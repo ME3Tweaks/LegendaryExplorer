@@ -276,7 +276,18 @@ namespace ME3Explorer.SequenceObjects
                                 case StrProperty strProp when strProp.Name == "m_sObjectTagToFind":
                                     return strProp.Value;
                                 case ObjectProperty objProp when objProp.Name == "ObjValue":
-                                    return pcc.getEntry(objProp.Value)?.ObjectName ?? "???";
+                                    {
+                                        IEntry entry = pcc.getEntry(objProp.Value);
+                                        if (entry == null) return "???";
+                                        if (entry is IExportEntry objValueExport && objValueExport.GetProperty<NameProperty>("Tag") is NameProperty tagProp && tagProp.Value != objValueExport.ObjectName)
+                                        {
+                                            return $"{entry.ObjectName}\n{ tagProp.Value}";
+                                        }
+                                        else
+                                        {
+                                            return entry.ObjectName;
+                                        }
+                                    }
                             }
                         }
                         return "???";
@@ -945,7 +956,7 @@ namespace ME3Explorer.SequenceObjects
             float midW = 0;
             varLinkBox = new PPath();
             GetVarLinks();
-            foreach(var varLink in Varlinks)
+            foreach (var varLink in Varlinks)
             {
                 string d = string.Join(",", varLink.Links.Select(l => $"#{l}"));
                 SText t2 = new SText(d + "\n" + varLink.Desc)

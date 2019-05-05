@@ -220,8 +220,8 @@ namespace ME3Explorer.PathfindingNodes
                         PathfindingEditorEdge edge = new PathfindingEditorEdge
                         {
                             Pen = penToUse,
-                            EndPoints = {[0] = this, [1] = othernode},
-                            OutboundConnections = {[0] = true, [1] = isTwoWay}
+                            EndPoints = { [0] = this, [1] = othernode },
+                            OutboundConnections = { [0] = true, [1] = isTwoWay }
                         };
                         if (!Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)) && !othernode.Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)))
                         {
@@ -303,7 +303,8 @@ namespace ME3Explorer.PathfindingNodes
     [DebuggerDisplay("PathNode - {" + nameof(UIndex) + "}")]
     public class PathNode : PathfindingNode
     {
-        public string Value {
+        public string Value
+        {
             get => val.Text;
             set => val.Text = value;
         }
@@ -546,9 +547,11 @@ namespace ME3Explorer.PathfindingNodes
     public class SFXNav_HarvesterMoveNode : PathfindingNode
     {
         //Not sure if this is actually implemented or not.
-        private static readonly Color outlinePenColor = Color.FromArgb(85, 59, 255);
+        private static readonly Color outlinePenColor = Color.FromArgb(165, 70, 70);
         //Shape may be same as mantle marker
-        private static readonly PointF[] outlineShape = { new PointF(0, 50), new PointF(0, 10), new PointF(35, 10), new PointF(35, 0), new PointF(50, 20), new PointF(35, 35), new PointF(35, 25), new PointF(20, 25), new PointF(20, 50), new PointF(0, 50) };
+        private static readonly PointF[] outlineShape = {
+            new PointF(0, 0), new PointF(17, 0), new PointF(17, 20), new PointF(33, 20), new PointF(33, 0), new PointF(50, 0), //Top part of H
+            new PointF(50, 50), new PointF(33, 50), new PointF(33, 30), new PointF(17, 30), new PointF(17, 50), new PointF(0, 50) }; //Bottom part of H
 
         public SFXNav_HarvesterMoveNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, x, y, p, grapheditor)
@@ -562,7 +565,7 @@ namespace ME3Explorer.PathfindingNodes
 
     public class SFXNav_LargeMantleNode : PathfindingNode
     {
-        private static readonly Color outlinePenColor = Color.FromArgb(185, 59, 55);
+        private static readonly Color outlinePenColor = Color.FromArgb(255, 119, 95);
         private static readonly PointF[] outlineShape = { new PointF(0, 50), new PointF(0, 10), new PointF(35, 10), new PointF(35, 0), new PointF(50, 20), new PointF(35, 35), new PointF(35, 25), new PointF(20, 25), new PointF(20, 50), new PointF(0, 50) };
 
         public SFXNav_LargeMantleNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)

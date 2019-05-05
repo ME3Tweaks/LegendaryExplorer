@@ -734,14 +734,22 @@ namespace ME3Explorer
                     break;
                 case StructProperty sp:
 
-                    if (sp.StructType == "Vector")
+                    if (sp.StructType == "Vector" || sp.StructType == "Rotator")
                     {
                         string loc = "(";
                         bool isFirst = true;
                         foreach (UProperty uprop in sp.Properties)
                         {
+                            string val = "";
+                            if (uprop is FloatProperty fp)
+                            {
+                                val = fp.Value.ToString();
+                            }
+                            else if (uprop is IntProperty ip)
+                            {
+                                val = ip.Value.ToString();
+                            }
 
-                            string val = (uprop as FloatProperty).Value.ToString();
                             if (isFirst)
                             {
                                 isFirst = false;
@@ -2064,7 +2072,7 @@ namespace ME3Explorer
         public string DisplayName
         {
             get => _displayName ?? "DisplayName for this UPropertyTreeViewItem is null!";
-            set => SetProperty(ref _displayName , value);
+            set => SetProperty(ref _displayName, value);
         }
 
         public bool IsUpdatable = false; //set to
