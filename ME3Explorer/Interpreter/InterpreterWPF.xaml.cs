@@ -634,10 +634,10 @@ namespace ME3Explorer
 
         public static UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(UProperty prop, UPropertyTreeViewEntry parent, IExportEntry parsingExport, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
         {
-            string displayName = $"{prop.StartOffset:X4}{displayPrefix}";
+            string displayName = displayPrefix;
             if (parent.Property == null || !parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
             {
-                displayName += $": { prop.Name}:";
+                displayName += $" {prop.Name}:";
             }
             string editableValue = ""; //editable value
             string parsedValue = ""; //human formatted item. Will most times be blank
@@ -814,7 +814,7 @@ namespace ME3Explorer
                 Property = prop,
                 EditableValue = editableValue,
                 ParsedValue = parsedValue,
-                DisplayName = displayName,
+                DisplayName = displayName.Trim(),
                 Parent = parent,
                 AttachedExport = parsingExport
             };
@@ -1991,7 +1991,7 @@ namespace ME3Explorer
 
         public UPropertyTreeViewEntry Parent { get; set; }
 
-        /// <summary>
+        /// <summary>d
         /// The UProperty object from the export's properties that this node represents
         /// </summary>
         public UProperty Property { get; set; }
@@ -2057,23 +2057,14 @@ namespace ME3Explorer
         public bool HasChanges
         {
             get => _hasChanges;
-            set
-            {
-                _hasChanges = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _hasChanges, value);
         }
 
         private string _displayName;
         public string DisplayName
         {
-            get
-            {
-                return _displayName ?? "DisplayName for this UPropertyTreeViewItem is null!";
-                //string type = UIndex < 0 ? "Imp" : "Exp";
-                //return $"({type}) {UIndex} {Entry.ObjectName}({Entry.ClassName})"; */
-            }
-            set => _displayName = value;
+            get => _displayName ?? "DisplayName for this UPropertyTreeViewItem is null!";
+            set => SetProperty(ref _displayName , value);
         }
 
         public bool IsUpdatable = false; //set to
@@ -2082,7 +2073,7 @@ namespace ME3Explorer
         public string ParsedValue
         {
             get => _parsedValue ?? "";
-            set => _parsedValue = value;
+            set => SetProperty(ref _parsedValue, value);
         }
 
         public string RawPropertyType => Property != null ? Property.PropType.ToString() : "Currently loaded export";

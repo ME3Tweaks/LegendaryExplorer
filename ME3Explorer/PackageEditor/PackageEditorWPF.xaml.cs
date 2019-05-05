@@ -3689,5 +3689,11 @@ namespace ME3Explorer
             Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad = !Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad;
             Properties.Settings.Default.Save();
         }
+
+        private void InterpreterWPF_AdvancedMode_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.InterpreterWPF_AdvancedDisplay = !Properties.Settings.Default.InterpreterWPF_AdvancedDisplay;
+            Properties.Settings.Default.Save();
+        }
     }
 }

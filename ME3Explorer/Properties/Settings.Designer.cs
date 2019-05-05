@@ -358,5 +358,17 @@ namespace ME3Explorer.Properties {
                 this["EmbeddedTextureViewer_AutoLoad"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InterpreterWPF_AdvancedDisplay {
+            get {
+                return ((bool)(this["InterpreterWPF_AdvancedDisplay"]));
+            }
+            set {
+                this["InterpreterWPF_AdvancedDisplay"] = value;
+            }
+        }
     }
 }

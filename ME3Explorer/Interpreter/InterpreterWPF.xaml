@@ -12,6 +12,7 @@
              mc:Ignorable="d" 
              Loaded="Interpreter_Loaded"
              xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+             xmlns:properties="clr-namespace:ME3Explorer.Properties"
                             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                             DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignWidth="800"
@@ -50,7 +51,7 @@
                     </DataTemplate>
                 </ComboBox.Resources>
             </ComboBox>
-            <TextBlock Text="Index:" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center"/>
+            <TextBlock Text="Index:" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center" Margin="5,0,2,0"/>
             <TextBox Width="30" Name="NameIndex_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"/>
             <Button Name="Set_Button" Content="Set" ToolTip="Sets the selected property to this value" Click="SetValue_Click" VerticalAlignment="Stretch" Padding="10,0,10,0" Style="{StaticResource {x:Type Button}}"/>
             <TextBlock Name="ParsedValue_TextBlock" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
@@ -88,12 +89,13 @@
                         <StackPanel x:Name="PropertyItem_Container" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="1">
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center" FontStyle="Italic"/>
+                                    <TextBlock x:Name="PropertyItem_Offset" Text="{Binding Property.StartOffset, StringFormat='{}{0:X5}: '}" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_AdvancedDisplay, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                    <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center" FontStyle="Italic" />
                                     <TextBlock x:Name="PropertyItem_EditableValue" Margin="5,0,0,0" Text="{Binding EditableValue}" VerticalAlignment="Center" FontWeight="Bold" Visibility="{Binding EditableValue, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
                                     <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0" Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
                                     <xctk:ColorPicker Margin="5,0,0,0" Visibility="{Binding Property, Converter={StaticResource UPropertyColorPickerVisibilityConverter}}" SelectedColor="{Binding ColorStructCode,Converter={StaticResource ColorCodeConverter}}" Width="60"/>
                                 </StackPanel>
-                                <TextBlock x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                <TextBlock x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_AdvancedDisplay, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="PreviewMouseRightButtonDown">
                                         <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>

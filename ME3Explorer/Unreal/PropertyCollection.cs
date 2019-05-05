@@ -836,7 +836,7 @@ namespace ME3Explorer.Unreal
         /// <summary>
         /// Offset to the start of this property as it was read by PropertyCollection.ReadProps()
         /// </summary>
-        internal long StartOffset;
+        public long StartOffset { get; set; }
 
         public NameReference Name
         {
