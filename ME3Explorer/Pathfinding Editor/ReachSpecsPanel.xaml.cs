@@ -118,6 +118,7 @@ namespace ME3Explorer.Pathfinding_Editor
             "SFXGame.SFXLadderReachSpec",
             "SFXGame.SFXJumpDownReachSpec",
             "SFXGame.SFXLargeBoostReachSpec",
+            "SFXGame.SFXLargeClimbReachSpec",
             "SFXGame.SFXLargeMantleReachSpec",
             "Engine.SlotToSlotReachSpec" });
 
@@ -457,7 +458,7 @@ namespace ME3Explorer.Pathfinding_Editor
             bool preAllow = AllowChanges;
             AllowChanges = false;
             ReachSpec selectedSpec = ReachableNodes_ComboBox.SelectedItem as ReachSpec;
-            AvailableReachSpecSizes.RemoveRange(AvailableReachSpecSizes.Where(x => x.CustomSized));
+            AvailableReachSpecSizes.RemoveRange(AvailableReachSpecSizes.Where(x => x.CustomSized).ToList());
             ReachSpecConnection_Panel.IsEnabled = selectedSpec != null;
             if (selectedSpec != null)
             {

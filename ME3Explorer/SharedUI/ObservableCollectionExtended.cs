@@ -47,7 +47,9 @@ namespace ME3Explorer.SharedUI
         public void RemoveRange(IEnumerable<T> collection)
         {
             if (collection == null) throw new ArgumentNullException(nameof(collection));
+            if (collection == Items) throw new Exception("Cannot remove range of same collection");
             int oldcount = Count;
+            //Todo: catch reachspec crash when changing size
             foreach (var i in collection) Items.Remove(i);
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             if (oldcount != Count)

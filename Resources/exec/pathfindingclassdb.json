@@ -30,8 +30,7 @@
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_BoostNode.CollisionCylinder",
       "description": "Enemies can use boost nodes to transition up or down a vertical space. Note there is also a LargeBoostNode type for large enemies such as Banshees.",
       "pathnode": true,
-      "usesbtop": true,
-
+      "usesbtop": true
     },
     {
       "nodetypename": "SFXNav_JumpDownNode",
@@ -63,7 +62,7 @@
         {
           "name": "MantleDest",
           "type": "ObjectProperty",
-          "defaultvalue":  "0" 
+          "defaultvalue": "0"
         }
       ]
     },
@@ -75,7 +74,21 @@
       "description": "Node that can be used as the start or end of a climbing action.",
       "pathnode": true,
       "usesbtop": true
-
+    },
+    {
+      "nodetypename": "SFXNav_LargeClimbNode",
+      "fullclasspath": "SFXGame.SFXNav_LargeClimbNode",
+      "name": "SFXNav_LargeMantleNode",
+      "cylindercomponentarchetype": "SFXGame.Default__SFXNav_LargeClimbNode.CollisionCylinder",
+      "pathnode": true,
+      "usesbtop": true,
+      "ensuredproperties": [
+        {
+          "name": "ClimbDest",
+          "type": "ObjectProperty",
+          "defaultvalue": "0"
+        }
+      ]
     },
     {
       "nodetypename": "BioPathPoint",
@@ -251,6 +264,10 @@
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
+    "SFXGame.SFXLargeClimbReachSpec": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
     "SFXGame.SFXLadderReachSpec": {
       "fullclasspath": "Class",
       "packagefile": "Core"
@@ -312,6 +329,18 @@
       "packagefile": "SFXGame"
     },
     "SFXGame.Default__SFXNav_ClimbWallNode.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGame.SFXNav_LargeClimbNode": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.Default__SFXNav_LargeClimbNode": {
+      "fullclasspath": "SFXGame.Default__SFXNav_LargeClimbNode",
+      "packagefile": "SFXGame"
+    },
+    "SFXGame.Default__SFXNav_LargeClimbNode.CollisionCylinder": {
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
