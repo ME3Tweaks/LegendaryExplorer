@@ -82,10 +82,31 @@ namespace ME3Explorer.AutoTOC
             //    }
             //}
 
+
+            // AUTO DLC MOUNTING
+
+            // 1. GET LIST OF DLC DIRECTORIES
+
+            
+
             //IList() me1DLCs; // set list of directorys
             string DLCDirectory = ME1Directory.DLCPath;
             MessageBox.Show(DLCDirectory); //DEBUG
-            
+            List dlcList (Directory.EnumerateDirectories(DLCDirectory, "*.*", SearchOption.TopDirectoryOnly);
+
+
+            // 2. READ AUTOLOAD.INI FROM EACH DLC.  BUILD TABLE OF DIRECTORIES & MOUNTS
+            // ADD BASEGAME = 0, UNC = 1, VEGAS = 2
+
+            // 3. REMOVE ALL SEEKFREEPCPATHs FROM $DOCUMENTS$\ME1
+
+            // 4. ADD SEEKFREE PATHS IN REVERSE ORDER (HIGHEST= BIOGAME, ETC).
+
+            // 5. BUILD FILEINDEX.TXT FILE FOR EACH DLC AND BASEGAME
+            // BACKUP BASEGAME Fileindex.txt => Fileindex.bak if not done already.
+            // SET UP MASTER FILE LIST VARIABLE
+            // CALL FUNCTION TO BUILD EACH FILEINDEX.  START WITH HIGHEST DLC MOUNT -> ADD TO MASTER FILE LIST
+            // DO NOT ADD DUPLICATES
         }
 
         private void GenerateFileList_BackgroundThread(object sender, DoWorkEventArgs e)
@@ -94,7 +115,7 @@ namespace ME3Explorer.AutoTOC
             string[] extensions = { ".sfm", ".upk", ".bik", ".u", ".isb" };
 
             //remove trailing slash
-            string dlcCookedDir = Path.GetFullPath(e.Argument as string); //standardize 
+            string dlcCookedDir = Path.GetFullPath(e.Argument as string); //standardize Need to CHECK FOR DUPLICATION WITH HIGHER MOUNTED FILES. 
             ListBoxTask task = new ListBoxTask($"Generating file index for {dlcCookedDir}");
             TOCTasks.Add(task);
             int rootLength = dlcCookedDir.Length + 1; //trailing slash path separator. This is used to strip off the absolute part of the path and leave only relative
