@@ -1,4 +1,5 @@
-﻿using ME3Explorer.ActorNodes;
+﻿using KFreonLib.MEDirectories;
+using ME3Explorer.ActorNodes;
 using ME3Explorer.Packages;
 using ME3Explorer.PathfindingNodes;
 using ME3Explorer.Sequence_Editor;
@@ -10,6 +11,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -48,7 +50,10 @@ namespace ME3Explorer.Pathfinding_Editor
             "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow",
             "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping",
             "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch",
-            "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan"
+            "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan","SFXNav_InteractionCannibal", "PlayerStart",
+            "SFXNav_InteractionCenturion","SFXNav_InteractionGuardPose", "SFXNav_InteractionHusk","SFXNav_InteractionInspectOmniTool",
+            "SFXNav_InteractionListening","SFXNav_InteractionListening2", "SFXNav_InteractionRavager","SFXNav_InteractionTalking",
+            "SFXNav_InteractionTalking2","SFXNav_InteractionTalking3", "SFXNav_KaiLengShield"
         };
 
         public static string[] actorNodeClasses =
@@ -71,7 +76,7 @@ namespace ME3Explorer.Pathfinding_Editor
         //Layers
         private List<PathfindingNodeMaster> GraphNodes;
         private bool ChangingSelectionByGraphClick;
-        private IExportEntry PersisentLevelExport;
+        private IExportEntry PersistentLevelExport;
 
         private readonly PathingGraphEditor graphEditor;
         private bool AllowRefresh;
@@ -841,7 +846,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void PopoutInterpreterWPF(object obj)
         {
-            IExportEntry export = (IExportEntry) ActiveNodes_ListBox.SelectedItem;
+            IExportEntry export = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
             ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export)
             {
                 Title = $"Interpreter - {export.UIndex} {export.GetNetIndexedFullPath} - {Pcc.FileName}"
@@ -863,8 +868,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
                     if (!AllLevelObjects.Contains(selectedEntry))
                     {
-                        byte[] leveldata = PersisentLevelExport.Data;
-                        int start = PersisentLevelExport.propsEnd();
+                        byte[] leveldata = PersistentLevelExport.Data;
+                        int start = PersistentLevelExport.propsEnd();
                         //Console.WriteLine("Found start of binary at {start.ToString("X8"));
 
                         uint exportid = BitConverter.ToUInt32(leveldata, start);
@@ -879,7 +884,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         List<byte> memList = leveldata.ToList();
                         memList.InsertRange(offset, BitConverter.GetBytes(selectedEntry.UIndex));
                         leveldata = memList.ToArray();
-                        PersisentLevelExport.Data = leveldata;
+                        PersistentLevelExport.Data = leveldata;
                         RefreshGraph();
                     }
                     else
@@ -1347,8 +1352,8 @@ namespace ME3Explorer.Pathfinding_Editor
             Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
 
             LoadMEPackage(fileName);
-            PersisentLevelExport = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
-            if (PersisentLevelExport == null)
+            PersistentLevelExport = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
+            if (PersistentLevelExport == null)
             {
                 UnLoadMEPackage();
                 StatusText = "Select a package file to load";
@@ -1387,7 +1392,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 RefreshRecent(true, RFiles);
                 Title = $"Pathfinding Editor WPF - {fileName}";
                 StatusText = null; //Nothing to prepend.
-                PathfindingEditorWPF_ValidationPanel.SetLevel(PersisentLevelExport);
+                PathfindingEditorWPF_ValidationPanel.SetLevel(PersistentLevelExport);
             }
             else
             {
@@ -1403,7 +1408,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private bool LoadPathingNodesFromLevel()
         {
-            if (Pcc == null || PersisentLevelExport == null)
+            if (Pcc == null || PersistentLevelExport == null)
             {
                 return false;
             }
@@ -1422,10 +1427,10 @@ namespace ME3Explorer.Pathfinding_Editor
             activeExportsListbox.Items.Clear();*/
             AllLevelObjects.Clear();
             //Read persistent level binary
-            byte[] data = PersisentLevelExport.Data;
+            byte[] data = PersistentLevelExport.Data;
 
             //find start of class binary (end of props)
-            int start = PersisentLevelExport.propsEnd();
+            int start = PersistentLevelExport.propsEnd();
 
             //Console.WriteLine("Found start of binary at " + start.ToString("X8"));
 
@@ -2780,10 +2785,10 @@ namespace ME3Explorer.Pathfinding_Editor
                 SharedPathfinding.GenerateNewRandomGUID(newNodeEntry);
                 //Add cloned node to persistentlevel
                 //Read persistent level binary
-                byte[] data = PersisentLevelExport.Data;
+                byte[] data = PersistentLevelExport.Data;
 
                 //find start of class binary (end of props)
-                int start = PersisentLevelExport.propsEnd();
+                int start = PersistentLevelExport.propsEnd();
 
                 uint exportid = BitConverter.ToUInt32(data, start);
                 start += 4;
@@ -2794,7 +2799,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 List<byte> memList = data.ToList();
                 memList.InsertRange(insertoffset, BitConverter.GetBytes(newNodeEntry.UIndex));
                 data = memList.ToArray();
-                PersisentLevelExport.Data = data;
+                PersistentLevelExport.Data = data;
 
                 SharedPathfinding.ReindexMatchingObjects(newNodeEntry);
                 SharedPathfinding.ReindexMatchingObjects(newCollisionEntry);
@@ -3323,10 +3328,10 @@ namespace ME3Explorer.Pathfinding_Editor
             IExportEntry nodeEntry = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
 
             //Read persistent level binary
-            byte[] data = PersisentLevelExport.Data;
+            byte[] data = PersistentLevelExport.Data;
 
             //find start of class binary (end of props)
-            int start = PersisentLevelExport.propsEnd();
+            int start = PersistentLevelExport.propsEnd();
 
             start += 4; //skip export id
             uint numberofitems = BitConverter.ToUInt32(data, start);
@@ -3350,7 +3355,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     Buffer.BlockCopy(data, start + 4, destarray, start, data.Length - (start + 4));
                     //Debug.WriteLine(data.Length);
                     //Debug.WriteLine("DA " + destarray.Length);
-                    PersisentLevelExport.Data = destarray;
+                    PersistentLevelExport.Data = destarray;
                     AllowRefresh = true;
                     RefreshGraph();
                     MessageBox.Show("Removed item from level.");
@@ -3381,6 +3386,145 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 SharedPathfinding.GenerateNewRandomGUID(nodeEntry);
             }
+        }
+
+        private void CheckGameFileNavs_Clicked(object sender, RoutedEventArgs e)
+        {
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += delegate
+            {
+                StatusText = "Getting file information from game directory";
+                FileInfo[] files = new DirectoryInfo(ME3Directory.BIOGamePath).EnumerateFiles("*.pcc", SearchOption.AllDirectories).ToArray();
+                int numScanned = 1;
+                SortedSet<string> navsNotAccountedFor = new SortedSet<string>();
+                foreach (var file in files)
+                {
+                    //GC.Collect();
+                    using (var package = MEPackageHandler.OpenMEPackage(file.FullName))
+                    {
+                        var persistenLevelExp = package.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
+                        if (persistenLevelExp == null) continue;
+                        //Scan
+                        byte[] data = persistenLevelExp.Data;
+
+                        //find start of class binary (end of props)
+                        int start = persistenLevelExp.propsEnd();
+
+                        //Console.WriteLine("Found start of binary at " + start.ToString("X8"));
+
+                        uint exportid = BitConverter.ToUInt32(data, start);
+                        start += 4;
+                        uint numberofitems = BitConverter.ToUInt32(data, start);
+                        int countoffset = start;
+
+                        start += 4;
+                        int bioworldinfoexportid = BitConverter.ToInt32(data, start);
+                        IExportEntry bioworldinfo = package.getUExport(bioworldinfoexportid);
+                        if (bioworldinfo.ObjectName != "BioWorldInfo")
+                        {
+                            //INVALID!!
+                            Debug.WriteLine("Error: BioworldInfo object is not bioworldinfo name");
+                            continue;
+                        }
+
+                        start += 4;
+                        uint shouldbezero = BitConverter.ToUInt32(data, start);
+                        if (shouldbezero != 0 && package.Game != MEGame.ME1)
+                        {
+                            //INVALID!!!
+                            Debug.WriteLine("Error: should be zero, not zero in " + package.FileName);
+                            continue;
+                        }
+                        int itemcount = 1; //Skip bioworldinfo and Class
+                        if (package.Game != MEGame.ME1)
+                        {
+                            start += 4;
+                            itemcount = 2;
+                        }
+                        while (itemcount < numberofitems)
+                        {
+                            //get header.
+                            int itemexportid = BitConverter.ToInt32(data, start);
+                            if (package.isUExport(itemexportid))
+                            {
+                                IExportEntry exportEntry = package.getUExport(itemexportid);
+                                //AllLevelObjects.Add(exportEntry);
+
+                                if (ignoredobjectnames.Contains(exportEntry.ObjectName))
+                                {
+                                    start += 4;
+                                    itemcount++;
+                                    continue;
+                                }
+
+                                if (!pathfindingNodeClasses.Contains(exportEntry.ClassName))
+                                {
+                                    if (exportEntry.GetProperty<ArrayProperty<ObjectProperty>>("PathList") is ArrayProperty<ObjectProperty>)
+                                    {
+                                        if (!navsNotAccountedFor.TryGetValue(exportEntry.ClassName, out string _))
+                                        {
+                                            Debug.WriteLine("Found new nav type: " + exportEntry.ClassName + " in " + exportEntry.FileRef.FileName);
+                                            navsNotAccountedFor.Add(exportEntry.GetFullPath);
+                                        }
+                                    }
+                                }
+
+                                //if (splineNodeClasses.Contains(exportEntry.ClassName))
+                                //{
+                                //    isParsedByExistingLayer = true;
+
+                                //    if (ShowSplinesLayer && isAllowedVisibleByZFiltering(exportEntry))
+                                //    {
+                                //        bulkActiveNodes.Add(exportEntry);
+                                //        var connectionsProp = exportEntry.GetProperty<ArrayProperty<StructProperty>>("Connections");
+                                //        if (connectionsProp != null)
+                                //        {
+                                //            foreach (StructProperty connectionProp in connectionsProp)
+                                //            {
+                                //                ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
+                                //                bulkActiveNodes.Add(Pcc.getUExport(splinecomponentprop.Value));
+                                //            }
+                                //        }
+                                //    }
+                                //}
+
+                                //if (exportEntry.ClassName == "StaticMeshCollectionActor")
+                                //{
+                                //    StaticMeshCollections.Add(new StaticMeshCollection(exportEntry));
+                                //}
+                                //else if (exportEntry.ClassName == "SFXCombatZone" || exportEntry.ClassName == "BioPlaypenVolumeAdditive")
+                                //{
+                                //    CombatZones.Add(new Zone(exportEntry));
+                                //}
+
+                                //if (ShowEverythingElseLayer && !isParsedByExistingLayer && isAllowedVisibleByZFiltering(exportEntry))
+                                //{
+                                //    bulkActiveNodes.Add(exportEntry);
+                                //}
+
+                                start += 4;
+                                itemcount++;
+                            }
+                            else
+                            {
+                                //INVALID ITEM ENCOUNTERED!
+                                start += 4;
+                                itemcount++;
+                            }
+                        }
+
+                        numScanned++;
+                        StatusText = "Scanning files " + ((int)(numScanned * 100.0 / files.Length)) + "%";
+                    }
+                }
+                Debug.WriteLine("Navs not accounted for:");
+                foreach (var s in navsNotAccountedFor)
+                {
+                    Debug.WriteLine(s);
+                }
+                StatusText = "Scanning completed";
+            };
+            worker.RunWorkerAsync();
         }
     }
 }

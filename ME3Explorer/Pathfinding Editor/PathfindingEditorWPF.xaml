@@ -114,7 +114,8 @@
             <MenuItem Header="Experiments" Padding="4">
                 <MenuItem Header="Flip level upside down" Command="{Binding FlipLevelCommand}"/>
                 <MenuItem Header="Build linear pathfinding chain from path logger (ASI)" Command="{Binding BuildPathfindingChainCommand}"/>
-                <MenuItem Header="Pop out interpreter for current node" Command="{Binding PopoutInterpreterCommand}"/>
+                <MenuItem Header="Pop out interpreter for current node" Command="{Binding PopoutInterpreterCommand}" InputGestureText="CTRL + P"/>
+                <MenuItem Header="Check all game files for navigation points that editor does not support" Click="CheckGameFileNavs_Clicked"/>
             </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
