@@ -659,12 +659,6 @@
     <Compile Include="SFAREditor2\SFAREditor2.Designer.cs">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
     </Compile>
-    <Compile Include="SharedUI\ExportSelectorWinForms.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SharedUI\ExportSelectorWinForms.Designer.cs">
-      <DependentUpon>ExportSelectorWinForms.cs</DependentUpon>
-    </Compile>
     <Compile Include="SharedUI\ListScrollBox.cs" />
     <Compile Include="SharedUI\ObservableCollectionExtended.cs" />
     <Compile Include="SharedUI\PeregrineTreeView\TreeViewHelper.cs" />
@@ -1338,9 +1332,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SharedUI\ExportSelectorWinForms.resx">
-      <DependentUpon>ExportSelectorWinForms.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Soundplorer\DirectReplace.resx">
       <DependentUpon>DirectReplace.cs</DependentUpon>

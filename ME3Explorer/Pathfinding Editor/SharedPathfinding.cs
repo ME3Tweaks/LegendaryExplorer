@@ -263,9 +263,9 @@ namespace ME3Explorer.Pathfinding_Editor
             string upstreamfullpath;
             while (upstreamCount < importParts.Length)
             {
-                upstreamfullpath = String.Join(".", importParts, 0, importParts.Length - upstreamCount);
+                upstreamfullpath = string.Join(".", importParts, 0, importParts.Length - upstreamCount);
                 var upstreammatchinglist = fullPathMappingList.Where(x => x.fullpath == upstreamfullpath).ToList();
-                if (upstreammatchinglist.Where(x=>x.entry is IExportEntry).ToList().Count == 1 || upstreammatchinglist.Where(x => x.entry is ImportEntry).ToList().Count == 1)
+                if (upstreammatchinglist.Where(x=>x.entry is IExportEntry).HasExactly(1) || upstreammatchinglist.Where(x => x.entry is ImportEntry).HasExactly(1))
                 {
                     upstreamEntryToAttachTo = upstreammatchinglist[0].entry;
                     break;
