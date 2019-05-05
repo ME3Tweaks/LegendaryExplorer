@@ -56,5 +56,16 @@ namespace Ini
             return temp.ToString();
 
         }
+        /// <summary>
+        /// Remove Key from Ini file
+        /// </summary>
+        /// <PARAM name="Section"></PARAM>
+        /// Section name
+        /// <PARAM name="Key"></PARAM>
+        /// Key Name
+        public void IniRemoveKey(string Section, string Key)
+        {
+            WritePrivateProfileString(Section, Key, null, this.path);
+        }
     }
 }

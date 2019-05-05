@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using FontAwesome.WPF;
+using Ini;
 using KFreonLib.MEDirectories;
 using ME3Explorer.SharedUI;
 using Microsoft.Win32;
@@ -85,26 +86,67 @@ namespace ME3Explorer.AutoTOC
 
             // AUTO DLC MOUNTING
 
-            // 1. GET LIST OF DLC DIRECTORIES
-
-            
-
+            // 1. GET LIST OF DLC DIRECTORIES, SET MAIN VARIABLES
             //IList() me1DLCs; // set list of directorys
             string DLCDirectory = ME1Directory.DLCPath;
             MessageBox.Show(DLCDirectory); //DEBUG
-            List dlcList (Directory.EnumerateDirectories(DLCDirectory, "*.*", SearchOption.TopDirectoryOnly);
+            string[] dlcList = Directory.GetDirectories(DLCDirectory, "*.*", SearchOption.TopDirectoryOnly);
+
+            SortedDictionary<int, string> dlcTable = new SortedDictionary<int, string>();
 
 
             // 2. READ AUTOLOAD.INI FROM EACH DLC.  BUILD TABLE OF DIRECTORIES & MOUNTS
-            // ADD BASEGAME = 0, UNC = 1, VEGAS = 2
+            foreach( string d in dlcList)
+            {
+                if (d == "DLC_UNC") 
+                {
+                    dlcTable.Add(1, "DLC_UNC");
+                }
+                else if (d != "DLC_VEGAS")
+                {
+                    dlcTable.Add(2, "DLC_VEGAS");
+                }
+                else
+                {
+                    string dlcDir = DLCDirectory + "\\" + d + "\\autoload.ini";  //CHECK IF FILE EXISTS?
+                    IniFile dlcAutoload = new IniFile(dlcDir);
+                    string name = dlcAutoload.IniReadValue("ME1DLCMOUNT", "ModDirName");
+                    int mount = Convert.ToInt32(dlcAutoload.IniReadValue("ME1DLCMOUNT", "ModMount"));
+                    dlcTable.Add(mount, name);
+                }
+            }
+            // ADD BASEGAME = 0
+            dlcTable.Add(0, "BioGame");
 
-            // 3. REMOVE ALL SEEKFREEPCPATHs FROM $DOCUMENTS$\ME1
+
+            // 3. REMOVE ALL SEEKFREEPCPATHs FROM $DOCUMENTS$\BIOWARE\MASS EFFECT\CONFIG\BIOENGINE.ini
+            IniFile BioEngine = new IniFile("$DOCUMENTS$\\Bioware\\Mass Effect\\Config\\BioEngine.ini");
+            BioEngine.IniRemoveKey("[Core.System]", "SeekFreePCPaths");
+
 
             // 4. ADD SEEKFREE PATHS IN REVERSE ORDER (HIGHEST= BIOGAME, ETC).
-
+            foreach (KeyValuePair<int,string> item in dlcTable)
+            {
+                if (item.Key == 0)
+                {
+                    BioEngine.IniWriteValue("[Core.System]", "SeekFreePCPaths", "..\\BioGame\\CookedPC");
+                }
+                else
+                {
+                    BioEngine.IniWriteValue("[Core.System]", "SeekFreePCPaths", "..\\DLC\\" + item.Value + "\\CookedPC");
+                }
+            }
+                        
             // 5. BUILD FILEINDEX.TXT FILE FOR EACH DLC AND BASEGAME
             // BACKUP BASEGAME Fileindex.txt => Fileindex.bak if not done already.
+            if (!File.Exists(ME1Directory.cookedPath + "\\Fileindex.bak"))
+            {
+                File.Copy(ME1Directory.cookedPath + "\\Fileindex.txt", ME1Directory.cookedPath + "\\Fileindex.bak");
+            }
+
             // SET UP MASTER FILE LIST VARIABLE
+            var masterList = new List<string>;
+
             // CALL FUNCTION TO BUILD EACH FILEINDEX.  START WITH HIGHEST DLC MOUNT -> ADD TO MASTER FILE LIST
             // DO NOT ADD DUPLICATES
         }
