@@ -861,36 +861,33 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void AddExportToLevel()
         {
-            using (EntrySelectorDialogWPF dialog = new EntrySelectorDialogWPF(this, Pcc, EntrySelectorDialogWPF.SupportedTypes.Exports))
+            if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is IExportEntry selectedEntry)
             {
-                if (dialog.ShowDialog() == true && dialog.ChosenEntry is IExportEntry selectedEntry)
+
+                if (!AllLevelObjects.Contains(selectedEntry))
                 {
+                    byte[] leveldata = PersistentLevelExport.Data;
+                    int start = PersistentLevelExport.propsEnd();
+                    //Console.WriteLine("Found start of binary at {start.ToString("X8"));
 
-                    if (!AllLevelObjects.Contains(selectedEntry))
-                    {
-                        byte[] leveldata = PersistentLevelExport.Data;
-                        int start = PersistentLevelExport.propsEnd();
-                        //Console.WriteLine("Found start of binary at {start.ToString("X8"));
+                    uint exportid = BitConverter.ToUInt32(leveldata, start);
+                    start += 4;
+                    uint numberofitems = BitConverter.ToUInt32(leveldata, start);
+                    numberofitems++;
+                    leveldata.OverwriteRange(start, BitConverter.GetBytes(numberofitems));
 
-                        uint exportid = BitConverter.ToUInt32(leveldata, start);
-                        start += 4;
-                        uint numberofitems = BitConverter.ToUInt32(leveldata, start);
-                        numberofitems++;
-                        leveldata.OverwriteRange(start, BitConverter.GetBytes(numberofitems));
-
-                        //Debug.WriteLine("Size before: {memory.Length);
-                        //memory = RemoveIndices(memory, offset, size);
-                        int offset = (int)(start + numberofitems * 4); //will be at the very end of the list as it is now +1
-                        List<byte> memList = leveldata.ToList();
-                        memList.InsertRange(offset, BitConverter.GetBytes(selectedEntry.UIndex));
-                        leveldata = memList.ToArray();
-                        PersistentLevelExport.Data = leveldata;
-                        RefreshGraph();
-                    }
-                    else
-                    {
-                        MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry.GetNetIndexedFullPath} is already in the level.");
-                    }
+                    //Debug.WriteLine("Size before: {memory.Length);
+                    //memory = RemoveIndices(memory, offset, size);
+                    int offset = (int)(start + numberofitems * 4); //will be at the very end of the list as it is now +1
+                    List<byte> memList = leveldata.ToList();
+                    memList.InsertRange(offset, BitConverter.GetBytes(selectedEntry.UIndex));
+                    leveldata = memList.ToArray();
+                    PersistentLevelExport.Data = leveldata;
+                    RefreshGraph();
+                }
+                else
+                {
+                    MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry.GetNetIndexedFullPath} is already in the level.");
                 }
             }
         }

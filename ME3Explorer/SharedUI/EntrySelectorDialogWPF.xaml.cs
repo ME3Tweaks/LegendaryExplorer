@@ -18,7 +18,7 @@ namespace ME3Explorer.SharedUI
     /// <summary>
     /// Interaction logic for EntrySelectorDialogWPF.xaml
     /// </summary>
-    public partial class EntrySelectorDialogWPF : NotifyPropertyChangedWindowBase, IDisposable
+    public partial class EntrySelector : NotifyPropertyChangedWindowBase, IDisposable
     {
         private IMEPackage Pcc;
         public ObservableCollectionExtended<object> AllEntriesList { get; } = new ObservableCollectionExtended<object>();
@@ -28,11 +28,11 @@ namespace ME3Explorer.SharedUI
         /// </summary>
         /// <param name="owner">WPF owning window. Used for centering. Set to null if the calling window is not WPF based</param>
         /// <param name="pcc">Package file to load entries from</param>
-        /// <param name="SupportedInputTypes">Supported selection types</param>
-        public EntrySelectorDialogWPF(Window owner, IMEPackage pcc, SupportedTypes SupportedInputTypes)
+        /// <param name="supportedInputTypes">Supported selection types</param>
+        private EntrySelector(Window owner, IMEPackage pcc, SupportedTypes supportedInputTypes)
         {
             this.Pcc = pcc;
-            this.SupportedInputTypes = SupportedInputTypes;
+            this.SupportedInputTypes = supportedInputTypes;
 
             var allEntriesBuilding = new List<object>();
             if (SupportedInputTypes.HasFlag(SupportedTypes.Imports))
@@ -57,7 +57,13 @@ namespace ME3Explorer.SharedUI
             EntrySelector_ComboBox.Focus();
         }
 
-        public ICommand OKCommand { get; private set; }
+        public static IEntry GetEntry(Window owner, IMEPackage pcc, SupportedTypes supportedInputTypes)
+        {
+            var dlg = new EntrySelector(owner, pcc, supportedInputTypes);
+            return dlg.ShowDialog() == true ? dlg.ChosenEntry : null;
+        }
+
+        public ICommand OKCommand { get; set; }
         private void LoadCommands()
         {
             OKCommand = new GenericCommand(AcceptSelection, CanAcceptSelection);
@@ -75,7 +81,7 @@ namespace ME3Explorer.SharedUI
             Dispose();
         }
 
-        public IEntry ChosenEntry;
+        private IEntry ChosenEntry;
 
         [Flags]
         public enum SupportedTypes
@@ -85,7 +91,7 @@ namespace ME3Explorer.SharedUI
             ExportsAndImports = 3
         }
 
-        private readonly SupportedTypes SupportedInputTypes = 0;
+        private readonly SupportedTypes SupportedInputTypes;
 
         public string DirectionsText
         {

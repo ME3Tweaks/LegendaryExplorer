@@ -1991,7 +1991,7 @@ namespace ME3Explorer
 
         public UPropertyTreeViewEntry Parent { get; set; }
 
-        /// <summary>d
+        /// <summary>
         /// The UProperty object from the export's properties that this node represents
         /// </summary>
         public UProperty Property { get; set; }

@@ -296,6 +296,22 @@ namespace ME3Explorer
         {
             return first.Zip(second, ValueTuple.Create);
         }
+
+        public static bool HasExactly<T>(this IEnumerable<T> src, int count)
+        {
+            if (count < 0) return false;
+            foreach (var _ in src)
+            {
+                if (count <= 0)
+                {
+                    return false;
+                }
+
+                --count;
+            }
+
+            return count == 0;
+        }
     }
 
     public static class DictionaryExtensions

@@ -136,8 +136,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private void GoTo()
         {
-            var dialog = new EntrySelectorDialogWPF(this, Pcc, EntrySelectorDialogWPF.SupportedTypes.Exports);
-            if (dialog.ShowDialog() == true && dialog.ChosenEntry is IExportEntry export)
+            if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is IExportEntry export)
             {
                 GoToExport(export);
             }
@@ -681,6 +680,7 @@ namespace ME3Explorer.Sequence_Editor
 
             List<SObj> LayoutSubTree(SBox root)
             {
+                //Task.WaitAll(Task.Delay(1500));
                 var tree = new List<SObj>();
                 var vars = new List<SVar>();
                 foreach (var varLink in root.Varlinks)
@@ -720,11 +720,12 @@ namespace ME3Explorer.Sequence_Editor
                         float dy = tree.Where(node => node.GlobalFullBounds.Left < subTreeWidth).BoundingRect().Bottom;
                         if (dy > 0) dy += VERTICAL_SPACING;
                         subTree.OffsetBy(dx, dy);
-                        float treeWidth = tree.BoundingRect().Width + HORIZONTAL_SPACING;
+                        //TODO: fix this so it doesn't screw up some sequences. eg: BioD_ProEar_310BigFall.pcc
+                        /*float treeWidth = tree.BoundingRect().Width + HORIZONTAL_SPACING;
                         //tighten spacing when this subtree is wider than existing tree. 
                         dy -= subTree.Where(node => node.GlobalFullBounds.Left < treeWidth).BoundingRect().Top;
                         if (dy < 0) dy += VERTICAL_SPACING;
-                        subTree.OffsetBy(0, dy);
+                        subTree.OffsetBy(0, dy);*/
 
                         tree.AddRange(subTree);
                     }
@@ -1564,28 +1565,19 @@ namespace ME3Explorer.Sequence_Editor
 
         private void AddObject_Clicked(object sender, RoutedEventArgs e)
         {
-            using (ExportSelectorWinForms form = new ExportSelectorWinForms(Pcc, ExportSelectorWinForms.SupportedTypes.Exports))
+            if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is IExportEntry exportToAdd)
             {
-                System.Windows.Forms.DialogResult dr = form.ShowDialog();
-                if (dr != System.Windows.Forms.DialogResult.Yes)
-                {
-                    return; //user cancel
-                }
-
-                IExportEntry exportToAdd = form.SelectedExport;
                 if (!exportToAdd.inheritsFrom("SequenceObject"))
                 {
                     MessageBox.Show($"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is not a sequence object.");
                     return;
                 }
-                if (CurrentObjects.All(obj => obj.Export != exportToAdd))
-                {
-                    addObject(exportToAdd);
-                }
-                else
+                if (CurrentObjects.Any(obj => obj.Export == exportToAdd))
                 {
                     MessageBox.Show($"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is already in the sequence.");
+                    return;
                 }
+                addObject(exportToAdd);
             }
         }
 
