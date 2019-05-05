@@ -23,6 +23,8 @@ namespace ME3Explorer.Packages
             OriginalDataSize = 0;
         }
 
+        public bool HasStack => (ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0;
+
         /// <summary>
         /// NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
         /// </summary>
@@ -62,24 +64,49 @@ namespace ME3Explorer.Packages
 
         public uint HeaderOffset { get; set; }
 
-        public int idxClass { get => BitConverter.ToInt32(Header, 0);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; } }
-        public int idxClassParent { get => BitConverter.ToInt32(Header, 4);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 4, sizeof(int)); HeaderChanged = true; } }
-        public int idxLink { get => BitConverter.ToInt32(Header, 8);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 8, sizeof(int)); HeaderChanged = true; } }
-        public int idxObjectName { get => BitConverter.ToInt32(Header, 12);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 12, sizeof(int)); HeaderChanged = true; } }
-        public int indexValue { get => BitConverter.ToInt32(Header, 16);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 16, sizeof(int)); HeaderChanged = true; } }
-        public int idxArchtype { get => BitConverter.ToInt32(Header, 20);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 20, sizeof(int)); HeaderChanged = true; } }
-        public ulong ObjectFlags { get => BitConverter.ToUInt64(Header, 24);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 24, sizeof(long)); HeaderChanged = true; } }
-        public int DataSize { get => BitConverter.ToInt32(Header, 32);
+        public int idxClass
+        {
+            get => BitConverter.ToInt32(Header, 0);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; }
+        }
+        public int idxClassParent
+        {
+            get => BitConverter.ToInt32(Header, 4);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 4, sizeof(int)); HeaderChanged = true; }
+        }
+        public int idxLink
+        {
+            get => BitConverter.ToInt32(Header, 8);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 8, sizeof(int)); HeaderChanged = true; }
+        }
+        public int idxObjectName
+        {
+            get => BitConverter.ToInt32(Header, 12);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 12, sizeof(int)); HeaderChanged = true; }
+        }
+        public int indexValue
+        {
+            get => BitConverter.ToInt32(Header, 16);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 16, sizeof(int)); HeaderChanged = true; }
+        }
+        public int idxArchtype
+        {
+            get => BitConverter.ToInt32(Header, 20);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 20, sizeof(int)); HeaderChanged = true; }
+        }
+        public ulong ObjectFlags
+        {
+            get => BitConverter.ToUInt64(Header, 24);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 24, sizeof(long)); HeaderChanged = true; }
+        }
+        public int DataSize
+        {
+            get => BitConverter.ToInt32(Header, 32);
             set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 32, sizeof(int));
         }
-        public int DataOffset { get => BitConverter.ToInt32(Header, 36);
+        public int DataOffset
+        {
+            get => BitConverter.ToInt32(Header, 36);
             set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 36, sizeof(int));
         }
         //if me1 or me2: int unkcount1

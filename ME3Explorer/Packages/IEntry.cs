@@ -43,6 +43,7 @@ namespace ME3Explorer.Packages
         ulong ObjectFlags { get; set; }
         int OriginalDataSize { get; }
         bool ReadsFromConfig { get; }
+        bool HasStack { get; }
 
         IExportEntry Clone();
 

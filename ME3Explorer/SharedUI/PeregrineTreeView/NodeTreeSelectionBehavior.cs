@@ -71,20 +71,35 @@ namespace ME3Explorer.SharedUI
                     {
                         //This can cause an exception still (InvalidOperationException) if content generation is in progress. 
                         //Will have to figure out how to deal with it.
-                        virtualizingPanel.BringIndexIntoViewPublic(index);
+                        try
+                        {
+                            virtualizingPanel.BringIndexIntoViewPublic(index);
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            //This seems to be an internal exception
+                        }
                     }
                     newParent = currentParent.ItemContainerGenerator.ContainerFromIndex(index) as TreeViewItem;
                     if (newParent == null)
                     {
                         currentParent.UpdateLayout();
-                        virtualizingPanel.BringIndexIntoViewPublic(index);
+                        try
+                        {
+                            virtualizingPanel.BringIndexIntoViewPublic(index);
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            //This seems to be an internal exception
+                        }
                         newParent = currentParent.ItemContainerGenerator.ContainerFromIndex(index) as TreeViewItem;
                     }
                 }
 
                 if (newParent == null)
                 {
-                    throw new InvalidOperationException("Tree view item cannot be found or created for node '" + node + "'");
+                    return;
+                    //throw new InvalidOperationException("Tree view item cannot be found or created for node '" + node + "'");
                 }
 
                 if (node == newNode)

@@ -123,7 +123,7 @@ namespace ME3Explorer.Pathfinding_Editor
             var badSpecs = new List<string>();
             //HashSet<string> names = new HashSet<string>();
 
-            int numNeedingRecalc = 0;
+            int numRecalculated = 0;
             for (int i = 0; i < Pcc.ExportCount; i++)
             {
                 IExportEntry exp = Pcc.Exports[i];
@@ -177,14 +177,14 @@ namespace ME3Explorer.Pathfinding_Editor
                         {
                             if (calculateReachSpec(spec))
                             {
-                                numNeedingRecalc++;
+                                numRecalculated++;
                             }
                         }
                     }
 
                 }
             }
-            task?.Complete($"{numNeedingRecalc} ReachSpec{(numNeedingRecalc == 1 ? "" : "s")} were recalculated");
+            task?.Complete($"{numRecalculated} ReachSpec{(numRecalculated == 1 ? "" : "s")} were recalculated");
         }
 
         private bool calculateReachSpec(IExportEntry reachSpecExport, IExportEntry startNodeExport = null)
@@ -258,7 +258,8 @@ namespace ME3Explorer.Pathfinding_Editor
             if (distanceDiff > MAX_DISTANCE_TOLERANCE)
             {
                 // Difference.
-                Debug.WriteLine("Diff Distance is > tolerance: " + distanceDiff + ", should be " + calculatedProperDistance);
+                Debug.WriteLine("Diff Distance is > tolerance: " + distanceDiff + ", proper value should be " + calculatedProperDistance);
+                reachSpecExport.WriteProperties(applyReachSpecCalculation(properties, calculatedProperDistance, dirX, dirY, dirZ));
                 return true;
             }
 
@@ -287,6 +288,22 @@ namespace ME3Explorer.Pathfinding_Editor
 
             return false;
             //We really shouldn't reach here, hopefully.
+        }
+
+        private PropertyCollection applyReachSpecCalculation(PropertyCollection props, int calculatedProperDistance, float dirX, float dirY, float dirZ)
+        {
+            IntProperty prop = props.GetProp<IntProperty>("Distance");
+            StructProperty directionProp = props.GetProp<StructProperty>("Direction");
+            FloatProperty propX = directionProp.GetProp<FloatProperty>("X");
+            FloatProperty propY = directionProp.GetProp<FloatProperty>("Y");
+            FloatProperty propZ = directionProp.GetProp<FloatProperty>("Z");
+
+            prop.Value = calculatedProperDistance;
+            propX.Value = dirX;
+            propY.Value = dirY;
+            propZ.Value = dirZ;
+
+            return props;
         }
 
         public void fixStackHeaders(ListBoxTask task = null)
@@ -347,65 +364,65 @@ namespace ME3Explorer.Pathfinding_Editor
                 //}
                 itemcount++;
             }
-/*
-            //Update IDs
-            for (int index = 0; index < mpIDs.Count; index++)
-            {
-                var item = mpIDs.ElementAt(index);
-                List<int> valueList = item.Value;
-                if (valueList.Count > 1 && item.Key != 0 && item.Key != -1)
-                {
-                    string itemlist = Pcc.Exports[valueList[0]].ObjectName;
-                    for (int i = 1; i < valueList.Count; i++)
-                    // for (int i = valueList.Count - 1; i > 1; i--)
-                    {
-                        int max = mpIDs.Keys.Max();
-                        //Debug.WriteLine("New max key size: " + max);
-                        IExportEntry export = Pcc.Exports[valueList[i]];
-                        itemlist += " " + export.ObjectName;
-                        string exportname = export.ObjectName;
-                        if (exportname.Contains("SFXOperation") || exportname.Contains("ReachSpec"))
+            /*
+                        //Update IDs
+                        for (int index = 0; index < mpIDs.Count; index++)
                         {
-
-                            int idOffset = 0;
-                            if ((export.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+                            var item = mpIDs.ElementAt(index);
+                            List<int> valueList = item.Value;
+                            if (valueList.Count > 1 && item.Key != 0 && item.Key != -1)
                             {
-                                idOffset = 0x1A;
+                                string itemlist = Pcc.Exports[valueList[0]].ObjectName;
+                                for (int i = 1; i < valueList.Count; i++)
+                                // for (int i = valueList.Count - 1; i > 1; i--)
+                                {
+                                    int max = mpIDs.Keys.Max();
+                                    //Debug.WriteLine("New max key size: " + max);
+                                    IExportEntry export = Pcc.Exports[valueList[i]];
+                                    itemlist += " " + export.ObjectName;
+                                    string exportname = export.ObjectName;
+                                    if (exportname.Contains("SFXOperation") || exportname.Contains("ReachSpec"))
+                                    {
+
+                                        int idOffset = 0;
+                                        if ((export.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+                                        {
+                                            idOffset = 0x1A;
+                                        }
+                                        byte[] exportData = export.Data;
+
+                                        int nameId = BitConverter.ToInt32(exportData, 4);
+
+                                        if (Pcc.isName(nameId) && Pcc.getNameEntry(nameId) == export.ObjectName)
+                                        {
+                                            //It's a primitive component header
+                                            idOffset += 8;
+                                            continue;
+                                        }
+                                        int maybe_MPID = BitConverter.ToInt32(exportData, idOffset);
+
+                                        max++;
+                                        int origId = maybe_MPID;
+                                        SharedPathfinding.WriteMem(exportData, idOffset, BitConverter.GetBytes(max));
+                                        numUpdated++;
+
+
+                                        maybe_MPID = BitConverter.ToInt32(exportData, idOffset); //read new fixed id
+                                        export.Data = exportData;
+
+                                        if (export.EntryHasPendingChanges)
+                                        {
+                                            Debug.WriteLine("Updated MPID " + origId + " -> " + maybe_MPID + " " + export.ObjectName + " in exp " + export.Index);
+                                        }
+                                        //add to new list to prevent rewrite of dupes.
+                                        mpIDs[maybe_MPID] = new List<int>();
+                                        mpIDs[maybe_MPID].Add(export.Index);
+                                    }
+
+                                }
+                                //Debug.WriteLine(itemlist);
                             }
-                            byte[] exportData = export.Data;
-
-                            int nameId = BitConverter.ToInt32(exportData, 4);
-
-                            if (Pcc.isName(nameId) && Pcc.getNameEntry(nameId) == export.ObjectName)
-                            {
-                                //It's a primitive component header
-                                idOffset += 8;
-                                continue;
-                            }
-                            int maybe_MPID = BitConverter.ToInt32(exportData, idOffset);
-
-                            max++;
-                            int origId = maybe_MPID;
-                            SharedPathfinding.WriteMem(exportData, idOffset, BitConverter.GetBytes(max));
-                            numUpdated++;
-
-
-                            maybe_MPID = BitConverter.ToInt32(exportData, idOffset); //read new fixed id
-                            export.Data = exportData;
-
-                            if (export.EntryHasPendingChanges)
-                            {
-                                Debug.WriteLine("Updated MPID " + origId + " -> " + maybe_MPID + " " + export.ObjectName + " in exp " + export.Index);
-                            }
-                            //add to new list to prevent rewrite of dupes.
-                            mpIDs[maybe_MPID] = new List<int>();
-                            mpIDs[maybe_MPID].Add(export.Index);
-                        }
-
-                    }
-                    //Debug.WriteLine(itemlist);
-                }
-            }*/
+                        }*/
             //if (showUI)
             //{
             task?.Complete($"{numUpdated} export{(numUpdated != 1 ? "s" : "")} stack headers updated");

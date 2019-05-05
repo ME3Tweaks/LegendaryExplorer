@@ -139,11 +139,11 @@ namespace ME3Explorer
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class","StringRefProperty", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "StructProperty", "ComponentProperty", "IntProperty", "NameProperty", "BoolProperty", "ClassProperty", "ByteProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance", "MetaData", "MaterialInstanceConstants",
-            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "StrProperty", "World", "Texture2D", "TextureFlipBook", "State", "BioGestureRuntimeData", "BioTlkFileSet", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData"};
+            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "StrProperty", "World", "Texture2D", "TextureFlipBook", "State", "BioGestureRuntimeData", "BioTlkFileSet", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData", "SFXNav_LargeMantleNode"};
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            return ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__");
+            return exportEntry.HasStack || (ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"));
         }
 
         public override void PopOut()
@@ -383,8 +383,16 @@ namespace ME3Explorer
                         subNodes = StartSoundNodeWaveScan(data, ref binarystart);
                         break;
                     default:
-                        isGenericScan = true;
-                        subNodes = StartGenericScan(data, ref binarystart);
+                        if (CurrentLoadedExport.HasStack)
+                        {
+                            subNodes = StartStackScan(data);
+                        }
+                        else
+                        {
+                            isGenericScan = true;
+                            subNodes = StartGenericScan(data, ref binarystart);
+                        }
+
                         break;
                 }
                 if (appendGenericScan)
@@ -422,7 +430,67 @@ namespace ME3Explorer
             {
                 topLevelTree.Items.Add(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
-            e.Result = topLevelTree; 
+            e.Result = topLevelTree;
+        }
+
+        private List<object> StartStackScan(byte[] data)
+        {
+            var subnodes = new List<object>();
+            int binarystart = 0;
+            int importNum = BitConverter.ToInt32(data, binarystart);
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"{binarystart:X4} Class: {importNum} ({CurrentLoadedExport.FileRef.GetEntryString(importNum)})",
+                Name = "_" + binarystart,
+                Tag = NodeType.StructLeafObject
+            });
+            binarystart += 4;
+            importNum = BitConverter.ToInt32(data, binarystart);
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"{binarystart:X4} Class: {importNum} ({CurrentLoadedExport.FileRef.GetEntryString(importNum)})",
+                Name = "_" + binarystart,
+                Tag = NodeType.StructLeafObject
+            });
+            binarystart += 4;
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"{binarystart:X4} Null: {BitConverter.ToInt32(data, binarystart)}",
+                Name = "_" + binarystart
+            });
+            binarystart += 4;
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"{binarystart:X4} Null: {BitConverter.ToInt32(data, binarystart)}",
+                Name = "_" + binarystart
+            });
+            binarystart += 4;
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"{binarystart:X4} ????: {BitConverter.ToInt32(data, binarystart)}",
+                Name = "_" + binarystart
+            });
+            binarystart += 4;
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"{binarystart:X4} ????: {BitConverter.ToInt16(data, binarystart)}",
+                Name = "_" + binarystart
+            });
+            binarystart += 2;
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"{binarystart:X4} Null: {BitConverter.ToInt32(data, binarystart)}",
+                Name = "_" + binarystart
+            });
+            binarystart += 4;
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"{binarystart:X4} NetIndex: {BitConverter.ToInt32(data, binarystart)}",
+                Name = "_" + binarystart,
+                Tag = NodeType.StructLeafInt
+            });
+
+            return subnodes;
         }
 
         private bool AttemptSelectPreviousEntry(List<object> subNodes)

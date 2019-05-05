@@ -260,6 +260,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand PopoutInterpreterCommand { get; set; }
         public ICommand NodeTypeChangeCommand { get; set; }
         public ICommand OpenRefInSequenceEditorCommand { get; set; }
+        public ICommand CheckNetIndexesCommand { get; set; }
         private void LoadCommands()
         {
             RefreshCommand = new GenericCommand(RefreshGraph, PackageIsLoaded);
@@ -291,6 +292,24 @@ namespace ME3Explorer.Pathfinding_Editor
             PopoutInterpreterCommand = new RelayCommand(PopoutInterpreterWPF, NodeIsSelected);
             NodeTypeChangeCommand = new GenericCommand(ChangeNodeType, CanChangeNodetype);
             OpenRefInSequenceEditorCommand = new RelayCommand(OpenRefInSequenceEditor, NodeIsSelected);
+            CheckNetIndexesCommand = new GenericCommand(CheckNetIndexes, PackageIsLoaded);
+        }
+
+        private void CheckNetIndexes()
+        {
+            List<int> indexes = new List<int>();
+            foreach (PathfindingNodeMaster m in GraphNodes)
+            {
+                int nindex = BitConverter.ToInt32(m.export.Data,m.export.GetPropertyStart()-4);
+                if (indexes.Contains(nindex))
+                {
+                    Debug.WriteLine("Duplicate netindex "+nindex+": Found a duplicate on "+m.export.GetNetIndexedFullPath);
+                }
+                else
+                {
+                    indexes.Add(nindex);
+                }
+            }
         }
 
         private static void OpenRefInSequenceEditor(object obj)
