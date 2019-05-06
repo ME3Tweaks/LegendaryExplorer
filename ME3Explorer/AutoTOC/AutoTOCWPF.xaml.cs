@@ -89,26 +89,26 @@ namespace ME3Explorer.AutoTOC
             // 1. GET LIST OF DLC DIRECTORIES, SET MAIN VARIABLES
             //IList() me1DLCs; // set list of directorys
             string DLCDirectory = ME1Directory.DLCPath;
-            MessageBox.Show(DLCDirectory); //DEBUG
+            
             string[] dlcList = Directory.GetDirectories(DLCDirectory, "*.*", SearchOption.TopDirectoryOnly);
 
             SortedDictionary<int, string> dlcTable = new SortedDictionary<int, string>();
 
 
             // 2. READ AUTOLOAD.INI FROM EACH DLC.  BUILD TABLE OF DIRECTORIES & MOUNTS
-            foreach( string d in dlcList)
+            foreach (string d in dlcList)
             {
-                if (d == "DLC_UNC") 
+                if (d.EndsWith("DLC_UNC"))
                 {
                     dlcTable.Add(1, "DLC_UNC");
                 }
-                else if (d != "DLC_VEGAS")
+                else if (d.EndsWith("DLC_VEGAS"))
                 {
                     dlcTable.Add(2, "DLC_VEGAS");
                 }
                 else
                 {
-                    string dlcDir = DLCDirectory + "\\" + d + "\\autoload.ini";  //CHECK IF FILE EXISTS?
+                    string dlcDir =  d + "\\autoload.ini";  //CHECK IF FILE EXISTS?
                     IniFile dlcAutoload = new IniFile(dlcDir);
                     string name = dlcAutoload.IniReadValue("ME1DLCMOUNT", "ModDirName");
                     int mount = Convert.ToInt32(dlcAutoload.IniReadValue("ME1DLCMOUNT", "ModMount"));
@@ -117,40 +117,46 @@ namespace ME3Explorer.AutoTOC
             }
             // ADD BASEGAME = 0
             dlcTable.Add(0, "BioGame");
-            
+
 
             // 3. REMOVE ALL SEEKFREEPCPATHs FROM $DOCUMENTS$\BIOWARE\MASS EFFECT\CONFIG\BIOENGINE.ini
-            IniFile BioEngine = new IniFile("$DOCUMENTS$\\Bioware\\Mass Effect\\Config\\BioEngine.ini");
-            BioEngine.IniRemoveKey("[Core.System]", "SeekFreePCPaths");
-            dlcTable.OrderByDescending(k => k.Key); //SORT INTO REVERSE ORDER 0 => HIGHEST FOR BIOENGINE
+            string userDocs = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var BioEngine =  new IniFile(userDocs + "\\Bioware\\Mass Effect\\Config\\BIOEngine.ini");
+
+            while (BioEngine.IniReadValue("Core.System", "SeekFreePCPaths") != "")
+            {
+                BioEngine.IniRemoveKey("Core.System", "SeekFreePCPaths");
+            }
+         
 
             // 4. ADD SEEKFREE PATHS IN REVERSE ORDER (HIGHEST= BIOGAME, ETC).
+            dlcTable.OrderBy(k => k.Key); //SORT INTO REVERSE ORDER 0 => HIGHEST FOR BIOENGINE
             foreach (KeyValuePair<int,string> item in dlcTable)
             {
                 if (item.Key == 0)
                 {
-                    BioEngine.IniWriteValue("[Core.System]", "SeekFreePCPaths", "..\\BioGame\\CookedPC");
+                    BioEngine.IniWriteNewValue("Core.System", "SeekFreePCPaths", "..\\BioGame\\CookedPC");
                 }
                 else
                 {
-                    BioEngine.IniWriteValue("[Core.System]", "SeekFreePCPaths", "..\\DLC\\" + item.Value + "\\CookedPC");
+                    BioEngine.IniWriteNewValue("Core.System", "SeekFreePCPaths", "..\\DLC\\" + item.Value + "\\CookedPC");
                 }
             }
                         
             // 5. BUILD FILEINDEX.TXT FILE FOR EACH DLC AND BASEGAME
             // BACKUP BASEGAME Fileindex.txt => Fileindex.bak if not done already.
-            if (!File.Exists(ME1Directory.cookedPath + "\\Fileindex.bak"))
+            if (!File.Exists(ME1Directory.cookedPath + "\\FileIndex.bak"))
             {
-                File.Copy(ME1Directory.cookedPath + "\\Fileindex.txt", ME1Directory.cookedPath + "\\Fileindex.bak");
+                File.Copy(ME1Directory.cookedPath + "\\FileIndex.txt", ME1Directory.cookedPath + "\\FileIndex.bak");
             }
 
             // SET UP MASTER FILE LIST VARIABLE
-            var masterList = new Dictionary<string, string>(null, null);  //Setup master list as int and string
+            var masterList = new Dictionary<string, string>();  //Setup master list as int and string
 
             // CALL FUNCTION TO BUILD EACH FILEINDEX.  START WITH HIGHEST DLC MOUNT -> ADD TO MASTER FILE LIST
             // DO NOT ADD DUPLICATES
-
-            dlcTable.OrderBy(k => k.Key);
+            TOCTasks.ClearEx();
+            dlcTable.OrderByDescending(k => k.Key);
             foreach (KeyValuePair<int, string> fileListStem in dlcTable)
             {
                 if (fileListStem.Value == "BioGame")
@@ -159,14 +165,14 @@ namespace ME3Explorer.AutoTOC
                 }
                 else
                 {
-                    GenerateFileList(ME1Directory.DLCPath + "\\" + fileListStem + "\\CookedPC");
+                    GenerateFileList(ME1Directory.DLCPath + "\\" + fileListStem.Value + "\\CookedPC");
                 }
             }
         }
 
         private void GenerateFileList(string CookedPath)
         {
-            TOCTasks.ClearEx();
+            
             string[] extensions = { ".sfm", ".upk", ".bik", ".u", ".isb" };
 
             //remove trailing slash
@@ -179,6 +185,7 @@ namespace ME3Explorer.AutoTOC
             var files = (Directory.EnumerateFiles(dlcCookedDir, "*.*", SearchOption.AllDirectories)
                 .Where(s => extensions.Any(ext => ext == Path.GetExtension(s).ToLower()))
                 .Select(p => p.Remove(0, rootLength))).ToList();
+
 
             string fileName = Path.Combine(dlcCookedDir, "FileIndex.txt");
             File.WriteAllLines(fileName, files);

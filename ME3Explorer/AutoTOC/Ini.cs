@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -66,6 +67,29 @@ namespace Ini
         public void IniRemoveKey(string Section, string Key)
         {
             WritePrivateProfileString(Section, Key, null, this.path);
+        }
+        /// <summary>
+        /// Write Data to the INI File adding a new key value if duplicated
+        /// </summary>
+        /// <PARAM name="Section"></PARAM>
+        /// Section name
+        /// <PARAM name="Key"></PARAM>
+        /// Key Name
+        /// <PARAM name="Value"></PARAM>
+        /// Value Name
+        public void IniWriteNewValue(string Section, string Key, string Value)
+        {
+            if (this.IniReadValue(Section, Key) == "")
+            {
+                WritePrivateProfileString(Section, Key, Value, this.path);
+            }
+            else
+            {
+                WritePrivateProfileString(Section, Key +"af78da8fy", Value, this.path);
+                string str = File.ReadAllText(this.path);
+                str = str.Replace(Key + "af78da8fy", Key);
+                File.WriteAllText(this.path, str);
+            }
         }
     }
 }
