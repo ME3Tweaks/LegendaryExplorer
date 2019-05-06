@@ -23,6 +23,8 @@ namespace ME3Explorer.AutoTOC
     public partial class AutoTOCWPF : NotifyPropertyChangedWindowBase
     {
         private object _myCollectionLock = new object();
+        private List<String> masterList = new List<string>();  //Setup master list as int and string
+
 
         public ObservableCollectionExtended<ListBoxTask> TOCTasks { get; } = new ObservableCollectionExtended<ListBoxTask>();
 
@@ -92,7 +94,7 @@ namespace ME3Explorer.AutoTOC
             
             string[] dlcList = Directory.GetDirectories(DLCDirectory, "*.*", SearchOption.TopDirectoryOnly);
 
-            SortedDictionary<int, string> dlcTable = new SortedDictionary<int, string>();
+            Dictionary<int, string> dlcTable = new Dictionary<int, string>();
 
 
             // 2. READ AUTOLOAD.INI FROM EACH DLC.  BUILD TABLE OF DIRECTORIES & MOUNTS
@@ -130,8 +132,8 @@ namespace ME3Explorer.AutoTOC
          
 
             // 4. ADD SEEKFREE PATHS IN REVERSE ORDER (HIGHEST= BIOGAME, ETC).
-            dlcTable.OrderBy(k => k.Key); //SORT INTO REVERSE ORDER 0 => HIGHEST FOR BIOENGINE
-            foreach (KeyValuePair<int,string> item in dlcTable)
+            //SORT INTO REVERSE ORDER 0 => HIGHEST FOR BIOENGINE
+            foreach (KeyValuePair<int,string> item in dlcTable.OrderBy(k => k.Key))
             {
                 if (item.Key == 0)
                 {
@@ -150,24 +152,29 @@ namespace ME3Explorer.AutoTOC
                 File.Copy(ME1Directory.cookedPath + "\\FileIndex.txt", ME1Directory.cookedPath + "\\FileIndex.bak");
             }
 
-            // SET UP MASTER FILE LIST VARIABLE
-            var masterList = new Dictionary<string, string>();  //Setup master list as int and string
-
             // CALL FUNCTION TO BUILD EACH FILEINDEX.  START WITH HIGHEST DLC MOUNT -> ADD TO MASTER FILE LIST
             // DO NOT ADD DUPLICATES
             TOCTasks.ClearEx();
-            dlcTable.OrderByDescending(k => k.Key);
-            foreach (KeyValuePair<int, string> fileListStem in dlcTable)
+            
+            foreach (KeyValuePair<int, string> fileListStem in dlcTable.OrderByDescending(k => k.Key))
             {
                 if (fileListStem.Value == "BioGame")
                 {
-                    GenerateFileList(ME1Directory.cookedPath.ToString());
+                    GenerateFileList(ME1Directory.BioGamePath + "\\CookedPC");
                 }
                 else
                 {
                     GenerateFileList(ME1Directory.DLCPath + "\\" + fileListStem.Value + "\\CookedPC");
                 }
             }
+            masterList.Clear();  //reset clean master list as int and string
+            TOCTasks.Add(new ListBoxTask
+            {
+                Header = "Done",
+                Icon = FontAwesomeIcon.Check,
+                Foreground = Brushes.Green,
+                Spinning = false
+            });
         }
 
         private void GenerateFileList(string CookedPath)
@@ -176,7 +183,7 @@ namespace ME3Explorer.AutoTOC
             string[] extensions = { ".sfm", ".upk", ".bik", ".u", ".isb" };
 
             //remove trailing slash
-            string dlcCookedDir = Path.GetFullPath(CookedPath); //standardize Need to CHECK FOR DUPLICATION WITH HIGHER MOUNTED FILES. 
+            string dlcCookedDir = Path.GetFullPath(CookedPath); //standardize  
             ListBoxTask task = new ListBoxTask($"Generating file index for {dlcCookedDir}");
             TOCTasks.Add(task);
             int rootLength = dlcCookedDir.Length + 1; //trailing slash path separator. This is used to strip off the absolute part of the path and leave only relative
@@ -185,18 +192,23 @@ namespace ME3Explorer.AutoTOC
             var files = (Directory.EnumerateFiles(dlcCookedDir, "*.*", SearchOption.AllDirectories)
                 .Where(s => extensions.Any(ext => ext == Path.GetExtension(s).ToLower()))
                 .Select(p => p.Remove(0, rootLength))).ToList();
-
-
+            
+            for (int i = 0; i < files.Count; i++)
+            {
+                if( masterList.Contains(files[i]) )
+                {
+                    files.RemoveAt(i);
+                }
+                else
+                {
+                    masterList.Add(files[i]);
+                }
+            }
+            
             string fileName = Path.Combine(dlcCookedDir, "FileIndex.txt");
             File.WriteAllLines(fileName, files);
             task.Complete($"Generated file index for {dlcCookedDir}");
-            TOCTasks.Add(new ListBoxTask
-            {
-                Header = "Done",
-                Icon = FontAwesomeIcon.Check,
-                Foreground = Brushes.Green,
-                Spinning = false
-            });
+
         }
 
         private void GenerateFileList_BackgroundThread(object sender, DoWorkEventArgs e)
