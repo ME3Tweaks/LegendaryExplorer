@@ -4697,7 +4697,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        public static void RelinkFunctionForPorting(IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, SortedDictionary<int, int> crossPCCObjectMap)
+        public static void RelinkFunctionForPorting(IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, SortedDictionary<IEntry, IEntry> crossPCCObjectMap)
         {
             //Copy function bytes
             byte[] originalData = sourceExport.Data;
@@ -4728,7 +4728,7 @@ namespace ME3Explorer.Unreal
             destinationExport.Data = newExpData;
         }
 
-        private static void RelinkToken(Token t, byte[] newscript, IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, SortedDictionary<int, int> crossPCCObjectMap)
+        private static void RelinkToken(Token t, byte[] newscript, IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, SortedDictionary<IEntry, IEntry> crossPCCObjectMap)
         {
             Debug.WriteLine($"Attemptng function relink on token at position {t.pos}. Number of listed relinkable items {t.inPackageReferences.Count}");
 
@@ -4746,6 +4746,8 @@ namespace ME3Explorer.Unreal
                         if (relinkItem.value > 0)
                         {
                             //Export
+
+                            //Todo: Add lookup
                             if (crossPCCObjectMap.TryGetValue(relinkItem.value - 1, out int relinkedValue))
                             {
                                 Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported a sub export: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");

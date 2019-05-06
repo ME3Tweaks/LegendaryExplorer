@@ -109,11 +109,21 @@ namespace ME3Explorer
             }
         }
 
+        private bool _multiRelinkingModeActive;
+        public bool MultiRelinkingModeActive
+        {
+            get => _multiRelinkingModeActive;
+            set => SetProperty(ref _multiRelinkingModeActive, value);
+        }
+
 
         public static readonly string PackageEditorDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"PackageEditor\");
         private const string RECENTFILES_FILE = "RECENTFILES";
         public List<string> RFiles;
-        private SortedDictionary<int, int> crossPCCObjectMap;
+        /// <summary>
+        /// PCC map that maps values from a source PCC to values in this PCC. Used extensively during relinking.
+        /// </summary>
+        private SortedDictionary<IEntry, IEntry> crossPCCObjectMap;
         private string currentFile;
         private int QueuedGotoNumber;
         private bool IsLoadingFile;
@@ -172,6 +182,8 @@ namespace ME3Explorer
         public ICommand OpenInInterpViewerCommand { get; set; }
         public ICommand FindEntryViaTagCommand { get; set; }
         public ICommand PopoutCurrentViewCommand { get; set; }
+        public ICommand MultidropRelinkingCommand { get; set; }
+        public ICommand PerformMultiRelinkCommand { get; set; }
         private void LoadCommands()
         {
             ComparePackagesCommand = new GenericCommand(ComparePackages, PackageIsLoaded);
@@ -197,7 +209,23 @@ namespace ME3Explorer
             OpenInInterpViewerCommand = new GenericCommand(OpenInInterpViewer, CanOpenInInterpViewer);
             FindEntryViaTagCommand = new GenericCommand(FindEntryViaTag, PackageIsLoaded);
             PopoutCurrentViewCommand = new GenericCommand(PopoutCurrentView, ExportIsSelected);
+            MultidropRelinkingCommand = new GenericCommand(EnableMultirelinkingMode, PackageIsLoaded);
+            PerformMultiRelinkCommand = new GenericCommand(PerformMultiRelink, CanPerformMultiRelink);
         }
+
+        private bool CanPerformMultiRelink() => MultiRelinkingModeActive;
+
+        private void EnableMultirelinkingMode()
+        {
+            MultiRelinkingModeActive = true;
+        }
+
+        private void PerformMultiRelink()
+        {
+            Debug.WriteLine("Performing multi-relink");
+            MultiRelinkingModeActive = false;
+        }
+
 
         private void PopoutCurrentView()
         {
@@ -961,26 +989,7 @@ namespace ME3Explorer
             if (CurrentView == CurrentViewMode.Tree && TryGetSelectedEntry(out IEntry entry))
             {
                 int nextIndex; //used to select the final node
-                               /*crossPCCObjectMap = new SortedDictionary<int, int>();
-                               TreeViewEntry rootNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
-                               if (n >= 0)
-                               {
-                                   nextIndex = Pcc.ExportCount;
-                                   IExportEntry exp = Pcc.getExport(n).Clone();
-                                   Pcc.addExport(exp);
-                                   crossPCCObjectMap[n] = Pcc.ExportCount - 1; //0 based.
-                                   n = ;
-                               }
-                               else
-                               {
-                                   nextIndex = -Pcc.ImportCount - 1;
-                                   ImportEntry imp = Pcc.getImport(-n - 1).Clone();
-                                   Pcc.addImport(imp);
-                                   n = nextIndex;
-                                   //We do not relink imports in same-pcc.
-                               }*/
-
-                crossPCCObjectMap = new SortedDictionary<int, int>();
+                crossPCCObjectMap.Clear();
                 TreeViewEntry newEntry;
                 if (entry is IExportEntry exp)
                 {
@@ -988,7 +997,7 @@ namespace ME3Explorer
                     IExportEntry ent = exp.Clone();
                     Pcc.addExport(ent);
                     newEntry = new TreeViewEntry(ent);
-                    crossPCCObjectMap[exp.Index] = ent.Index; //0 based. map old index to new index
+                    crossPCCObjectMap[exp] = ent;
                 }
                 else
                 {
@@ -1002,12 +1011,11 @@ namespace ME3Explorer
                 newEntry.Parent = selected.Parent;
                 selected.Parent.Sublinks.Add(newEntry);
                 selected.Parent.SortChildren();
-                //goToNumber(newEntry.UIndex);
 
                 cloneTree(selected, newEntry);
                 relinkObjects2(Pcc);
                 relinkBinaryObjects(Pcc);
-                crossPCCObjectMap = null;
+                crossPCCObjectMap.Clear(); //Don't support keeping things in memory
                 RefreshView();
                 GoToNumber(nextIndex);
             }
@@ -1059,7 +1067,7 @@ namespace ME3Explorer
                         IExportEntry ent = (node.Entry as IExportEntry).Clone();
                         Pcc.addExport(ent);
                         newEntry = new TreeViewEntry(ent);
-                        crossPCCObjectMap[node.Entry.Index] = ent.Index; //map old node index to new node index
+                        crossPCCObjectMap[node.Entry] = ent;
                     }
                     else if (node.UIndex < 0)
                     {
@@ -2239,10 +2247,12 @@ namespace ME3Explorer
             if (dropInfo.TargetItem is TreeViewEntry targetItem && (dropInfo.Data as TreeViewEntry)?.Parent != null)
             {
                 //Check if the path of the target and the source is the same. If so, offer to merge instead
-                crossPCCObjectMap = new SortedDictionary<int, int>();
+                if (!MultiRelinkingModeActive)
+                {
+                    crossPCCObjectMap.Clear();
+                }
 
                 TreeViewEntry sourceItem = (TreeViewEntry)dropInfo.Data;
-
 
                 if (sourceItem == targetItem || (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
                 {
@@ -2297,7 +2307,7 @@ namespace ME3Explorer
                     if (importExport(sourceEntry as IExportEntry, link, out IExportEntry newExport))
                     {
                         newItem = new TreeViewEntry(newExport);
-                        crossPCCObjectMap[n - 1] = newExport.Index; //0 based. map old index to new index
+                        crossPCCObjectMap[sourceEntry] = newExport; //0 based. map old index to new index
                     }
                     else
                     {
@@ -2308,9 +2318,9 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    ImportEntry newImport = getOrAddCrossImport(importpcc.getImport(Math.Abs(n) - 1).GetFullPath, importpcc, Pcc, sourceItem.Sublinks.Count == 0 ? link : (int?)null);
+                    ImportEntry newImport = getOrAddCrossImport(sourceEntry.GetFullPath, importpcc, Pcc, sourceItem.Sublinks.Count == 0 ? link : (int?)null);
                     newItem = new TreeViewEntry(newImport);
-                    crossPCCObjectMap[n] = newImport.UIndex; //0 based. map old index to new index
+                    crossPCCObjectMap[sourceEntry] = newImport;
                 }
                 newItem.Parent = targetItem;
                 targetItem.Sublinks.Add(newItem);
@@ -2410,7 +2420,7 @@ namespace ME3Explorer
                     TreeViewEntry sameObjInTarget = newItemParent.Sublinks.FirstOrDefault(x => node.Entry.GetFullPath == x.Entry.GetFullPath);
                     if (sameObjInTarget != null)
                     {
-                        crossPCCObjectMap[node.Entry.Index] = sameObjInTarget.Entry.Index; //0 based. Make the relink map know about this entry
+                        crossPCCObjectMap[node.Entry] = sameObjInTarget.Entry;
 
                         //merge children to this node instead
                         if (node.Sublinks.Count > 0)
@@ -2426,11 +2436,11 @@ namespace ME3Explorer
 
                 if (index >= 0)
                 {
-                    index--; //code is written for 0-based indexing, while UIndex is not 0 based
+                    //index--; //This was definitely wrong... probably
                     if (importExport(node.Entry as IExportEntry, newItemParent.UIndex, out IExportEntry importedEntry))
                     {
                         newEntry = new TreeViewEntry(importedEntry);
-                        crossPCCObjectMap[node.Entry.UIndex - 1] = importedEntry.Index; //0 based. map old index to new index
+                        crossPCCObjectMap[node.Entry] = importedEntry;
                     }
                     else
                     {
@@ -2442,14 +2452,11 @@ namespace ME3Explorer
                     //todo: ensure relink works with this
                     ImportEntry newImport = getOrAddCrossImport(importpcc.getImport(Math.Abs(index) - 1).GetFullPath, importpcc, Pcc);
 
-                    //nextIndex = -Pcc.ImportCount;
-
-                    //ImportEntry newImport = Pcc.Imports[nextIndex - 1]; //0 based
                     newEntry = new TreeViewEntry(newImport);
-                    crossPCCObjectMap[index] = newImport.UIndex; //0 based. map old index to new index
+                    crossPCCObjectMap[node.Entry] = newImport;
                 }
                 newEntry.Parent = newItemParent;
-                newItemParent.Sublinks.Add(newEntry); //TODO: Resort the children so they display in the proper order
+                newItemParent.Sublinks.Add(newEntry);
 
                 if (node.Sublinks.Count > 0)
                 {
@@ -3116,33 +3123,9 @@ namespace ME3Explorer
             Properties.Settings.Default.Save();
         }
 
+        //To be moved to Pathinding Editor WPF. will take some re-architecting though for relinking
         private void Port_SFXObjectives_Click(object sender, RoutedEventArgs e)
         {
-            /*int offsetx = -9990 - 38713;
-            int standingz = 803;
-            int offsety = -809 - 1589;
-            foreach (IExportEntry exp in Pcc.Exports)
-            {
-                StructProperty locationProp = exp.GetProperty<StructProperty>("location");
-                if (locationProp != null)
-                {
-                    FloatProperty xProp = locationProp.GetProp<FloatProperty>("X");
-                    FloatProperty yProp = locationProp.GetProp<FloatProperty>("Y");
-                    //FloatProperty zProp = locationProp.GetProp<FloatProperty>("Z");
-                    //Debug.WriteLine("Original coordinate of objective: " + xProp.Value + "," + yProp.Value + "," + zProp.Value);
-
-                    xProp.Value += -600;
-                    yProp.Value += 3000;
-                    //zProp.Value = standingz;
-
-                    //Debug.WriteLine("--New coordinate for positioning: " + xPos + "," + y + "," + z);
-
-                    //xPos += 55;
-                    exp.WriteProperty(locationProp);
-                }
-            }
-
-            return;*/
             if (Pcc == null)
             {
                 return;
@@ -3185,7 +3168,7 @@ namespace ME3Explorer
 
                 Debug.WriteLine($"Base coordinate for positioning: {xPos},{y},{z}");
 
-                crossPCCObjectMap = new SortedDictionary<int, int>();
+                crossPCCObjectMap.Clear();
 
                 var itemsToAddToLevel = new List<IExportEntry>();
                 foreach (IExportEntry export in sourceFile.Exports)
@@ -3194,13 +3177,13 @@ namespace ME3Explorer
                     {
                         Debug.WriteLine("Porting " + export.GetFullPath + "_" + export.indexValue);
                         importExport(export, targetPersistentLevel.UIndex, out IExportEntry portedObjective);
-                        crossPCCObjectMap[export.Index] = portedObjective.Index; //0 based. map old index to new index
+                        crossPCCObjectMap[export] = portedObjective;
                         itemsToAddToLevel.Add(portedObjective);
                         var child = export.GetProperty<ObjectProperty>("CollisionComponent");
                         IExportEntry collCyl = sourceFile.Exports[child.Value - 1];
                         Debug.WriteLine($"Porting {collCyl.GetFullPath}_{collCyl.indexValue}");
                         importExport(collCyl, portedObjective.UIndex, out IExportEntry portedCollisionCylinder);
-                        crossPCCObjectMap[collCyl.Index] = portedCollisionCylinder.Index; //0 based. map old index to new index
+                        crossPCCObjectMap[collCyl] = portedCollisionCylinder;
                     }
                 }
 

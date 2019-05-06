@@ -27,24 +27,23 @@ namespace ME3Explorer
             //This is a list because otherwise we would get a concurrent modification exception.
             //Since we only enumerate exports and append imports to this list we will not need to worry about recursive links
             //I am sure this won't come back to be a pain for me.
-            List<KeyValuePair<int, int>> crossPCCObjectMappingList = crossPCCObjectMap.ToList();
+            List<KeyValuePair<IEntry, IEntry>> crossPCCObjectMappingList = crossPCCObjectMap.ToList();
             for (int i = 0; i < crossPCCObjectMappingList.Count; i++)
             {
-                KeyValuePair<int, int> entry = crossPCCObjectMappingList[i];
-                if (entry.Key > 0)
+                KeyValuePair<IEntry, IEntry> mapping = crossPCCObjectMappingList[i];
+                if (mapping.Key is IExportEntry sourceExportInNewFile)
                 {
-                    IExportEntry sourceExportInNewFile = Pcc.getExport(entry.Value);
                     PropertyCollection transplantProps = sourceExportInNewFile.GetProperties();
                     Debug.WriteLine("Relinking items in destination export: " + sourceExportInNewFile.GetFullPath);
                     relinkResults.AddRange(relinkPropertiesRecursive(importpcc, sourceExportInNewFile, transplantProps, crossPCCObjectMappingList, ""));
-                    Pcc.getExport(entry.Value).WriteProperties(transplantProps);
+                    (mapping.Value as IExportEntry).WriteProperties(transplantProps);
                 }
             }
 
             return relinkResults;
         }
 
-        private List<string> relinkPropertiesRecursive(IMEPackage importingPCC, IExportEntry relinkingExport, PropertyCollection transplantProps, List<KeyValuePair<int, int>> crossPCCObjectMappingList, string debugPrefix)
+        private List<string> relinkPropertiesRecursive(IMEPackage importingPCC, IExportEntry relinkingExport, PropertyCollection transplantProps, List<KeyValuePair<IEntry, IEntry>> crossPCCObjectMappingList, string debugPrefix)
         {
             List<string> relinkResults = new List<string>();
             foreach (UProperty prop in transplantProps)
@@ -85,7 +84,7 @@ namespace ME3Explorer
             return relinkResults;
         }
 
-        private string relinkObjectProperty(IMEPackage importingPCC, IExportEntry relinkingExport, ObjectProperty objProperty, List<KeyValuePair<int, int>> crossPCCObjectMappingList, string debugPrefix)
+        private string relinkObjectProperty(IMEPackage importingPCC, IExportEntry relinkingExport, ObjectProperty objProperty, List<KeyValuePair<IEntry, IEntry>> crossPCCObjectMappingList, string debugPrefix)
         {
             if (objProperty.Value == 0)
             {
@@ -97,33 +96,33 @@ namespace ME3Explorer
             }
             int sourceObjReference = objProperty.Value;
 
-            if (sourceObjReference > 0)
-            {
-                sourceObjReference--; //make 0 based for mapping.
-            }
-            if (sourceObjReference < 0)
-            {
-                sourceObjReference++; //make 0 based for mapping.
-            }
+            //if (sourceObjReference > 0)
+            //{
+            //    sourceObjReference--; //make 0 based for mapping.
+            //}
+            //if (sourceObjReference < 0)
+            //{
+            //    sourceObjReference++; //make 0 based for mapping.
+            //}
             if (objProperty.Name != null)
             {
                 Debug.WriteLine(debugPrefix + " Relinking:" + objProperty.Name);
             }
-            KeyValuePair<int, int> mapping = crossPCCObjectMappingList.Where(pair => pair.Key == sourceObjReference).FirstOrDefault();
-            var defaultKVP = default(KeyValuePair<int, int>); //struct comparison
+            KeyValuePair<IEntry, IEntry> mapping = crossPCCObjectMappingList.Where(pair => pair.Key.UIndex == sourceObjReference).FirstOrDefault();
+            var defaultKVP = default(KeyValuePair<IEntry, IEntry>); //struct comparison
 
             if (!mapping.Equals(defaultKVP))
             {
                 //relink
-                int newval = 0;
-                if (mapping.Value > 0)
-                {
-                    newval = mapping.Value + 1; //reincrement
-                }
-                else if (mapping.Value < 0)
-                {
-                    newval = mapping.Value - 1; //redecrement
-                }
+                int newval = mapping.Value.UIndex;
+                //if (mapping.Value > 0)
+                //{
+                //    newval = mapping.Value + 1; //reincrement
+                //}
+                //else if (mapping.Value < 0)
+                //{
+                //    newval = mapping.Value - 1; //redecrement
+                //}
                 objProperty.Value = (newval);
                 IEntry entry = relinkingExport.FileRef.getEntry(newval);
                 string s = "";
@@ -162,10 +161,10 @@ namespace ME3Explorer
                         DebugOutput.PrintLn("You may want to consider discarding this sessions' changes as relinking was not able to properly finish.");
                         linkFailedDueToError = e.Message;
                     }
+
                     if (crossImport != null)
                     {
-                        //cache item. Imports are stored +1, Exports-1. Someday I will go back and make this just 0 indexed
-                        crossPCCObjectMappingList.Add(new KeyValuePair<int, int>(sourceObjReference, crossImport.UIndex + 1)); //add to mapping to speed up future relinks
+                        crossPCCObjectMappingList.Add(new KeyValuePair<IEntry, IEntry>(origImport, crossImport)); //add to mapping to speed up future relinks
                         objProperty.Value = crossImport.UIndex;
                         Debug.WriteLine("Relink hit: Dynamic CrossImport for " + origvalue + " " + importingPCC.getEntry(origvalue).GetFullPath + " -> " + objProperty.Value);
 
@@ -209,12 +208,11 @@ namespace ME3Explorer
         private List<string> relinkBinaryObjects(IMEPackage importpcc)
         {
             List<string> relinkFailedReport = new List<string>();
-            foreach (KeyValuePair<int, int> entry in crossPCCObjectMap)
+            foreach (KeyValuePair<IEntry, IEntry> mapping in crossPCCObjectMap)
             {
-                if (entry.Key > 0)
+                if (mapping.Key is IExportEntry sourceexp)
                 {
-                    IExportEntry sourceexp = importpcc.getExport(entry.Key);
-                    IExportEntry exp = Pcc.getExport(entry.Value);
+                    IExportEntry exp = (IExportEntry)mapping.Value;
                     byte[] binarydata = exp.getBinaryData();
                     if (binarydata.Length > 0)
                     {
@@ -229,9 +227,13 @@ namespace ME3Explorer
                                         int count = BitConverter.ToInt32(binarydata, 0);
                                         for (int i = 0; i < count; i++)
                                         {
+                                            //Todo: Add lookup feature for UIndex
                                             int originalValue = BitConverter.ToInt32(binarydata, 4 + (i * 4));
                                             int currentObjectRef = unrealIndexToME3ExpIndexing(originalValue); //count + i * intsize
                                             int mapped;
+                                            var mappedObjectRef = crossPCCObjectMap.FirstOrDefault(x => x.Key.UIndex == currentObjectRef);
+                                            //TODO: CHECK IF THIS IS THE DEFAULT
+
                                             bool isMapped = crossPCCObjectMap.TryGetValue(currentObjectRef, out mapped);
                                             if (isMapped)
                                             {
@@ -257,7 +259,7 @@ namespace ME3Explorer
                                             //Cannot relink against a different game.
                                             continue;
                                         }
-                                        IExportEntry importingExp = importpcc.getExport(entry.Key);
+                                        IExportEntry importingExp = (IExportEntry) mapping.Key;
                                         if (importingExp.ClassName != "Class")
                                         {
                                             continue; //the class was not actually set, so this is not really class.
@@ -346,6 +348,8 @@ namespace ME3Explorer
 
                                                 int functionObjectIndex = unrealIndexToME3ExpIndexing(BitConverter.ToInt32(data, offset));
                                                 int mapped;
+
+                                                //TODO: Add lookup
                                                 isMapped = crossPCCObjectMap.TryGetValue(functionObjectIndex, out mapped);
                                                 if (isMapped)
                                                 {
@@ -409,6 +413,8 @@ namespace ME3Explorer
 
                                             int defaultsClassLink = unrealIndexToME3ExpIndexing(BitConverter.ToInt32(data, offset));
                                             int defClassLink;
+
+                                            //TODO: Add lookup
                                             isMapped = crossPCCObjectMap.TryGetValue(defaultsClassLink, out defClassLink);
                                             if (isMapped)
                                             {
@@ -430,6 +436,8 @@ namespace ME3Explorer
                                                 {
                                                     int functionsTableIndex = unrealIndexToME3ExpIndexing(BitConverter.ToInt32(data, offset));
                                                     int mapped;
+
+                                                    //TODO: Add lookup
                                                     isMapped = crossPCCObjectMap.TryGetValue(functionsTableIndex, out mapped);
                                                     if (isMapped)
                                                     {
@@ -480,6 +488,7 @@ namespace ME3Explorer
                                             int val = BitConverter.ToInt32(binarydata, binarypos);
                                             string name = val.ToString();
 
+                                            //TODO: Add lookup
                                             if (crossPCCObjectMap.TryGetValue(unrealIndexToME3ExpIndexing(val), out int mapped))
                                             {
                                                 Debug.WriteLine($"Binary relink (material) hit: {val} -> {mapped}");
@@ -498,6 +507,7 @@ namespace ME3Explorer
                                 case "Function":
                                     //Crazy experimental
                                     {
+                                        //Oh god
                                         Bytecode.RelinkFunctionForPorting(sourceexp, exp, relinkFailedReport, crossPCCObjectMap);
                                     }
                                     break;
@@ -557,6 +567,8 @@ namespace ME3Explorer
 
                     int componentObjectIndex = BitConverter.ToInt32(data, offset);
                     int mapped;
+
+                    //TODO: Add lookup
                     bool isMapped = crossPCCObjectMap.TryGetValue(componentObjectIndex, out mapped);
                     if (isMapped)
                     {
@@ -659,6 +671,8 @@ namespace ME3Explorer
                 {
                     int interfaceIndex = BitConverter.ToInt32(data, offset);
                     int mapped;
+
+                    //TODO: Add lookup
                     bool isMapped = crossPCCObjectMap.TryGetValue(interfaceIndex, out mapped);
                     if (isMapped)
                     {
@@ -673,6 +687,8 @@ namespace ME3Explorer
 
                     //propertypointer
                     interfaceIndex = BitConverter.ToInt32(data, offset);
+
+                    //Todo: Add lookup
                     isMapped = crossPCCObjectMap.TryGetValue(interfaceIndex, out mapped);
                     if (isMapped)
                     {
