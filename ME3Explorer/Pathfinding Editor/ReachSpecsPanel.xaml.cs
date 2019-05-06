@@ -124,16 +124,19 @@ namespace ME3Explorer.Pathfinding_Editor
 
             AvailableReachSpecSizes.Add(new ReachSpecSize("Bosses", ReachSpecSize.BOSS_HEIGHT, ReachSpecSize.BOSS_RADIUS));
             AvailableReachSpecSizes.Add(new ReachSpecSize("Banshee", ReachSpecSize.BANSHEE_HEIGHT, ReachSpecSize.BANSHEE_RADIUS));
+            AvailableReachSpecSizes.Add(new ReachSpecSize("Harvester", ReachSpecSize.HARVESTER_HEIGHT, ReachSpecSize.HARVESTER_RADIUS));
             AvailableReachSpecSizes.Add(new ReachSpecSize("Minibosses", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.MINIBOSS_RADIUS));
             AvailableReachSpecSizes.Add(new ReachSpecSize("Mooks", ReachSpecSize.MOOK_HEIGHT, ReachSpecSize.MOOK_RADIUS));
 
             AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Bosses", ReachSpecSize.BOSS_HEIGHT, ReachSpecSize.BOSS_RADIUS));
             AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Banshee", ReachSpecSize.BANSHEE_HEIGHT, ReachSpecSize.BANSHEE_RADIUS));
+            AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Harvester", ReachSpecSize.HARVESTER_HEIGHT, ReachSpecSize.HARVESTER_RADIUS));
             AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Minibosses", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.MINIBOSS_RADIUS));
             AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Mooks", ReachSpecSize.MOOK_HEIGHT, ReachSpecSize.MOOK_RADIUS));
 
             AvailableNodeSizes.Add(new NodeSize("Bosses", ReachSpecSize.BOSS_HEIGHT, ReachSpecSize.BOSS_RADIUS));
             AvailableNodeSizes.Add(new NodeSize("Banshee", ReachSpecSize.BANSHEE_HEIGHT, ReachSpecSize.BANSHEE_RADIUS));
+            AvailableNodeSizes.Add(new NodeSize("Harvester", ReachSpecSize.HARVESTER_HEIGHT, ReachSpecSize.HARVESTER_RADIUS));
             AvailableNodeSizes.Add(new NodeSize("Minibosses", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.MINIBOSS_RADIUS));
             AvailableNodeSizes.Add(new NodeSize("Mooks", ReachSpecSize.MOOK_HEIGHT, ReachSpecSize.MOOK_RADIUS));
 

@@ -579,6 +579,8 @@ namespace ME3Explorer.Pathfinding_Editor
         public const int BOSS_HEIGHT = 195;
         public const int BANSHEE_RADIUS = 50;
         public const int BANSHEE_HEIGHT = 125;
+        public const int HARVESTER_RADIUS = 500;
+        public const int HARVESTER_HEIGHT = 500;
 
         public bool CustomSized;
 

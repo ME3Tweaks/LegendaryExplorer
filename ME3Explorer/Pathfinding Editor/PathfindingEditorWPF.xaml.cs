@@ -303,7 +303,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 int nindex = BitConverter.ToInt32(m.export.Data,m.export.GetPropertyStart()-4);
                 if (indexes.Contains(nindex))
                 {
-                    Debug.WriteLine("Duplicate netindex "+nindex+": Found a duplicate on "+m.export.GetNetIndexedFullPath);
+                    Debug.WriteLine("Duplicate netindex "+nindex+": Found a duplicate on "+m.export.GetIndexedFullPath);
                 }
                 else
                 {
@@ -868,7 +868,7 @@ namespace ME3Explorer.Pathfinding_Editor
             IExportEntry export = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
             ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export)
             {
-                Title = $"Interpreter - {export.UIndex} {export.GetNetIndexedFullPath} - {Pcc.FileName}"
+                Title = $"Interpreter - {export.UIndex} {export.GetIndexedFullPath} - {Pcc.FileName}"
             };
             elhw.Show();
         }
@@ -906,7 +906,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
                 else
                 {
-                    MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry.GetNetIndexedFullPath} is already in the level.");
+                    MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry.GetIndexedFullPath} is already in the level.");
                 }
             }
         }

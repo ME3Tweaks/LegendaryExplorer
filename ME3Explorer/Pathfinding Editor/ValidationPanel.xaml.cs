@@ -479,38 +479,46 @@ namespace ME3Explorer.Pathfinding_Editor
                 nextNavigationPointChain.Add(exportEntry);
             }
 
-            //Follow chain to end to find end node
-            IExportEntry nodeEntry = nextNavigationPointChain[0];
-            ObjectProperty nextNavPoint = nodeEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
-
-            while (nextNavPoint != null)
+            if (nextNavigationPointChain.Count > 0)
             {
-                nodeEntry = Pcc.getUExport(nextNavPoint.Value);
-                nextNavPoint = nodeEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
-            }
+                //Follow chain to end to find end node
+                IExportEntry nodeEntry = nextNavigationPointChain[0];
+                ObjectProperty nextNavPoint = nodeEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
 
-            //rebuild chain
-            for (int i = 0; i < nextNavigationPointChain.Count; i++)
-            {
-                IExportEntry chainItem = nextNavigationPointChain[i];
-                IExportEntry nextchainItem;
-                if (i < nextNavigationPointChain.Count - 1)
+                while (nextNavPoint != null)
                 {
-                    nextchainItem = nextNavigationPointChain[i + 1];
-                }
-                else
-                {
-                    nextchainItem = nodeEntry;
+                    nodeEntry = Pcc.getUExport(nextNavPoint.Value);
+                    nextNavPoint = nodeEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
                 }
 
-                ObjectProperty nextNav = chainItem.GetProperty<ObjectProperty>("nextNavigationPoint");
+                //rebuild chain
+                for (int i = 0; i < nextNavigationPointChain.Count; i++)
+                {
+                    IExportEntry chainItem = nextNavigationPointChain[i];
+                    IExportEntry nextchainItem;
+                    if (i < nextNavigationPointChain.Count - 1)
+                    {
+                        nextchainItem = nextNavigationPointChain[i + 1];
+                    }
+                    else
+                    {
+                        nextchainItem = nodeEntry;
+                    }
 
-                byte[] expData = chainItem.Data;
-                expData.OverwriteRange((int)nextNav.ValueOffset, BitConverter.GetBytes(nextchainItem.UIndex));
-                chainItem.Data = expData;
-                //Debug.WriteLine(chainItem.UIndex + " Chain link -> " + nextchainItem.UIndex);
+                    ObjectProperty nextNav = chainItem.GetProperty<ObjectProperty>("nextNavigationPoint");
+
+                    byte[] expData = chainItem.Data;
+                    expData.OverwriteRange((int) nextNav.ValueOffset, BitConverter.GetBytes(nextchainItem.UIndex));
+                    chainItem.Data = expData;
+                    //Debug.WriteLine(chainItem.UIndex + " Chain link -> " + nextchainItem.UIndex);
+                }
+
+                task?.Complete("NavigationPoint chain has been updated");
             }
-            task?.Complete("NavigationPoint chain has been updated");
+            else
+            {
+                task?.Complete("NavigationPoint chain not updated, no chain found");
+            }
         }
 
 

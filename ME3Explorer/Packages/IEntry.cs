@@ -18,7 +18,7 @@ namespace ME3Explorer.Packages
         int idxObjectName { get; set; }
         string ClassName { get; }
         string GetFullPath { get; }
-        string GetNetIndexedFullPath { get; }
+        string GetIndexedFullPath { get; }
         string ObjectName { get; }
         string PackageFullName { get; }
         string PackageName { get; }

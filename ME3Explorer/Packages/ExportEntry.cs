@@ -166,7 +166,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public string GetNetIndexedFullPath
+        public string GetIndexedFullPath
         {
             get
             {

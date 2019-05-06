@@ -2606,9 +2606,18 @@ namespace ME3Explorer
             if (ex.idxClass < 0)
             {
                 //The class of the export we are importing is an import. We should attempt to relink this.
-                ImportEntry portingFromClassImport = ex.FileRef.getImport(Math.Abs(ex.idxClass) - 1);
+                ImportEntry portingFromClassImport = ex.FileRef.getUImport(ex.idxClass);
                 ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, ex.FileRef, Pcc);
                 classValue = newClassImport.UIndex;
+            }
+            else if (ex.idxClass > 0)
+            {
+                IExportEntry portingInClass = ex.FileRef.getUExport(ex.idxClass);
+                IExportEntry matchingExport = Pcc.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
+                if (matchingExport != null)
+                {
+                    classValue = matchingExport.UIndex;
+                }
             }
 
             //Check archetype.
@@ -2617,6 +2626,15 @@ namespace ME3Explorer
                 ImportEntry portingFromClassImport = ex.FileRef.getImport(Math.Abs(ex.idxArchtype) - 1);
                 ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, ex.FileRef, Pcc);
                 archetype = newClassImport.UIndex;
+            }
+            else if (ex.idxArchtype > 0)
+            {
+                IExportEntry portingInClass = ex.FileRef.getUExport(ex.idxArchtype);
+                IExportEntry matchingExport = Pcc.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
+                if (matchingExport != null)
+                {
+                    archetype = matchingExport.UIndex;
+                }
             }
 
             if (!dataAlreadySet)
