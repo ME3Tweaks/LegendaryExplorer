@@ -1820,7 +1820,6 @@ namespace ME3Explorer
                         System.Windows.MessageBox.Show("Can't add this property type yet.\nPlease pester Mgamerz to get it implemented");
                         break;
                 }
-                CurrentLoadedProperties.Wr
                 CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
             }
         }
