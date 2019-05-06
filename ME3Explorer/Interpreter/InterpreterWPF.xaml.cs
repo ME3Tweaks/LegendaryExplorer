@@ -85,6 +85,7 @@ namespace ME3Explorer
         //};
         private HexBox Interpreter_Hexbox;
         private bool isLoadingNewData;
+        private int ForcedRescanOffset;
 
         public InterpreterWPF()
         {
@@ -511,6 +512,12 @@ namespace ME3Explorer
             {
                 RescanSelectionOffset = 0;
             }
+            if (ForcedRescanOffset != 0)
+            {
+                RescanSelectionOffset = ForcedRescanOffset;
+                ForcedRescanOffset = 0;
+            }
+            Debug.WriteLine("Selection offset: " + RescanSelectionOffset);
             CurrentLoadedExport = export;
             isLoadingNewData = true;
             (Interpreter_Hexbox.ByteProvider as DynamicByteProvider)?.ReplaceBytes(export.Data);
@@ -584,6 +591,7 @@ namespace ME3Explorer
                         itemToSelect.ExpandParents();
                         itemToSelect.IsSelected = true;
                     }
+                    RescanSelectionOffset = 0;
                 }
             }
         }
@@ -1774,9 +1782,6 @@ namespace ME3Explorer
                             }
                             else
                             {
-                                //empty
-                                //if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
-                                //{
                                 PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(CurrentLoadedExport.FileRef.Game, astructp.Name, CurrentLoadedExport.ClassName);
                                 if (p == null)
                                 {
@@ -1808,31 +1813,14 @@ namespace ME3Explorer
                                     StructProperty sp = new StructProperty(typeName, props);
                                     astructp.Add(sp);
                                 }
-                                //}
-                                //else
-                                //{
-                                //    System.Windows.MessageBox.Show("Adding struct properties to ME1/ME2 is not supported at this time.");
-                                //}
                             }
                         }
                         break;
                     default:
                         System.Windows.MessageBox.Show("Can't add this property type yet.\nPlease pester Mgamerz to get it implemented");
                         break;
-
-                        //TODO: Figure out how to do these
-                        /*
-                        case ArrayProperty<EnumProperty> aep:
-                            EnumProperty ep = new EnumProperty()
-                            break;
-                        case ArrayProperty<StructProperty> asp:
-                            //TODO: Figure out how to do this
-                            break;
-                            case ArrayProperty<ArrayProperty> aap:
-                            //uh...
-                                break;
-                            */
                 }
+                CurrentLoadedProperties.Wr
                 CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
             }
         }
@@ -1848,9 +1836,28 @@ namespace ME3Explorer
                 int index = parent.Items.IndexOf(tvi); //=1 when you select "0-0-1"
                 if (index >= 0)
                 {
+                    //Change selected item so when refresh occurs we choose different item
+
+
                     dynamic arrayPropContaining = tvi.Parent.Property; //???? -> Property = UProperty
                     //var childProps = arrayPropContaining.ValuesAsProperties.ToList();
                     arrayPropContaining.RemoveAt(index);
+                    if (index == tvi.Parent.ChildrenProperties.Count - 1)
+                    {
+                        if (tvi.Parent.ChildrenProperties.Count > 1)
+                        {
+                            //Select previous item as we are the last of the list
+                            ForcedRescanOffset = (int)tvi.Parent.ChildrenProperties[index - 1].Property.StartOffset;
+                        }
+                        else
+                        {
+                            //Select container as we do not have any children
+                            ForcedRescanOffset = (int)tvi.Parent.Property.StartOffset;
+                        }
+                    } else
+                    {
+                        ForcedRescanOffset = (int)tvi.Parent.ChildrenProperties[index].Property.StartOffset;
+                    }
                     tvi.Parent.ChildrenProperties.RemoveAt(index);
                     CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
                 }
