@@ -321,7 +321,7 @@ namespace ME3Explorer
                 uint flags = ms.ReadUInt32();
                 string flagsStr = $"0x{ms.Position - 4:X2} Flags: 0x{flags:X8} ";
                 EPackageFlags flagEnum = (EPackageFlags)flags;
-                var setFlags = EnumHelper<EPackageFlags>.MaskToList(flagEnum);
+                var setFlags = flagEnum.MaskToList();
                 foreach (var setFlag in setFlags)
                 {
                     flagsStr += " " + setFlag;

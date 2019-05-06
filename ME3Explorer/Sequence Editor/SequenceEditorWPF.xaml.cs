@@ -34,6 +34,7 @@ using Path = System.IO.Path;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using InterpEditor = ME3Explorer.Matinee.InterpEditor;
 using System.Windows.Threading;
+using KFreonLib.MEDirectories;
 
 namespace ME3Explorer.Sequence_Editor
 {
@@ -122,6 +123,7 @@ namespace ME3Explorer.Sequence_Editor
         public ICommand SaveViewCommand { get; set; }
         public ICommand AutoLayoutCommand { get; set; }
         public ICommand GotoCommand { get; set; }
+        public ICommand KismetLogCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -132,6 +134,43 @@ namespace ME3Explorer.Sequence_Editor
             SaveViewCommand = new GenericCommand(() => saveView(), CurrentObjects.Any);
             AutoLayoutCommand = new GenericCommand(AutoLayout, CurrentObjects.Any);
             GotoCommand = new GenericCommand(GoTo, PackageIsLoaded);
+            KismetLogCommand = new RelayCommand(OpenKismetLogParser, CanOpenKismetLog);
+        }
+
+        private bool CanOpenKismetLog(object o)
+        {
+            if (o is true)
+            {
+                return Pcc != null && Pcc.Game == MEGame.ME3 && File.Exists(KismetLogPath);
+            }
+            return File.Exists(KismetLogPath);
+        }
+
+        static readonly string KismetLogPath = Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "KismetLog.txt");
+        private void OpenKismetLogParser(object obj)
+        {
+            if (File.Exists(KismetLogPath))
+            {
+                kismetLogParser.Visibility = Visibility.Visible;
+                kismetLogParserRow.Height = new GridLength(150);
+                if (obj is true)
+                {
+                    kismetLogParser.LoadLog(KismetLogPath, Pcc);
+                }
+                else
+                {
+                    kismetLogParser.LoadLog(KismetLogPath);
+                }
+                kismetLogParser.ExportFound = (filePath, uIndex) =>
+                {
+                    if (Pcc == null || Pcc.FileName != filePath) LoadFile(filePath);
+                    GoToExport(Pcc.getUExport(uIndex), false);
+                };
+            }
+            else
+            {
+                MessageBox.Show("No Kismet Log!");
+            }
         }
 
         private void GoTo()
@@ -1646,24 +1685,50 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        private void GoToExport(IExportEntry export)
+        private void GoToExport(IExportEntry export, bool selectSequences = true)
         {
             foreach (IExportEntry exp in SequenceExports)
             {
-                if (export == exp)
+                if (selectSequences && export == exp)
                 {
-                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == exp.UIndex);
+                    if (export.ClassName == "SequenceReference")
+                    {
+                        var sequenceprop = exp.GetProperty<ObjectProperty>("oSequenceReference");
+                        if (sequenceprop != null)
+                        {
+                            export = Pcc.getUExport(sequenceprop.Value);
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == export.UIndex);
                     break;
                 }
 
-                var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                IExportEntry sequence = exp;
+                if (sequence.ClassName == "SequenceReference")
+                {
+                    var sequenceprop = sequence.GetProperty<ObjectProperty>("oSequenceReference");
+                    if (sequenceprop != null)
+                    {
+                        sequence = Pcc.getUExport(sequenceprop.Value);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
                 if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == export.UIndex))
                 {
                     //This is our sequence
-                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == exp.UIndex);
+                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == sequence.UIndex);
                     CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == export);
                     break;
                 }
+
             }
         }
     }

@@ -312,18 +312,23 @@ namespace ME3Explorer
 
             return count == 0;
         }
+
+        public static IEnumerable<T> NonNull<T>(this IEnumerable<T> src) where T : class
+        {
+            return src.Where(obj => obj != null);
+        }
     }
 
     public static class DictionaryExtensions
     {
         /// <summary>
-        /// Adds <paramref name="value"/> to List&lt;<typeparamref name="T"/>&gt; associated with <paramref name="key"/>. Creates List&lt;<typeparamref name="T"/>&gt; if neccesary.
+        /// Adds <paramref name="value"/> to List&lt;<typeparamref name="TValue"/>&gt; associated with <paramref name="key"/>. Creates List&lt;<typeparamref name="TValue"/>&gt; if neccesary.
         /// </summary>
-        public static void AddToListAt<K, T>(this Dictionary<K, List<T>> dict, K key, T value)
+        public static void AddToListAt<TKey, TValue>(this Dictionary<TKey, List<TValue>> dict, TKey key, TValue value)
         {
-            if (!dict.TryGetValue(key, out List<T> list))
+            if (!dict.TryGetValue(key, out List<TValue> list))
             {
-                list = new List<T>();
+                list = new List<TValue>();
                 dict[key] = list;
             }
             list.Add(value);
@@ -712,34 +717,14 @@ namespace ME3Explorer
         {
             return (T)Enum.Parse(typeof(T), val);
         }
-    }
-
-    public static class EnumHelper<T> where T : struct
-    {
-        // ReSharper disable StaticFieldInGenericType
-        private static readonly Enum[] Values;
-        // ReSharper restore StaticFieldInGenericType
-        private static readonly T DefaultValue;
-
-        static EnumHelper()
+        public static T[] MaskToList<T>(this T mask, bool ignoreDefault = true) where T : Enum
         {
-            var type = typeof(T);
-            if (type.IsSubclassOf(typeof(Enum)) == false)
-            {
-                throw new ArgumentException();
-            }
-            Values = Enum.GetValues(type).Cast<Enum>().ToArray();
-            DefaultValue = default;
-        }
-
-        public static T[] MaskToList(Enum mask, bool ignoreDefault = true)
-        {
-            var q = Values.Where(mask.HasFlag);
+            var q = GetValues<T>().Where(t => mask.HasFlag(t));
             if (ignoreDefault)
             {
-                q = q.Where(v => !v.Equals(DefaultValue));
+                q = q.Where(v => !v.Equals(default(T)));
             }
-            return q.Cast<T>().ToArray();
+            return q.ToArray();
         }
     }
 }

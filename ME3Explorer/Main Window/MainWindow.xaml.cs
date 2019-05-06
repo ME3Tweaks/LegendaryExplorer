@@ -9,10 +9,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Threading.Tasks;
 using FontAwesome.WPF;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace ME3Explorer
 {
@@ -109,12 +111,12 @@ namespace ME3Explorer
             }
             UpdateGamePathWarningIconStatus();
             StartLoadingTLKs();
+            //File.WriteAllText(Path.Combine(App.ExecFolder, "LoadedFiles.json"), JsonConvert.SerializeObject(ME3LoadedFiles.GetFilesLoadedInGame(), Formatting.Indented));
         }
 
         private void StartLoadingTLKs()
         {
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += delegate
+            Task.Run(() =>
             {
                 // load TLK strings
                 try
@@ -146,8 +148,7 @@ namespace ME3Explorer
                 {
                     //?
                 }
-            };
-            bw.RunWorkerCompleted += delegate
+            }).ContinueWithOnUIThread(prevTask =>
             {
                 //StartingUpPanel.Visibility = Visibility.Invisible;
                 DoubleAnimation fadeout = new DoubleAnimation
@@ -172,10 +173,7 @@ namespace ME3Explorer
                 };
                 //da.RepeatBehavior=new RepeatBehavior(3);
                 LoadingPanel.BeginAnimation(OpacityProperty, fadeout);
-
-
-            };
-            bw.RunWorkerAsync();
+            });
         }
 
         private static void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)

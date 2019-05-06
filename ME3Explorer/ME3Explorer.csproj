@@ -418,12 +418,14 @@
     <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzer.xaml.cs">
       <DependentUpon>MemoryAnalyzer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ME3LoadedFiles.cs" />
     <Compile Include="MetadataEditor\MetadataEditorWPF.xaml.cs">
       <DependentUpon>MetadataEditorWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="MountEditor\MountEditorWPF.xaml.cs">
       <DependentUpon>MountEditorWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MountEditor\MountFile.cs" />
     <Compile Include="NativesEditor\CodexMapCommands.cs" />
     <Compile Include="NativesEditor\Commands.cs" />
     <Compile Include="NativesEditor\Dialogs\ChangeObjectIdDialog.xaml.cs">
@@ -522,6 +524,9 @@
     </Compile>
     <Compile Include="Sequence Editor\GraphEditor.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Sequence Editor\KismetLogParser.xaml.cs">
+      <DependentUpon>KismetLogParser.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\Converters\EntryTypeBooleanConverter.cs" />
     <Compile Include="SharedUI\PeregrineTreeView\NodeTreeSelectionBehavior.cs" />
@@ -1018,6 +1023,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PackageEditor\TreeMergeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sequence Editor\KismetLogParser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

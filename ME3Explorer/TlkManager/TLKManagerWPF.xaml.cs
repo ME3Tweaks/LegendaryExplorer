@@ -417,7 +417,7 @@ namespace ME3Explorer.TlkManagerNS
                 this.embedded = true;
                 this.tlkPath = tlkPath;
                 this.exportName = exportName;
-                this.tlkDisplayPath = exportName + " - " + System.IO.Path.GetFileName(tlkPath);
+                this.tlkDisplayPath = $"{exportName} - {System.IO.Path.GetFileName(tlkPath)}";
                 this.selectedForLoad = selectedForLoad;
             }
 
@@ -431,7 +431,7 @@ namespace ME3Explorer.TlkManagerNS
                 string mountPath = System.IO.Path.Combine(Directory.GetParent(tlkPath).FullName, "mount.dlc");
                 if (File.Exists(mountPath))
                 {
-                    mountpriority = new MountEditor.MountFile(mountPath).MountPriority;
+                    mountpriority = new MountFile(mountPath).MountPriority;
                     tlkDisplayPath = $"Priority {mountpriority}: {tlkDisplayPath}";
                 }
             }

@@ -383,6 +383,8 @@ namespace ME3Explorer.Packages
             return result;
         }
 
+        public int NetIndex => BitConverter.ToInt32(_data, GetPropertyStart() - 4);
+
         private int? propsEndOffset;
         public int propsEnd()
         {

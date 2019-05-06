@@ -300,7 +300,7 @@ namespace ME3Explorer.Pathfinding_Editor
             List<int> indexes = new List<int>();
             foreach (PathfindingNodeMaster m in GraphNodes)
             {
-                int nindex = BitConverter.ToInt32(m.export.Data,m.export.GetPropertyStart()-4);
+                int nindex = m.export.NetIndex;
                 if (indexes.Contains(nindex))
                 {
                     Debug.WriteLine("Duplicate netindex "+nindex+": Found a duplicate on "+m.export.GetIndexedFullPath);
