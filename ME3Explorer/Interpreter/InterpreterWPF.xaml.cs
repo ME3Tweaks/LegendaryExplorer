@@ -86,6 +86,7 @@ namespace ME3Explorer
         private HexBox Interpreter_Hexbox;
         private bool isLoadingNewData;
         private int ForcedRescanOffset;
+        private bool ArrayElementJustAdded;
 
         public InterpreterWPF()
         {
@@ -586,10 +587,30 @@ namespace ME3Explorer
                     var itemToSelect = flattenedTree.LastOrDefault(x => x.Property != null && x.Property.ValueOffset == RescanSelectionOffset);
                     if (itemToSelect != null)
                     {
+                        UPropertyTreeViewEntry cachedSelectedItem = itemToSelect;
+                        if (ArrayElementJustAdded)
+                        {
+                            //Ensure we are at array level so we can choose the last item
+                            if (!itemToSelect.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
+                            {
+                                itemToSelect = itemToSelect.Parent;
+                            }
+
+                            RescanSelectionOffset = 0;
+                            ArrayElementJustAdded = false;
+                            if (itemToSelect.ChildrenProperties.LastOrDefault() is UPropertyTreeViewEntry u)
+                            {
+                                u.ExpandParents();
+                                u.IsSelected = true;
+                                return;
+                            }
+                        }
                         //todo: select node using parent-first selection (from packageeditorwpf)
                         //due to tree view virtualization
-                        itemToSelect.ExpandParents();
-                        itemToSelect.IsSelected = true;
+
+                        //Cached item in the event we can't find added item to select, or none was being added
+                        cachedSelectedItem.ExpandParents();
+                        cachedSelectedItem.IsSelected = true;
                     }
                     RescanSelectionOffset = 0;
                 }
@@ -1818,8 +1839,9 @@ namespace ME3Explorer
                         break;
                     default:
                         System.Windows.MessageBox.Show("Can't add this property type yet.\nPlease pester Mgamerz to get it implemented");
-                        break;
+                        return;
                 }
+                ArrayElementJustAdded = true;
                 CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
             }
         }
@@ -1853,7 +1875,8 @@ namespace ME3Explorer
                             //Select container as we do not have any children
                             ForcedRescanOffset = (int)tvi.Parent.Property.StartOffset;
                         }
-                    } else
+                    }
+                    else
                     {
                         ForcedRescanOffset = (int)tvi.Parent.ChildrenProperties[index].Property.StartOffset;
                     }
