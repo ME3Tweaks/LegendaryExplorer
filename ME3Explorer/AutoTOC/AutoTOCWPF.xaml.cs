@@ -216,6 +216,7 @@ namespace ME3Explorer.AutoTOC
                 .Where(s => extensions.Any(ext => ext == Path.GetExtension(s).ToLower()))
                 .Select(p => p.Remove(0, rootLength))).ToList();
 
+            var addressedFiles = new List<string>();  //sub list of files that actually are addressed by the game (not duplicated at higher levels)
             for (int i = 0; i < files.Count; i++)
             {
                 Debug.WriteLine(files[i]);
@@ -223,11 +224,12 @@ namespace ME3Explorer.AutoTOC
                 {
                     //Only add items that are not already done.
                     masterList.Add(files[i]);
+                    addressedFiles.Add(files[i]);
                 }
             }
 
             string fileName = Path.Combine(dlcCookedDir, "FileIndex.txt");
-            File.WriteAllLines(fileName, files);
+            File.WriteAllLines(fileName, addressedFiles);
             task.Complete($"Generated file index for {dlcCookedDir}");
 
         }
