@@ -62,30 +62,6 @@ namespace ME3Explorer.AutoTOC
 
         private void GenerateME1FileList()
         {
-            //CommonOpenFileDialog outputDlg = new CommonOpenFileDialog
-            //{
-            //    IsFolderPicker = true,
-            //    EnsurePathExists = true,
-            //    Title = "Select DLC CookedPC folder to create Fileindex",
-            //    InitialDirectory = ME1Directory.DLCPath,
-            //};
-            //if (outputDlg.ShowDialog() == CommonFileDialogResult.Ok)
-            //{
-            //    //Validate
-            //    if (Path.GetFileName(outputDlg.FileName).Equals("CookedPC", StringComparison.InvariantCultureIgnoreCase))
-            //    {
-            //        TOCWorker = new BackgroundWorker();
-            //        TOCWorker.DoWork += GenerateFileList_BackgroundThread;
-            //        TOCWorker.RunWorkerCompleted += GenerateAllTOCs_Completed;
-            //        TOCWorker.RunWorkerAsync(outputDlg.FileName);
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("Chosen directory be named CookedPC.");
-            //    }
-            //}
-
-
             // AUTO DLC MOUNTING
 
             // 1. GET LIST OF DLC DIRECTORIES, SET MAIN VARIABLES
@@ -121,18 +97,32 @@ namespace ME3Explorer.AutoTOC
             dlcTable.Add(0, "BioGame");
 
 
-            // 3. REMOVE ALL SEEKFREEPCPATHs FROM $DOCUMENTS$\BIOWARE\MASS EFFECT\CONFIG\BIOENGINE.ini
+            // 3. REMOVE ALL SEEKFREEPCPATHs/DLCMOVIEPATHS FROM $DOCUMENTS$\BIOWARE\MASS EFFECT\CONFIG\BIOENGINE.ini
             string userDocs = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             var bioEnginePath = Path.Combine(userDocs, "BioWare", "Mass Effect", "Config", "BIOEngine.ini");
-            File.SetAttributes(bioEnginePath, File.GetAttributes(bioEnginePath) & ~FileAttributes.ReadOnly);
+            try
+            {
+                File.SetAttributes(bioEnginePath, File.GetAttributes(bioEnginePath) & ~FileAttributes.ReadOnly);
+            }
+            catch (IOException e)
+            {
+                MessageBox.Show("BioEngine not found. Run config or game to set it up." + ExceptionHandlerDialogWPF.FlattenException((e)));
+                return;
+            }
+            
+            
             var BioEngine = new IniFile(bioEnginePath);
 
-            //If file is readonly this will cause infinite loop
+            //Clean out seekfreepaths and moviepaths
             while (BioEngine.IniReadValue("Core.System", "SeekFreePCPaths") != "")
             {
                 BioEngine.IniRemoveKey("Core.System", "SeekFreePCPaths");
             }
 
+            while (BioEngine.IniReadValue("Core.System", "DLC_MoviePaths") != "")
+            {
+                BioEngine.IniRemoveKey("Core.System", "DLC_MoviePaths");
+            }
 
             // 4. ADD SEEKFREE PATHS IN REVERSE ORDER (HIGHEST= BIOGAME, ETC).
             //SORT INTO REVERSE ORDER 0 => HIGHEST FOR BIOENGINE
@@ -145,10 +135,16 @@ namespace ME3Explorer.AutoTOC
                 }
                 else
                 {
-                    //Apparently you can also combine them, $ and @
                     BioEngine.IniWriteNewValue("Core.System", "SeekFreePCPaths", $@"..\DLC\{item.Value}\CookedPC");
+                    if(Directory.Exists(Path.Combine(ME1Directory.DLCPath, item.Value, "Movies")))
+                    {
+                        BioEngine.IniWriteNewValue("Core.System", "DLC_MoviePaths", $@"..\DLC\{item.Value}\Movies"); //Add MoviePath if present
+                    }
                 }
             }
+
+            
+
 
             // 5. BUILD FILEINDEX.TXT FILE FOR EACH DLC AND BASEGAME
             // BACKUP BASEGAME Fileindex.txt => Fileindex.bak if not done already.
@@ -186,6 +182,11 @@ namespace ME3Explorer.AutoTOC
                     GenerateFileList(Path.Combine(ME1Directory.DLCPath, fileListStem.Value, "CookedPC"), masterList);
                 }
             }
+
+
+
+
+            //7. FINAL MESSAGE ON TOC TASKS
             TOCTasks.Add(new ListBoxTask
             {
                 Header = "Done",
@@ -196,7 +197,7 @@ namespace ME3Explorer.AutoTOC
         }
 
         /// <summary>
-        /// Appends new items to the master list of files for FileIndex.txt (ME1)
+        /// Generates new items to the FileIndex.txt (ME1) removing duplicate references contained in masterList
         /// </summary>
         /// <param name="CookedPath"></param>
         /// <param name="masterList"></param>
@@ -233,35 +234,6 @@ namespace ME3Explorer.AutoTOC
             task.Complete($"Generated file index for {dlcCookedDir}");
 
         }
-
-        private void GenerateFileList_BackgroundThread(object sender, DoWorkEventArgs e)
-        {
-            TOCTasks.ClearEx();
-            string[] extensions = { ".sfm", ".upk", ".bik", ".u", ".isb" };
-
-            //remove trailing slash
-            string dlcCookedDir = Path.GetFullPath(e.Argument as string); //standardize Need to CHECK FOR DUPLICATION WITH HIGHER MOUNTED FILES. 
-            ListBoxTask task = new ListBoxTask($"Generating file index for {dlcCookedDir}");
-            TOCTasks.Add(task);
-            int rootLength = dlcCookedDir.Length + 1; //trailing slash path separator. This is used to strip off the absolute part of the path and leave only relative
-
-            //Where first as not all files need to be selected and then filtered, they should be filtered and then selected
-            var files = (Directory.EnumerateFiles(dlcCookedDir, "*.*", SearchOption.AllDirectories)
-                .Where(s => extensions.Any(ext => ext == Path.GetExtension(s).ToLower()))
-                .Select(p => p.Remove(0, rootLength))).ToList();
-
-            string fileName = Path.Combine(dlcCookedDir, "FileIndex.txt");
-            File.WriteAllLines(fileName, files);
-            task.Complete($"Generated file index for {dlcCookedDir}");
-            TOCTasks.Add(new ListBoxTask
-            {
-                Header = "Done",
-                Icon = FontAwesomeIcon.Check,
-                Foreground = Brushes.Green,
-                Spinning = false
-            });
-        }
-
 
         private void GenerateSingleDLCTOC()
         {
