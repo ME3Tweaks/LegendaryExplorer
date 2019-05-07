@@ -184,6 +184,15 @@ namespace ME3Explorer
         public ICommand PopoutCurrentViewCommand { get; set; }
         public ICommand MultidropRelinkingCommand { get; set; }
         public ICommand PerformMultiRelinkCommand { get; set; }
+
+        public ICommand OpenFileCommand { get; set; }
+        public ICommand SaveFileCommand { get; set; }
+        public ICommand SaveAsCommand { get; set; }
+        public ICommand FindCommand { get; set; }
+        public ICommand GotoCommand { get; set; }
+        public ICommand TabRightCommand { get; set; }
+        public ICommand TabLeftCommand { get; set; }
+
         private void LoadCommands()
         {
             ComparePackagesCommand = new GenericCommand(ComparePackages, PackageIsLoaded);
@@ -211,6 +220,97 @@ namespace ME3Explorer
             PopoutCurrentViewCommand = new GenericCommand(PopoutCurrentView, ExportIsSelected);
             MultidropRelinkingCommand = new GenericCommand(EnableMultirelinkingMode, PackageIsLoaded);
             PerformMultiRelinkCommand = new GenericCommand(PerformMultiRelink, CanPerformMultiRelink);
+
+            OpenFileCommand = new GenericCommand(OpenFile);
+            SaveFileCommand = new GenericCommand(SaveFile, PackageIsLoaded);
+            SaveAsCommand = new GenericCommand(SaveFileAs, PackageIsLoaded);
+            FindCommand = new GenericCommand(FocusSearch, PackageIsLoaded);
+            GotoCommand = new GenericCommand(FocusGoto, PackageIsLoaded);
+            TabRightCommand = new GenericCommand(TabRight, PackageIsLoaded);
+            TabLeftCommand = new GenericCommand(TabLeft, PackageIsLoaded);
+
+        }
+
+        private void TabRight()
+        {
+            int index = EditorTabs.SelectedIndex + 1;
+            while (index < EditorTabs.Items.Count)
+            {
+                TabItem ti = (TabItem)EditorTabs.Items[index];
+                if (ti.IsEnabled && ti.IsVisible)
+                {
+                    EditorTabs.SelectedIndex = index;
+                    break;
+                }
+                index++;
+            }
+        }
+
+        private void TabLeft()
+        {
+            int index = EditorTabs.SelectedIndex - 1;
+            while (index >= 0)
+            {
+                TabItem ti = (TabItem)EditorTabs.Items[index];
+                if (ti.IsEnabled && ti.IsVisible)
+                {
+                    EditorTabs.SelectedIndex = index;
+                    break;
+                }
+                index--;
+            }
+        }
+
+        private void FocusSearch()
+        {
+            Search_TextBox.Focus();
+            Search_TextBox.SelectAll();
+        }
+
+        private void FocusGoto()
+        {
+            Goto_TextBox.Focus();
+            Goto_TextBox.SelectAll();
+        }
+
+
+        private void SaveFileAs()
+        {
+            string extension = System.IO.Path.GetExtension(Pcc.FileName);
+            SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
+            if (d.ShowDialog() == true)
+            {
+                Pcc.save(d.FileName);
+                MessageBox.Show("Done");
+            }
+        }
+
+        private void SaveFile()
+        {
+            Pcc.save();
+        }
+
+        private void OpenFile()
+        {
+            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            if (d.ShowDialog() == true)
+            {
+#if !DEBUG
+                try
+                {
+#endif
+                LoadFile(d.FileName);
+                AddRecent(d.FileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+#if !DEBUG
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+                }
+#endif
+            }
         }
 
         private bool CanPerformMultiRelink() => MultiRelinkingModeActive && crossPCCObjectMap.Count > 0;
@@ -806,27 +906,6 @@ namespace ME3Explorer
             }
         }
 
-        /// <summary>
-        /// Command binding for when the Find command binding is issued (CTRL F)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void FindCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Search_TextBox.Focus();
-            Search_TextBox.SelectAll();
-        }
-
-        /// <summary>
-        /// Command binding for when the Goto command is issued (CTRL G)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GotoCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Goto_TextBox.Focus();
-            Goto_TextBox.SelectAll();
-        }
 
         private void AddName(object obj)
         {
@@ -2043,45 +2122,6 @@ namespace ME3Explorer
             }
         }
 
-        private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
-            if (d.ShowDialog() == true)
-            {
-#if !DEBUG
-                try
-                {
-#endif
-                LoadFile(d.FileName);
-                AddRecent(d.FileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
-#if !DEBUG
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Unable to open file:\n" + ex.Message);
-                }
-#endif
-            }
-        }
-
-        private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Pcc.save();
-        }
-
-        private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            string extension = System.IO.Path.GetExtension(Pcc.FileName);
-            SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
-            if (d.ShowDialog() == true)
-            {
-                Pcc.save(d.FileName);
-                MessageBox.Show("Done");
-            }
-        }
-
 
 
         /// <summary>
@@ -2901,47 +2941,7 @@ namespace ME3Explorer
                 }
             }
         }
-
-        /// <summary>
-        /// Binding for moving to the next visible and enabled tab.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NextTabBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            int index = EditorTabs.SelectedIndex + 1;
-            while (index < EditorTabs.Items.Count)
-            {
-                TabItem ti = (TabItem)EditorTabs.Items[index];
-                if (ti.IsEnabled && ti.IsVisible)
-                {
-                    EditorTabs.SelectedIndex = index;
-                    break;
-                }
-                index++;
-            }
-        }
-
-        /// <summary>
-        /// Binding to move to the previous visible and enabled tab.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PreviousTabBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            int index = EditorTabs.SelectedIndex - 1;
-            while (index >= 0)
-            {
-                TabItem ti = (TabItem)EditorTabs.Items[index];
-                if (ti.IsEnabled && ti.IsVisible)
-                {
-                    EditorTabs.SelectedIndex = index;
-                    break;
-                }
-                index--;
-            }
-        }
-
+        
         private void BuildME1TLKDB_Clicked(object sender, RoutedEventArgs e)
         {
             string myBasePath = ME1Directory.gamePath;
