@@ -85,6 +85,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private string FileQueuedForLoad;
 
         public ObservableCollectionExtended<IExportEntry> ActiveNodes { get; set; } = new ObservableCollectionExtended<IExportEntry>();
+        public ObservableCollectionExtended<IExportEntry> ActiveOverlayNodes { get; set; } = new ObservableCollectionExtended<IExportEntry>();
 
         public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
 
@@ -95,6 +96,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ObservableCollectionExtended<Zone> CurrentNodeCombatZones { get; } = new ObservableCollectionExtended<Zone>();
 
         private readonly List<IExportEntry> AllLevelObjects = new List<IExportEntry>();
+        private readonly List<IExportEntry> AllOverlayObjects = new List<IExportEntry>();
         public string CurrentFile;
         private readonly PathfindingMouseListener pathfindingMouseListener;
 
@@ -261,6 +263,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand NodeTypeChangeCommand { get; set; }
         public ICommand OpenRefInSequenceEditorCommand { get; set; }
         public ICommand CheckNetIndexesCommand { get; set; }
+        public ICommand LoadOverlayFileCommand { get; set; }
         private void LoadCommands()
         {
             RefreshCommand = new GenericCommand(RefreshGraph, PackageIsLoaded);
@@ -293,7 +296,46 @@ namespace ME3Explorer.Pathfinding_Editor
             NodeTypeChangeCommand = new GenericCommand(ChangeNodeType, CanChangeNodetype);
             OpenRefInSequenceEditorCommand = new RelayCommand(OpenRefInSequenceEditor, NodeIsSelected);
             CheckNetIndexesCommand = new GenericCommand(CheckNetIndexes, PackageIsLoaded);
+            LoadOverlayFileCommand = new GenericCommand(LoadOverlay, PackageIsLoaded);
         }
+
+        private void LoadOverlay()
+        {
+            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            if (d.ShowDialog() == true)
+            {
+#if !DEBUG
+                try
+                {
+#endif
+                LoadOverlayFile(d.FileName);
+#if !DEBUG
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+                }
+#endif
+            }
+        }
+
+        private void LoadOverlayFile(string fileName)
+        {
+            ActiveOverlayNodes.ClearEx();
+
+            using (var overlayPackage = MEPackageHandler.OpenMEPackage(fileName))
+            {
+                OverlayPersistentLevelExport = overlayPackage.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
+                if (OverlayPersistentLevelExport == null)
+                {
+                    MessageBox.Show("This file does not contain a Level export.");
+                    return;
+                }
+                RefreshGraph();
+            }
+        }
+
+        public IExportEntry OverlayPersistentLevelExport { get; set; }
 
         private void CheckNetIndexes()
         {
@@ -303,7 +345,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 int nindex = m.export.NetIndex;
                 if (indexes.Contains(nindex))
                 {
-                    Debug.WriteLine("Duplicate netindex "+nindex+": Found a duplicate on "+m.export.GetIndexedFullPath);
+                    Debug.WriteLine("Duplicate netindex " + nindex + ": Found a duplicate on " + m.export.GetIndexedFullPath);
                 }
                 else
                 {
@@ -1263,6 +1305,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
                 ActiveNodes.ClearEx();
+                ActiveOverlayNodes.ClearEx();
                 GraphNodes.Clear();
                 StaticMeshCollections.ClearEx();
                 CombatZones.ClearEx();
@@ -1422,31 +1465,34 @@ namespace ME3Explorer.Pathfinding_Editor
             }), DispatcherPriority.ContextIdle, null);
         }
 
-        private bool LoadPathingNodesFromLevel()
+        /// <summary>
+        /// Reads the persistent level export and loads the pathfindingnodemasters that will be used in the graph.
+        /// This method will recursively call itself - do not pass in a parameter from an external call.
+        /// </summary>
+        /// <param name="isOverlay"></param>
+        /// <returns></returns>
+        private bool LoadPathingNodesFromLevel(IExportEntry overlayPersistentLevel = null)
         {
             if (Pcc == null || PersistentLevelExport == null)
             {
                 return false;
             }
 
+            bool isOverlay = overlayPersistentLevel != null;
+            IExportEntry levelToRead = overlayPersistentLevel ?? PersistentLevelExport;
+
             IsReadingLevel = true;
             graphEditor.UseWaitCursor = true;
+            var AllObjectsList = isOverlay ? AllOverlayObjects : AllLevelObjects;
+            var ActiveObjectsList = isOverlay ? ActiveOverlayNodes : ActiveNodes;
 
-            /*staticMeshCollectionActorsToolStripMenuItem.DropDownItems.Clear();
-            staticMeshCollectionActorsToolStripMenuItem.Enabled = false;
-            staticMeshCollectionActorsToolStripMenuItem.ToolTipText = "No StaticMeshCollectionActors found in this file";
-            sFXCombatZonesToolStripMenuItem.DropDownItems.Clear();
-            sFXCombatZonesToolStripMenuItem.Enabled = false;
-            sFXCombatZonesToolStripMenuItem.ToolTipText = "No SFXCombatZones found in this file";
-            sfxCombatZones = new List<int>();
-            CurrentObjects = new List<int>();
-            activeExportsListbox.Items.Clear();*/
-            AllLevelObjects.Clear();
+            AllObjectsList.Clear();
+
             //Read persistent level binary
-            byte[] data = PersistentLevelExport.Data;
+            byte[] data = levelToRead.Data;
 
             //find start of class binary (end of props)
-            int start = PersistentLevelExport.propsEnd();
+            int start = levelToRead.propsEnd();
 
             //Console.WriteLine("Found start of binary at " + start.ToString("X8"));
 
@@ -1458,23 +1504,23 @@ namespace ME3Explorer.Pathfinding_Editor
             start += 4;
             int bioworldinfoexportid = BitConverter.ToInt32(data, start);
 
-            IExportEntry bioworldinfo = Pcc.getUExport(bioworldinfoexportid);
+            IExportEntry bioworldinfo = levelToRead.FileRef.getUExport(bioworldinfoexportid);
             if (bioworldinfo.ObjectName != "BioWorldInfo")
             {
                 //INVALID!!
                 return false;
             }
-            AllLevelObjects.Add(bioworldinfo);
+            AllObjectsList.Add(bioworldinfo);
 
             start += 4;
             uint shouldbezero = BitConverter.ToUInt32(data, start);
-            if (shouldbezero != 0 && Pcc.Game != MEGame.ME1)
+            if (shouldbezero != 0 && levelToRead.FileRef.Game != MEGame.ME1)
             {
                 //INVALID!!!
                 return false;
             }
             int itemcount = 1; //Skip bioworldinfo and Class
-            if (Pcc.Game != MEGame.ME1)
+            if (levelToRead.FileRef.Game != MEGame.ME1)
             {
                 start += 4;
                 itemcount = 2;
@@ -1492,10 +1538,10 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 //get header.
                 int itemexportid = BitConverter.ToInt32(data, start);
-                if (Pcc.isUExport(itemexportid))
+                if (levelToRead.FileRef.isUExport(itemexportid))
                 {
-                    IExportEntry exportEntry = Pcc.getUExport(itemexportid);
-                    AllLevelObjects.Add(exportEntry);
+                    IExportEntry exportEntry = levelToRead.FileRef.getUExport(itemexportid);
+                    AllObjectsList.Add(exportEntry);
 
                     if (ignoredobjectnames.Contains(exportEntry.ObjectName))
                     {
@@ -1537,19 +1583,23 @@ namespace ME3Explorer.Pathfinding_Editor
                                 foreach (StructProperty connectionProp in connectionsProp)
                                 {
                                     ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
-                                    bulkActiveNodes.Add(Pcc.getUExport(splinecomponentprop.Value));
+                                    bulkActiveNodes.Add(levelToRead.FileRef.getUExport(splinecomponentprop.Value));
                                 }
                             }
                         }
                     }
 
-                    if (exportEntry.ClassName == "StaticMeshCollectionActor")
+                    //Don't parse SMCA or combat zones from overlays.
+                    if (overlayPersistentLevel == null)
                     {
-                        StaticMeshCollections.Add(new StaticMeshCollection(exportEntry));
-                    }
-                    else if (exportEntry.ClassName == "SFXCombatZone" || exportEntry.ClassName == "BioPlaypenVolumeAdditive")
-                    {
-                        CombatZones.Add(new Zone(exportEntry));
+                        if (exportEntry.ClassName == "StaticMeshCollectionActor")
+                        {
+                            StaticMeshCollections.Add(new StaticMeshCollection(exportEntry));
+                        }
+                        else if (exportEntry.ClassName == "SFXCombatZone" || exportEntry.ClassName == "BioPlaypenVolumeAdditive")
+                        {
+                            CombatZones.Add(new Zone(exportEntry));
+                        }
                     }
 
                     if (ShowEverythingElseLayer && !isParsedByExistingLayer && isAllowedVisibleByZFiltering(exportEntry))
@@ -1563,19 +1613,23 @@ namespace ME3Explorer.Pathfinding_Editor
                 else
                 {
                     //INVALID ITEM ENCOUNTERED!
-                    /*
-                    Console.WriteLine("0x" + start.ToString("X8") + "\t0x" + itemexportid.ToString("X8") + "\tInvalid item. Ensure the list is the correct length. (Export " + itemexportid + ")");
-                    TreeNode node = new TreeNode();
-                    node.Tag = nodeType.ArrayLeafObject;
-                    node.Text = start.ToString("X4") + " Invalid item.Ensure the list is the correct length. (Export " + itemexportid + ")";
-                    node.Name = start.ToString();
-                    topLevelTree.Nodes.Add(node);*/
                     start += 4;
                     itemcount++;
                 }
             }
 
-            ActiveNodes.ReplaceAll(bulkActiveNodes);
+            ActiveObjectsList.ReplaceAll(bulkActiveNodes);
+
+            if (OverlayPersistentLevelExport != null && overlayPersistentLevel == null)
+            {
+                //Recursive call of this function. It will only execute once
+                LoadPathingNodesFromLevel(OverlayPersistentLevelExport);
+            }
+
+            if (overlayPersistentLevel != null)
+            {
+                return true; //Don't execute the rest of this function.
+            }
 
             bool oneViewActive = ShowPathfindingNodesLayer || ShowActorsLayer || ShowEverythingElseLayer;
             if (oneViewActive && ActiveNodes.Count == 0)
@@ -1585,6 +1639,9 @@ namespace ME3Explorer.Pathfinding_Editor
                 graphEditor.UseWaitCursor = false;
                 return true; //file still loaded.
             }
+
+            
+
             graphEditor.Enabled = true;
             graphEditor.UseWaitCursor = false;
             IsReadingLevel = false;
@@ -1628,7 +1685,15 @@ namespace ME3Explorer.Pathfinding_Editor
                 fully += pos.Y;
             }
             PointF centerpoint = new PointF((float)(fullx / GraphNodes.Count), (float)(fully / GraphNodes.Count));
+
+            //Overlay file
+            currentcount = ActiveOverlayNodes.Count;
+            for (int i = 0; i < currentcount; i++)
+            {
+                LoadObject(ActiveOverlayNodes[i], true);
+            }
             CreateConnections();
+
 
             #region Sequence References to nodes
             if (ShowSequenceReferences)
@@ -1683,7 +1748,10 @@ namespace ME3Explorer.Pathfinding_Editor
             TagsList.ClearEx();
             foreach (var node in GraphNodes)
             {
-                node.MouseDown += node_MouseDown;
+                if (!node.IsOverlay)
+                {
+                    node.MouseDown += node_MouseDown;
+                }
                 if (!string.IsNullOrEmpty(node.NodeTag) && !TagsList.Contains(node.NodeTag))
                 {
                     TagsList.Add(node.NodeTag);
@@ -1725,232 +1793,168 @@ namespace ME3Explorer.Pathfinding_Editor
 
         }
 
-        public PointF LoadObject(IExportEntry exporttoLoad)
+        public PointF LoadObject(IExportEntry exportToLoad, bool isFromOverlay = false)
         {
-            string s = exporttoLoad.ObjectName;
-            int uindex = exporttoLoad.UIndex;
+            string s = exportToLoad.ObjectName;
+            int uindex = exportToLoad.UIndex;
             int x = 0, y = 0, z = int.MinValue;
-            var props = exporttoLoad.GetProperties();
-            Point3D position = SharedPathfinding.GetLocation(exporttoLoad);
+            var props = exportToLoad.GetProperties();
+            Point3D position = SharedPathfinding.GetLocation(exportToLoad);
             if (position != null)
             {
                 x = (int)position.X;
                 y = (int)position.Y;
                 z = (int)position.Z;
-
-                //if (ZFilteringMode != EZFilterIncludeDirection.None)
-                //{
-                //    bool includedInView = false;
-                //    switch (ZFilteringMode)
-                //    {
-                //        case EZFilterIncludeDirection.Above:
-                //            includedInView = z > ZFilteringValue;
-                //            break;
-                //        case EZFilterIncludeDirection.AboveEquals:
-                //            includedInView = z >= ZFilteringValue;
-                //            break;
-                //        case EZFilterIncludeDirection.Below:
-                //            includedInView = z < ZFilteringValue;
-                //            break;
-                //        case EZFilterIncludeDirection.BelowEquals:
-                //            includedInView = z <= ZFilteringValue;
-                //            break;
-                //    }
-                //    //Don't add as graph node, but add average point anyways.
-                //    if (!includedInView)
-                //    {
-                //        return new PointF(x, y);
-                //    }
-                //}
             }
 
-            //if (CurrentFilterType != HeightFilterForm.FILTER_Z_NONE)
-            //{
-            //    if (CurrentFilterType == HeightFilterForm.FILTER_Z_BELOW && z < CurrentZFilterValue)
-            //    {
-            //        return;
-            //    }
-            //    else if (CurrentFilterType == HeightFilterForm.FILTER_Z_ABOVE && z > CurrentZFilterValue)
-            //    {
-            //        return;
-            //    }
-            //}
-
-            //IExportEntry export = pcc.getExport(index);
-            if (pathfindingNodeClasses.Contains(exporttoLoad.ClassName))
+            if (pathfindingNodeClasses.Contains(exportToLoad.ClassName))
             {
                 PathfindingNode pathNode;
-                switch (exporttoLoad.ClassName)
+                switch (exportToLoad.ClassName)
                 {
                     case "PathNode":
-                        pathNode = new PathNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new PathNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXEnemySpawnPoint":
-                        pathNode = new SFXEnemySpawnPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXEnemySpawnPoint(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_JumpNode":
-                        pathNode = new SFXNav_JumpNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_JumpNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_LeapNodeHumanoid":
-                        pathNode = new SFXNav_LeapNodeHumanoid(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_LeapNodeHumanoid(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXDoorMarker":
-                        pathNode = new PathfindingNodes.SFXDoorMarker(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new PathfindingNodes.SFXDoorMarker(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_LargeMantleNode":
-                        pathNode = new SFXNav_LargeMantleNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_LargeMantleNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXDynamicPathNode":
                     case "BioPathPoint":
-                        pathNode = new BioPathPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new BioPathPoint(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "PathNode_Dynamic":
-                        pathNode = new PathNode_Dynamic(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new PathNode_Dynamic(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_LargeBoostNode":
-                        pathNode = new SFXNav_LargeBoostNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_LargeBoostNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_TurretPoint":
-                        pathNode = new SFXNav_TurretPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_TurretPoint(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "CoverLink":
-                        pathNode = new CoverLink(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new CoverLink(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_JumpDownNode":
-                        pathNode = new SFXNav_JumpDownNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_JumpDownNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_LadderNode":
-                        pathNode = new SFXNav_LadderNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_LadderNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXDynamicCoverLink":
-                        pathNode = new SFXDynamicCoverLink(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXDynamicCoverLink(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
-
-
-
                     case "CoverSlotMarker":
-                        pathNode = new CoverSlotMarker(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new CoverSlotMarker(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXDynamicCoverSlotMarker":
-                        pathNode = new SFXDynamicCoverSlotMarker(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXDynamicCoverSlotMarker(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "MantleMarker":
-                        pathNode = new MantleMarker(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new MantleMarker(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
-
-
                     case "SFXNav_HarvesterMoveNode":
-                        pathNode = new SFXNav_HarvesterMoveNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_HarvesterMoveNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
-
                     case "SFXNav_BoostNode":
-                        pathNode = new SFXNav_BoostNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_BoostNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     default:
-                        pathNode = new PendingNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new PendingNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                 }
-
-                //if (ActiveCombatZoneExportIndex >= 0 && exporttoLoad.ClassName == "CoverSlotMarker")
-                //{
-                //    ArrayProperty<StructProperty> volumes = props.GetProp<ArrayProperty<StructProperty>>("Volumes");
-                //    if (volumes != null)
-                //    {
-                //        foreach (StructProperty volume in volumes)
-                //        {
-                //            ObjectProperty actorRef = volume.GetProp<ObjectProperty>("Actor");
-                //            if (actorRef != null)
-                //            {
-                //                if (actorRef.Value == ActiveCombatZoneExportIndex + 1)
-                //                {
-                //                    Debug.WriteLine("FOUND ACTIVE COMBAT NODE!");
-                //                    pathNode.shape.Brush = PathfindingNodeMaster.sfxCombatZoneBrush;
-                //                    break;
-                //                }
-                //            }
-                //        }
-                //    }
-                //}
+                pathNode.IsOverlay = isFromOverlay;
                 GraphNodes.Add(pathNode);
                 return new PointF(x, y);
             } //End if Pathnode Class 
 
-            if (actorNodeClasses.Contains(exporttoLoad.ClassName))
+            if (actorNodeClasses.Contains(exportToLoad.ClassName))
             {
                 ActorNode actorNode;
-                switch (exporttoLoad.ClassName)
+                switch (exportToLoad.ClassName)
                 {
                     case "BlockingVolume":
-                        actorNode = new BlockingVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_BlockingVolumes);
+                        actorNode = new BlockingVolume(uindex, x, y, exportToLoad.FileRef, graphEditor, ShowVolumes_BlockingVolumes);
                         break;
                     case "BioPlaypenVolumeAdditive":
-                        actorNode = new BioPlaypenVolumeAdditive(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new BioPlaypenVolumeAdditive(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "DynamicBlockingVolume":
-                        actorNode = new DynamicBlockingVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_DynamicBlockingVolumes);
+                        actorNode = new DynamicBlockingVolume(uindex, x, y, exportToLoad.FileRef, graphEditor, ShowVolumes_DynamicBlockingVolumes);
                         break;
                     case "DynamicTriggerVolume":
-                        actorNode = new DynamicTriggerVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new DynamicTriggerVolume(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "InterpActor":
-                        actorNode = new InterpActorNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new InterpActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "BioTriggerVolume":
-                        actorNode = new BioTriggerVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_BioTriggerVolumes);
+                        actorNode = new BioTriggerVolume(uindex, x, y, exportToLoad.FileRef, graphEditor, ShowVolumes_BioTriggerVolumes);
                         break;
                     case "BioTriggerStream":
-                        actorNode = new BioTriggerStream(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_BioTriggerStreams);
+                        actorNode = new BioTriggerStream(uindex, x, y, exportToLoad.FileRef, graphEditor, ShowVolumes_BioTriggerStreams);
                         break;
                     case "SFXGrenadeContainer":
-                        actorNode = new SFXGrenadeContainer(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXGrenadeContainer(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXAmmoContainer":
-                        actorNode = new SFXAmmoContainer(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXAmmoContainer(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXAmmoContainer_Simulator":
-                        actorNode = new SFXAmmoContainer_Simulator(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXAmmoContainer_Simulator(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXBlockingVolume_Ledge":
-                        actorNode = new SFXBlockingVolume_Ledge(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXBlockingVolume_Ledge(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXCombatZone":
-                        actorNode = new SFXCombatZone(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_SFXCombatZones);
+                        actorNode = new SFXCombatZone(uindex, x, y, exportToLoad.FileRef, graphEditor, ShowVolumes_SFXCombatZones);
                         break;
                     case "BioStartLocation":
                     case "BioStartLocationMP":
-                        actorNode = new BioStartLocation(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new BioStartLocation(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "StaticMeshActor":
-                        actorNode = new StaticMeshActorNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new StaticMeshActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXStuntActor":
-                        actorNode = new SFXStuntActor(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXStuntActor(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SkeletalMeshActor":
-                        actorNode = new SkeletalMeshActor(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SkeletalMeshActor(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXPlaceable_Generator":
                     case "SFXPlaceable_ShieldGenerator":
-                        actorNode = new SFXPlaceable(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXPlaceable(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "WwiseAmbientSound":
-                        actorNode = new WwiseAmbientSound(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new WwiseAmbientSound(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "WwiseAudioVolume":
-                        actorNode = new WwiseAudioVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_WwiseAudioVolumes);
+                        actorNode = new WwiseAudioVolume(uindex, x, y, exportToLoad.FileRef, graphEditor, ShowVolumes_WwiseAudioVolumes);
                         break;
                     case "SFXArmorNode":
                     case "SFXTreasureNode":
-                        actorNode = new SFXTreasureNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXTreasureNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXMedStation":
-                        actorNode = new SFXMedStation(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXMedStation(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "TargetPoint":
-                        actorNode = new TargetPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new TargetPoint(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXOperation_ObjectiveSpawnPoint":
-                        actorNode = new SFXObjectiveSpawnPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXObjectiveSpawnPoint(uindex, x, y, exportToLoad.FileRef, graphEditor);
 
                         //Create annex node if required
                         var annexZoneLocProp = props.GetProp<ObjectProperty>("AnnexZoneLocation");
@@ -1964,26 +1968,31 @@ namespace ME3Explorer.Pathfinding_Editor
                         }
                         break;
                     case "SFXMedkit":
-                        actorNode = new SFXMedKit(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXMedKit(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     default:
-                        actorNode = new PendingActorNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new PendingActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                 }
-                actorNode.DoubleClick += actornode_DoubleClick;
+                actorNode.IsOverlay = isFromOverlay;
+                if (!isFromOverlay)
+                {
+                    actorNode.DoubleClick += actornode_DoubleClick;
+                }
+
                 GraphNodes.Add(actorNode);
                 return new PointF(x, y);
             }
 
-            if (splineNodeClasses.Contains(exporttoLoad.ClassName))
+            if (splineNodeClasses.Contains(exportToLoad.ClassName))
             {
                 SplineNode splineNode;
-                switch (exporttoLoad.ClassName)
+                switch (exportToLoad.ClassName)
                 {
                     case "SplineActor":
-                        splineNode = new SplineActorNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        splineNode = new SplineActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
 
-                        var connectionsProp = exporttoLoad.GetProperty<ArrayProperty<StructProperty>>("Connections");
+                        var connectionsProp = exportToLoad.GetProperty<ArrayProperty<StructProperty>>("Connections");
                         if (connectionsProp != null)
                         {
                             foreach (StructProperty connectionProp in connectionsProp)
@@ -2000,13 +2009,13 @@ namespace ME3Explorer.Pathfinding_Editor
                                     double yf = point1.GetProp<FloatProperty>("Y");
                                     //double zf = point1.GetProp<FloatProperty>("Z");
                                     //Point3D point1_3d = new Point3D(xf, yf, zf);
-                                    SplinePoint0Node point0node = new SplinePoint0Node(splinecomponentprop.Value, Convert.ToInt32(xf), Convert.ToInt32(yf), exporttoLoad.FileRef, graphEditor);
+                                    SplinePoint0Node point0node = new SplinePoint0Node(splinecomponentprop.Value, Convert.ToInt32(xf), Convert.ToInt32(yf), exportToLoad.FileRef, graphEditor);
                                     StructProperty point2 = pointsProp[1].GetProp<StructProperty>("OutVal");
                                     xf = point2.GetProp<FloatProperty>("X");
                                     yf = point2.GetProp<FloatProperty>("Y");
                                     //zf = point2.GetProp<FloatProperty>("Z");
                                     //Point3D point2_3d = new Point3D(xf, yf, zf);
-                                    SplinePoint1Node point1node = new SplinePoint1Node(splinecomponentprop.Value, Convert.ToInt32(xf), Convert.ToInt32(yf), exporttoLoad.FileRef, graphEditor);
+                                    SplinePoint1Node point1node = new SplinePoint1Node(splinecomponentprop.Value, Convert.ToInt32(xf), Convert.ToInt32(yf), exportToLoad.FileRef, graphEditor);
                                     point0node.SetDestinationPoint(point1node);
 
                                     GraphNodes.Add(point0node);
@@ -2019,15 +2028,17 @@ namespace ME3Explorer.Pathfinding_Editor
                         }
                         break;
                     default:
-                        splineNode = new PendingSplineNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        splineNode = new PendingSplineNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                 }
+
+                splineNode.IsOverlay = isFromOverlay;
                 GraphNodes.Add(splineNode);
                 return new PointF(x, y);
             }
 
             //everything else
-            GraphNodes.Add(new EverythingElseNode(uindex, x, y, exporttoLoad.FileRef, graphEditor));
+            GraphNodes.Add(new EverythingElseNode(uindex, x, y, exportToLoad.FileRef, graphEditor));
             return new PointF(x, y);
         }
 
