@@ -213,7 +213,7 @@ namespace ME3Explorer
             PerformMultiRelinkCommand = new GenericCommand(PerformMultiRelink, CanPerformMultiRelink);
         }
 
-        private bool CanPerformMultiRelink() => MultiRelinkingModeActive;
+        private bool CanPerformMultiRelink() => MultiRelinkingModeActive && crossPCCObjectMap.Count > 0;
 
         private void EnableMultirelinkingMode()
         {
@@ -223,6 +223,22 @@ namespace ME3Explorer
         private void PerformMultiRelink()
         {
             Debug.WriteLine("Performing multi-relink");
+            var entry = crossPCCObjectMap.Keys.FirstOrDefault();
+            var relinkResults = new List<string>();
+            relinkResults.AddRange(relinkObjects2(entry.FileRef));
+            relinkResults.AddRange(relinkBinaryObjects(entry.FileRef));
+            crossPCCObjectMap.Clear();
+
+
+            if (relinkResults.Count > 0)
+            {
+                ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", this);
+                ld.Show();
+            }
+            else
+            {
+                MessageBox.Show("Items have been ported and relinked with no reported issues.\nNote that this does not mean all binary properties were relinked, only supported ones were.");
+            }
             MultiRelinkingModeActive = false;
         }
 
@@ -2334,22 +2350,26 @@ namespace ME3Explorer
                 targetItem.SortChildren();
 
                 //relinkObjects(importpcc);
-                var relinkResults = new List<string>();
-                relinkResults.AddRange(relinkObjects2(importpcc));
-                relinkResults.AddRange(relinkBinaryObjects(importpcc));
-                crossPCCObjectMap.Clear();
+                if (!MultiRelinkingModeActive)
+                {
+                    var relinkResults = new List<string>();
+                    relinkResults.AddRange(relinkObjects2(importpcc));
+                    relinkResults.AddRange(relinkBinaryObjects(importpcc));
+                    crossPCCObjectMap.Clear();
 
+
+                    if (relinkResults.Count > 0)
+                    {
+                        ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", this);
+                        ld.Show();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Items have been ported and relinked with no reported issues.\nNote that this does not mean all binary properties were relinked, only supported ones were.");
+                    }
+                }
                 RefreshView();
                 GoToNumber(n >= 0 ? Pcc.ExportCount : -Pcc.ImportCount);
-                if (relinkResults.Count > 0)
-                {
-                    ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", this);
-                    ld.Show();
-                }
-                else
-                {
-                    MessageBox.Show("Items have been ported and relinked with no reported issues.\nNote that this does not mean all binary properties were relinked, only supported ones were.");
-                }
             }
         }
 
