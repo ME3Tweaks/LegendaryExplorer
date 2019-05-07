@@ -44,7 +44,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void OpenFile()
         {
-            var dlg = new OpenFileDialog {Filter = "ME3 PCC Files|*.pcc", Multiselect = false};
+            var dlg = new OpenFileDialog { Filter = "ME2/3 PCC Files|*.pcc|ME1 UPK Files|*.upk", Multiselect = false};
 
             if (dlg.ShowDialog() != true)
 			{
@@ -70,7 +70,7 @@ namespace MassEffect.NativesEditor.Views
             }
 
             FileName = path;
-            LoadME3Package(path);
+            LoadMEPackage(path);
 
             CodexMapControl?.Open(Pcc);
 
