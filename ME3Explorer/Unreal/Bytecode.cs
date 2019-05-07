@@ -4697,7 +4697,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        public static void RelinkFunctionForPorting(IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, SortedDictionary<IEntry, IEntry> crossPCCObjectMap)
+        public static void RelinkFunctionForPorting(IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, Dictionary<IEntry, IEntry> crossPCCObjectMap)
         {
             //Copy function bytes
             byte[] originalData = sourceExport.Data;
@@ -4728,9 +4728,9 @@ namespace ME3Explorer.Unreal
             destinationExport.Data = newExpData;
         }
 
-        private static void RelinkToken(Token t, byte[] newscript, IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, SortedDictionary<IEntry, IEntry> crossPCCObjectMap)
+        private static void RelinkToken(Token t, byte[] newscript, IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, Dictionary<IEntry, IEntry> crossPCCObjectMap)
         {
-            Debug.WriteLine($"Attemptng function relink on token at position {t.pos}. Number of listed relinkable items {t.inPackageReferences.Count}");
+            Debug.WriteLine($"Attempting function relink on token at position {t.pos}. Number of listed relinkable items {t.inPackageReferences.Count}");
 
             foreach ((int pos, int type, int value) relinkItem in t.inPackageReferences)
             {
@@ -4747,11 +4747,10 @@ namespace ME3Explorer.Unreal
                         {
                             //Export
 
-                            //Todo: Add lookup
-                            if (crossPCCObjectMap.TryGetValue(relinkItem.value - 1, out int relinkedValue))
+                            if (crossPCCObjectMap.TryGetValue(sourceExport.FileRef.getEntry(relinkItem.value), out IEntry relinkedValue))
                             {
                                 Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported a sub export: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");
-                                newscript.OverwriteRange(relinkItem.pos, BitConverter.GetBytes(relinkedValue+1)); //crossPCCMapping is 0 indexed
+                                newscript.OverwriteRange(relinkItem.pos, BitConverter.GetBytes(relinkedValue.UIndex)); 
                             }
                             else
                             {

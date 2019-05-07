@@ -123,7 +123,7 @@ namespace ME3Explorer
         /// <summary>
         /// PCC map that maps values from a source PCC to values in this PCC. Used extensively during relinking.
         /// </summary>
-        private SortedDictionary<IEntry, IEntry> crossPCCObjectMap;
+        private Dictionary<IEntry, IEntry> crossPCCObjectMap = new Dictionary<IEntry, IEntry>();
         private string currentFile;
         private int QueuedGotoNumber;
         private bool IsLoadingFile;
@@ -2337,7 +2337,7 @@ namespace ME3Explorer
                 var relinkResults = new List<string>();
                 relinkResults.AddRange(relinkObjects2(importpcc));
                 relinkResults.AddRange(relinkBinaryObjects(importpcc));
-                crossPCCObjectMap = null;
+                crossPCCObjectMap.Clear();
 
                 RefreshView();
                 GoToNumber(n >= 0 ? Pcc.ExportCount : -Pcc.ImportCount);
@@ -3235,9 +3235,9 @@ namespace ME3Explorer
                 targetPersistentLevel.Data = leveldata;
             }
 
-            Debug.WriteLine("Done");
-            crossPCCObjectMap = null;
+            crossPCCObjectMap.Clear();
             GoToNumber(targetPersistentLevel.UIndex);
+            Debug.WriteLine("Done");
         }
 
         private void GenerateGUIDCacheForFolder_Clicked(object sender, RoutedEventArgs e)
