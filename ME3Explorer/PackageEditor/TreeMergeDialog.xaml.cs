@@ -31,7 +31,7 @@ namespace ME3Explorer.PackageEditorWPFControls
             MergeTreeChildren,
             Cancel
         }
-        public PortingOption PortingOptionChosen;
+        public PortingOption PortingOptionChosen = PortingOption.Cancel; //Click X, get cancel
         private readonly IEntry sourceEntry;
         private readonly IEntry targetEntry;
         private readonly bool sourceHasChildren;

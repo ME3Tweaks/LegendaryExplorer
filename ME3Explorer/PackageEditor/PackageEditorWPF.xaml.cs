@@ -2357,29 +2357,39 @@ namespace ME3Explorer
                     //link = link >= 0 ? link + 1 : link;
                 }
                 TreeViewEntry newItem = null;
-                if (n >= 0)
+                //Don't clone the root element into this item since this is a merge
+                if (portingOption != TreeMergeDialog.PortingOption.MergeTreeChildren)
                 {
-                    //importing an export
-                    if (importExport(sourceEntry as IExportEntry, link, out IExportEntry newExport))
+                    if (n >= 0)
                     {
-                        newItem = new TreeViewEntry(newExport);
-                        crossPCCObjectMap[sourceEntry] = newExport; //0 based. map old index to new index
+                        //importing an export
+                        if (importExport(sourceEntry as IExportEntry, link, out IExportEntry newExport))
+                        {
+                            newItem = new TreeViewEntry(newExport);
+                            crossPCCObjectMap[sourceEntry] = newExport; //0 based. map old index to new index
+                        }
+                        else
+                        {
+                            //import failed!
+                            //Todo: Throw error message or something
+                            return;
+                        }
                     }
                     else
                     {
-                        //import failed!
-                        //Todo: Throw error message or something
-                        return;
+                        ImportEntry newImport = getOrAddCrossImport(sourceEntry.GetFullPath, importpcc, Pcc,
+                            sourceItem.Sublinks.Count == 0 ? link : (int?) null);
+                        newItem = new TreeViewEntry(newImport);
+                        crossPCCObjectMap[sourceEntry] = newImport;
                     }
+                    newItem.Parent = targetItem;
+                    targetItem.Sublinks.Add(newItem);
                 }
                 else
                 {
-                    ImportEntry newImport = getOrAddCrossImport(sourceEntry.GetFullPath, importpcc, Pcc, sourceItem.Sublinks.Count == 0 ? link : (int?)null);
-                    newItem = new TreeViewEntry(newImport);
-                    crossPCCObjectMap[sourceEntry] = newImport;
+                    newItem = targetItem; //Root item is the one we just dropped. Use that as the root.
                 }
-                newItem.Parent = targetItem;
-                targetItem.Sublinks.Add(newItem);
+
 
                 //if this node has children
                 if (sourceItem.Sublinks.Count > 0 && portingOption == TreeMergeDialog.PortingOption.CloneTreeAsChild || portingOption == TreeMergeDialog.PortingOption.MergeTreeChildren)
