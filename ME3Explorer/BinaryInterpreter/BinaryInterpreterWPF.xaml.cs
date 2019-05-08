@@ -1500,7 +1500,7 @@ namespace ME3Explorer
                 {
                     Header = $"0x{offset:X5} Child probe first item UIndex: {childProbeUIndex} ({CurrentLoadedExport.FileRef.GetEntryString(childProbeUIndex)}))",
                     Name = "_" + offset,
-                    Tag = NodeType.StructLeafInt
+                    Tag = NodeType.StructLeafObject
                 });
                 offset += 4;
 
