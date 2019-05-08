@@ -2676,7 +2676,7 @@ namespace ME3Explorer
 
             int classValue = 0;
             int archetype = 0;
-
+            int superclass = 0;
             //Set class. This will only work if the class is an import, as we can't reliably pull in exports without lots of other stuff.
             if (ex.idxClass < 0)
             {
@@ -2687,11 +2687,31 @@ namespace ME3Explorer
             }
             else if (ex.idxClass > 0)
             {
+                //Todo: Add cross mapping support as multi-mode will allow this to work now
                 IExportEntry portingInClass = ex.FileRef.getUExport(ex.idxClass);
                 IExportEntry matchingExport = Pcc.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
                 if (matchingExport != null)
                 {
                     classValue = matchingExport.UIndex;
+                }
+            }
+
+            //Set superclass
+            if (ex.idxClassParent < 0)
+            {
+                //The class of the export we are importing is an import. We should attempt to relink this.
+                ImportEntry portingFromClassImport = ex.FileRef.getUImport(ex.idxClassParent);
+                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, ex.FileRef, Pcc);
+                superclass = newClassImport.UIndex;
+            }
+            else if (ex.idxClassParent > 0)
+            {
+                //Todo: Add cross mapping support as multi-mode will allow this to work now
+                IExportEntry portingInClass = ex.FileRef.getUExport(ex.idxClassParent);
+                IExportEntry matchingExport = Pcc.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
+                if (matchingExport != null)
+                {
+                    superclass = matchingExport.UIndex;
                 }
             }
 
@@ -2719,8 +2739,8 @@ namespace ME3Explorer
             outputEntry.idxClass = classValue;
             outputEntry.idxObjectName = Pcc.FindNameOrAdd(ex.FileRef.getNameEntry(ex.idxObjectName));
             outputEntry.idxLink = link;
+            outputEntry.idxClassParent = superclass;
             outputEntry.idxArchtype = archetype;
-            outputEntry.idxClassParent = 0;
             Pcc.addExport(outputEntry);
 
             return true;
