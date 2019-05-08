@@ -194,10 +194,24 @@ namespace ME3Explorer
             }
             else
             {
-                string path = importingPCC.getEntry(objProperty.Value) != null ? importingPCC.getEntry(objProperty.Value).GetFullPath : "Entry not found: " + objProperty.Value;
-                Debug.WriteLine("Relink failed in " + relinkingExport.ObjectName + " " + relinkingExport.UIndex + ": " + objProperty.Name + " " + objProperty.Value + " " + path);
-                return "Relink failed: " + objProperty.Name + " " + objProperty.Value + " in export " + path + "(" + relinkingExport.UIndex + ")";
+                //It's an export
+                //Attempt lookup
+                importingPCC.getUExport(objProperty.Value);
+                var existingExport = relinkingExport.FileRef.Exports.FirstOrDefault(x => x.GetIndexedFullPath == importingPCC.getUExport(objProperty.Value).GetIndexedFullPath);
+                if (existingExport != null)
+                {
+                    Debug.WriteLine("Relink hit [EXPERIMENTAL]: Existing export in file was found, linking to it:  " + objProperty.Value + " " + importingPCC.getUExport(objProperty.Value).GetIndexedFullPath + " -> " + existingExport.GetIndexedFullPath);
+                    objProperty.Value = existingExport.UIndex;
+
+                }
+                else
+                {
+                    string path = importingPCC.getEntry(objProperty.Value) != null ? importingPCC.getEntry(objProperty.Value).GetFullPath : "Entry not found: " + objProperty.Value;
+                    Debug.WriteLine("Relink failed in " + relinkingExport.ObjectName + " " + relinkingExport.UIndex + ": " + objProperty.Name + " " + objProperty.Value + " " + path);
+                    return "Relink failed: " + objProperty.Name + " " + objProperty.Value + " in export " + path + "(" + relinkingExport.UIndex + ")";
+                }
             }
+
             return null;
         }
 
