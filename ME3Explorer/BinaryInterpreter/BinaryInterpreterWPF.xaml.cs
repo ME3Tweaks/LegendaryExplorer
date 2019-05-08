@@ -30,6 +30,7 @@ using ME3Explorer.Unreal;
 using StreamHelpers;
 using static ME3Explorer.BinaryInterpreter;
 using static ME3Explorer.PackageEditorWPF;
+using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 
 namespace ME3Explorer
 {
@@ -139,7 +140,7 @@ namespace ME3Explorer
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class","StringRefProperty", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "StructProperty", "ComponentProperty", "IntProperty", "NameProperty", "BoolProperty", "ClassProperty", "ByteProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance", "MetaData", "MaterialInstanceConstants",
-            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "StrProperty", "World", "Texture2D", "TextureFlipBook", "State", "BioGestureRuntimeData", "BioTlkFileSet", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData", "SFXNav_LargeMantleNode"};
+            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "StrProperty", "World", "Texture2D", "TextureFlipBook", "State", "BioGestureRuntimeData", "BioTlkFileSet", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData", "SFXNav_LargeMantleNode", "BioCodexMap", "BioQuestMap", "BioStateEventMap"};
 
         public override bool CanParse(IExportEntry exportEntry)
         {
@@ -381,6 +382,9 @@ namespace ME3Explorer
                         break;
                     case "SoundNodeWave":
                         subNodes = StartSoundNodeWaveScan(data, ref binarystart);
+                        break;
+                    case "BioCodexMap":
+                        subNodes = StartBioCodexMapScan(data, ref binarystart);
                         break;
                     default:
                         if (CurrentLoadedExport.HasStack)
@@ -773,6 +777,244 @@ namespace ME3Explorer
             return subnodes;
         }
 
+        private List<object> StartBioCodexMapScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<object>();
+            var game = CurrentLoadedExport.FileRef.Game;
+            try
+            {
+                int offset = binarystart;
+
+                int sCount = BitConverter.ToInt32(data, offset);
+                var SectionsNode = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X4} Codex Section Count: {sCount}",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    };
+                    offset += 4;
+                subnodes.Add(SectionsNode);
+
+                for (int i = 0; i < sCount; i++)
+                {
+                    int iSectionID = BitConverter.ToInt32(data, offset);  //Section ID
+                    var SectionIDs = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Section ID: {iSectionID} ",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    };
+                    offset += 4;
+                    SectionsNode.Items.Add(SectionIDs);
+
+                    int instVersion = BitConverter.ToInt32(data, offset); //Instance Version
+                    SectionIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Instance Version: {instVersion} ",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    });
+                    offset += 4;
+
+                    int sTitle = BitConverter.ToInt32(data, offset); //Codex Title
+                    string ttlkLookup = GlobalFindStrRefbyID(sTitle, game);
+                    SectionIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Section Title StrRef: {sTitle} { ttlkLookup }",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafObject
+                    });
+                    offset += 4;
+
+                    int sDescription = BitConverter.ToInt32(data, offset); //Codex Description
+                    string dtlkLookup = GlobalFindStrRefbyID(sDescription, game);
+                    SectionIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Section Description StrRef: {sDescription} { dtlkLookup }",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafObject
+                    });
+                    offset += 4;
+
+                    int sTexture = BitConverter.ToInt32(data, offset); //Texture ID
+                    SectionIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Section Texture ID: {sTexture} ",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafObject
+                    });
+                    offset += 4;
+
+                    int sPriority = BitConverter.ToInt32(data, offset); //Priority
+                    SectionIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Section Priority: {sPriority}  (5 is low, 1 is high)",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafObject
+                    });
+                    offset += 4;
+
+                    if (instVersion >= 3)
+                    {
+                        int sndExport = BitConverter.ToInt32(data, offset);
+                        SectionIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{offset:X8} Codex Sound: {sndExport} {CurrentLoadedExport.FileRef.GetEntryString(sndExport)}",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafObject
+                        });
+                        offset += 4;
+                    }
+
+                    int sPrimary = BitConverter.ToInt32(data, offset); //Primary Codex
+                    bool bPrimary = false;
+                    if (sPrimary == 1) { bPrimary = true; }
+                    SectionIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Is Primary Codex: {sPrimary}  { bPrimary }",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafObject
+                    });
+                    offset += 4;
+
+                }
+                //START OF CODEX PAGES SECTION
+                int pCount = BitConverter.ToInt32(data, offset);
+                var PagesNode = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X4} Codex Page Count: {pCount}",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafInt
+                };
+                offset += 4;
+                subnodes.Add(PagesNode);
+
+                for (int i = 0; i < pCount; i++)
+                {
+                    int iPageID = BitConverter.ToInt32(data, offset);  //Page ID
+                    var PageIDs = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Page Bool: {iPageID} ",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    };
+                    offset += 4;
+                    PagesNode.Items.Add(PageIDs);
+
+                    int instVersion = BitConverter.ToInt32(data, offset); //Instance Version
+                    PageIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Instance Version: {instVersion} ",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    });
+                    offset += 4;
+
+                    int pTitle = BitConverter.ToInt32(data, offset); //Codex Title
+                    string ttlkLookup = GlobalFindStrRefbyID(pTitle, game);
+                    PageIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Page Title StrRef: {pTitle} { ttlkLookup }",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    });
+                    offset += 4;
+
+                    int pDescription = BitConverter.ToInt32(data, offset); //Codex Description
+                    string dtlkLookup = GlobalFindStrRefbyID(pDescription, game);
+                    PageIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Page Description StrRef: {pDescription} { dtlkLookup }",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    });
+                    offset += 4;
+
+                    int pTexture = BitConverter.ToInt32(data, offset); //Texture ID
+                    PageIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Section Texture ID: {pTexture} ",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    });
+                    offset += 4;
+
+                    int pPriority = BitConverter.ToInt32(data, offset); //Priority
+                    PageIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Section Priority: {pPriority}  (5 is low, 1 is high)",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    });
+                    offset += 4;
+
+                    if (instVersion == 4) //ME3 use object reference found sound then sectioin
+                    {
+                        int sndExport = BitConverter.ToInt32(data, offset); 
+                        PageIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{offset:X8} Codex Sound: {sndExport} {CurrentLoadedExport.FileRef.GetEntryString(sndExport)}",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafObject
+                        });
+                        offset += 4;
+
+                        int pSection = BitConverter.ToInt32(data, offset); //Section ID
+                        PageIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{offset:X5} Section Reference: {pSection} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafInt
+                        });
+                        offset += 4;
+                    }
+                    else if (instVersion == 3) //ME2 use Section then no sound reference 
+                    {
+                        int pSection = BitConverter.ToInt32(data, offset); //Section ID
+                        PageIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{offset:X5} Section Reference: {pSection} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafInt
+                        });
+                        offset += 4;
+                    }
+                    else  //ME1 has different order (section ID then codex sound) and uses a string reference.
+                    {
+                        int pSection = BitConverter.ToInt32(data, offset); //Section ID
+                        PageIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{offset:X5} Section Reference: {pSection} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafInt
+                        });
+                        offset += 4;
+
+                        int sndStrLgth = BitConverter.ToInt32(data, offset); //String length for sound
+                        offset += 4;
+                        string sndRef = "No sound data";
+                        if (sndStrLgth > 0)
+                        {
+                            MemoryStream ms = new MemoryStream(data);
+                            ms.Position = offset;
+                            sndRef = ms.ReadString(sndStrLgth, true, Encoding.ASCII);
+                        }
+                        PageIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{offset:X5} SoundRef String: {sndRef} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafObject
+                        });
+                        offset += sndStrLgth;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
         private List<object> StartSoundCueScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();

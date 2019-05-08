@@ -502,5 +502,31 @@ namespace ME3Explorer.TlkManagerNS
         {
             SelectLoadedTLKsME1();
         }
+
+        /// <summary>
+        /// Looks up current loaded file game ID and returns appropriate string reference.
+        /// </summary>
+        /// <param name="stringRefID"></param>
+        /// <returns></returns>
+        public static string GlobalFindStrRefbyID(int stringRefID, MEGame game)
+        {
+            if (stringRefID <= 0 )
+            {
+                return null;
+            }
+
+            if (game == MEGame.ME1)
+            {
+               return ME1TalkFiles.findDataById(stringRefID);
+            }
+            else if (game == MEGame.ME2)
+            {
+                return ME2TalkFiles.findDataById(stringRefID);
+            }
+            else
+            {
+                return ME3TalkFiles.findDataById(stringRefID);
+            }
+        }
     }
 }
