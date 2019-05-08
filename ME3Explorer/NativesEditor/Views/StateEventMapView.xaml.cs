@@ -317,7 +317,7 @@ namespace MassEffect.NativesEditor.Views
 
             try
             {
-                export = pcc.Exports.First(exp => exp.ClassName == "BioStateEventMap");
+                export = pcc.Exports.First(exp => (exp.ClassName == "BioStateEventMap" && exp.ObjectName == "StateTransitionMap")); //ME1 has 2 BioStateEventMaps only want one named StateTransitionMap
             }
             catch
             {

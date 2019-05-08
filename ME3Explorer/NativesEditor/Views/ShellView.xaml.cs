@@ -53,6 +53,11 @@ namespace MassEffect.NativesEditor.Views
 
 			OpenPccFile(dlg.FileName);
 
+            if (Pcc.Game == MEGame.ME1)
+            { MessageBox.Show("ME1 Packages codex map is not working.  State Event map may not be working. Use as reference tool only."); }
+            if (Pcc.Game == MEGame.ME2)
+            { MessageBox.Show("ME2 saves not working. Use as reference tool only."); }
+
             //OpenPccFile(@"C:\Program Files (x86)\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\SFXGameInfoSP_SF.pcc");
             //OpenPccFile(@"_Test\SFXGameInfoSP_SF.pcc");
         }
@@ -84,6 +89,12 @@ namespace MassEffect.NativesEditor.Views
             if (Pcc == null)
             {
                 return;
+            }
+
+            if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.ME2)
+            {
+                MessageBox.Show("Saving in ME1/2 not supported.");
+                //return;
             }
 
             if (CodexMapControl != null)
