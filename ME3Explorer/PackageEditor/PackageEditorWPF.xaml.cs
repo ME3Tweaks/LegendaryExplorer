@@ -1852,7 +1852,7 @@ namespace ME3Explorer
                 foreach (PackageUpdate u in addedChanges)
                 {
                     //convert to uindex
-                    addedChangesByUIndex.Add(new PackageUpdate { change = u.change, index = u.index >= 0 ? u.index + 1 : u.index });
+                    addedChangesByUIndex.Add(new PackageUpdate { change = u.change, index = u.change == PackageChange.ExportAdd ? u.index + 1 : -u.index - 1 });
                 }
                 List<TreeViewEntry> treeViewItems = AllTreeViewNodesX[0].FlattenTree();
 
@@ -1867,23 +1867,12 @@ namespace ME3Explorer
                 foreach (PackageUpdate newItem in addedChangesByUIndex)
                 {
                     int idx = newItem.change == PackageChange.ExportAdd ? newItem.index : -newItem.index; //make UIndex based
-                    IEntry entry = Pcc.getEntry(idx);
+                    IEntry entry = Pcc.getEntry(newItem.index);
                     if (entry == null)
                     {
-                        Debugger.Break();
+                        Debugger.Break(); //This shouldn't occur... I hope
                     }
 
-                    //TreeViewEntry parent = null;
-                    //foreach (TreeViewEntry tve in treeViewItems)
-                    //{
-                    //    Debug.WriteLine(tve.UIndex + " vs " + entry.idxLink);
-                    //    if (tve.UIndex == entry.idxLink)
-                    //    {
-                    //        Debug.WriteLine("FOUND!");
-                    //        parent = tve;
-                    //        break;
-                    //    }
-                    //}
                     TreeViewEntry parent = treeViewItems.FirstOrDefault(x => x.UIndex == entry.idxLink);
                     if (parent != null)
                     {
@@ -1891,6 +1880,10 @@ namespace ME3Explorer
                         parent.Sublinks.Add(newEntry);
                         treeViewItems.Add(newEntry); //used to find parents
                         nodesToSortChildrenFor.Add(parent);
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Unable to attach new item to parent. Could not find parent with UIndex " + entry.idxLink);
                     }
                     //newItem.Parent = targetItem;
                     //targetItem.Sublinks.Add(newItem);
@@ -2340,6 +2333,7 @@ namespace ME3Explorer
                     //replace data only
                     if (sourceEntry is IExportEntry entry)
                     {
+                        crossPCCObjectMap.Add(entry, targetLinkEntry);
                         ReplaceExportDataWithAnother(entry, targetLinkEntry as IExportEntry);
                     }
                     return;
@@ -2378,7 +2372,7 @@ namespace ME3Explorer
                     else
                     {
                         ImportEntry newImport = getOrAddCrossImport(sourceEntry.GetFullPath, importpcc, Pcc,
-                            sourceItem.Sublinks.Count == 0 ? link : (int?) null);
+                            sourceItem.Sublinks.Count == 0 ? link : (int?)null);
                         newItem = new TreeViewEntry(newImport);
                         crossPCCObjectMap[sourceEntry] = newImport;
                     }
@@ -2463,6 +2457,10 @@ namespace ME3Explorer
             }
             res.Write(idata, end, idata.Length - end);
             targetLinkEntry.Data = res.ToArray();
+            if (ex.ClassName == "Class")
+            {
+                relinkBinaryObjects(ex.FileRef);
+            }
             MessageBox.Show("Done. Check the resulting export to ensure accuracy of this experimental feature.");
         }
 
@@ -2951,7 +2949,7 @@ namespace ME3Explorer
                 }
             }
         }
-        
+
         private void BuildME1TLKDB_Clicked(object sender, RoutedEventArgs e)
         {
             string myBasePath = ME1Directory.gamePath;

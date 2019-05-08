@@ -31,12 +31,13 @@ namespace ME3Explorer
             for (int i = 0; i < crossPCCObjectMappingList.Count; i++)
             {
                 KeyValuePair<IEntry, IEntry> mapping = crossPCCObjectMappingList[i];
-                if (mapping.Key is IExportEntry sourceExportInNewFile)
+                if (mapping.Key is IExportEntry sourceExportInOriginalFile)
                 {
-                    PropertyCollection transplantProps = sourceExportInNewFile.GetProperties();
-                    Debug.WriteLine("Relinking items in destination export: " + sourceExportInNewFile.GetFullPath);
-                    relinkResults.AddRange(relinkPropertiesRecursive(importpcc, sourceExportInNewFile, transplantProps, crossPCCObjectMappingList, ""));
-                    (mapping.Value as IExportEntry).WriteProperties(transplantProps);
+                    IExportEntry Value = (IExportEntry) mapping.Value;
+                    PropertyCollection transplantProps = sourceExportInOriginalFile.GetProperties();
+                    Debug.WriteLine("Relinking items in destination export: " + sourceExportInOriginalFile.GetFullPath);
+                    relinkResults.AddRange(relinkPropertiesRecursive(importpcc, Value, transplantProps, crossPCCObjectMappingList, ""));
+                    Value.WriteProperties(transplantProps);
                 }
             }
 
@@ -241,7 +242,7 @@ namespace ME3Explorer
                                             else
                                             {
                                                 Debug.WriteLine("Binary relink missed WwiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue);
-                                                relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relink error: WwiseEvent referenced WwiseStream " + originalValue + " is not in the mapping tree and could not be relinked");
+                                                relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: WwiseEvent referenced WwiseStream " + originalValue + " is not in the mapping tree and could not be relinked");
                                             }
                                         }
                                         exp.setBinaryData(binarydata);
@@ -275,20 +276,31 @@ namespace ME3Explorer
                                             if (superclassIndex < 0)
                                             {
                                                 //its an import
-                                                ImportEntry superclassImportEntry = importpcc.Imports[Math.Abs(unrealIndexToME3ExpIndexing(superclassIndex))];
+                                                ImportEntry superclassImportEntry = importpcc.getUImport(superclassIndex);
                                                 ImportEntry newSuperclassValue = getOrAddCrossImport(superclassImportEntry.GetFullPath, importpcc, exp.FileRef);
                                                 WriteMem(offset, newdata, BitConverter.GetBytes(newSuperclassValue.UIndex));
                                             }
                                             else
                                             {
-                                                relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relink error: Superclass is an export in the source package and was not relinked.");
+                                                relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: Superclass is an export in the source package and was not relinked.");
+                                            }
+                                            offset += 4;
+                                            int unknown1 = BitConverter.ToInt32(data, offset);
+
+                                            offset += 4;
+                                            int childProbeUIndex = BitConverter.ToInt32(data, offset);
+                                            if (childProbeUIndex != 0)
+                                            { //Scoped
+                                                if (crossPCCObjectMap.TryGetValue(importpcc.getEntry(childProbeUIndex), out IEntry mapped))
+                                                {
+                                                    WriteMem(offset, newdata, BitConverter.GetBytes(mapped.UIndex));
+                                                }
+                                                else
+                                                {
+                                                    relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: Child Probe UIndex could not be remapped during porting: " + childProbeUIndex + " is not in the mapping tree and could not be relinked");
+                                                }
                                             }
 
-
-                                            int unknown1 = BitConverter.ToInt32(data, offset);
-                                            offset += 4;
-
-                                            int classObjTree = BitConverter.ToInt32(data, offset); //Don't know if I need to do this.
                                             offset += 4;
 
 
@@ -324,8 +336,7 @@ namespace ME3Explorer
                                                 }
                                             }
 
-                                            int offsetEnd = offset + skipAmount + 10;
-                                            offset += skipAmount + 10; //heuristic to find end of script
+                                            offset += skipAmount + 10;//heuristic to find end of script (ends with 10 FF's)
                                             uint stateMask = BitConverter.ToUInt32(data, offset);
                                             offset += 4;
 
@@ -350,7 +361,7 @@ namespace ME3Explorer
                                                 }
                                                 else
                                                 {
-                                                    relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relink error: Local function[" + i + "] could not be remapped during porting: " + functionObjectIndex + " is not in the mapping tree and could not be relinked");
+                                                    relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: Local function[" + i + "] could not be remapped during porting: " + functionObjectIndex + " is not in the mapping tree and could not be relinked");
                                                 }
                                                 offset += 4;
                                             }
@@ -372,7 +383,7 @@ namespace ME3Explorer
                                             }
                                             else
                                             {
-                                                relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relink error: Outerclass is an export in the original package, not relinked.");
+                                                relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: Outerclass is an export in the original package, not relinked.");
                                             }
                                             offset += 4;
 
@@ -412,7 +423,7 @@ namespace ME3Explorer
                                             }
                                             else
                                             {
-                                                relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relink error: DefaultsClassLink cannot be currently automatically relinked by Binary Relinker. Please manually set this in Binary Editor");
+                                                relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: DefaultsClassLink cannot be currently automatically relinked by Binary Relinker. Please manually set this in Binary Editor");
                                             }
                                             offset += 4;
 
@@ -432,13 +443,13 @@ namespace ME3Explorer
                                                     {
                                                         if (functionsTableIndex < 0)
                                                         {
-                                                            ImportEntry functionObjIndex = importpcc.Imports[Math.Abs(functionsTableIndex)];
+                                                            ImportEntry functionObjIndex = importpcc.getUImport(functionsTableIndex);
                                                             ImportEntry newFunctionObjIndex = getOrAddCrossImport(functionObjIndex.GetFullPath, importpcc, exp.FileRef);
                                                             WriteMem(offset, newdata, BitConverter.GetBytes(newFunctionObjIndex.UIndex));
                                                         }
                                                         else
                                                         {
-                                                            relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relink error: Full Functions List function[" + i + "] could not be remapped during porting: " + functionsTableIndex + " is not in the mapping tree and could not be relinked");
+                                                            relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: Full Functions List function[" + i + "] could not be remapped during porting: " + functionsTableIndex + " is not in the mapping tree and could not be relinked");
 
                                                         }
                                                     }
@@ -449,7 +460,7 @@ namespace ME3Explorer
                                         }
                                         catch (Exception ex)
                                         {
-                                            relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relink error: Exception relinking: " + ex.Message);
+                                            relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: Exception relinking: " + ex.Message);
                                         }
                                     }
                                     break;
@@ -504,7 +515,7 @@ namespace ME3Explorer
                         }
                         catch (Exception e)
                         {
-                            relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relinking failed due to exception: " + e.Message);
+                            relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relinking failed due to exception: " + e.Message);
                         }
                         //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
                         //BinaryInterpreter binaryrelinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, sourceexp, pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
@@ -569,7 +580,7 @@ namespace ME3Explorer
                         }
                         else if (componentObjectIndex > 0) //we do not remap on 0 here in binary land
                         {
-                            relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relink error: Component[" + i + "] could not be remapped during porting: " + componentObjectIndex + " is not in the mapping tree");
+                            relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: Component[" + i + "] could not be remapped during porting: " + componentObjectIndex + " is not in the mapping tree");
                         }
                     }
                     offset += 4;

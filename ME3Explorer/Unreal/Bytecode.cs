@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using ME3Explorer.Packages;
 using System.Diagnostics;
+using ME3Explorer.Pathfinding_Editor;
 
 namespace ME3Explorer.Unreal
 {
@@ -720,7 +721,7 @@ namespace ME3Explorer.Unreal
             if (start >= memsize)
                 return res;
             byte t = memory[start];
-            Token newTok = new Token {op = t};
+            Token newTok = new Token { op = t };
             int end = start;
             if (t <= 0x60)
             {
@@ -4703,17 +4704,17 @@ namespace ME3Explorer.Unreal
             byte[] originalData = sourceExport.Data;
             byte[] script = new byte[sourceExport.Data.Length - 0x20];
             byte[] newscript = new byte[sourceExport.Data.Length - 0x20];
-            for (int i = 0x20; i < script.Length; i++)
+            for (int i = 0; i < script.Length; i++)
             {
-                script[i - 0x20] = originalData[i];
-                newscript[i - 0x20] = originalData[i];
+                script[i] = originalData[i + 0x20];
+                newscript[i] = originalData[i + 0x20];
             }
 
             //Perform relink
             var parsedSource = ParseBytecode(script, sourceExport.FileRef);
             var parsedDest = ParseBytecode(script, destinationExport.FileRef);
 
-            (List<Token> topLevelTokens, _ )= parsedSource;
+            (List<Token> topLevelTokens, _) = parsedSource;
             foreach (Token t in topLevelTokens)
             {
                 RelinkToken(t, newscript, sourceExport, destinationExport, relinkFailedReport, crossPCCObjectMap);
@@ -4721,9 +4722,53 @@ namespace ME3Explorer.Unreal
 
             //Copy relinked data to new destination
             byte[] newExpData = destinationExport.Data;
-            for (int i = 0x20; i < newscript.Length; i++)
+
+            int functionSuperclass = BitConverter.ToInt32(originalData, 0x0C);
+            if (functionSuperclass != 0)
             {
-                newExpData[i] = newscript[i - 0x20];
+                if (crossPCCObjectMap.TryGetValue(sourceExport.FileRef.getEntry(functionSuperclass), out IEntry relinkedValue))
+                {
+                    Debug.WriteLine($"Function superclass relink hit @ 0x0C, new value {relinkedValue.GetFullPath}");
+                    newscript.OverwriteRange(0x0C, BitConverter.GetBytes(relinkedValue.UIndex));
+                }
+                else if (functionSuperclass < 0)
+                {
+                    var sourceEntry = sourceExport.FileRef.getEntry(functionSuperclass);
+                    if (SharedPathfinding.GetEntryOrAddImport(destinationExport.FileRef, sourceEntry.GetFullPath) is IEntry ent)
+                    {
+                        //Todo: Add to relink map
+                        Debug.WriteLine($"Function superclass relink crossported @ 0x0C, new value {ent.GetFullPath}");
+                        newExpData.OverwriteRange(0x0C, BitConverter.GetBytes(ent.UIndex));
+                        //crossPCCObjectMap.Add(sourceEntry, ent); //Can't add or we will modify the enumeration of this colelction. GetEntryOrAddImport should still catch this
+                    }
+                    else
+                    {
+                        relinkFailedReport.Add($"0x0C Function superclass relink failed: Unable to get or add cross import for: {sourceExport.FileRef.getObjectName(functionSuperclass)}");
+                    }
+                }
+                else
+                {
+                    relinkFailedReport.Add($"0x0C Function superclass relink failed: Cannot relink reference to export that was not mapped from another package: {sourceExport.FileRef.getObjectName(functionSuperclass)}");
+                }
+            }
+
+            {
+                //Scoped
+                int childProbeUIndex = BitConverter.ToInt32(originalData, 0x14);
+                if (crossPCCObjectMap.TryGetValue(sourceExport.FileRef.getEntry(childProbeUIndex), out IEntry relinkedValue))
+                {
+                    Debug.WriteLine($"Function child probe start relink hit @ 0x14, new value {relinkedValue.GetFullPath}");
+                    newExpData.OverwriteRange(0x14, BitConverter.GetBytes(relinkedValue.UIndex));
+                }
+                else
+                {
+                    relinkFailedReport.Add($"0x0C Function child probe start relink failed: Referenced object was not cross ported: {sourceExport.FileRef.getObjectName(childProbeUIndex)}");
+                }
+            }
+
+            for (int i = 0; i < newscript.Length; i++)
+            {
+                newExpData[i + 0x20] = newscript[i];
             }
             destinationExport.Data = newExpData;
         }
@@ -4750,7 +4795,7 @@ namespace ME3Explorer.Unreal
                             if (crossPCCObjectMap.TryGetValue(sourceExport.FileRef.getEntry(relinkItem.value), out IEntry relinkedValue))
                             {
                                 Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported a sub export: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");
-                                newscript.OverwriteRange(relinkItem.pos, BitConverter.GetBytes(relinkedValue.UIndex)); 
+                                newscript.OverwriteRange(relinkItem.pos, BitConverter.GetBytes(relinkedValue.UIndex));
                             }
                             else
                             {
@@ -4781,7 +4826,7 @@ namespace ME3Explorer.Unreal
         public int TokenIndex { get; set; }
         public string OpCode { get; set; }
         public string CurrentStack { get; set; }
-        public int StartPos { get; set;  }
+        public int StartPos { get; set; }
 
         public override string ToString()
         {
