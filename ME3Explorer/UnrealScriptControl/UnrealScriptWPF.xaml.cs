@@ -51,6 +51,9 @@ namespace ME3Explorer
                 }
             }
         }
+
+        public bool HexBoxSelectionChanging { get; private set; }
+
         public UnrealScriptWPF()
         {
             InitializeComponent();
@@ -107,7 +110,12 @@ namespace ME3Explorer
                 DecompiledScriptBlocks.AddRange(func.ScriptBlocks);
                 TokenList.AddRange(func.SingularTokenList);
 
-                int pos = 16;
+                int pos = 12;
+
+                var functionSuperclass = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Function superclass", functionSuperclass, pos, functionSuperclass != 0 ? CurrentLoadedExport.FileRef.getEntry(functionSuperclass) : null));
+
+                pos += 4;
                 var nextItemCompilingChain = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Next item in loading chain", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
 
@@ -244,6 +252,7 @@ namespace ME3Explorer
         {
             if (!TokenChanging)
             {
+                HexBoxSelectionChanging = true;
                 int start = (int)ScriptEditor_Hexbox.SelectionStart;
                 int len = (int)ScriptEditor_Hexbox.SelectionLength;
                 int size = (int)ScriptEditor_Hexbox.ByteProvider.Length;
@@ -343,6 +352,7 @@ namespace ME3Explorer
                     allBoxesToUpdate.Remove(selectedBox);
                 }
                 allBoxesToUpdate.ForEach(x => x.SelectedIndex = -1);
+                HexBoxSelectionChanging = false;
             }
         }
 
@@ -371,7 +381,7 @@ namespace ME3Explorer
         private void Tokens_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             BytecodeSingularToken selectedToken = Tokens_ListBox.SelectedItem as BytecodeSingularToken;
-            if (selectedToken != null)
+            if (selectedToken != null && !HexBoxSelectionChanging)
             {
                 TokenChanging = true;
                 ScriptEditor_Hexbox.SelectionStart = selectedToken.StartPos;
@@ -386,7 +396,7 @@ namespace ME3Explorer
             public string value { get; set; }
             public int offset { get; set; }
             public int length { get; set; }
-            public ScriptHeaderItem(string id, int value, int offset, IExportEntry callingEntry = null)
+            public ScriptHeaderItem(string id, int value, int offset, IEntry callingEntry = null)
             {
                 this.id = id;
                 this.value = $"{value}";
@@ -447,7 +457,7 @@ namespace ME3Explorer
         {
             ScriptHeaderItem token = Function_Header.SelectedItem as ScriptHeaderItem;
             ScriptEditor_Hexbox.UnhighlightAll();
-            if (token != null && !TokenChanging)
+            if (token != null && !TokenChanging && !HexBoxSelectionChanging)
             {
                 TokenChanging = true;
                 ScriptEditor_Hexbox.SelectionStart = token.offset;
@@ -460,7 +470,7 @@ namespace ME3Explorer
         {
             ScriptHeaderItem token = Function_Footer.SelectedItem as ScriptHeaderItem;
             ScriptEditor_Hexbox.UnhighlightAll();
-            if (token != null && !TokenChanging)
+            if (token != null && !TokenChanging && !HexBoxSelectionChanging)
             {
                 TokenChanging = true;
                 ScriptEditor_Hexbox.SelectionStart = token.offset;
