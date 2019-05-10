@@ -1572,7 +1572,7 @@ namespace ME3Explorer
                     byte[] scriptmemory = data.Skip(offset).Take(skipAmount).ToArray();
                     try
                     {
-                        var tokens = Bytecode.ParseBytecode(scriptmemory, CurrentLoadedExport.FileRef, offset);
+                        var tokens = Bytecode.ParseBytecode(scriptmemory, CurrentLoadedExport, offset);
                         string scriptText = "";
                         foreach (Token t in tokens.Item1)
                         {
