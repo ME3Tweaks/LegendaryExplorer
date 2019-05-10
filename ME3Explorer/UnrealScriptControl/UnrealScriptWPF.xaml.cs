@@ -271,13 +271,18 @@ namespace ME3Explorer
                             {
                                 s += $", Name: {CurrentLoadedExport.FileRef.getNameEntry(val)}";
                             }
-                            if (CurrentLoadedExport.FileRef.getEntry(val) is IExportEntry exp)
+
+                            if (CurrentLoadedExport.FileRef.getEntry(val) is IEntry ent)
                             {
-                                s += $", Export: {exp.ObjectName}";
-                            }
-                            else if (CurrentLoadedExport.FileRef.getEntry(val) is ImportEntry imp)
-                            {
-                                s += $", Import: {imp.ObjectName}";
+                                string type = ent is IExportEntry ? "Export" : "Import";
+                                if (ent.ObjectName == CurrentLoadedExport.ObjectName)
+                                {
+                                    s += $", {type}: {ent.GetFullPath}";
+                                }
+                                else
+                                {
+                                    s += $", {type}: {ent.ObjectName}";
+                                }
                             }
                         }
                         s += $" | Start=0x{start.ToString("X8")} ";

@@ -1864,6 +1864,8 @@ namespace ME3Explorer.Unreal
                     break;
                 case (int)ENatives.NATIVE_FRand:// 0x00C3
                     t.text = "FRand()";
+                    pos++;
+                    ReadToken(pos); //EndFunctionParms
                     break;
                 case (int)ENatives.NATIVE_IsA: // 0x00C5
                     a = ReadToken(pos);
