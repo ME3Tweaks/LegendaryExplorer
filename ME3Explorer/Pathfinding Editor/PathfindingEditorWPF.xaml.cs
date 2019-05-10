@@ -1640,7 +1640,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 return true; //file still loaded.
             }
 
-            
+
 
             graphEditor.Enabled = true;
             graphEditor.UseWaitCursor = false;
@@ -1957,12 +1957,37 @@ namespace ME3Explorer.Pathfinding_Editor
                         actorNode = new SFXObjectiveSpawnPoint(uindex, x, y, exportToLoad.FileRef, graphEditor);
 
                         //Create annex node if required
-                        var annexZoneLocProp = props.GetProp<ObjectProperty>("AnnexZoneLocation");
-                        if (annexZoneLocProp != null)
+                        if (props.GetProp<ObjectProperty>("AnnexZoneLocation") is ObjectProperty annexZoneLocProp)
                         {
-                            if (!Pcc.isUExport(annexZoneLocProp.Value))
+                            if (exportToLoad.FileRef.isUExport(annexZoneLocProp.Value))
                             {
-                                actorNode.comment.Text += "\nBAD ANNEXZONELOC!";
+                                IExportEntry targetPoint = exportToLoad.FileRef.getUExport(annexZoneLocProp.Value);
+                                if (targetPoint.ClassName != "TargetPoint")
+                                {
+                                    actorNode.comment.Text += "\nAnnex Zone Location not a target point!";
+                                    actorNode.comment.TextBrush = new SolidBrush(System.Drawing.Color.Red);
+                                }
+                            }
+                            else
+                            {
+                                actorNode.comment.Text += "\nAnnex Zone Location export out of bounds!";
+                                actorNode.comment.TextBrush = new SolidBrush(System.Drawing.Color.Red);
+                            }
+                        }
+                        if (props.GetProp<ObjectProperty>("CombatZone") is ObjectProperty combatZoneProp)
+                        {
+                            if (exportToLoad.FileRef.isUExport(combatZoneProp.Value))
+                            {
+                                IExportEntry combatZoneExp = exportToLoad.FileRef.getUExport(combatZoneProp.Value);
+                                if (combatZoneExp.ClassName != "SFXCombatZone")
+                                {
+                                    actorNode.comment.Text += "\nAnnex Zone combat zone not a combat zone!";
+                                    actorNode.comment.TextBrush = new SolidBrush(System.Drawing.Color.Red);
+                                }
+                            }
+                            else
+                            {
+                                actorNode.comment.Text += "\nCombat Zone export out of bounds!";
                                 actorNode.comment.TextBrush = new SolidBrush(System.Drawing.Color.Red);
                             }
                         }
@@ -2751,86 +2776,82 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             if (nodeEntry != null)
             {
-                var collisionComponentProperty = nodeEntry.GetProperty<ObjectProperty>("CollisionComponent");
-                IExportEntry collisionEntry = nodeEntry.FileRef.getUExport(collisionComponentProperty.Value);
-
-
-                IExportEntry newNodeEntry = nodeEntry.Clone();
-                nodeEntry.FileRef.addExport(newNodeEntry);
-                IExportEntry newCollisionEntry = collisionEntry.Clone();
-                nodeEntry.FileRef.addExport(newCollisionEntry);
-                newCollisionEntry.idxLink = newNodeEntry.UIndex;
-
-                //Update the cloned nodes to be new items
-                bool changed = false;
-
-                //empty the pathlist
-                PropertyCollection newExportProps = newNodeEntry.GetProperties();
-
-                var PathList = newExportProps.GetProp<ArrayProperty<ObjectProperty>>("PathList");
-                if (PathList != null && PathList.Count > 0)
+                IExportEntry subComponentEntry = null;
+                if (nodeEntry.GetProperty<ObjectProperty>("CollisionComponent") is ObjectProperty collisionComponentProperty)
                 {
-                    changed = true;
-                    PathList.Clear();
+                    subComponentEntry = nodeEntry.FileRef.getUExport(collisionComponentProperty.Value);
+                }
+                else if (nodeEntry.GetProperty<ObjectProperty>("ParticleSystemComponent") is ObjectProperty psComponentProperty)
+                {
+                    subComponentEntry = nodeEntry.FileRef.getUExport(psComponentProperty.Value);
                 }
 
-                foreach (UProperty prop in newExportProps)
+                if (subComponentEntry != null)
                 {
-                    if (prop is ObjectProperty objProp)
+                    IExportEntry newNodeEntry = nodeEntry.Clone();
+                    nodeEntry.FileRef.addExport(newNodeEntry);
+                    IExportEntry newSubcomponent = subComponentEntry.Clone();
+                    nodeEntry.FileRef.addExport(newSubcomponent);
+                    newSubcomponent.idxLink = newNodeEntry.UIndex;
+
+                    //Update the cloned nodes to be new items
+                    bool changed = false;
+
+                    //empty the pathlist
+                    PropertyCollection newExportProps = newNodeEntry.GetProperties();
+
+                    var PathList = newExportProps.GetProp<ArrayProperty<ObjectProperty>>("PathList");
+                    if (PathList != null && PathList.Count > 0)
                     {
-                        if (objProp.Value == collisionEntry.UIndex)
+                        changed = true;
+                        PathList.Clear();
+                    }
+
+                    foreach (UProperty prop in newExportProps)
+                    {
+                        if (prop is ObjectProperty objProp)
                         {
-                            objProp.Value = newCollisionEntry.UIndex;
-                            changed = true;
+                            if (objProp.Value == subComponentEntry.UIndex)
+                            {
+                                objProp.Value = newSubcomponent.UIndex;
+                                changed = true;
+                            }
                         }
                     }
+
+                    if (changed)
+                    {
+                        newNodeEntry.WriteProperties(newExportProps);
+                    }
+
+                    var oldloc = SharedPathfinding.GetLocation(newNodeEntry);
+                    SetLocation(newNodeEntry, (float)oldloc.X + 50, (float)oldloc.Y + 50, (float)oldloc.Z);
+
+                    SharedPathfinding.GenerateNewRandomGUID(newNodeEntry);
+                    //Add cloned node to persistentlevel
+                    //Read persistent level binary
+                    byte[] data = PersistentLevelExport.Data;
+
+                    //find start of class binary (end of props)
+                    int start = PersistentLevelExport.propsEnd();
+
+                    uint exportid = BitConverter.ToUInt32(data, start);
+                    start += 4;
+                    uint numberofitems = BitConverter.ToUInt32(data, start);
+                    numberofitems++;
+                    SharedPathfinding.WriteMem(data, start, BitConverter.GetBytes(numberofitems));
+                    int insertoffset = (int)(numberofitems * 4) + start;
+                    List<byte> memList = data.ToList();
+                    memList.InsertRange(insertoffset, BitConverter.GetBytes(newNodeEntry.UIndex));
+                    data = memList.ToArray();
+                    PersistentLevelExport.Data = data;
+
+                    SharedPathfinding.ReindexMatchingObjects(newNodeEntry);
+                    SharedPathfinding.ReindexMatchingObjects(newSubcomponent);
+                    return newNodeEntry;
                 }
 
-                if (changed)
-                {
-                    newNodeEntry.WriteProperties(newExportProps);
-                }
-
-                var oldloc = SharedPathfinding.GetLocation(newNodeEntry);
-                SetLocation(newNodeEntry, (float)oldloc.X + 50, (float)oldloc.Y + 50, (float)oldloc.Z);
-                /*
-                collisionComponentProperty = newNodeEntry.GetProperty<ObjectProperty>("CollisionComponent");
-                if (collisionComponentProperty != null)
-                {
-                    collisionComponentProperty.Value = newCollisionEntry.UIndex;
-                    newNodeEntry.WriteProperty(collisionComponentProperty);
-                }
-
-                collisionComponentProperty = newNodeEntry.GetProperty<ObjectProperty>("CylinderComponent");
-                if (collisionComponentProperty != null)
-                {
-                    collisionComponentProperty.Value = newCollisionEntry.UIndex;
-                    newNodeEntry.WriteProperty(collisionComponentProperty);
-
-                }*/
-
-                SharedPathfinding.GenerateNewRandomGUID(newNodeEntry);
-                //Add cloned node to persistentlevel
-                //Read persistent level binary
-                byte[] data = PersistentLevelExport.Data;
-
-                //find start of class binary (end of props)
-                int start = PersistentLevelExport.propsEnd();
-
-                uint exportid = BitConverter.ToUInt32(data, start);
-                start += 4;
-                uint numberofitems = BitConverter.ToUInt32(data, start);
-                numberofitems++;
-                SharedPathfinding.WriteMem(data, start, BitConverter.GetBytes(numberofitems));
-                int insertoffset = (int)(numberofitems * 4) + start;
-                List<byte> memList = data.ToList();
-                memList.InsertRange(insertoffset, BitConverter.GetBytes(newNodeEntry.UIndex));
-                data = memList.ToArray();
-                PersistentLevelExport.Data = data;
-
-                SharedPathfinding.ReindexMatchingObjects(newNodeEntry);
-                SharedPathfinding.ReindexMatchingObjects(newCollisionEntry);
-                return newNodeEntry;
+                MessageBox.Show("Can't clone this type type yet.");
             }
             return null;
         }
@@ -2906,6 +2927,9 @@ namespace ME3Explorer.Pathfinding_Editor
 
             private bool _active;
             public bool Active { get => _active; set => SetProperty(ref _active, value); }
+
+            private bool _displayactive;
+            public bool DisplayActive { get => _displayactive; set => SetProperty(ref _displayactive, value); }
             public string DisplayString => $"{export.UIndex} {export.ObjectName}_{export.indexValue}";
 
             public Zone(IExportEntry combatZone)
@@ -2921,6 +2945,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 export = combatZone.export;
                 Active = combatZone.Active;
+                DisplayActive = combatZone.DisplayActive;
             }
         }
 
@@ -2934,17 +2959,17 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     if (zone != e.Item)
                     {
-                        zone.Active = false;
+                        zone.DisplayActive = false;
                     }
                     else
                     {
-                        zone.Active = e.IsSelected;
+                        zone.DisplayActive = e.IsSelected;
                     }
                 }
                 IsCombatZonesSingleSelecting = false;
 
                 //Highlight active combat zone
-                Zone activeZone = CombatZones.FirstOrDefault(x => x.Active);
+                Zone activeZone = CombatZones.FirstOrDefault(x => x.DisplayActive);
 
                 //These statements are split into two groups for optimization purposes
                 if (activeZone != null)

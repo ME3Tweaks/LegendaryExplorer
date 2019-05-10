@@ -301,7 +301,7 @@
                             <xctk:CheckListBox MinHeight="70" ItemsSource="{Binding StaticMeshCollections}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" ItemSelectionChanged="StaticMeshCollectionActors_ItemSelectionChanged"/>
                             <TextBlock Text="Zones" FontWeight="Bold"  TextAlignment="Center" Margin="0,10,0,0"/>
                             <TextBlock Text="Select an item to highlight nodes in that combat zone" Foreground="Gray" FontSize="10" Margin="3,0" TextWrapping="Wrap"  TextAlignment="Center"/>
-                            <xctk:CheckListBox MinHeight="70" ItemsSource="{Binding CombatZones}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" ItemSelectionChanged="CombatZones_ItemSelectionChanged"/>
+                            <xctk:CheckListBox MinHeight="70" ItemsSource="{Binding CombatZones}" DisplayMemberPath="DisplayString" SelectedMemberPath="DisplayActive" ItemSelectionChanged="CombatZones_ItemSelectionChanged"/>
                         </StackPanel>
                     </Expander>
                     <!--<DockPanel>-->
