@@ -1922,7 +1922,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         break;
                     case "BioStartLocation":
                     case "BioStartLocationMP":
-                        actorNode = new BioStartLocation(uindex, x, y, exportToLoad.FileRef, graphEditor);
+                        actorNode = new BioStartLocation(uindex, x, y, exportToLoad.FileRef, graphEditor, showRotation: true);
                         break;
                     case "StaticMeshActor":
                         actorNode = new StaticMeshActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);

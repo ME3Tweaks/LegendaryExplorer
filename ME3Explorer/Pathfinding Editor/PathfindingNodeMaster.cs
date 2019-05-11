@@ -23,6 +23,7 @@ namespace ME3Explorer.Pathfinding_Editor
         protected static Color commentColor = Color.FromArgb(74, 63, 190);
         public static Brush sfxCombatZoneBrush = new SolidBrush(Color.FromArgb(255, 0, 0));
         public static Brush highlightedCoverSlotBrush = new SolidBrush(Color.FromArgb(219, 137, 6));
+        public static Brush directionBrush = new SolidBrush(Color.FromArgb(15, 95, 15));
         public static Brush OverlayBrush = new SolidBrush(Color.FromArgb(128, 128, 175));
         public static Brush OverlayOutlineBrush = new SolidBrush(Color.FromArgb(148, 148, 175));
 
@@ -35,7 +36,6 @@ namespace ME3Explorer.Pathfinding_Editor
 
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
         public List<IExportEntry> SequenceReferences = new List<IExportEntry>();
-
         public int UIndex => index;
 
         protected int index;

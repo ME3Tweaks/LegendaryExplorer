@@ -2,9 +2,11 @@
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SequenceObjects;
 using ME3Explorer.Unreal;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 
 namespace ME3Explorer.ActorNodes
@@ -18,7 +20,7 @@ namespace ME3Explorer.ActorNodes
         public abstract Color GetDefaultShapeColor();
         public abstract PointF[] GetDefaultShapePoints();
 
-        protected ActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawAsPolygon = false)
+        protected ActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawAsPolygon = false, bool drawRotationLine = false)
         {
             pcc = p;
             g = grapheditor;
@@ -28,9 +30,28 @@ namespace ME3Explorer.ActorNodes
             comment.X = 0;
             comment.Y = 52 + comment.Height;
             comment.Pickable = false;
+            
+            if (drawRotationLine)
+            {
+                if (export.GetProperty<StructProperty>("Rotation") is StructProperty rotation)
+                {
+                    var theta = rotation.GetProp<IntProperty>("Yaw").Value * 360f / 65536f;
+                    float circleX1 = (float)(25 + 20 * Math.Cos((theta + 5) * Math.PI / 180));
+                    float circleY1 = (float)(25 + 20 * Math.Sin((theta + 5) * Math.PI / 180));
+                    float circleX2 = (float)(25 + 20 * Math.Cos((theta - 5) * Math.PI / 180));
+                    float circleY2 = (float)(25 + 20 * Math.Sin((theta - 5) * Math.PI / 180));
+
+                    float circleTipX = (float)(25 + 25 * Math.Cos((theta) * Math.PI / 180));
+                    float circleTipY = (float)(25 + 25 * Math.Sin((theta) * Math.PI / 180));
+                    PPath directionShape = PPath.CreatePolygon(new PointF[] { new PointF(25, 25), new PointF(circleX1, circleY1), new PointF(circleTipX, circleTipY), new PointF(circleX2, circleY2) });
+                    directionShape.Pen = Pens.BlanchedAlmond;
+                    directionShape.Brush = directionBrush;
+                    directionShape.Pickable = false;
+                    AddChild(directionShape);
+                }
+            }
             this.AddChild(comment);
             this.Pickable = true;
-
             Bounds = new RectangleF(0, 0, 50, 50);
             SetShape(drawAsPolygon);
             TranslateBy(x, y);
@@ -241,7 +262,7 @@ namespace ME3Explorer.ActorNodes
                             [1] = othernode
                         }
                     };
-                    if (!Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)) && !othernode.Edges.Any(x=>x.DoesEdgeConnectSameNodes(edge)))
+                    if (!Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)) && !othernode.Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)))
                     {
                         Edges.Add(edge);
                         othernode.Edges.Add(edge);
@@ -319,13 +340,13 @@ namespace ME3Explorer.ActorNodes
 
         //TODO: UPDATE THIS. ORIGINALLY AN ELLIPSE.
         private static readonly PointF[] outlineShape = {
-            new PointF(35, 0), new PointF(35, 15),new PointF(50, 15), //top right
-            new PointF(50, 35),new PointF(35, 35), new PointF(35, 50), //bottom right
-            new PointF(15, 50),new PointF(15, 35),new PointF(0, 35), //bottom left
-            new PointF(0, 15), new PointF(15, 15), new PointF(15, 0), }; //top left
+            new PointF(35, 0), new PointF(40, 10),new PointF(50, 15), //top right
+            new PointF(50, 35),new PointF(40, 40), new PointF(35, 50), //bottom right
+            new PointF(15, 50),new PointF(10, 40),new PointF(0, 35), //bottom left
+            new PointF(0, 15), new PointF(10, 10), new PointF(15, 0), }; //top left
 
-        public BioStartLocation(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+        public BioStartLocation(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool showRotation = false)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: showRotation)
         {
         }
 
