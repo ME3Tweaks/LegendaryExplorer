@@ -23,6 +23,9 @@ namespace ME3Explorer.Pathfinding_Editor
         protected static Color commentColor = Color.FromArgb(74, 63, 190);
         public static Brush sfxCombatZoneBrush = new SolidBrush(Color.FromArgb(255, 0, 0));
         public static Brush highlightedCoverSlotBrush = new SolidBrush(Color.FromArgb(219, 137, 6));
+        public static Brush directionBrush = new SolidBrush(Color.FromArgb(15, 95, 15));
+        public static Brush OverlayBrush = new SolidBrush(Color.FromArgb(128, 128, 175));
+        public static Brush OverlayOutlineBrush = new SolidBrush(Color.FromArgb(148, 148, 175));
 
         protected static Brush actorNodeBrush = new SolidBrush(Color.FromArgb(80, 80, 80));
         protected static Brush splineNodeBrush = new SolidBrush(Color.FromArgb(255, 60, 200));
@@ -33,7 +36,6 @@ namespace ME3Explorer.Pathfinding_Editor
 
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
         public List<IExportEntry> SequenceReferences = new List<IExportEntry>();
-
         public int UIndex => index;
 
         protected int index;
@@ -42,6 +44,23 @@ namespace ME3Explorer.Pathfinding_Editor
         public SText comment;
         public string NodeTag;
         internal bool Selected;
+
+        private bool isOverlay;
+        public bool IsOverlay
+        {
+            //This is not used for NotifyPropertyChanged.
+            get => isOverlay;
+            set
+            {
+                if (value)
+                {
+                    shape.Pen = new Pen(OverlayOutlineBrush);
+                    shape.Brush = OverlayBrush;
+                }
+                isOverlay = value;
+            }
+        }
+
         /// <summary>
         /// List of all outbound connections between two PNodes (since some code requires this)
         /// </summary>
@@ -110,7 +129,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     return -1;
                 }
-                IExportEntry brush = export.FileRef.getExport(brushComponent.Value - 1);
+                IExportEntry brush = export.FileRef.getUExport(brushComponent.Value);
                 List<PointF> graphVertices = new List<PointF>();
                 List<Vector3> brushVertices = new List<Vector3>();
                 PropertyCollection brushProps = brush.GetProperties();

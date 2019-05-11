@@ -178,9 +178,10 @@ namespace ME3Explorer
             {
                 if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name.Equals("tlkFile", StringComparison.OrdinalIgnoreCase))
                 {
-                    string toolVersion = xmlReader.GetAttribute("TLKToolVersion");
-                    if (toolVersion != null)
-                        _inputFileVersion = new Version(toolVersion);
+                    if (xmlReader.GetAttribute("TLKToolVersion") is string toolVersion)
+                    {
+                        _inputFileVersion = new Version(toolVersion.Trim('v'));
+                    }
                     break;
                 }
             }

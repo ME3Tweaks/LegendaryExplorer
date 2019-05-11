@@ -50,19 +50,23 @@ namespace ME3Explorer.Sequence_Editor
             string[] args = line.Split(' ');
             if (args.Length == 4)
             {
-                string nameAndNetIndex = args[3].Split('.').Last();
+                string[] path = args[3].Split('.');
+                if (path.Length < 2) return null;
+                string nameAndIndex = path.Last();
+                string sequence = path[path.Length - 2];
                 string packageName = args[1].Trim('(', ')').ToLower();
                 if (Pcc == null || Path.GetFileNameWithoutExtension(Pcc.FileName).ToLower() == packageName)
                 {
-                    if (int.TryParse(nameAndNetIndex.Substring(nameAndNetIndex.LastIndexOf('_') + 1), out int netIndex))
+                    if (int.TryParse(nameAndIndex.Substring(nameAndIndex.LastIndexOf('_') + 1), out int nameIndex))
                     {
                         return new LoggerInfo
                         {
                             fullLine = line,
                             packageName = packageName,
                             className = args[2],
-                            objectName = nameAndNetIndex.Substring(0, nameAndNetIndex.LastIndexOf('_')),
-                            netIndex = netIndex
+                            objectName = nameAndIndex.Substring(0, nameAndIndex.LastIndexOf('_')),
+                            sequenceName = sequence,
+                            nameIndex = nameIndex
                         };
                     }
                 }
@@ -77,7 +81,8 @@ namespace ME3Explorer.Sequence_Editor
             public string packageName;
             public string className;
             public string objectName;
-            public int netIndex;
+            public string sequenceName;
+            public int nameIndex;
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -92,7 +97,8 @@ namespace ME3Explorer.Sequence_Editor
                         {
                             foreach (IExportEntry exp in package.Exports)
                             {
-                                if (exp.ClassName == info.className && exp.ObjectName == info.objectName && exp.NetIndex == info.netIndex)
+                                if (exp.ClassName == info.className && exp.ObjectName == info.objectName && exp.indexValue == info.nameIndex &&
+                                    exp.PackageName == info.sequenceName)
                                 {
                                     ExportFound(kvp.Value, exp.UIndex);
                                     return;

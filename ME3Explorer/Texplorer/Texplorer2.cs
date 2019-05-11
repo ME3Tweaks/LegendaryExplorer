@@ -20,6 +20,7 @@ using TreeTexInfo = KFreonLib.Textures.TreeTexInfo;
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
+using System.Windows.Threading;
 using UsefulThings;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using CSharpImageLibrary;
@@ -1355,8 +1356,11 @@ namespace ME3Explorer
             if (WhichGame == 3)
             {
                 DebugOutput.PrintLn("Updating TOCs...");
-                AutoTOCWPF auto = new AutoTOCWPF(true);
-                auto.ShowDialog();
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    AutoTOCWPF auto = new AutoTOCWPF(true);
+                    auto.ShowDialog();
+                }); 
                 DebugOutput.PrintLn("TOCs updated.");
             }
         }

@@ -207,7 +207,7 @@ namespace ME3Explorer.Unreal.Classes
             HeaderText += "Script Size : " + size + "\n";
             HeaderText += GetFlags() + "\n";
             HeaderText += "Native Index: " + nativeindex;
-            var parsedData = Bytecode.ParseBytecode(script, export.FileRef);
+            var parsedData = Bytecode.ParseBytecode(script, export);
             ScriptBlocks = parsedData.Item1;
             SingularTokenList = parsedData.Item2;
         }

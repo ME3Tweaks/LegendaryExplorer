@@ -44,7 +44,7 @@
             <MenuItem Header="Open sequence reference in Sequence Editor" ItemsSource="{Binding CurrentNodeSequenceReferences}" IsEnabled="{Binding Path=CurrentNodeSequenceReferences.Count, Converter={StaticResource IsIntNotEqualConverter}, ConverterParameter=0}">
                 <MenuItem.ItemContainerStyle>
                     <Style TargetType="MenuItem">
-                        <Setter Property="Header" Value="{Binding GetNetIndexedFullPath}"/>
+                        <Setter Property="Header" Value="{Binding GetIndexedFullPath}"/>
                         <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=MenuItem}, Path=DataContext.OpenRefInSequenceEditorCommand}" />
                         <Setter Property="CommandParameter" Value="{Binding}" />
                     </Style>
@@ -117,6 +117,7 @@
                 <MenuItem Header="Pop out interpreter for current node" Command="{Binding PopoutInterpreterCommand}" InputGestureText="CTRL + P"/>
                 <MenuItem Header="Check all game files for navigation points that editor does not support" Click="CheckGameFileNavs_Clicked"/>
                 <MenuItem Header="Check all NetIndexes" Command="{Binding CheckNetIndexesCommand}"/>
+                <MenuItem Header="Load overlay file" Command="{Binding LoadOverlayFileCommand}"/>
             </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -300,7 +301,7 @@
                             <xctk:CheckListBox MinHeight="70" ItemsSource="{Binding StaticMeshCollections}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" ItemSelectionChanged="StaticMeshCollectionActors_ItemSelectionChanged"/>
                             <TextBlock Text="Zones" FontWeight="Bold"  TextAlignment="Center" Margin="0,10,0,0"/>
                             <TextBlock Text="Select an item to highlight nodes in that combat zone" Foreground="Gray" FontSize="10" Margin="3,0" TextWrapping="Wrap"  TextAlignment="Center"/>
-                            <xctk:CheckListBox MinHeight="70" ItemsSource="{Binding CombatZones}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" ItemSelectionChanged="CombatZones_ItemSelectionChanged"/>
+                            <xctk:CheckListBox MinHeight="70" ItemsSource="{Binding CombatZones}" DisplayMemberPath="DisplayString" SelectedMemberPath="DisplayActive" ItemSelectionChanged="CombatZones_ItemSelectionChanged"/>
                         </StackPanel>
                     </Expander>
                     <!--<DockPanel>-->

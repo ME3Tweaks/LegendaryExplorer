@@ -33,7 +33,7 @@ namespace ME3Explorer
         //Values in this list will cause the ExportToString() method to be called on an objectproperty in InterpreterWPF.
         //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
-        public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent" };
+        public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent" };
         public static readonly string[] IntToStringConverters = { "WwiseEvent" };
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
@@ -717,7 +717,7 @@ namespace ME3Explorer
                     break;
                 case FloatProperty fp:
                     {
-                        editableValue = fp.Value.ToString();
+                        editableValue = fp.Value.ToString("F7");
                     }
                     break;
                 case BoolProperty bp:
@@ -927,13 +927,28 @@ namespace ME3Explorer
                     NameProperty prop = exportEntry.GetProperty<NameProperty>("PackageName");
                     return "(" + prop.Value.Name + "_" + prop.Value.Number + ")";
                 case "StaticMeshComponent":
-                    ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("StaticMesh");
-                    if (smprop != null)
                     {
-                        IEntry smEntry = exportEntry.FileRef.getEntry(smprop.Value);
-                        if (smEntry != null)
+                        ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("StaticMesh");
+                        if (smprop != null)
                         {
-                            return "(" + smEntry.ObjectName + ")";
+                            IEntry smEntry = exportEntry.FileRef.getEntry(smprop.Value);
+                            if (smEntry != null)
+                            {
+                                return "(" + smEntry.ObjectName + ")";
+                            }
+                        }
+                    }
+                    break;
+                case "ParticleSystemComponent":
+                    {
+                        ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("Template");
+                        if (smprop != null)
+                        {
+                            IEntry smEntry = exportEntry.FileRef.getEntry(smprop.Value);
+                            if (smEntry != null)
+                            {
+                                return "(" + smEntry.ObjectName + ")";
+                            }
                         }
                     }
                     break;

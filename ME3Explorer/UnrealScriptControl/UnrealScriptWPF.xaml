@@ -146,10 +146,10 @@
                 </ListBox>
             </DockPanel>
         </DockPanel>
-        <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
-        <DockPanel Grid.Row="0" Grid.Column="2">
-            <TextBlock Text="Tokens" DockPanel.Dock="Top" FontWeight="Bold"/>
-            <ListBox Name="Tokens_ListBox" VerticalAlignment="Stretch" ItemsSource="{Binding TokenList}" SelectionChanged="Tokens_ListBox_SelectionChanged">
+        <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center" HorizontalContentAlignment="Left"/>
+        <DockPanel Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" >
+            <TextBlock Text="Tokens" DockPanel.Dock="Top" FontWeight="Bold" HorizontalAlignment="Left"/>
+            <ListBox Name="Tokens_ListBox" VerticalAlignment="Stretch" ItemsSource="{Binding TokenList}" SelectionChanged="Tokens_ListBox_SelectionChanged"  HorizontalContentAlignment="Left" HorizontalAlignment="Left">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -158,8 +158,8 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50"/>
-                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition MaxWidth="50" Width="50"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Grid.Style>
                                 <Style>
@@ -171,12 +171,17 @@
                                     </Style.Triggers>
                                 </Style>
                             </Grid.Style>
-                            <TextBlock Grid.Row="0" Text="{Binding StartPos, StringFormat='0x{0:X5}:'}"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding OpCode}" Foreground="Navy"/>
-                            <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding CurrentStack}" Foreground="Gray" Visibility="{Binding CurrentStack, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding StartPos, StringFormat='0x{0:X5}:'}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding OpCode}" Foreground="DarkMagenta" HorizontalAlignment="Stretch"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0"  Grid.ColumnSpan="2" Text="{Binding CurrentStack}" Foreground="Gray" Visibility="{Binding CurrentStack, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
             </ListBox>
         </DockPanel>
         <GridSplitter Grid.Row="1" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>

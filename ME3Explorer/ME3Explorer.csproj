@@ -518,7 +518,6 @@
     <Compile Include="PackageEditor\PackageEditorWPF.xaml.cs">
       <DependentUpon>PackageEditorWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PackageEditor\PackageEditorWPFCommands.cs" />
     <Compile Include="PackageEditor\TreeMergeDialog.xaml.cs">
       <DependentUpon>TreeMergeDialog.xaml</DependentUpon>
     </Compile>
