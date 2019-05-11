@@ -4275,6 +4275,7 @@ namespace UMD.HCIL.Piccolo
         /// <returns>The removed child.</returns>
         public virtual PNode RemoveChild(int index)
         {
+            if (index == -1) return null;
             PNode child = children[index];
             children.RemoveAt(index);
 

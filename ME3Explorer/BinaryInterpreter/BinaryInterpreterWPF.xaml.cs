@@ -1737,13 +1737,12 @@ namespace ME3Explorer
                 });
                 offset += 4;
 
-                int classObjTree = BitConverter.ToInt32(data, offset);
+                int childProbeUIndex = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"0x{offset:X5} ProbeMask/Class Object Tree Final Pointer Index: {classObjTree}",
+                    Header = $"0x{offset:X5} Child probe first item UIndex: {childProbeUIndex} ({CurrentLoadedExport.FileRef.GetEntryString(childProbeUIndex)}))",
                     Name = "_" + offset,
-
-                    Tag = NodeType.StructLeafInt
+                    Tag = NodeType.StructLeafObject
                 });
                 offset += 4;
 
@@ -1813,17 +1812,23 @@ namespace ME3Explorer
                 if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 && skipAmount > 6)
                 {
                     byte[] scriptmemory = data.Skip(offset).Take(skipAmount).ToArray();
-                    var tokens = Bytecode.ParseBytecode(scriptmemory, CurrentLoadedExport.FileRef, offset);
-                    string scriptText = "";
-                    foreach (Token t in tokens.Item1)
+                    try
                     {
-                        scriptText += "0x" + t.pos.ToString("X4") + " " + t.text + "\n";
+                        var tokens = Bytecode.ParseBytecode(scriptmemory, CurrentLoadedExport, offset);
+                        string scriptText = "";
+                        foreach (Token t in tokens.Item1)
+                        {
+                            scriptText += "0x" + t.pos.ToString("X4") + " " + t.text + "\n";
+                        }
+
+                        scriptBlock.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = scriptText,
+                            Name = "_" + offset
+                        });
                     }
-                    scriptBlock.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Header = scriptText,
-                        Name = "_" + offset
-                    });
+                    catch (Exception) { }
+
                 }
 
 
@@ -1869,7 +1874,7 @@ namespace ME3Explorer
 
                 var classFlagsNode = new BinaryInterpreterWPFTreeViewItem()
                 {
-                    Header = $"0x{offset:X5} Class Mask: 0x{ClassFlags.ToString():X8}",
+                    Header = $"0x{offset:X5} Class Mask: 0x{((int)ClassFlags):X8}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafInt
                 };
