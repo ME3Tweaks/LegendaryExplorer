@@ -383,6 +383,9 @@ namespace ME3Explorer
                     case "SoundNodeWave":
                         subNodes = StartSoundNodeWaveScan(data, ref binarystart);
                         break;
+                    case "BioStateEventMap":
+                        subNodes = StartBioStateEventMapScan(data, ref binarystart);
+                        break;
                     case "BioCodexMap":
                         subNodes = StartBioCodexMapScan(data, ref binarystart);
                         break;
@@ -779,6 +782,488 @@ namespace ME3Explorer
             }
             return subnodes;
         }
+
+        private List<object> StartBioStateEventMapScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<object>();
+            var game = CurrentLoadedExport.FileRef.Game;
+            try
+            {
+                int offset = binarystart;
+
+                int eCount = BitConverter.ToInt32(data, offset);
+                var EventCountNode = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X4} State Event Count: {eCount}",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafInt
+                };
+                offset += 4;
+                subnodes.Add(EventCountNode);
+
+                for (int e = 0; e < eCount; e++) //EVENTS
+                {
+                    int iEventID = BitConverter.ToInt32(data, offset);  //EVENT ID
+                    var EventIDs = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} State Transition ID: {iEventID} ",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    };
+                    offset += 4;
+                    EventCountNode.Items.Add(EventIDs);
+
+                    int EventMapInstVer = BitConverter.ToInt32(data, offset); //Event Instance Version
+                    EventIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Instance Version: {EventMapInstVer} ",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    });
+                    offset += 4;
+
+                    int nTransitions = BitConverter.ToInt32(data, offset); //Count of State Events
+                    var TransitionsIDs = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Transitions: {nTransitions} ",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    };
+                    offset += 4;
+                    EventIDs.Items.Add(TransitionsIDs);
+                    
+                    for (int t = 0; t < nTransitions; t++) //TRANSITIONS
+                    {
+                        int transTYPE = BitConverter.ToInt32(data, offset); //Get TYPE
+                        if (transTYPE == 0)  // TYPE 0 = BOOL STATE EVENT
+                        {
+                            offset += 8;
+                            int tPlotID = BitConverter.ToInt32(data, offset);  //Get Plot
+                            offset -= 8;
+                            var nTransition = new BinaryInterpreterWPFTreeViewItem 
+                            {
+                                Header = $"0x{offset:X5} Type: {transTYPE} Transition on Bool {tPlotID}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            };
+                            offset += 4;
+                            TransitionsIDs.Items.Add(nTransition);
+
+                            int TransInstVersion = BitConverter.ToInt32(data, offset);  //Instance Version
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Instance Version: {TransInstVersion} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            tPlotID = BitConverter.ToInt32(data, offset);  //Plot
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Plot ID: {tPlotID} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int tNewValue = BitConverter.ToInt32(data, offset);  //NewValue
+                            bool bNewValue = false;
+                            if (tNewValue == 1) { bNewValue = true; }
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} New Value: {tNewValue}  {bNewValue} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int tUseParam = BitConverter.ToInt32(data, offset);  //Use Parameter bool
+                            bool bUseParam = false;
+                            if (tUseParam == 1) { bUseParam = true; }
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Use parameter: {tUseParam}  {bUseParam} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+                        }
+                        else if (transTYPE == 1) //TYPE 1 = CONSEQUENCE
+                        {
+                            var nTransition = new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Type: {transTYPE} Consequence",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            };
+                            offset += 4;
+                            TransitionsIDs.Items.Add(nTransition);
+
+                            int TransInstVersion = BitConverter.ToInt32(data, offset);  //Instance Version
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Instance Version: {TransInstVersion} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int tConsequenceParam = BitConverter.ToInt32(data, offset);  //Consequence parameter
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Consequence Parameter: {tConsequenceParam} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+                        }
+                        else if (transTYPE == 2)  // TYPE 2 = FLOAT TRANSITION
+                        {
+                            offset += 8;
+                            int tPlotID = BitConverter.ToInt32(data, offset);  //Get Plot
+                            offset -= 8;
+                            var nTransition = new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Type: {transTYPE} transition on Float {tPlotID}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            };
+                            offset += 4;
+                            TransitionsIDs.Items.Add(nTransition);
+
+                            int TransInstVersion = BitConverter.ToInt32(data, offset);  //Instance Version
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Instance Version: {TransInstVersion} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            tPlotID = BitConverter.ToInt32(data, offset);  //Plot
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Plot ID: {tPlotID} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            float tNewValue = BitConverter.ToInt32(data, offset);  //NewValue
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} New Value: {tNewValue} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafFloat
+                            });
+                            offset += 4;
+
+                            int tUseParam = BitConverter.ToInt32(data, offset);  //Use Parameter bool
+                            bool bUseParam = false;
+                            if (tUseParam == 1) { bUseParam = true; }
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Use parameter: {tUseParam}  {bUseParam} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int tIncrement = BitConverter.ToInt32(data, offset);  //Increment bool
+                            bool bIncrement = false;
+                            if (tIncrement == 1) { bIncrement = true; }
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Increment value: {tIncrement}  {bIncrement} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+                        }
+                        else if (transTYPE == 3)  // TYPE 3 = FUNCTION
+                        {
+                            var nTransition = new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Type: {transTYPE} Function",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            };
+                            offset += 36;
+                            TransitionsIDs.Items.Add(nTransition);
+                            
+                        }
+                        else if (transTYPE == 4)  // TYPE 4 = INT TRANSITION
+                        {
+                            offset += 8;
+                            int tPlotID = BitConverter.ToInt32(data, offset);  //Get Plot
+                            offset -= 8;
+                            var nTransition = new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Type: {transTYPE} transition on INT {tPlotID}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            };
+                            offset += 4;
+                            TransitionsIDs.Items.Add(nTransition);
+
+                            int TransInstVersion = BitConverter.ToInt32(data, offset);  //Instance Version
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Instance Version: {TransInstVersion} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            tPlotID = BitConverter.ToInt32(data, offset);  //Plot
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Plot ID: {tPlotID} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int tNewValue = BitConverter.ToInt32(data, offset);  //NewValue
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} New Value: {tNewValue} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafFloat
+                            });
+                            offset += 4;
+
+                            int tUseParam = BitConverter.ToInt32(data, offset);  //Use Parameter bool
+                            bool bUseParam = false;
+                            if (tUseParam == 1) { bUseParam = true; }
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Use parameter: {tUseParam}  {bUseParam} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int tIncrement = BitConverter.ToInt32(data, offset);  //Increment bool
+                            bool bIncrement = false;
+                            if (tIncrement == 1) { bIncrement = true; }
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Increment value: {tIncrement}  {bIncrement} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+                        }
+                        else if (transTYPE == 5)  // TYPE 5 = LOCAL BOOL
+                        {
+                            var nTransition = new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Type: {transTYPE} Local Bool",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            };
+                            offset += 36;
+                            TransitionsIDs.Items.Add(nTransition);
+
+                        }
+                        else if (transTYPE == 6)  // TYPE 6 = LOCAL FLOAT
+                        {
+                            var nTransition = new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Type: {transTYPE} Local Float",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            };
+                            offset += 36;
+                            TransitionsIDs.Items.Add(nTransition);
+                        }
+                        else if (transTYPE == 7)  // TYPE 7 = LOCAL INT
+                        {
+                            var nTransition = new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Type: {transTYPE} Local Int",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            };
+                            offset += 4;
+                            TransitionsIDs.Items.Add(nTransition);
+
+                            int TransInstVersion = BitConverter.ToInt32(data, offset);  //Instance Version
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Instance Version: {TransInstVersion} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int tObjtag = BitConverter.ToInt32(data, offset);  //Use Object tag??
+                            bool bObjtag = false;
+                            if (tObjtag == 1) { bObjtag = true; }
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Object Tag: {tObjtag}  {bObjtag} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int FunctionName = BitConverter.ToInt32(data, offset);  //Function name
+                            offset += 4;
+                            int FunctionIdx = BitConverter.ToInt32(data, offset);  //Function name
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Function Name: {CurrentLoadedExport.FileRef.getNameEntry(FunctionName)}_{FunctionIdx}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafName
+                            });
+                            offset += 4;
+
+                            int TagName = BitConverter.ToInt32(data, offset);  //Object name
+                            offset += 4;
+                            int TagIdx = BitConverter.ToInt32(data, offset);  //Object idx
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Object Name: {CurrentLoadedExport.FileRef.getNameEntry(TagName)}_{TagIdx}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafName
+                            });
+                            offset += 4;
+
+                            int tUseParam = BitConverter.ToInt32(data, offset);  //Use Parameter bool
+                            bool bUseParam = false;
+                            if (tUseParam == 1) { bUseParam = true; }
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Use parameter: {tUseParam}  {bUseParam} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int tNewValue = BitConverter.ToInt32(data, offset);  //NewValue
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} New Value: {tNewValue} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafFloat
+                            });
+                            offset += 4;
+                        }
+                        else if (transTYPE == 8)  // TYPE 8 = SUBSTATE
+                        {
+                            offset += 8;
+                            int tPlotID = BitConverter.ToInt32(data, offset);  //Get Plot
+                            offset -= 8;
+                            var nTransition = new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Type: {transTYPE} Substate Transition on Bool {tPlotID}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            };
+                            offset += 4;
+                            TransitionsIDs.Items.Add(nTransition);
+
+                            int TransInstVersion = BitConverter.ToInt32(data, offset);  //Instance Version
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Instance Version: {TransInstVersion} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            tPlotID = BitConverter.ToInt32(data, offset);  //Plot
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Plot ID: {tPlotID} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int tNewValue = BitConverter.ToInt32(data, offset);  //NewState Bool
+                            bool bNewValue = false;
+                            if (tNewValue == 1) { bNewValue = true; }
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} New State: {tNewValue}  {bNewValue}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int tUseParam = BitConverter.ToInt32(data, offset);  //Use Parameter bool
+                            bool bUseParam = false;
+                            if (tUseParam == 1) { bUseParam = true; }
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Use parameter: {tUseParam}  {bUseParam} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int tParentType = BitConverter.ToInt32(data, offset);  //Parent OR type flag
+                            bool bParentType = false;
+                            string sParentType = "ALL of siblings TRUE => Parent TRUE";
+                            if (tParentType == 1)
+                            {
+                                bParentType = true;
+                                sParentType = "ANY of siblings TRUE => Parent TRUE";
+                            }
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Parent OR type: {tParentType}  {bParentType} {sParentType}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int ParentIdx = BitConverter.ToInt32(data, offset);  //Parent Bool
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Parent Bool: {ParentIdx} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int sibCount = BitConverter.ToInt32(data, offset); //Sibling Substates
+                            var SiblingIDs = new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Sibling Substates Count: {sibCount} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            };
+                            offset += 4;
+                            nTransition.Items.Add(SiblingIDs);
+
+                            for (int s = 0; s < sibCount; s++)  //SIBLING SUBSTATE BOOLS
+                            {
+                                int nSibling = BitConverter.ToInt32(data, offset);  
+                                var nSiblings = new BinaryInterpreterWPFTreeViewItem
+                                {
+                                    Header = $"0x{offset:X5} Sibling: {s}  Bool: { nSibling }",
+                                    Name = "_" + offset,
+                                    Tag = NodeType.StructLeafInt
+                                };
+                                SiblingIDs.Items.Add(nSiblings);
+                                offset += 4;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
+
 
         private List<object> StartBioQuestMapScan(byte[] data, ref int binarystart)
         {
