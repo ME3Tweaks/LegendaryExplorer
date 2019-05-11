@@ -1148,7 +1148,7 @@ namespace ME3Explorer.Unreal
                         res = newTok;
                         break;
                     case EX_DynArrayInsertItem: //0x57
-                        newTok = ReadArrayArg(start, "Insert",export);
+                        newTok = ReadArrayArg(start, "Insert", export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -3884,7 +3884,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadPrimitiveCast(int start, IExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 2,export);
+            Token a = ReadToken(start + 2, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             t.text = a.text;
@@ -4041,11 +4041,12 @@ namespace ME3Explorer.Unreal
             Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
-            pos += a.raw.Length + 2;
-            t.text = "foreach " + a.text;
+            pos += a.raw.Length;
+            ushort jumpoffset = BitConverter.ToUInt16(memory, pos);
+            pos += 2;
+            t.text = "foreach(" + a.text + ") Goto(0x" + jumpoffset.ToString("X4") + ")";
             int len = pos - start;
             t.raw = new byte[len];
-            t.text += " )";
             if (start + len <= memsize)
                 for (int i = 0; i < len; i++)
                     t.raw[i] = memory[start + i];
@@ -4106,19 +4107,25 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             int pos = start + 1;
-            Token a = ReadToken(pos, export);
-            pos += a.raw.Length;
-            Token b = ReadToken(pos, export);
-            pos += b.raw.Length;
+            Token arrayToken = ReadToken(pos, export);
+            pos += arrayToken.raw.Length;
+
+            //??? This appears to be bioware specific - 0x5E is not in unhood
+            Token iteratorVariableToken = ReadToken(pos, export);
+            pos += iteratorVariableToken.raw.Length;
             pos += 1;
+
             Token c = ReadToken(pos, export);
             pos += c.raw.Length;
+
+            //Skip jump offset
+            ushort jumpoffset = BitConverter.ToUInt16(memory, pos);
             pos += 2;
-            t.inPackageReferences.AddRange(a.inPackageReferences);
-            t.inPackageReferences.AddRange(b.inPackageReferences);
+            t.inPackageReferences.AddRange(arrayToken.inPackageReferences);
+            t.inPackageReferences.AddRange(iteratorVariableToken.inPackageReferences);
             t.inPackageReferences.AddRange(c.inPackageReferences);
 
-            t.text = "foreach " + c.text + "(" + b.text + " IN " + a.text + ")";
+            t.text = "foreach " + (c.text != "null" ? c.text : "") + "(" + iteratorVariableToken.text + " IN " + arrayToken.text + ") //Goto (0x" + jumpoffset.ToString("X4") + ")";
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
