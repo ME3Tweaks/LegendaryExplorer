@@ -180,7 +180,11 @@ namespace ME3Explorer
                 {
                     string toolVersion = xmlReader.GetAttribute("TLKToolVersion");
                     if (toolVersion != null)
+                    {
+                        toolVersion = toolVersion.Trim('v');
                         _inputFileVersion = new Version(toolVersion);
+                    }
+
                     break;
                 }
             }
