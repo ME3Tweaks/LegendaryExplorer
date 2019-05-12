@@ -517,6 +517,20 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             return null;
         }
+
+        public static void SetLocation(IExportEntry export, float x, float y, float z)
+        {
+            StructProperty prop = export.GetProperty<StructProperty>("location");
+            SetLocation(prop, x, y, z);
+            export.WriteProperty(prop);
+        }
+
+        public static void SetLocation(StructProperty prop, float x, float y, float z)
+        {
+            prop.GetProp<FloatProperty>("X").Value = x;
+            prop.GetProp<FloatProperty>("Y").Value = y;
+            prop.GetProp<FloatProperty>("Z").Value = z;
+        }
     }
 
     public class UnrealGUID

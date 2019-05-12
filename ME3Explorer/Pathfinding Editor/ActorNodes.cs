@@ -304,8 +304,8 @@ namespace ME3Explorer.ActorNodes
             new PointF(0, 30), new PointF(0, 20), //left
             new PointF(15, 20),new PointF(15, 15), new PointF(20, 15) };
 
-        public TargetPoint(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+        public TargetPoint(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool showRotation = false)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: showRotation)
         {
             shape.Brush = dynamicPathfindingNodeBrush;
         }

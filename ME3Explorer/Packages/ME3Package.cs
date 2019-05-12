@@ -37,10 +37,10 @@ namespace ME3Explorer.Packages
                 SetHeaderValue(value, 68);
             }
         }
-        int NameOffset
+        public int NameOffset
         {
             get => BitConverter.ToInt32(header, idxOffsets + 4);
-            set
+            private set
             {
                 SetHeaderValue(value, 4);
                 SetHeaderValue(value, 100);
@@ -55,10 +55,10 @@ namespace ME3Explorer.Packages
                 SetHeaderValue(value, 64);
             }
         }
-        int ExportOffset
+        public int ExportOffset
         {
             get => BitConverter.ToInt32(header, idxOffsets + 12);
-            set => SetHeaderValue(value, 12);
+            private set => SetHeaderValue(value, 12);
         }
         public override int ImportCount
         {

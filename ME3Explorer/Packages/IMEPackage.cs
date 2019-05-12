@@ -57,6 +57,8 @@ namespace ME3Explorer.Packages
         int ExportCount { get; }
         int ImportCount { get; }
         int ImportOffset { get; }
+        int ExportOffset { get; }
+        int NameOffset { get; }
         IReadOnlyList<IExportEntry> Exports { get; }
         IReadOnlyList<ImportEntry> Imports { get; }
         IReadOnlyList<string> Names { get; }

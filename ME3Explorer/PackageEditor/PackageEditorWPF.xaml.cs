@@ -497,12 +497,12 @@ namespace ME3Explorer
                 items.Add($"0x{ms.Position - 4:X2} Import Metadata Table Offset: 0x{importOffset:X8}");
 
                 uint dependencyTableCount = ms.ReadUInt32();
-                items.Add($"0x{ms.Position - 4:X2} Dependency Count: {dependencyTableCount} (Not used in Mass Effect games)");
+                items.Add($"0x{ms.Position - 4:X2} Dependency Table Start Offset: 0x{dependencyTableCount:X8} (Not used in Mass Effect games)");
 
                 if (Pcc.Game == MEGame.ME3)
                 {
                     uint dependencyTableOffset = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} Dependency Table Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
+                    items.Add($"0x{ms.Position - 4:X2} Dependency Table End Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
 
                     uint unknown2 = ms.ReadUInt32();
                     items.Add($"0x{ms.Position - 4:X2} Unknown 2: {unknown2} (0x{unknown2:X8})");
@@ -523,13 +523,13 @@ namespace ME3Explorer
                 for (int i = 0; i < generationsTableCount; i++)
                 {
                     uint generationExportcount = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} (Generations #{i}: Export count: {generationExportcount}");
+                    items.Add($"0x{ms.Position - 4:X2}   Generation #{i}: Export count: {generationExportcount}");
 
                     uint generationImportcount = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} (Generations #{i}: Import count: {generationImportcount}");
+                    items.Add($"0x{ms.Position - 4:X2}   Generation #{i}: Nametable count: {generationImportcount}");
 
                     uint generationNetcount = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} (Generations #{i}: Net(worked) object count: {generationNetcount}");
+                    items.Add($"0x{ms.Position - 4:X2}   Generation #{i}: Net(worked) object count: {generationNetcount}");
                 }
 
                 uint engineVersion = ms.ReadUInt32();

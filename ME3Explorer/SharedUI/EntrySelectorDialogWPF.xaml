@@ -12,7 +12,7 @@
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d"
         ResizeMode="NoResize"
-        Title="Entry Selector" Height="147" Width="500">
+        Title="Entry Selector" SizeToContent="Height" Width="500">
     <me3explorer:NotifyPropertyChangedWindowBase.Resources>
         <System:Int32 x:Key="InfoTab_TopMargins">24</System:Int32>
         <System:Int32 x:Key="InfoTab_MaxWidth">700</System:Int32>
@@ -43,7 +43,7 @@
             </ItemsPanelTemplate>
         </StackPanel.Resources>
         
-        <TextBlock Text="{Binding DirectionsText, FallbackValue=Select an export or import}" FontSize="14" FontWeight="Bold"/>
+        <TextBlock Text="{Binding DirectionsText, FallbackValue=Select an export or import}" FontSize="14" FontWeight="Bold" TextWrapping="Wrap"/>
         <ComboBox Name="EntrySelector_ComboBox" VerticalAlignment="Center"
                   ItemsSource="{Binding AllEntriesList}" 
                   ItemsPanel="{StaticResource VSP}"

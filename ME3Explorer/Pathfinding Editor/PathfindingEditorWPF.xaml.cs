@@ -264,6 +264,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand OpenRefInSequenceEditorCommand { get; set; }
         public ICommand CheckNetIndexesCommand { get; set; }
         public ICommand LoadOverlayFileCommand { get; set; }
+        public ICommand CalculateInterpAgainstTargetPointCommand { get; set; }
         private void LoadCommands()
         {
             RefreshCommand = new GenericCommand(RefreshGraph, PackageIsLoaded);
@@ -297,6 +298,52 @@ namespace ME3Explorer.Pathfinding_Editor
             OpenRefInSequenceEditorCommand = new RelayCommand(OpenRefInSequenceEditor, NodeIsSelected);
             CheckNetIndexesCommand = new GenericCommand(CheckNetIndexes, PackageIsLoaded);
             LoadOverlayFileCommand = new GenericCommand(LoadOverlay, PackageIsLoaded);
+            CalculateInterpAgainstTargetPointCommand = new GenericCommand(CalculateInterpStartEndTargetpoint, TargetPointIsSelected);
+        }
+
+        private void CalculateInterpStartEndTargetpoint()
+        {
+if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && targetpointAnchorEnd.ClassName == "TargetPoint")
+{
+    var movingObject = EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports, "Select a level object that will be moved along the curve. This will be the starting point.");
+    if (movingObject == null) return;
+
+    ActiveNodes_ListBox.SelectedItem = movingObject as IExportEntry;
+
+    var interpTrack = (IExportEntry) EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports, "Select the interptrackmove data that we will modify for these points.");
+    if (interpTrack == null) return;
+
+    var locationTarget = SharedPathfinding.GetLocation(targetpointAnchorEnd);
+    var locationStart = SharedPathfinding.GetLocation(movingObject as IExportEntry);
+
+    if (locationStart == null)
+    {
+        MessageBox.Show("Start point doesn't have a location property. Ensure you picked the correct export.");
+        return;
+    }
+
+    double deltaX = locationTarget.X - locationStart.X;
+    double deltaY = locationTarget.Y - locationStart.Y;
+    double deltaZ = locationTarget.Z - locationStart.Z;
+
+    var posTrack = interpTrack.GetProperty<StructProperty>("PosTrack");
+    if (posTrack == null)
+    {
+        MessageBox.Show("Selected interpdata doesn't have a postrack.");
+        return;
+    }
+
+    var posTrackPoints = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+    SharedPathfinding.SetLocation(posTrackPoints[0].GetProp<StructProperty>("OutVal"), (float)deltaX, (float)deltaY, (float)deltaZ);
+    SharedPathfinding.SetLocation(posTrackPoints[posTrackPoints.Count - 1].GetProp<StructProperty>("OutVal"), 0,0,0);
+
+    interpTrack.WriteProperty(posTrack);
+            }
+        }
+
+        private bool TargetPointIsSelected()
+        {
+            return ActiveNodes_ListBox.SelectedItem is IExportEntry exp && exp.ClassName == "TargetPoint";
         }
 
         private void LoadOverlay()
@@ -1951,7 +1998,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         actorNode = new SFXMedStation(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "TargetPoint":
-                        actorNode = new TargetPoint(uindex, x, y, exportToLoad.FileRef, graphEditor);
+                        actorNode = new TargetPoint(uindex, x, y, exportToLoad.FileRef, graphEditor, true);
                         break;
                     case "SFXOperation_ObjectiveSpawnPoint":
                         actorNode = new SFXObjectiveSpawnPoint(uindex, x, y, exportToLoad.FileRef, graphEditor);
@@ -2636,7 +2683,7 @@ namespace ME3Explorer.Pathfinding_Editor
             if (e.Key == Key.Return && ActiveNodes_ListBox.SelectedItem is IExportEntry export &&
                 float.TryParse(NodePositionX_TextBox.Text, out float x) && float.TryParse(NodePositionY_TextBox.Text, out float y) && float.TryParse(NodePositionZ_TextBox.Text, out float z))
             {
-                SetLocation(export, x, y, z);
+                SharedPathfinding.SetLocation(export, x, y, z);
                 PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
                 s.SetOffset(x, y);
 
@@ -2725,14 +2772,8 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        private void SetLocation(IExportEntry export, float x, float y, float z)
-        {
-            StructProperty prop = export.GetProperty<StructProperty>("location");
-            prop.GetProp<FloatProperty>("X").Value = x;
-            prop.GetProp<FloatProperty>("Y").Value = y;
-            prop.GetProp<FloatProperty>("Z").Value = z;
-            export.WriteProperty(prop);
-        }
+
+
 
         private void SetGraphXY_Clicked(object sender, RoutedEventArgs e)
         {
@@ -2741,7 +2782,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
                 var currentlocation = SharedPathfinding.GetLocation(export);
-                SetLocation(export, s.GlobalBounds.X, s.GlobalBounds.Y, (float)currentlocation.Z);
+                SharedPathfinding.SetLocation(export, s.GlobalBounds.X, s.GlobalBounds.Y, (float)currentlocation.Z);
                 MessageBox.Show($"Location set to {s.GlobalBounds.X}, { s.GlobalBounds.Y}");
             }
             else
@@ -2825,7 +2866,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     }
 
                     var oldloc = SharedPathfinding.GetLocation(newNodeEntry);
-                    SetLocation(newNodeEntry, (float)oldloc.X + 50, (float)oldloc.Y + 50, (float)oldloc.Z);
+                    SharedPathfinding.SetLocation(newNodeEntry, (float)oldloc.X + 50, (float)oldloc.Y + 50, (float)oldloc.Z);
 
                     SharedPathfinding.GenerateNewRandomGUID(newNodeEntry);
                     //Add cloned node to persistentlevel
