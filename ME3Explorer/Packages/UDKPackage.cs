@@ -49,10 +49,10 @@ namespace ME3Explorer.Packages
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 68, sizeof(int));
             }
         }
-        int NameOffset
+        public int NameOffset
         {
             get => BitConverter.ToInt32(header, idxOffsets + 4);
-            set
+            private set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 4, sizeof(int));
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 100, sizeof(int));
@@ -67,8 +67,8 @@ namespace ME3Explorer.Packages
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 64, sizeof(int));
             }
         }
-        int ExportOffset { get => BitConverter.ToInt32(header, idxOffsets + 12);
-            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 12, sizeof(int));
+        public int ExportOffset { get => BitConverter.ToInt32(header, idxOffsets + 12);
+            private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 12, sizeof(int));
         }
         public override int ImportCount { get => BitConverter.ToInt32(header, idxOffsets + 16);
             protected set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 16, sizeof(int));

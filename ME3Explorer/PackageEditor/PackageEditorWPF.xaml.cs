@@ -523,13 +523,13 @@ namespace ME3Explorer
                 for (int i = 0; i < generationsTableCount; i++)
                 {
                     uint generationExportcount = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} (Generations #{i}: Export count: {generationExportcount}");
+                    items.Add($"0x{ms.Position - 4:X2}   Generation #{i}: Export count: {generationExportcount}");
 
                     uint generationImportcount = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} (Generations #{i}: Import count: {generationImportcount}");
+                    items.Add($"0x{ms.Position - 4:X2}   Generation #{i}: Nametable count: {generationImportcount}");
 
                     uint generationNetcount = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} (Generations #{i}: Net(worked) object count: {generationNetcount}");
+                    items.Add($"0x{ms.Position - 4:X2}   Generation #{i}: Net(worked) object count: {generationNetcount}");
                 }
 
                 uint engineVersion = ms.ReadUInt32();
