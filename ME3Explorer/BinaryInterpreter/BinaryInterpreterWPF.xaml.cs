@@ -140,7 +140,7 @@ namespace ME3Explorer
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class","StringRefProperty", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "StructProperty", "ComponentProperty", "IntProperty", "NameProperty", "BoolProperty", "ClassProperty", "ByteProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance", "MetaData", "MaterialInstanceConstants",
-            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "StrProperty", "World", "Texture2D", "TextureFlipBook", "State", "BioGestureRuntimeData", "BioTlkFileSet", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData", "SFXNav_LargeMantleNode", "BioCodexMap", "BioQuestMap", "BioStateEventMap"};
+            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "StrProperty", "World", "Texture2D", "TextureFlipBook", "State", "BioGestureRuntimeData", "BioTlkFileSet", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData", "SFXNav_LargeMantleNode", "BioCodexMap", "BioQuestMap", "BioStateEventMap", "BioOutcomeMap", "BioConsequenceMap"};
 
         public override bool CanParse(IExportEntry exportEntry)
         {
@@ -391,6 +391,9 @@ namespace ME3Explorer
                         break;
                     case "BioQuestMap":
                         subNodes = StartBioQuestMapScan(data, ref binarystart);
+                        break;
+                    case "BioConsequenceMap":
+                        subNodes = StartBioStateEventMapScan(data, ref binarystart);
                         break;
                     default:
                         if (CurrentLoadedExport.HasStack)
@@ -786,7 +789,6 @@ namespace ME3Explorer
         private List<object> StartBioStateEventMapScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
-            var game = CurrentLoadedExport.FileRef.Game;
             try
             {
                 int offset = binarystart;
@@ -989,9 +991,60 @@ namespace ME3Explorer
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafInt
                             };
-                            offset += 36;
+                            offset += 4;
                             TransitionsIDs.Items.Add(nTransition);
-                            
+
+                            int TransInstVersion = BitConverter.ToInt32(data, offset);  //Instance Version
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Instance Version: {TransInstVersion} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            int PackageName = BitConverter.ToInt32(data, offset);  //Package name
+                            offset += 4;
+                            int PackageIdx = BitConverter.ToInt32(data, offset);  //Package name idx
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Package Name: {CurrentLoadedExport.FileRef.getNameEntry(PackageName)}_{PackageIdx}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafName
+                            });
+                            offset += 4;
+
+                            int ClassName = BitConverter.ToInt32(data, offset);  //Class name
+                            offset += 4;
+                            int ClassIdx = BitConverter.ToInt32(data, offset);  //Class name idx
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Class Name: {CurrentLoadedExport.FileRef.getNameEntry(ClassName)}_{ClassIdx}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafName
+                            });
+                            offset += 4;
+
+                            int FunctionName = BitConverter.ToInt32(data, offset);  //Function name
+                            offset += 4;
+                            int FunctionIdx = BitConverter.ToInt32(data, offset);  //Function name idx
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Function Name: {CurrentLoadedExport.FileRef.getNameEntry(FunctionName)}_{FunctionIdx}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafName
+                            });
+                            offset += 4;
+
+
+                            int Parameter = BitConverter.ToInt32(data, offset);  //Parameter
+                            nTransition.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Parameter: {Parameter} ",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
                         }
                         else if (transTYPE == 4)  // TYPE 4 = INT TRANSITION
                         {
@@ -1263,7 +1316,6 @@ namespace ME3Explorer
             }
             return subnodes;
         }
-
 
         private List<object> StartBioQuestMapScan(byte[] data, ref int binarystart)
         {
@@ -1597,7 +1649,7 @@ namespace ME3Explorer
                 int bsCount = BitConverter.ToInt32(data, offset);
                 var bsNode = new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"0x{offset:X4} Bool State Events: {bsCount}",
+                    Header = $"0x{offset:X4} Bool Journal Events: {bsCount}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafInt
                 };
@@ -1609,7 +1661,7 @@ namespace ME3Explorer
                     int iBoolEvtID = BitConverter.ToInt32(data, offset);  //BOOL STATE ID
                     var BoolEvtIDs = new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{offset:X5} Bool State Event: {iBoolEvtID} ",
+                        Header = $"0x{offset:X5} Bool Journal Event: {iBoolEvtID} ",
                         Name = "_" + offset,
                         Tag = NodeType.StructLeafInt
                     };
@@ -1701,7 +1753,7 @@ namespace ME3Explorer
                 int isCount = BitConverter.ToInt32(data, offset);
                 var isNode = new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"0x{offset:X4} Int State Events: {isCount}",
+                    Header = $"0x{offset:X4} Int Journal Events: {isCount}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafInt
                 };
@@ -1713,7 +1765,7 @@ namespace ME3Explorer
                     int iInttEvtID = BitConverter.ToInt32(data, offset);
                     var IntEvtIDs = new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{offset:X5} Int State Event: {iInttEvtID} ",
+                        Header = $"0x{offset:X5} Int Journal Event: {iInttEvtID} ",
                         Name = "_" + offset,
                         Tag = NodeType.StructLeafInt
                     };
@@ -1804,7 +1856,7 @@ namespace ME3Explorer
                 int fsCount = BitConverter.ToInt32(data, offset);
                 var fsNode = new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"0x{offset:X4} Float State Events: {fsCount}",
+                    Header = $"0x{offset:X4} Float Journal Events: {fsCount}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafInt
                 };
@@ -1816,7 +1868,7 @@ namespace ME3Explorer
                     int iFloatEvtID = BitConverter.ToInt32(data, offset);  //FLOAT STATE ID
                     var FloatEvtIDs = new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{offset:X5} Float State Event: {iFloatEvtID} ",
+                        Header = $"0x{offset:X5} Float Journal Event: {iFloatEvtID} ",
                         Name = "_" + offset,
                         Tag = NodeType.StructLeafInt
                     };
