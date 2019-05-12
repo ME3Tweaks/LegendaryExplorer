@@ -29,10 +29,11 @@ namespace ME3Explorer.SharedUI
         /// <param name="owner">WPF owning window. Used for centering. Set to null if the calling window is not WPF based</param>
         /// <param name="pcc">Package file to load entries from</param>
         /// <param name="supportedInputTypes">Supported selection types</param>
-        private EntrySelector(Window owner, IMEPackage pcc, SupportedTypes supportedInputTypes)
+        private EntrySelector(Window owner, IMEPackage pcc, SupportedTypes supportedInputTypes, string directionsText = null)
         {
             this.Pcc = pcc;
             this.SupportedInputTypes = supportedInputTypes;
+            this.DirectionsTextOverride = directionsText;
 
             var allEntriesBuilding = new List<object>();
             if (SupportedInputTypes.HasFlag(SupportedTypes.Imports))
@@ -57,9 +58,9 @@ namespace ME3Explorer.SharedUI
             EntrySelector_ComboBox.Focus();
         }
 
-        public static IEntry GetEntry(Window owner, IMEPackage pcc, SupportedTypes supportedInputTypes)
+        public static IEntry GetEntry(Window owner, IMEPackage pcc, SupportedTypes supportedInputTypes, string directionsText = null)
         {
-            var dlg = new EntrySelector(owner, pcc, supportedInputTypes);
+            var dlg = new EntrySelector(owner, pcc, supportedInputTypes, directionsText);
             return dlg.ShowDialog() == true ? dlg.ChosenEntry : null;
         }
 
@@ -93,10 +94,12 @@ namespace ME3Explorer.SharedUI
 
         private readonly SupportedTypes SupportedInputTypes;
 
+        private string DirectionsTextOverride;
         public string DirectionsText
         {
             get
             {
+                if (DirectionsTextOverride != null) return DirectionsTextOverride;
                 switch (SupportedInputTypes)
                 {
                     case SupportedTypes.Exports:

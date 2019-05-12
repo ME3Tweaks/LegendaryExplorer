@@ -102,6 +102,20 @@ namespace ME3Explorer
                 subCategory = "For Toolset Devs Only",
                 description = "Memory Analyzer allows you to track references to objects to help trace memory leaks."
             });
+
+            set.Add(new Tool
+            {
+                name = "File Hex Analyzer",
+                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzer),
+                icon = Application.Current.FindResource("iconModMaker") as ImageSource,
+                open = () =>
+                {
+                    (new FileHexViewer.FileHexViewerWPF()).Show();
+                },
+                tags = new List<string> { "utility", "toolsetdev" },
+                subCategory = "For Toolset Devs Only",
+                description = "File Hex Analyzer is a package hex viewer that shows references in the package hex."
+            });
 #endif
             set.Add(new Tool
             {

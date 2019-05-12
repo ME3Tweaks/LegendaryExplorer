@@ -64,6 +64,7 @@
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}"/>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
+        <KeyBinding Key="P" Modifiers="Control" Command="{Binding PopoutInterpreterCommand}"/>
     </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -118,6 +119,7 @@
                 <MenuItem Header="Check all game files for navigation points that editor does not support" Click="CheckGameFileNavs_Clicked"/>
                 <MenuItem Header="Check all NetIndexes" Command="{Binding CheckNetIndexesCommand}"/>
                 <MenuItem Header="Load overlay file" Command="{Binding LoadOverlayFileCommand}"/>
+                <MenuItem Header="Calculate Interp Start and End against anchored Targetpoint" Command="{Binding CalculateInterpAgainstTargetPointCommand}"/>
             </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
