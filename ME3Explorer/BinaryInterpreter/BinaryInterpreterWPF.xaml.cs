@@ -455,15 +455,14 @@ namespace ME3Explorer
             var subnodes = new List<object>();
             try
             {
-                int nameIdx = BitConverter.ToInt32(data, binarystart);
-                int nameIndex = BitConverter.ToInt32(data, binarystart + 4);
+                int levelIdx = BitConverter.ToInt32(data, binarystart);
 
-                string name = "World Name: " + CurrentLoadedExport.FileRef.getNameEntry(nameIdx) + "_" + nameIndex;
+                string name = "Persistent Level: " + CurrentLoadedExport.FileRef.GetEntryString(levelIdx);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{binarystart:X5} : {name}",
                     Name = "_" + binarystart,
-                    Tag = NodeType.StructLeafName
+                    Tag = NodeType.StructLeafObject
                 });
 
                 binarystart += 8;
