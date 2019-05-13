@@ -3726,10 +3726,10 @@ namespace ME3Explorer
             new MountEditor.MountEditorWPF().Show();
         }
 
-        private void ShowNetIndexes_Click(object sender, RoutedEventArgs e)
+        private void ShowObjectIndexes_Click(object sender, RoutedEventArgs e)
         {
 
-            Properties.Settings.Default.PackageEditorWPF_TreeViewShowNetIndex = !Properties.Settings.Default.PackageEditorWPF_TreeViewShowNetIndex;
+            Properties.Settings.Default.PackageEditorWPF_TreeViewShowEntryIndex = !Properties.Settings.Default.PackageEditorWPF_TreeViewShowEntryIndex;
             Properties.Settings.Default.Save();
         }
 
@@ -3743,6 +3743,34 @@ namespace ME3Explorer
         {
             Properties.Settings.Default.InterpreterWPF_AdvancedDisplay = !Properties.Settings.Default.InterpreterWPF_AdvancedDisplay;
             Properties.Settings.Default.Save();
+        }
+
+        private void ListNetIndexes_Click(object sender, RoutedEventArgs e)
+        {
+            List<string> strs = new List<String>();
+            Debug.WriteLine((Pcc as ME3Package).Generations0NameCount);
+            foreach (IExportEntry exp in Pcc.Exports)
+            {
+                if (exp.GetFullPath.StartsWith("TheWorld.PersistentLevel") && exp.GetFullPath.Count(f => f == '.') == 2)
+                {
+                    strs.Add($"{exp.NetIndex} {exp.GetIndexedFullPath}");
+                }
+            }
+
+            var d = new ListDialog(strs, "NetIndexes", "Here are the netindexes in this file", this);
+            d.Show();
+        }
+
+        private void ListLinkerValues_Click(object sender, RoutedEventArgs e)
+        {
+            List<string> strs = new List<String>();
+            foreach (IExportEntry exp in Pcc.Exports.Where(x=>x.LinkerIndex >= 0).OrderBy(x=>x.LinkerIndex))
+            {
+                strs.Add($"UI:{exp.UIndex} -> LI:{BitConverter.ToInt32(exp.Data,0)} = {exp.GetIndexedFullPath}");
+            }
+
+            var d = new ListDialog(strs, "Linker Indexes", "Here are the linker indexes in this file", this);
+            d.Show();
         }
     }
 }
