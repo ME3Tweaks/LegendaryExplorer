@@ -2133,7 +2133,7 @@ namespace ME3Explorer
                     });
                     offset += 4;
 
-                    if (instVersion == 4) //ME3 use object reference found sound then sectioin
+                    if (instVersion == 4) //ME3 use object reference found sound then section
                     {
                         int sndExport = BitConverter.ToInt32(data, offset); 
                         PageIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem

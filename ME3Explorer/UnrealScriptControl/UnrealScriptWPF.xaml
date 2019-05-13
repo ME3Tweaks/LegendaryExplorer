@@ -32,7 +32,7 @@
         <DockPanel Grid.Row="0" Grid.Column="0">
             <DockPanel DockPanel.Dock="Top">
                 <TextBlock Text="Script header" DockPanel.Dock="Top" FontWeight="Bold"/>
-                <ListBox Name="Function_Header" HorizontalAlignment="Stretch" MinHeight="60" ItemsSource="{Binding ScriptHeaderBlocks}" SelectionChanged="FunctionHeader_ListBox_SelectionChanged">
+                <ListBox Name="Function_Header" HorizontalAlignment="Stretch" Height="60" ItemsSource="{Binding ScriptHeaderBlocks}" SelectionChanged="FunctionHeader_ListBox_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -68,7 +68,7 @@
             </DockPanel>
             <DockPanel DockPanel.Dock="Bottom">
                 <TextBlock Text="Script footer" DockPanel.Dock="Top" FontWeight="Bold"/>
-                <ListBox Name="Function_Footer" HorizontalAlignment="Stretch" MinHeight="60" ItemsSource="{Binding ScriptFooterBlocks}" SelectionChanged="FunctionFooter_ListBox_SelectionChanged">
+                <ListBox Name="Function_Footer" HorizontalAlignment="Stretch" Height="60" ItemsSource="{Binding ScriptFooterBlocks}" SelectionChanged="FunctionFooter_ListBox_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
