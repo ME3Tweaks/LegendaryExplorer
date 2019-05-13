@@ -30,6 +30,7 @@
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
                 <MenuItem Header="Output Links" Name="outputLinksMenuItem"></MenuItem>
                 <MenuItem Header="Var Links" Name="varLinksMenuItem"></MenuItem>
+                <MenuItem Header="Event Links" Name="eventLinksMenuItem"></MenuItem>
                 <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Click="removeAllLinks"/>
             </MenuItem>
         </ContextMenu>

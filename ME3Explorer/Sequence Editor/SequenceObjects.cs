@@ -27,6 +27,10 @@ namespace ME3Explorer.SequenceObjects
     {
     }
 
+    public class EventEdge : VarEdge
+    {
+    }
+
     public class ActionEdge : SeqEdEdge
     {
         public int inputIndex;
@@ -42,13 +46,15 @@ namespace ME3Explorer.SequenceObjects
         static readonly Color boolColor = Color.FromArgb(215, 37, 33); //red
         static readonly Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static readonly Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
-        protected static Color titleColor = Color.FromArgb(255, 255, 128);
-        protected static Brush titleBoxBrush = new SolidBrush(Color.FromArgb(112, 112, 112));
-        protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
-        protected static Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
-        protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
-        public static bool draggingOutlink = false;
-        public static bool draggingVarlink = false;
+        protected static readonly Color EventColor = Color.FromArgb(214, 30, 28);
+        protected static readonly Color titleColor = Color.FromArgb(255, 255, 128);
+        protected static readonly Brush titleBoxBrush = new SolidBrush(Color.FromArgb(112, 112, 112));
+        protected static readonly Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
+        protected static readonly Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
+        protected static readonly Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
+        public static bool draggingOutlink;
+        public static bool draggingVarlink;
+        public static bool draggingEventlink;
         public static PNode dragTarget;
         public static bool OutputNumbers;
 
@@ -477,7 +483,9 @@ namespace ME3Explorer.SequenceObjects
 
     public abstract class SBox : SObj
     {
-        public override IEnumerable<SeqEdEdge> Edges => Outlinks.SelectMany(l => l.Edges).Union(Varlinks.SelectMany(l => l.Edges).Cast<SeqEdEdge>());
+        public override IEnumerable<SeqEdEdge> Edges => Outlinks.SelectMany(l => l.Edges).Cast<SeqEdEdge>()
+                                                                .Union(Varlinks.SelectMany(l => l.Edges))
+                                                                .Union(EventLinks.SelectMany(l => l.Edges));
 
         protected static Brush outputBrush = new SolidBrush(Color.Black);
 
@@ -500,6 +508,14 @@ namespace ME3Explorer.SequenceObjects
             public List<VarEdge> Edges;
         }
 
+        public struct EventLink
+        {
+            public PPath node;
+            public List<int> Links;
+            public string Desc;
+            public List<EventEdge> Edges;
+        }
+
         public struct InputLink
         {
             public PPath node;
@@ -514,16 +530,20 @@ namespace ME3Explorer.SequenceObjects
         protected PPath outLinkBox;
         public readonly List<OutputLink> Outlinks = new List<OutputLink>();
         public readonly List<VarLink> Varlinks = new List<VarLink>();
+        public readonly List<EventLink> EventLinks = new List<EventLink>();
         protected readonly VarDragHandler varDragHandler;
         protected readonly OutputDragHandler outputDragHandler;
+        protected readonly EventDragHandler eventDragHandler;
         private static readonly PointF[] downwardTrianglePoly = { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) };
         protected PPath CreateActionLinkBox() => PPath.CreateRectangle(0, -4, 10, 8);
+        protected PPath CreateVarLinkBox() => PPath.CreateRectangle(-4, 0, 8, 10);
 
         protected SBox(IExportEntry entry, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             varDragHandler = new VarDragHandler(grapheditor, this);
             outputDragHandler = new OutputDragHandler(grapheditor, this);
+            eventDragHandler = new EventDragHandler(grapheditor, this);
         }
 
         public override void CreateConnections(IList<SObj> objects)
@@ -571,6 +591,31 @@ namespace ME3Explorer.SequenceObjects
                             edge.end = destVar;
                             g.addEdge(edge);
                             varLink.Edges.Add(edge);
+                        }
+                    }
+                }
+            }
+            foreach (EventLink eventLink in EventLinks)
+            {
+                foreach (SEvent destEvent in objects.OfType<SEvent>())
+                {
+                    foreach (int link in eventLink.Links)
+                    {
+                        if (destEvent.UIndex == link)
+                        {
+                            PPath p1 = eventLink.node;
+                            var edge = new EventEdge
+                            {
+                                Pen = new Pen(EventColor),
+                                start = p1,
+                                end = destEvent
+                            };
+                            if (p1.Tag == null)
+                                p1.Tag = new List<EventEdge>();
+                            ((List<EventEdge>)p1.Tag).Add(edge);
+                            destEvent.connections.Add(edge);
+                            g.addEdge(edge);
+                            eventLink.Edges.Add(edge);
                         }
                     }
                 }
@@ -626,14 +671,13 @@ namespace ME3Explorer.SequenceObjects
                         PPath dragger;
                         if (props.GetProp<BoolProperty>("bWriteable").Value)
                         {
-                            //downward pointing triangle
                             l.node = PPath.CreatePolygon(downwardTrianglePoly);
                             dragger = PPath.CreatePolygon(downwardTrianglePoly);
                         }
                         else
                         {
-                            l.node = PPath.CreateRectangle(-4, 0, 8, 10);
-                            dragger = PPath.CreateRectangle(-4, 0, 8, 10);
+                            l.node = CreateVarLinkBox();
+                            dragger = CreateVarLinkBox();
                         }
                         l.node.Brush = new SolidBrush(getColor(l.type));
                         l.node.Pen = new Pen(getColor(l.type));
@@ -645,6 +689,44 @@ namespace ME3Explorer.SequenceObjects
                         dragger.AddInputEventListener(varDragHandler);
                         l.node.AddChild(dragger);
                         Varlinks.Add(l);
+                    }
+                }
+            }
+        }
+
+        protected void GetEventLinks()
+        {
+            var eventLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("EventLinks");
+            if (eventLinksProp != null)
+            {
+                foreach (var prop in eventLinksProp)
+                {
+                    PropertyCollection props = prop.Properties;
+                    var linkedEvents = props.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents");
+                    if (linkedEvents != null)
+                    {
+                        var l = new EventLink
+                        {
+                            Links = new List<int>(),
+                            Edges = new List<EventEdge>(),
+                            Desc = props.GetProp<StrProperty>("LinkDesc"),
+                            node = CreateVarLinkBox()
+                        };
+                        l.node.Brush = new SolidBrush(EventColor);
+                        l.node.Pen = new Pen(EventColor);
+                        l.node.Pickable = false;
+                        foreach (var objProp in linkedEvents)
+                        {
+                            l.Links.Add(objProp.Value);
+                        }
+                        PPath dragger = CreateVarLinkBox();
+                        dragger.Brush = mostlyTransparentBrush;
+                        dragger.Pen = l.node.Pen;
+                        dragger.X = l.node.X;
+                        dragger.Y = l.node.Y;
+                        dragger.AddInputEventListener(eventDragHandler);
+                        l.node.AddChild(dragger);
+                        EventLinks.Add(l);
                     }
                 }
             }
@@ -809,6 +891,65 @@ namespace ME3Explorer.SequenceObjects
             }
         }
 
+        protected class EventDragHandler : PDragEventHandler
+        {
+            private readonly GraphEditor graphEditor;
+            private readonly SBox sObj;
+            public EventDragHandler(GraphEditor graph, SBox obj)
+            {
+                graphEditor = graph;
+                sObj = obj;
+            }
+
+            public override bool DoesAcceptEvent(PInputEventArgs e)
+            {
+                return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
+            }
+
+            protected override void OnStartDrag(object sender, PInputEventArgs e)
+            {
+                sObj.MoveToBack();
+                e.Handled = true;
+                PNode p1 = ((PNode)sender).Parent;
+                PNode p2 = (PNode)sender;
+                var edge = new EventEdge();
+                if (p1.Tag == null)
+                    p1.Tag = new List<EventEdge>();
+                if (p2.Tag == null)
+                    p2.Tag = new List<EventEdge>();
+                ((List<EventEdge>)p1.Tag).Add(edge);
+                ((List<EventEdge>)p2.Tag).Add(edge);
+                edge.start = p1;
+                edge.end = p2;
+                graphEditor.addEdge(edge);
+                base.OnStartDrag(sender, e);
+                draggingEventlink = true;
+            }
+
+            protected override void OnDrag(object sender, PInputEventArgs e)
+            {
+                base.OnDrag(sender, e);
+                e.Handled = true;
+                GraphEditor.UpdateEdge(((List<EventEdge>)((PNode)sender).Tag)[0]);
+            }
+
+            protected override void OnEndDrag(object sender, PInputEventArgs e)
+            {
+                EventEdge edge = ((List<EventEdge>)((PNode)sender).Tag)[0];
+                ((PNode)sender).SetOffset(0, 0);
+                ((List<EventEdge>)((PNode)sender).Parent.Tag).Remove(edge);
+                graphEditor.edgeLayer.RemoveChild(edge);
+                ((List<EventEdge>)((PNode)sender).Tag).RemoveAt(0);
+                base.OnEndDrag(sender, e);
+                draggingEventlink = false;
+                if (dragTarget != null)
+                {
+                    sObj.CreateEventlink(((PPath)sender).Parent, (SEvent)dragTarget);
+                    dragTarget = null;
+                }
+            }
+        }
+
         public void CreateOutlink(PNode n1, PNode n2)
         {
             SBox start = (SBox)n1.Parent.Parent.Parent;
@@ -887,6 +1028,37 @@ namespace ME3Explorer.SequenceObjects
             }
         }
 
+        public void CreateEventlink(PNode p1, SEvent end)
+        {
+            SBox start = (SBox)p1.Parent.Parent.Parent;
+            IExportEntry startExport = start.export;
+            string linkDesc = null;
+            foreach (EventLink l in start.EventLinks)
+            {
+                if (l.node == p1)
+                {
+                    if (l.Links.Contains(end.UIndex))
+                        return;
+                    linkDesc = l.Desc;
+                    break;
+                }
+            }
+            if (linkDesc == null)
+                return;
+            var eventLinksProp = startExport.GetProperty<ArrayProperty<StructProperty>>("EventLinks");
+            if (eventLinksProp != null)
+            {
+                foreach (var prop in eventLinksProp)
+                {
+                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
+                    {
+                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Add(new ObjectProperty(end.Export));
+                        startExport.WriteProperty(eventLinksProp);
+                    }
+                }
+            }
+        }
+
         public void RemoveOutlink(int linkconnection, int linkIndex)
         {
             string linkDesc = Outlinks[linkconnection].Desc;
@@ -924,27 +1096,52 @@ namespace ME3Explorer.SequenceObjects
             }
         }
 
+        public void RemoveEventlink(int linkconnection, int linkIndex)
+        {
+            string linkDesc = EventLinks[linkconnection].Desc;
+            var eventLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("EventLinks");
+            if (eventLinksProp != null)
+            {
+                foreach (var prop in eventLinksProp)
+                {
+                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
+                    {
+                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").RemoveAt(linkIndex);
+                        export.WriteProperty(eventLinksProp);
+                        return;
+                    }
+                }
+            }
+        }
+
         public override void Dispose()
         {
             base.Dispose();
             if (outputDragHandler != null)
             {
-                Outlinks.ForEach(x => x.node[0].RemoveInputEventListener(outputDragHandler));
+                foreach (var x in Outlinks) x.node[0].RemoveInputEventListener(outputDragHandler);
             }
             if (varDragHandler != null)
             {
-                Varlinks.ForEach(x => x.node[0].RemoveInputEventListener(varDragHandler));
+                foreach (var x in Varlinks) x.node[0].RemoveInputEventListener(varDragHandler);
+            }
+
+            if (eventDragHandler != null)
+            {
+                foreach (var x in EventLinks) x.node[0].RemoveInputEventListener(eventDragHandler);
             }
         }
     }
 
     public class SEvent : SBox
     {
+        public List<EventEdge> connections = new List<EventEdge>();
+        public override IEnumerable<SeqEdEdge> Edges => connections.Union(base.Edges);
 
         public SEvent(IExportEntry entry, float x, float y, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
-            outlinePen = new Pen(Color.FromArgb(214, 30, 28));
+            outlinePen = new Pen(EventColor);
             string s = export.ObjectName;
             s = s.Replace("BioSeqEvt_", "");
             s = s.Replace("SFXSeqEvt_", "");
@@ -1022,14 +1219,17 @@ namespace ME3Explorer.SequenceObjects
             h += outLinkBox.Height + 1;
             varLinkBox.TranslateBy(0, h);
             h += varLinkBox.Height;
-            this.bounds = new RectangleF(0, 0, w, h);
-            this.AddChild(titleBox);
-            this.AddChild(varLinkBox);
-            this.AddChild(outLinkBox);
-            this.SetOffset(x, y);
+            bounds = new RectangleF(0, 0, w, h);
+            AddChild(titleBox);
+            AddChild(varLinkBox);
+            AddChild(outLinkBox);
+            SetOffset(x, y);
+            MouseEnter += OnMouseEnter;
+            MouseLeave += OnMouseLeave;
         }
 
         private bool _isSelected;
+
         public override bool IsSelected
         {
             get => _isSelected;
@@ -1049,6 +1249,24 @@ namespace ME3Explorer.SequenceObjects
                     varLinkBox.Pen = outlinePen;
                     outLinkBox.Pen = outlinePen;
                 }
+            }
+        }
+
+        public void OnMouseEnter(object sender, PInputEventArgs e)
+        {
+            if (draggingEventlink)
+            {
+                ((SEvent)sender).IsSelected = true;
+                dragTarget = (PNode)sender;
+            }
+        }
+
+        public void OnMouseLeave(object sender, PInputEventArgs e)
+        {
+            if (draggingEventlink)
+            {
+                ((SEvent)sender).IsSelected = false;
+                dragTarget = null;
             }
         }
 
@@ -1077,6 +1295,7 @@ namespace ME3Explorer.SequenceObjects
             : base(entry, grapheditor)
         {
             GetVarLinks();
+            GetEventLinks();
             GetOutputLinks();
             originalX = x;
             originalY = y;
@@ -1120,7 +1339,7 @@ namespace ME3Explorer.SequenceObjects
             for (int i = 0; i < Varlinks.Count; i++)
             {
                 string d = string.Join(",", Varlinks[i].Links.Select(l => $"#{l}"));
-                SText t2 = new SText(d + "\n" + Varlinks[i].Desc)
+                SText t2 = new SText($"{d}\n{Varlinks[i].Desc}")
                 {
                     X = w,
                     Y = 0,
@@ -1131,7 +1350,21 @@ namespace ME3Explorer.SequenceObjects
                 t2.AddChild(Varlinks[i].node);
                 varLinkBox.AddChild(t2);
             }
-            if (Varlinks.Count != 0)
+            for (int i = 0; i < EventLinks.Count; i++)
+            {
+                string d = string.Join(",", EventLinks[i].Links.Select(l => $"#{l}"));
+                SText t2 = new SText($"{d}\n{EventLinks[i].Desc}")
+                {
+                    X = w,
+                    Y = 0,
+                    Pickable = false
+                };
+                w += t2.Width + 20;
+                EventLinks[i].node.TranslateBy(t2.X + t2.Width / 2, t2.Y + t2.Height);
+                t2.AddChild(EventLinks[i].node);
+                varLinkBox.AddChild(t2);
+            }
+            if (Varlinks.Any() || EventLinks.Any())
                 varLinkBox.Height = varLinkBox[0].Height;
             varLinkBox.Width = w;
             varLinkBox.Pickable = false;

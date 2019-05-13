@@ -94,7 +94,7 @@ namespace UMD.HCIL.GraphEditor
             PNode node2 = edge.end;
             PointF start = node1.GlobalBounds.Location;
             PointF end = node2.GlobalBounds.Location;
-            float h1x, h1y, h2x;
+            float h1x, h1y, h2x, h2y;
             if (edge is VarEdge)
             {
                 start.X += node1.GlobalBounds.Width * 0.5f;
@@ -105,8 +105,17 @@ namespace UMD.HCIL.GraphEditor
                 {
                     h1y = 15;
                 }
+
                 end.X += node2.GlobalBounds.Width / 2;
-                end.Y += node2.GlobalBounds.Height / 2;
+                if (edge is EventEdge)
+                {
+                    h2y = h1y;
+                }
+                else
+                {
+                    h2y = 0;
+                    end.Y += node2.GlobalBounds.Height / 2;
+                }
             }
             else
             {
@@ -118,11 +127,11 @@ namespace UMD.HCIL.GraphEditor
                 {
                     h1x = h2x = 15;
                 }
-                h1y = 0;
+                h1y = h2y = 0;
             }
 
             edge.Reset();
-            edge.AddBezier(start.X, start.Y, start.X + h1x, start.Y + h1y, end.X - h2x, end.Y, end.X, end.Y);
+            edge.AddBezier(start.X, start.Y, start.X + h1x, start.Y + h1y, end.X - h2x, end.Y - h2y, end.X, end.Y);
         }
 
         //private PNode boxSelectOriginNode;

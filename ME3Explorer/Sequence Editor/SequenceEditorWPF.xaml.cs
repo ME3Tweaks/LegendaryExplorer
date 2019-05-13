@@ -1049,7 +1049,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
             {
-                if (obj is SBox sBox && (sBox.Varlinks.Any() || sBox.Outlinks.Any())
+                if (obj is SBox sBox && (sBox.Varlinks.Any() || sBox.Outlinks.Any() || sBox.EventLinks.Any())
                  && contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
                 {
                     bool hasLinks = false;
@@ -1098,6 +1098,30 @@ namespace ME3Explorer.Sequence_Editor
                                     sBox.RemoveVarlink(linkConnection, linkIndex);
                                 };
                                 varLinksMenuItem.Items.Add(temp);
+                            }
+                        }
+                    }
+                    if (breakLinksMenuItem.GetChild("eventLinksMenuItem") is MenuItem eventLinksMenuItem)
+                    {
+                        eventLinksMenuItem.Visibility = Visibility.Collapsed;
+                        eventLinksMenuItem.Items.Clear();
+                        for (int i = 0; i < sBox.EventLinks.Count; i++)
+                        {
+                            for (int j = 0; j < sBox.EventLinks[i].Links.Count; j++)
+                            {
+                                eventLinksMenuItem.Visibility = Visibility.Visible;
+                                hasLinks = true;
+                                var temp = new MenuItem
+                                {
+                                    Header = $"Break link from {sBox.EventLinks[i].Desc} to {sBox.EventLinks[i].Links[j]}"
+                                };
+                                int linkConnection = i;
+                                int linkIndex = j;
+                                temp.Click += (o, args) =>
+                                {
+                                    sBox.RemoveEventlink(linkConnection, linkIndex);
+                                };
+                                eventLinksMenuItem.Items.Add(temp);
                             }
                         }
                     }
@@ -1153,6 +1177,14 @@ namespace ME3Explorer.Sequence_Editor
                 foreach (var prop in varLinksProp)
                 {
                     prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
+                }
+            }
+            var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
+            if (eventLinksProp != null)
+            {
+                foreach (var prop in eventLinksProp)
+                {
+                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Clear();
                 }
             }
             export.WriteProperties(props);
