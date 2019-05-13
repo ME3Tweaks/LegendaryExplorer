@@ -269,6 +269,8 @@ namespace ME3Explorer
                         {
                             int val = BitConverter.ToInt32(currentData, start);
                             s += $", Int: {val}";
+                            s += $", Float: {BitConverter.ToSingle(currentData, start)}";
+
                             if (CurrentLoadedExport.FileRef.isName(val))
                             {
                                 s += $", Name: {CurrentLoadedExport.FileRef.getNameEntry(val)}";

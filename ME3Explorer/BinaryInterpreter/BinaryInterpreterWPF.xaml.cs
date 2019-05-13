@@ -3385,11 +3385,12 @@ namespace ME3Explorer
                 var scriptBlock = new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} State/Script Block: 0x{offset:X4} - 0x{offsetEnd:X4}",
-                    Name = "_" + offset
+                    Name = "_" + offset,
+                    IsExpanded = true
                 };
                 subnodes.Add(scriptBlock);
 
-                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 && skipAmount > 6)
+                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 && skipAmount > 6 && ignoreMask != 0)
                 {
                     byte[] scriptmemory = data.Skip(offset).Take(skipAmount).ToArray();
                     try
