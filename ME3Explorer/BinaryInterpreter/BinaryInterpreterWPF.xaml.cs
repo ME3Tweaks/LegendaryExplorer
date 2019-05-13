@@ -377,6 +377,7 @@ namespace ME3Explorer
                         break;
                     case "State":
                         subNodes = StartStateScan(data, ref binarystart);
+                        appendGenericScan = true;
                         break;
                     case "TextureMovie":
                         subNodes = StartTextureMovieScan(data, ref binarystart);
@@ -3338,14 +3339,14 @@ namespace ME3Explorer
                 });
                 offset += 8;
 
-                Int16 labelOffset = BitConverter.ToInt16(data, offset);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                {
-                    Header = $"0x{offset:X5} LabelOffset: 0x{labelOffset:X4}",
-                    Name = "_" + offset
+                //Int16 labelOffset = BitConverter.ToInt16(data, offset);
+                //subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                //{
+                //    Header = $"0x{offset:X5} LabelOffset: 0x{labelOffset:X4}",
+                //    Name = "_" + offset
 
-                });
-                offset += 2;
+                //});
+                //offset += 2;
 
                 int skipAmount = 0x6;
                 //Find end of script block. Seems to be 10 FF's.
@@ -4874,15 +4875,7 @@ namespace ME3Explorer
 
             try
             {
-                int pos = binarystart;
-                int stateEntryIndex = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                {
-                    Header = $"{pos:X4} State Entry: {stateEntryIndex} {CurrentLoadedExport.FileRef.GetEntryString(stateEntryIndex)}",
-                    Name = "_" + pos,
-                    Tag = NodeType.StructLeafObject
-                });
-                pos += 4;
+                
 
                 /*int length = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
