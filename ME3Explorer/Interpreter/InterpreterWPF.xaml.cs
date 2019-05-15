@@ -735,14 +735,13 @@ namespace ME3Explorer
                     break;
                 case NameProperty np:
                     editableValue = $"{parsingExport.FileRef.findName(np.Value.Name)}_{np.Value.Number}";
-                    parsedValue = $"{np.Value}_{np.Value.Number}"; //will require special 2-box setup
+                    parsedValue = np.Value.InstancedString; //will require special 2-box setup
                     break;
                 case ByteProperty bp:
                     editableValue = parsedValue = bp.Value.ToString();
                     break;
                 case EnumProperty ep:
-                    //editableValue = ep.Value.ToString();
-                    editableValue = ep.Value;
+                    editableValue = ep.Value.InstancedString;
                     break;
                 case StringRefProperty strrefp:
                     editableValue = strrefp.Value.ToString();
@@ -1123,9 +1122,9 @@ namespace ME3Explorer
                     case EnumProperty ep:
                         {
                             SupportedEditorSetElements.Add(Value_ComboBox);
-                            List<string> values = ep.EnumValues;
+                            List<NameReference> values = ep.EnumValues;
                             Value_ComboBox.ItemsSource = values;
-                            int indexSelected = values.IndexOf(ep.Value.Name);
+                            int indexSelected = values.IndexOf(ep.Value);
                             Value_ComboBox.SelectedIndex = indexSelected;
                         }
                         break;
@@ -1689,9 +1688,9 @@ namespace ME3Explorer
                         }
                         break;
                     case EnumProperty ep:
-                        if (ep.Value != (string)Value_ComboBox.SelectedItem)
+                        if (ep.Value != (NameReference)Value_ComboBox.SelectedItem)
                         {
-                            ep.Value = (string)Value_ComboBox.SelectedItem; //0 = true
+                            ep.Value = (NameReference)Value_ComboBox.SelectedItem; //0 = true
                             updated = true;
                         }
                         break;
@@ -1729,12 +1728,7 @@ namespace ME3Explorer
                         nameindexok &= nameIndex >= 0;
                         if (index >= 0 && nameindexok)
                         {
-                            NameReference nameRef = new NameReference
-                            {
-                                Name = input,
-                                Number = nameIndex
-                            };
-                            namep.Value = nameRef;
+                            namep.Value = new NameReference(input, nameIndex);
                             updated = true;
                         }
                         break;
@@ -1785,12 +1779,7 @@ namespace ME3Explorer
                 switch (propertyToAddItemTo)
                 {
                     case ArrayProperty<NameProperty> anp:
-                        NameReference nameRef = new NameReference
-                        {
-                            Name = CurrentLoadedExport.FileRef.getNameEntry(0),
-                            Number = 0
-                        };
-                        NameProperty np = new NameProperty { Value = nameRef };
+                        NameProperty np = new NameProperty { Value = new NameReference(CurrentLoadedExport.FileRef.getNameEntry(0)) };
                         anp.Add(np);
                         break;
                     case ArrayProperty<ObjectProperty> aop:

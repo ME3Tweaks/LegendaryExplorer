@@ -23,14 +23,8 @@ using UMD.HCIL.GraphEditor;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
-using Application = System.Windows.Application;
-using Button = System.Windows.Controls.Button;
 using Color = System.Drawing.Color;
-using ContextMenu = System.Windows.Controls.ContextMenu;
-using MenuItem = System.Windows.Controls.MenuItem;
-using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
-using Path = System.IO.Path;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using InterpEditor = ME3Explorer.Matinee.InterpEditor;
 using System.Windows.Threading;
@@ -1440,9 +1434,7 @@ namespace ME3Explorer.Sequence_Editor
                             linkedOp.Value = newObj;
 
                             NameProperty linkAction = inLinkStruct.GetProp<NameProperty>("LinkAction");
-                            var nameRef = linkAction.Value;
-                            nameRef.Number = pcc.getUExport(newObj).indexValue;
-                            linkAction.Value = nameRef;
+                            linkAction.Value = new NameReference(linkAction.Value.Name, pcc.getUExport(newObj).indexValue);
                         }
                     }
                 }
@@ -1459,9 +1451,7 @@ namespace ME3Explorer.Sequence_Editor
                             linkedOp.Value = newObj;
 
                             NameProperty linkAction = outLinkStruct.GetProp<NameProperty>("LinkAction");
-                            var nameRef = linkAction.Value;
-                            nameRef.Number = pcc.getUExport(newObj).indexValue;
-                            linkAction.Value = nameRef;
+                            linkAction.Value = new NameReference(linkAction.Value.Name, pcc.getUExport(newObj).indexValue);
                         }
                     }
                 }
@@ -1517,9 +1507,7 @@ namespace ME3Explorer.Sequence_Editor
                     for (int i = 0; i < inLinksProp.Count; i++)
                     {
                         NameProperty linkAction = inLinksProp[i].GetProp<NameProperty>("LinkAction");
-                        var nameRef = linkAction.Value;
-                        nameRef.Number = inputIndices[i];
-                        linkAction.Value = nameRef;
+                        linkAction.Value = new NameReference(linkAction.Value.Name, inputIndices[i]);
                     }
                 }
                 outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
@@ -1528,9 +1516,7 @@ namespace ME3Explorer.Sequence_Editor
                     for (int i = 0; i < outLinksProp.Count; i++)
                     {
                         NameProperty linkAction = outLinksProp[i].GetProp<NameProperty>("LinkAction");
-                        var nameRef = linkAction.Value;
-                        nameRef.Number = outputIndices[i];
-                        linkAction.Value = nameRef;
+                        linkAction.Value = new NameReference(linkAction.Value.Name, outputIndices[i]);
                     }
                 }
                 exp.WriteProperties(props);

@@ -330,6 +330,7 @@
     <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CodeWriter.cs" />
     <Compile Include="DLCUnpacker\DLCUnpacker.xaml.cs">
       <DependentUpon>DLCUnpacker.xaml</DependentUpon>
     </Compile>

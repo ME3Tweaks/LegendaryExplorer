@@ -7,6 +7,7 @@
              xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
              xmlns:global="clr-namespace:ME3Explorer"
              xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
+             xmlns:unreal="clr-namespace:ME3Explorer.Unreal"
              xmlns:Commands="clr-namespace:ME3Explorer.Commands"
              xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
              mc:Ignorable="d" 
@@ -47,6 +48,11 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
                             <TextBlock Text="{Binding Path=Name.Name}" Foreground="Black" Margin="5,0,0,0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type unreal:NameReference}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=InstancedString}" Foreground="Black" Margin="5,0,0,0"/>
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.Resources>

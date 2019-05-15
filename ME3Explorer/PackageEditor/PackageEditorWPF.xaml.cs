@@ -3652,7 +3652,7 @@ namespace ME3Explorer
                 {
                     searchResult += "Key found in ME1 Structs\n";
                 }
-                if (ME1UnrealObjectInfo.Enums.TryGetValue(searchTerm, out List<string> _))
+                if (ME1UnrealObjectInfo.Enums.TryGetValue(searchTerm, out _))
                 {
                     searchResult += "Key found in ME1 Enums\n";
                 }
@@ -3666,7 +3666,7 @@ namespace ME3Explorer
                 {
                     searchResult += "Key found in ME2 Structs\n";
                 }
-                if (ME2Explorer.Unreal.ME2UnrealObjectInfo.Enums.TryGetValue(searchTerm, out List<string> _))
+                if (ME2Explorer.Unreal.ME2UnrealObjectInfo.Enums.TryGetValue(searchTerm, out _))
                 {
                     searchResult += "Key found in ME2 Enums\n";
                 }
@@ -3680,7 +3680,7 @@ namespace ME3Explorer
                 {
                     searchResult += "Key found in ME3 Structs\n";
                 }
-                if (ME3UnrealObjectInfo.Enums.TryGetValue(searchTerm, out List<string> _))
+                if (ME3UnrealObjectInfo.Enums.TryGetValue(searchTerm, out _))
                 {
                     searchResult += "Key found in ME3 Enums\n";
                 }
@@ -3743,6 +3743,11 @@ namespace ME3Explorer
         {
             Properties.Settings.Default.InterpreterWPF_AdvancedDisplay = !Properties.Settings.Default.InterpreterWPF_AdvancedDisplay;
             Properties.Settings.Default.Save();
+        }
+
+        private void GenerateME3Code_Click(object sender, RoutedEventArgs e)
+        {
+            ME3UnrealObjectInfo.GenerateCode();
         }
     }
 }

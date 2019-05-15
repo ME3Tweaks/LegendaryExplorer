@@ -359,7 +359,7 @@ namespace ME1Explorer
                         rp.Unskippable = (result == "1");
                         break;
                     case "ReplyType":
-                        result = InputComboBox.GetValue("Please select new value", ME1UnrealObjectInfo.getEnumValues("EReplyTypes"), Pcc.getNameEntry(Dialog.ReplyList[n].ReplyTypeValue));
+                        result = InputComboBox.GetValue("Please select new value", ME1UnrealObjectInfo.getEnumValues("EReplyTypes").Select(nRef => nRef.Name), Pcc.getNameEntry(Dialog.ReplyList[n].ReplyTypeValue));
                         if (result == "") return;
                         rp.ReplyTypeValue = Pcc.FindNameOrAdd(result);
                         break;
@@ -433,7 +433,7 @@ namespace ME1Explorer
                         rp.IgnoreBodyGestures = (result == "1");
                         break;
                     case "GUIStyle":
-                        result = InputComboBox.GetValue("Please select new value", ME1UnrealObjectInfo.getEnumValues("EConvGUIStyles"), Pcc.getNameEntry(Dialog.ReplyList[n].GUIStyleValue));
+                        result = InputComboBox.GetValue("Please select new value", ME1UnrealObjectInfo.getEnumValues("EConvGUIStyles").Select(nRef => nRef.Name), Pcc.getNameEntry(Dialog.ReplyList[n].GUIStyleValue));
                         if (result == "") return;
                         rp.GUIStyleValue = Pcc.FindNameOrAdd(result);
                         break;
@@ -632,7 +632,7 @@ namespace ME1Explorer
                         el.IgnoreBodyGestures = (result == "1");
                         break;
                     case "GUIStyle":
-                        result = InputComboBox.GetValue("Please select new value", ME1UnrealObjectInfo.getEnumValues("EConvGUIStyles"), Pcc.getNameEntry(el.GUIStyleValue));
+                        result = InputComboBox.GetValue("Please select new value", ME1UnrealObjectInfo.getEnumValues("EConvGUIStyles").Select(nRef => nRef.Name), Pcc.getNameEntry(el.GUIStyleValue));
                         if (result == "") return;
                         el.GUIStyleValue = Pcc.FindNameOrAdd(result);
                         break;
@@ -658,7 +658,7 @@ namespace ME1Explorer
                     result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new StringRef value for \"refParaphrase\"", "ME1Explorer", rpe.refParaphrase.ToString(), 0, 0);
                     if (result == "") return;
                     if (int.TryParse(result, out i)) rpe.refParaphrase = i;
-                    result = InputComboBox.GetValue("Please select new value for \"Category\"", ME1UnrealObjectInfo.getEnumValues("EReplyCategory"), Pcc.getNameEntry(rpe.CategoryValue));
+                    result = InputComboBox.GetValue("Please select new value for \"Category\"", ME1UnrealObjectInfo.getEnumValues("EReplyCategory").Select(nRef => nRef.Name), Pcc.getNameEntry(rpe.CategoryValue));
                     if (result == "") return;
                     rpe.CategoryValue = Pcc.FindNameOrAdd(result);
                     el.ReplyList[m] = rpe;
