@@ -14,6 +14,7 @@
              xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
              xmlns:properties="clr-namespace:ME3Explorer.Properties"
                             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                            xmlns:fa="http://schemas.fontawesome.io/icons/"
                             DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignWidth="800"
              d:DesignHeight="500">
@@ -34,6 +35,13 @@
             <Separator Name="EditorSet_ArraySetSeparator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array" Content="Add Array Element" Click="AddArrayElement_Button_Click" VerticalAlignment="Center"/>
             <Button Name="RemoveArrayElement_Button" ToolTip="Remove the selected element from the array" Content="Remove Array Element" Click="RemoveArrayElement_Button_Click" VerticalAlignment="Center"/>
+            <Separator Margin="5,0"/>
+            <Button Name="ArrayElement_MoveUp_Button" ToolTip="Move the selected array element up in the list" Click="MoveArrayElementUp_Click" VerticalAlignment="Center" Width="30">
+                <fa:ImageAwesome Icon="ArrowUp" Height="16" Width="16" Foreground="CornflowerBlue"/>
+            </Button>
+            <Button Name="ArrayElement_MoveDown_Button" ToolTip="Move the selected array element down in the list" Click="MoveArrayElementDown_Click" VerticalAlignment="Center"  Width="30">
+                <fa:ImageAwesome Icon="ArrowDown" Height="16" Width="16" Foreground="CornflowerBlue"/>
+            </Button>
             <Separator Name="EditorSet_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <TextBox Width="80" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Margin="0" Style="{StaticResource {x:Type TextBox}}"/>
             <ComboBox Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True">

@@ -18,9 +18,11 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using ME3Explorer.SharedUI;
 using System.Windows.Input;
+using Gammtek.Conduit.Extensions.Collections.Generic;
 using Xceed.Wpf.Toolkit;
 using static ME3Explorer.PackageEditorWPF;
 using Gammtek.Conduit.Extensions.IO;
+using MessageBox = System.Windows.MessageBox;
 
 namespace ME3Explorer
 {
@@ -955,17 +957,17 @@ namespace ME3Explorer
                     }
                     break;
                 case "DecalComponent":
-                {
-                    ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("DecalMaterial");
-                    if (smprop != null)
                     {
-                        IEntry smEntry = exportEntry.FileRef.getEntry(smprop.Value);
-                        if (smEntry != null)
+                        ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("DecalMaterial");
+                        if (smprop != null)
                         {
-                            return "(" + smEntry.ObjectName + ")";
+                            IEntry smEntry = exportEntry.FileRef.getEntry(smprop.Value);
+                            if (smEntry != null)
+                            {
+                                return "(" + smEntry.ObjectName + ")";
+                            }
                         }
                     }
-                }
                     break;
             }
             return "";
@@ -1769,7 +1771,7 @@ namespace ME3Explorer
 
         private void AddArrayElement_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi)
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null)
             {
                 UProperty propertyToAddItemTo = null;
 
@@ -1934,6 +1936,70 @@ namespace ME3Explorer
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), CurrentLoadedExport);
                 elhw.Title = $"Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
                 elhw.Show();
+            }
+        }
+
+        private void MoveArrayElementDown_Click(object sender, RoutedEventArgs e)
+        {
+            MoveArrayElement(false);
+        }
+
+        private void MoveArrayElementUp_Click(object sender, RoutedEventArgs e)
+        {
+            MoveArrayElement(true);
+
+        }
+
+        private void MoveArrayElement(bool up)
+        {
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null && tvi.Parent != null && tvi.Parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
+            {
+                int moveOffset = up ? -1 : 1;
+                //UI
+                //UPropertyTreeViewEntry parent = tvi.Parent;
+                //int childIndex = tvi.Parent.ChildrenProperties.IndexOf(tvi);
+                //if (childIndex > 0)
+                //{
+                //    var objectBeingReplaced = tvi.Parent.ChildrenProperties[childIndex - 1];
+                //    tvi.Parent.ChildrenProperties[childIndex - 1] = tvi.Parent.ChildrenProperties[childIndex];
+                //    tvi.Parent.ChildrenProperties[childIndex] = objectBeingReplaced;
+                //}
+
+                //Backing data
+                //This is big and ugly due to generic type casting combined with inability to get a reference value (casting will result in a non-reference value).
+                switch (tvi.Parent.Property)
+                {
+                    case ArrayProperty<ObjectProperty> aop:
+                        {
+                            int selectedItemIndex = aop.IndexOf(tvi.Property);
+                            if (up ? (selectedItemIndex > 0) : (selectedItemIndex < aop.Count - 1))
+                            {
+                                var objectBeingReplaced = aop[selectedItemIndex + moveOffset];
+                                aop[selectedItemIndex + moveOffset] = aop[selectedItemIndex];
+                                aop[selectedItemIndex] = objectBeingReplaced;
+                            }
+                        }
+                        break;
+                    case ArrayProperty<NameProperty> anp:
+                        {
+                            int selectedItemIndex = anp.IndexOf(tvi.Property);
+                            if (up ? (selectedItemIndex > 0) : (selectedItemIndex < anp.Count - 1))
+                            {
+                                var objectBeingReplaced = anp[selectedItemIndex + moveOffset];
+                                anp[selectedItemIndex + moveOffset] = anp[selectedItemIndex];
+                                anp[selectedItemIndex] = objectBeingReplaced;
+                                ForcedRescanOffset = (int)tvi.Parent.ChildrenProperties[selectedItemIndex + moveOffset].Property.StartOffset;
+                            }
+                        }
+                        break;
+                    default:
+                        MessageBox.Show("Can't move this element type yet.");
+                        break;
+                }
+
+
+                //Will force reload
+                CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
             }
         }
     }
