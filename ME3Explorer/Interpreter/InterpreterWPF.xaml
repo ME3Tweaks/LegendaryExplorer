@@ -95,15 +95,15 @@
                 <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
                 </hb1:HexBox>
             </WindowsFormsHost>
-            <GridSplitter
-                Name="HexProps_GridSplitter"
-                Grid.Column="1"
-                HorizontalAlignment="Stretch"
-                Margin="-5,0"
-                BorderThickness="5,0"
-                BorderBrush="Transparent"
-                Panel.ZIndex="60" />
-            <SharedUI:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" ItemsSource="{Binding PropertyNodes}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+            <GridSplitter 
+                Name="HexProps_GridSplitter"      
+                Grid.Column="1" 
+                      Grid.Row="0" HorizontalAlignment="Stretch" 
+                      Margin="-5,0"
+                      BorderThickness="5,0"
+                      BorderBrush="Transparent"
+                      Panel.ZIndex="60"/>
+            <SharedUI:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Row="0" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" ItemsSource="{Binding PropertyNodes}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                 <SharedUI:StretchingTreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type global:UPropertyTreeViewEntry}" ItemsSource="{Binding ChildrenProperties}">
                         <Border x:Name="PropertyItem_Container" Margin="1" Padding="{Binding Path=(SharedUI:TouchComfySettings.InterpreterWPFNodeMargin)}">

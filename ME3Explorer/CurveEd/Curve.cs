@@ -7,7 +7,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using UsefulThings.WPF;
 
 namespace ME3Explorer.CurveEd
 {
@@ -21,7 +20,7 @@ namespace ME3Explorer.CurveEd
         CIM_CurveAutoClamped,
     }
 
-    public class CurvePoint : ViewModelBase
+    public class CurvePoint : NotifyPropertyChangedBase
     {
         private float inVal;
         private float outVal;

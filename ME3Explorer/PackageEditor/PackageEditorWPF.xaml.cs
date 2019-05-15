@@ -385,7 +385,7 @@ namespace ME3Explorer
         private void OpenInInterpViewer()
         {
             if (!TryGetSelectedExport(out IExportEntry export)) return;
-            Matinee.InterpEditor p = new Matinee.InterpEditor();
+            InterpViewer.InterpEditor p = new InterpViewer.InterpEditor();
             p.Show();
             p.LoadPCC(export.FileRef.FileName); //hmm...
             p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(export.Index);

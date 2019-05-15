@@ -10,7 +10,7 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using ME3Explorer.Packages;
 
-namespace ME3Explorer.Matinee
+namespace ME3Explorer.InterpViewer
 {
     public struct byteprop
     {

@@ -6,7 +6,7 @@ using ME3Explorer.SequenceObjects;
 using ME3Explorer.Packages;
 using System.Linq;
 
-namespace ME3Explorer.Matinee
+namespace ME3Explorer.InterpViewer
 {
     public partial class InterpEditor : WinFormsBase
     {
