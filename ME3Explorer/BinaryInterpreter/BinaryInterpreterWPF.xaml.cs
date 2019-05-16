@@ -84,6 +84,7 @@ namespace ME3Explorer
             }
         }
         private List<FrameworkElement> EditorSetElements = new List<FrameworkElement>();
+        public ObservableCollectionExtended<BinaryInterpreterWPFTreeViewItem> TreeViewItems { get; } = new ObservableCollectionExtended<BinaryInterpreterWPFTreeViewItem>();
         public enum InterpreterMode
         {
             Objects,
@@ -278,7 +279,7 @@ namespace ME3Explorer
             var result = (BinaryInterpreterWPFTreeViewItem)e.Result;
             OnDemand_Panel.Visibility = Visibility.Collapsed;
             LoadedContent_Panel.Visibility = Visibility.Visible;
-            BinaryInterpreter_TreeView.ItemsSource = new List<object>(new BinaryInterpreterWPFTreeViewItem[] { result });
+            TreeViewItems.Replace(result);
         }
 
         private void PerformScanBackground(object sender, DoWorkEventArgs e)
@@ -4876,7 +4877,7 @@ namespace ME3Explorer
 
             try
             {
-                
+
 
                 /*int length = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
@@ -5026,7 +5027,7 @@ namespace ME3Explorer
         public override void UnloadExport()
         {
             BinaryInterpreter_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
-            BinaryInterpreter_TreeView.ItemsSource = null;
+            TreeViewItems.ClearEx();
             if (CurrentLoadedExport != null && CurrentLoadedExport.Data.Length > 20480)
             {
                 //There was likely a large amount of nodes placed onto the UI
@@ -5546,10 +5547,28 @@ namespace ME3Explorer
             BinaryInterpreter_Hexbox_Host.Child.Dispose();
             BinaryInterpreter_Hexbox_Host.Dispose();
         }
+
+        private void CopyTree_Button_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (TreeViewItems.Count > 0)
+            {
+                try
+                {
+                    using (StringWriter stringoutput = new StringWriter())
+                    {
+                        TreeViewItems[0].PrintPretty("", stringoutput, true, CurrentLoadedExport);
+                        Clipboard.SetText(stringoutput.ToString());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to copy to clipboard: " + ex.Message);
+                }
+            }
+        }
     }
 
-
-    class BinaryInterpreterWPFTreeViewItem : NotifyPropertyChangedBase
+    public class BinaryInterpreterWPFTreeViewItem : NotifyPropertyChangedBase
     {
         public enum ArrayPropertyChildAddAlgorithm
         {
@@ -5563,8 +5582,7 @@ namespace ME3Explorer
         public BinaryInterpreterWPFTreeViewItem Parent;
         public ArrayPropertyChildAddAlgorithm ArrayAddAlgoritm;
 
-        public bool IsExpanded
-        { get; set; }
+        public bool IsExpanded { get; set; }
 
         /// <summary>
         /// Children nodes of this item. They can be of different types (like UPropertyTreeViewEntry).
@@ -5581,6 +5599,45 @@ namespace ME3Explorer
             Items = new List<object>();
             Header = header;
         }
+
+        public void PrintPretty(string indent, StringWriter str, bool last, IExportEntry associatedExport)
+        {
+            bool supressNewLine = false;
+            if (Header != null)
+            {
+                str.Write(indent);
+                if (last)
+                {
+                    str.Write("└─");
+                    indent += "  ";
+                }
+                else
+                {
+                    str.Write("├─");
+                    indent += "| ";
+                }
+                //if (Parent != null && Parent == )
+                str.Write(Name.TrimStart('_') + ": " + Header);// + " "  " (" + PropertyType + ")");
+            }
+            else
+            {
+                supressNewLine = true;
+            }
+
+            for (int i = 0; i < Items.Count; i++)
+            {
+                if (!supressNewLine)
+                {
+                    str.Write("\n");
+                }
+                else
+                {
+                    supressNewLine = false;
+                }
+                (Items[i] as BinaryInterpreterWPFTreeViewItem)?.PrintPretty(indent, str, i == Items.Count - 1, associatedExport);
+            }
+        }
+
 
         public bool IsProgramaticallySelecting;
         private bool isSelected;
