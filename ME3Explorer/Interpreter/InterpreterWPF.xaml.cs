@@ -1941,7 +1941,7 @@ namespace ME3Explorer
 
         private void MoveArrayElement(bool up)
         {
-            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null && tvi.Parent != null && tvi.Parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null && tvi.Parent != null & tvi.Parent.Property != null && tvi.Parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
             {
                 int moveOffset = up ? -1 : 1;
                 //UI
