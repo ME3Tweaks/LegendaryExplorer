@@ -2335,8 +2335,13 @@ namespace ME3Explorer
                     {
                         crossPCCObjectMap.Add(entry, targetLinkEntry);
                         ReplaceExportDataWithAnother(entry, targetLinkEntry as IExportEntry);
+                        //if (successful)
+                        //{
+                        //    relinkObjects2(sourceEntry.FileRef);
+                        //    relinkBinaryObjects(sourceEntry.FileRef);
+                        //}
                     }
-                    return;
+                    //return;
                 }
 
                 int n = sourceEntry.UIndex;
@@ -2352,7 +2357,7 @@ namespace ME3Explorer
                 }
                 TreeViewEntry newItem = null;
                 //Don't clone the root element into this item since this is a merge
-                if (portingOption != TreeMergeDialog.PortingOption.MergeTreeChildren)
+                if (portingOption != TreeMergeDialog.PortingOption.MergeTreeChildren && portingOption != TreeMergeDialog.PortingOption.ReplaceSingular)
                 {
                     if (n >= 0)
                     {
@@ -2417,15 +2422,15 @@ namespace ME3Explorer
             }
         }
 
-        private void ReplaceExportDataWithAnother(IExportEntry ex, IExportEntry targetLinkEntry)
+        private bool ReplaceExportDataWithAnother(IExportEntry incomingExport, IExportEntry targetExport)
         {
-            byte[] idata = ex.Data;
-            PropertyCollection props = ex.GetProperties();
-            int start = ex.GetPropertyStart();
+            byte[] idata = incomingExport.Data;
+            PropertyCollection props = incomingExport.GetProperties();
+            int start = incomingExport.GetPropertyStart();
             int end = props.endOffset;
 
             MemoryStream res = new MemoryStream();
-            if ((ex.ObjectFlags & (ulong)EObjectFlags.HasStack) != 0)
+            if ((incomingExport.ObjectFlags & (ulong)EObjectFlags.HasStack) != 0)
             {
                 //ME1, ME2 stack
                 byte[] stackdummy = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
@@ -2433,6 +2438,7 @@ namespace ME3Explorer
 
                 if (Pcc.Game != MEGame.ME3)
                 {
+                    //TODO: Find a unique NetIndex instead of writing a blank... don't know if that will fix multiplayer sync issues
                     stackdummy = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
                 }
@@ -2452,16 +2458,12 @@ namespace ME3Explorer
             {
                 //restore namelist in event of failure.
                 Pcc.setNames(names);
-                MessageBox.Show($"Error occured while replacing data in {ex.ObjectName} : {exception.Message}");
-                return;
+                MessageBox.Show($"Error occured while replacing data in {incomingExport.ObjectName} : {exception.Message}");
+                return false;
             }
             res.Write(idata, end, idata.Length - end);
-            targetLinkEntry.Data = res.ToArray();
-            if (ex.ClassName == "Class")
-            {
-                relinkBinaryObjects(ex.FileRef);
-            }
-            MessageBox.Show("Done. Check the resulting export to ensure accuracy of this experimental feature.");
+            targetExport.Data = res.ToArray();
+            return true;
         }
 
 
