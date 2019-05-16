@@ -160,7 +160,7 @@
                     <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked" ToolTip="Makes Package Editor WPF a bit easier to use on touch devices"/>
                     <MenuItem Name="AssociatePccSfm_MenuItem" Header="Associate PCC/SFM files" Click="AssociateFileTypes_Clicked" ToolTip="Makes Package Editor WPF open when you double click PCC/SFM files in Windows Explorer"/>
                     <Separator/>
-                    <MenuItem Name="ShowNetIndexes_MenuItem" Header="Show Object Indexes (NetIndexes) if not zero" Click="ShowNetIndexes_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PackageEditorWPF_TreeViewShowNetIndex, Mode=TwoWay}" ToolTip="Changes the treeview of Package Editor WPF to include netindexes if the index value is no 0. This will take full effect after loading a new file."/>
+                    <MenuItem Name="ShowObjectIndexes_MenuItem" Header="Show Object Indexes if not zero" Click="ShowObjectIndexes_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PackageEditorWPF_TreeViewShowEntryIndex, Mode=TwoWay}" ToolTip="Changes the treeview of Package Editor WPF to include netindexes if the index value is no 0. This will take full effect after loading a new file."/>
                     <MenuItem Header="Property Parsing">
                         <MenuItem Name="PropertyParsing_ME1UnknownArrayAsObj_MenuItem" Header="ME1: Parse Unknown array types as objects instead of int" Click="PropertyParsing_ME1UnknownArrayAsObj_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PropertyParsingME1UnknownArrayAsObject, Mode=TwoWay}" ToolTip="Return unknown array types as object arrays instead of integer. This only affects parsing and resolving of values. This setting only applies to ME1."/>
                         <MenuItem Name="PropertyParsing_ME2UnknownArrayAsObj_MenuItem" Header="ME2: Parse Unknown array types as objects instead of int" Click="PropertyParsing_ME2UnknownArrayAsObj_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PropertyParsingME2UnknownArrayAsObject, Mode=TwoWay}" ToolTip="Return unknown array types as object arrays instead of integer. This only affects parsing and resolving of values. This setting only applies to ME2."/>
@@ -203,8 +203,8 @@
                     <MenuItem Header="Build ME1 Native Functions Info" Click="BuildME1NativeFunctionsInfo_Click"/>
                     <MenuItem Header="Find ME1 2DA Tables" Click="FindME12DATables_Click"/>
                     <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
-                    <MenuItem Header="Open PCC Dumper" Click="CreatePCCDumpME1_Click"/>
-                    <MenuItem Header="Open Mount Editor" Click="MountEditor_Click"/>
+                    <MenuItem Header="List NetIndexes" Click="ListNetIndexes_Click"/>
+                    <MenuItem Header="List Linker Indexes" Click="ListLinkerValues_Click"/>
 
                 </MenuItem>
             </Menu>

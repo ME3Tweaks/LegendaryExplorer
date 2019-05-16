@@ -137,10 +137,12 @@ namespace ME3Explorer.Sequence_Editor
             {
                 return Pcc != null && Pcc.Game == MEGame.ME3 && File.Exists(KismetLogPath);
             }
+
             return File.Exists(KismetLogPath);
         }
 
         static readonly string KismetLogPath = Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "KismetLog.txt");
+
         private void OpenKismetLogParser(object obj)
         {
             if (File.Exists(KismetLogPath))
@@ -155,6 +157,7 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     kismetLogParser.LoadLog(KismetLogPath);
                 }
+
                 kismetLogParser.ExportFound = (filePath, uIndex) =>
                 {
                     if (Pcc == null || Pcc.FileName != filePath) LoadFile(filePath);
@@ -194,6 +197,7 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     saveView();
                 }
+
                 if (SetProperty(ref _selectedItem, value) && value != null)
                 {
                     value.IsSelected = true;
@@ -299,9 +303,11 @@ namespace ME3Explorer.Sequence_Editor
                         {
                             // ignored
                         }
+
                         break;
                 }
             }
+
             if (prefabs.Count > 0)
             {
                 foreach (var export in Pcc.Exports)
@@ -315,6 +321,7 @@ namespace ME3Explorer.Sequence_Editor
                         }
                     }
                 }
+
                 foreach (var item in prefabs.Values)
                 {
                     if (item.Sublinks.Any())
@@ -356,6 +363,7 @@ namespace ME3Explorer.Sequence_Editor
                     }
                 }
             }
+
             return root;
         }
 
@@ -365,6 +373,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 return;
             }
+
             graphEditor.Enabled = false;
             graphEditor.UseWaitCursor = true;
             SelectedSequence = seqExport;
@@ -381,6 +390,7 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     SavedPositions = new List<SaveData>();
                 }
+
                 extraSaveData.Clear();
                 selectedExports.Clear();
             }
@@ -388,12 +398,12 @@ namespace ME3Explorer.Sequence_Editor
             try
             {
 #endif
-                GenerateGraph();
-                if (selectedExports.Count == 1 && CurrentObjects.FirstOrDefault(obj => obj.Export == selectedExports[0]) is SObj selectedObj)
-                {
-                    panToSelection = false;
-                    CurrentObjects_ListBox.SelectedItem = selectedObj;
-                }
+            GenerateGraph();
+            if (selectedExports.Count == 1 && CurrentObjects.FirstOrDefault(obj => obj.Export == selectedExports[0]) is SObj selectedObj)
+            {
+                panToSelection = false;
+                CurrentObjects_ListBox.SelectedItem = selectedObj;
+            }
 #if !DEBUG
             }
             catch (Exception e)
@@ -439,8 +449,10 @@ namespace ME3Explorer.Sequence_Editor
                                 break;
                             }
                         }
+
                         idx = Pcc.getUExport(idx).idxLink;
                     }
+
                     if (objectName == "Sequence")
                     {
                         objectName = ObjName;
@@ -448,6 +460,7 @@ namespace ME3Explorer.Sequence_Editor
                     }
                     else
                         packageName = packageName.Replace("Sequence", ObjName) + ".";
+
                     if (Pcc.Game == MEGame.ME2)
                     {
                         JSONpath = $"{ME2ViewsPath}SequenceReference{packageName}{objectName}.JSON";
@@ -457,6 +470,7 @@ namespace ME3Explorer.Sequence_Editor
                         JSONpath = $"{ME1ViewsPath}SequenceReference{packageName}{objectName}.JSON";
                     }
                 }
+
                 RefOrRefChild = true;
             }
             else
@@ -471,6 +485,7 @@ namespace ME3Explorer.Sequence_Editor
                         viewsPath = ME1ViewsPath;
                         break;
                 }
+
                 JSONpath = $"{viewsPath}{CurrentFile}.#{export.Index}{objectName}.JSON";
                 RefOrRefChild = false;
             }
@@ -483,7 +498,7 @@ namespace ME3Explorer.Sequence_Editor
             if (seqObjs != null)
             {
                 CurrentObjects.AddRange(seqObjs.OrderBy(prop => prop.Value)
-                                               .Select(prop => LoadObject(Pcc.getUExport(prop.Value))));
+                    .Select(prop => LoadObject(Pcc.getUExport(prop.Value))));
             }
         }
 
@@ -501,6 +516,7 @@ namespace ME3Explorer.Sequence_Editor
                 o.MouseDown += node_MouseDown;
                 o.Click += node_Click;
             }
+
             if (SavedPositions.IsEmpty() && Pcc.Game != MEGame.ME1)
             {
                 if (CurrentFile.Contains("_LOC_INT"))
@@ -562,12 +578,12 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     if (obj.Export.ObjectName.StartsWith("BioSeqEvt_ConvNode"))
                     {
-                        obj.SetOffset(StartPosDialog, 600);//Startconv event
+                        obj.SetOffset(StartPosDialog, 600); //Startconv event
                         SAction interp = (SAction)CurrentObjects.First(o => o.UIndex == ((SEvent)obj).Outlinks[0].Links[0]);
-                        interp.SetOffset(StartPosDialog + 150, 600);//Interp
-                        CurrentObjects.First(o => o.UIndex == interp.Varlinks[0].Links[0]).SetOffset(StartPosDialog + 165, 770);//Interpdata
+                        interp.SetOffset(StartPosDialog + 150, 600); //Interp
+                        CurrentObjects.First(o => o.UIndex == interp.Varlinks[0].Links[0]).SetOffset(StartPosDialog + 165, 770); //Interpdata
                         StartPosDialog += interp.Width + 200;
-                        CurrentObjects.First(o => o.UIndex == interp.Outlinks[0].Links[0]).SetOffset(StartPosDialog, 600);//Endconv node
+                        CurrentObjects.First(o => o.UIndex == interp.Outlinks[0].Links[0]).SetOffset(StartPosDialog, 600); //Endconv node
                         StartPosDialog += 270;
                     }
                 }
@@ -581,6 +597,7 @@ namespace ME3Explorer.Sequence_Editor
                     GraphEditor.UpdateEdge(edge);
                 return false;
             }
+
             return true;
         }
 
@@ -592,6 +609,7 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     graphEditor.addNode(obj);
                 }
+
                 foreach (SObj obj in CurrentObjects)
                 {
                     obj.CreateConnections(CurrentObjects);
@@ -652,6 +670,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 obj.SetOffset(0, 0); //remove existing positioning
             }
+
             const float HORIZONTAL_SPACING = 40;
             const float VERTICAL_SPACING = 20;
             const float VAR_SPACING = 10;
@@ -743,6 +762,7 @@ namespace ME3Explorer.Sequence_Editor
                         childTrees.Add(subTree);
                     }
                 }
+
                 if (childTrees.Any())
                 {
                     float dx = root.GlobalFullWidth + (HORIZONTAL_SPACING * (1 + childTrees.Count * 0.4f));
@@ -762,6 +782,7 @@ namespace ME3Explorer.Sequence_Editor
 
                         tree.AddRange(subTree);
                     }
+
                     //center the root on its children
                     float centerOffset = tree.OfType<SBox>().BoundingRect().Height / 2 - root.GlobalFullHeight / 2;
                     root.OffsetBy(0, centerOffset);
@@ -780,7 +801,7 @@ namespace ME3Explorer.Sequence_Editor
             LoadSequence(SelectedSequence, false);
         }
 
-#region Recents
+        #region Recents
 
         private readonly List<Button> RecentButtons = new List<Button>();
         public List<string> RFiles;
@@ -804,6 +825,7 @@ namespace ME3Explorer.Sequence_Editor
                     }
                 }
             }
+
             RefreshRecent(false);
         }
 
@@ -813,6 +835,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 Directory.CreateDirectory(SequenceEditorDataFolder);
             }
+
             string path = SequenceEditorDataFolder + RECENTFILES_FILE;
             if (File.Exists(path))
                 File.Delete(path);
@@ -837,12 +860,14 @@ namespace ME3Explorer.Sequence_Editor
                 //we are receiving an update
                 RFiles = new List<string>(recents);
             }
+
             Recents_MenuItem.Items.Clear();
             if (RFiles.Count <= 0)
             {
                 Recents_MenuItem.IsEnabled = false;
                 return;
             }
+
             Recents_MenuItem.IsEnabled = true;
 
             int i = 0;
@@ -863,6 +888,7 @@ namespace ME3Explorer.Sequence_Editor
                 Recents_MenuItem.Items.Add(fr);
                 i++;
             }
+
             while (i < 10)
             {
                 RecentButtons[i].Visibility = Visibility.Collapsed;
@@ -894,14 +920,16 @@ namespace ME3Explorer.Sequence_Editor
             {
                 RFiles.Insert(0, s); //put at front
             }
+
             if (RFiles.Count > 10)
             {
                 RFiles.RemoveRange(10, RFiles.Count - 10);
             }
+
             Recents_MenuItem.IsEnabled = true;
         }
 
-#endregion Recents
+        #endregion Recents
 
         private void backMouseDown_Handler(object sender, PInputEventArgs e)
         {
@@ -965,6 +993,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 return; //nothing is loaded
             }
+
             IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
                                                                             x.change != PackageChange.ImportAdd &&
                                                                             x.change != PackageChange.Names);
@@ -982,6 +1011,7 @@ namespace ME3Explorer.Sequence_Editor
                     SelectedObjects.ClearEx();
                     Properties_InterpreterWPF.UnloadExport();
                 }
+
                 RefreshView();
                 LoadSequences();
                 return;
@@ -991,6 +1021,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 RefreshView();
             }
+
             foreach (var i in updatedExports)
             {
                 if (Pcc.getExport(i).ClassName.Contains("Sequence"))
@@ -1063,14 +1094,12 @@ namespace ME3Explorer.Sequence_Editor
                                 };
                                 int linkConnection = i;
                                 int linkIndex = j;
-                                temp.Click += (o, args) =>
-                                {
-                                    sBox.RemoveOutlink(linkConnection, linkIndex);
-                                };
+                                temp.Click += (o, args) => { sBox.RemoveOutlink(linkConnection, linkIndex); };
                                 outputLinksMenuItem.Items.Add(temp);
                             }
                         }
                     }
+
                     if (breakLinksMenuItem.GetChild("varLinksMenuItem") is MenuItem varLinksMenuItem)
                     {
                         varLinksMenuItem.Visibility = Visibility.Collapsed;
@@ -1087,10 +1116,7 @@ namespace ME3Explorer.Sequence_Editor
                                 };
                                 int linkConnection = i;
                                 int linkIndex = j;
-                                temp.Click += (o, args) =>
-                                {
-                                    sBox.RemoveVarlink(linkConnection, linkIndex);
-                                };
+                                temp.Click += (o, args) => { sBox.RemoveVarlink(linkConnection, linkIndex); };
                                 varLinksMenuItem.Items.Add(temp);
                             }
                         }
@@ -1134,12 +1160,13 @@ namespace ME3Explorer.Sequence_Editor
                         }
                     }
                 }
+
                 if (contextMenu.GetChild("interpViewerMenuItem") is MenuItem interpViewerMenuItem)
                 {
                     string className = obj.Export.ClassName;
                     if (className == "InterpData"
-                    || (className == "SeqAct_Interp" && obj is SAction action && action.Varlinks.Any() && action.Varlinks[0].Links.Any()
-                                                     && Pcc.isUExport(action.Varlinks[0].Links[0]) && Pcc.getUExport(action.Varlinks[0].Links[0]).ClassName == "InterpData"))
+                        || (className == "SeqAct_Interp" && obj is SAction action && action.Varlinks.Any() && action.Varlinks[0].Links.Any()
+                            && Pcc.isUExport(action.Varlinks[0].Links[0]) && Pcc.getUExport(action.Varlinks[0].Links[0]).ClassName == "InterpData"))
                     {
                         interpViewerMenuItem.Visibility = Visibility.Visible;
                     }
@@ -1148,6 +1175,7 @@ namespace ME3Explorer.Sequence_Editor
                         interpViewerMenuItem.Visibility = Visibility.Collapsed;
                     }
                 }
+
                 contextMenu.IsOpen = true;
                 graphEditor.DisableDragging();
             }
@@ -1165,6 +1193,7 @@ namespace ME3Explorer.Sequence_Editor
                     prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
                 }
             }
+
             var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
             if (varLinksProp != null)
             {
@@ -1197,6 +1226,7 @@ namespace ME3Explorer.Sequence_Editor
                         CurrentObjects_ListBox.SelectedItems.Clear();
                         panToSelection = false;
                     }
+
                     CurrentObjects_ListBox.SelectedItem = obj;
                     OpenNodeContextMenu(obj);
                 }
@@ -1252,9 +1282,9 @@ namespace ME3Explorer.Sequence_Editor
 
             var options = new Dictionary<string, object>
             {
-                { "OutputNumbers", SObj.OutputNumbers },
-                { "AutoSave", AutoSaveView_MenuItem.IsChecked },
-                { "GlobalSeqRefView", GlobalSeqRefViewSavesMenuItem.IsChecked }
+                {"OutputNumbers", SObj.OutputNumbers},
+                {"AutoSave", AutoSaveView_MenuItem.IsChecked},
+                {"GlobalSeqRefView", GlobalSeqRefViewSavesMenuItem.IsChecked}
             };
             string outputFile = JsonConvert.SerializeObject(options);
             if (!Directory.Exists(SequenceEditorDataFolder))
@@ -1308,6 +1338,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 exp.indexValue = old.indexValue;
             }
+
             pcc.addExport(exp);
             addObjectToSequence(exp, topLevel, sequence);
             cloneSequence(exp, sequence);
@@ -1333,6 +1364,7 @@ namespace ME3Explorer.Sequence_Editor
                             prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
                         }
                     }
+
                     var varLinksProp = newObjectProps.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
                     if (varLinksProp != null)
                     {
@@ -1342,6 +1374,7 @@ namespace ME3Explorer.Sequence_Editor
                         }
                     }
                 }
+
                 newObject.WriteProperties(newObjectProps);
                 newObject.idxLink = sequenceExport.UIndex;
             }
@@ -1390,6 +1423,7 @@ namespace ME3Explorer.Sequence_Editor
                             }
                         }
                     }
+
                     var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
                     if (varLinksProp != null)
                     {
@@ -1402,6 +1436,7 @@ namespace ME3Explorer.Sequence_Editor
                             }
                         }
                     }
+
                     var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
                     if (eventLinksProp != null)
                     {
@@ -1414,6 +1449,7 @@ namespace ME3Explorer.Sequence_Editor
                             }
                         }
                     }
+
                     obj.WriteProperties(props);
                 }
 
@@ -1438,6 +1474,7 @@ namespace ME3Explorer.Sequence_Editor
                         }
                     }
                 }
+
                 var outputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
                 if (outputLinksProp != null)
                 {
@@ -1455,6 +1492,7 @@ namespace ME3Explorer.Sequence_Editor
                         }
                     }
                 }
+
                 exp.WriteProperties(propCollection);
             }
             else if (exp.ClassName == "SequenceReference")
@@ -1465,6 +1503,7 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     return;
                 }
+
                 int oldSeqIndex = oSeqRefProp.Value;
                 oSeqRefProp.Value = exp.UIndex + 1;
                 exp.WriteProperty(oSeqRefProp);
@@ -1491,6 +1530,7 @@ namespace ME3Explorer.Sequence_Editor
                         inputIndices.Add(inLink.GetProp<NameProperty>("LinkAction").Value.Number);
                     }
                 }
+
                 var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
                 if (outLinksProp != null)
                 {
@@ -1510,6 +1550,7 @@ namespace ME3Explorer.Sequence_Editor
                         linkAction.Value = new NameReference(linkAction.Value.Name, inputIndices[i]);
                     }
                 }
+
                 outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
                 if (outLinksProp != null)
                 {
@@ -1519,6 +1560,7 @@ namespace ME3Explorer.Sequence_Editor
                         linkAction.Value = new NameReference(linkAction.Value.Name, outputIndices[i]);
                     }
                 }
+
                 exp.WriteProperties(props);
 
                 //set new Sequence's link and ParentSequence prop to SeqRef
@@ -1580,6 +1622,7 @@ namespace ME3Explorer.Sequence_Editor
                     }
                 }
             }
+
             panToSelection = true;
             graphEditor.Refresh();
         }
@@ -1609,6 +1652,7 @@ namespace ME3Explorer.Sequence_Editor
                 MessageBox.Show("Done.");
             }
         }
+
         private void addObject(IExportEntry exportToAdd, bool removeLinks = true)
         {
             extraSaveData.Add(new SaveData
@@ -1629,11 +1673,13 @@ namespace ME3Explorer.Sequence_Editor
                     MessageBox.Show($"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is not a sequence object.");
                     return;
                 }
+
                 if (CurrentObjects.Any(obj => obj.Export == exportToAdd))
                 {
                     MessageBox.Show($"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is already in the sequence.");
                     return;
                 }
+
                 addObject(exportToAdd);
             }
         }
@@ -1655,6 +1701,7 @@ namespace ME3Explorer.Sequence_Editor
                 MessageBox.Show("InterpViewer does not support ME1 or ME2 yet.", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
             if (CurrentObjects_ListBox.SelectedItem is SObj obj)
             {
                 var p = new InterpEditor();
@@ -1698,6 +1745,7 @@ namespace ME3Explorer.Sequence_Editor
                         GoToExport(ExportQueuedForFocusing);
                         ExportQueuedForFocusing = null;
                     }
+
                     Activate();
                 }));
             }
@@ -1721,6 +1769,7 @@ namespace ME3Explorer.Sequence_Editor
                             return;
                         }
                     }
+
                     SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == export.UIndex);
                     break;
                 }
@@ -1738,6 +1787,7 @@ namespace ME3Explorer.Sequence_Editor
                         return;
                     }
                 }
+
                 var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
                 if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == export.UIndex))
                 {
@@ -1746,7 +1796,23 @@ namespace ME3Explorer.Sequence_Editor
                     CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == export);
                     break;
                 }
+            }
+        }
 
+        private void RemoveFromSequence_Click(object sender, RoutedEventArgs e)
+        {
+            //Todo: Dialog to confirm? Offer to remove all incoming links (if any)?
+            //Currently you must be sure that you won't leave hanging nodes
+            //Also todo: Disable this menuitem when its not available for use.
+            if (CurrentObjects_ListBox.SelectedItem is SObj obj)
+            {
+                var seqObjs = SelectedSequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                var arrayObj = seqObjs?.FirstOrDefault(x => x.Value == obj.UIndex);
+                if (arrayObj != null)
+                {
+                    seqObjs.Remove(new ObjectProperty(obj.UIndex));
+                    SelectedSequence.WriteProperty(seqObjs);
+                }
             }
         }
     }

@@ -502,7 +502,7 @@ namespace ME3Explorer.ActorNodes
             : base(idx, x, y, p, grapheditor)
         {
             var bRespawns = export.GetProperty<BoolProperty>("bRespawns");
-            var respawnTime = export.GetProperty<IntProperty>("RespawnTime");
+            var respawnTime = export.GetProperty<FloatProperty>("RespawnTime");
             string commentText = "Respawns: ";
             commentText += (bRespawns?.Value ?? false).ToString();
             if (respawnTime != null)

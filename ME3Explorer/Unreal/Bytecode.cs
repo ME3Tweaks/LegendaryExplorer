@@ -3042,9 +3042,9 @@ namespace ME3Explorer.Unreal
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
-                        if (count != 0)
+                        if (count != 0 && a.text != "null")
                             t.text += a.text;
-                        else
+                        else if (!(a.raw.Length == 1 && a.raw[0] == 0x4A))
                             t.text += a.text;
                         count++;
                     }

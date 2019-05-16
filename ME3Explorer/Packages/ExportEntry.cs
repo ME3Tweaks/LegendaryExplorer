@@ -23,12 +23,13 @@ namespace ME3Explorer.Packages
             OriginalDataSize = 0;
         }
 
-        public bool HasStack => (ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0;
+        public bool HasStack => (ObjectFlags & (ulong) UnrealFlags.EObjectFlags.HasStack) != 0;
 
         /// <summary>
         /// NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
         /// </summary>
         protected byte[] _header;
+
         /// <summary>
         /// The underlying header is directly returned by this getter. If you want to write a new header back, use the copy provided by getHeader()!
         /// Otherwise some events may not trigger
@@ -67,60 +68,136 @@ namespace ME3Explorer.Packages
         public int idxClass
         {
             get => BitConverter.ToInt32(Header, 0);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; }
+            set
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int));
+                HeaderChanged = true;
+            }
         }
+
         public int idxClassParent
         {
             get => BitConverter.ToInt32(Header, 4);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 4, sizeof(int)); HeaderChanged = true; }
+            set
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 4, sizeof(int));
+                HeaderChanged = true;
+            }
         }
+
         public int idxLink
         {
             get => BitConverter.ToInt32(Header, 8);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 8, sizeof(int)); HeaderChanged = true; }
+            set
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 8, sizeof(int));
+                HeaderChanged = true;
+            }
         }
+
         public int idxObjectName
         {
             get => BitConverter.ToInt32(Header, 12);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 12, sizeof(int)); HeaderChanged = true; }
+            set
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 12, sizeof(int));
+                HeaderChanged = true;
+            }
         }
+
         public int indexValue
         {
             get => BitConverter.ToInt32(Header, 16);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 16, sizeof(int)); HeaderChanged = true; }
+            set
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 16, sizeof(int));
+                HeaderChanged = true;
+            }
         }
+
         public int idxArchtype
         {
             get => BitConverter.ToInt32(Header, 20);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 20, sizeof(int)); HeaderChanged = true; }
+            set
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 20, sizeof(int));
+                HeaderChanged = true;
+            }
         }
+
+        public int LinkerIndex
+        {
+            get => BitConverter.ToInt32(_data, 0);
+            //set
+            //{
+            //    Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 20, sizeof(int));
+            //    HeaderChanged = true;
+            //}
+        }
+
         public ulong ObjectFlags
         {
             get => BitConverter.ToUInt64(Header, 24);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 24, sizeof(long)); HeaderChanged = true; }
+            set
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 24, sizeof(long));
+                HeaderChanged = true;
+            }
         }
+
         public int DataSize
         {
             get => BitConverter.ToInt32(Header, 32);
             set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 32, sizeof(int));
         }
+
         public int DataOffset
         {
             get => BitConverter.ToInt32(Header, 36);
             set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 36, sizeof(int));
         }
+
         //if me1 or me2: int unkcount1
-        byte[][] unkList1;//if me1 or me2: unkcount1 * 12 bytes
+        byte[][] unkList1; //if me1 or me2: unkcount1 * 12 bytes
+
         int unk1; //int unk1 
+
         //int unkcount2 
-        int unk2;//int unk2 
+        int unk2; //int unk2 
         public Guid PackageGUID { get; set; } //GUID
-        int[] unkList2;//unkcount2 * 4 bytes 
+        int[] unkList2; //unkcount2 * 4 bytes 
 
         public string ObjectName => FileRef.Names[idxObjectName];
-        public string ClassName { get { int val = idxClass; if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName]; else return "Class"; } }
-        public string ClassParent { get { int val = idxClassParent; if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName]; else return "Class"; } }
-        public string ArchtypeName { get { int val = idxArchtype; if (val != 0) return FileRef.getNameEntry(FileRef.getEntry(val).idxObjectName); else return "None"; } }
+
+        public string ClassName
+        {
+            get
+            {
+                int val = idxClass;
+                if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName];
+                else return "Class";
+            }
+        }
+
+        public string ClassParent
+        {
+            get
+            {
+                int val = idxClassParent;
+                if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName];
+                else return "Class";
+            }
+        }
+
+        public string ArchtypeName
+        {
+            get
+            {
+                int val = idxArchtype;
+                if (val != 0) return FileRef.getNameEntry(FileRef.getEntry(val).idxObjectName);
+                else return "None";
+            }
+        }
 
         public string PackageName
         {
@@ -150,6 +227,7 @@ namespace ME3Explorer.Packages
                         result = newPackageName + "." + result;
                     idxNewPackName = FileRef.getEntry(idxNewPackName).idxLink;
                 }
+
                 return result;
             }
         }
@@ -168,14 +246,12 @@ namespace ME3Explorer.Packages
 
         public string GetIndexedFullPath
         {
-            get
-            {
-                return GetFullPath + "_" + indexValue;
-            }
+            get { return GetFullPath + "_" + indexValue; }
         }
 
         //NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
         protected byte[] _data;
+
         /// <summary>
         /// RETURNS A CLONE
         /// </summary>
@@ -203,6 +279,7 @@ namespace ME3Explorer.Packages
         public bool ReadsFromConfig { get; protected set; }
 
         bool dataChanged;
+
         public bool DataChanged
         {
             get => dataChanged;
@@ -222,6 +299,7 @@ namespace ME3Explorer.Packages
         }
 
         bool headerChanged;
+
         public bool HeaderChanged
         {
             get => headerChanged;
@@ -240,6 +318,7 @@ namespace ME3Explorer.Packages
         }
 
         private bool _entryHasPendingChanges = false;
+
         public bool EntryHasPendingChanges
         {
             get => _entryHasPendingChanges;
@@ -267,7 +346,12 @@ namespace ME3Explorer.Packages
             {
                 return properties;
             }
-            if (ClassName == "Class") { return new PropertyCollection(); } //no properties
+
+            if (ClassName == "Class")
+            {
+                return new PropertyCollection();
+            } //no properties
+
             //else if (!includeNoneProperties)
             //{
             //    int start = GetPropertyStart();
@@ -285,8 +369,9 @@ namespace ME3Explorer.Packages
             {
                 parsingClass = FileRef.getEntry(idxClass); //class we are defaults of
             }
+
             return PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
-                                                                                                                        //  }
+            //  }
         }
 
         public T GetProperty<T>(string name) where T : UProperty
@@ -331,6 +416,7 @@ namespace ME3Explorer.Packages
                 WriteProperties(props);
                 return true;
             }
+
             return false;
         }
 
@@ -338,14 +424,16 @@ namespace ME3Explorer.Packages
         public int GetPropertyStart()
         {
             IMEPackage pcc = FileRef;
-            if ((ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+            if ((ObjectFlags & (ulong) UnrealFlags.EObjectFlags.HasStack) != 0)
             {
                 if (pcc.Game != MEGame.ME3)
                 {
                     return 32;
                 }
+
                 return 30;
             }
+
             //if (!ObjectName.StartsWith("Default__"))
             //{
             //    switch (ClassName)
@@ -380,12 +468,25 @@ namespace ME3Explorer.Packages
                 //Debug.WriteLine("Primitive Component: " + ClassName + " (" + ObjectName + ")");
                 return 0x10; //Primitive Component
             }
+
             return result;
         }
 
-        public int NetIndex => BitConverter.ToInt32(_data, GetPropertyStart() - 4);
+        public int NetIndex
+        {
+            get => BitConverter.ToInt32(_data, GetPropertyStart() - 4);
+            set {
+                if (value != NetIndex)
+                {
+                    var data = Data;
+                    data.OverwriteRange(GetPropertyStart() - 4, BitConverter.GetBytes(value));
+                    Data = data;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        private int? propsEndOffset;
+    private int? propsEndOffset;
         public int propsEnd()
         {
             if (propsEndOffset.HasValue)

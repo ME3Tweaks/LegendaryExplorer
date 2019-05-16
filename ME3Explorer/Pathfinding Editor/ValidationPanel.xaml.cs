@@ -317,6 +317,8 @@ namespace ME3Explorer.Pathfinding_Editor
             int itemcount = 2;
 
             //This will update netindex'es for all items that start with TheWorld.PersistentLevel and are 3 items long.
+
+            List<int> NetIndexesInUse = new List<int>();
             foreach (IExportEntry exportEntry in Pcc.Exports)
             {
                 string path = exportEntry.GetFullPath;
@@ -327,8 +329,30 @@ namespace ME3Explorer.Pathfinding_Editor
                     continue;
                 }
 
+            }
+
+            int nextNetIndex = 1;
+            foreach (IExportEntry exportEntry in Pcc.Exports)
+            {
+                string path = exportEntry.GetFullPath;
+                string[] pieces = path.Split('.');
+
+                if (pieces.Length < 3 || pieces[0] != "TheWorld" || pieces[1] != "PersistentLevel")
+                {
+                    if ((exportEntry.ObjectFlags & (ulong) UnrealFlags.EObjectFlags.HasStack) != 0)
+                    {
+                        if (exportEntry.NetIndex >= 0)
+                        {
+                            Debug.WriteLine("Updating netindex on " + exportEntry.GetIndexedFullPath+" from "+exportEntry.NetIndex);
+                            exportEntry.NetIndex = nextNetIndex++;
+                        }
+                    }
+
+                    continue;
+                }
+
                 int idOffset = 0;
-                if ((PersistentLevel.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+                if ((exportEntry.ObjectFlags & (ulong) UnrealFlags.EObjectFlags.HasStack) != 0)
                 {
                     byte[] exportData = exportEntry.Data;
                     int classId1 = BitConverter.ToInt32(exportData, 0);
@@ -341,92 +365,19 @@ namespace ME3Explorer.Pathfinding_Editor
                         Debug.WriteLine($"Updating class type at start of export data {exportEntry.UIndex} {exportEntry.ClassName}");
                         //Update unreal header
                         exportData.OverwriteRange(0, BitConverter.GetBytes(metadataClass));
-                        exportData.OverwriteRange(4, BitConverter.GetBytes(metadataClass));
-                        numUpdated++;
                         exportEntry.Data = exportData;
-
                     }
-                    idOffset = 0x1A;
+
+                    if (exportEntry.NetIndex >= 0)
+                    {
+                        Debug.WriteLine("Updating netindex on " + exportEntry.GetIndexedFullPath + " from " + exportEntry.NetIndex);
+                        exportEntry.NetIndex = nextNetIndex++;
+                    }
                 }
 
-                //Maybe MP IDs??
-                //int maybe_MPID = BitConverter.ToInt32(exportEntry.Data, idOffset);
-                //List<int> idList;
-                //if (mpIDs.TryGetValue(maybe_MPID, out idList))
-                //{
-                //    //Debug.WriteLine(itemcount);
-                //    idList.Add(exportEntry.Index);
-                //}
-                //else
-                //{
-                //    mpIDs[maybe_MPID] = new List<int>();
-                //    mpIDs[maybe_MPID].Add(exportEntry.Index);
-                //}
                 itemcount++;
             }
-            /*
-                        //Update IDs
-                        for (int index = 0; index < mpIDs.Count; index++)
-                        {
-                            var item = mpIDs.ElementAt(index);
-                            List<int> valueList = item.Value;
-                            if (valueList.Count > 1 && item.Key != 0 && item.Key != -1)
-                            {
-                                string itemlist = Pcc.Exports[valueList[0]].ObjectName;
-                                for (int i = 1; i < valueList.Count; i++)
-                                // for (int i = valueList.Count - 1; i > 1; i--)
-                                {
-                                    int max = mpIDs.Keys.Max();
-                                    //Debug.WriteLine("New max key size: " + max);
-                                    IExportEntry export = Pcc.Exports[valueList[i]];
-                                    itemlist += " " + export.ObjectName;
-                                    string exportname = export.ObjectName;
-                                    if (exportname.Contains("SFXOperation") || exportname.Contains("ReachSpec"))
-                                    {
-
-                                        int idOffset = 0;
-                                        if ((export.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
-                                        {
-                                            idOffset = 0x1A;
-                                        }
-                                        byte[] exportData = export.Data;
-
-                                        int nameId = BitConverter.ToInt32(exportData, 4);
-
-                                        if (Pcc.isName(nameId) && Pcc.getNameEntry(nameId) == export.ObjectName)
-                                        {
-                                            //It's a primitive component header
-                                            idOffset += 8;
-                                            continue;
-                                        }
-                                        int maybe_MPID = BitConverter.ToInt32(exportData, idOffset);
-
-                                        max++;
-                                        int origId = maybe_MPID;
-                                        SharedPathfinding.WriteMem(exportData, idOffset, BitConverter.GetBytes(max));
-                                        numUpdated++;
-
-
-                                        maybe_MPID = BitConverter.ToInt32(exportData, idOffset); //read new fixed id
-                                        export.Data = exportData;
-
-                                        if (export.EntryHasPendingChanges)
-                                        {
-                                            Debug.WriteLine("Updated MPID " + origId + " -> " + maybe_MPID + " " + export.ObjectName + " in exp " + export.Index);
-                                        }
-                                        //add to new list to prevent rewrite of dupes.
-                                        mpIDs[maybe_MPID] = new List<int>();
-                                        mpIDs[maybe_MPID].Add(export.Index);
-                                    }
-
-                                }
-                                //Debug.WriteLine(itemlist);
-                            }
-                        }*/
-            //if (showUI)
-            //{
-            task?.Complete($"{numUpdated} export{(numUpdated != 1 ? "s" : "")} stack headers updated");
-            //}
+            task?.Complete($"{itemcount} stack headers updated");
         }
 
         public void relinkPathfindingChain(ListBoxTask task = null)

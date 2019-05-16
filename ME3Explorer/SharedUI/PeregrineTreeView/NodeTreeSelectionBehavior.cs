@@ -91,6 +91,7 @@ namespace ME3Explorer.SharedUI
                         catch (InvalidOperationException)
                         {
                             //This seems to be an internal exception
+                            return; //?
                         }
                         newParent = currentParent.ItemContainerGenerator.ContainerFromIndex(index) as TreeViewItem;
                     }

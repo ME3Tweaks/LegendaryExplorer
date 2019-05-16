@@ -67,6 +67,11 @@
                     <TextBlock Name="ByteShift_Textblock" Text="Byte shift:" VerticalAlignment="Center" Margin="5,0,0,0"/>
                     <xctk:ByteUpDown Name="ByteShift_UpDown" Width="40" VerticalAlignment="Stretch" Margin="5,0,0,0" Value="{Binding ByteShiftUpDownValue}" Minimum="0" Maximum="7" ValueChanged="ByteShift_UpDown_ValueChanged"/>
                 </StackPanel>
+
+                <Button Name="CopyTree_Button" ToolTip="Copies the tree to the clipboard as text" Click="CopyTree_Button_OnClick" VerticalAlignment="Center" Margin="5,0" Width="26">
+                    <fa:ImageAwesome Icon="Copy" Height="16" Width="16" Foreground="CornflowerBlue"/>
+                </Button>
+
                 <!--<Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>-->
             </ToolBar>
             <StatusBar Height="23" DockPanel.Dock="Bottom" Name="BinaryInterpreter_StatusBar">
@@ -107,7 +112,7 @@
                       BorderThickness="5,0"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-                    <TreeView Name="BinaryInterpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="BinaryInterpreter_TreeViewSelectedItemChanged" PreviewMouseRightButtonDown="BinaryInterpreter_TreeView_PreviewMouseRightButtonDown" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
+                    <TreeView Name="BinaryInterpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="BinaryInterpreter_TreeViewSelectedItemChanged" PreviewMouseRightButtonDown="BinaryInterpreter_TreeView_PreviewMouseRightButtonDown" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True" ItemsSource="{Binding TreeViewItems}">
                         <TreeView.Resources>
                             <HierarchicalDataTemplate DataType="{x:Type global:BinaryInterpreterWPFTreeViewItem}" ItemsSource="{Binding Items}">
                                 <TextBlock Text="{Binding Path=Header}" />
@@ -128,7 +133,7 @@
                                         </i:Interaction.Triggers>
 
 
-                                        
+
 
                                     </StackPanel>
                                 </StackPanel>

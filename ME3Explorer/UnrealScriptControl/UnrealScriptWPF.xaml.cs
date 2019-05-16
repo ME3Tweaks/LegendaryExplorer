@@ -30,6 +30,8 @@ namespace ME3Explorer
     public partial class UnrealScriptWPF : ExportLoaderControl
     {
         private HexBox ScriptEditor_Hexbox;
+        private bool ControlLoaded;
+
         public ObservableCollectionExtended<BytecodeSingularToken> TokenList { get; private set; } = new ObservableCollectionExtended<BytecodeSingularToken>();
         public ObservableCollectionExtended<object> DecompiledScriptBlocks { get; private set; } = new ObservableCollectionExtended<object>();
         public ObservableCollectionExtended<ScriptHeaderItem> ScriptHeaderBlocks { get; private set; } = new ObservableCollectionExtended<ScriptHeaderItem>();
@@ -238,7 +240,7 @@ namespace ME3Explorer
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
-                lines[i] = "    "+line; //textbuilder use 4 spaces
+                lines[i] = "    " + line; //textbuilder use 4 spaces
             }
             return string.Join("\n", lines);
         }
@@ -267,6 +269,8 @@ namespace ME3Explorer
                         {
                             int val = BitConverter.ToInt32(currentData, start);
                             s += $", Int: {val}";
+                            s += $", Float: {BitConverter.ToSingle(currentData, start)}";
+
                             if (CurrentLoadedExport.FileRef.isName(val))
                             {
                                 s += $", Name: {CurrentLoadedExport.FileRef.getNameEntry(val)}";
@@ -364,6 +368,7 @@ namespace ME3Explorer
         private void UnrealScriptWPF_Loaded(object sender, RoutedEventArgs e)
         {
             ScriptEditor_Hexbox = (HexBox)ScriptEditor_Hexbox_Host.Child;
+            ControlLoaded = true;
         }
 
         private void ByteProviderBytesChanged(object sender, EventArgs e)
@@ -454,7 +459,7 @@ namespace ME3Explorer
             if (me1statement != null)
             {
                 //todo: figure out how length could be calculated
-                ScriptEditor_Hexbox.Highlight(me1statement.StartOffset + BytecodeStart, me1statement.EndOffset-me1statement.StartOffset);
+                ScriptEditor_Hexbox.Highlight(me1statement.StartOffset + BytecodeStart, me1statement.EndOffset - me1statement.StartOffset);
             }
         }
 
@@ -489,6 +494,14 @@ namespace ME3Explorer
             ScriptEditor_Hexbox = null;
             ScriptEditor_Hexbox_Host.Child.Dispose();
             ScriptEditor_Hexbox_Host.Dispose();
+        }
+
+        private void StartOffset_Changed(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (ControlLoaded)
+            {
+                ScriptEditor_PreviewScript_Click(null, null);
+            }
         }
     }
 }
