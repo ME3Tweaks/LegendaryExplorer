@@ -3628,7 +3628,7 @@ namespace ME3Explorer
 
         private void RefreshProperties_Clicked(object sender, RoutedEventArgs e)
         {
-            var properties = InterpreterTab_Interpreter.CurrentLoadedExport.GetProperties();
+            var properties = InterpreterTab_Interpreter.CurrentLoadedExport?.GetProperties();
         }
 
         private void PrintLoadedPackages_Clicked(object sender, RoutedEventArgs e)
