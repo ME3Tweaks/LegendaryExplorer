@@ -3164,6 +3164,20 @@ namespace ME3Explorer
                 Index = index;
                 Name = name;
             }
+
+            public override bool Equals(Object obj)
+            {
+                //Check for null and compare run-time types.
+                if ((obj == null) || this.GetType() != obj.GetType())
+                {
+                    return false;
+                }
+                else
+                {
+                    IndexedName other = (IndexedName)obj;
+                    return Index == other.Index && Name == other.Name;
+                }
+            }
         }
 
         private void BinaryInterpreterWPF_AlwaysAutoParse_Click(object sender, RoutedEventArgs e)

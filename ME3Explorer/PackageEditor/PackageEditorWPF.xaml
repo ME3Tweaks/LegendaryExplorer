@@ -261,7 +261,7 @@
                             </StackPanel>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type Packages:ImportEntry}">
-                            <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource EntryContextMenu}">
+                            <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent">
                                 <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
                                 <TextBlock Text="{Binding Path=GetFullPath}" Foreground="Black" Margin="5,0,0,0"/>
                             </StackPanel>
