@@ -1842,7 +1842,7 @@ namespace ME3Explorer
 
             //we might need to identify parent depths and add those first
             List<PackageUpdate> addedChanges = updates.Where(x => x.change == PackageChange.ExportAdd || x.change == PackageChange.ImportAdd).OrderBy(x => x.index).ToList();
-            List<int> headerChanges = updates.Where(x => x.change == PackageChange.ExportHeader || x.change == PackageChange.Import).Select(x => x.index).OrderBy(x => x).ToList();
+            List<int> headerChanges = updates.Where(x => x.change == PackageChange.ExportHeader || x.change == PackageChange.Import).Select(x => x.change == PackageChange.ExportHeader ? x.index + 1 : -x.index - 1).OrderBy(x => x).ToList();
             if (addedChanges.Count > 0)
             {
                 ClassDropdownList.ReplaceAll(Pcc.Exports.Select(x => x.idxClass).Distinct().Select(Pcc.getObjectName).ToList().OrderBy(p => p));
@@ -1903,6 +1903,8 @@ namespace ME3Explorer
                     }
                 }
 
+
+                //Author: Mgamerz
                 if (CurrentView == CurrentViewMode.Exports)
                 {
                     foreach (PackageUpdate update in addedChangesByUIndex)
@@ -1918,7 +1920,8 @@ namespace ME3Explorer
             {
                 List<TreeViewEntry> tree = AllTreeViewNodesX[0].FlattenTree();
                 var nodesNeedingResort = new List<TreeViewEntry>();
-                List<TreeViewEntry> tviWithChangedHeaders = tree.Where(x => x.UIndex != 0 && headerChanges.Contains(x.Entry.Index)).ToList();
+
+                List<TreeViewEntry> tviWithChangedHeaders = tree.Where(x => x.UIndex != 0 && headerChanges.Contains(x.Entry.UIndex)).ToList();
                 foreach (TreeViewEntry tvi in tviWithChangedHeaders)
                 {
                     if (tvi.Parent.UIndex != tvi.Entry.idxLink)
@@ -2000,8 +2003,10 @@ namespace ME3Explorer
                     {
                         IndexedName indexed = new IndexedName(update.index, Pcc.Names[update.index]);
                         NamesList[update.index] = indexed;
-                        LeftSideList_ItemsSource[update.index] = indexed;
-
+                        if (CurrentView == CurrentViewMode.Names)
+                        {
+                            LeftSideList_ItemsSource[update.index] = indexed;
+                        }
                     }
                 }
             }
@@ -3780,9 +3785,9 @@ namespace ME3Explorer
         private void ListLinkerValues_Click(object sender, RoutedEventArgs e)
         {
             List<string> strs = new List<String>();
-            foreach (IExportEntry exp in Pcc.Exports.Where(x=>x.LinkerIndex >= 0).OrderBy(x=>x.LinkerIndex))
+            foreach (IExportEntry exp in Pcc.Exports.Where(x => x.LinkerIndex >= 0).OrderBy(x => x.LinkerIndex))
             {
-                strs.Add($"UI:{exp.UIndex} -> LI:{BitConverter.ToInt32(exp.Data,0)} = {exp.GetIndexedFullPath}");
+                strs.Add($"UI:{exp.UIndex} -> LI:{BitConverter.ToInt32(exp.Data, 0)} = {exp.GetIndexedFullPath}");
             }
 
             var d = new ListDialog(strs, "Linker Indexes", "Here are the linker indexes in this file", this);
