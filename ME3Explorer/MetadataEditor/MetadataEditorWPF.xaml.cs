@@ -338,11 +338,11 @@ namespace ME3Explorer.MetadataEditor
                         s += $"Length=0x{len.ToString("X8")} ";
                         s += $"End=0x{(start + len - 1).ToString("X8")}";
                     }
-                    Header_Hexbox_SelectedBytesLabel.Content = s;
+                    Header_Hexbox_SelectedBytesLabel.Text = s;
                 }
                 else
                 {
-                    Header_Hexbox_SelectedBytesLabel.Content = "Nothing Selected";
+                    Header_Hexbox_SelectedBytesLabel.Text = "Nothing Selected";
                 }
             }
             catch (Exception)
