@@ -286,6 +286,7 @@ namespace ME3Explorer.MetadataEditor
             InfoTab_PackageFile_ComboBox.SelectedIndex = importEntry.FileRef.findName(System.IO.Path.GetFileNameWithoutExtension(importEntry.PackageFile));
             InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(importEntry.Header, HEADER_OFFSET_IMP_IDXOBJECTNAME + 4).ToString();
             CurrentLoadedEntry = importEntry;
+            OriginalHeader = CurrentLoadedEntry.Header;
             headerByteProvider.ReplaceBytes(CurrentLoadedEntry.Header);
             Header_Hexbox.Refresh();
             HexChanged = false;
@@ -617,7 +618,6 @@ namespace ME3Explorer.MetadataEditor
 
         public override void SignalNamelistAboutToUpdate()
         {
-            bool changingIndexes = CurrentObjectNameIndex >= 0 && CurrentObjectNameIndex != InfoTab_Objectname_ComboBox.SelectedIndex;
             CurrentObjectNameIndex = CurrentObjectNameIndex >= 0 ? CurrentObjectNameIndex : InfoTab_Objectname_ComboBox.SelectedIndex;
         }
 
