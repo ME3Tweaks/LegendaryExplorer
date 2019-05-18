@@ -23,6 +23,8 @@ namespace ME3Explorer.Packages
         string PackageFullName { get; }
         string PackageName { get; }
         byte[] GetHeader(); //returns clone
+        bool HasParent { get; }
+        IEntry Parent { get; set; }
     }
 
     public interface IExportEntry : IEntry

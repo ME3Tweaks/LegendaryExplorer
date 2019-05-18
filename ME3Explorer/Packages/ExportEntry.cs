@@ -244,9 +244,14 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public string GetIndexedFullPath
+        public string GetIndexedFullPath => GetFullPath + "_" + indexValue;
+
+        public bool HasParent => FileRef.isEntry(idxLink);
+
+        public IEntry Parent
         {
-            get { return GetFullPath + "_" + indexValue; }
+            get => FileRef.getEntry(idxLink);
+            set => idxLink = value.UIndex;
         }
 
         //NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
@@ -486,7 +491,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-    private int? propsEndOffset;
+        private int? propsEndOffset;
         public int propsEnd()
         {
             if (propsEndOffset.HasValue)

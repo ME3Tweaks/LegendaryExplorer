@@ -108,8 +108,6 @@ namespace ME3Explorer.Sequence_Editor
             ExportQueuedForFocusing = export;
         }
 
-        #region Properties and Bindings
-
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
@@ -243,8 +241,6 @@ namespace ME3Explorer.Sequence_Editor
             return Pcc != null;
         }
 
-        #endregion Properties and Bindings
-
         public void LoadFile(string fileName)
         {
             try
@@ -290,7 +286,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 switch (export.ClassName)
                 {
-                    case "Sequence" when !Pcc.getObjectClass(export.idxLink).Contains("Sequence"):
+                    case "Sequence" when !(export.HasParent && export.Parent.IsSequence()):
                         TreeViewRootNodes.Add(FindSequences(export, export.ObjectName != "Main_Sequence"));
                         SequenceExports.Add(export);
                         break;
@@ -998,10 +994,10 @@ namespace ME3Explorer.Sequence_Editor
                                                                             x.change != PackageChange.ImportAdd &&
                                                                             x.change != PackageChange.Names);
             List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (updatedExports.Contains(SelectedSequence.Index))
+            if (SelectedSequence != null && updatedExports.Contains(SelectedSequence.Index))
             {
                 //loaded sequence is no longer a sequence
-                if (!SelectedSequence.ClassName.Contains("Sequence"))
+                if (!SelectedSequence.IsSequence())
                 {
                     SelectedSequence = null;
                     graphEditor.nodeLayer.RemoveAllChildren();
@@ -1024,7 +1020,7 @@ namespace ME3Explorer.Sequence_Editor
 
             foreach (var i in updatedExports)
             {
-                if (Pcc.getExport(i).ClassName.Contains("Sequence"))
+                if (Pcc.getExport(i).IsSequence())
                 {
                     LoadSequences();
                     break;
@@ -1184,6 +1180,11 @@ namespace ME3Explorer.Sequence_Editor
         private void removeAllLinks(object sender, RoutedEventArgs args)
         {
             IExportEntry export = (IExportEntry)((MenuItem)sender).Tag;
+            removeAllLinks(export);
+        }
+
+        private static void removeAllLinks(IExportEntry export)
+        {
             var props = export.GetProperties();
             var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
             if (outLinksProp != null)
@@ -1202,6 +1203,7 @@ namespace ME3Explorer.Sequence_Editor
                     prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
                 }
             }
+
             var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
             if (eventLinksProp != null)
             {
@@ -1210,7 +1212,58 @@ namespace ME3Explorer.Sequence_Editor
                     prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Clear();
                 }
             }
+
             export.WriteProperties(props);
+        }
+
+        private void RemoveFromSequence_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SObj sObj)
+            {
+                //remove incoming connections TODO: FIX
+                switch (sObj)
+                {
+                    case SVar sVar:
+                        foreach (VarEdge edge in sVar.connections)
+                        {
+                            edge.originator.RemoveVarlink(edge);
+                        }
+                        break;
+                    case SAction sAction:
+                        foreach (SBox.InputLink inLink in sAction.InLinks)
+                        {
+                            foreach (ActionEdge edge in inLink.Edges)
+                            {
+                                edge.originator.RemoveOutlink(edge);
+                            }
+                        }
+                        break;
+                    case SEvent sEvent:
+                        foreach (EventEdge edge in sEvent.connections)
+                        {
+                            edge.originator.RemoveEventlink(edge);
+                        }
+                        break;
+                }
+
+                //remove outgoing links
+                removeAllLinks(sObj.Export);
+
+                //remove from sequence
+                var seqObjs = SelectedSequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                var arrayObj = seqObjs?.FirstOrDefault(x => x.Value == sObj.UIndex);
+                if (arrayObj != null)
+                {
+                    seqObjs.Remove(arrayObj);
+                    SelectedSequence.WriteProperty(seqObjs);
+                }
+
+                //set ParentSequence to null
+                var parentSeqProp = sObj.Export.GetProperty<ObjectProperty>("ParentSequence");
+                parentSeqProp.Value = 0;
+                sObj.Export.WriteProperty(parentSeqProp);
+
+            }
         }
 
         protected void node_MouseDown(object sender, PInputEventArgs e)
@@ -1602,7 +1655,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 Properties_InterpreterWPF.LoadExport(SelectedObjects[0].Export);
             }
-            else if (!(Properties_InterpreterWPF.CurrentLoadedExport?.ClassName.Contains("Sequence") ?? false))
+            else if (!(Properties_InterpreterWPF.CurrentLoadedExport?.IsSequence() ?? false))
             {
                 Properties_InterpreterWPF.UnloadExport();
             }
@@ -1798,22 +1851,10 @@ namespace ME3Explorer.Sequence_Editor
                 }
             }
         }
+    }
 
-        private void RemoveFromSequence_Click(object sender, RoutedEventArgs e)
-        {
-            //Todo: Dialog to confirm? Offer to remove all incoming links (if any)?
-            //Currently you must be sure that you won't leave hanging nodes
-            //Also todo: Disable this menuitem when its not available for use.
-            if (CurrentObjects_ListBox.SelectedItem is SObj obj)
-            {
-                var seqObjs = SelectedSequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                var arrayObj = seqObjs?.FirstOrDefault(x => x.Value == obj.UIndex);
-                if (arrayObj != null)
-                {
-                    seqObjs.Remove(new ObjectProperty(obj.UIndex));
-                    SelectedSequence.WriteProperty(seqObjs);
-                }
-            }
-        }
+    static class SequenceEditorExtensions
+    {
+        public static bool IsSequence(this IEntry entry) => entry.inheritsFrom("Sequence");
     }
 }

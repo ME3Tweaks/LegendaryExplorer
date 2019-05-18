@@ -1,9 +1,9 @@
-﻿<Window x:Class="HexConverterWPF.MainWindow"
+﻿<Window x:Class="HexConverter.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:HexConverterWPF"
+        xmlns:local="clr-namespace:HexConverter"
         mc:Ignorable="d"
         Title="Hex Converter" Height="192" Width="260">
     <Grid Margin="5">
@@ -29,8 +29,8 @@
         <TextBlock Text="Press enter to convert" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" FontSize="11" Foreground="Gray"/>
 
 
-        <TextBox Name="LittleEndian_TextBox" Text="{Binding LittleEndianText}"  Grid.Row="0" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
-        <TextBox Name="BigEndian_TextBox" Text="{Binding BigEndianText}" Grid.Row="1" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
+        <TextBox Name="LittleEndian_TextBox" Text="{Binding LittleEndianText}"  Grid.Row="0" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp" PreviewTextInput="Hex_TextBox_PreviewTextInput"/>
+        <TextBox Name="BigEndian_TextBox" Text="{Binding BigEndianText}" Grid.Row="1" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp" PreviewTextInput="Hex_TextBox_PreviewTextInput"/>
         <TextBox Name="Signed_TextBox" Text="{Binding SignedIntegerText}" MaxLength="11" Grid.Row="2" Height="20" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
         <TextBox Name="Unsigned_TextBox" Text="{Binding UnsignedIntegerText}" MaxLength="10" Grid.Row="3" Height="20" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
         <TextBox Name="Float_TextBox" Text="{Binding FloatText}" MaxLength="8" Grid.Row="4" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>

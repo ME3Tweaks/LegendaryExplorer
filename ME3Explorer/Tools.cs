@@ -32,7 +32,7 @@ namespace ME3Explorer
 
         // Using a DependencyProperty as the backing store for IsFavorited.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsFavoritedProperty =
-            DependencyProperty.Register("IsFavorited", typeof(bool), typeof(Tool), new PropertyMetadata(false, OnIsFavoritedChanged));
+            DependencyProperty.Register(nameof(IsFavorited), typeof(bool), typeof(Tool), new PropertyMetadata(false, OnIsFavoritedChanged));
 
         private static void OnIsFavoritedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -50,13 +50,7 @@ namespace ME3Explorer
 
         public static event EventHandler FavoritesChanged;
 
-        public static IReadOnlyCollection<Tool> Items
-        {
-            get
-            {
-                return items;
-            }
-        }
+        public static IReadOnlyCollection<Tool> Items => items;
 
         public static void Initialize()
         {
@@ -683,7 +677,7 @@ namespace ME3Explorer
                 if (File.Exists(FavoritesPath))
                 {
                     string raw = File.ReadAllText(FavoritesPath);
-                    HashSet<string> favorites = JsonConvert.DeserializeObject<HashSet<string>>(raw);
+                    var favorites = JsonConvert.DeserializeObject<HashSet<string>>(raw);
                     foreach (var tool in items)
                     {
                         if (favorites.Contains(tool.name))
@@ -707,7 +701,7 @@ namespace ME3Explorer
                 FavoritesChanged.Invoke(null, EventArgs.Empty);
                 try
                 {
-                    HashSet<string> favorites = new HashSet<string>();
+                    var favorites = new HashSet<string>();
                     foreach (var tool in items)
                     {
                         if (tool.IsFavorited)

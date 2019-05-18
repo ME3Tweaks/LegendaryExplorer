@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer
 {
@@ -904,7 +905,7 @@ namespace ME3Explorer
             int n = listBox1.SelectedIndex;
             if (n == -1) return;
             Entries temp = Entry[n];
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new ID", "ME3 Explorer", temp.id.ToString(), 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new ID", "ME3 Explorer", temp.id.ToString(), true);
             int x;
             if (!int.TryParse(result, out x))
             {
@@ -922,7 +923,7 @@ namespace ME3Explorer
         private void forIDToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = listBox1.SelectedIndex;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter string to search for", "ME3 Explorer", lastsearch, 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter string to search for", "ME3 Explorer", lastsearch, true);
             if (result == "")
                 return;
             lastsearch = result.ToLower();

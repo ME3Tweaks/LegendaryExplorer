@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace ME3Explorer.SequenceObjects
     {
         public PNode start;
         public PNode end;
+        public SBox originator;
     }
     public class VarEdge : SeqEdEdge
     {
@@ -31,11 +33,13 @@ namespace ME3Explorer.SequenceObjects
     {
     }
 
+    [DebuggerDisplay("ActionEdge | {originator} to {inputIndex}")]
     public class ActionEdge : SeqEdEdge
     {
         public int inputIndex;
     }
 
+    [DebuggerDisplay("SObj | #{UIndex}: {export.ObjectName}")]
     public abstract class SObj : PNode, IDisposable
     {
         public IMEPackage pcc;
@@ -152,6 +156,7 @@ namespace ME3Explorer.SequenceObjects
         }
     }
 
+    [DebuggerDisplay("SVar | #{UIndex}: {export.ObjectName}")]
     public class SVar : SObj
     {
         public const float RADIUS = 30;
@@ -418,6 +423,7 @@ namespace ME3Explorer.SequenceObjects
         }
     }
 
+    [DebuggerDisplay("SFrame | #{UIndex}: {export.ObjectName}")]
     public class SFrame : SObj
     {
         protected PPath shape;
@@ -481,6 +487,7 @@ namespace ME3Explorer.SequenceObjects
         }
     }
 
+    [DebuggerDisplay("SBox | #{UIndex}: {export.ObjectName}")]
     public abstract class SBox : SObj
     {
         public override IEnumerable<SeqEdEdge> Edges => Outlinks.SelectMany(l => l.Edges).Cast<SeqEdEdge>()
@@ -550,9 +557,9 @@ namespace ME3Explorer.SequenceObjects
         {
             foreach (OutputLink outLink in Outlinks)
             {
-                foreach (SAction destAction in objects.OfType<SAction>())
+                for (int j = 0; j < outLink.Links.Count; j++)
                 {
-                    for (int j = 0; j < outLink.Links.Count; j++)
+                    foreach (SAction destAction in objects.OfType<SAction>())
                     {
                         if (destAction.UIndex == outLink.Links[j])
                         {
@@ -564,6 +571,7 @@ namespace ME3Explorer.SequenceObjects
                             destAction.InputEdges.Add(edge);
                             edge.start = p1;
                             edge.end = destAction;
+                            edge.originator = this;
                             edge.inputIndex = outLink.InputIndices[j];
                             g.addEdge(edge);
                             outLink.Edges.Add(edge);
@@ -573,9 +581,9 @@ namespace ME3Explorer.SequenceObjects
             }
             foreach (VarLink varLink in Varlinks)
             {
-                foreach (SVar destVar in objects.OfType<SVar>())
+                foreach (int link in varLink.Links)
                 {
-                    foreach (int link in varLink.Links)
+                    foreach (SVar destVar in objects.OfType<SVar>())
                     {
                         if (destVar.UIndex == link)
                         {
@@ -589,6 +597,7 @@ namespace ME3Explorer.SequenceObjects
                             destVar.connections.Add(edge);
                             edge.start = p1;
                             edge.end = destVar;
+                            edge.originator = this;
                             g.addEdge(edge);
                             varLink.Edges.Add(edge);
                         }
@@ -597,9 +606,9 @@ namespace ME3Explorer.SequenceObjects
             }
             foreach (EventLink eventLink in EventLinks)
             {
-                foreach (SEvent destEvent in objects.OfType<SEvent>())
+                foreach (int link in eventLink.Links)
                 {
-                    foreach (int link in eventLink.Links)
+                    foreach (SEvent destEvent in objects.OfType<SEvent>())
                     {
                         if (destEvent.UIndex == link)
                         {
@@ -608,7 +617,8 @@ namespace ME3Explorer.SequenceObjects
                             {
                                 Pen = new Pen(EventColor),
                                 start = p1,
-                                end = destEvent
+                                end = destEvent,
+                                originator = this
                             };
                             if (p1.Tag == null)
                                 p1.Tag = new List<EventEdge>();
@@ -802,6 +812,7 @@ namespace ME3Explorer.SequenceObjects
                 ((List<ActionEdge>)p2.Tag).Add(edge);
                 edge.start = p1;
                 edge.end = p2;
+                edge.originator = sObj;
                 graphEditor.addEdge(edge);
                 base.OnStartDrag(sender, e);
                 draggingOutlink = true;
@@ -861,6 +872,7 @@ namespace ME3Explorer.SequenceObjects
                 ((List<VarEdge>)p2.Tag).Add(edge);
                 edge.start = p1;
                 edge.end = p2;
+                edge.originator = sObj;
                 graphEditor.addEdge(edge);
                 base.OnStartDrag(sender, e);
                 draggingVarlink = true;
@@ -921,6 +933,7 @@ namespace ME3Explorer.SequenceObjects
                 ((List<EventEdge>)p2.Tag).Add(edge);
                 edge.start = p1;
                 edge.end = p2;
+                edge.originator = sObj;
                 graphEditor.addEdge(edge);
                 base.OnStartDrag(sender, e);
                 draggingEventlink = true;
@@ -1058,6 +1071,22 @@ namespace ME3Explorer.SequenceObjects
                 }
             }
         }
+        public void RemoveOutlink(ActionEdge edge)
+        {
+            for (int i = 0; i < Outlinks.Count; i++)
+            {
+                OutputLink outLink = Outlinks[i];
+                for (int j = 0; j < outLink.Edges.Count; j++)
+                {
+                    ActionEdge actionEdge = outLink.Edges[j];
+                    if (actionEdge == edge)
+                    {
+                        RemoveOutlink(i, j);
+                        return;
+                    }
+                }
+            }
+        }
 
         public void RemoveOutlink(int linkconnection, int linkIndex)
         {
@@ -1078,6 +1107,23 @@ namespace ME3Explorer.SequenceObjects
             }
         }
 
+        public void RemoveVarlink(VarEdge edge)
+        {
+            for (int i = 0; i < Varlinks.Count; i++)
+            {
+                VarLink varlink = Varlinks[i];
+                for (int j = 0; j < varlink.Edges.Count; j++)
+                {
+                    VarEdge varEdge = varlink.Edges[j];
+                    if (varEdge == edge)
+                    {
+                        RemoveVarlink(i, j);
+                        return;
+                    }
+                }
+            }
+        }
+
         public void RemoveVarlink(int linkconnection, int linkIndex)
         {
             string linkDesc = Varlinks[linkconnection].Desc;
@@ -1090,6 +1136,23 @@ namespace ME3Explorer.SequenceObjects
                     {
                         prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").RemoveAt(linkIndex);
                         export.WriteProperty(varLinksProp);
+                        return;
+                    }
+                }
+            }
+        }
+
+        public void RemoveEventlink(EventEdge edge)
+        {
+            for (int i = 0; i < EventLinks.Count; i++)
+            {
+                EventLink eventLink = EventLinks[i];
+                for (int j = 0; j < eventLink.Edges.Count; j++)
+                {
+                    EventEdge eventEdge = eventLink.Edges[j];
+                    if (eventEdge == edge)
+                    {
+                        RemoveEventlink(i, j);
                         return;
                     }
                 }
@@ -1133,6 +1196,7 @@ namespace ME3Explorer.SequenceObjects
         }
     }
 
+    [DebuggerDisplay("SEvent | #{UIndex}: {export.ObjectName}")]
     public class SEvent : SBox
     {
         public List<EventEdge> connections = new List<EventEdge>();
@@ -1279,6 +1343,7 @@ namespace ME3Explorer.SequenceObjects
         //}
     }
 
+    [DebuggerDisplay("SAction | #{UIndex}: {export.ObjectName}")]
     public class SAction : SBox
     {
         public override IEnumerable<SeqEdEdge> Edges => InLinks.SelectMany(l => l.Edges).Union(base.Edges);

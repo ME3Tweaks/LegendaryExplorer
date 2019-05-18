@@ -61,6 +61,14 @@ namespace ME3Explorer.Packages
             return _header.TypedClone();
         }
 
+        public bool HasParent => FileRef.isEntry(idxLink);
+
+        public IEntry Parent
+        {
+            get => FileRef.getEntry(idxLink);
+            set => idxLink = value.UIndex;
+        }
+
         public int idxPackageFile { get => BitConverter.ToInt32(Header, 0);
             set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; } }
         //int PackageNameNumber
@@ -148,6 +156,8 @@ namespace ME3Explorer.Packages
 
 
         private bool _entryHasPendingChanges = false;
+        private IEntry _entryImplementation;
+
         public bool EntryHasPendingChanges
         {
             get => _entryHasPendingChanges;

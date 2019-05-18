@@ -1968,7 +1968,7 @@ namespace ME3Explorer
                     GoToNumber(n);
                 }
             }
-            else if ((CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree) && hasSelection &&
+            if ((CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree) && hasSelection &&
                      updates.Contains(new PackageUpdate { index = n - 1, change = PackageChange.ExportData }))
             {
                 Preview(true);

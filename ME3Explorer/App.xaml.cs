@@ -91,7 +91,7 @@ namespace ME3Explorer
             SequenceObjects.SText.LoadFont();
 
 
-            System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
+            System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
 
             splashScreen.Close(TimeSpan.FromMilliseconds(1));
             if (HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode) == 0)
@@ -100,7 +100,7 @@ namespace ME3Explorer
             }
             else
             {
-                this.Dispatcher.UnhandledException += OnDispatcherUnhandledException; //only start handling them after bootup
+                Dispatcher.UnhandledException += OnDispatcherUnhandledException; //only start handling them after bootup
                 (new MainWindow()).Show();
             }
         }

@@ -12,10 +12,12 @@ namespace ME3Explorer
         private readonly StreamWriter writer;
         private byte indent;
         private bool writingLine;
+        private readonly string indentString;
 
-        public CodeWriter(Stream stream)
+        public CodeWriter(Stream stream, string indentString = "    ")
         {
             writer = new StreamWriter(stream);
+            this.indentString = indentString;
         }
 
         public void IncreaseIndent(byte amount = 1)
@@ -32,30 +34,32 @@ namespace ME3Explorer
             indent -= amount;
         }
 
+        public void WriteIndent()
+        {
+            for (int i = 0; i < indent; i++)
+            {
+                writer.Write(indentString);
+            }
+        }
+
         public void Write(string text)
         {
-            if (writingLine)
+            if (!writingLine)
             {
-                writer.Write(text);
-            }
-            else
-            {
+                WriteIndent();
                 writingLine = true;
-                writer.Write($"{new string(' ', indent * 4)}{text}");
             }
+            writer.Write(text);
         }
 
         public void WriteLine(string line)
         {
-            if (writingLine)
+            if (!writingLine)
             {
-                writer.WriteLine(line);
-                writingLine = false;
+                WriteIndent();
             }
-            else
-            {
-                writer.WriteLine($"{new string(' ', indent * 4)}{line}");
-            }
+            writingLine = false;
+            writer.WriteLine(line);
         }
 
         public void WriteLine()

@@ -733,4 +733,12 @@ namespace ME3Explorer
             return q.ToArray();
         }
     }
+
+    public static class TypeExtension
+    {
+        public static object InvokeGenericMethod(this Type type, string methodName, Type genericType, object invokeOn, params object[] parameters)
+        {
+            return type.GetMethod(methodName).MakeGenericMethod(genericType).Invoke(invokeOn, parameters);
+        }
+    }
 }

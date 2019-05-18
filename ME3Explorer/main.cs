@@ -125,7 +125,7 @@ namespace ME3Explorer
         //
         public int SignalExternalCommandLineArgs(string[] args)
         {
-            int taskListResponse = HandleCommandLineJumplistCall(args, out int exitCode);
+            int taskListResponse = HandleCommandLineJumplistCall(args, out _);
             if (taskListResponse == 0)
             {
                 //just a new instance
