@@ -4237,6 +4237,140 @@ namespace ME3Explorer
                 });
 
                 start += nxsLength;
+                int yetAnotherCount1 = BitConverter.ToInt32(data, start);
+                var yetAnotherNode = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.Unknown,
+                    Header = $"{start:X4}| Unknown 4-Item Tuple List",
+                    Name = "_" + start
+                };
+                subnodesTop.Add(yetAnotherNode);
+                start += 4;
+
+                //yetAnotherNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                //{
+                //    Tag = NodeType.Unknown,
+                //    Header = $"{(start):X4}| Int?: {BitConverter.ToInt32(data,start)}",
+                //    Name = "_" + start
+                //});
+                //start += 4;
+                //yetAnotherNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                //{
+                //    Tag = NodeType.Unknown,
+                //    Header = $"{(start):X4}| Floating Point #?: {BitConverter.ToSingle(data, start)}",
+                //    Name = "_" + start
+                //});
+                //start += 4;
+                //yetAnotherNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                //{
+                //    Tag = NodeType.Unknown,
+                //    Header = $"{(start):X4}| Floating Point #?: {BitConverter.ToSingle(data, start)}",
+                //    Name = "_" + start
+                //});
+                //start += 4;
+                //yetAnotherNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                //{
+                //    Tag = NodeType.Unknown,
+                //    Header = $"{(start):X4}| Floating Point #?: {BitConverter.ToSingle(data, start)}",
+                //    Name = "_" + start
+                //});
+                //start += 4;
+
+                for (int i = 0; i < yetAnotherCount1; i++)
+                {
+                    int ID = BitConverter.ToInt32(data, start);
+                    var subFloatingPointNode = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4}| Mapping? ID: {ID}",
+                        Name = "_" + start
+                    };
+                    start += 4;
+                    yetAnotherNode.Items.Add(subFloatingPointNode);
+                    for (int k = 0; k < 4; k++)
+                    {
+                        subFloatingPointNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Tag = NodeType.Unknown,
+                            Header = $"{start:X4}| { (k == 3 ? BitConverter.ToInt32(data, start) : BitConverter.ToSingle(data,start))}",
+                            Name = "_" + start
+                        });
+                        start += 4;
+                    }
+                }
+
+                int cvxmCount = BitConverter.ToInt32(data, start);
+                var nvscxvmItems = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.Unknown,
+                    Header = $"{start:X4}| NXS CVXM items: {cvxmCount}",
+                    Name = "_" + start
+                };
+                subnodesTop.Add(nvscxvmItems);
+                start += 4;
+
+                for (int i = 0; i < cvxmCount; i++)
+                {
+                    var nvscxvmItem = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4}| NXS CVXM Item",
+                        Name = "_" + start
+                    };
+                    nvscxvmItems.Items.Add(nvscxvmItem);
+
+                    nvscxvmItem.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4}| Const 1?: {BitConverter.ToInt32(data, start)}",
+                        Name = "_" + start
+                    });
+
+                    start += 4;
+                    nvscxvmItem.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4}| Const 1?: {BitConverter.ToInt32(data,start)}",
+                        Name = "_" + start
+                    });
+                    start += 4;
+
+                    int size = BitConverter.ToInt32(data, start);
+                    nvscxvmItem.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4}| CVXM Size: {size} ({size:X5}",
+                        Name = "_" + start
+                    });
+                    start += 4;
+
+
+                    nvscxvmItem.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4}| CVXM TheWorld?: {CurrentLoadedExport.FileRef.getNameEntry(BitConverter.ToInt32(data,start))}",
+                        Name = "_" + start
+                    });
+                    start += 8;
+
+                    nvscxvmItem.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4}| CVXM Unknown: {BitConverter.ToInt32(data, start)}",
+                        Name = "_" + start
+                    });
+                    start += 8; //Skip a blank
+
+                    nvscxvmItem.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4}| NXS CVXM 0x{start:X4} - 0x{(start + size):X4}",
+                        Name = "_" + start
+                    });
+
+                    start += size - 16;
+                }
+
                 binarystart = start;
             }
             catch (Exception ex)
