@@ -3152,10 +3152,9 @@ namespace ME3Explorer
 
         private void HexConverterMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            string loc = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-            if (File.Exists(loc + @"\HexConverterWPF.exe"))
+            if (File.Exists(App.HexConverterPath))
             {
-                Process.Start(loc + @"\HexConverterWPF.exe");
+                Process.Start(App.HexConverterPath);
             }
         }
 

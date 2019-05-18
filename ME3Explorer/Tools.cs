@@ -193,9 +193,8 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconHexConverter") as ImageSource,
                 open = () =>
                 {
-                    string loc = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                    if (File.Exists(loc + "\\HexConverterWPF.exe"))
-                        Process.Start(loc + "\\HexConverterWPF.exe");
+                    if (File.Exists(App.HexConverterPath))
+                        Process.Start(App.HexConverterPath);
                 },
                 tags = new List<string> { "utility", "code", "endian", "convert", "integer", "float" },
                 subCategory = "Converters",
