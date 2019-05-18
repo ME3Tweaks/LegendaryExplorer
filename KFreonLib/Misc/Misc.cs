@@ -41,7 +41,7 @@ namespace KFreonLib.Misc
                     //if (Directory.Exists(MEExDirecs.GetDifferentPathBIOGame(i + 1)))
                     string temp = MEExDirecs.GetDifferentPathBIOGame(i + 1).TrimEnd(Path.DirectorySeparatorChar);
                     string tocPath = null;
-                    switch(i)
+                    switch (i)
                     {
                         case 0:
                             temp = Path.GetDirectoryName(temp);
@@ -103,7 +103,7 @@ namespace KFreonLib.Misc
                     {
                         result.Add(item.Item2);
                     }
-                    return result; 
+                    return result;
                 }
                 else
                 {
@@ -115,9 +115,11 @@ namespace KFreonLib.Misc
 
         public static int GetDLCPriority(string DLCBasePath)
         {
+            string file = DLCBasePath + "\\CookedPCConsole\\Mount.dlc";
+            if (!File.Exists(file)) return -1;
             try
             {
-                using (System.IO.FileStream s = new FileStream(DLCBasePath + "\\CookedPCConsole\\Mount.dlc", FileMode.Open))
+                using (System.IO.FileStream s = new FileStream(file, FileMode.Open))
                 {
                     byte[] pdata = new byte[2];
                     s.Seek(16, SeekOrigin.Begin);
@@ -212,7 +214,7 @@ namespace KFreonLib.Misc
             selectDir.Title = "Select the Mass Effect " + GameVers + " executable file";
             if (selectDir.ShowDialog() == DialogResult.OK)
                 retval = Path.GetDirectoryName(Path.GetDirectoryName(selectDir.FileName)) + @"\";
-			if (GameVers == 3)
+            if (GameVers == 3)
                 retval = Path.GetDirectoryName(Path.GetDirectoryName(retval));
             return retval;
         }
@@ -357,7 +359,7 @@ namespace KFreonLib.Misc
                 else
                     return retval;
             }
-            else 
+            else
                 return null;
         }
     }
