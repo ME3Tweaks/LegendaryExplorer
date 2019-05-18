@@ -4292,7 +4292,7 @@ namespace ME3Explorer
                         subFloatingPointNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Tag = NodeType.Unknown,
-                            Header = $"{start:X4}| { (k == 3 ? BitConverter.ToInt32(data, start) : BitConverter.ToSingle(data,start))}",
+                            Header = $"{start:X4}| { (k == 3 ? BitConverter.ToInt32(data, start) : BitConverter.ToSingle(data, start))}",
                             Name = "_" + start
                         });
                         start += 4;
@@ -4330,7 +4330,7 @@ namespace ME3Explorer
                     nvscxvmItem.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Tag = NodeType.Unknown,
-                        Header = $"{start:X4}| Const 1?: {BitConverter.ToInt32(data,start)}",
+                        Header = $"{start:X4}| Const 1?: {BitConverter.ToInt32(data, start)}",
                         Name = "_" + start
                     });
                     start += 4;
@@ -4348,7 +4348,8 @@ namespace ME3Explorer
                     nvscxvmItem.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Tag = NodeType.Unknown,
-                        Header = $"{start:X4}| CVXM TheWorld?: {CurrentLoadedExport.FileRef.getNameEntry(BitConverter.ToInt32(data,start))}",
+                        Header =
+                            $"{start:X4}| CVXM TheWorld?: {CurrentLoadedExport.FileRef.getNameEntry(BitConverter.ToInt32(data, start))}",
                         Name = "_" + start
                     });
                     start += 8;
@@ -4367,8 +4368,189 @@ namespace ME3Explorer
                         Header = $"{start:X4}| NXS CVXM 0x{start:X4} - 0x{(start + size):X4}",
                         Name = "_" + start
                     });
-
                     start += size - 16;
+                }
+
+
+                //Navigation start, end
+                //CoverLink Start,End
+                //For some reason Navigation Chain and CoverLink Chain are separate chains.
+                //These values indicate the entry point and exit point for probing the chain.
+                //The end object will not have a nextNavigationPoint/nextCoverLink object.
+
+                subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.Unknown,
+                    Header = $"{start:X4}| Unknown data 0x{start:X4} - 0x{(start + 20):X4}",
+                    Name = "_" + start
+                });
+                start += 20; //5*4
+
+                subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.ObjectProperty,
+                    Header = $"{start:X4}| Navigation Chain Start: " + CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
+                    Name = "_" + start
+                });
+                start += 4;
+
+                subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.ObjectProperty,
+                    Header = $"{start:X4}| Navigation Chain End: " + CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
+                    Name = "_" + start
+                });
+                start += 4;
+
+
+                subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.ObjectProperty,
+                    Header = $"{start:X4}| CoverLink Chain Start: " + CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
+                    Name = "_" + start
+                });
+                start += 4;
+
+                subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.ObjectProperty,
+                    Header = $"{start:X4}| CoverLink Chain End: " + CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
+                    Name = "_" + start
+                });
+                start += 4;
+
+                subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.ObjectProperty,
+                    Header = $"{start:X4}| Zero: " + BitConverter.ToInt32(data, start),
+                    Name = "_" + start
+                });
+                start += 4;
+
+                subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.ObjectProperty,
+                    Header = $"{start:X4}| Zero: " + BitConverter.ToInt32(data, start),
+                    Name = "_" + start
+                });
+                start += 4;
+
+                //Unsure if this is always zero. It seems there is some sort of list of 3 things there, maybe he last one is unused
+                //From udk site this may be pylons? No idea what those are but they seem to be a third type of level object.
+                subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.ObjectProperty,
+                    Header = $"{start:X4}| Zero: " + BitConverter.ToInt32(data, start),
+                    Name = "_" + start
+                });
+                start += 4;
+
+                int count = BitConverter.ToInt32(data, start);
+                var coverLinks = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.ObjectProperty,
+                    Header = $"{start:X4}| CoverLinkCount?: " + count,
+                    Name = "_" + start
+                };
+                subnodesTop.Add(coverLinks);
+                start += 4;
+                for (int i = 0; i < count; i++)
+                {
+                    coverLinks.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Tag = NodeType.ObjectProperty,
+                        Header = $"{start:X4}| " +
+                                 CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
+                        Name = "_" + start
+                    });
+                    start += 4;
+                }
+
+                count = BitConverter.ToInt32(data, start);
+                var nodeTuples = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.ObjectProperty,
+                    Header = $"{start:X4}| Node Tuples? Precomputed Visibility Table?: " + count,
+                    Name = "_" + start
+                };
+                subnodesTop.Add(nodeTuples);
+                start += 4;
+                start += 4; //Skip 0?
+
+                //Values in this table seem to be kind of like the packed values we see in coverlinks.
+                //Maybe this is precomputed visibility values, but idk how any of this works.
+                //I'm not sure why it is divided by 4. Maybe the count is the number of bytes? All I know is that it somehow works out
+                for (int i = 0; i < count/4; i++)
+                {
+                    var tupleItem = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Tag = NodeType.IntProperty,
+                        Header = $"{start:X4}| Tuple Item " + i,
+                        Name = "_" + start
+                    };
+                    nodeTuples.Items.Add(tupleItem);
+
+                    for (int j = 0; j < 5; j++)
+                    {
+                        if (j > 0 && j < 4)
+                        {
+                            tupleItem.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Tag = NodeType.IntProperty,
+                                Header =
+                                    $"{start:X4}| {BitConverter.ToInt32(data, start)}",
+                                Name = "_" + start
+                            });
+                        }
+                        else
+                        {
+                            tupleItem.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Tag = NodeType.ObjectProperty,
+                                Header =
+                                    $"{start:X4}| {BitConverter.ToInt32(data, start)} {CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start))}",
+                                Name = "_" + start
+                            });
+                        }
+
+                        start += 4;
+                    }
+
+                    //nodeTuples.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    //{
+                    //    Tag = NodeType.IntProperty,
+                    //    Header = $"{start:X4}| " + BitConverter.ToInt32(data, start),
+                    //    Name = "_" + start
+                    //});
+                    //start += 4;
+
+                    //nodeTuples.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    //{
+                    //    Tag = NodeType.ObjectProperty,
+                    //    Header = $"{start:X4}| " + CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
+                    //    Name = "_" + start
+                    //});
+                    //start += 4;
+                }
+
+                start += 1; //Skip a 1 value. Byte alignment maybe?
+                var navigationNodes = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.ObjectProperty,
+                    Header = $"{start:X4}| Navigation Nodes?",
+                    Name = "_" + start
+                };
+                subnodesTop.Add(navigationNodes);
+                while (start < data.Length - 8)
+                {
+                    navigationNodes.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Tag = NodeType.ObjectProperty,
+                        Header = $"{start:X4}| " +
+                                 CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
+                        Name = "_" + start
+                    });
+                    start += 4;
                 }
 
                 binarystart = start;
