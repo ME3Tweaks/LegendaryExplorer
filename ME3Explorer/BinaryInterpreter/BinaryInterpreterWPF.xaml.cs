@@ -358,6 +358,9 @@ namespace ME3Explorer
                     case "StaticMesh":
                         subNodes = StartStaticMeshScan(data, ref binarystart);
                         break;
+                    case "StaticLightCollectionActor":
+                        subNodes = StartStaticLightCollectionActorScan(data, ref binarystart);
+                        break;
                     case "Texture2D":
                     case "TextureFlipBook":
                         subNodes = StartTextureBinaryScan(data);
@@ -3826,11 +3829,12 @@ namespace ME3Explorer
              *  
              */
             var subnodes = new List<object>();
-            if (CurrentLoadedExport.FileRef.Game != MEGame.ME3)
-            {
-                subnodes.Add("Only ME3 is supported for this scan.");
-                return subnodes;
-            }
+            TreeView skmtree = new TreeView();
+            //if (CurrentLoadedExport.FileRef.Game != MEGame.ME2)
+            //{
+            //    subnodes.Add("ME1/2 is not currently supported for this scan.");
+            //    return subnodes;
+            //}
             try
             {
                 int pos = binarystart;
@@ -3855,6 +3859,29 @@ namespace ME3Explorer
                     });
                     pos += 4;
                 }
+                // SKELMESH TREE TO BE DONE
+                //if (CurrentLoadedExport.FileRef.Game == MEGame.UDK)
+                //{
+                //    UDKExplorer.UDK.UDKObject udk = new UDKExplorer.UDK.UDKObject(CurrentLoadedExport.GetFullPath);
+                //    int idx = CurrentLoadedExport.Index;
+                //    UDKExplorer.UDK.Classes.SkeletalMesh SKM = new UDKExplorer.UDK.Classes.SkeletalMesh(udk, idx);
+
+                //    subnodes.Add(SKM.ToTree());
+                //}
+                //else if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
+                //{
+
+                //    Unreal.Classes.SkeletalMesh skm = new Unreal.Classes.SkeletalMesh(CurrentLoadedExport.FileRef, CurrentLoadedExport.Index);
+                //    skmtree.Items.Add(skm.ToTree());
+                //    subnodes.Add(skmtree);
+                //    subnodes.Add(new BinaryInterpreterWPFTreeViewItem()
+                //    {
+                //        Header = $"Skeletal mesh tree { skmtree.ToString() }",
+
+
+                //        Tag = NodeType.StructLeafObject,
+                //    });
+                //}
             }
             catch (Exception ex)
             {
@@ -3990,6 +4017,113 @@ namespace ME3Explorer
                     smcaindex++;
                 }
                 //topLevelTree.ItemsSource = subnodes;
+
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+
+        }
+
+        private List<object> StartStaticLightCollectionActorScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<object>();
+            try
+            {
+                //get a list of lightcomponents from the props.
+                var slcaitems = new List<IExportEntry>();
+                var props = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("LightComponents");
+
+                foreach (var prop in props)
+                {
+                    if (prop.Value > 0)
+                    {
+                        slcaitems.Add(CurrentLoadedExport.FileRef.getEntry(prop.Value) as IExportEntry);
+                    }
+                    else
+                    {
+                        slcaitems.Add(null);
+                    }
+                }
+
+                //find start of class binary (end of props)
+                int start = binarystart;
+
+                //Lets make sure this binary is divisible by 64.
+                if ((data.Length - start) % 64 != 0)
+                {
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4} Binary data is not divisible by 64 ({data.Length - start})! SLCA binary data should be a length divisible by 64.",
+                        Name = "_" + start
+
+                    });
+                    return subnodes;
+                }
+
+                int slcaindex = 0;
+                while (start < data.Length && slcaindex < slcaitems.Count)
+                {
+                    BinaryInterpreterWPFTreeViewItem slcanode = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Tag = NodeType.Unknown
+                    };
+                    IExportEntry assossiateddata = slcaitems[slcaindex];
+                    string staticmesh = "";
+                    string objtext = "Null - unused data";
+                    if (assossiateddata != null)
+                    {
+                        objtext = $"[Export {assossiateddata.UIndex}] {assossiateddata.ObjectName}_{assossiateddata.indexValue}";
+                    }
+
+                    slcanode.Header = $"{start:X4} [{slcaindex}] ";
+                    slcanode.Name = "_" + start;
+                    subnodes.Add(slcanode);
+
+                    //Read nodes
+                    for (int i = 0; i < 16; i++)
+                    {
+                        float slcadata = BitConverter.ToSingle(data, start);
+                        BinaryInterpreterWPFTreeViewItem node = new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Tag = NodeType.StructLeafFloat,
+                            Header = start.ToString("X4")
+                        };
+
+                        //TODO: Figure out what the rest of these mean
+                        string label = i.ToString();
+                        switch (i)
+                        {
+                            case 1:
+                                label = "ScalingXorY1:";
+                                break;
+                            case 12:
+                                label = "LocX:";
+                                break;
+                            case 13:
+                                label = "LocY:";
+                                break;
+                            case 14:
+                                label = "LocZ:";
+                                break;
+                            case 15:
+                                label = "CameraLayerDistance?:";
+                                break;
+                        }
+
+                        node.Header += $" {label} {slcadata}";
+
+                        node.Name = "_" + start;
+                        slcanode.Items.Add(node);
+                        start += 4;
+                    }
+
+                    slcaindex++;
+                }
+                
 
             }
             catch (Exception ex)
