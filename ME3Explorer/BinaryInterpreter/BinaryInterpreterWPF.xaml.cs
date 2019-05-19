@@ -4983,14 +4983,13 @@ namespace ME3Explorer
                         Tag = NodeType.Unknown
                     };
                     IExportEntry assossiateddata = slcaitems[slcaindex];
-                    string staticmesh = "";
                     string objtext = "Null - unused data";
                     if (assossiateddata != null)
                     {
                         objtext = $"[Export {assossiateddata.UIndex}] {assossiateddata.ObjectName}_{assossiateddata.indexValue}";
                     }
 
-                    slcanode.Header = $"{start:X4} [{slcaindex}] ";
+                    slcanode.Header = $"{start:X4} [{slcaindex}] {objtext}"; 
                     slcanode.Name = "_" + start;
                     subnodes.Add(slcanode);
 
