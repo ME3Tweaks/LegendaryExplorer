@@ -5671,15 +5671,14 @@ namespace ME3Explorer
                         });
                         pos += 4;
                     }
-
-
                 }
-                
+                binarystart = pos;
             }
             catch (Exception ex)
             {
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
+            
             return subnodes;
             
         }
@@ -5811,7 +5810,7 @@ namespace ME3Explorer
                     smcaindex++;
                 }
                 //topLevelTree.ItemsSource = subnodes;
-
+                binarystart = start;
             }
             catch (Exception ex)
             {
@@ -5916,8 +5915,8 @@ namespace ME3Explorer
 
                     slcaindex++;
                 }
-                
 
+                binarystart = start;
             }
             catch (Exception ex)
             {
