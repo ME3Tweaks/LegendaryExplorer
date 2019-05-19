@@ -1,0 +1,77 @@
+{
+  "Classes": {},
+  "Structs": {
+    "TriangleSortSettings": {
+      "properties": {
+        "TriangleSorting": {
+          "reference": "TriangleSortOption",
+          "transient": false,
+          "type": 3
+        },
+        "CustomRightBoneName": {
+          "reference": null,
+          "transient": false,
+          "type": 5
+        },
+        "CustomLeftRightAxis": {
+          "reference": "TriangleSortAxis",
+          "transient": false,
+          "type": 7
+        }
+      }
+    },
+    "SkeletalMeshLODInfo": {
+      "properties": {
+        "LODMaterialMap": {
+          "reference": "IntProperty",
+          "transient": false,
+          "type": 8
+        },
+        "LODHysteresis": {
+          "reference": null,
+          "transient": false,
+          "type": 3
+        },
+        "DisplayFactor": {
+          "reference": null,
+          "transient": false,
+          "type": 3
+        },
+        "bEnableShadowCasting": {
+          "reference": "BoolProperty",
+          "transient": false,
+          "type": 8
+        },
+        "TriangleSorting": {
+          "reference": "TriangleSortOption",
+          "transient": false,
+          "type": 8
+        },
+        "TriangleSortSettings": {
+          "reference": "TriangleSortSettings",
+          "transient": false,
+          "type": 8
+        }
+      },
+      "baseClass": "Class",
+      "pccPath": null,
+      "exportIndex": 0
+    }
+  },
+  "Enums": {
+    "TriangleSortAxis": [
+      {
+        "Name": "TSA_X_Axis",
+        "Number": 0
+      },
+      {
+        "Name": "TSA_Y_Axis",
+        "Number": 0
+      },
+      {
+        "Name": "TSA_Z_Axis",
+        "Number": 0
+      }
+    ]
+  }
+}
