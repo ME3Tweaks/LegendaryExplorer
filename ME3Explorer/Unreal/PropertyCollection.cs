@@ -748,18 +748,22 @@ namespace ME3Explorer.Unreal
                                 long structOffset = stream.Position;
                                 //Debug.WriteLine("reading array struct: " + arrayStructType + " at 0x" + stream.Position.ToString("X5"));
                                 PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties,entry: parsingEntry);
+#if DEBUG
                                 try
                                 {
+#endif
                                     props.Add(new StructProperty(arrayStructType, structProps)
                                     {
                                         StartOffset = structOffset,
                                         ValueOffset = structProps[0].StartOffset
                                     });
+#if DEBUG
                                 }
                                 catch (Exception e)
                                 {
                                     return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
                                 }
+#endif
                             }
                         }
                         return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
