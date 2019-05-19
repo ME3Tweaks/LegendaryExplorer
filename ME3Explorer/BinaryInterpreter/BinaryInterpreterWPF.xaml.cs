@@ -4740,8 +4740,8 @@ namespace ME3Explorer
              *  
              */
             var subnodes = new List<object>();
-            TreeView skmtree = new TreeView();
-            //if (CurrentLoadedExport.FileRef.Game != MEGame.ME2)
+            
+            //if (CurrentLoadedExport.FileRef.Game != MEGame.ME3)
             //{
             //    subnodes.Add("ME1/2 is not currently supported for this scan.");
             //    return subnodes;
@@ -4770,7 +4770,118 @@ namespace ME3Explorer
                     });
                     pos += 4;
                 }
-                // SKELMESH TREE TO BE DONE
+                // SKELMESH TREE
+                pos = binarystart;  //reset to  start again
+
+                var BoundingBox = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{pos:X4} Boundings Box",
+                    Name = "_" + pos,
+                    Tag = NodeType.Unknown
+                };
+                subnodes.Add(BoundingBox);
+                //Get Origin X, Y, Z
+                float boxoriginX = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                float boxoriginY = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                float boxoriginZ = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                BoundingBox.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"{pos:X4} Origin: X:({boxoriginX}) Y:({boxoriginY}) Z:({boxoriginZ})",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.Unknown
+                });
+
+
+                //Get Size X, Y, Z
+                float sizeX = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                float sizeY = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                float sizeZ = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                BoundingBox.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"{pos:X4} Size: X:({sizeX}) Y:({sizeY}) Z:({sizeZ})",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.Unknown
+                });
+
+                //Get Radius R
+                float radius = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                BoundingBox.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"{pos:X4} Radius: R:({radius}) ",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.Unknown
+                });
+
+                //Materials (again)
+                var materials = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"{pos:X4} Materials: {count}",
+                    Name = "_" + pos,
+                    Tag = NodeType.StructLeafInt
+                };
+                subnodes.Add(materials);
+                pos += 4;
+                for (int m = 0; m < count; m++)
+                {
+                    int material = BitConverter.ToInt32(data, pos);
+                    materials.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"{pos:X4} Material: ({material}) {CurrentLoadedExport.FileRef.getEntry(material)?.GetFullPath ?? ""}",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafObject
+                    });
+                    pos += 4;
+                }
+
+                //Origin and Rotation
+                var skmLocation = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{pos:X4} Origin and Rotation",
+                    Name = "_" + pos,
+                    Tag = NodeType.Unknown
+                };
+                subnodes.Add(skmLocation);
+                //Get Origin X, Y, Z
+                float originX = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                float originY = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                float originZ = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                skmLocation.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"{pos:X4} Origin: X:({originX}) Y:({originY}) Z:({originZ})",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.Unknown
+                });
+
+                //Get Rotation X, Y, Z ?CONVERT TO RADIANS/DEG?
+                float rotX = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                float rotY = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                float rotZ = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                skmLocation.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"{pos:X4} Rotation: X:({rotX}) Y:({rotY}) Z:({rotZ})",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.Unknown
+                });
+
                 //if (CurrentLoadedExport.FileRef.Game == MEGame.UDK)
                 //{
                 //    UDKExplorer.UDK.UDKObject udk = new UDKExplorer.UDK.UDKObject(CurrentLoadedExport.GetFullPath);
