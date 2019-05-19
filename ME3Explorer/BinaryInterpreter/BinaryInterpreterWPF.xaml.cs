@@ -4913,7 +4913,7 @@ namespace ME3Explorer
                     });
                     pos += 4;
 
-                    float orientX = BitConverter.ToInt32(data, pos);
+                    float orientX = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} Orientation: X: {orientX}",
@@ -4923,7 +4923,7 @@ namespace ME3Explorer
                     });
                     pos += 4;
 
-                    float orientY = BitConverter.ToInt32(data, pos);
+                    float orientY = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} Y: {orientY}",
@@ -4933,7 +4933,7 @@ namespace ME3Explorer
                     });
                     pos += 4;
 
-                    float orientZ = BitConverter.ToInt32(data, pos);
+                    float orientZ = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} Z: {orientZ}",
@@ -4943,7 +4943,7 @@ namespace ME3Explorer
                     });
                     pos += 4;
 
-                    float orientW = BitConverter.ToInt32(data, pos);
+                    float orientW = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} W: {orientW}",
@@ -4953,17 +4953,17 @@ namespace ME3Explorer
                     });
                     pos += 4;
 
-                    float posX = BitConverter.ToInt32(data, pos);
+                    float posX = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"{pos:X4} Postion: X: {posX}",
+                        Header = $"{pos:X4} Position: X: {posX}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafFloat
                     });
                     pos += 4;
 
-                    float posY = BitConverter.ToInt32(data, pos);
+                    float posY = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} Y: {posY}",
@@ -4973,7 +4973,7 @@ namespace ME3Explorer
                     });
                     pos += 4;
 
-                    float posZ = BitConverter.ToInt32(data, pos);
+                    float posZ = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} Z: {posZ}",
@@ -5003,7 +5003,7 @@ namespace ME3Explorer
                     });
                     pos += 4;
 
-                    if (game == MEGame.ME3)
+                    if (game == MEGame.ME3 || game == MEGame.UDK) //Color in ME3 and UDK only
                     {
                         int bnColor = BitConverter.ToInt32(data, pos);
                         nBoneNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
@@ -5071,46 +5071,100 @@ namespace ME3Explorer
                         };
                         sections.Items.Add(nSection);
 
-                        int chunk = BitConverter.ToInt32(data, pos);
-                        nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        if(game == MEGame.UDK)  //UDK section quite different
                         {
-                            Header = $"{pos:X4} Chunk Index: {chunk}",
-                            Name = "_" + pos,
+                            int mat = BitConverter.ToInt32(data, pos);
+                            nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} Material Index: {mat}",
+                                Name = "_" + pos,
 
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-
-                        int baseidx = BitConverter.ToInt32(data, pos);
-                        nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                        {
-                            Header = $"{pos:X4} Base Index: {baseidx}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-
-                        var initpos = pos;  //Section Triangles
-                        int nTriangles = 0;
-                        if( game == MEGame.ME3)
-                        {
-                            nTriangles = BitConverter.ToInt32(data, pos);  //ME3 int32
+                                Tag = NodeType.StructLeafInt,
+                            });
                             pos += 4;
+
+                            int chunk = BitConverter.ToInt16(data, pos);
+                            nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} Chunk Index: {chunk}",
+                                Name = "_" + pos,
+
+                                Tag = NodeType.StructLeafInt,
+                            });
+                            pos += 2;
+
+                            int baseidx = BitConverter.ToInt16(data, pos);
+                            nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} Base Index: {baseidx}",
+                                Name = "_" + pos,
+
+                                Tag = NodeType.StructLeafInt,
+                            });
+                            pos += 2;
+
+                            int nTriangles = BitConverter.ToInt16(data, pos); //Section Triangles
+                            nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} Triangles: {nTriangles}",
+                                Name = "_" + pos,
+
+                                Tag = NodeType.StructLeafInt,
+                            });
+                            pos += 4;
+
+                            bool bSortTri = BitConverter.ToBoolean(data, pos);
+                            nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} Sort Triangles: {bSortTri}",
+                                Name = "_" + pos,
+
+                                Tag = NodeType.StructLeafBool,
+                            });
+                            pos += 1;
                         }
                         else
                         {
-                            nTriangles = BitConverter.ToInt16(data, pos); //ME2 int16
-                            pos += 2;
-                        }
-                        nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                        {
-                            Header = $"{initpos:X4} Triangles: {nTriangles}",
-                            Name = "_" + initpos,
+                            int chunk = BitConverter.ToInt32(data, pos);
+                            nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} Chunk Index: {chunk}",
+                                Name = "_" + pos,
 
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        
+                                Tag = NodeType.StructLeafInt,
+                            });
+                            pos += 4;
+
+                            int baseidx = BitConverter.ToInt32(data, pos);
+                            nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} Base Index: {baseidx}",
+                                Name = "_" + pos,
+
+                                Tag = NodeType.StructLeafInt,
+                            });
+                            pos += 4;
+
+                            var initpos = pos;  //Section Triangles
+                            int nTriangles = 0;
+                            if (game == MEGame.ME3)
+                            {
+                                nTriangles = BitConverter.ToInt32(data, pos);  //ME3 int32
+                                pos += 4;
+                            }
+                            else
+                            {
+                                nTriangles = BitConverter.ToInt16(data, pos); //ME2/1 int16
+                                pos += 2;
+                            }
+                            nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{initpos:X4} Triangles: {nTriangles}",
+                                Name = "_" + initpos,
+
+                                Tag = NodeType.StructLeafInt,
+                            });
+                        }
                     }
 
                     var idxHeader = new BinaryInterpreterWPFTreeViewItem // Multi-size index container
@@ -5122,7 +5176,31 @@ namespace ME3Explorer
                     };
                     nLOD.Items.Add(idxHeader);
 
-                    int idxSize = BitConverter.ToInt32(data, pos); // Index Size (2 byte?)
+                    if(game == MEGame.UDK)
+                    {
+                        int iCPU = BitConverter.ToInt32(data, pos); 
+                        idxHeader.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"{pos:X4} Needs CPU Access: {iCPU}",
+                            Name = "_" + pos,
+
+                            Tag = NodeType.StructLeafInt,
+                        });
+                        pos += 4;
+
+                        //int dataType = BitConverter.ToInt16(data, pos); //Single byte?
+                        idxHeader.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"{pos:X4} Datatype Size: ",
+                            Name = "_" + pos,
+
+                            Tag = NodeType.StructLeafInt,
+                        });
+                        pos += 1;
+
+                    }
+
+                    int idxSize = BitConverter.ToInt32(data, pos); // Index Size
                     idxHeader.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} IndexSize: {idxSize}",
@@ -5156,28 +5234,31 @@ namespace ME3Explorer
                         pos += 2;
                     }
 
-                    int Unknown1 = BitConverter.ToInt32(data, pos); // Unknown
-                    var UnkList1 = new BinaryInterpreterWPFTreeViewItem
+                    if(game != MEGame.UDK)
                     {
-                        Header = $"{pos:X4} Unknown 1 List: {Unknown1}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    };
-                    idxHeader.Items.Add(UnkList1);
-                    pos += 4;
-
-                    for (int uk1 = 0; uk1 < Unknown1; uk1++)
-                    {
-                        int ukIndex = BitConverter.ToInt16(data, pos);  //int16 unknown
-                        UnkList1.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        int Unknown1 = BitConverter.ToInt32(data, pos); // Unknown 1 not UDK
+                        var UnkList1 = new BinaryInterpreterWPFTreeViewItem
                         {
-                            Header = $"{pos:X4} {uk1} : {ukIndex}",
+                            Header = $"{pos:X4} Unknown 1 List: {Unknown1}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 2;
+                        };
+                        idxHeader.Items.Add(UnkList1);
+                        pos += 4;
+
+                        for (int uk1 = 0; uk1 < Unknown1; uk1++)
+                        {
+                            int ukIndex = BitConverter.ToInt16(data, pos);  //int16 unknown
+                            UnkList1.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} {uk1} : {ukIndex}",
+                                Name = "_" + pos,
+
+                                Tag = NodeType.StructLeafInt,
+                            });
+                            pos += 2;
+                        }
                     }
 
                     int nActBones = BitConverter.ToInt32(data, pos); // Active Bones
@@ -5204,32 +5285,33 @@ namespace ME3Explorer
                         pos += 2;
                     }
 
-                    int Unknown2 = BitConverter.ToInt32(data, pos); // Unknown
-                    var UnkList2 = new BinaryInterpreterWPFTreeViewItem
+                    if(game != MEGame.UDK)
                     {
-                        Header = $"{pos:X4} Unknown 2 Bool List: {Unknown2}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    };
-                    nLOD.Items.Add(UnkList2);
-                    pos += 4;
-
-                    for (int uk2 = 0; uk2 < Unknown2; uk2++)
-                    {
-                        bool uk2Bool = BitConverter.ToBoolean(data, pos);  //Bool unknown
-                        UnkList2.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        int Unknown2 = BitConverter.ToInt32(data, pos); // Unknown 2 Not in UDK
+                        var UnkList2 = new BinaryInterpreterWPFTreeViewItem
                         {
-                            Header = $"{pos:X4} {uk2} : {uk2Bool}",
+                            Header = $"{pos:X4} Unknown 2 Bool List: {Unknown2}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 1;
+                        };
+                        nLOD.Items.Add(UnkList2);
+                        pos += 4;
+
+                        for (int uk2 = 0; uk2 < Unknown2; uk2++)
+                        {
+                            bool uk2Bool = BitConverter.ToBoolean(data, pos);  //Bool unknown
+                            UnkList2.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} {uk2} : {uk2Bool}",
+                                Name = "_" + pos,
+
+                                Tag = NodeType.StructLeafInt,
+                            });
+                            pos += 1;
+                        }
                     }
-
-
-
+                    
                     // Chunk Data
                     int chunkCt = BitConverter.ToInt32(data, pos);
                     var chunks = new BinaryInterpreterWPFTreeViewItem
@@ -5276,8 +5358,10 @@ namespace ME3Explorer
 
                         for (int rv = 0; rv < rigidskinVertex; rv++)
                         {
-                            //skip uneccessary parsing
-                            pos += 33;
+                            //skip uneccessary parsing UDK is uncompressed
+                            if(game == MEGame.UDK)
+                            { pos += 61; }
+                            else { pos += 33; }
                         }
                         
                         int softskinVertex = BitConverter.ToInt32(data, pos); //Soft vertices collection
@@ -5292,8 +5376,10 @@ namespace ME3Explorer
 
                         for (int sv = 0; sv < softskinVertex; sv++)
                         {
-                            //skip uneccessary parsing
-                            pos += 40;
+                            //skip uneccessary parsing UDK is uncompressed
+                            if (game == MEGame.UDK)
+                            { pos += 68; }
+                            else { pos += 40; }
                         }
 
                         int nMapBones = BitConverter.ToInt32(data, pos); // Bone Map
@@ -5371,34 +5457,37 @@ namespace ME3Explorer
                     });
                     pos += 4;
 
-                    int Unknown3 = BitConverter.ToInt32(data, pos); // Unknown
-                    var UnkList3 = new BinaryInterpreterWPFTreeViewItem
+                    if(game != MEGame.UDK)
                     {
-                        Header = $"{pos:X4} Unknown List 3: {Unknown3}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    };
-                    nLOD.Items.Add(UnkList3);
-                    pos += 4;
-
-                    for (int uk3 = 0; uk3 < Unknown3; uk3++)
-                    {
-                        int uk3IndexA = BitConverter.ToInt32(data, pos);  //int32 unknown
-                        pos += 4;
-                        int uk3IndexB = BitConverter.ToInt32(data, pos);  //int32 unknown
-                        pos += 4;
-                        int uk3IndexC = BitConverter.ToInt32(data, pos);  //int32 unknown
-                        pos += 4;
-                        int uk3IndexD = BitConverter.ToInt32(data, pos);  //int32 unknown
-                        pos += 4;
-                        UnkList3.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        int Unknown3 = BitConverter.ToInt32(data, pos); // Unknown 3 Not in UDK
+                        var UnkList3 = new BinaryInterpreterWPFTreeViewItem
                         {
-                            Header = $"{pos:X4} {uk3} : unkA {uk3IndexA} unkB {uk3IndexB} unkC {uk3IndexC} unkD {uk3IndexD}",
+                            Header = $"{pos:X4} Unknown List 3: {Unknown3}",
                             Name = "_" + pos,
 
-                            Tag = NodeType.Unknown,
-                        });
+                            Tag = NodeType.StructLeafInt,
+                        };
+                        nLOD.Items.Add(UnkList3);
+                        pos += 4;
+
+                        for (int uk3 = 0; uk3 < Unknown3; uk3++)
+                        {
+                            int uk3IndexA = BitConverter.ToInt32(data, pos);  //int32 unknown
+                            pos += 4;
+                            int uk3IndexB = BitConverter.ToInt32(data, pos);  //int32 unknown
+                            pos += 4;
+                            int uk3IndexC = BitConverter.ToInt32(data, pos);  //int32 unknown
+                            pos += 4;
+                            int uk3IndexD = BitConverter.ToInt32(data, pos);  //int32 unknown
+                            pos += 4;
+                            UnkList3.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} {uk3} : unkA {uk3IndexA} unkB {uk3IndexB} unkC {uk3IndexC} unkD {uk3IndexD}",
+                                Name = "_" + pos,
+
+                                Tag = NodeType.Unknown,
+                            });
+                        }
                     }
 
                     int nReqBones = BitConverter.ToInt32(data, pos); //Required Bones
@@ -5478,9 +5567,9 @@ namespace ME3Explorer
                         pos += rawPoint3;
                     }
 
-                    if(game == MEGame.ME3 || game == MEGame.ME2)
+                    if(game != MEGame.ME1)
                     {
-                        int Unknown9 = BitConverter.ToInt32(data, pos); // Unknown 9 ME3 or ME2 (Not ME1)
+                        int Unknown9 = BitConverter.ToInt32(data, pos); // Unknown 9 ME3 or ME2 or UDK (Not ME1)
                         nLOD.Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"{pos:X4} Unknown 9: {Unknown9}",
@@ -5501,7 +5590,7 @@ namespace ME3Explorer
                     };
                     nLOD.Items.Add(vtxGPUskin);
 
-                    if (game == MEGame.ME3)
+                    if (game == MEGame.ME3 || game == MEGame.UDK)
                     {
                         int nTexCoord = BitConverter.ToInt32(data, pos);
                         var lTexCoord = new BinaryInterpreterWPFTreeViewItem
@@ -5513,6 +5602,29 @@ namespace ME3Explorer
                         };
                         vtxGPUskin.Items.Add(lTexCoord);
                         pos += 4;
+                        
+                        if(game == MEGame.UDK)
+                        {
+                            int useFullUV= BitConverter.ToInt32(data, pos); // UDK only
+                            vtxGPUskin.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} Use Full Precision UVs: {useFullUV}",
+                                Name = "_" + pos,
+
+                                Tag = NodeType.StructLeafInt,
+                            });
+                            pos += 4;
+
+                            int usePackedPre= BitConverter.ToInt32(data, pos); // UDK only
+                            vtxGPUskin.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} Use Packed Precision: {usePackedPre}",
+                                Name = "_" + pos,
+
+                                Tag = NodeType.StructLeafInt,
+                            });
+                            pos += 4;
+                        }
 
                         //Get Extension X, Y, Z
                         float vetxX = BitConverter.ToSingle(data, pos);
@@ -5573,19 +5685,99 @@ namespace ME3Explorer
                          pos += vtxSize; 
                     }
 
-                    if (game == MEGame.ME3)
+                    if (game == MEGame.ME3 || game == MEGame.UDK)
                     {
-                        int Unknown4 = BitConverter.ToInt32(data, pos); // Unknown 4 appears ME3 (not ME2)
+                        int Unknown4 = BitConverter.ToInt32(data, pos); // Unknown 4 appears ME3/UDK (not ME2/ME1)
                         nLOD.Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
-                            Header = $"{pos:X4} Unknown 4: {Unknown4}",
+                            Header = $"{pos:X4} Unknown (Index GPU buffer size?): {Unknown4}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
                         });
                         pos += 4;
+
+                        if (Unknown4 > 0)
+                        {
+
+                            int Unk4Count = BitConverter.ToInt32(data, pos);
+                            var unk4List = new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} ?Index GPU buffer?: {Unk4Count}",
+                                Name = "_" + pos,
+
+                                Tag = NodeType.StructLeafInt,
+                            };
+                            nLOD.Items.Add(unk4List);
+                            pos += 4;
+
+                            for (int uk4 = 0; uk4 < Unk4Count; uk4++)
+                            {
+                                int nUnk4 = BitConverter.ToInt32(data, pos);
+                                unk4List.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                                {
+                                    Header = $"{pos:X4} {uk4} : {nUnk4}",
+                                    Name = "_" + pos,
+
+                                    Tag = NodeType.StructLeafInt,
+                                });
+                                pos += Unknown4;
+                            }
+                        }
                     }
 
+                    if(game == MEGame.UDK) //UDK only - are these LOD or tail?
+                    {
+                        int nUnkU1 = BitConverter.ToInt32(data, pos);
+                        nLOD.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"{pos:X4} Unknown UDK 1 : {nUnkU1}",
+                            Name = "_" + pos,
+
+                            Tag = NodeType.StructLeafInt,
+                        });
+                        pos += 4;
+
+                        int nUnkU2 = BitConverter.ToInt32(data, pos);
+                        nLOD.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"{pos:X4} Unknown UDK 2 : {nUnkU2}",
+                            Name = "_" + pos,
+
+                            Tag = NodeType.StructLeafInt,
+                        });
+                        pos += 4;
+
+                        int nUnkU3 = BitConverter.ToInt32(data, pos);
+                        nLOD.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"{pos:X4} Unknown UDK 3 : {nUnkU3}",
+                            Name = "_" + pos,
+
+                            Tag = NodeType.StructLeafInt,
+                        });
+                        pos += 4;
+
+                        int nUnkU4 = BitConverter.ToInt32(data, pos);
+                        nLOD.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"{pos:X4} Unknown UDK 4 : {nUnkU4}",
+                            Name = "_" + pos,
+
+                            Tag = NodeType.StructLeafInt,
+                        });
+                        pos += 4;
+
+                        bool nUnkU5 = BitConverter.ToBoolean(data, pos);
+                        nLOD.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"{pos:X4} Unknown UDK 5 : {nUnkU5}",
+                            Name = "_" + pos,
+
+                            Tag = NodeType.StructLeafBool,
+                        });
+                        pos += 1;
+                    }
                 }
 
                 var tail = new BinaryInterpreterWPFTreeViewItem  // Tail
@@ -5597,36 +5789,33 @@ namespace ME3Explorer
                 };
                 subnodes.Add(tail);
 
-                if(game != MEGame.UDK)  // No Tail in UDK
+                int blCount = BitConverter.ToInt32(data, pos);
+                var bonelist = new BinaryInterpreterWPFTreeViewItem
                 {
-                    int blCount = BitConverter.ToInt32(data, pos);
-                    var bonelist = new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Header = $"{pos:X4} Bone List: {blCount}",
-                        Name = "_" + pos,
-                        Tag = NodeType.StructLeafInt
-                    };
-                    tail.Items.Add(bonelist);
+                    Header = $"{pos:X4} Bone List: {blCount}",
+                    Name = "_" + pos,
+                    Tag = NodeType.StructLeafInt
+                };
+                tail.Items.Add(bonelist);
+                pos += 4;
+                for (int bl = 0; bl < blCount; bl++)
+                {
+                    int bnName = BitConverter.ToInt32(data, pos);
                     pos += 4;
-                    for (int bl = 0; bl < blCount; bl++)
+                    int bnIdx = BitConverter.ToInt32(data, pos);
+                    pos += 4;
+                    int iBone = BitConverter.ToInt32(data, pos);
+                    pos -= 8;
+                    bonelist.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        int bnName = BitConverter.ToInt32(data, pos);
-                        pos += 4;
-                        int bnIdx = BitConverter.ToInt32(data, pos);
-                        pos += 4;
-                        int iBone = BitConverter.ToInt32(data, pos);
-                        pos -= 8;
-                        bonelist.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                        {
-                            Header = $"{pos:X4} {bl}: {CurrentLoadedExport.FileRef.getNameEntry(bnName)}_{bnIdx}  Nbr: {iBone}",
-                            Name = "_" + pos,
-                            Tag = NodeType.StructLeafName
-                        });
-                        pos += 12;
-                    }
+                        Header = $"{pos:X4} {bl}: {CurrentLoadedExport.FileRef.getNameEntry(bnName)}_{bnIdx}  Nbr: {iBone}",
+                        Name = "_" + pos,
+                        Tag = NodeType.StructLeafName
+                    });
+                    pos += 12;
                 }
 
-                int Unknown5 = BitConverter.ToInt32(data, pos); // Unknown ME3/ME2
+                int Unknown5 = BitConverter.ToInt32(data, pos); // Unknown ME3/ME2/ME1/UDK
                 tail.Items.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} Unknown 5: {Unknown5}",
@@ -5636,9 +5825,9 @@ namespace ME3Explorer
                 });
                 pos += 4;
 
-                if (game == MEGame.ME3)
+                if (game == MEGame.ME3 || game == MEGame.UDK)
                 {
-                    int Unknown6 = BitConverter.ToInt32(data, pos); // Unknown ME3 (not ME2)
+                    int Unknown6 = BitConverter.ToInt32(data, pos); // Unknown ME3/UDK (not ME2/1)
                     tail.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} Unknown 6: {Unknown6}",
@@ -5647,8 +5836,21 @@ namespace ME3Explorer
                         Tag = NodeType.StructLeafInt,
                     });
                     pos += 4;
+                    
+                    if(game == MEGame.UDK)
+                    {
+                        int nUnkU6 = BitConverter.ToInt32(data, pos);
+                        tail.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"{pos:X4} Unknown UDK 6 : {nUnkU6}",
+                            Name = "_" + pos,
 
-                    int Unknown7 = BitConverter.ToInt32(data, pos); // Unknown 7 ME3 (not ME2)
+                            Tag = NodeType.StructLeafInt,
+                        });
+                        pos += 4;
+                    }
+                    
+                    int Unknown7 = BitConverter.ToInt32(data, pos); // Unknown 7 ME3/UDK (not ME2/1)
                     var lUnknown7 = new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} Unknown List 7: {Unknown7}",
@@ -5671,6 +5873,70 @@ namespace ME3Explorer
                         });
                         pos += 4;
                     }
+                }
+
+                if (game == MEGame.UDK)  // Extended Tail in UDK
+                {
+
+                    int nUnkU7 = BitConverter.ToInt32(data, pos);
+                    tail.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"{pos:X4} Unknown UDK 7 : {nUnkU7}",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt,
+                    });
+                    pos += 4;
+
+                    int nUnkU8 = BitConverter.ToInt32(data, pos);
+                    tail.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"{pos:X4} Unknown UDK 8 : {nUnkU8}",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt,
+                    });
+                    pos += 4;
+
+                    int nUnkU9 = BitConverter.ToInt32(data, pos);
+                    tail.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"{pos:X4} Unknown UDK 9 : {nUnkU9}",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt,
+                    });
+                    pos += 4;
+
+                    int nUnkU10 = BitConverter.ToInt32(data, pos);
+                    tail.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"{pos:X4} Unknown UDK 10 : {nUnkU10}",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt,
+                    });
+                    pos += 4;
+
+                    int nUnkU11 = BitConverter.ToInt32(data, pos);
+                    tail.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"{pos:X4} Unknown UDK 11 : {nUnkU11}",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt,
+                    });
+                    pos += 4;
+
+                    int nUnkU12 = BitConverter.ToInt32(data, pos);
+                    tail.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"{pos:X4} Unknown UDK 12 : {nUnkU12}",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt,
+                    });
+                    pos += 4;
                 }
                 binarystart = pos;
             }
