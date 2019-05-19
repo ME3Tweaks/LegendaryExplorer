@@ -13,6 +13,7 @@ using ME3Explorer.Packages;
 using Be.Windows.Forms;
 using ME3Explorer.Scene3D;
 using System.Globalization;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer.Meshplorer
 {
@@ -750,7 +751,7 @@ namespace ME3Explorer.Meshplorer
             int lod = t4.Index;
             int sec = t2.Index;
             int currmat = skm.LODModels[lod].Sections[sec].MaterialIndex;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new ID", "ME3 Explorer", currmat.ToString(), 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new ID", "ME3 Explorer", currmat.ToString(), true);
             int newmat = currmat;
             if (Int32.TryParse(result, out newmat))
             {

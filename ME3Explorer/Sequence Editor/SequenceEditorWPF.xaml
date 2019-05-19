@@ -33,6 +33,7 @@
                 <MenuItem Header="Event Links" Name="eventLinksMenuItem"></MenuItem>
                 <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Click="removeAllLinks"/>
             </MenuItem>
+            <MenuItem Header="Remove from sequence" Name="removeFromSequenceMenuItem" Click="RemoveFromSequence_Click"/>
         </ContextMenu>
         <ContextMenu x:Key="backContextMenu">
             <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence"/>

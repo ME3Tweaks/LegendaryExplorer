@@ -16,7 +16,7 @@ namespace ME2Explorer.Unreal
     {
         public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
-        public static Dictionary<string, List<string>> Enums = new Dictionary<string, List<string>>();
+        public static Dictionary<string, List<NameReference>> Enums = new Dictionary<string, List<NameReference>>();
 
         private static readonly string jsonPath = Path.Combine(ME3Explorer.App.ExecFolder, "ME2ObjectInfo.json");
 
@@ -49,7 +49,7 @@ namespace ME2Explorer.Unreal
             return p?.reference;
         }
 
-        public static List<string> getEnumfromProp(string className, string propName, bool inStruct = false)
+        public static List<NameReference> getEnumfromProp(string className, string propName, bool inStruct = false)
         {
             Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
             if (temp.ContainsKey(className))
@@ -71,7 +71,7 @@ namespace ME2Explorer.Unreal
                     {
                         if (p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty)
                         {
-                            List<string> vals = getEnumfromProp(p.reference, propName, true);
+                            List<NameReference> vals = getEnumfromProp(p.reference, propName, true);
                             if (vals != null)
                             {
                                 return vals;
@@ -82,7 +82,7 @@ namespace ME2Explorer.Unreal
                 //look in base class
                 if (temp.ContainsKey(info.baseClass))
                 {
-                    List<string> vals = getEnumfromProp(info.baseClass, propName, inStruct);
+                    List<NameReference> vals = getEnumfromProp(info.baseClass, propName, inStruct);
                     if (vals != null)
                     {
                         return vals;
@@ -97,11 +97,11 @@ namespace ME2Explorer.Unreal
             return generateClassInfo(export.Index, export.FileRef as ME2Package);
         }
 
-        public static List<string> getEnumValues(string enumName, bool includeNone = false)
+        public static List<NameReference> getEnumValues(string enumName, bool includeNone = false)
         {
             if (Enums.ContainsKey(enumName))
             {
-                var values = new List<string>(Enums[enumName]);
+                var values = new List<NameReference>(Enums[enumName]);
                 if (includeNone)
                 {
                     values.Insert(0, "None");
@@ -244,7 +244,7 @@ namespace ME2Explorer.Unreal
             return null;
         }
 
-        public static bool inheritsFrom(ME2ExportEntry entry, string baseClass)
+        public static bool inheritsFrom(IEntry entry, string baseClass)
         {
             string className = entry.ClassName;
             while (Classes.ContainsKey(className))
@@ -420,7 +420,7 @@ namespace ME2Explorer.Unreal
         {
             var NewClasses = new Dictionary<string, ClassInfo>();
             var NewStructs = new Dictionary<string, ClassInfo>();
-            var NewEnums = new Dictionary<string, List<string>>();
+            var NewEnums = new Dictionary<string, List<NameReference>>();
 
             string path = ME2Directory.gamePath;
             string[] files = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
@@ -538,18 +538,19 @@ namespace ME2Explorer.Unreal
             return info;
         }
 
-        private static void generateEnumValues(int index, ME2Package pcc, Dictionary<string, List<string>> NewEnums = null)
+        private static void generateEnumValues(int index, ME2Package pcc, Dictionary<string, List<NameReference>> NewEnums = null)
         {
             var enumTable = NewEnums ?? Enums;
             string enumName = pcc.Exports[index].ObjectName;
             if (!enumTable.ContainsKey(enumName))
             {
-                var values = new List<string>();
+                var values = new List<NameReference>();
                 byte[] buff = pcc.Exports[index].Data;
                 int count = BitConverter.ToInt32(buff, 20);
                 for (int i = 0; i < count; i++)
                 {
-                    values.Add(pcc.Names[BitConverter.ToInt32(buff, 24 + i * 8)]);
+                    int enumValIndex = 24 + i * 8;
+                    values.Add(new NameReference(pcc.Names[BitConverter.ToInt32(buff, enumValIndex)], BitConverter.ToInt32(buff, enumValIndex + 4)));
                 }
 
                 enumTable.Add(enumName, values);

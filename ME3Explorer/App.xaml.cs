@@ -28,6 +28,9 @@ namespace ME3Explorer
 
         public static string ExecFolder => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "exec");
 
+        public static string HexConverterPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HexConverter.exe");
+
+
         public const string FileFilter = "*.pcc;*.u;*.upk;*sfm|*.pcc;*.u;*.upk;*sfm|All Files (*.*)|*.*";
 
         public static string Version => GetVersion();
@@ -91,7 +94,7 @@ namespace ME3Explorer
             SequenceObjects.SText.LoadFont();
 
 
-            System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
+            System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
 
             splashScreen.Close(TimeSpan.FromMilliseconds(1));
             if (HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode) == 0)
@@ -100,7 +103,7 @@ namespace ME3Explorer
             }
             else
             {
-                this.Dispatcher.UnhandledException += OnDispatcherUnhandledException; //only start handling them after bootup
+                Dispatcher.UnhandledException += OnDispatcherUnhandledException; //only start handling them after bootup
                 (new MainWindow()).Show();
             }
         }

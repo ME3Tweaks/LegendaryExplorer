@@ -23,6 +23,8 @@ namespace ME3Explorer.Packages
         string PackageFullName { get; }
         string PackageName { get; }
         byte[] GetHeader(); //returns clone
+        bool HasParent { get; }
+        IEntry Parent { get; set; }
     }
 
     public interface IExportEntry : IEntry
@@ -44,11 +46,11 @@ namespace ME3Explorer.Packages
         int OriginalDataSize { get; }
         bool ReadsFromConfig { get; }
         bool HasStack { get; }
-        int NetIndex { get; }
+        int NetIndex { get; set; }
 
         IExportEntry Clone();
 
-
+        int LinkerIndex { get; }
         PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false);
         void WriteProperties(PropertyCollection props);
         int propsEnd();

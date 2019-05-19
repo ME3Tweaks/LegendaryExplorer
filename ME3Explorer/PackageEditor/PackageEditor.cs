@@ -1104,7 +1104,7 @@ namespace ME3Explorer
 
         private void addNameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name", "ME3 Explorer", "", 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new name", "ME3 Explorer", "", true);
             if (result != "")
             {
                 int idx = Pcc.FindNameOrAdd(result);
@@ -1427,10 +1427,9 @@ namespace ME3Explorer
 
         private void hexConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string loc = Path.GetDirectoryName(Application.ExecutablePath);
-            if (File.Exists(loc + @"\HexConverterWPF.exe"))
+            if (File.Exists(App.HexConverterPath))
             {
-                Process.Start(loc + @"\HexConverterWPF.exe");
+                Process.Start(App.HexConverterPath);
             }
         }
 
@@ -1983,7 +1982,7 @@ namespace ME3Explorer
             if (CurrentView == View.Names && listBox1.SelectedIndex != -1)
             {
                 int idx = listBox1.SelectedIndex;
-                string result = Microsoft.VisualBasic.Interaction.InputBox("", "Rename", Pcc.getNameEntry(idx));
+                string result = PromptDialog.Prompt(null, "", "Rename", Pcc.getNameEntry(idx));
                 if (result != "")
                 {
                     Pcc.replaceName(idx, result);

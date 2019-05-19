@@ -338,12 +338,12 @@ namespace ME3Explorer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool PackageEditorWPF_TreeViewShowNetIndex {
+        public bool PackageEditorWPF_TreeViewShowEntryIndex {
             get {
-                return ((bool)(this["PackageEditorWPF_TreeViewShowNetIndex"]));
+                return ((bool)(this["PackageEditorWPF_TreeViewShowEntryIndex"]));
             }
             set {
-                this["PackageEditorWPF_TreeViewShowNetIndex"] = value;
+                this["PackageEditorWPF_TreeViewShowEntryIndex"] = value;
             }
         }
         

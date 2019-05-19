@@ -60,7 +60,7 @@ namespace ME3Explorer.Packages
             if (coreRefEntry != null)
             {
                 retStr = coreRefEntry is ImportEntry ? "[I] " : "[E] ";
-                retStr += coreRefEntry.GetFullPath;
+                retStr += coreRefEntry.GetIndexedFullPath;
             }
             return retStr;
         }
@@ -290,7 +290,7 @@ namespace ME3Explorer.Packages
                 return imports[-uindex - 1];
             return null;
         }
-        public bool isEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (Math.Abs(uindex) > 0 && Math.Abs(uindex) <= ImportCount);
+        public bool isEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (uindex != int.MinValue && Math.Abs(uindex) > 0 && Math.Abs(uindex) <= ImportCount);
 
         #endregion
 

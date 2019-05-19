@@ -36,16 +36,12 @@ namespace ME3Explorer.Packages
 
     public class ClassInfo
     {
-        public Dictionary<string, PropertyInfo> properties;
+        public Dictionary<string, PropertyInfo> properties = new Dictionary<string, PropertyInfo>();
         public string baseClass;
         //Relative to BIOGame
         public string pccPath;
+        //0-based
         public int exportIndex;
-
-        public ClassInfo()
-        {
-            properties = new Dictionary<string, PropertyInfo>();
-        }
     }
 
     public interface IMEPackage : IDisposable

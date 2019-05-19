@@ -17,7 +17,7 @@ namespace ME1Explorer.Unreal
     {
         public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
-        public static Dictionary<string, List<string>> Enums = new Dictionary<string, List<string>>();
+        public static Dictionary<string, List<NameReference>> Enums = new Dictionary<string, List<NameReference>>();
 
         private static readonly string jsonPath = Path.Combine(ME3Explorer.App.ExecFolder, "ME1ObjectInfo.json");
         public static void loadfromJSON()
@@ -47,24 +47,6 @@ namespace ME1Explorer.Unreal
 
         public static bool isImmutableStruct(string structName)
         {
-            //string hex = "1F19000000000000A12E0000000000000400000000000000000000001849000000000000A12E0000000000000400000000000000000000001638000000000000763A000000000000040000000000000000000000722B000000000000414C0000000000001000000000000000722B00000000000000000000000000000000000000000000C539000000000000";
-            //string str = "0x";
-            //for (int i = 0; i < hex.Length; i++)
-            //{
-            //    if (i % 2 == 0 && i != 0)
-            //    {
-            //        Debug.Write(str + ", ");
-            //        str = "0x";
-            //    }
-            //    str += hex[i];
-            //    if (i % 8 == 0)
-            //    {
-            //        Debug.WriteLine("");
-            //    }
-            //}
-            //Debug.WriteLine("");
-
-
             return ImmutableStructs.Contains(structName);
         }
 
@@ -78,7 +60,7 @@ namespace ME1Explorer.Unreal
             return p?.reference;
         }
 
-        public static List<string> getEnumfromProp(string className, string propName, bool inStruct = false)
+        public static List<NameReference> getEnumfromProp(string className, string propName, bool inStruct = false)
         {
             Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
             if (temp.ContainsKey(className))
@@ -100,7 +82,7 @@ namespace ME1Explorer.Unreal
                     {
                         if (p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty)
                         {
-                            List<string> vals = getEnumfromProp(p.reference, propName, true);
+                            List<NameReference> vals = getEnumfromProp(p.reference, propName, true);
                             if (vals != null)
                             {
                                 return vals;
@@ -111,7 +93,7 @@ namespace ME1Explorer.Unreal
                 //look in base class
                 if (temp.ContainsKey(info.baseClass))
                 {
-                    List<string> vals = getEnumfromProp(info.baseClass, propName, inStruct);
+                    List<NameReference> vals = getEnumfromProp(info.baseClass, propName, inStruct);
                     if (vals != null)
                     {
                         return vals;
@@ -121,11 +103,11 @@ namespace ME1Explorer.Unreal
             return null;
         }
 
-        public static List<string> getEnumValues(string enumName, bool includeNone = false)
+        public static List<NameReference> getEnumValues(string enumName, bool includeNone = false)
         {
             if (Enums.ContainsKey(enumName))
             {
-                var values = new List<string>(Enums[enumName]);
+                var values = new List<NameReference>(Enums[enumName]);
                 if (includeNone)
                 {
                     values.Insert(0, "None");
@@ -425,7 +407,7 @@ namespace ME1Explorer.Unreal
             return null;
         }
 
-        public static bool inheritsFrom(ME1ExportEntry entry, string baseClass)
+        public static bool inheritsFrom(IEntry entry, string baseClass)
         {
             string className = entry.ClassName;
             while (Classes.ContainsKey(className))
@@ -446,7 +428,7 @@ namespace ME1Explorer.Unreal
         {
             Classes = new Dictionary<string, ClassInfo>();
             Structs = new Dictionary<string, ClassInfo>();
-            Enums = new Dictionary<string, List<string>>();
+            Enums = new Dictionary<string, List<NameReference>>();
             string path = ME1Directory.gamePath;
             string[] files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
             string objectName;
@@ -550,12 +532,13 @@ namespace ME1Explorer.Unreal
             string enumName = pcc.Exports[index].ObjectName;
             if (!Enums.ContainsKey(enumName))
             {
-                List<string> values = new List<string>();
+                var values = new List<NameReference>();
                 byte[] buff = pcc.Exports[index].Data;
                 int count = BitConverter.ToInt32(buff, 20);
                 for (int i = 0; i < count; i++)
                 {
-                    values.Add(pcc.Names[BitConverter.ToInt32(buff, 24 + i * 8)]);
+                    int enumValIndex = 24 + i * 8;
+                    values.Add(new NameReference(pcc.Names[BitConverter.ToInt32(buff, enumValIndex)], BitConverter.ToInt32(buff, enumValIndex + 4)));
                 }
                 Enums.Add(enumName, values);
             }

@@ -11,6 +11,7 @@ using Be.Windows.Forms;
 using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.FaceFX;
+using ME3Explorer.SharedUI;
 
 namespace ME2Explorer
 {
@@ -162,35 +163,35 @@ namespace ME2Explorer
             //    switch (subidx)
             //    {
             //        case 0://unk1
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.Name.ToString(), 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.Name.ToString(), true);
             //            i = -1;
             //            if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
             //                d.Name = i;
             //            break;
             //        case 4://FadeInTime
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.FadeInTime.ToString(), 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.FadeInTime.ToString(), true);
             //            if (float.TryParse(result, out f))
             //                d.FadeInTime = f;
             //            break;
             //        case 5://FadeInTime
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.FadeOutTime.ToString(), 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.FadeOutTime.ToString(), true);
             //            if (float.TryParse(result, out f))
             //                d.FadeOutTime = f;
             //            break;
             //        case 6://unk2
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.unk2.ToString(), 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.unk2.ToString(), true);
             //            i = -1;
             //            if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
             //                d.unk2 = i;
             //            break;
             //        case 7://Path
-            //            d.path = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.path, 0, 0);
+            //            d.path = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.path, true);
             //            break;
             //        case 8://ID
-            //            d.ID = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.ID, 0, 0);
+            //            d.ID = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.ID, true);
             //            break;
             //        case 9://unk3
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.unk3.ToString(), 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.unk3.ToString(), true);
             //            i = -1;
             //            if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
             //                d.unk3 = i;
@@ -210,7 +211,7 @@ namespace ME2Explorer
             //    {
             //        case 1:
             //            FaceFXAnimSet.NameRef u = d.animations[subsubidx];
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", u.index + " ; " + u.unk2, 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", u.index + " ; " + u.unk2, true);
             //            string[] reslist = result.Split(';');
             //            if (reslist.Length != 2)
             //                return;
@@ -226,7 +227,7 @@ namespace ME2Explorer
             //            break;
             //        case 2:
             //            FaceFXAnimSet.ControlPoint u2 = d.points[subsubidx];
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", u2.time + " ; " + u2.weight + " ; " + u2.inTangent + " ; " + u2.leaveTangent, 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", u2.time + " ; " + u2.weight + " ; " + u2.inTangent + " ; " + u2.leaveTangent, true);
             //            reslist = result.Split(';');
             //            if (reslist.Length != 4)
             //                return;
@@ -249,7 +250,7 @@ namespace ME2Explorer
             //            d.points[subsubidx] = u2;
             //            break;
             //        case 3:
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.numKeys[subsubidx].ToString(), 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.numKeys[subsubidx].ToString(), true);
             //            if (int.TryParse(result.Trim(), out i))
             //                d.numKeys[subsubidx] = i;
             //            else
@@ -303,7 +304,7 @@ namespace ME2Explorer
             TreeNode t1 = t?.Parent;
             if (t1 == null || t1.Text != "Entries" || FaceFX == null)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new index", "ME3Explorer", t.Index.ToString(), 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new index", "ME3Explorer", t.Index.ToString(), true);
             if (int.TryParse(result, out int i))
             {
                 FaceFX.MoveEntry(t.Index, i);
@@ -318,7 +319,7 @@ namespace ME2Explorer
         {
             if (FaceFX == null)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name to add", "ME3Explorer", "", 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new name to add", "ME3Explorer", "", true);
             if (result != "")
             {
                 FaceFX.AddName(result);

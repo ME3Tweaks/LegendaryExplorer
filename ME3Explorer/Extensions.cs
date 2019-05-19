@@ -333,6 +333,12 @@ namespace ME3Explorer
             }
             list.Add(value);
         }
+
+        public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value)
+        {
+            key = kvp.Key;
+            value = kvp.Value;
+        }
     }
 
     public static class StringExtensions
@@ -725,6 +731,14 @@ namespace ME3Explorer
                 q = q.Where(v => !v.Equals(default(T)));
             }
             return q.ToArray();
+        }
+    }
+
+    public static class TypeExtension
+    {
+        public static object InvokeGenericMethod(this Type type, string methodName, Type genericType, object invokeOn, params object[] parameters)
+        {
+            return type.GetMethod(methodName).MakeGenericMethod(genericType).Invoke(invokeOn, parameters);
         }
     }
 }

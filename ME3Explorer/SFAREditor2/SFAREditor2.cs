@@ -12,6 +12,7 @@ using Be.Windows.Forms;
 using ME3Explorer.Unreal;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
+using ME3Explorer.SharedUI;
 using UsefulThings;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
@@ -64,7 +65,7 @@ namespace ME3Explorer
         {
             if (treeView1.Nodes.Count > 0)
             {
-                string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter string to search", "ME3 Explorer", previousTerm, 0, 0);
+                string result = PromptDialog.Prompt(null, "Please enter string to search", "ME3 Explorer", previousTerm, true);
                 previousTerm = result;
                 selectSearchedElement(result);
             }

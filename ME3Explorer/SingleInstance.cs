@@ -88,10 +88,7 @@ namespace Microsoft.Shell
         /// <summary>
         /// Gets list of command line arguments for the application.
         /// </summary>
-        public static IList<string> CommandLineArgs
-        {
-            get { return commandLineArgs; }
-        }
+        public static IList<string> CommandLineArgs => commandLineArgs;
 
         #endregion
 
@@ -109,11 +106,10 @@ namespace Microsoft.Shell
             // Build unique application Id and the IPC channel name.
             string applicationIdentifier = uniqueName + Environment.UserName;
 
-            string channelName = String.Concat(applicationIdentifier, Delimiter, ChannelNameSuffix);
+            string channelName = string.Concat(applicationIdentifier, Delimiter, ChannelNameSuffix);
 
             // Create mutex based on unique application Id to check if this is the first instance of the application. 
-            bool firstInstance = false;
-            singleInstanceMutex = new Mutex(true, applicationIdentifier, out firstInstance);
+            singleInstanceMutex = new Mutex(true, applicationIdentifier, out bool firstInstance);
             if (firstInstance)
             {
                 CreateRemoteService(channelName);
@@ -155,13 +151,16 @@ namespace Microsoft.Shell
         /// <param name="channelName">Application's IPC channel name.</param>
         private static void CreateRemoteService(string channelName)
         {
-            BinaryServerFormatterSinkProvider serverProvider = new BinaryServerFormatterSinkProvider();
-            serverProvider.TypeFilterLevel = TypeFilterLevel.Full;
-            IDictionary props = new Dictionary<string, string>();
-
-            props["name"] = channelName;
-            props["portName"] = channelName;
-            props["exclusiveAddressUse"] = "false";
+            BinaryServerFormatterSinkProvider serverProvider = new BinaryServerFormatterSinkProvider
+            {
+                TypeFilterLevel = TypeFilterLevel.Full
+            };
+            IDictionary props = new Dictionary<string, string>
+            {
+                ["name"] = channelName,
+                ["portName"] = channelName,
+                ["exclusiveAddressUse"] = "false"
+            };
 
             // Create the IPC Server channel with the channel properties
             channel = new IpcServerChannel(props, serverProvider);
@@ -212,7 +211,7 @@ namespace Microsoft.Shell
         private static object ActivateFirstInstanceCallback(object arg)
         {
             // Get command line args to be passed to first instance
-            string[] args = arg as string[];
+            var args = arg as string[];
             return ActivateFirstInstance(args);
         }
 

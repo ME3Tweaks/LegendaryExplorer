@@ -10,6 +10,7 @@ using ME3Explorer.Packages;
 using Gibbed.IO;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace ME3Explorer.Unreal
 {
@@ -108,14 +109,24 @@ namespace ME3Explorer.Unreal
     }
     #endregion
 
-    public struct NameReference : INotifyPropertyChanged
+    public struct NameReference
     {
-        public string Name { get; set; }
-        public int Number { get; set; }
+        public string Name { get; }
+        public int Number { get; }
+
+        public NameReference(string name, int number = 0)
+        {
+            Name = name;
+            Number = number;
+        }
+
+        //https://api.unrealengine.com/INT/API/Runtime/Core/UObject/FName/index.html
+        [JsonIgnore]
+        public string InstancedString => Number > 0 ? $"{Name}_{Number - 1}" : Name;
 
         public static implicit operator NameReference(string s)
         {
-            return new NameReference { Name = s };
+            return new NameReference(s);
         }
 
         public static implicit operator string(NameReference n)
@@ -137,36 +148,23 @@ namespace ME3Explorer.Unreal
         {
             return s != r.Name;
         }
-
-        #region Property Changed Notification
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notifies listeners when given property is updated.
-        /// </summary>
-        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-        private void OnPropertyChanged([CallerMemberName] string propertyname = null)
+        public bool Equals(NameReference other)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+            return string.Equals(Name, other.Name) && Number == other.Number;
         }
 
-        /// <summary>
-        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-        /// Should be called in property setters.
-        /// </summary>
-        /// <typeparam name="T">Type of given property.</typeparam>
-        /// <param name="field">Backing field to update.</param>
-        /// <param name="value">New value of property.</param>
-        /// <param name="propertyName">Name of property.</param>
-        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-        private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+        public override bool Equals(object obj)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
+            return obj is NameReference other && Equals(other);
         }
-        #endregion
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Name.GetHashCode() * 397) ^ Number;
+            }
+        }
     }
 
     public enum PropertyType
@@ -617,13 +615,8 @@ namespace ME3Explorer.Unreal
                     break;
                 case "NameProperty":
                     v.IntValue = BitConverter.ToInt32(raw, start);
-                    var nameRef = new NameReference();
-                    nameRef.Name = pcc.getNameEntry(v.IntValue);
-                    nameRef.Number = BitConverter.ToInt32(raw, start + 4);
-                    if (nameRef.Number > 0)
-                        nameRef.Name += "_" + (nameRef.Number - 1);
-                    v.NameValue = nameRef;
-                    v.StringValue = nameRef.Name;
+                    v.NameValue = new NameReference(pcc.getNameEntry(v.IntValue), BitConverter.ToInt32(raw, start + 4));
+                    v.StringValue = v.NameValue.InstancedString;
                     v.len = 8;
                     break;
             }

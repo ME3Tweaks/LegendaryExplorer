@@ -14,6 +14,7 @@ using ME3Explorer;
 using Be.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Diagnostics;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer.WwiseBankEditor
 {
@@ -233,7 +234,7 @@ namespace ME3Explorer.WwiseBankEditor
                 int ID3 = BitConverter.ToInt32(buff, 21);
                 int tp = buff[25];
                 string s = ID1 + ", " + opt + ", " + ID2 + ", " + ID3 + ", " + tp;
-                string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new values[Object ID, Stream Option, ID audio, ID source, Sound Type", "ME3Explorer", s, 0, 0);
+                string result = PromptDialog.Prompt(null, "Please enter new values[Object ID, Stream Option, ID audio, ID source, Sound Type", "ME3Explorer", s, true);
                 string[] sres = result.Split(',');
                 if (sres.Length != 5)
                     return;

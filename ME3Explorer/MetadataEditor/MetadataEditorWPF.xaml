@@ -91,7 +91,7 @@
 
         </Grid.Resources>
         <TextBlock Name="InfoTab_ObjectName_TextBlock" VerticalAlignment="Center" Text="0x0C Object name:" Grid.Row="0" Grid.Column="0"/>
-        <TextBlock Name="InfoTab_ObjectNameIndex_TextBlock" VerticalAlignment="Center" Text="0x18 Object index:" Grid.Row="1" Grid.Column="0"/>
+        <TextBlock Name="InfoTab_ObjectNameIndex_TextBlock" VerticalAlignment="Center" Text="0x10 Object index:" Grid.Row="1" Grid.Column="0"/>
 
         <TextBlock VerticalAlignment="Center" Text="0x00 Class:" Grid.Row="2" Grid.Column="0"/>
         <TextBlock VerticalAlignment="Center" Text="0x08 Class:" Grid.Row="3" Grid.Column="0"/>
@@ -190,6 +190,6 @@
             <hb1:HexBox  MinBytesPerLine="4" MaxBytesPerLine="16" BytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" VScrollBarVisible="True" UseFixedBytesPerLine="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged">
             </hb1:HexBox>
         </WindowsFormsHost>
-        <Label Name="Header_Hexbox_SelectedBytesLabel" Grid.Row="20" Grid.ColumnSpan="2" Content="Selected item: " Margin="-6,0,0,0"/>
+        <TextBlock Name="Header_Hexbox_SelectedBytesLabel" Grid.Row="20" Grid.ColumnSpan="2" Text="Selected item: " TextWrapping="Wrap"/>
     </Grid>
 </global:ExportLoaderControl>

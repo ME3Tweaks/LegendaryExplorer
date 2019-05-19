@@ -33,18 +33,17 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static bool inheritsFrom(this IExportEntry entry, string baseClass)
+        public static bool inheritsFrom(this IEntry entry, string baseClass)
         {
             switch (entry.FileRef.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.inheritsFrom(entry as ME1ExportEntry, baseClass);
+                    return ME1UnrealObjectInfo.inheritsFrom(entry, baseClass);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.inheritsFrom(entry as ME2ExportEntry, baseClass);
+                    return ME2UnrealObjectInfo.inheritsFrom(entry, baseClass);
                 case MEGame.ME3:
-                    return ME3UnrealObjectInfo.inheritsFrom(entry as ME3ExportEntry, baseClass);
-                case MEGame.UDK:
-                    return ME3UnrealObjectInfo.inheritsFrom(entry as UDKExportEntry, baseClass); //use me3?
+                case MEGame.UDK: //use me3?
+                    return ME3UnrealObjectInfo.inheritsFrom(entry, baseClass);
                 default:
                     return false;
             }
@@ -66,7 +65,7 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static List<string> GetEnumValues(MEGame game, string enumName, bool includeNone)
+        public static List<NameReference> GetEnumValues(MEGame game, string enumName, bool includeNone)
         {
             switch (game)
             {
@@ -209,7 +208,7 @@ namespace ME3Explorer.Unreal
         public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new Dictionary<string, SequenceObjectInfo>();
-        public static Dictionary<string, List<string>> Enums = new Dictionary<string, List<string>>();
+        public static Dictionary<string, List<NameReference>> Enums = new Dictionary<string, List<NameReference>>();
 
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "AimOffsetProfile", "FontCharacter",
@@ -299,11 +298,11 @@ namespace ME3Explorer.Unreal
             return p?.reference;
         }
 
-        public static List<string> getEnumValues(string enumName, bool includeNone = false)
+        public static List<NameReference> getEnumValues(string enumName, bool includeNone = false)
         {
             if (Enums.ContainsKey(enumName))
             {
-                List<string> values = new List<string>(Enums[enumName]);
+                var values = new List<NameReference>(Enums[enumName]);
                 if (includeNone)
                 {
                     values.Insert(0, "None");
@@ -605,7 +604,7 @@ namespace ME3Explorer.Unreal
                             }
                             foreach (var prop in toRemove)
                             {
-                                Debug.WriteLine("ME3: Get Default Struct value (" + className + ") - removing transient prop: " + prop.Name);
+                                Debug.WriteLine($"ME3: Get Default Struct value ({className}) - removing transient prop: {prop.Name}");
                                 props.Remove(prop);
                             }
                         }
@@ -620,21 +619,7 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static bool inheritsFrom(ME3ExportEntry entry, string baseClass)
-        {
-            string className = entry.ClassName;
-            while (Classes.ContainsKey(className))
-            {
-                if (className == baseClass)
-                {
-                    return true;
-                }
-                className = Classes[className].baseClass;
-            }
-            return false;
-        }
-
-        public static bool inheritsFrom(UDKExportEntry entry, string baseClass)
+        public static bool inheritsFrom(IEntry entry, string baseClass)
         {
             string className = entry.ClassName;
             while (Classes.ContainsKey(className))
@@ -655,7 +640,7 @@ namespace ME3Explorer.Unreal
         {
             Classes = new Dictionary<string, ClassInfo>();
             Structs = new Dictionary<string, ClassInfo>();
-            Enums = new Dictionary<string, List<string>>();
+            Enums = new Dictionary<string, List<NameReference>>();
 
             string path = ME3Directory.gamePath;
             string[] files = Directory.GetFiles(Path.Combine(path, "BIOGame"), "*.pcc", SearchOption.AllDirectories);
@@ -767,11 +752,11 @@ namespace ME3Explorer.Unreal
                 exportIndex = 0,
                 properties =
                 {
-                    ["m_aoTargets"] = new PropertyInfo()
+                    ["m_aoTargets"] = new PropertyInfo
                     {
                         type = PropertyType.ArrayProperty, reference = "Actor"
                     },
-                    ["m_pDefaultFaceFXAsset"] = new PropertyInfo()
+                    ["m_pDefaultFaceFXAsset"] = new PropertyInfo
                     {
                         type = PropertyType.ObjectProperty, reference = "FaceFXAsset"
                     }
@@ -843,13 +828,14 @@ namespace ME3Explorer.Unreal
             string enumName = pcc.Exports[index].ObjectName;
             if (!Enums.ContainsKey(enumName))
             {
-                List<string> values = new List<string>();
+                var values = new List<NameReference>();
                 byte[] buff = pcc.Exports[index].Data;
                 //subtract 1 so that we don't get the MAX value, which is an implementation detail
                 int count = BitConverter.ToInt32(buff, 20) - 1;
                 for (int i = 0; i < count; i++)
                 {
-                    values.Add(pcc.Names[BitConverter.ToInt32(buff, 24 + i * 8)]);
+                    int enumValIndex = 24 + i * 8;
+                    values.Add(new NameReference(pcc.Names[BitConverter.ToInt32(buff, enumValIndex)], BitConverter.ToInt32(buff, enumValIndex + 4)));
                 }
                 Enums.Add(enumName, values);
             }
@@ -952,6 +938,157 @@ namespace ME3Explorer.Unreal
         internal static ClassInfo generateClassInfo(IExportEntry export)
         {
             return generateClassInfo(export.Index, export.FileRef as ME3Package);
+        }
+        #endregion
+
+        #region CodeGen
+        public static void GenerateCode()
+        {
+            GenerateEnums();
+            GenerateStructs();
+            GenerateClasses();
+        }
+        private static void GenerateClasses()
+        {
+            using (var fileStream = new FileStream(Path.Combine(App.ExecFolder, "ME3Classes.cs"), FileMode.Create))
+            using (var writer = new CodeWriter(fileStream))
+            {
+                writer.WriteLine("using Unreal.ME3Enums;");
+                writer.WriteLine("using Unreal.ME3Structs;");
+                writer.WriteLine("using NameReference = ME3Explorer.Unreal.NameReference;");
+                writer.WriteLine();
+                writer.WriteBlock("namespace Unreal.ME3Classes", () =>
+                {
+                    writer.WriteBlock("public class Level", () =>
+                    {
+                        writer.WriteLine("public float ShadowmapTotalSize;");
+                        writer.WriteLine("public float LightmapTotalSize;");
+                    });
+                    foreach ((string className, ClassInfo info) in Classes)
+                    {
+                        writer.WriteBlock($"public class {className}{(info.baseClass != "Class" ? $" : {info.baseClass}" : "")}", () =>
+                        {
+                            foreach ((string propName, PropertyInfo propInfo) in info.properties.Reverse())
+                            {
+                                if (propInfo.transient || propInfo.type == PropertyType.None)
+                                {
+                                    continue;
+                                }
+                                if (propName.Contains(":") || propName == className)
+                                {
+                                    writer.WriteLine($"public {CSharpTypeFromUnrealType(propInfo)} _{propName.Replace(":", "")};");
+                                }
+                                else
+                                {
+                                    writer.WriteLine($"public {CSharpTypeFromUnrealType(propInfo)} {propName};");
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+
+        private static void GenerateStructs()
+        {
+            using (var fileStream = new FileStream(Path.Combine(App.ExecFolder, "ME3Structs.cs"), FileMode.Create))
+            using (var writer = new CodeWriter(fileStream))
+            {
+                writer.WriteLine("using Unreal.ME3Enums;");
+                writer.WriteLine("using Unreal.ME3Classes;");
+                writer.WriteLine("using NameReference = ME3Explorer.Unreal.NameReference;");
+                writer.WriteLine();
+                writer.WriteBlock("namespace Unreal.ME3Structs", () =>
+                {
+                    foreach ((string structName, ClassInfo info) in Structs)
+                    {
+                        writer.WriteBlock($"public class {structName}{(info.baseClass != "Class" ? $" : {info.baseClass}" : "")}", () =>
+                        {
+                            foreach ((string propName, PropertyInfo propInfo) in info.properties.Reverse())
+                            {
+                                if (propInfo.transient || propInfo.type == PropertyType.None)
+                                {
+                                    continue;
+                                }
+                                writer.WriteLine($"public {CSharpTypeFromUnrealType(propInfo)} {propName.Replace(":", "")};");
+                            }
+                        });
+                    }
+                });
+            }
+        }
+
+        private static void GenerateEnums()
+        {
+            using (var fileStream = new FileStream(Path.Combine(App.ExecFolder, "ME3Enums.cs"), FileMode.Create))
+            using (var writer = new CodeWriter(fileStream))
+            {
+                writer.WriteBlock("namespace Unreal.ME3Enums", () =>
+                {
+                    foreach ((string enumName, List<NameReference> values) in Enums)
+                    {
+                        writer.WriteBlock($"public enum {enumName}", () =>
+                        {
+                            foreach (NameReference val in values)
+                            {
+                                writer.WriteLine($"{val.InstancedString},");
+                            }
+                        });
+                    }
+                });
+            }
+        }
+        static string CSharpTypeFromUnrealType(PropertyInfo propInfo)
+        {
+            switch (propInfo.type)
+            {
+                case PropertyType.StructProperty:
+                    return propInfo.reference;
+                case PropertyType.IntProperty:
+                    return "int";
+                case PropertyType.FloatProperty:
+                    return "float";
+                case PropertyType.DelegateProperty:
+                case PropertyType.ObjectProperty:
+                    return "int";
+                case PropertyType.NameProperty:
+                    return nameof(NameReference);
+                case PropertyType.BoolProperty:
+                    return "bool";
+                case PropertyType.BioMask4Property:
+                    return "byte";
+                case PropertyType.ByteProperty when propInfo.reference != null && propInfo.reference != "Class" && propInfo.reference != "Object":
+                    return propInfo.reference;
+                case PropertyType.ByteProperty:
+                    return "byte";
+                case PropertyType.ArrayProperty:
+                {
+                    string type;
+                    if (Enum.TryParse(propInfo.reference, out PropertyType arrayType))
+                    {
+                        type = CSharpTypeFromUnrealType(new PropertyInfo { type = arrayType });
+                    }
+                    else if (Classes.ContainsKey(propInfo.reference))
+                    {
+                        //ObjectProperty
+                        type = "int";
+                    }
+                    else
+                    {
+                        type = propInfo.reference;
+                    }
+
+                    return $"{type}[]";
+                }
+                case PropertyType.StrProperty:
+                    return "string";
+                case PropertyType.StringRefProperty:
+                    return "int";
+                case PropertyType.None:
+                case PropertyType.Unknown:
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
         #endregion
     }

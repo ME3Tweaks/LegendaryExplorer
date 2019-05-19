@@ -75,15 +75,28 @@ namespace ME3Explorer.Packages
             get => BitConverter.ToInt32(header, idxOffsets + 24);
             private set => SetHeaderValue(value, 24);
         }
-        int FreeZoneStart
+        int DependencyTableStart
         {
             get => BitConverter.ToInt32(header, idxOffsets + 24);
             set => SetHeaderValue(value, 24);
         }
-        int FreeZoneEnd
+        int DependencyTableEnd
         {
             get => BitConverter.ToInt32(header, idxOffsets + 28);
             set => SetHeaderValue(value, 28);
+        }
+
+
+        int Generations0ExportCount
+        {
+            get => BitConverter.ToInt32(header, idxOffsets + 0x40);
+            set => SetHeaderValue(value, 0x40);
+        }
+
+        public int Generations0NameCount
+        {
+            get => BitConverter.ToInt32(header, idxOffsets+0x44 );
+            set => SetHeaderValue(value, 0x44);
         }
 
         void SetHeaderValue(int val, int offset)
@@ -238,10 +251,12 @@ namespace ME3Explorer.Packages
                     m.WriteBytes(e.Header);
                 }
                 //freezone
-                int FreeZoneSize = FreeZoneEnd - FreeZoneStart;
-                FreeZoneStart = (int)m.Position;
-                m.WriteBytes(new byte[FreeZoneSize]);
-                FreeZoneEnd = expDataBegOffset = (int)m.Position;
+                int DependencyTableSize = DependencyTableEnd - DependencyTableStart; //Should be ExportsCount * 4, technically.
+                DependencyTableStart = (int)m.Position;
+                m.WriteBytes(new byte[DependencyTableSize]);
+                DependencyTableEnd = expDataBegOffset = (int)m.Position;
+                Generations0ExportCount = ExportCount;
+                Generations0NameCount = NameCount;
                 //export data
                 foreach (IExportEntry e in exports)
                 {
@@ -385,7 +400,8 @@ namespace ME3Explorer.Packages
                 {
                     newPCCStream.WriteBytes(export.Header);
                 }
-
+                Generations0ExportCount = ExportCount;
+                Generations0NameCount = NameCount;
                 IsAppend = true;
 
                 //write the updated header

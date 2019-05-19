@@ -286,6 +286,7 @@ namespace ME3Explorer.MetadataEditor
             InfoTab_PackageFile_ComboBox.SelectedIndex = importEntry.FileRef.findName(System.IO.Path.GetFileNameWithoutExtension(importEntry.PackageFile));
             InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(importEntry.Header, HEADER_OFFSET_IMP_IDXOBJECTNAME + 4).ToString();
             CurrentLoadedEntry = importEntry;
+            OriginalHeader = CurrentLoadedEntry.Header;
             headerByteProvider.ReplaceBytes(CurrentLoadedEntry.Header);
             Header_Hexbox.Refresh();
             HexChanged = false;
@@ -337,11 +338,11 @@ namespace ME3Explorer.MetadataEditor
                         s += $"Length=0x{len.ToString("X8")} ";
                         s += $"End=0x{(start + len - 1).ToString("X8")}";
                     }
-                    Header_Hexbox_SelectedBytesLabel.Content = s;
+                    Header_Hexbox_SelectedBytesLabel.Text = s;
                 }
                 else
                 {
-                    Header_Hexbox_SelectedBytesLabel.Content = "Nothing Selected";
+                    Header_Hexbox_SelectedBytesLabel.Text = "Nothing Selected";
                 }
             }
             catch (Exception)
@@ -393,6 +394,7 @@ namespace ME3Explorer.MetadataEditor
                 var selectedClassIndex = InfoTab_Class_ComboBox.SelectedIndex;
                 var unrealIndex = selectedClassIndex - CurrentLoadedEntry.FileRef.ImportCount;
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXCLASS, BitConverter.GetBytes(unrealIndex));
+                Header_Hexbox.Refresh();
             }
         }
 
@@ -411,6 +413,7 @@ namespace ME3Explorer.MetadataEditor
                 var selectedImpExp = InfoTab_PackageLink_ComboBox.SelectedIndex;
                 var unrealIndex = selectedImpExp - CurrentLoadedEntry.FileRef.ImportCount;
                 headerByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXLINK : HEADER_OFFSET_IMP_IDXLINK, BitConverter.GetBytes(unrealIndex));
+                Header_Hexbox.Refresh();
             }
         }
 
@@ -421,6 +424,7 @@ namespace ME3Explorer.MetadataEditor
                 var selectedClassIndex = InfoTab_Superclass_ComboBox.SelectedIndex;
                 var unrealIndex = selectedClassIndex - CurrentLoadedEntry.FileRef.ImportCount;
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXSUPERCLASS, BitConverter.GetBytes(unrealIndex));
+                Header_Hexbox.Refresh();
             }
         }
 
@@ -432,6 +436,7 @@ namespace ME3Explorer.MetadataEditor
                 if (selectedNameIndex >= 0)
                 {
                     headerByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXOBJECTNAME : HEADER_OFFSET_IMP_IDXOBJECTNAME, BitConverter.GetBytes(selectedNameIndex));
+                Header_Hexbox.Refresh();
                 }
             }
         }
@@ -444,6 +449,7 @@ namespace ME3Explorer.MetadataEditor
                 if (int.TryParse(InfoTab_ObjectnameIndex_TextBox.Text, out x))
                 {
                     headerByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXOBJECTNAME + 4 : HEADER_OFFSET_IMP_IDXOBJECTNAME + 4, BitConverter.GetBytes(x));
+                    Header_Hexbox.Refresh();
                 }
             }
         }
@@ -455,6 +461,7 @@ namespace ME3Explorer.MetadataEditor
                 var selectedArchetTypeIndex = InfoTab_Archetype_ComboBox.SelectedIndex;
                 var unrealIndex = selectedArchetTypeIndex - CurrentLoadedEntry.FileRef.ImportCount;
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXARCHETYPE, BitConverter.GetBytes(unrealIndex));
+                Header_Hexbox.Refresh();
             }
         }
 
@@ -464,6 +471,7 @@ namespace ME3Explorer.MetadataEditor
             {
                 var selectedNameIndex = InfoTab_PackageFile_ComboBox.SelectedIndex;
                 headerByteProvider.WriteBytes(HEADER_OFFSET_IMP_IDXPACKAGEFILE, BitConverter.GetBytes(selectedNameIndex));
+                Header_Hexbox.Refresh();
             }
         }
 
@@ -473,6 +481,7 @@ namespace ME3Explorer.MetadataEditor
             {
                 var selectedNameIndex = InfoTab_ImpClass_ComboBox.SelectedIndex;
                 headerByteProvider.WriteBytes(HEADER_OFFSET_IMP_IDXCLASSNAME, BitConverter.GetBytes(selectedNameIndex));
+                Header_Hexbox.Refresh();
             }
         }
 
@@ -550,6 +559,7 @@ namespace ME3Explorer.MetadataEditor
                 }
                 //Debug.WriteLine(newFlags);
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_OBJECTFLAGS, BitConverter.GetBytes((UInt64)newFlags));
+                Header_Hexbox.Refresh();
             }
         }
 
@@ -579,11 +589,12 @@ namespace ME3Explorer.MetadataEditor
                 //Check name
                 var text = InfoTab_Objectname_ComboBox.Text;
                 int index = CurrentLoadedEntry.FileRef.findName(text);
-                if (index < 0)
+                if (index < 0 && !string.IsNullOrEmpty(text))
                 {
+                    Keyboard.ClearFocus();
                     string input = $"The name \"{text}\" does not exist in the current loaded package.\nIf you'd like to add this name, press enter below, or change the name to what you would like it to be.";
                     string result = PromptDialog.Prompt(Window.GetWindow(this), input, "Enter new name", text);
-                    if (result != null && result != "")
+                    if (!string.IsNullOrEmpty(result))
                     {
                         int idx = CurrentLoadedEntry.FileRef.FindNameOrAdd(result);
                         if (idx != CurrentLoadedEntry.FileRef.Names.Count - 1)
@@ -593,21 +604,21 @@ namespace ME3Explorer.MetadataEditor
                         }
                         else
                         {
-                            //CurrentLoadedEntry.idxObjectName = idx;
-                            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => { })).Wait();
-                            InfoTab_Objectname_ComboBox.SelectedIndex = idx; //This may need to be deferred as the handleUpdate() may not have fired yet.
-                            //MessageBox.Show($"{result} has been added as a name.\nName index: {idx} (0x{idx:X8})", "Name added");
-                            //.SelectedIndex = idx; //This may need to be deferred as the handleUpdate() may not have fired yet.
+                            CurrentObjectNameIndex = idx;
                         }
                         //refresh should be triggered by hosting window
                     }
+                }
+                else
+                {
+                    e.Handled = true;
                 }
             }
         }
 
         public override void SignalNamelistAboutToUpdate()
         {
-            CurrentObjectNameIndex = InfoTab_Objectname_ComboBox.SelectedIndex;
+            CurrentObjectNameIndex = CurrentObjectNameIndex >= 0 ? CurrentObjectNameIndex : InfoTab_Objectname_ComboBox.SelectedIndex;
         }
 
         public override void SignalNamelistChanged()
@@ -634,7 +645,7 @@ namespace ME3Explorer.MetadataEditor
 
             public override string ToString()
             {
-                return "0 : Class";
+                return "0: Class";
             }
 
             public int UIndex { get { return 0; } }

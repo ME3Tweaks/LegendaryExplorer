@@ -18,9 +18,11 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using ME3Explorer.SharedUI;
 using System.Windows.Input;
+using Gammtek.Conduit.Extensions.Collections.Generic;
 using Xceed.Wpf.Toolkit;
 using static ME3Explorer.PackageEditorWPF;
 using Gammtek.Conduit.Extensions.IO;
+using MessageBox = System.Windows.MessageBox;
 
 namespace ME3Explorer
 {
@@ -735,14 +737,13 @@ namespace ME3Explorer
                     break;
                 case NameProperty np:
                     editableValue = $"{parsingExport.FileRef.findName(np.Value.Name)}_{np.Value.Number}";
-                    parsedValue = $"{np.Value}_{np.Value.Number}"; //will require special 2-box setup
+                    parsedValue = np.Value.InstancedString; //will require special 2-box setup
                     break;
                 case ByteProperty bp:
                     editableValue = parsedValue = bp.Value.ToString();
                     break;
                 case EnumProperty ep:
-                    //editableValue = ep.Value.ToString();
-                    editableValue = ep.Value;
+                    editableValue = ep.Value.InstancedString;
                     break;
                 case StringRefProperty strrefp:
                     editableValue = strrefp.Value.ToString();
@@ -955,17 +956,17 @@ namespace ME3Explorer
                     }
                     break;
                 case "DecalComponent":
-                {
-                    ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("DecalMaterial");
-                    if (smprop != null)
                     {
-                        IEntry smEntry = exportEntry.FileRef.getEntry(smprop.Value);
-                        if (smEntry != null)
+                        ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("DecalMaterial");
+                        if (smprop != null)
                         {
-                            return "(" + smEntry.ObjectName + ")";
+                            IEntry smEntry = exportEntry.FileRef.getEntry(smprop.Value);
+                            if (smEntry != null)
+                            {
+                                return "(" + smEntry.ObjectName + ")";
+                            }
                         }
                     }
-                }
                     break;
             }
             return "";
@@ -1123,9 +1124,9 @@ namespace ME3Explorer
                     case EnumProperty ep:
                         {
                             SupportedEditorSetElements.Add(Value_ComboBox);
-                            List<string> values = ep.EnumValues;
+                            List<NameReference> values = ep.EnumValues;
                             Value_ComboBox.ItemsSource = values;
-                            int indexSelected = values.IndexOf(ep.Value.Name);
+                            int indexSelected = values.IndexOf(ep.Value);
                             Value_ComboBox.SelectedIndex = indexSelected;
                         }
                         break;
@@ -1689,9 +1690,9 @@ namespace ME3Explorer
                         }
                         break;
                     case EnumProperty ep:
-                        if (ep.Value != (string)Value_ComboBox.SelectedItem)
+                        if (ep.Value != (NameReference)Value_ComboBox.SelectedItem)
                         {
-                            ep.Value = (string)Value_ComboBox.SelectedItem; //0 = true
+                            ep.Value = (NameReference)Value_ComboBox.SelectedItem; //0 = true
                             updated = true;
                         }
                         break;
@@ -1729,12 +1730,7 @@ namespace ME3Explorer
                         nameindexok &= nameIndex >= 0;
                         if (index >= 0 && nameindexok)
                         {
-                            NameReference nameRef = new NameReference
-                            {
-                                Name = input,
-                                Number = nameIndex
-                            };
-                            namep.Value = nameRef;
+                            namep.Value = new NameReference(input, nameIndex);
                             updated = true;
                         }
                         break;
@@ -1769,7 +1765,7 @@ namespace ME3Explorer
 
         private void AddArrayElement_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi)
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null)
             {
                 UProperty propertyToAddItemTo = null;
 
@@ -1785,12 +1781,7 @@ namespace ME3Explorer
                 switch (propertyToAddItemTo)
                 {
                     case ArrayProperty<NameProperty> anp:
-                        NameReference nameRef = new NameReference
-                        {
-                            Name = CurrentLoadedExport.FileRef.getNameEntry(0),
-                            Number = 0
-                        };
-                        NameProperty np = new NameProperty { Value = nameRef };
+                        NameProperty np = new NameProperty { Value = new NameReference(CurrentLoadedExport.FileRef.getNameEntry(0)) };
                         anp.Add(np);
                         break;
                     case ArrayProperty<ObjectProperty> aop:
@@ -1934,6 +1925,70 @@ namespace ME3Explorer
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), CurrentLoadedExport);
                 elhw.Title = $"Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
                 elhw.Show();
+            }
+        }
+
+        private void MoveArrayElementDown_Click(object sender, RoutedEventArgs e)
+        {
+            MoveArrayElement(false);
+        }
+
+        private void MoveArrayElementUp_Click(object sender, RoutedEventArgs e)
+        {
+            MoveArrayElement(true);
+
+        }
+
+        private void MoveArrayElement(bool up)
+        {
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null && tvi.Parent != null & tvi.Parent.Property != null && tvi.Parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
+            {
+                int moveOffset = up ? -1 : 1;
+                //UI
+                //UPropertyTreeViewEntry parent = tvi.Parent;
+                //int childIndex = tvi.Parent.ChildrenProperties.IndexOf(tvi);
+                //if (childIndex > 0)
+                //{
+                //    var objectBeingReplaced = tvi.Parent.ChildrenProperties[childIndex - 1];
+                //    tvi.Parent.ChildrenProperties[childIndex - 1] = tvi.Parent.ChildrenProperties[childIndex];
+                //    tvi.Parent.ChildrenProperties[childIndex] = objectBeingReplaced;
+                //}
+
+                //Backing data
+                //This is big and ugly due to generic type casting combined with inability to get a reference value (casting will result in a non-reference value).
+                switch (tvi.Parent.Property)
+                {
+                    case ArrayProperty<ObjectProperty> aop:
+                        {
+                            int selectedItemIndex = aop.IndexOf(tvi.Property);
+                            if (up ? (selectedItemIndex > 0) : (selectedItemIndex < aop.Count - 1))
+                            {
+                                var objectBeingReplaced = aop[selectedItemIndex + moveOffset];
+                                aop[selectedItemIndex + moveOffset] = aop[selectedItemIndex];
+                                aop[selectedItemIndex] = objectBeingReplaced;
+                            }
+                        }
+                        break;
+                    case ArrayProperty<NameProperty> anp:
+                        {
+                            int selectedItemIndex = anp.IndexOf(tvi.Property);
+                            if (up ? (selectedItemIndex > 0) : (selectedItemIndex < anp.Count - 1))
+                            {
+                                var objectBeingReplaced = anp[selectedItemIndex + moveOffset];
+                                anp[selectedItemIndex + moveOffset] = anp[selectedItemIndex];
+                                anp[selectedItemIndex] = objectBeingReplaced;
+                                ForcedRescanOffset = (int)tvi.Parent.ChildrenProperties[selectedItemIndex + moveOffset].Property.StartOffset;
+                            }
+                        }
+                        break;
+                    default:
+                        MessageBox.Show("Can't move this element type yet.");
+                        break;
+                }
+
+
+                //Will force reload
+                CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
             }
         }
     }

@@ -330,6 +330,7 @@
     <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CodeWriter.cs" />
     <Compile Include="DLCUnpacker\DLCUnpacker.xaml.cs">
       <DependentUpon>DLCUnpacker.xaml</DependentUpon>
     </Compile>
@@ -825,6 +826,9 @@
     <Compile Include="Unreal\HuffmanCompression.cs" />
     <Compile Include="Packages\MEPackageHandler.cs" />
     <Compile Include="Packages\ME3Package.cs" />
+    <Compile Include="Unreal\ME3Classes.cs" />
+    <Compile Include="Unreal\ME3Enums.cs" />
+    <Compile Include="Unreal\ME3Structs.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropertyCollection.cs" />
     <Compile Include="Unreal\PropGrid.cs" />
