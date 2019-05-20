@@ -236,8 +236,10 @@ namespace ME3Explorer.MetadataEditor
                 Guid guid = new Guid(guidbytes);
                 InfoTab_ExportGUID_TextBox.Text = guid.ToString();
                 InfoTab_Unknown2_TextBlock.Text = $"0x{(guidOffset + 16):X2} Unknown 2:";
-
-                InfoTab_ExportUnknown2_TextBox.Text = BitConverter.ToInt32(header, guidOffset + 16).ToString();
+                if (guidOffset + 16 <= header.Length - 4)
+                {
+                    InfoTab_ExportUnknown2_TextBox.Text = BitConverter.ToInt32(header, guidOffset + 16).ToString();
+                }
             }
             catch (Exception e)
             {

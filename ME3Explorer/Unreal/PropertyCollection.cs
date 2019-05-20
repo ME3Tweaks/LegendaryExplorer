@@ -171,7 +171,7 @@ namespace ME3Explorer.Unreal
                                 if (size != 1)
                                 {
                                     NameReference enumType;
-                                    if (pcc.Game == MEGame.ME3)
+                                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                                     {
                                         enumType = new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
                                     }
@@ -630,7 +630,7 @@ namespace ME3Explorer.Unreal
         {
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
             ArrayType arrayType = UnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType, parsingEntry);
-            //Debug.WriteLine("Reading array length at 0x" + stream.Position.ToString("X5"));
+            Debug.WriteLine("Reading array length at 0x" + stream.Position.ToString("X5"));
             int count = stream.ReadValueS32();
             switch (arrayType)
             {
@@ -747,12 +747,23 @@ namespace ME3Explorer.Unreal
                             {
                                 long structOffset = stream.Position;
                                 //Debug.WriteLine("reading array struct: " + arrayStructType + " at 0x" + stream.Position.ToString("X5"));
-                                PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties);
-                                props.Add(new StructProperty(arrayStructType, structProps)
+                                PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties,entry: parsingEntry);
+#if DEBUG
+                                try
                                 {
-                                    StartOffset = structOffset,
-                                    ValueOffset = structProps[0].StartOffset
-                                });
+#endif
+                                    props.Add(new StructProperty(arrayStructType, structProps)
+                                    {
+                                        StartOffset = structOffset,
+                                        ValueOffset = structProps[0].StartOffset
+                                    });
+#if DEBUG
+                                }
+                                catch (Exception e)
+                                {
+                                    return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
+                                }
+#endif
                             }
                         }
                         return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
@@ -1406,7 +1417,7 @@ namespace ME3Explorer.Unreal
         public BoolProperty(MemoryStream stream, MEGame game, NameReference? name = null, bool isArrayContained = false) : base(name)
         {
             ValueOffset = stream.Position;
-            if (game != MEGame.ME3 && isArrayContained)
+            if (game != MEGame.ME3 && game != MEGame.UDK && isArrayContained)
             {
                 //ME2 seems to read 1 byte... sometimes...
                 //ME1 as well
@@ -1414,7 +1425,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                Value = game == MEGame.ME3 ? stream.ReadValueB8() : stream.ReadValueB32();
+                Value = (game == MEGame.ME3 || game == MEGame.UDK) ? stream.ReadValueB8() : stream.ReadValueB32();
             }
             PropType = PropertyType.BoolProperty;
         }
