@@ -5358,28 +5358,179 @@ namespace ME3Explorer
 
                         for (int rv = 0; rv < rigidskinVertex; rv++)
                         {
-                            //skip uneccessary parsing UDK is uncompressed
+                            //UDK has lots of unused values
+                            int rvpos = pos;
+                            float vPosX = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4;
+                            float vPosY = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4;
+                            float vPosZ = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4;
+                            float TanX = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4; 
+                            float TanY = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4;
+                            float TanZ = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4;
+                            float uv1U = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4;
+                            float uv1V = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4; //32
+
                             if(game == MEGame.UDK)
-                            { pos += 61; }
-                            else { pos += 33; }
+                            {
+                                float uv2U = BitConverter.ToSingle(data, rvpos);
+                                rvpos += 4;
+                                float uv2V = BitConverter.ToSingle(data, rvpos);
+                                rvpos += 4; 
+                                float uv3U = BitConverter.ToSingle(data, rvpos);
+                                rvpos += 4;
+                                float uv3V = BitConverter.ToSingle(data, rvpos);
+                                rvpos += 4; //48
+                                float uv4U = BitConverter.ToSingle(data, rvpos);
+                                rvpos += 4;
+                                float uv4V = BitConverter.ToSingle(data, rvpos);
+                                rvpos += 4; //56
+                                int color = BitConverter.ToInt32(data, rvpos);
+                                rvpos += 4; //60
+
+                                bool bone = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE
+                                rvpos += 1;
+
+                                rigidvertices.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                                {
+                                    Header = $"{pos:X4} {rv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ} UV(0) U:{uv1U} W:{uv1U} UV(1) U:{uv2U} W:{uv2U} UV(2) U:{uv3U} W:{uv3U} UV(3) U:{uv4U} W:{uv4U} Color: {color} Bone: {bone}",
+                                    Name = "_" + pos,
+
+                                    Tag = NodeType.Unknown,
+                                });
+                                pos += 61;
+                            }
+                            else {
+
+                                bool bone = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE
+                                rvpos += 1;
+
+                                rigidvertices.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                                {
+                                    Header = $"{pos:X4} {rv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ}  UV U:{uv1U} W:{uv1U} Bone:{bone}",
+                                    Name = "_" + pos,
+
+                                    Tag = NodeType.Unknown,
+                                });
+                                pos += 33;
+                            }
                         }
                         
                         int softskinVertex = BitConverter.ToInt32(data, pos); //Soft vertices collection
-                        nChunk.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        var softvertices = new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"{pos:X4} Soft Skin Vertices: {softskinVertex}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
-                        });
+                        };
+                        nChunk.Items.Add(softvertices);
                         pos += 4;
 
                         for (int sv = 0; sv < softskinVertex; sv++)
                         {
-                            //skip uneccessary parsing UDK is uncompressed
+                            //UDK has lots of unused values
+                            int rvpos = pos;
+                            float vPosX = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4;
+                            float vPosY = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4;
+                            float vPosZ = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4;
+                            float TanX = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4;
+                            float TanY = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4;
+                            float TanZ = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4;
+                            float uv1U = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4;
+                            float uv1V = BitConverter.ToSingle(data, rvpos);
+                            rvpos += 4; //32
+
                             if (game == MEGame.UDK)
-                            { pos += 68; }
-                            else { pos += 40; }
+                            {
+                                float uv2U = BitConverter.ToSingle(data, rvpos);
+                                rvpos += 4;
+                                float uv2V = BitConverter.ToSingle(data, rvpos);
+                                rvpos += 4;
+                                float uv3U = BitConverter.ToSingle(data, rvpos);
+                                rvpos += 4;
+                                float uv3V = BitConverter.ToSingle(data, rvpos);
+                                rvpos += 4;
+                                float uv4U = BitConverter.ToSingle(data, rvpos);
+                                rvpos += 4;
+                                float uv4V = BitConverter.ToSingle(data, rvpos);
+                                rvpos += 4;
+                                int color = BitConverter.ToInt32(data, rvpos);
+                                rvpos += 4;
+
+                                //Influence Bones
+                                bool inflbnA = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE Influence
+                                rvpos += 1;
+                                bool inflbnB = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                rvpos += 1;
+                                bool inflbnC = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                rvpos += 1;
+                                bool inflbnD = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                rvpos += 1;
+
+                                //Influence Weights
+                                bool inflwA = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE Influence
+                                rvpos += 1;
+                                bool inflwB = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                rvpos += 1;
+                                bool inflwC = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                rvpos += 1;
+                                bool inflwD = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                rvpos += 1;
+
+                                softvertices.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                                {
+                                    Header = $"{pos:X4} {sv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ} UV(0) U:{uv1U} W:{uv1U} UV(1) U:{uv2U} W:{uv2U} UV(2) U:{uv3U} W:{uv3U} UV(3) U:{uv4U} W:{uv4U} Color: {color} Influence bones: ({inflbnA}, {inflbnB},{inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB},{inflwC}, {inflwD})",
+                                    Name = "_" + pos,
+
+                                    Tag = NodeType.Unknown,
+                                });
+                                pos += 68;
+                            }
+                            else
+                            {
+                                //Influence Bones
+                                bool inflbnA = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE Influence
+                                rvpos += 1;
+                                bool inflbnB = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                rvpos += 1;
+                                bool inflbnC = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                rvpos += 1;
+                                bool inflbnD = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                rvpos += 1;
+
+                                //Influence Weights
+                                bool inflwA = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE Influence
+                                rvpos += 1;
+                                bool inflwB = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                rvpos += 1;
+                                bool inflwC = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                rvpos += 1;
+                                bool inflwD = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                rvpos += 1;
+
+                                softvertices.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                                {
+                                    Header = $"{pos:X4} {sv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ}  UV U:{uv1U} W:{uv1U} Influence bones: ({inflbnA}, {inflbnB},{inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB},{inflwC}, {inflwD})",
+                                    Name = "_" + pos,
+
+                                    Tag = NodeType.Unknown,
+                                });
+                                pos += 40;
+                            }
                         }
 
                         int nMapBones = BitConverter.ToInt32(data, pos); // Bone Map
@@ -5681,8 +5832,47 @@ namespace ME3Explorer
 
                     for (int v = 0; v < nVertex; v++)
                     {
-                        //  Shift data (skip uneccessary parsing)
-                         pos += vtxSize; 
+                        int vpos = pos; //use seperate positioning as vertex size is variable
+                        float TanX = BitConverter.ToSingle(data, vpos);
+                        vpos += 4;
+                        float TanY = BitConverter.ToSingle(data, vpos);
+                        vpos += 4;
+                        float TanZ = BitConverter.ToSingle(data, vpos);
+                        vpos += 4;
+                        float vPosX = BitConverter.ToSingle(data, vpos);
+                        vpos += 4;
+                        float vPosY = BitConverter.ToSingle(data, vpos);
+                        vpos += 4;
+                        float vPosZ = BitConverter.ToSingle(data, vpos);
+                        vpos += 4;
+                        int infB1 = BitConverter.ToInt16(data, vpos);
+                        vpos += 2;
+                        int infW1 = BitConverter.ToInt16(data, vpos);
+                        vpos += 2;
+                        int infB2 = BitConverter.ToInt16(data, vpos);
+                        vpos += 2;
+                        int infW2 = BitConverter.ToInt16(data, vpos);
+                        vpos += 2;
+                        int infB3 = BitConverter.ToInt16(data, vpos);
+                        vpos += 2;
+                        int infW3 = BitConverter.ToInt16(data, vpos);
+                        vpos += 2;
+                        int infB4 = BitConverter.ToInt16(data, vpos);
+                        vpos += 2;
+                        int infW4 = BitConverter.ToInt16(data, vpos);
+                        vpos += 2;
+                        float uvU = BitConverter.ToSingle(data, vpos);
+                        vpos += 4;
+                        float uvV = BitConverter.ToSingle(data, vpos);
+                        vpos += 4;
+                        vertices.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"{pos:X4} {v}: Tangent X:{TanX} Y:{TanY} Z:{TanZ} Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Influences: {infB1}:{infW1} {infB2}:{infW2} {infB3}:{infW4} {infB4}:{infW4} UV U:{uvU} W:{uvV}",
+                            Name = "_" + pos,
+
+                            Tag = NodeType.Unknown,
+                        });
+                        pos += vtxSize; 
                     }
 
                     if (game == MEGame.ME3 || game == MEGame.UDK)
