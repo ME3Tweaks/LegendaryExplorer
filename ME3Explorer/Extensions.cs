@@ -658,6 +658,16 @@ namespace ME3Explorer
         }
 
         /// <summary>
+        /// Converts Degrees to Unreal rotation units
+        /// </summary>
+        public static int ToUnrealRotationUnits(this float degrees) => Convert.ToInt32(degrees * 65536f / 360f);
+
+        /// <summary>
+        /// Converts Unreal rotation units to Degrees
+        /// </summary>
+        public static float ToDegrees(this int unrealRotationUnits) => unrealRotationUnits * 360f / 65536f;
+
+        /// <summary>
         /// Checks if this object is of a specific generic type (e.g. List&lt;IntProperty&gt;)
         /// </summary>
         /// <param name="typeToCheck">typeof() of the item you are checking</param>

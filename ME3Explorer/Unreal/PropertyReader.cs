@@ -313,9 +313,9 @@ namespace ME3Explorer.Unreal
                             {
                                 name = structType,
                                 nameindex = p.Value.IntValue,
-                                Pitch = BitConverter.ToInt32(p.raw, 32) * 360f / 65536f,
-                                Yaw = BitConverter.ToInt32(p.raw, 36) * 360f / 65536f,
-                                Roll = BitConverter.ToInt32(p.raw, 40) * 360f / 65536f
+                                Pitch = BitConverter.ToInt32(p.raw, 32).ToDegrees(),
+                                Yaw = BitConverter.ToInt32(p.raw, 36).ToDegrees(),
+                                Roll = BitConverter.ToInt32(p.raw, 40).ToDegrees()
                             };
                             pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, rp, typeof(RotatorProp), false, true);
                             break;

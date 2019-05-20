@@ -269,10 +269,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Interpreter\AltPropertyEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="CoalesceTool\Coalesced Editor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -337,9 +333,6 @@
     <Compile Include="FaceFXAnimSetEditor\ME1FaceFXAnimSet.cs" />
     <Compile Include="FileHexViewer\FileHexViewerWPF.xaml.cs">
       <DependentUpon>FileHexViewerWPF.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
-      <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="CoalesceTool\CoalesceAsset.cs" />
     <Compile Include="CoalesceTool\CoalesceAssetType.cs" />
@@ -535,6 +528,7 @@
     <Compile Include="Sequence Editor\KismetLogParser.xaml.cs">
       <DependentUpon>KismetLogParser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\AttachedProperties.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeBooleanConverter.cs" />
     <Compile Include="SharedUI\PeregrineTreeView\NodeTreeSelectionBehavior.cs" />
     <Compile Include="SharedUI\ListBoxTask.cs" />

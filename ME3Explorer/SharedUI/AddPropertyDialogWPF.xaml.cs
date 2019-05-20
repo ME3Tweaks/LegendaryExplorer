@@ -43,24 +43,18 @@ namespace ME3Explorer.SharedUI
 
         private void LoadCommands()
         {
-            AddPropertyCommand = new RelayCommand(AddProperty, CanAddProperty);
+            AddPropertyCommand = new GenericCommand(AddProperty, CanAddProperty);
         }
 
-        private void AddProperty(object obj)
+        private void AddProperty()
         {
             DialogResult = true;
             Close();
         }
 
-        private bool CanAddProperty(object obj)
+        private bool CanAddProperty()
         {
             return PropertiesListView.SelectedItem != null;
-        }
-
-        private void propListBox_DoubleClick(object sender, EventArgs e)
-        {
-            DialogResult = true;
-            Close();
         }
 
         public static (string, PropertyInfo)? GetProperty(IExportEntry export, List<string> _existingProperties, MEGame game, Window callingWindow = null)
@@ -144,14 +138,9 @@ namespace ME3Explorer.SharedUI
             return null;
         }
 
-        private void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
-        }
-
         private void ClassesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string className = ClassesListView.SelectedItem as string;
+            string className = (string)ClassesListView.SelectedItem;
             SelectedClassName = className;
             var props = classList[className].properties.Where(x => !x.Value.transient && !existingProperties.Contains(x.Key)).OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
             //props.Sort();

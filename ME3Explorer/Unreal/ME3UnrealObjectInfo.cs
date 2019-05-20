@@ -1057,7 +1057,7 @@ namespace ME3Explorer.Unreal
                     return "bool";
                 case PropertyType.BioMask4Property:
                     return "byte";
-                case PropertyType.ByteProperty when propInfo.reference != null && propInfo.reference != "Class" && propInfo.reference != "Object":
+                case PropertyType.ByteProperty when propInfo.IsEnumProp():
                     return propInfo.reference;
                 case PropertyType.ByteProperty:
                     return "byte";

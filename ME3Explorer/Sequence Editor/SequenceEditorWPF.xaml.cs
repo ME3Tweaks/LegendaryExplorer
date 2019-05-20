@@ -1220,7 +1220,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (CurrentObjects_ListBox.SelectedItem is SObj sObj)
             {
-                //remove incoming connections TODO: FIX
+                //remove incoming connections
                 switch (sObj)
                 {
                     case SVar sVar:

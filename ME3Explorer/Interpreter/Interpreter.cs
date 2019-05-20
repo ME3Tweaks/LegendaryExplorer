@@ -828,7 +828,7 @@ namespace ME3Explorer
                 for (int i = 0; i < 3; i++)
                 {
                     val = BitConverter.ToInt32(memory, readerpos);
-                    node = new TreeNode(readerpos.ToString("X4") + ": " + labels[i] + " : " + val + " (" + (val * 360f / 65536f).ToString("0.0######") + " degrees)");
+                    node = new TreeNode(readerpos.ToString("X4") + ": " + labels[i] + " : " + val + " (" + (val.ToDegrees()).ToString("0.0######") + " degrees)");
                     node.Name = readerpos.ToString();
                     node.Tag = NodeType.StructLeafDeg;
                     t.Nodes.Add(node);
@@ -1810,7 +1810,7 @@ namespace ME3Explorer
                         propDropdown.SelectedItem = pcc.getNameEntry(BitConverter.ToInt32(memory, pos));
                         break;
                     case NodeType.StructLeafDeg:
-                        proptext.Text = (BitConverter.ToInt32(memory, pos) * 360f / 65536f).ToString();
+                        proptext.Text = BitConverter.ToInt32(memory, pos).ToDegrees().ToString();
                         proptext.Visible = true;
                         break;
                     case NodeType.ArrayLeafStruct:
@@ -1896,7 +1896,7 @@ namespace ME3Explorer
                     case NodeType.StructLeafDeg:
                         if (float.TryParse(proptext.Text, out f))
                         {
-                            WriteMem(pos, BitConverter.GetBytes(Convert.ToInt32(f * 65536f / 360f)));
+                            WriteMem(pos, BitConverter.GetBytes(f.ToUnrealRotationUnits()));
                             UpdateMem(pos);
                         }
                         break;
@@ -2791,7 +2791,7 @@ namespace ME3Explorer
                         buff.AddRange(BitConverter.GetBytes(0));
                         break;
                     case PropertyType.ByteProperty:
-                        if (info.reference == null)
+                        if (!info.IsEnumProp())
                         {
                             //size
                             buff.AddRange(BitConverter.GetBytes(1));

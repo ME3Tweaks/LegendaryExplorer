@@ -26,8 +26,10 @@ namespace ME3Explorer.ActorNodes
             g = grapheditor;
             index = idx;
             export = pcc.getUExport(index);
-            comment = new SText(GetComment(), commentColor, false);
-            comment.X = 0;
+            comment = new SText(GetComment(), commentColor, false)
+            {
+                X = 0
+            };
             comment.Y = 52 + comment.Height;
             comment.Pickable = false;
             
@@ -35,15 +37,15 @@ namespace ME3Explorer.ActorNodes
             {
                 if (export.GetProperty<StructProperty>("Rotation") is StructProperty rotation)
                 {
-                    var theta = rotation.GetProp<IntProperty>("Yaw").Value * 360f / 65536f;
+                    var theta = rotation.GetProp<IntProperty>("Yaw").Value.ToDegrees();
                     float circleX1 = (float)(25 + 20 * Math.Cos((theta + 5) * Math.PI / 180));
                     float circleY1 = (float)(25 + 20 * Math.Sin((theta + 5) * Math.PI / 180));
                     float circleX2 = (float)(25 + 20 * Math.Cos((theta - 5) * Math.PI / 180));
                     float circleY2 = (float)(25 + 20 * Math.Sin((theta - 5) * Math.PI / 180));
 
-                    float circleTipX = (float)(25 + 25 * Math.Cos((theta) * Math.PI / 180));
-                    float circleTipY = (float)(25 + 25 * Math.Sin((theta) * Math.PI / 180));
-                    PPath directionShape = PPath.CreatePolygon(new PointF[] { new PointF(25, 25), new PointF(circleX1, circleY1), new PointF(circleTipX, circleTipY), new PointF(circleX2, circleY2) });
+                    float circleTipX = (float)(25 + 25 * Math.Cos(theta * Math.PI / 180));
+                    float circleTipY = (float)(25 + 25 * Math.Sin(theta * Math.PI / 180));
+                    PPath directionShape = PPath.CreatePolygon(new[] { new PointF(25, 25), new PointF(circleX1, circleY1), new PointF(circleTipX, circleTipY), new PointF(circleX2, circleY2) });
                     directionShape.Pen = Pens.BlanchedAlmond;
                     directionShape.Brush = directionBrush;
                     directionShape.Pickable = false;

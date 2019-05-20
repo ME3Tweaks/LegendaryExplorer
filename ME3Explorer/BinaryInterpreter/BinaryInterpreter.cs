@@ -3220,7 +3220,7 @@ Floats*/
                                                                       BitConverter.ToInt32(memory, pos + 4));
                         break;
                     case NodeType.StructLeafDeg:
-                        proptext.Text = (BitConverter.ToInt32(memory, pos) * 360f / 65536f).ToString();
+                        proptext.Text = BitConverter.ToInt32(memory, pos).ToDegrees().ToString();
                         proptext.Visible = true;
                         break;
                     case NodeType.ArrayLeafStruct:
@@ -3307,7 +3307,7 @@ Floats*/
                     case NodeType.StructLeafDeg:
                         if (float.TryParse(proptext.Text, out f))
                         {
-                            WriteMem(pos, BitConverter.GetBytes(Convert.ToInt32(f * 65536f / 360f)));
+                            WriteMem(pos, BitConverter.GetBytes(f.ToUnrealRotationUnits()));
                             UpdateMem(pos);
                         }
                         break;

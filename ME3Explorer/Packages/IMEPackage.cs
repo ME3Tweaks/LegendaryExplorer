@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using ME3Explorer.Unreal;
 
 namespace ME3Explorer.Packages
 {
@@ -32,6 +33,8 @@ namespace ME3Explorer.Packages
         public Unreal.PropertyType type { get; set; }
         public string reference;
         public bool transient;
+
+        public bool IsEnumProp() => type == PropertyType.ByteProperty && reference != null && reference != "Class" && reference != "Object";
     }
 
     public class ClassInfo

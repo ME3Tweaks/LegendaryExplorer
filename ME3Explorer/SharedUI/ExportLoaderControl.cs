@@ -33,6 +33,11 @@ namespace ME3Explorer
         }
 
         /// <summary>
+        /// The currently loaded export's file, or null if none is currently loaded
+        /// </summary>
+        public IMEPackage Pcc => CurrentLoadedExport?.FileRef;
+
+        /// <summary>
         /// Signals to the export loader that namelist is about to be modified
         /// and that anything selected that is bound to a namelist (typically IndexedName)
         /// should cached their current values until the change has completed

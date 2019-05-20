@@ -935,7 +935,7 @@ namespace ME3Explorer.Unreal
                         prop.WriteTo(m, pcc, IsImmutable);
                     }
 
-                    if (!IsImmutable && (Properties.Count == 0 || (!(Properties.Last() is NoneProperty)))) //ensure ending none
+                    if (!IsImmutable && (Properties.Count == 0 || !(Properties.Last() is NoneProperty))) //ensure ending none
                     {
                         m.WriteNoneProperty(pcc);
                     }
@@ -992,7 +992,7 @@ namespace ME3Explorer.Unreal
                         return typeof(BoolProperty);
                     case PropertyType.BioMask4Property:
                         return typeof(BioMask4Property);
-                    case PropertyType.ByteProperty when propInfo.reference != null && propInfo.reference != "Class" && propInfo.reference != "Object":
+                    case PropertyType.ByteProperty when propInfo.IsEnumProp():
                         return typeof(EnumProperty);
                     case PropertyType.ByteProperty:
                         return typeof(ByteProperty);
@@ -1025,7 +1025,7 @@ namespace ME3Explorer.Unreal
                 {
                     case ArrayPropertyBase arrayPropertyBase:
                     {
-                        List<object> objVals = arrayPropertyBase.ValuesAsProperties.Select(p => getUPropertyValue(p, propInfo)).ToList();
+                        List<object> objVals = arrayPropertyBase.Properties.Select(p => getUPropertyValue(p, propInfo)).ToList();
                         Type arrayType = getArrayPropertyValueType(arrayPropertyBase, propInfo);
                         //IEnumerable<arrayType> typedEnumerable = objVals.Cast<arrayType>();
                         var typedEnumerable = typeof(Enumerable).InvokeGenericMethod(nameof(Enumerable.Cast), arrayType, null, objVals);
@@ -1585,21 +1585,32 @@ namespace ME3Explorer.Unreal
         }
     }
 
-    public abstract class ArrayPropertyBase : UProperty
+    public abstract class ArrayPropertyBase : UProperty, IEnumerable
     {
-        public abstract IEnumerable<UProperty> ValuesAsProperties { get; }
+        public abstract IReadOnlyList<UProperty> Properties { get; }
         public abstract int Count { get; }
+        public bool IsReadOnly => true;
 
         protected ArrayPropertyBase(NameReference? name) : base(name)
         {
         }
+
+        public IEnumerator GetEnumerator() => Properties.GetEnumerator();
+
+        public abstract void Clear();
+
+        public abstract void RemoveAt(int index);
+
+        public UProperty this[int index] => Properties[index];
+
+        public abstract void SwapElements(int i, int j);
     }
 
     [DebuggerDisplay("ArrayProperty<{arrayType}> | {Name}, Length = {Values.Count}")]
     public class ArrayProperty<T> : ArrayPropertyBase, IList<T> where T : UProperty
     {
         public List<T> Values { get; set; }
-        public override IEnumerable<UProperty> ValuesAsProperties => Values;
+        public override IReadOnlyList<UProperty> Properties => Values;
         public readonly ArrayType arrayType;
 
         public ArrayProperty(long startOffset, List<T> values, ArrayType type, NameReference name) : base(name)
@@ -1649,7 +1660,7 @@ namespace ME3Explorer.Unreal
         }
 
         #region IEnumerable<T>
-        public IEnumerator<T> GetEnumerator()
+        public new IEnumerator<T> GetEnumerator()
         {
             return Values.GetEnumerator();
         }
@@ -1662,9 +1673,9 @@ namespace ME3Explorer.Unreal
 
         #region IList<T>
         public override int Count => Values.Count;
-        public bool IsReadOnly => ((ICollection<T>)Values).IsReadOnly;
+        public new bool IsReadOnly => ((ICollection<T>)Values).IsReadOnly;
 
-        public T this[int index]
+        public new T this[int index]
         {
             get => Values[index];
             set => Values[index] = value;
@@ -1675,7 +1686,7 @@ namespace ME3Explorer.Unreal
             Values.Add(item);
         }
 
-        public void Clear()
+        public override void Clear()
         {
             Values.Clear();
         }
@@ -1695,7 +1706,7 @@ namespace ME3Explorer.Unreal
             return Values.Remove(item);
         }
 
-        public void RemoveAt(int index)
+        public override void RemoveAt(int index)
         {
             Values.RemoveAt(index);
         }
@@ -1715,6 +1726,16 @@ namespace ME3Explorer.Unreal
             Values.InsertRange(index, collection);
         }
         #endregion
+
+        public override void SwapElements(int i, int j)
+        {
+            if (i == j || i < 0 || i >= Count || j < 0 || j >= Count)
+            {
+                return;
+            }
+
+            (this[i], this[j]) = (this[j], this[i]);
+        }
     }
 
     [DebuggerDisplay("StrProperty | {Name} = {Value}")]
