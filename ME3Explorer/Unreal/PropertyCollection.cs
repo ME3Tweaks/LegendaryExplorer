@@ -630,7 +630,7 @@ namespace ME3Explorer.Unreal
         {
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
             ArrayType arrayType = UnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType, parsingEntry);
-            Debug.WriteLine("Reading array length at 0x" + stream.Position.ToString("X5"));
+            //Debug.WriteLine("Reading array length at 0x" + stream.Position.ToString("X5"));
             int count = stream.ReadValueS32();
             switch (arrayType)
             {
