@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Gammtek.Conduit;
 using Gammtek.Conduit.MassEffect3.SFXGame.CodexMap;
 using MassEffect.NativesEditor.Dialogs;
@@ -310,8 +312,7 @@ namespace MassEffect.NativesEditor.Views
             using (var stream = new MemoryStream(export.Data))
             {
                 stream.Seek(dataOffset, SeekOrigin.Begin);
-
-                var codexMap = BinaryBioCodexMap.Load(stream);
+                var codexMap = BinaryBioCodexMap.Load(stream, pcc is ME3Package ? Encoding.UTF8 : Encoding.ASCII);
 
                 CodexPages = InitCollection(codexMap.Pages.OrderBy(pair => pair.Key));
                 CodexSections = InitCollection(codexMap.Sections.OrderBy(pair => pair.Key));
