@@ -149,18 +149,30 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 				entry.TextureIndex = ReadInt32();
 				entry.Priority = ReadInt32();
 
-				entry.CodexSound = entry.InstanceVersion == 4 ? ReadInt32() : 0;
-			}
+                // set entry to defaults as varies between Page and section
+                entry.CodexSound = 0;
+                entry.CodexSoundString = "";
+
+            }
 
 			public BioCodexPage ReadCodexPage()
 			{
 				var page = new BioCodexPage();
 
 				ReadCodexEntry(page);
-
-				page.Section = ReadInt32();
-
-				return page;
+                if (page.InstanceVersion == 4) //if 4 then read object
+                {
+                    page.CodexSound = ReadInt32();
+                    page.Section = ReadInt32();
+                }
+                else if (page.InstanceVersion == 2) //if 2 read section then string else just section
+                {
+                    page.Section = ReadInt32();
+                    page.CodexSoundString = ReadString();
+                }
+                else
+                { page.Section = ReadInt32(); }
+                return page;
 			}
 
 			public BioCodexSection ReadCodexSection()
@@ -168,8 +180,16 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 				var section = new BioCodexSection();
 
 				ReadCodexEntry(section);
+                if (section.InstanceVersion >= 3) //if 3 / 4 then read object
+                {
+                    section.CodexSound = ReadInt32();
+                }
+                else //else read string
+                {
+                    section.CodexSoundString = ReadString();
+                }
 
-				section.IsPrimary = ReadInt32().ToBoolean();
+                section.IsPrimary = ReadInt32().ToBoolean();
 
 				return section;
 			}
@@ -198,24 +218,44 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 				Write(entry.TextureIndex);
 				Write(entry.Priority);
 
-				if (entry.InstanceVersion == 4)
-				{
-					Write(entry.CodexSound);
-				}
+
 			}
 
 			public void Write(BioCodexPage page)
 			{
 				WriteCodexEntry(page);
 
-				Write(page.Section);
+                if (page.InstanceVersion == 4)
+                {
+                    Write(page.CodexSound);
+                    Write(page.Section);
+                }
+                else if (page.InstanceVersion == 2)
+                {
+                    Write(page.Section);
+                    Write(page.CodexSoundString);
+                }
+                else
+                {
+                    Write(page.Section);
+                }
+                
 			}
 
 			public void Write(BioCodexSection section)
 			{
 				WriteCodexEntry(section);
 
-				Write(section.IsPrimary.ToInt32());
+                if (section.InstanceVersion >= 3)
+                {
+                    Write(section.CodexSound);
+                }
+                else 
+                {
+                    Write(section.CodexSoundString);
+                }
+
+                Write(section.IsPrimary.ToInt32());
 			}
 		}
 	}
