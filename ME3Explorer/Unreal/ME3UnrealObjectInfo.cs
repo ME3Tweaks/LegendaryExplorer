@@ -443,7 +443,7 @@ namespace ME3Explorer.Unreal
                     return info.properties[propName];
                 }
                 //look in structs
-                else
+                else if (inStruct)
                 {
                     foreach (PropertyInfo p in info.properties.Values)
                     {
