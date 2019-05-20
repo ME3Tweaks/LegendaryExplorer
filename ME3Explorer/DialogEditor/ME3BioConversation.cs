@@ -18,7 +18,7 @@ namespace ME3Explorer.Unreal.Classes
         List<PropertyReader.Property> Props;
 
         public List<int> StartingList;
-        public List<int> SpeakerList;
+        public List<NameReference> SpeakerList;
         public List<int> MaleFaceSets;
         public List<int> FemaleFaceSets;
         public List<StageDirectionStruct> StageDirections;
@@ -434,14 +434,18 @@ namespace ME3Explorer.Unreal.Classes
 
         void ReadSpeakerList()
         {
-            SpeakerList = new List<int>();
+            SpeakerList = new List<NameReference>();
             int f = FindPropByName("m_aSpeakerList");
             if (f == -1)
                 return;
             byte[] buff = Props[f].raw;
             int count = BitConverter.ToInt32(buff, 0x18);
             for (int i = 0; i < count; i++)
-                SpeakerList.Add(BitConverter.ToInt32(buff, 0x1C + i * 8));
+            {
+                string nameEntry = pcc.getNameEntry(BitConverter.ToInt32(buff, 0x1C + i * 8));
+                int number = BitConverter.ToInt32(buff, 0x1C + 4 + i * 8);
+                SpeakerList.Add(new NameReference(nameEntry, number));
+            }
         }
 
         void ReadStageDirections()
@@ -726,8 +730,12 @@ namespace ME3Explorer.Unreal.Classes
                         m.Write(BitConverter.GetBytes(SpeakerList.Count * 8 + 4), 0, 4);
                         m.Write(BitConverter.GetBytes(0), 0, 4);
                         m.Write(BitConverter.GetBytes(SpeakerList.Count), 0, 4);
-                        foreach (int i in SpeakerList)
-                            m.Write(BitConverter.GetBytes((long)i), 0, 8);
+                        foreach (NameReference name in SpeakerList)
+                        {
+                            m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(name.Name)), 0, 4);
+                            m.Write(BitConverter.GetBytes(name.Number), 0, 4);
+                        }
+
                         break;
                     case "m_aFemaleFaceSets":
                         m.Write(p.raw, 0, 0x10);

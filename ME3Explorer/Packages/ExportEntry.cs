@@ -498,7 +498,7 @@ namespace ME3Explorer.Packages
             {
                 return propsEndOffset.Value;
             }
-            var props = GetProperties(true);
+            var props = GetProperties(true, true);
             propsEndOffset = props.endOffset;
             return propsEndOffset.Value;
         }

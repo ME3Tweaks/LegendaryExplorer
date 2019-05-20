@@ -25,14 +25,12 @@ namespace ME1Explorer.Unreal.Classes
 
         public struct ScriptListStruct
         {
-            public string Text;
-            public int ScriptTag;
+            public NameReference ScriptTag;
         }
 
         public struct SpeakerListStruct
         {
-            public string Text;
-            public int SpeakerTag;
+            public NameReference SpeakerTag;
         }
 
         public struct EntryListReplyListStruct
@@ -433,8 +431,7 @@ namespace ME1Explorer.Unreal.Classes
             {
                 List<PropertyReader.Property> p = PropertyReader.ReadProp(pcc, buff, pos);
                 SpeakerListStruct sp = new SpeakerListStruct();
-                sp.SpeakerTag = p[0].Value.IntValue;
-                sp.Text = pcc.getNameEntry(sp.SpeakerTag);
+                sp.SpeakerTag = p[0].Value.NameValue;
                 SpeakerList.Add(sp);
                 pos = p[p.Count - 1].offend;
             }
@@ -453,8 +450,7 @@ namespace ME1Explorer.Unreal.Classes
             {
                 List<PropertyReader.Property> p = PropertyReader.ReadProp(pcc, buff, pos);
                 ScriptListStruct sd = new ScriptListStruct();
-                sd.ScriptTag = p[0].Value.IntValue;
-                sd.Text = pcc.getNameEntry(sd.ScriptTag);
+                sd.ScriptTag = p[0].Value.NameValue;
                 ScriptList.Add(sd);
                 pos = p[p.Count - 1].offend;
             }
@@ -526,7 +522,7 @@ namespace ME1Explorer.Unreal.Classes
             return 28;
         }
 
-        public int WriteNameProperty(MemoryStream m, string name, int value)
+        public int WriteNameProperty(MemoryStream m, string name, NameReference value)
         {
             int NAME_name = FindName(name);
             int NAME_type = FindName("NameProperty");
@@ -536,8 +532,8 @@ namespace ME1Explorer.Unreal.Classes
             m.Write(BitConverter.GetBytes(0), 0, 4);
             m.Write(BitConverter.GetBytes(4), 0, 4);
             m.Write(BitConverter.GetBytes(0), 0, 4);
-            m.Write(BitConverter.GetBytes(value), 0, 4);
-            m.Write(BitConverter.GetBytes(0), 0, 4);
+            m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(value.Name)), 0, 4);
+            m.Write(BitConverter.GetBytes(value.Number), 0, 4);
             return 32;
         }
 
@@ -740,7 +736,7 @@ namespace ME1Explorer.Unreal.Classes
                         m.Write(BitConverter.GetBytes(size), 0, 4);
                         m.Seek(tmp2, 0);
                         break;
-                    case "m_aSpeakerList":
+                    case "m_SpeakerList":
                         tmp1 = (int)m.Position;
                         m.Write(p.raw, 0, 0x10);
                         m.Write(new byte[8], 0, 8);//size placeholder

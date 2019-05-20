@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 using static ME1Explorer.Unreal.Classes.TalkFile;
 
 namespace ME1Explorer
@@ -83,10 +84,6 @@ namespace ME1Explorer
             PrepareHuffmanCoding();
         }
 
-        /// <summary>
-        /// Loads a file into memory and prepares for compressing it to TLK
-        /// </summary>
-        /// <param name="fileName"></param>
         public void LoadInputData(List<TLKStringRef> tlkEntries)
         {
             _inputData = tlkEntries;
@@ -99,15 +96,15 @@ namespace ME1Explorer
             {
                 throw new Exception("Cannot save a ME1 TLK to a game that is not Mass Effect 1.");
             }
-            serializeTalkfileToExport(export.FileRef as ME1Package, export.Index, savePackage);
+            serializeTalkfileToExport(export.FileRef as ME1Package, export, savePackage);
         }
 
-        public void serializeTalkfileToExport(ME1Package pcc, int Index, bool savePackage = false)
+        public void serializeTalkfileToExport(ME1Package pcc, IExportEntry export, bool savePackage = false)
         {
             /* converts Huffmann Tree to binary form */
             byte[] treeBuffer = ConvertHuffmanTreeToBuffer();
 
-            List<EncodedString> encodedStrings = new List<EncodedString>();
+            var encodedStrings = new List<EncodedString>();
             int i = 0;
             foreach (var entry in _inputData)
             {
@@ -122,7 +119,7 @@ namespace ME1Explorer
                 {
                     entry.Index = i;
                     i++;
-                    List<BitArray> binaryData = new List<BitArray>();
+                    var binaryData = new List<BitArray>();
                     int binaryLength = 0;
                     
                     /* for every character in a string, put it's binary code into data array */
@@ -136,17 +133,11 @@ namespace ME1Explorer
                 }
             }
 
-            /* get properties from object we're replacing*/
-            byte[] properties = pcc.Exports[Index].Data.Take(40).ToArray();
-
-            MemoryStream m = new MemoryStream();
 
             /* writing properties */
-            m.Write(properties, 0, 40);
-            m.Seek(0x1C, SeekOrigin.Begin);
-            m.Write(BitConverter.GetBytes(_inputData.Count), 0, 4);
-            m.Seek(0, SeekOrigin.End);
+            export.WriteProperty(new IntProperty(_inputData.Count, "m_nHashTableSize"));
 
+            MemoryStream m = new MemoryStream();
             /* writing entries */
             m.Write(BitConverter.GetBytes(_inputData.Count), 0, 4);
             foreach (TLKStringRef entry in _inputData)
@@ -169,7 +160,7 @@ namespace ME1Explorer
             }
 
             byte[] buff = m.ToArray();
-            pcc.Exports[Index].Data = buff;
+            export.setBinaryData(buff);
             if (savePackage)
             {
                 pcc.save(pcc.FileName);

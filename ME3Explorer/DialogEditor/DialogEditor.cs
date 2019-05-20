@@ -105,8 +105,8 @@ namespace ME3Explorer.DialogEditor
             foreach (ME3BioConversation.ReplyListStruct r in Dialog.ReplyList)
                 replyListTreeView.Nodes.Add(r.ToTree(count++, Pcc as ME3Package));
             count = 0;
-            foreach (int i in Dialog.SpeakerList)
-                speakerListBox.Items.Add((count++) + " : " + i + " , " + Pcc.getNameEntry(i));
+            foreach (NameReference name in Dialog.SpeakerList)
+                speakerListBox.Items.Add($"{count++} : {name.InstancedString}");
             count = 0;
             foreach (ME3BioConversation.StageDirectionStruct sd in Dialog.StageDirections)
                 stageDirectionsListBox.Items.Add((count++) + " : " + sd.Text.Substring(0, sd.Text.Length - 1) + " , " + sd.StringRef + " , " + ME3TalkFiles.findDataById(sd.StringRef));
@@ -147,12 +147,15 @@ namespace ME3Explorer.DialogEditor
             int n;
             if (Pcc == null || Dialog == null || (n = speakerListBox.SelectedIndex) == -1)
                 return;
-            string result = PromptDialog.Prompt(null, "Please enter new name entry", "ME3Explorer", Dialog.SpeakerList[n].ToString(), true);
-            if (result == "")
+            string nameResult = PromptDialog.Prompt(null, "Please enter new name", "ME3Explorer", Dialog.SpeakerList[n].Name, true);
+            if (nameResult == "")
                 return;
-            if (int.TryParse(result, out int i) && Pcc.isName(i))
+            string numberResult = PromptDialog.Prompt(null, "Please enter new name index", "ME3Explorer", Dialog.SpeakerList[n].Number.ToString(), true);
+            if (numberResult == "")
+                return;
+            if (int.TryParse(numberResult, out int i) && i >= 0)
             {
-                Dialog.SpeakerList[n] = i;
+                Dialog.SpeakerList[n] = new NameReference(nameResult, i);
                 Dialog.Save();
             }
         }
@@ -205,12 +208,15 @@ namespace ME3Explorer.DialogEditor
         {
             if (Pcc == null || Dialog == null)
                 return;
-            string result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", "", true);
-            if (result == "")
+            string nameResult = PromptDialog.Prompt(null, "Please enter new name", "ME3Explorer", "", true);
+            if (nameResult == "")
                 return;
-            if (int.TryParse(result, out int i) && Pcc.isName(i))
+            string numberResult = PromptDialog.Prompt(null, "Please enter new name index", "ME3Explorer", "", true);
+            if (numberResult == "")
+                return;
+            if (int.TryParse(numberResult, out int i) && i >= 0)
             {
-                Dialog.SpeakerList.Add(i);
+                Dialog.SpeakerList.Add(new NameReference(nameResult, i));
                 Dialog.Save();
             }
         }

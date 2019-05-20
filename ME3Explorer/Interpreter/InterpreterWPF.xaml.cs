@@ -1363,7 +1363,7 @@ namespace ME3Explorer
             Interpreter_Hexbox = (HexBox)Interpreter_Hexbox_Host.Child;
             if (Interpreter_Hexbox.ByteProvider == null)
             {
-                Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
+                Interpreter_Hexbox.ByteProvider = new DynamicByteProvider();
             }
             //remove in the event this object is reloaded again
             Interpreter_Hexbox.ByteProvider.Changed -= Interpreter_Hexbox_BytesChanged;

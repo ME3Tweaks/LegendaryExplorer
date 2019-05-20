@@ -334,7 +334,7 @@ namespace ME3Explorer.FaceFX
                     FaceFX = null;
                     treeView1.Nodes.Clear();
                     treeView2.Nodes.Clear();
-                    hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
+                    hb1.ByteProvider = new DynamicByteProvider();
                     ListRefresh();
                 }
                 else
@@ -343,7 +343,7 @@ namespace ME3Explorer.FaceFX
                 }
                 updatedExports.Remove(index);
             }
-            if (updatedExports.Intersect(Objects).Count() > 0)
+            if (updatedExports.Intersect(Objects).Any())
             {
                 ListRefresh();
             }

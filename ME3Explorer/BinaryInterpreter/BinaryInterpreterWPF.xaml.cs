@@ -6825,7 +6825,7 @@ namespace ME3Explorer
 
         public override void UnloadExport()
         {
-            BinaryInterpreter_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
+            BinaryInterpreter_Hexbox.ByteProvider = new DynamicByteProvider();
             TreeViewItems.ClearEx();
             if (CurrentLoadedExport != null && CurrentLoadedExport.Data.Length > 20480)
             {

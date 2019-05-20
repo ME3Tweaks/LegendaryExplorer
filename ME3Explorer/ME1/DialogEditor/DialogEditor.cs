@@ -13,6 +13,7 @@ using ME3Explorer.Packages;
 using ME3Explorer;
 using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
+using ME3Explorer.Unreal;
 
 namespace ME1Explorer
 {
@@ -113,10 +114,10 @@ namespace ME1Explorer
                 treeView2.Nodes.Add(r.ToTree(count++, tlkFile, Pcc as ME1Package));
             count = 0;
             foreach (ME1BioConversation.SpeakerListStruct sp in Dialog.SpeakerList)
-                listBox2.Items.Add((count++) + " : " + sp.SpeakerTag + " , " + sp.Text);
+                listBox2.Items.Add((count++) + " : " + sp.SpeakerTag.InstancedString);
             count = 0;
             foreach (ME1BioConversation.ScriptListStruct sd in Dialog.ScriptList)
-                listBox3.Items.Add((count++) + " : " + sd.ScriptTag + " , " + sd.Text);
+                listBox3.Items.Add((count++) + " : " + sd.ScriptTag.InstancedString);
             count = 0;
             foreach (int i in Dialog.MaleFaceSets)
                 listBox4.Items.Add((count++) + " : " + i);
@@ -155,15 +156,16 @@ namespace ME1Explorer
             int n;
             if (Pcc == null || Dialog == null || (n = listBox2.SelectedIndex) == -1)
                 return;
-            string result = PromptDialog.Prompt(null, "Please enter new name entry", "ME1Explorer", Dialog.SpeakerList[n].SpeakerTag.ToString(), true);
-            if (result == "")
+            string nameResult = PromptDialog.Prompt(null, "Please enter new name", "ME1Explorer", Dialog.SpeakerList[n].SpeakerTag.Name, true);
+            if (nameResult == "")
                 return;
-            int i = 0;
-            if (int.TryParse(result, out i) && Pcc.isName(i))
+            string numberResult = PromptDialog.Prompt(null, "Please enter new name index", "ME1Explorer", Dialog.SpeakerList[n].SpeakerTag.Number.ToString(), true);
+            if (numberResult == "")
+                return;
+            if (int.TryParse(numberResult, out int i) && i >= 0)
             {
                 ME1BioConversation.SpeakerListStruct sp = new ME1BioConversation.SpeakerListStruct();
-                sp.SpeakerTag = i;
-                sp.Text = Pcc.getNameEntry(i);
+                sp.SpeakerTag = new NameReference(nameResult, i);
                 Dialog.SpeakerList[n] = sp;
                 Dialog.Save();
             }
@@ -220,15 +222,16 @@ namespace ME1Explorer
         {
             if (Pcc == null || Dialog == null)
                 return;
-            string result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", "", true);
-            if (result == "")
+            string nameResult = PromptDialog.Prompt(null, "Please enter new name", "ME1Explorer", "", true);
+            if (nameResult == "")
                 return;
-            int i = 0;
-            if (int.TryParse(result, out i) && Pcc.isName(i))
+            string numberResult = PromptDialog.Prompt(null, "Please enter new name index", "ME1Explorer", "", true);
+            if (numberResult == "")
+                return;
+            if (int.TryParse(numberResult, out int i) && i >= 0)
             {
                 ME1BioConversation.SpeakerListStruct sp = new ME1BioConversation.SpeakerListStruct();
-                sp.SpeakerTag = i;
-                sp.Text = Pcc.getNameEntry(i);
+                sp.SpeakerTag = new NameReference(nameResult, i);
                 Dialog.SpeakerList.Add(sp);
                 Dialog.Save();
             }
@@ -305,16 +308,16 @@ namespace ME1Explorer
             int n;
             if (Pcc == null || Dialog == null || (n = listBox3.SelectedIndex) == -1)
                 return;
-            ME1BioConversation.ScriptListStruct sd = Dialog.ScriptList[n];
-            string result = PromptDialog.Prompt(null, "Please enter new name entry", "ME1Explorer", Dialog.ScriptList[n].ScriptTag.ToString(), true);
-            if (result == "")
+            string nameResult = PromptDialog.Prompt(null, "Please enter new name", "ME1Explorer", Dialog.ScriptList[n].ScriptTag.Name, true);
+            if (nameResult == "")
                 return;
-            int i = 0;
-            if (int.TryParse(result, out i) && Pcc.isName(i))
+            string numberResult = PromptDialog.Prompt(null, "Please enter new name index", "ME1Explorer", Dialog.ScriptList[n].ScriptTag.Number.ToString(), true);
+            if (numberResult == "")
+                return;
+            if (int.TryParse(numberResult, out int i) && i >= 0)
             {
                 ME1BioConversation.ScriptListStruct sp = new ME1BioConversation.ScriptListStruct();
-                sp.ScriptTag = i;
-                sp.Text = Pcc.getNameEntry(i);
+                sp.ScriptTag = new NameReference(nameResult, i);
                 Dialog.ScriptList[n] = sp;
                 Dialog.Save();
             }
@@ -327,7 +330,6 @@ namespace ME1Explorer
                 return;
             ME1BioConversation.ScriptListStruct sc = new ME1BioConversation.ScriptListStruct();
             sc.ScriptTag = Dialog.ScriptList[n].ScriptTag;
-            sc.Text = Pcc.getNameEntry(sc.ScriptTag);
             Dialog.ScriptList.Add(sc);
             Dialog.Save();
         }

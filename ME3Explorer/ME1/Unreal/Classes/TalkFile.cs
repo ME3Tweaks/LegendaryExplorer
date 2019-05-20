@@ -190,10 +190,7 @@ namespace ME1Explorer.Unreal.Classes
         #region Load Data
         public void LoadTlkData()
         {
-            BinaryReader r = new BinaryReader(new MemoryStream(pcc.getUExport(uindex).Data), Encoding.Unicode);
-
-            //skip properties
-            r.BaseStream.Seek(40, SeekOrigin.Begin);
+            BinaryReader r = new BinaryReader(new MemoryStream(pcc.getUExport(uindex).getBinaryData()), Encoding.Unicode);
 
             //hashtable
             int entryCount = r.ReadInt32();

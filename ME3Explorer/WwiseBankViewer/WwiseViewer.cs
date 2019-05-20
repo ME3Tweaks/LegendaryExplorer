@@ -362,8 +362,8 @@ namespace ME3Explorer.WwiseBankEditor
                     bank = null;
                     listBox2.Items.Clear();
                     rtb1.Text = "";
-                    hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
-                    hircHexBox.ByteProvider = new DynamicByteProvider(new List<byte>());
+                    hb1.ByteProvider = new DynamicByteProvider();
+                    hircHexBox.ByteProvider = new DynamicByteProvider();
                 }
                 RefreshSelected();
                 updatedExports.Remove(index);
