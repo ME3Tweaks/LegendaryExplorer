@@ -5073,7 +5073,7 @@ namespace ME3Explorer
 
                         if(game == MEGame.UDK)  //UDK section quite different
                         {
-                            int mat = BitConverter.ToInt32(data, pos);
+                            int mat = BitConverter.ToInt16(data, pos);
                             nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
                             {
                                 Header = $"{pos:X4} Material Index: {mat}",
@@ -5081,7 +5081,7 @@ namespace ME3Explorer
 
                                 Tag = NodeType.StructLeafInt,
                             });
-                            pos += 4;
+                            pos += 2;
 
                             int chunk = BitConverter.ToInt16(data, pos);
                             nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
@@ -5093,7 +5093,7 @@ namespace ME3Explorer
                             });
                             pos += 2;
 
-                            int baseidx = BitConverter.ToInt16(data, pos);
+                            int baseidx = BitConverter.ToInt32(data, pos);
                             nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
                             {
                                 Header = $"{pos:X4} Base Index: {baseidx}",
@@ -5101,7 +5101,7 @@ namespace ME3Explorer
 
                                 Tag = NodeType.StructLeafInt,
                             });
-                            pos += 2;
+                            pos += 4;
 
                             int nTriangles = BitConverter.ToInt16(data, pos); //Section Triangles
                             nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
@@ -5188,13 +5188,13 @@ namespace ME3Explorer
                         });
                         pos += 4;
 
-                        //int dataType = BitConverter.ToInt16(data, pos); //Single byte?
+                        byte dataType = data[pos]; //Single byte
                         idxHeader.Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
-                            Header = $"{pos:X4} Datatype Size: ",
+                            Header = $"{pos:X4} Datatype Size: {dataType}",
                             Name = "_" + pos,
 
-                            Tag = NodeType.StructLeafInt,
+                            Tag = NodeType.Unknown,
                         });
                         pos += 1;
 
@@ -5306,7 +5306,7 @@ namespace ME3Explorer
                                 Header = $"{pos:X4} {uk2} : {uk2Bool}",
                                 Name = "_" + pos,
 
-                                Tag = NodeType.StructLeafInt,
+                                Tag = NodeType.StructLeafBool,
                             });
                             pos += 1;
                         }
@@ -5394,7 +5394,7 @@ namespace ME3Explorer
                                 int color = BitConverter.ToInt32(data, rvpos);
                                 rvpos += 4; //60
 
-                                bool bone = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE
+                                byte bone = data[rvpos];  //SINGLE BYTE
                                 rvpos += 1;
 
                                 rigidvertices.Items.Add(new BinaryInterpreterWPFTreeViewItem
@@ -5408,7 +5408,7 @@ namespace ME3Explorer
                             }
                             else {
 
-                                bool bone = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE
+                                byte bone = data[rvpos];  //SINGLE BYTE
                                 rvpos += 1;
 
                                 rigidvertices.Items.Add(new BinaryInterpreterWPFTreeViewItem
@@ -5472,28 +5472,28 @@ namespace ME3Explorer
                                 rvpos += 4;
 
                                 //Influence Bones
-                                bool inflbnA = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE Influence
+                                byte inflbnA = data[rvpos];  //SINGLE BYTE Influence
                                 rvpos += 1;
-                                bool inflbnB = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                byte inflbnB = data[rvpos];
                                 rvpos += 1;
-                                bool inflbnC = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                byte inflbnC = data[rvpos];
                                 rvpos += 1;
-                                bool inflbnD = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                byte inflbnD = data[rvpos]; 
                                 rvpos += 1;
 
                                 //Influence Weights
-                                bool inflwA = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE Influence
+                                byte inflwA = data[rvpos];  //SINGLE BYTE Influence
                                 rvpos += 1;
-                                bool inflwB = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                byte inflwB = data[rvpos];
                                 rvpos += 1;
-                                bool inflwC = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                byte inflwC = data[rvpos];
                                 rvpos += 1;
-                                bool inflwD = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                byte inflwD = data[rvpos];
                                 rvpos += 1;
 
                                 softvertices.Items.Add(new BinaryInterpreterWPFTreeViewItem
                                 {
-                                    Header = $"{pos:X4} {sv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ} UV(0) U:{uv1U} W:{uv1U} UV(1) U:{uv2U} W:{uv2U} UV(2) U:{uv3U} W:{uv3U} UV(3) U:{uv4U} W:{uv4U} Color: {color} Influence bones: ({inflbnA}, {inflbnB},{inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB},{inflwC}, {inflwD})",
+                                    Header = $"{pos:X4} {sv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ} UV(0) U:{uv1U} W:{uv1U} UV(1) U:{uv2U} W:{uv2U} UV(2) U:{uv3U} W:{uv3U} UV(3) U:{uv4U} W:{uv4U} Color: {color} Influence bones: ({inflbnA}, {inflbnB}, {inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB}, {inflwC}, {inflwD})",
                                     Name = "_" + pos,
 
                                     Tag = NodeType.Unknown,
@@ -5503,28 +5503,28 @@ namespace ME3Explorer
                             else
                             {
                                 //Influence Bones
-                                bool inflbnA = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE Influence
+                                byte inflbnA = data[rvpos];  //SINGLE BYTE Influence
                                 rvpos += 1;
-                                bool inflbnB = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                byte inflbnB = data[rvpos];
                                 rvpos += 1;
-                                bool inflbnC = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                byte inflbnC = data[rvpos];
                                 rvpos += 1;
-                                bool inflbnD = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                byte inflbnD = data[rvpos];
                                 rvpos += 1;
 
                                 //Influence Weights
-                                bool inflwA = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE Influence
+                                byte inflwA = data[rvpos];
                                 rvpos += 1;
-                                bool inflwB = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                byte inflwB = data[rvpos];
                                 rvpos += 1;
-                                bool inflwC = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                byte inflwC = data[rvpos];
                                 rvpos += 1;
-                                bool inflwD = BitConverter.ToBoolean(data, rvpos);  //SINGLE BYTE 
+                                byte inflwD = data[rvpos]; 
                                 rvpos += 1;
 
                                 softvertices.Items.Add(new BinaryInterpreterWPFTreeViewItem
                                 {
-                                    Header = $"{pos:X4} {sv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ}  UV U:{uv1U} W:{uv1U} Influence bones: ({inflbnA}, {inflbnB},{inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB},{inflwC}, {inflwD})",
+                                    Header = $"{pos:X4} {sv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ}  UV U:{uv1U} W:{uv1U} Influence bones: ({inflbnA}, {inflbnB}, {inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB}, {inflwC}, {inflwD})",
                                     Name = "_" + pos,
 
                                     Tag = NodeType.Unknown,
@@ -5654,14 +5654,14 @@ namespace ME3Explorer
 
                     for (int rq = 0; rq < nReqBones; rq++)
                     {
-                        //int rqIndex = BitConverter.ToInt16(data, pos);  // int8 single byte integers (max 256 bones)??
-                        //reqBones.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                        //{
-                        //    Header = $"{pos:X4} {rq} : {rqIndex}",
-                        //    Name = "_" + pos,
+                        //single byte integers (max 256 bones)
+                        reqBones.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"{pos:X4} {rq} : {data[pos]}",
+                            Name = "_" + pos,
 
-                        //    Tag = NodeType.StructLeafInt,
-                        //});
+                            Tag = NodeType.StructLeafByte,
+                        });
                         pos += 1;
                     }
 
@@ -5708,13 +5708,26 @@ namespace ME3Explorer
 
                     if(rawPoint3 != 0)
                     {
-                        nLOD.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        var rawpoints = new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"{pos:X4} Raw Point Indices Collection",
                             Name = "_" + pos,
 
                             Tag = NodeType.Unknown,
-                        });
+                        };
+                        nLOD.Items.Add(rawpoints);
+                        int rapos = pos;
+                        for ( int rp = 0; rp < rawPoint3; rp++)
+                        {
+                            rawpoints.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{rapos:X4} {rp} : {data[rapos]:X2}",
+                                Name = "_" + rapos,
+
+                                Tag = NodeType.StructLeafByte,
+                            });
+                            rapos += 1;
+                        }
                         pos += rawPoint3;
                     }
 
@@ -5730,7 +5743,6 @@ namespace ME3Explorer
                         });
                         pos += 4;
                     }
-
 
                     var vtxGPUskin = new BinaryInterpreterWPFTreeViewItem
                     {
@@ -5958,13 +5970,13 @@ namespace ME3Explorer
                         });
                         pos += 4;
 
-                        bool nUnkU5 = BitConverter.ToBoolean(data, pos);
+                        byte nUnkU5 = data[pos];
                         nLOD.Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"{pos:X4} Unknown UDK 5 : {nUnkU5}",
                             Name = "_" + pos,
 
-                            Tag = NodeType.StructLeafBool,
+                            Tag = NodeType.StructLeafByte,
                         });
                         pos += 1;
                     }
