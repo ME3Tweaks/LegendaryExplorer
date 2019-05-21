@@ -5,49 +5,100 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:views="clr-namespace:MassEffect.NativesEditor.Views"
     xmlns:global="clr-namespace:ME3Explorer"
-	mc:Ignorable="d"
+                xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
+                xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+                mc:Ignorable="d"
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
-	Title="{Binding WindowTitle}" 
     Height="600" 
     Width="800" 
     SizeToContent="Manual" 
+    Title="Plot Editor"
+    DragOver="Window_DragOver"
+    Drop="Window_Drop"
+    AllowDrop="True"
     Icon="/Resources/ploteditor_256x256.ico">
+    <Window.Resources>
+        <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
+    </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
         <CommandBinding Command="Open" CanExecute="Open_CanExecute" Executed="Open_Executed"/>
     </Window.CommandBindings>
     <!-- Content -->
-	<Grid>
-		<Grid.ColumnDefinitions>
+    <DockPanel>
+        <!--<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+            <RowDefinition Height
+		</Grid.RowDefinitions>-->
 
-		<!-- Main Menu -->
-		<Menu x:Name="MainMenu" Margin="0,0,0,5">
-            <MenuItem Header="_File">
+        <!-- Main Menu -->
+        <Menu x:Name="MainMenu" Margin="0,0,0,5" DockPanel.Dock="Top">
+            <MenuItem Header="_File" Padding="4">
                 <MenuItem Header="_Open" x:Name="OpenFileMenuItem" Command="Open" />
                 <MenuItem Header="_Save" x:Name="SaveFileMenuItem" Command="Save" />
+                <Separator />
+                <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
             </MenuItem>
-		</Menu>
+        </Menu>
+        <StatusBar Height="23" DockPanel.Dock="Bottom">
+            <SharedUI:StatusBarGameIDIndicator Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
+                                               GameType="{Binding Pcc, Converter={StaticResource GameTypeConverter}}" Margin="0,-4"/>
+            <StatusBarItem>
+                <TextBlock Name="StatusBar_LeftMostText" Text="{Binding CurrentFile}"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding Pcc.LastSaved, StringFormat='Last saved at {0}'}" Foreground="Gray"/>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+        <!-- Main Tab Control -->
+        <TabControl x:Name="MainTabControl">
+            <TabItem Name="RecentFiles_Tab" Header="Recent Files" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="280"/>
+                        <ColumnDefinition Width="280"/>
+                    </Grid.ColumnDefinitions>
 
-		<!-- Main Tab Control -->
-		<TabControl Grid.Row="1" x:Name="MainTabControl">
-			<TabItem Header="Codex Map">
-				<views:CodexMapView x:Name="CodexMapControl" />
-			</TabItem>
-			<TabItem Header="Quest Map">
-				<views:QuestMapView x:Name="QuestMapControl" />
-			</TabItem>
-			<TabItem Header="State Event Map">
-				<views:StateEventMapView x:Name="StateEventMapControl" />
-			</TabItem>
-			<TabItem Header="Find Usages">
-				<views:FindObjectUsagesView x:Name="FindObjectUsagesControl" />
-			</TabItem>
-		</TabControl>
-	</Grid>
+                    <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="5"/>
+                    <Button Name="RecentButton1" Content="Item" Grid.Row="1" Grid.Column="0" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton2" Content="Item" Grid.Row="1" Grid.Column="1" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton3" Content="Item" Grid.Row="2" Grid.Column="0" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton4" Content="Item" Grid.Row="2" Grid.Column="1" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton5" Content="Item" Grid.Row="3" Grid.Column="0" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton6" Content="Item" Grid.Row="3" Grid.Column="1" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton7" Content="Item" Grid.Row="4" Grid.Column="0" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton8" Content="Item" Grid.Row="4" Grid.Column="1" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Codex Map">
+                <views:CodexMapView x:Name="CodexMapControl" />
+            </TabItem>
+            <TabItem Header="Quest Map">
+                <views:QuestMapView x:Name="QuestMapControl" />
+            </TabItem>
+            <TabItem Header="State Event Map">
+                <views:StateEventMapView x:Name="StateEventMapControl" />
+            </TabItem>
+            <TabItem Header="Find Usages">
+                <views:FindObjectUsagesView x:Name="FindObjectUsagesControl" />
+            </TabItem>
+        </TabControl>
+    </DockPanel>
 </global:WPFBase>

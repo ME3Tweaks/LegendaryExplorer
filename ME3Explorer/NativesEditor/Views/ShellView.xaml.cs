@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Gammtek.Conduit.Extensions;
 using Gammtek.Conduit.MassEffect3.SFXGame.CodexMap;
@@ -14,48 +16,36 @@ using Microsoft.Win32;
 
 namespace MassEffect.NativesEditor.Views
 {
-	/// <summary>
-	///     Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class ShellView : WPFBase, INotifyPropertyChanged
-	{
-		public ShellView()
-		{
+    /// <summary>
+    ///     Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class ShellView : WPFBase
+    {
+        public ShellView()
+        {
             ME3Explorer.ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Plot Editor", new WeakReference(this));
-            WindowTitle = "Plot Editor";
-			InitializeComponent();
+            InitializeComponent();
+            LoadRecentList();
+            RefreshRecent(false);
             FindObjectUsagesControl.parentRef = this;
         }
 
-        private string _windowTitle;
-        private string _fileName;
-        
-        public string FileName
-        {
-            get => _fileName;
-            set => SetProperty(ref _fileName, value);
-        }
-
-        public string WindowTitle
-        {
-            get => _windowTitle;
-            set => SetProperty(ref _windowTitle, value);
-        }
+        public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FileName) : "Select a file to load";
 
         public void OpenFile()
         {
-            var dlg = new OpenFileDialog { Filter = "ME2/3 PCC Files|*.pcc|ME1 UPK Files|*.upk", Multiselect = false};
+            var dlg = new OpenFileDialog { Filter = "Support files|*.pcc;*.upk", Multiselect = false };
 
             if (dlg.ShowDialog() != true)
-			{
-				return;
-			}
+            {
+                return;
+            }
 
-			OpenPccFile(dlg.FileName);
+            LoadFile(dlg.FileName);
 
         }
 
-        public void OpenPccFile(string path)
+        public void LoadFile(string path)
         {
             if (path == null)
             {
@@ -67,7 +57,6 @@ namespace MassEffect.NativesEditor.Views
                 return;
             }
 
-            FileName = path;
             LoadMEPackage(path);
 
             CodexMapControl?.Open(Pcc);
@@ -75,6 +64,18 @@ namespace MassEffect.NativesEditor.Views
             QuestMapControl?.Open(Pcc);
 
             StateEventMapControl?.Open(Pcc);
+
+            AddRecent(path, false);
+            SaveRecentList();
+            RefreshRecent(true, RFiles);
+            Title = $"Plot Editor - {path}";
+            OnPropertyChanged(nameof(CurrentFile));
+
+            //Hiding "Recents" panel
+            if (MainTabControl.SelectedIndex == 0)
+            {
+                MainTabControl.SelectedIndex = 1; 
+            }
         }
 
         public void SaveFile()
@@ -135,7 +136,7 @@ namespace MassEffect.NativesEditor.Views
                 }
             }
 
-            Pcc.save(FileName);
+            Pcc.save();
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
@@ -145,7 +146,7 @@ namespace MassEffect.NativesEditor.Views
 
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute =  Pcc != null && !string.IsNullOrEmpty(FileName);
+            e.CanExecute = Pcc != null;
         }
 
         private void Save_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -161,6 +162,162 @@ namespace MassEffect.NativesEditor.Views
         private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             OpenFile();
+        }
+
+        #region Recents
+        private readonly List<Button> RecentButtons = new List<Button>();
+        public List<string> RFiles;
+        public static readonly string NativesEditorDataFolder = Path.Combine(App.AppDataFolder, @"NativesEditor\");
+        private readonly string RECENTFILES_FILE = "RECENTFILES";
+
+        private void LoadRecentList()
+        {
+            RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
+            Recents_MenuItem.IsEnabled = false;
+            RFiles = new List<string>();
+            RFiles.Clear();
+            string path = NativesEditorDataFolder + RECENTFILES_FILE;
+            if (File.Exists(path))
+            {
+                string[] recents = File.ReadAllLines(path);
+                foreach (string recent in recents)
+                {
+                    if (File.Exists(recent))
+                    {
+                        AddRecent(recent, true);
+                    }
+                }
+            }
+        }
+
+        private void SaveRecentList()
+        {
+            if (!Directory.Exists(NativesEditorDataFolder))
+            {
+                Directory.CreateDirectory(NativesEditorDataFolder);
+            }
+            string path = NativesEditorDataFolder + RECENTFILES_FILE;
+            if (File.Exists(path))
+                File.Delete(path);
+            File.WriteAllLines(path, RFiles);
+        }
+
+        public void RefreshRecent(bool propogate, List<string> recents = null)
+        {
+            if (propogate && recents != null)
+            {
+                //we are posting an update to other instances of PathEd
+                foreach (var form in Application.Current.Windows)
+                {
+                    if (form is ShellView wpf && this != wpf)
+                    {
+                        wpf.RefreshRecent(false, RFiles);
+                    }
+                }
+            }
+            else if (recents != null)
+            {
+                //we are receiving an update
+                RFiles = new List<string>(recents);
+            }
+            Recents_MenuItem.Items.Clear();
+            if (RFiles.Count <= 0)
+            {
+                Recents_MenuItem.IsEnabled = false;
+                return;
+            }
+            Recents_MenuItem.IsEnabled = true;
+
+            int i = 0;
+            foreach ((string filepath, Button recentButton) in RFiles.ZipTuple(RecentButtons))
+            {
+                MenuItem fr = new MenuItem
+                {
+                    Header = filepath.Replace("_", "__"),
+                    Tag = filepath
+                };
+                recentButton.Visibility = Visibility.Visible;
+                recentButton.Content = Path.GetFileName(filepath.Replace("_", "__"));
+                recentButton.Click -= RecentFile_click;
+                recentButton.Click += RecentFile_click;
+                recentButton.Tag = filepath;
+                recentButton.ToolTip = filepath;
+                fr.Click += RecentFile_click;
+                Recents_MenuItem.Items.Add(fr);
+                i++;
+            }
+            while (i < 10)
+            {
+                RecentButtons[i].Visibility = Visibility.Collapsed;
+                i++;
+            }
+        }
+
+        private void RecentFile_click(object sender, EventArgs e)
+        {
+            string s = ((FrameworkElement)sender).Tag.ToString();
+            if (File.Exists(s))
+            {
+                LoadFile(s);
+            }
+            else
+            {
+                MessageBox.Show($"File does not exist: {s}");
+            }
+        }
+
+        public void AddRecent(string s, bool loadingList)
+        {
+            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            if (loadingList)
+            {
+                RFiles.Add(s); //in order
+            }
+            else
+            {
+                RFiles.Insert(0, s); //put at front
+            }
+            if (RFiles.Count > 10)
+            {
+                RFiles.RemoveRange(10, RFiles.Count - 10);
+            }
+            Recents_MenuItem.IsEnabled = true;
+        }
+
+        #endregion
+
+        private void Window_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string ext = Path.GetExtension(files[0]).ToLower();
+                if (ext != ".upk" && ext != ".pcc")
+                {
+                    e.Effects = DragDropEffects.None;
+                    e.Handled = true;
+                }
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+                e.Handled = true;
+            }
+        }
+
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string ext = Path.GetExtension(files[0]).ToLower();
+                if (ext == ".upk" || ext == ".pcc")
+                {
+                    LoadFile(files[0]);
+                }
+            }
         }
     }
 }

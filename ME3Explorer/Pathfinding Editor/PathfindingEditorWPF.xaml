@@ -123,11 +123,6 @@
             </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
-            <!--<StatusBarItem VerticalContentAlignment="Center" Name="StatusBar_GameID_Container" Visibility="Collapsed">
-                <Border BorderBrush="Gray" BorderThickness="2,2,2,2" CornerRadius="3,3,3,3" VerticalAlignment="Center">
-                    <TextBlock Name="StatusBar_GameID_Text" Background="Red" Text="Game ID" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
-                </Border>
-            </StatusBarItem>-->
             <SharedUI:StatusBarGameIDIndicator Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
                                                GameType="{Binding Pcc, Converter={StaticResource GameTypeConverter}}" Margin="0,-4"/>
             <StatusBarItem>
