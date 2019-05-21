@@ -112,17 +112,12 @@ namespace ME3Explorer.MetadataEditor
             {
                 allEntriesNew.Add(Pcc.Imports[i]);
             }
-            allEntriesNew.Add(new ZeroUIndexClassEntry());
+            allEntriesNew.Add(ZeroUIndexClassEntry.instance);
             foreach (IExportEntry exp in Pcc.Exports)
             {
                 allEntriesNew.Add(exp);
             }
             AllEntriesList.ReplaceAll(allEntriesNew);
-            if (CurrentLoadedEntry != null)
-            {
-                LoadAllEntriesBindedItems(CurrentLoadedEntry); //This will correct several issues. For some reason 0: Class on exports don't show up due to handleUpdate() timing. Imports don't set it when cloning because the offset is wrong but handleUPdate() may not have fired yet.
-            }
-
         }
 
         public override void PopOut()
@@ -665,16 +660,13 @@ namespace ME3Explorer.MetadataEditor
         /// </summary>
         private class ZeroUIndexClassEntry
         {
-            public ZeroUIndexClassEntry()
-            {
-            }
+            public static readonly ZeroUIndexClassEntry instance = new ZeroUIndexClassEntry();
 
-            public override string ToString()
-            {
-                return "0: Class";
-            }
+            private ZeroUIndexClassEntry() { }
 
-            public int UIndex { get { return 0; } }
+            public override string ToString() => "0: Class";
+
+            public int UIndex => 0;
         }
     }
 }
