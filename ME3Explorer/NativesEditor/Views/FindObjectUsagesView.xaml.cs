@@ -28,24 +28,28 @@ namespace MassEffect.NativesEditor.Views
 
             set
             {
-                _searchTerm = value;
+                SetProperty(ref _searchTerm, value);
                 UpdateSearch();
             }
         }
-        List<BioVersionedNativeObject> searchResults;
 
-        public List<BioVersionedNativeObject> SearchResults
+        string _typeToFind;
+        public string TypeToFind
         {
-            get => searchResults;
-            set => SetProperty(ref searchResults, value);
+            get => _typeToFind;
+            set
+            {
+                SetProperty(ref _typeToFind, value);
+                UpdateSearch();
+            }
         }
 
         public ShellView parentRef;
 
         void UpdateSearch()
         {
-            string typeToFind = ((ComboBoxItem)objectTypeCombo.SelectedItem).Content as string;
-            switch (typeToFind)
+            if (parentRef == null) return;
+            switch (TypeToFind)
             {
                 case "Plot Bool":
                     int boolId = SearchTerm;
@@ -85,17 +89,9 @@ namespace MassEffect.NativesEditor.Views
             var selectedItem = searchResultsListBox.SelectedItem;
             if (selectedItem is KeyValuePair<int, BioStateEvent> pair)
             {
-                parentRef.MainTabControl.SelectedIndex = 2;
+                parentRef.MainTabControl.SelectedIndex = 3;
                 parentRef.StateEventMapControl.SelectedStateEvent = pair;
                 parentRef.StateEventMapControl.StateEventMapListBox.ScrollIntoView(pair);
-            }
-        }
-
-        private void objectTypeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (IsInitialized)
-            {
-                UpdateSearch();
             }
         }
     }
