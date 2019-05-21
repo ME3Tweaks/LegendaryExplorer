@@ -162,7 +162,7 @@
 										</Grid.RowDefinitions>
 
 										<!-- Quest Goal Conditional -->
-										<Label Grid.Column="0" Grid.Row="0" Content="Condtional"
+										<Label Grid.Column="0" Grid.Row="0" Content="Conditional"
 											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 										<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
@@ -268,7 +268,7 @@
 										</Grid.RowDefinitions>
 
 										<!-- Quest Plot Items Conditional -->
-										<Label Grid.Column="0" Grid.Row="0" Content="Condtional"
+										<Label Grid.Column="0" Grid.Row="0" Content="Conditional"
 											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 										<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
