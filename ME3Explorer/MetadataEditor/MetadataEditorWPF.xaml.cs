@@ -118,6 +118,11 @@ namespace ME3Explorer.MetadataEditor
                 allEntriesNew.Add(exp);
             }
             AllEntriesList.ReplaceAll(allEntriesNew);
+            if (CurrentLoadedEntry != null)
+            {
+                LoadAllEntriesBindedItems(CurrentLoadedEntry); //This will correct several issues. For some reason 0: Class on exports don't show up due to handleUpdate() timing. Imports don't set it when cloning because the offset is wrong but handleUPdate() may not have fired yet.
+            }
+
         }
 
         public override void PopOut()
@@ -158,45 +163,11 @@ namespace ME3Explorer.MetadataEditor
 
                 InfoTab_Objectname_ComboBox.SelectedIndex = exportEntry.FileRef.findName(exportEntry.ObjectName);
 
-                if (exportEntry.idxClass != 0)
-                {
-                    //IEntry _class = pcc.getEntry(exportEntry.idxClass);
-                    //InfoTab_Class_ComboBox.ItemsSource = AllEntriesList;
-                    InfoTab_Class_ComboBox.SelectedIndex = exportEntry.idxClass + exportEntry.FileRef.Imports.Count; //make positive
-                }
-                else
-                {
-                    InfoTab_Class_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
-                }
-                //InfoTab_Superclass_ComboBox.ItemsSource = AllEntriesList;
-                if (exportEntry.idxClassParent != 0)
-                {
-                    InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.idxClassParent + exportEntry.FileRef.Imports.Count; //make positive
-                }
-                else
-                {
-                    InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
-                }
+                LoadAllEntriesBindedItems(exportEntry);
 
-                if (exportEntry.idxLink != 0)
-                {
-                    InfoTab_PackageLink_ComboBox.SelectedIndex = exportEntry.idxLink + exportEntry.FileRef.Imports.Count; //make positive
-                }
-                else
-                {
-                    InfoTab_PackageLink_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
-                }
                 InfoTab_Headersize_TextBox.Text = exportEntry.Header.Length + " bytes";
                 InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(exportEntry.Header, HEADER_OFFSET_EXP_IDXOBJECTNAME + 4).ToString();
-                //InfoTab_Archetype_ComboBox.ItemsSource = AllEntriesList;
-                if (exportEntry.idxArchtype != 0)
-                {
-                    InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.idxArchtype + exportEntry.FileRef.Imports.Count; //make positive
-                }
-                else
-                {
-                    InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
-                }
+
                 var flagsList = Enums.GetValues<EObjectFlags>().Distinct().ToList();
                 //Don't even get me started on how dumb it is that SelectedItems is read only...
                 string selectedFlags = "";
@@ -254,6 +225,67 @@ namespace ME3Explorer.MetadataEditor
             loadingNewData = false;
         }
 
+        /// <summary>
+        /// Sets the dropdowns for the items binded to the AllEntries list. HandleUpdate() may fire in the parent control, refreshing the list of values, so we will refire this when that occurs.
+        /// </summary>
+        /// <param name="exportEntry"></param>
+        private void LoadAllEntriesBindedItems(IEntry entry)
+        {
+            if (entry is IExportEntry exportEntry)
+            {
+                if (exportEntry.idxClass != 0)
+                {
+                    //IEntry _class = pcc.getEntry(exportEntry.idxClass);
+                    //InfoTab_Class_ComboBox.ItemsSource = AllEntriesList;
+                    InfoTab_Class_ComboBox.SelectedIndex = exportEntry.idxClass + exportEntry.FileRef.Imports.Count; //make positive
+                }
+                else
+                {
+                    InfoTab_Class_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
+                }
+
+                //InfoTab_Superclass_ComboBox.ItemsSource = AllEntriesList;
+                if (exportEntry.idxClassParent != 0)
+                {
+                    InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.idxClassParent + exportEntry.FileRef.Imports.Count; //make positive
+                }
+                else
+                {
+                    InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
+                }
+
+                if (exportEntry.idxLink != 0)
+                {
+                    InfoTab_PackageLink_ComboBox.SelectedIndex = exportEntry.idxLink + exportEntry.FileRef.Imports.Count; //make positive
+                }
+                else
+                {
+                    InfoTab_PackageLink_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
+                }
+
+                if (exportEntry.idxArchtype != 0)
+                {
+                    InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.idxArchtype + exportEntry.FileRef.Imports.Count; //make positive
+                }
+                else
+                {
+                    InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
+                    Debug.WriteLine("SelectedIndex: " + InfoTab_Archetype_ComboBox.SelectedIndex);
+                }
+            }
+            else if (entry is ImportEntry importEntry)
+            {
+                if (importEntry.idxLink != 0)
+                {
+                    InfoTab_PackageLink_ComboBox.SelectedIndex = importEntry.idxLink + importEntry.FileRef.Imports.Count; //make positive
+                }
+                else
+                {
+                    InfoTab_PackageLink_ComboBox.SelectedIndex = importEntry.FileRef.Imports.Count; //Class, 0
+                }
+            }
+        }
+
         public void LoadImport(ImportEntry importEntry)
         {
             loadingNewData = true;
@@ -276,14 +308,7 @@ namespace ME3Explorer.MetadataEditor
 
             InfoTab_Objectname_ComboBox.SelectedIndex = importEntry.FileRef.findName(importEntry.ObjectName);
             InfoTab_ImpClass_ComboBox.SelectedIndex = importEntry.FileRef.findName(importEntry.ClassName);
-            if (importEntry.idxLink != 0)
-            {
-                InfoTab_PackageLink_ComboBox.SelectedIndex = importEntry.idxLink + importEntry.FileRef.Imports.Count; //make positive
-            }
-            else
-            {
-                InfoTab_PackageLink_ComboBox.SelectedIndex = importEntry.FileRef.Imports.Count; //Class, 0
-            }
+            LoadAllEntriesBindedItems(importEntry);
 
             InfoTab_PackageFile_ComboBox.SelectedIndex = importEntry.FileRef.findName(System.IO.Path.GetFileNameWithoutExtension(importEntry.PackageFile));
             InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(importEntry.Header, HEADER_OFFSET_IMP_IDXOBJECTNAME + 4).ToString();
@@ -391,7 +416,7 @@ namespace ME3Explorer.MetadataEditor
 
         private void Info_ClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!loadingNewData)
+            if (!loadingNewData && InfoTab_Class_ComboBox.SelectedIndex >= 0)
             {
                 var selectedClassIndex = InfoTab_Class_ComboBox.SelectedIndex;
                 var unrealIndex = selectedClassIndex - CurrentLoadedEntry.FileRef.ImportCount;
@@ -410,7 +435,7 @@ namespace ME3Explorer.MetadataEditor
 
         private void Info_PackageLinkClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!loadingNewData)
+            if (!loadingNewData && InfoTab_PackageLink_ComboBox.SelectedIndex >= 0)
             {
                 var selectedImpExp = InfoTab_PackageLink_ComboBox.SelectedIndex;
                 var unrealIndex = selectedImpExp - CurrentLoadedEntry.FileRef.ImportCount;
@@ -421,7 +446,7 @@ namespace ME3Explorer.MetadataEditor
 
         private void Info_SuperClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!loadingNewData)
+            if (!loadingNewData && InfoTab_Superclass_ComboBox.SelectedIndex >= 0)
             {
                 var selectedClassIndex = InfoTab_Superclass_ComboBox.SelectedIndex;
                 var unrealIndex = selectedClassIndex - CurrentLoadedEntry.FileRef.ImportCount;
@@ -432,13 +457,13 @@ namespace ME3Explorer.MetadataEditor
 
         private void Info_ObjectNameComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!loadingNewData)
+            if (!loadingNewData && InfoTab_Objectname_ComboBox.SelectedIndex >= 0)
             {
                 var selectedNameIndex = InfoTab_Objectname_ComboBox.SelectedIndex;
                 if (selectedNameIndex >= 0)
                 {
                     headerByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXOBJECTNAME : HEADER_OFFSET_IMP_IDXOBJECTNAME, BitConverter.GetBytes(selectedNameIndex));
-                Header_Hexbox.Refresh();
+                    Header_Hexbox.Refresh();
                 }
             }
         }
@@ -447,8 +472,7 @@ namespace ME3Explorer.MetadataEditor
         {
             if (!loadingNewData)
             {
-                int x;
-                if (int.TryParse(InfoTab_ObjectnameIndex_TextBox.Text, out x))
+                if (int.TryParse(InfoTab_ObjectnameIndex_TextBox.Text, out int x))
                 {
                     headerByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXOBJECTNAME + 4 : HEADER_OFFSET_IMP_IDXOBJECTNAME + 4, BitConverter.GetBytes(x));
                     Header_Hexbox.Refresh();
@@ -458,7 +482,7 @@ namespace ME3Explorer.MetadataEditor
 
         private void Info_ArchetypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!loadingNewData)
+            if (!loadingNewData && InfoTab_Archetype_ComboBox.SelectedIndex >= 0)
             {
                 var selectedArchetTypeIndex = InfoTab_Archetype_ComboBox.SelectedIndex;
                 var unrealIndex = selectedArchetTypeIndex - CurrentLoadedEntry.FileRef.ImportCount;
@@ -469,7 +493,7 @@ namespace ME3Explorer.MetadataEditor
 
         private void Info_PackageFileComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!loadingNewData)
+            if (!loadingNewData && InfoTab_PackageFile_ComboBox.SelectedIndex >= 0)
             {
                 var selectedNameIndex = InfoTab_PackageFile_ComboBox.SelectedIndex;
                 headerByteProvider.WriteBytes(HEADER_OFFSET_IMP_IDXPACKAGEFILE, BitConverter.GetBytes(selectedNameIndex));
@@ -479,7 +503,7 @@ namespace ME3Explorer.MetadataEditor
 
         private void Info_ImpClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!loadingNewData)
+            if (!loadingNewData && InfoTab_ImpClass_ComboBox.SelectedIndex >= 0)
             {
                 var selectedNameIndex = InfoTab_ImpClass_ComboBox.SelectedIndex;
                 headerByteProvider.WriteBytes(HEADER_OFFSET_IMP_IDXCLASSNAME, BitConverter.GetBytes(selectedNameIndex));
