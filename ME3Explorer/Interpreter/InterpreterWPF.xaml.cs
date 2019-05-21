@@ -461,7 +461,7 @@ namespace ME3Explorer
                 RescanSelectionOffset = ForcedRescanOffset;
                 ForcedRescanOffset = 0;
             }
-            Debug.WriteLine("Selection offset: " + RescanSelectionOffset);
+            //Debug.WriteLine("Selection offset: " + RescanSelectionOffset);
             CurrentLoadedExport = export;
             isLoadingNewData = true;
             (Interpreter_Hexbox.ByteProvider as DynamicByteProvider)?.ReplaceBytes(export.Data);
