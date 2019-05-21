@@ -102,7 +102,7 @@ namespace ME3Explorer
             get => _selectedItem;
             set
             {
-                if (SetProperty(ref _selectedItem, value))
+                if (SetProperty(ref _selectedItem, value) && !SuppressSelectionEvent)
                 {
                     Preview();
                 }
@@ -156,6 +156,7 @@ namespace ME3Explorer
         public string SearchHintText { get => _searchHintText; set => SetProperty(ref _searchHintText, value); }
 
         private string _gotoHintText = "UIndex";
+        private bool SuppressSelectionEvent;
         public string GotoHintText { get => _gotoHintText; set => SetProperty(ref _gotoHintText, value); }
 
         #region Commands
@@ -1105,8 +1106,9 @@ namespace ME3Explorer
                 TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
                 newEntry.Parent = selected.Parent;
                 selected.Parent.Sublinks.Add(newEntry);
+                SuppressSelectionEvent = true;
                 selected.Parent.SortChildren();
-
+                SuppressSelectionEvent = false;
                 cloneTree(selected, newEntry);
                 relinkObjects2(Pcc);
                 relinkBinaryObjects(Pcc);
@@ -1145,7 +1147,9 @@ namespace ME3Explorer
                 }
                 newEntry.Parent = selected.Parent;
                 selected.Parent.Sublinks.Add(newEntry);
+                SuppressSelectionEvent = true;
                 selected.Parent.SortChildren();
+                SuppressSelectionEvent = false;
                 GoToNumber(newEntry.UIndex);
             }
         }
@@ -1196,7 +1200,9 @@ namespace ME3Explorer
                     }
                 }
             }
+            SuppressSelectionEvent = true;
             newRootNode.SortChildren();
+            SuppressSelectionEvent = false;
         }
 
         private void ImportBinaryData() => ImportExpData(true);
@@ -1888,8 +1894,9 @@ namespace ME3Explorer
                     //newItem.Parent = targetItem;
                     //targetItem.Sublinks.Add(newItem);
                 }
-
+                SuppressSelectionEvent = true;
                 nodesToSortChildrenFor.ToList().ForEach(x => x.SortChildren());
+                SuppressSelectionEvent = false;
 
                 int currentLeftSideListMaxCount = LeftSideList_ItemsSource.Count - 1;
                 if (CurrentView == CurrentViewMode.Imports)
@@ -1942,7 +1949,9 @@ namespace ME3Explorer
                     }
                 }
                 nodesNeedingResort = nodesNeedingResort.Distinct().ToList();
+                SuppressSelectionEvent = true;
                 nodesNeedingResort.ForEach(x => x.SortChildren());
+                SuppressSelectionEvent = false;
             }
 
             if (changes.Contains(PackageChange.Names))
@@ -2401,7 +2410,9 @@ namespace ME3Explorer
                     importTree(sourceItem, importpcc, newItem, portingOption);
                 }
 
+                SuppressSelectionEvent = true;
                 targetItem.SortChildren();
+                SuppressSelectionEvent = false;
 
                 //relinkObjects(importpcc);
                 if (!MultiRelinkingModeActive)
