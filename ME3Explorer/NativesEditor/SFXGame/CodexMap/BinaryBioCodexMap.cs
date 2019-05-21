@@ -232,7 +232,9 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
                 else if (page.InstanceVersion == 2)
                 {
                     Write(page.Section);
-                    Write(page.CodexSoundString);
+                    int Length = page.CodexSoundString.Length;
+                    Write(Length);
+                    Write(page.CodexSoundString.ToCharArray(), 0, Length);
                 }
                 else
                 {

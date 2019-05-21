@@ -102,12 +102,12 @@
 							Text="{Binding Path=SelectedCodexPage.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" />-->
 
 						<!-- Codex Sound -->
-						<Label Content="Sound Obj (iv4):" Grid.Column="0" Grid.Row="6" HorizontalAlignment="Right" Width="100" />
+						<Label Content="Sound Obj (v4):" Grid.Column="0" Grid.Row="6" HorizontalAlignment="Right" Width="100" />
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="6"
 							Text="{Binding Path=SelectedCodexPage.Value.CodexSound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" />
-                        <Label Content="Sound String (iv2):" Grid.Column="0" Grid.Row="7" HorizontalAlignment="Right" Width="100" />
-                        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="7"
-							Text="{Binding Path=SelectedCodexPage.Value.CodexSoundStrg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" />
+                        <Label Content="Sound String (v2):" Grid.Column="0" Grid.Row="7" HorizontalAlignment="Right" Width="100" />
+                        <xctk:AutoSelectTextBox Grid.Column="1" Grid.Row="7"
+							Text="{Binding Path=SelectedCodexPage.Value.CodexSoundString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" />
 
                         <!-- Description -->
 						<Label Content="Description:" Grid.Column="0" Grid.Row="2" />
@@ -198,7 +198,6 @@
 						</Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
@@ -213,13 +212,10 @@
 							Text="{Binding Path=SelectedCodexSection.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" />-->
 
 						<!-- Codex Sound -->
-						<Label Content="Sound Obj (iv3/4):" Grid.Column="0" Grid.Row="6" />
+						<Label Content="Sound Object:" Grid.Column="0" Grid.Row="6" />
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="6"
 							Text="{Binding Path=SelectedCodexSection.Value.CodexSound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" />
-                        <Label Content="Sound Str (iv2):" Grid.Column="0" Grid.Row="7" />
-                        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="7"
-							Text="{Binding Path=SelectedCodexSection.Value.CodexSoundString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" />
-
+                        
                         <!-- Description -->
 						<Label Content="Description:" Grid.Column="0" Grid.Row="2" />
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"

@@ -427,7 +427,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 
 				if (task.WaypointTag.Length > 0)
 				{
-					Write(task.WaypointTag);
+                    Write(task.WaypointTag.ToCharArray(), 0, task.WaypointTag.Length);
 				}
 			}
 

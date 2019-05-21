@@ -1929,22 +1929,16 @@ namespace ME3Explorer
                         }
 
                         int planetName = BitConverter.ToInt32(data, offset); //Planet name
+                        offset += 4;
+                        int planetIdx = BitConverter.ToInt32(data, offset); //Name index
+                        offset -= 4;
                         nTaskIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
-                            Header = $"0x{offset:X5} Planet Name: {CurrentLoadedExport.FileRef.getNameEntry(planetName)} ",
+                            Header = $"0x{offset:X5} Planet Name: {CurrentLoadedExport.FileRef.getNameEntry(planetName)}_{planetIdx} ",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafName
                         });
-                        offset += 4;
-
-                        int Unknown4 = BitConverter.ToInt32(data, offset); //Unknown ?
-                        nTaskIDs.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                        {
-                            Header = $"0x{offset:X5} Unknown?: {Unknown4}  ",
-                            Name = "_" + offset,
-                            Tag = NodeType.StructLeafObject
-                        });
-                        offset += 4;
+                        offset += 8;
 
                         int wpStrLgth = BitConverter.ToInt32(data, offset); //String length for waypoint
                         offset += 4;
@@ -1960,7 +1954,7 @@ namespace ME3Explorer
                         {
                             Header = $"0x{offset:X5} Waypoint ref: {wpRef} ",
                             Name = "_" + offset,
-                            Tag = NodeType.StructLeafObject
+                            Tag = NodeType.StructLeafStr
                         });
                         offset += wpStrLgth;
                     }
