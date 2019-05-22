@@ -156,7 +156,7 @@
 
                 <MenuItem Header="Options" Padding="4">
                     <MenuItem Name="TLKManagerWPF_MenuItem" Header="TLK Manager" Click="TLKManagerWPF_MenuItem_Click" ToolTip="Open TLK Manager WPF"/>
-                    <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked" ToolTip="Makes Package Editor WPF a bit easier to use on touch devices"/>
+                    <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=TouchComfyMode, Mode=TwoWay}" ToolTip="Makes Package Editor WPF a bit easier to use on touch devices" StaysOpenOnClick="True"/>
                     <MenuItem Name="AssociatePccSfm_MenuItem" Header="Associate PCC/SFM files" Click="AssociateFileTypes_Clicked" ToolTip="Makes Package Editor WPF open when you double click PCC/SFM files in Windows Explorer"/>
                     <Separator/>
                     <MenuItem Name="ShowObjectIndexes_MenuItem" Header="Show Object Indexes if not zero" Click="ShowObjectIndexes_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PackageEditorWPF_TreeViewShowEntryIndex, Mode=TwoWay}" ToolTip="Changes the treeview of Package Editor WPF to include netindexes if the index value is no 0. This will take full effect after loading a new file."/>
@@ -170,6 +170,7 @@
                     </MenuItem>
                     <MenuItem Header="Interpreter">
                         <MenuItem Name="InterpreterWPF_AdvancedMode_MenuItem" Header="Advanced Mode" Click="InterpreterWPF_AdvancedMode_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_AdvancedDisplay, Mode=TwoWay}" ToolTip="Displays data types, array sizes for each property in InterpreterWPF. Turning this off will condense the interface"/>
+                        <MenuItem Name="InterpreterWPF_Colorize_MenuItem" Header="Colorize property types" Click="InterpreterWPF_Colorize_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize, Mode=TwoWay}" ToolTip="Changes the background color for different property types. Makes it easier to quickly identify different types of data."/>
                     </MenuItem>
                     <MenuItem Header="Texture Viewer">
                         <MenuItem Name="EmbeddedTextureViewerWPF_AutoPreviewTextures" Header="Automatically preview textures on export selection" Click="EmbeddedTextureViewer_AutoLoad_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=EmbeddedTextureViewer_AutoLoad, Mode=TwoWay}" ToolTip="Automatically load texture exports for viewing. Turn this feature off to improve performance and increase application stability"/>
@@ -307,7 +308,7 @@
                 <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" FontFamily="Consolas" Visibility="Collapsed" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" ItemsSource="{Binding AllTreeViewNodesX}" FocusManager.IsFocusScope="True" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type global:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
-                            <Border Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent"  Padding="{Binding Path=TreeViewMargin,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=global:PackageEditorWPF}}">
+                            <Border Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent"  Padding="{Binding Path=(SharedUI:TouchComfySettings.TreeViewMargin)}">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="16" Height="16" Source="{Binding Entry, Converter={StaticResource EntryFileTypeIconPathConverter}}" Visibility="{Binding Entry, Converter={StaticResource EntryFileTypeConverter}}" />
                                     <TextBlock  Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}">

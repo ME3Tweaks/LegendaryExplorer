@@ -370,5 +370,29 @@ namespace ME3Explorer.Properties {
                 this["InterpreterWPF_AdvancedDisplay"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TouchComfyMode {
+            get {
+                return ((bool)(this["TouchComfyMode"]));
+            }
+            set {
+                this["TouchComfyMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InterpreterWPF_Colorize {
+            get {
+                return ((bool)(this["InterpreterWPF_Colorize"]));
+            }
+            set {
+                this["InterpreterWPF_Colorize"] = value;
+            }
+        }
     }
 }

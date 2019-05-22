@@ -51,15 +51,6 @@ namespace ME3Explorer
         }
         public static readonly string[] ExportFileTypes = { "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream" };
 
-        #region TouchComfyMode
-        int _treeViewMargin = 2;
-        public int TreeViewMargin
-        {
-            get => _treeViewMargin;
-            set => SetProperty(ref _treeViewMargin, value);
-        }
-        #endregion
-
         /// <summary>
         /// Used to populate the metadata editor values so the list does not constantly need to rebuilt, which can slow down the program on large files like SFXGame or BIOC_Base.
         /// </summary>
@@ -3118,8 +3109,9 @@ namespace ME3Explorer
 
         private void TouchComfyMode_Clicked(object sender, RoutedEventArgs e)
         {
-            TouchComfyMode_MenuItem.IsChecked = !TouchComfyMode_MenuItem.IsChecked;
-            TreeViewMargin = TouchComfyMode_MenuItem.IsChecked ? 5 : 2;
+            Properties.Settings.Default.TouchComfyMode = !Properties.Settings.Default.TouchComfyMode;
+            Properties.Settings.Default.Save();
+            TouchComfySettings.ModeSwitched();
         }
 
         private void PackageEditorWPF_Closing(object sender, CancelEventArgs e)
@@ -3848,6 +3840,12 @@ namespace ME3Explorer
                     }
                 }
             }
+        }
+
+        private void InterpreterWPF_Colorize_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.InterpreterWPF_Colorize = !Properties.Settings.Default.InterpreterWPF_Colorize;
+            Properties.Settings.Default.Save();
         }
     }
 }

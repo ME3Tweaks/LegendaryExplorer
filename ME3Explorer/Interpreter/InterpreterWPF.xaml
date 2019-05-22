@@ -106,79 +106,118 @@
             <SharedUI:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" ItemsSource="{Binding PropertyNodes}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                 <SharedUI:StretchingTreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type global:UPropertyTreeViewEntry}" ItemsSource="{Binding ChildrenProperties}">
-                        <StackPanel x:Name="PropertyItem_Container" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="1">
-                            <StackPanel>
+                        <Border x:Name="PropertyItem_Container" Margin="1" Padding="{Binding Path=(SharedUI:TouchComfySettings.InterpreterWPFNodeMargin)}">
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock x:Name="PropertyItem_Offset" Text="{Binding Property.StartOffset, StringFormat='{}{0:X5}: '}" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_AdvancedDisplay, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}}" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center" FontStyle="Italic" />
+                                    <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center"/>
                                     <TextBlock x:Name="PropertyItem_EditableValue" Margin="5,0,0,0" Text="{Binding EditableValue}" VerticalAlignment="Center" FontWeight="Bold" Visibility="{Binding EditableValue, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
                                     <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0" Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
                                     <xctk:ColorPicker Margin="5,0,0,0" Visibility="{Binding Property, Converter={StaticResource UPropertyColorPickerVisibilityConverter}}" SelectedColor="{Binding ColorStructCode,Converter={StaticResource ColorCodeConverter}}" Width="60"/>
                                 </StackPanel>
-                                <TextBlock x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_AdvancedDisplay, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                <TextBlock Grid.Row="1" x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_AdvancedDisplay, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="PreviewMouseRightButtonDown">
                                         <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
-                            </StackPanel>
-                        </StackPanel>
+                            </Grid>
+                        </Border>
                         <HierarchicalDataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="ObjectProperty">
-                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#6d6c3f"/>-->
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="ObjectProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d6c3f"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88fffec4"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="FloatProperty">
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="FloatProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#004f46"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#4400ffaa"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="IntProperty">
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="IntProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#664f46"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#AAffeae2"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="StrProperty">
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="StrProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#071f06"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#6632aaf4"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="ArrayProperty">
-                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#382c4c"/>-->
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="ArrayProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#382c4c"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#99ffe2ba"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="BoolProperty">
-                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#43563a"/>-->
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="BoolProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#43563a"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ecffe2"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="StructProperty">
-                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#593953"/>-->
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="StructProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#593953"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88f4beea"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="ByteProperty">
+                            </MultiDataTrigger>
+                             <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="ByteProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#474647"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88afaeaf"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="NameProperty">
-                                <!--<Setter TargetName="PropertyItem_EditorSet" Property="ContentTemplate" Value="{StaticResource EditorSet_NamePropertyTemplate}"/>-->
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="NameProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#4a5568"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88e2edff"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="Unknown">
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="Unknown" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="White"/>
                                 <Setter TargetName="PropertyItem_EditableValue" Property="Foreground" Value="White"/>
                                 <Setter TargetName="PropertyItem_ParsedValue" Property="Foreground" Value="White"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="Red"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="None">
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="None" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d4818"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ffb759"/>
-                            </DataTrigger>
-                            <!--<DataTrigger Binding="{Binding HasChanges}" Value="True">
-                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="Maroon"/>
-                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="Yellow"/>
-                            </DataTrigger>-->
+                            </MultiDataTrigger>
                         </HierarchicalDataTemplate.Triggers>
                     </HierarchicalDataTemplate>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
