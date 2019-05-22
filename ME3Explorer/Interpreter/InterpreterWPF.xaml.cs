@@ -983,6 +983,7 @@ namespace ME3Explorer
                         {
                             SupportedEditorSetElements.Add(Value_ComboBox);
                             var values = new List<string> { "True", "False" };
+                            Value_ComboBox.IsEditable = false;
                             Value_ComboBox.ItemsSource = values;
                             Value_ComboBox.SelectedIndex = bp.Value ? 0 : 1; //true : false
                         }
