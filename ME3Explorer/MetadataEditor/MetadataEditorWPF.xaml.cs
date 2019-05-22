@@ -20,7 +20,6 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using Xceed.Wpf.Toolkit.Primitives;
-using static ME3Explorer.PackageEditorWPF;
 using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.MetadataEditor
@@ -56,7 +55,7 @@ namespace ME3Explorer.MetadataEditor
 
         private HexBox Header_Hexbox;
         private DynamicByteProvider headerByteProvider;
-        private bool loadingNewData = false;
+        private bool loadingNewData;
 
         public MetadataEditorWPF()
         {
@@ -90,13 +89,14 @@ namespace ME3Explorer.MetadataEditor
             for (int i = 0; i < headerByteProvider.Length; i++)
                 m.WriteByte(headerByteProvider.ReadByte(i));
             CurrentLoadedEntry.Header = m.ToArray();
-            if (CurrentLoadedEntry is IExportEntry)
+            switch (CurrentLoadedEntry)
             {
-                LoadExport(CurrentLoadedEntry as IExportEntry);
-            }
-            else if (CurrentLoadedEntry is ImportEntry)
-            {
-                LoadImport(CurrentLoadedEntry as ImportEntry);
+                case IExportEntry exportEntry:
+                    LoadExport(exportEntry);
+                    break;
+                case ImportEntry importEntry:
+                    LoadImport(importEntry);
+                    break;
             }
         }
 
@@ -105,15 +105,15 @@ namespace ME3Explorer.MetadataEditor
             return true;
         }
 
-        public void RefreshAllEntriesList(IMEPackage Pcc)
+        public void RefreshAllEntriesList(IMEPackage pcc)
         {
             var allEntriesNew = new List<object>();
-            for (int i = Pcc.Imports.Count - 1; i >= 0; i--)
+            for (int i = pcc.Imports.Count - 1; i >= 0; i--)
             {
-                allEntriesNew.Add(Pcc.Imports[i]);
+                allEntriesNew.Add(pcc.Imports[i]);
             }
             allEntriesNew.Add(ZeroUIndexClassEntry.instance);
-            foreach (IExportEntry exp in Pcc.Exports)
+            foreach (IExportEntry exp in pcc.Exports)
             {
                 allEntriesNew.Add(exp);
             }
@@ -125,10 +125,12 @@ namespace ME3Explorer.MetadataEditor
             if (CurrentLoadedEntry is IExportEntry export)
             {
                 var mde = new MetadataEditorWPF();
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(mde, export);
-                elhw.Height = 620;
-                elhw.Width = 780;
-                elhw.Title = $"Metadata Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FileName}";
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(mde, export)
+                {
+                    Height = 620,
+                    Width = 780,
+                    Title = $"Metadata Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FileName}"
+                };
                 mde.RefreshAllEntriesList(CurrentLoadedEntry.FileRef);
                 elhw.Show();
             }
@@ -182,8 +184,8 @@ namespace ME3Explorer.MetadataEditor
                 InfoTab_Flags_ComboBox.ItemsSource = flagsList;
                 InfoTab_Flags_ComboBox.SelectedValue = selectedFlags;
 
-                InfoTab_ExportDataSize_TextBox.Text = exportEntry.DataSize + " bytes";
-                InfoTab_ExportOffsetHex_TextBox.Text = "0x" + exportEntry.DataOffset.ToString("X8");
+                InfoTab_ExportDataSize_TextBox.Text = $"{exportEntry.DataSize} bytes";
+                InfoTab_ExportOffsetHex_TextBox.Text = $"0x{exportEntry.DataOffset:X8}";
                 InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
 
                 //not parsed by package handling, must do it manually here
@@ -223,7 +225,7 @@ namespace ME3Explorer.MetadataEditor
         /// <summary>
         /// Sets the dropdowns for the items binded to the AllEntries list. HandleUpdate() may fire in the parent control, refreshing the list of values, so we will refire this when that occurs.
         /// </summary>
-        /// <param name="exportEntry"></param>
+        /// <param name="entry"></param>
         private void LoadAllEntriesBindedItems(IEntry entry)
         {
             if (entry is IExportEntry exportEntry)
@@ -265,7 +267,7 @@ namespace ME3Explorer.MetadataEditor
                 else
                 {
                     InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
-                    Debug.WriteLine("SelectedIndex: " + InfoTab_Archetype_ComboBox.SelectedIndex);
+                    Debug.WriteLine($"SelectedIndex: {InfoTab_Archetype_ComboBox.SelectedIndex}");
                 }
             }
             else if (entry is ImportEntry importEntry)
@@ -284,7 +286,7 @@ namespace ME3Explorer.MetadataEditor
         public void LoadImport(ImportEntry importEntry)
         {
             loadingNewData = true;
-            InfoTab_Headersize_TextBox.Text = importEntry.Header.Length + " bytes";
+            InfoTab_Headersize_TextBox.Text = $"{importEntry.Header.Length} bytes";
             Row_Archetype.Height = new GridLength(0);
             Row_ExpClass.Height = new GridLength(0);
             Row_ImpClass.Height = new GridLength(24);
@@ -334,7 +336,7 @@ namespace ME3Explorer.MetadataEditor
             byte[] currentData = headerByteProvider.Bytes.ToArray();
             try
             {
-                if (currentData != null && start != -1 && start < size)
+                if (start != -1 && start < size)
                 {
                     string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
                     if (start <= currentData.Length - 4)
@@ -354,11 +356,11 @@ namespace ME3Explorer.MetadataEditor
                             s += $", Import: {imp.ObjectName}";
                         }
                     }
-                    s += $" | Start=0x{start.ToString("X8")} ";
+                    s += $" | Start=0x{start:X8} ";
                     if (len > 0)
                     {
-                        s += $"Length=0x{len.ToString("X8")} ";
-                        s += $"End=0x{(start + len - 1).ToString("X8")}";
+                        s += $"Length=0x{len:X8} ";
+                        s += $"End=0x{start + len - 1:X8}";
                     }
                     Header_Hexbox_SelectedBytesLabel.Text = s;
                 }
@@ -369,6 +371,7 @@ namespace ME3Explorer.MetadataEditor
             }
             catch (Exception)
             {
+                // ignored
             }
         }
 
@@ -565,21 +568,20 @@ namespace ME3Explorer.MetadataEditor
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void InfoTab_Flags_ComboBox_ItemSelectionChanged(object sender, Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
+        private void InfoTab_Flags_ComboBox_ItemSelectionChanged(object sender, ItemSelectionChangedEventArgs e)
         {
             if (!loadingNewData)
             {
                 EPropertyFlags newFlags = 0U;
                 foreach (var flag in InfoTab_Flags_ComboBox.Items)
                 {
-                    var selectorItem = InfoTab_Flags_ComboBox.ItemContainerGenerator.ContainerFromItem(flag) as SelectorItem;
-                    if ((selectorItem != null) && !selectorItem.IsSelected.Value)
+                    if (InfoTab_Flags_ComboBox.ItemContainerGenerator.ContainerFromItem(flag) is SelectorItem selectorItem && selectorItem.IsSelected != true)
                     {
                         newFlags |= (EPropertyFlags)flag;
                     }
                 }
                 //Debug.WriteLine(newFlags);
-                headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_OBJECTFLAGS, BitConverter.GetBytes((UInt64)newFlags));
+                headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_OBJECTFLAGS, BitConverter.GetBytes((ulong)newFlags));
                 Header_Hexbox.Refresh();
             }
         }

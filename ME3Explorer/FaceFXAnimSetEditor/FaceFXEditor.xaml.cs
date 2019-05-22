@@ -299,7 +299,7 @@ namespace ME3Explorer.FaceFX
                         index = names.FindOrAdd(sourceNames[x.index]),
                         unk2 = x.unk2
                     }).ToArray();
-                    FaceFX.Data.Data = FaceFX.Data.Data.Concat(line).ToArray();
+                    FaceFX.Data.Data = FaceFX.Data.Data.Append(line).ToArray();
                     FaceFX.Header.Names = names.ToArray();
                     linesListBox.ItemsSource = FaceFX.Data.Data;
                 }
@@ -322,7 +322,7 @@ namespace ME3Explorer.FaceFX
                         unk2 = x.unk2
                     }).ToArray();
                     ME2DataAnimSetStruct me2DataAnimSetStruct = (FaceFX.Data as ME2DataAnimSetStruct);
-                    me2DataAnimSetStruct.Data = me2DataAnimSetStruct.Data.Concat(line as ME2FaceFXLine).ToArray();
+                    me2DataAnimSetStruct.Data = me2DataAnimSetStruct.Data.Append(line as ME2FaceFXLine).ToArray();
                     FaceFX.Header.Names = names.ToArray();
                     linesListBox.ItemsSource = me2DataAnimSetStruct.Data;
                 }
@@ -381,11 +381,11 @@ namespace ME3Explorer.FaceFX
                 List<string> names = FaceFX.Header.Names.ToList();
                 if (Pcc.Game == MEGame.ME3)
                 {
-                    selectedLine.animations = selectedLine.animations.Concat(new ME3NameRef { index = names.FindOrAdd(a.Name), unk2 = 0 }).ToArray();
+                    selectedLine.animations = selectedLine.animations.Append(new ME3NameRef { index = names.FindOrAdd(a.Name), unk2 = 0 }).ToArray();
                 }
                 else
                 {
-                    selectedLine.animations = selectedLine.animations.Concat(new ME2NameRef { index = names.FindOrAdd(a.Name), unk1 = 1 }).ToArray();
+                    selectedLine.animations = selectedLine.animations.Append(new ME2NameRef { index = names.FindOrAdd(a.Name), unk1 = 1 }).ToArray();
                 }
                 FaceFX.Header.Names = names.ToArray();
                 selectedLine.points = selectedLine.points.Concat(a.points.Select(x => new ControlPoint
@@ -395,7 +395,7 @@ namespace ME3Explorer.FaceFX
                     inTangent = x.ArriveTangent,
                     leaveTangent = x.LeaveTangent
                 })).ToArray();
-                selectedLine.numKeys = selectedLine.numKeys.Concat(group).ToArray();
+                selectedLine.numKeys = selectedLine.numKeys.Append(group).ToArray();
                 updateAnimListBox();
             }
             SaveChanges();
@@ -454,7 +454,7 @@ namespace ME3Explorer.FaceFX
                     }
                     else if (MessageBoxResult.Yes == MessageBox.Show($"The names list does not contain the name \"{result}\", do you want to add it?", "", MessageBoxButton.YesNo))
                     {
-                        FaceFX.Header.Names = FaceFX.Header.Names.Concat(result).ToArray();
+                        FaceFX.Header.Names = FaceFX.Header.Names.Append(result).ToArray();
                         selectedLine.Name = FaceFX.Header.Names.Length - 1;
                     }
                     break;

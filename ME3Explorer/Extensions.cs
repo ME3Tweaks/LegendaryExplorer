@@ -126,22 +126,6 @@ namespace ME3Explorer
             return idx;
         }
 
-        public static IEnumerable<T> Concat<T>(this IEnumerable<T> first, T second)
-        {
-            if (first == null) throw new ArgumentNullException(nameof(first));
-            if (second == null) throw new ArgumentNullException(nameof(second));
-            return ConcatIterator();
-
-            IEnumerable<T> ConcatIterator()
-            {
-                foreach (T element in first)
-                {
-                    yield return element;
-                }
-                yield return second;
-            }
-        }
-
         /// <summary>
         /// Searches for the specified object and returns the index of its first occurence, or -1 if it is not found
         /// </summary>

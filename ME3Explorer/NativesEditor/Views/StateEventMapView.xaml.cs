@@ -310,40 +310,23 @@ namespace MassEffect.NativesEditor.Views
             }
         }
 
-        public bool TryFindStateEventMap(IMEPackage pcc, out IExportEntry export, out int dataOffset)
+        public static bool TryFindStateEventMap(IMEPackage pcc, out IExportEntry export)
         {
-            export = null;
-            dataOffset = -1;
+            export = pcc.Exports.FirstOrDefault(exp => exp.ClassName == "BioStateEventMap" && exp.ObjectName == "StateTransitionMap"); //ME1 has 2 BioStateEventMaps only want one named StateTransitionMap
 
-            try
-            {
-                export = pcc.Exports.First(exp => (exp.ClassName == "BioStateEventMap" && exp.ObjectName == "StateTransitionMap")); //ME1 has 2 BioStateEventMaps only want one named StateTransitionMap
-            }
-            catch
-            {
-                return false;
-            }
-
-            dataOffset = export.propsEnd();
-
-            return true;
+            return export != null;
         }
 
         public void Open(IMEPackage pcc)
         {
-            if (!TryFindStateEventMap(pcc, out IExportEntry export, out int dataOffset))
+            if (!TryFindStateEventMap(pcc, out IExportEntry export))
             {
                 return;
             }
 
-            using (var stream = new MemoryStream(export.Data))
-            {
-                stream.Seek(dataOffset, SeekOrigin.Begin);
-
-                var stateEventMap = BinaryBioStateEventMap.Load(stream);
-                StateEvents = InitCollection(stateEventMap.StateEvents.OrderBy(stateEvent => stateEvent.Key));
-                SetListsAsBindable();
-            }
+            var stateEventMap = BinaryBioStateEventMap.Load(export);
+            StateEvents = InitCollection(stateEventMap.StateEvents.OrderBy(stateEvent => stateEvent.Key));
+            SetListsAsBindable();
         }
 
         

@@ -491,8 +491,8 @@
     <Compile Include="NativesEditor\Views\QuestMapView.xaml.cs">
       <DependentUpon>QuestMapView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NativesEditor\Views\ShellView.xaml.cs">
-      <DependentUpon>ShellView.xaml</DependentUpon>
+    <Compile Include="NativesEditor\Views\PlotEditor.xaml.cs">
+      <DependentUpon>PlotEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="NativesEditor\Views\StateEventMapView.xaml.cs">
       <DependentUpon>StateEventMapView.xaml</DependentUpon>
@@ -999,7 +999,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="NativesEditor\Views\ShellView.xaml">
+    <Page Include="NativesEditor\Views\PlotEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
