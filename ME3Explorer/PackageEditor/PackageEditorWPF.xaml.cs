@@ -25,6 +25,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -117,13 +118,13 @@ namespace ME3Explorer
         }
 
 
-        public static readonly string PackageEditorDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"PackageEditor\");
+        public static readonly string PackageEditorDataFolder = Path.Combine(App.AppDataFolder, @"PackageEditor\");
         private const string RECENTFILES_FILE = "RECENTFILES";
         public List<string> RFiles;
         /// <summary>
         /// PCC map that maps values from a source PCC to values in this PCC. Used extensively during relinking.
         /// </summary>
-        private Dictionary<IEntry, IEntry> crossPCCObjectMap = new Dictionary<IEntry, IEntry>();
+        private readonly Dictionary<IEntry, IEntry> crossPCCObjectMap = new Dictionary<IEntry, IEntry>();
         private string currentFile;
         private int QueuedGotoNumber;
         private bool IsLoadingFile;
@@ -277,7 +278,7 @@ namespace ME3Explorer
 
         private void SaveFileAs()
         {
-            string extension = System.IO.Path.GetExtension(Pcc.FileName);
+            string extension = Path.GetExtension(Pcc.FileName);
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
@@ -566,7 +567,7 @@ namespace ME3Explorer
             {
 
             }
-            new SharedUI.ListDialog(items, Path.GetFileName(Pcc.FileName) + " header information", "Below is information about this package from the header.", this).Show();
+            new ListDialog(items, Path.GetFileName(Pcc.FileName) + " header information", "Below is information about this package from the header.", this).Show();
         }
 
         private void TrashEntryAndChildren()
@@ -1025,7 +1026,7 @@ namespace ME3Explorer
             {
                 try
                 {
-                    int offsetDec = int.Parse(result, System.Globalization.NumberStyles.HexNumber);
+                    int offsetDec = int.Parse(result, NumberStyles.HexNumber);
 
                     //TODO: Fix offset selection code, it seems off by a bit, not sure why yet
                     for (int i = 0; i < Pcc.ImportCount; i++)
@@ -1275,7 +1276,7 @@ namespace ME3Explorer
         {
             if (Pcc != null)
             {
-                string extension = System.IO.Path.GetExtension(Pcc.FileName);
+                string extension = Path.GetExtension(Pcc.FileName);
                 OpenFileDialog d = new OpenFileDialog { Filter = "*" + extension + "|*" + extension };
                 if (d.ShowDialog() == true)
                 {
@@ -1365,7 +1366,7 @@ namespace ME3Explorer
             LoadCommands();
 
             InitializeComponent();
-            ((FrameworkElement)this.Resources["EntryContextMenu"]).DataContext = this;
+            ((FrameworkElement)Resources["EntryContextMenu"]).DataContext = this;
 
             //map export loaders to their tabs
             ExportLoaders[InterpreterTab_Interpreter] = Interpreter_Tab;
@@ -1391,7 +1392,7 @@ namespace ME3Explorer
         {
             try
             {
-                BusyText = "Loading " + System.IO.Path.GetFileName(s);
+                BusyText = "Loading " + Path.GetFileName(s);
                 IsBusy = true;
                 IsLoadingFile = true;
                 foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
@@ -1407,22 +1408,21 @@ namespace ME3Explorer
                 ClassDropdownList.ClearEx();
 
                 currentFile = s;
-                StatusBar_LeftMostText.Text = $"Loading {System.IO.Path.GetFileName(s)} ({ByteSize.FromBytes(new System.IO.FileInfo(s).Length)})";
+                StatusBar_LeftMostText.Text = $"Loading {Path.GetFileName(s)} ({ByteSize.FromBytes(new FileInfo(s).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(s);
 
                 RefreshView();
                 InitStuff();
-                StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(s);
-                Title = "Package Editor WPF - " + s;
+                StatusBar_LeftMostText.Text = Path.GetFileName(s);
+                Title = $"Package Editor WPF - {s}";
                 InterpreterTab_Interpreter.UnloadExport();
                 //InitializeTreeView();
 
                 QueuedGotoNumber = goToIndex;
-                BackgroundWorker bg = new BackgroundWorker();
-                bg.DoWork += InitializeTreeViewBackground;
-                bg.RunWorkerCompleted += InitializeTreeViewBackground_Completed;
-                bg.RunWorkerAsync();
+
+                Task.Run(InitializeTreeViewBackground)
+                    .ContinueWithOnUIThread(InitializeTreeViewBackground_Completed);
 
                 AddRecent(s, false);
                 SaveRecentList();
@@ -1430,20 +1430,20 @@ namespace ME3Explorer
             }
             catch (Exception e)
             {
-                StatusBar_LeftMostText.Text = "Failed to load " + System.IO.Path.GetFileName(s);
-                MessageBox.Show($"Error loading {System.IO.Path.GetFileName(s)}:\n{e.Message}");
+                StatusBar_LeftMostText.Text = "Failed to load " + Path.GetFileName(s);
+                MessageBox.Show($"Error loading {Path.GetFileName(s)}:\n{e.Message}");
                 IsBusy = false;
                 IsBusyTaskbar = false;
                 //throw e;
             }
         }
 
-        private void InitializeTreeViewBackground_Completed(object sender, RunWorkerCompletedEventArgs e)
+        private void InitializeTreeViewBackground_Completed(Task<ObservableCollectionExtended<TreeViewEntry>> prevTask)
         {
-            if (e.Result != null)
+            if (prevTask.Result != null)
             {
                 AllTreeViewNodesX.ClearEx();
-                AllTreeViewNodesX.AddRange(e.Result as ObservableCollectionExtended<TreeViewEntry>);
+                AllTreeViewNodesX.AddRange(prevTask.Result);
             }
             IsLoadingFile = false;
             if (QueuedGotoNumber != 0)
@@ -1466,15 +1466,15 @@ namespace ME3Explorer
             }
         }
 
-        private void InitializeTreeViewBackground(object sender, DoWorkEventArgs e)
+        private ObservableCollectionExtended<TreeViewEntry> InitializeTreeViewBackground()
         {
             if (Thread.CurrentThread.Name == null)
                 Thread.CurrentThread.Name = "PackageEditorWPF TreeViewInitialization";
 
-            BusyText = "Loading " + System.IO.Path.GetFileName(Pcc.FileName);
+            BusyText = "Loading " + Path.GetFileName(Pcc.FileName);
             if (Pcc == null)
             {
-                return;
+                return null;
             }
 
             IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
@@ -1511,7 +1511,7 @@ namespace ME3Explorer
 
                 }
             }
-            e.Result = new ObservableCollectionExtended<TreeViewEntry>(rootNodes.Except(itemsToRemove).ToList());
+            return new ObservableCollectionExtended<TreeViewEntry>(rootNodes.Except(itemsToRemove));
         }
 
         private void InitializeTreeView()
@@ -1617,7 +1617,7 @@ namespace ME3Explorer
                         editor.RefreshRecent(false, RFiles);
                     }
                 }
-                foreach (var form in App.Current.Windows)
+                foreach (var form in Application.Current.Windows)
                 {
                     if (form is PackageEditorWPF wpf && this != wpf)
                     {
@@ -1647,7 +1647,7 @@ namespace ME3Explorer
                     Tag = filepath
                 };
                 RecentButtons[i].Visibility = Visibility.Visible;
-                RecentButtons[i].Content = System.IO.Path.GetFileName(filepath.Replace("_", "__"));
+                RecentButtons[i].Content = Path.GetFileName(filepath.Replace("_", "__"));
                 RecentButtons[i].Click -= RecentFile_click;
                 RecentButtons[i].Click += RecentFile_click;
                 RecentButtons[i].Tag = filepath;
@@ -3036,7 +3036,7 @@ namespace ME3Explorer
 
             int done = 0;
             int total = stringMapping.Count;
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Public\SuperTLK.txt"))
+            using (StreamWriter file = new StreamWriter(@"C:\Users\Public\SuperTLK.txt"))
             {
                 StatusBar_LeftMostText.Text = "Writing... ";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
@@ -3075,7 +3075,7 @@ namespace ME3Explorer
             {
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                string ext = System.IO.Path.GetExtension(files[0]).ToLower();
+                string ext = Path.GetExtension(files[0]).ToLower();
                 if (ext != ".u" && ext != ".upk" && ext != ".pcc" && ext != ".sfm")
                 {
                     e.Effects = DragDropEffects.None;
@@ -3183,7 +3183,7 @@ namespace ME3Explorer
             public override bool Equals(Object obj)
             {
                 //Check for null and compare run-time types.
-                if ((obj == null) || this.GetType() != obj.GetType())
+                if ((obj == null) || GetType() != obj.GetType())
                 {
                     return false;
                 }
@@ -3638,13 +3638,13 @@ namespace ME3Explorer
 
         private void AssociateFileTypes_Clicked(object sender, RoutedEventArgs e)
         {
-            ME3Explorer.Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("pcc", "Mass Effect 2/3 Package File");
-            ME3Explorer.Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("sfm", "Mass Effect 1 Package File");
+            Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("pcc", "Mass Effect 2/3 Package File");
+            Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("sfm", "Mass Effect 1 Package File");
         }
 
         private void BuildME1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            ME1Explorer.Unreal.ME1UnrealObjectInfo.generateInfo();
+            ME1UnrealObjectInfo.generateInfo();
         }
 
         private void BuildME2ObjectInfo_Clicked(object sender, RoutedEventArgs e)

@@ -568,12 +568,12 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Plot Editor",
-                type = typeof(MassEffect.NativesEditor.Views.ShellView),
+                type = typeof(MassEffect.NativesEditor.Views.PlotEditor),
                 icon = Application.Current.FindResource("iconPlotEditor") as ImageSource,
                 open = () =>
                 {
-                    var shellView = new MassEffect.NativesEditor.Views.ShellView();
-                    shellView.Show();
+                    var plotEd = new MassEffect.NativesEditor.Views.PlotEditor();
+                    plotEd.Show();
                 },
                 tags = new List<string> { "developer", "codex", "state transition", "quest", "natives" },
                 subCategory = "Core",

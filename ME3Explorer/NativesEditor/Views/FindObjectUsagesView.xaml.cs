@@ -44,7 +44,7 @@ namespace MassEffect.NativesEditor.Views
             }
         }
 
-        public ShellView parentRef;
+        public PlotEditor parentRef;
 
         void UpdateSearch()
         {
@@ -89,7 +89,7 @@ namespace MassEffect.NativesEditor.Views
             var selectedItem = searchResultsListBox.SelectedItem;
             if (selectedItem is KeyValuePair<int, BioStateEvent> pair)
             {
-                parentRef.MainTabControl.SelectedIndex = 3;
+                parentRef.MainTabControl.SelectedValue = parentRef.StateEventMapControl;
                 parentRef.StateEventMapControl.SelectedStateEvent = pair;
                 parentRef.StateEventMapControl.StateEventMapListBox.ScrollIntoView(pair);
             }

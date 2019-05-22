@@ -28,7 +28,9 @@ using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using InterpEditor = ME3Explorer.Matinee.InterpEditor;
 using System.Windows.Threading;
+using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using KFreonLib.MEDirectories;
+using MassEffect.NativesEditor.Views;
 
 namespace ME3Explorer.Sequence_Editor
 {
@@ -1172,6 +1174,21 @@ namespace ME3Explorer.Sequence_Editor
                     }
                 }
 
+                if (contextMenu.GetChild("plotEditorMenuItem") is MenuItem plotEditorMenuItem)
+                {
+
+                    if (Pcc.Game == MEGame.ME3 && obj is SAction sAction &&
+                        sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
+                        sAction.Export.GetProperty<IntProperty>("m_nIndex") != null)
+                    {
+                        plotEditorMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        plotEditorMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
                 contextMenu.IsOpen = true;
                 graphEditor.DisableDragging();
             }
@@ -1848,6 +1865,48 @@ namespace ME3Explorer.Sequence_Editor
                     SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == sequence.UIndex);
                     CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == export);
                     break;
+                }
+            }
+        }
+        //TODO: Make this work for ME2 and ME1
+        private void PlotEditorMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (Pcc.Game == MEGame.ME3 &&
+                CurrentObjects_ListBox.SelectedItem is SAction sAction &&
+                sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
+                sAction.Export.GetProperty<IntProperty>("m_nIndex")?.Value is int m_nIndex)
+            {
+                var plotFiles = ME3LoadedFiles.GetEnabledDLC().OrderByDescending(ME3LoadedFiles.GetMountPriority)
+                                              .Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{ME3LoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
+                                              .Append(Path.Combine(ME3Directory.cookedPath, "SFXGameInfoSP_SF.pcc"))
+                                              .Where(File.Exists);
+                string filePath = null;
+                foreach (string plotFile in plotFiles)
+                {
+                    using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(plotFile))
+                    {
+                        if (StateEventMapView.TryFindStateEventMap(pcc, out IExportEntry export))
+                        {
+                            var stateEventMap = BinaryBioStateEventMap.Load(export);
+                            if (stateEventMap.StateEvents.ContainsKey(m_nIndex))
+                            {
+                                filePath = plotFile;
+                            }
+                        }
+                    }
+                }
+
+                if (filePath != null)
+                {
+
+                    var plotEd = new PlotEditor();
+                    plotEd.Show();
+                    plotEd.LoadFile(filePath);
+                    plotEd.GoToStateEvent(m_nIndex);
+                }
+                else
+                {
+                    MessageBox.Show($"Could not find State Event {m_nIndex}");
                 }
             }
         }
