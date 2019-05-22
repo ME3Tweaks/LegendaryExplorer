@@ -2963,7 +2963,7 @@ namespace ME3Explorer
                     }
                 }
             }
-            if (CurrentView == CurrentViewMode.Tree)
+            if (CurrentView == CurrentViewMode.Tree && AllTreeViewNodesX.Count > 0)
             {
                 TreeViewEntry selectedNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
                 var items = AllTreeViewNodesX[0].FlattenTree();
