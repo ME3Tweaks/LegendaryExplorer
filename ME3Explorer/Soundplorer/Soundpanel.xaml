@@ -177,6 +177,9 @@
                                     <DataTrigger Binding="{Binding Path=DataChanged}" Value="true">
                                         <Setter Property="Background" Value="Yellow" TargetName="HIRCContainer"/>
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem }}}" Value="True">
+                                        <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                    </DataTrigger>
                                 </DataTemplate.Triggers>
                             </DataTemplate>
                         </ListBox.Resources>
@@ -197,7 +200,7 @@
                             <RowDefinition MaxHeight="27" MinHeight="27" Height="27"/>
                             <RowDefinition MinHeight="200"/>
                         </Grid.RowDefinitions>
-                        <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top" Grid.Row="0" Grid.ColumnSpan="3">
+                        <ToolBar ToolBarTray.IsLocked="True" Grid.Row="0" Grid.ColumnSpan="4">
                             <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the HIRC object. This does not commit the changes to the export." Content="Save Hex Changes" Command="{Binding SaveHIRCHexCommand}">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}">
@@ -222,9 +225,9 @@
                       BorderThickness="5,0"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-                        <Label Name="TempLabel" Grid.Column="2"  Grid.Row="1">Select a HIRC to get started</Label>
+                        <ListBox Name="HIRCNotableItems_ListBox" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding HIRCNotableItems}" SelectionChanged="HIRCNotableItems_ListBox_SelectionChanged" Width="Auto"/>
                     </Grid>
-                    
+
                 </Grid>
             </DockPanel>
         </TabItem>

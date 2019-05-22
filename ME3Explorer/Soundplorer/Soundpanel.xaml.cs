@@ -43,7 +43,8 @@ namespace ME3Explorer
     /// </summary>
     public partial class Soundpanel : ExportLoaderControl
     {
-        public ObservableCollectionExtended<object> ExportInformationList { get; set; } = new ObservableCollectionExtended<object>();
+        public ObservableCollectionExtended<object> ExportInformationList { get; } = new ObservableCollectionExtended<object>();
+        public ObservableCollectionExtended<HIRCNotableItem> HIRCNotableItems { get; } = new ObservableCollectionExtended<HIRCNotableItem>();
         private readonly List<EmbeddedWEMFile> AllWems = new List<EmbeddedWEMFile>(); //used only for rebuilding soundbank
         WwiseStream wwiseStream;
         public string afcPath = "";
@@ -1626,49 +1627,107 @@ namespace ME3Explorer
 
         private void HIRC_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //TempLabel.Content = "hi";
+            HIRCNotableItems.ClearEx();
             if (HIRC_ListBox.SelectedItem is HIRCObject h)
             {
+                HIRC_ListBox.ScrollIntoView(h);
+
                 OriginalHIRCHex = h.Data;
                 hircHexProvider.ReplaceBytes(h.Data);
                 SoundpanelHIRC_Hexbox.Refresh();
 
-                string hircStr = $"0x000000: Type: 0x{h.ObjType:X2}\n";
-                hircStr += $"0x000001: Size: 0x{h.Size:X8}\n";
-                hircStr += $"0x000005: Object ID: 0x{h.ID:X8}\n";
+                HIRCNotableItems.Add(new HIRCNotableItem
+                {
+                    Offset = 0x0,
+                    Header = $"Type: 0x{h.ObjType:X2}",
+                    Length = 1
+                });
+
+                HIRCNotableItems.Add(new HIRCNotableItem
+                {
+                    Offset = 0x1,
+                    Header = $"Size: 0x{h.Size:X8}",
+                    Length = 4
+                });
+
+                HIRCNotableItems.Add(new HIRCNotableItem
+                {
+                    Offset = 0x5,
+                    Header = $"Object ID: 0x{h.ID:X8}",
+                    Length = 4
+                });
+
                 int start = 0x9;
                 switch (h.ObjType)
                 {
                     case HIRCObject.TYPE_SOUNDSFXVOICE:
-                        hircStr += $"0x{start:X6} Unknown 4 bytes: {h.unk1:X8}\n";
+                        HIRCNotableItems.Add(new HIRCNotableItem
+                        {
+                            Offset = start,
+                            Header = $"Unknown 4 bytes: 0x{h.unk1:X8}",
+                            Length = 4
+                        });
 
                         start += 4;
-                        hircStr += $"0x{start:X6} State: {h.State:X8}\n";
+                        HIRCNotableItems.Add(new HIRCNotableItem
+                        {
+                            Offset = start,
+                            Header = $"State: {h.State:X8}",
+                            Length = 4
+                        });
 
                         start += 4;
-                        hircStr += $"0x{start:X6} Audio ID: {h.IDaudio:X8}\n";
+                        HIRCNotableItems.Add(new HIRCNotableItem
+                        {
+                            Offset = start,
+                            Header = $"Audio ID: {h.unk1:X8}",
+                            Length = 4
+                        });
 
                         start += 4;
-                        hircStr += $"0x{start:X6} Source ID: {h.IDsource:X8}\n";
+                        HIRCNotableItems.Add(new HIRCNotableItem
+                        {
+                            Offset = start,
+                            Header = $"Source ID: 0x{h.IDsource:X8}",
+                            Length = 4
+                        });
 
                         start += 4;
-                        hircStr += $"0x{start:X6} Sound Type: {h.SoundType}\n";
+                        HIRCNotableItems.Add(new HIRCNotableItem
+                        {
+                            Offset = start,
+                            Header = $"Sound Type: {h.SoundType}",
+                            Length = 4
+                        });
                         break;
                     case HIRCObject.TYPE_EVENT:
-                        hircStr += $"0x{start:X6} # of event actions to fire: {h.eventIDs.Count}\n";
+                        HIRCNotableItems.Add(new HIRCNotableItem
+                        {
+                            Offset = start,
+                            Header = $"# of event actions to fire: {h.eventIDs.Count}",
+                            Length = 4
+                        });
                         start += 4;
                         foreach (int eventid in h.eventIDs)
                         {
-                            hircStr += $"0x{start:X6} Event Action to fire: 0x{eventid:X8}\n";
+                            HIRCNotableItems.Add(new HIRCNotableItem
+                            {
+                                Offset = start,
+                                Header = $"Event action to fire: 0x{eventid:X8}",
+                                Length = 4
+                            });
                             start += 4;
                         }
                         break;
                 }
-                TempLabel.Content = hircStr;
             }
             else
             {
-                TempLabel.Content = "Nothing selected";
+                HIRCNotableItems.Add(new HIRCNotableItem
+                {
+                    Header = "Select a HIRC object"
+                });
+
                 OriginalHIRCHex = null;
                 hircHexProvider.ClearBytes();
                 SoundpanelHIRC_Hexbox.Refresh();
@@ -1793,6 +1852,25 @@ namespace ME3Explorer
             if (e.Key == Key.Return && CanSearchHIRCHex())
             {
                 SearchHIRCHex();
+            }
+        }
+
+        public class HIRCNotableItem
+        {
+            public int Offset { get; set; }
+            public string Header { get; set; }
+            public int Length { get; internal set; }
+            public override string ToString() => $"0x{Offset:X6}: {Header}";
+        }
+
+        private void HIRCNotableItems_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SoundpanelHIRC_Hexbox.UnhighlightAll();
+            if (HIRCNotableItems_ListBox.SelectedItem is HIRCNotableItem h)
+            {
+                SoundpanelHIRC_Hexbox.Highlight(h.Offset, h.Length);
+                SoundpanelHIRC_Hexbox.SelectionStart = h.Offset;
+                SoundpanelHIRC_Hexbox.SelectionLength = 1;
             }
         }
     }
