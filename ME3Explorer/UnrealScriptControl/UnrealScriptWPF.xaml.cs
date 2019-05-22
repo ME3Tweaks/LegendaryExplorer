@@ -323,12 +323,14 @@ namespace ME3Explorer
                     if (token != null)
                     {
                         Function_ListBox.SelectedItem = token;
+                        Function_ListBox.ScrollIntoView(token);
                     }
 
                     BytecodeSingularToken bst = TokenList.FirstOrDefault(x => x.StartPos == start);
                     if (bst != null)
                     {
                         Tokens_ListBox.SelectedItem = bst;
+                        Tokens_ListBox.ScrollIntoView(bst);
                     }
                     selectedBox = Function_ListBox;
                 }
