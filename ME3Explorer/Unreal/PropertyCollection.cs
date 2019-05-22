@@ -1342,12 +1342,16 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public NameProperty(NameReference? name = null) : base(name)
+        public NameProperty(NameReference? propertyName = null, NameReference? value = null) : base(propertyName)
         {
             PropType = PropertyType.NameProperty;
+            if (value is NameReference name)
+            {
+                Value = name;
+            }
         }
 
-        public NameProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
+        public NameProperty(MemoryStream stream, IMEPackage pcc, NameReference? propertyName = null) : base(propertyName)
         {
             ValueOffset = stream.Position;
             Value = new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
