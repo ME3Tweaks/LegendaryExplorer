@@ -343,6 +343,9 @@ namespace ME3Explorer
                         subNodes = StartWorldScan(data, ref binarystart);
                         appendGenericScan = true;
                         break;
+                    case "ShaderCache":
+                        subNodes = StartShaderCacheScan(data, ref binarystart);
+                        break;
                     case "Model":
                         subNodes = StartModelScan(data, ref binarystart);
                         appendGenericScan = true;
@@ -462,6 +465,30 @@ namespace ME3Explorer
                 topLevelTree.Items.Add(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
             e.Result = topLevelTree;
+        }
+
+        private List<object> StartShaderCacheScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<object>();
+            try
+            {
+                var ShaderStartOffsets = data.Locate(Encoding.ASCII.GetBytes("Microsoft (R) HLSL Shader Compiler "));
+                for (int i = 0; i < ShaderStartOffsets.Length; i++)
+                {
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{ShaderStartOffsets[i]:X8} : Shader {i}",
+                        Name = "_" + ShaderStartOffsets[i],
+                        Tag = NodeType.Unknown
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
         }
 
         private List<object> StartPolysScan(byte[] data, ref int binarystart)
@@ -3677,7 +3704,7 @@ namespace ME3Explorer
             return offset;
         }
 
-        static byte[] nxsMeshBytes = new byte[]{0x4E, 0x58, 0x53, 0x01, 0x43,0x56,0x58,0x4D};
+        static byte[] nxsMeshBytes = new byte[] { 0x4E, 0x58, 0x53, 0x01, 0x43, 0x56, 0x58, 0x4D };
         private int ClassParser_ReadImplementsTable(List<object> subnodes, byte[] data, int offset)
         {
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
@@ -4493,7 +4520,7 @@ namespace ME3Explorer
                 //Values in this table seem to be kind of like the packed values we see in coverlinks.
                 //Maybe this is precomputed visibility values, but idk how any of this works.
                 //I'm not sure why it is divided by 4. Maybe the count is the number of bytes? All I know is that it somehow works out
-                for (int i = 0; i < count/4; i++)
+                for (int i = 0; i < count / 4; i++)
                 {
                     var tupleItem = new BinaryInterpreterWPFTreeViewItem
                     {
@@ -4587,6 +4614,7 @@ namespace ME3Explorer
                 }
             }
         }
+
 
         private List<object> StartMaterialScan(byte[] data, ref int binarystart)
         {
@@ -5094,7 +5122,7 @@ namespace ME3Explorer
                         };
                         sections.Items.Add(nSection);
 
-                        if(game == MEGame.UDK)  //UDK section quite different
+                        if (game == MEGame.UDK)  //UDK section quite different
                         {
                             int mat = BitConverter.ToInt16(data, pos);
                             nSection.Items.Add(new BinaryInterpreterWPFTreeViewItem
@@ -5199,9 +5227,9 @@ namespace ME3Explorer
                     };
                     nLOD.Items.Add(idxHeader);
 
-                    if(game == MEGame.UDK)
+                    if (game == MEGame.UDK)
                     {
-                        int iCPU = BitConverter.ToInt32(data, pos); 
+                        int iCPU = BitConverter.ToInt32(data, pos);
                         idxHeader.Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"{pos:X4} Needs CPU Access: {iCPU}",
@@ -5257,7 +5285,7 @@ namespace ME3Explorer
                         pos += 2;
                     }
 
-                    if(game != MEGame.UDK)
+                    if (game != MEGame.UDK)
                     {
                         int Unknown1 = BitConverter.ToInt32(data, pos); // Unknown 1 not UDK
                         var UnkList1 = new BinaryInterpreterWPFTreeViewItem
@@ -5308,7 +5336,7 @@ namespace ME3Explorer
                         pos += 2;
                     }
 
-                    if(game != MEGame.UDK)
+                    if (game != MEGame.UDK)
                     {
                         int Unknown2 = BitConverter.ToInt32(data, pos); // Unknown 2 Not in UDK
                         var UnkList2 = new BinaryInterpreterWPFTreeViewItem
@@ -5334,7 +5362,7 @@ namespace ME3Explorer
                             pos += 1;
                         }
                     }
-                    
+
                     // Chunk Data
                     int chunkCt = BitConverter.ToInt32(data, pos);
                     var chunks = new BinaryInterpreterWPFTreeViewItem
@@ -5390,7 +5418,7 @@ namespace ME3Explorer
                             float vPosZ = BitConverter.ToSingle(data, rvpos);
                             rvpos += 4;
                             float TanX = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4; 
+                            rvpos += 4;
                             float TanY = BitConverter.ToSingle(data, rvpos);
                             rvpos += 4;
                             float TanZ = BitConverter.ToSingle(data, rvpos);
@@ -5400,12 +5428,12 @@ namespace ME3Explorer
                             float uv1V = BitConverter.ToSingle(data, rvpos);
                             rvpos += 4; //32
 
-                            if(game == MEGame.UDK)
+                            if (game == MEGame.UDK)
                             {
                                 float uv2U = BitConverter.ToSingle(data, rvpos);
                                 rvpos += 4;
                                 float uv2V = BitConverter.ToSingle(data, rvpos);
-                                rvpos += 4; 
+                                rvpos += 4;
                                 float uv3U = BitConverter.ToSingle(data, rvpos);
                                 rvpos += 4;
                                 float uv3V = BitConverter.ToSingle(data, rvpos);
@@ -5429,7 +5457,8 @@ namespace ME3Explorer
                                 });
                                 pos += 61;
                             }
-                            else {
+                            else
+                            {
 
                                 byte bone = data[rvpos];  //SINGLE BYTE
                                 rvpos += 1;
@@ -5444,7 +5473,7 @@ namespace ME3Explorer
                                 pos += 33;
                             }
                         }
-                        
+
                         int softskinVertex = BitConverter.ToInt32(data, pos); //Soft vertices collection
                         var softvertices = new BinaryInterpreterWPFTreeViewItem
                         {
@@ -5501,7 +5530,7 @@ namespace ME3Explorer
                                 rvpos += 1;
                                 byte inflbnC = data[rvpos];
                                 rvpos += 1;
-                                byte inflbnD = data[rvpos]; 
+                                byte inflbnD = data[rvpos];
                                 rvpos += 1;
 
                                 //Influence Weights
@@ -5542,7 +5571,7 @@ namespace ME3Explorer
                                 rvpos += 1;
                                 byte inflwC = data[rvpos];
                                 rvpos += 1;
-                                byte inflwD = data[rvpos]; 
+                                byte inflwD = data[rvpos];
                                 rvpos += 1;
 
                                 softvertices.Items.Add(new BinaryInterpreterWPFTreeViewItem
@@ -5631,7 +5660,7 @@ namespace ME3Explorer
                     });
                     pos += 4;
 
-                    if(game != MEGame.UDK)
+                    if (game != MEGame.UDK)
                     {
                         int Unknown3 = BitConverter.ToInt32(data, pos); // Unknown 3 Not in UDK
                         var UnkList3 = new BinaryInterpreterWPFTreeViewItem
@@ -5729,7 +5758,7 @@ namespace ME3Explorer
                     });
                     pos += 4;
 
-                    if(rawPoint3 != 0)
+                    if (rawPoint3 != 0)
                     {
                         var rawpoints = new BinaryInterpreterWPFTreeViewItem
                         {
@@ -5740,7 +5769,7 @@ namespace ME3Explorer
                         };
                         nLOD.Items.Add(rawpoints);
                         int rapos = pos;
-                        for ( int rp = 0; rp < rawPoint3; rp++)
+                        for (int rp = 0; rp < rawPoint3; rp++)
                         {
                             rawpoints.Items.Add(new BinaryInterpreterWPFTreeViewItem
                             {
@@ -5754,7 +5783,7 @@ namespace ME3Explorer
                         pos += rawPoint3;
                     }
 
-                    if(game != MEGame.ME1)
+                    if (game != MEGame.ME1)
                     {
                         int Unknown9 = BitConverter.ToInt32(data, pos); // Unknown 9 ME3 or ME2 or UDK (Not ME1)
                         nLOD.Items.Add(new BinaryInterpreterWPFTreeViewItem
@@ -5788,10 +5817,10 @@ namespace ME3Explorer
                         };
                         vtxGPUskin.Items.Add(lTexCoord);
                         pos += 4;
-                        
-                        if(game == MEGame.UDK)
+
+                        if (game == MEGame.UDK)
                         {
-                            int useFullUV= BitConverter.ToInt32(data, pos); // UDK only
+                            int useFullUV = BitConverter.ToInt32(data, pos); // UDK only
                             vtxGPUskin.Items.Add(new BinaryInterpreterWPFTreeViewItem
                             {
                                 Header = $"{pos:X4} Use Full Precision UVs: {useFullUV}",
@@ -5801,7 +5830,7 @@ namespace ME3Explorer
                             });
                             pos += 4;
 
-                            int usePackedPre= BitConverter.ToInt32(data, pos); // UDK only
+                            int usePackedPre = BitConverter.ToInt32(data, pos); // UDK only
                             vtxGPUskin.Items.Add(new BinaryInterpreterWPFTreeViewItem
                             {
                                 Header = $"{pos:X4} Use Packed Precision: {usePackedPre}",
@@ -5907,7 +5936,7 @@ namespace ME3Explorer
 
                             Tag = NodeType.Unknown,
                         });
-                        pos += vtxSize; 
+                        pos += vtxSize;
                     }
 
                     if (game == MEGame.ME3 || game == MEGame.UDK)
@@ -5951,7 +5980,7 @@ namespace ME3Explorer
                         }
                     }
 
-                    if(game == MEGame.UDK) //UDK only - are these LOD or tail?
+                    if (game == MEGame.UDK) //UDK only - are these LOD or tail?
                     {
                         int nUnkU1 = BitConverter.ToInt32(data, pos);
                         nLOD.Items.Add(new BinaryInterpreterWPFTreeViewItem
@@ -6061,8 +6090,8 @@ namespace ME3Explorer
                         Tag = NodeType.StructLeafInt,
                     });
                     pos += 4;
-                    
-                    if(game == MEGame.UDK)
+
+                    if (game == MEGame.UDK)
                     {
                         int nUnkU6 = BitConverter.ToInt32(data, pos);
                         tail.Items.Add(new BinaryInterpreterWPFTreeViewItem
@@ -6074,7 +6103,7 @@ namespace ME3Explorer
                         });
                         pos += 4;
                     }
-                    
+
                     int Unknown7 = BitConverter.ToInt32(data, pos); // Unknown 7 ME3/UDK (not ME2/1)
                     var lUnknown7 = new BinaryInterpreterWPFTreeViewItem
                     {
@@ -6169,9 +6198,9 @@ namespace ME3Explorer
             {
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
-            
+
             return subnodes;
-            
+
         }
 
         private List<object> StartStaticMeshCollectionActorScan(byte[] data, ref int binarystart)
@@ -6362,7 +6391,7 @@ namespace ME3Explorer
                         objtext = $"[Export {assossiateddata.UIndex}] {assossiateddata.ObjectName}_{assossiateddata.indexValue}";
                     }
 
-                    slcanode.Header = $"{start:X4} [{slcaindex}] {objtext}"; 
+                    slcanode.Header = $"{start:X4} [{slcaindex}] {objtext}";
                     slcanode.Name = "_" + start;
                     subnodes.Add(slcanode);
 
