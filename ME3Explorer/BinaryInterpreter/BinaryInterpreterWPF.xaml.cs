@@ -472,10 +472,138 @@ namespace ME3Explorer
             var subnodes = new List<object>();
             try
             {
+                // SWF files used a single byte to store platform. It seems like there is either some sort of odd byte alignment or maybe
+                // this is a platform
+                byte maybePlatform = data[binarystart];
+                binarystart++;
+
+                for (int mapCount = 0; mapCount < 2; mapCount++)
+                {
+                    int vertexMapCount = BitConverter.ToInt32(data, binarystart);
+                    var mappingNode = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8}: Name Mapping {mapCount}, {vertexMapCount} items",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
+                    };
+                    subnodes.Add(mappingNode);
+                    binarystart += 4;
+
+                    for (int i = 0; i < vertexMapCount; i++)
+                    {
+                        int shaderID = BitConverter.ToInt32(data, binarystart + 8); //Maybe this is a CRC since it is an int, like textures
+                        int nameIdx = BitConverter.ToInt32(data, binarystart);
+                        mappingNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{binarystart:X8} : {shaderID:X8} {Pcc.getNameEntry(nameIdx)}",
+                            Name = "_" + binarystart,
+                            Tag = NodeType.Unknown,
+                            Length = 12
+                        });
+                        binarystart += 12;
+                    }
+                }
+
+                int embeddedShaderFileCount = BitConverter.ToInt32(data, binarystart);
+                var embeddedShaderCount = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarystart:X8}: Embedded Shader File Count: {embeddedShaderFileCount}",
+                    Name = "_" + binarystart,
+                    Tag = NodeType.Unknown,
+                };
+                subnodes.Add(embeddedShaderCount);
+                binarystart += 4;
+
+                for (int i = 0; i < embeddedShaderFileCount; i++)
+                {
+                    int nameIdx = BitConverter.ToInt32(data, binarystart);
+                    var shaderNode = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} Shader {i} {CurrentLoadedExport.FileRef.getNameEntry(nameIdx)}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown
+                    };
+
+                    shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} Shader Name: {CurrentLoadedExport.FileRef.getNameEntry(nameIdx)}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.NameProperty,
+                        Length = 8
+                    });
+
+                    binarystart += 8;
+                    shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} Shader Unknown Data",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
+                        Length = 22
+                    });
+
+                    //Wrong, not file size, but not sure.
+                    binarystart += 22;
+                    int shaderFileSize = BitConverter.ToInt32(data, binarystart);
+                    shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} Compiled Shader File Size: {shaderFileSize}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.IntProperty,
+                        Length = 4
+                    });
+                    binarystart += 4;
+
+
+                    shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} Compiled Shader File",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
+                        Length = shaderFileSize
+                    });
+                    embeddedShaderCount.Items.Add(shaderNode);
+                    break;
+                    /*
+                    shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} : {shaderID:X8} {Pcc.getNameEntry(nameIdx)}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
+                        Length = 12
+                    });*/
+                }
+
+                //binarystart += 8; //blanks?
+                //int vertexMapCount2 = BitConverter.ToInt32(data, binarystart);
+
+                //var vertexShaderMapping2 = new BinaryInterpreterWPFTreeViewItem
+                //{
+                //    Header = $"0x{binarystart:X8}: Vertex Mapping Count 2? {vertexMapCount2}",
+                //    Name = "_" + binarystart,
+                //    Tag = NodeType.Unknown
+                //};
+
+                //subnodes.Add(vertexShaderMapping2);
+                //binarystart += 4;
+
+                //for (int i = 0; i < vertexMapCount2; i++)
+                //{
+                //    int shaderID = BitConverter.ToInt32(data, binarystart + 8); //Maybe this is a CRC since it is an int, like textures
+                //    int nameIdx = BitConverter.ToInt32(data, binarystart);
+                //    vertexShaderMapping2.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                //    {
+                //        Header = $"0x{binarystart:X8} : {shaderID:X8} {Pcc.getNameEntry(nameIdx)}",
+                //        Name = "_" + binarystart,
+                //        Tag = NodeType.Unknown,
+                //        Length = 12
+                //    });
+                //    binarystart += 12;
+                //}
+
                 var ShaderStartOffsets = data.Locate(Encoding.ASCII.GetBytes("Microsoft (R) HLSL Shader Compiler "));
                 for (int i = 0; i < ShaderStartOffsets.Length; i++)
                 {
-                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                    embeddedShaderCount.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{ShaderStartOffsets[i]:X8} : Shader {i}",
                         Name = "_" + ShaderStartOffsets[i],
@@ -6926,7 +7054,6 @@ namespace ME3Explorer
         {
             BinaryInterpreter_Hexbox.UnhighlightAll();
             List<FrameworkElement> SupportedEditorSetElements = new List<FrameworkElement>();
-
             switch (BinaryInterpreter_TreeView.SelectedItem)
             {
                 case BinaryInterpreterWPFTreeViewItem bitve:
@@ -6938,6 +7065,10 @@ namespace ME3Explorer
                         {
                             BinaryInterpreter_Hexbox.SelectionStart = dataOffset;
                             BinaryInterpreter_Hexbox.SelectionLength = 1;
+                            if (bitve.Length > 0)
+                            {
+                                BinaryInterpreter_Hexbox.Highlight(dataOffset, bitve.Length);
+                            }
                         }
                     }
                     switch (bitve.Tag)
@@ -7556,5 +7687,8 @@ namespace ME3Explorer
                 var unused = DispatcherHelper.ProcessQueueAsync();
             }
         }
+
+        public int Length
+        { get; set; }
     }
 }
