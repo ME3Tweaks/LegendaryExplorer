@@ -365,6 +365,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         Debug.WriteLine($"Updating class type at start of export data {exportEntry.UIndex} {exportEntry.ClassName}");
                         //Update unreal header
                         exportData.OverwriteRange(0, BitConverter.GetBytes(metadataClass));
+                        exportData.OverwriteRange(4, BitConverter.GetBytes(metadataClass));
                         exportEntry.Data = exportData;
                     }
 
