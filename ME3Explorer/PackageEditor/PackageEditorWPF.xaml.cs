@@ -2321,6 +2321,27 @@ namespace ME3Explorer
                 {
                     return; //ignore
                 }
+
+                bool ClearRelinkingMapIfPortingContinues = false;
+                if (MultiRelinkingModeActive && crossPCCObjectMap.Count > 0)
+                {
+                    //Check the incoming file matches the object in Cross PCC Object Map, otherwise will will have to discard the map or cancel the porting
+                    var sentry = crossPCCObjectMap.Keys.First();
+                    if (sentry.FileRef != sourceItem.Entry.FileRef)
+                    {
+                        var promptResult = MessageBox.Show($"The item dropped does not come from the same package file as other items in your multi-drop relinking session:\n{sourceItem.Entry.FileRef.FileName}\n\nContinuing will drop all items in your relinking session.","Warning",MessageBoxButton.OKCancel,MessageBoxImage.Warning,MessageBoxResult.Cancel);
+                        if (promptResult == MessageBoxResult.Cancel)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            ClearRelinkingMapIfPortingContinues = true;
+                            
+                        }
+                    }
+                }
+
                 var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem);
 
                 if (portingOption == TreeMergeDialog.PortingOption.Cancel)
@@ -2328,6 +2349,11 @@ namespace ME3Explorer
                     return;
                 }
 
+                if (ClearRelinkingMapIfPortingContinues)
+                {
+                    crossPCCObjectMap.Clear();
+                    MultiRelinkingModeActive = false;
+                }
 
                 //Debug.WriteLine("Adding source item: " + sourceItem.TagzToString());
 

@@ -128,14 +128,13 @@
                     <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
                     <MenuItem Header="Pop out current view into new window" ToolTip="Opens the panel on the right side in a new windowstored in package header" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL + P"/>
                     <Separator/>
+                    <MenuItem Header="Multi-drop relinking mode" ToolTip="Enables the multi-drop relinking mode" IsChecked="{Binding MultiRelinkingModeActive}" Command="{Binding MultidropRelinkingCommand}"/>
+                    <MenuItem Header="Perform relinking" ToolTip="Runs the relinker against the items that have been added to the relinking map since the mode was turned on.&#10;Selecting this option will relink and then clear the cross-file map."
+                              Command="{Binding PerformMultiRelinkCommand}"/>
+                    <Separator/>
                     <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}"/>
                     <MenuItem Header="Convenience tools" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem Header="Rebuild BioWorld StreamingLevels"  Command="{Binding RebuildStreamingLevelsCommand}" ToolTip="Updates BioWorldInfo's list of StreamingLevels to include all LevelStreamingKismet"/>
-                        <MenuItem Header="Multi-drop relinking" ToolTip="Enable/disable multi-drop relinking. Allows you to drag/drop multiple items, and then perform the relink afterwards." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
-                            <MenuItem Header="Multi-drop relinking mode" ToolTip="Enables the multi-drop relinking mode" IsChecked="{Binding MultiRelinkingModeActive}" Command="{Binding MultidropRelinkingCommand}"/>
-                            <MenuItem Header="Perform relinking" ToolTip="Runs the relinker against the items that have been added to the relinking map since the mode was turned on.&#10;Selecting this option will relink and then clear the cross-file map."
-                                      Command="{Binding PerformMultiRelinkCommand}"/>
-                        </MenuItem>
                     </MenuItem>
 
                     <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
