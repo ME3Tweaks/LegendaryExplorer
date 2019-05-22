@@ -3829,5 +3829,25 @@ namespace ME3Explorer
             var d = new ListDialog(strs, "Linker Indexes", "Here are the linker indexes in this file", this);
             d.Show();
         }
+
+        private void ScanShaderCacheForOffsets_Click(object sender, RoutedEventArgs e)
+        {
+            IExportEntry shaderCache = Pcc.Exports.FirstOrDefault(x => x.ClassName == "ShaderCache");
+            if (shaderCache != null)
+            {
+                byte[] data = shaderCache.Data;
+                int offsetStart = shaderCache.DataOffset;
+                int offsetEnd = shaderCache.DataOffset + shaderCache.DataSize - 4; // i don't think anything will reference before
+
+                for (int i = offsetStart; i < offsetEnd; i++)
+                {
+                    int value = BitConverter.ToInt32(data, i - offsetStart);
+                    if (value >= offsetStart && value <= offsetEnd)
+                    {
+                        Debug.WriteLine($"Found embedded offset at 0x{(i-offsetStart):X8} pointing to 0x{value:X8}");
+                    }
+                }
+            }
+        }
     }
 }

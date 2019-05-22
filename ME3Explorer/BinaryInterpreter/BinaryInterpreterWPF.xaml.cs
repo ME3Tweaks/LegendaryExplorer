@@ -533,36 +533,93 @@ namespace ME3Explorer
                     });
 
                     binarystart += 8;
+                    byte[] shaderStartGUIDOrSomething = new byte[16];
+                    Buffer.BlockCopy(data, binarystart, shaderStartGUIDOrSomething, 0, 16);
+                    Guid g = new Guid(shaderStartGUIDOrSomething);
+
                     shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{binarystart:X8} Shader Unknown Data",
+                        Header = $"0x{binarystart:X8} Shader Start GUID: {g}",
                         Name = "_" + binarystart,
                         Tag = NodeType.Unknown,
-                        Length = 22
+                        Length = 16
                     });
+                    binarystart += 16;
 
-                    //Wrong, not file size, but not sure.
-                    binarystart += 22;
-                    int shaderFileSize = BitConverter.ToInt32(data, binarystart);
                     shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{binarystart:X8} Compiled Shader File Size: {shaderFileSize}",
+                        Header = $"0x{binarystart:X8} Shader Unknown 6 bytes",
                         Name = "_" + binarystart,
-                        Tag = NodeType.IntProperty,
+                        Tag = NodeType.Unknown,
+                        Length = 6
+                    });
+                    binarystart += 6;
+
+                    int shaderSize = BitConverter.ToInt32(data, binarystart);
+                    shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} Shader File Size: {shaderSize}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
                         Length = 4
                     });
                     binarystart += 4;
 
+                    shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} Shader File",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
+                        Length = shaderSize
+                    });
+                    binarystart += shaderSize;
 
                     shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{binarystart:X8} Compiled Shader File",
+                        Header = $"0x{binarystart:X8} Zero? {BitConverter.ToInt32(data, binarystart)}",
                         Name = "_" + binarystart,
                         Tag = NodeType.Unknown,
-                        Length = shaderFileSize
+                        Length = 4
                     });
+                    binarystart += 4;
+
+                    byte[] shaderStartGUIDOrSomething2 = new byte[16];
+                    Buffer.BlockCopy(data, binarystart, shaderStartGUIDOrSomething2, 0, 16);
+                    Guid g2 = new Guid(shaderStartGUIDOrSomething2);
+
+                    shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} Shader End GUID: {g2}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
+                        Length = 16
+                    });
+                    binarystart += 16;
+
+                    //Wrong, not file size, but not sure.
+                    //int shaderFileSize = BitConverter.ToInt32(data, binarystart);
+                    //shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    //{
+                    //    Header = $"0x{binarystart:X8} Compiled Shader File Size: {shaderFileSize}",
+                    //    Name = "_" + binarystart,
+                    //    Tag = NodeType.IntProperty,
+                    //    Length = 4
+                    //});
+                    //binarystart += 4;
+
+
+                    //shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    //{
+                    //    Header = $"0x{binarystart:X8} Compiled Shader File",
+                    //    Name = "_" + binarystart,
+                    //    Tag = NodeType.Unknown,
+                    //    Length = shaderFileSize
+                    //});
                     embeddedShaderCount.Items.Add(shaderNode);
-                    break;
+                    if (i > 2)
+                    {
+                        break;
+                    }
                     /*
                     shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {

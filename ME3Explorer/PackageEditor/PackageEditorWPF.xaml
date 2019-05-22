@@ -204,6 +204,7 @@
                     <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
                     <MenuItem Header="List NetIndexes" Click="ListNetIndexes_Click"/>
                     <MenuItem Header="List Linker Indexes" Click="ListLinkerValues_Click"/>
+                    <MenuItem Header="Scan ShaderCache for embedded offsets" Click="ScanShaderCacheForOffsets_Click"/>
 
                 </MenuItem>
             </Menu>
