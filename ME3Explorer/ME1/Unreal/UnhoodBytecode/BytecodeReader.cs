@@ -849,7 +849,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
             var array = ReadNext();
             if (IsInvalid(array)) return array;
-            var exprSize = _reader.ReadInt16();
+            //var exprSize = _reader.ReadInt16();
             var indexer = ReadNext();
             if (IsInvalid(indexer)) return WrapErrToken(array + "." + methodName + "(" + indexer, indexer);
             return Token(array + "." + methodName + "(" + indexer + ")", readerpos);
@@ -937,7 +937,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         internal IEntry ReadRef()
         {
-            return _package.getEntry(_reader.ReadInt32());
+            int idx = _reader.ReadInt32();
+            return _package.getEntry(idx);
         }
 
         internal BytecodeToken ReadRef(Func<IEntry, string> func)

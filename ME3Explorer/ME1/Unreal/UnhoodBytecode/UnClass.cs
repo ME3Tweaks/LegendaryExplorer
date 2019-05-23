@@ -40,7 +40,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 {
                     bc = bcReader.ReadNext();
                 }
-                catch (EndOfStreamException)
+                catch (Exception)
                 {
                     //extra bytes at the end can trigger this. They are not used. may be something like byte aligning or something
                     break;
