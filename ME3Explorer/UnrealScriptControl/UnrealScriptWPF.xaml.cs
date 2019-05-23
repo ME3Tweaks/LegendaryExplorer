@@ -178,8 +178,9 @@ namespace ME3Explorer
                 {
                     Statement s = func.Statements.statements[i];
                     DecompiledScriptBlocks.Add(s);
-                    if (s.Reader != null)
+                    if (s.Reader != null && i == 0)
                     {
+                        //Add tokens read from statement. All of them point to the same reader, so just do only the first one.
                         TokenList.AddRange(s.Reader.ReadTokens.Select(x => x.ToBytecodeSingularToken(pos)).OrderBy(x => x.StartPos));
                     }
                 }
@@ -190,7 +191,7 @@ namespace ME3Explorer
                 }
 
                 //Footer
-                pos = CurrentLoadedExport.Data.Length - (func.HasFlag("Net") ? 19 : 17);
+                pos = CurrentLoadedExport.Data.Length - (func.HasFlag("Net") ? 17 : 15);
                 string flagStr = func.GetFlags();
                 ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", BitConverter.ToInt16(CurrentLoadedExport.Data, pos), pos));
                 pos += 2;
@@ -204,15 +205,15 @@ namespace ME3Explorer
 
                 //if ((functionFlags & func._flagSet.GetMask("Net")) != 0)
                 //{
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 1 (RepOffset?)", $"0x{BitConverter.ToInt16(CurrentLoadedExport.Data, pos).ToString("X4")}", pos));
-                pos += 2;
+                //ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 1 (RepOffset?)", BitConverter.ToInt16(CurrentLoadedExport.Data, pos), pos));
+                //pos += 2;
                 //}
 
                 int friendlyNameIndex = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
                 ScriptFooterBlocks.Add(new ScriptHeaderItem("Friendly Name Table Index", $"0x{friendlyNameIndex.ToString("X8")} {CurrentLoadedExport.FileRef.getNameEntry(friendlyNameIndex)}", pos));
                 pos += 4;
 
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2", $"0x{BitConverter.ToInt32(CurrentLoadedExport.Data, pos).ToString("X8")}", pos));
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2", $"0x{BitConverter.ToInt16(CurrentLoadedExport.Data, pos).ToString("X4")}", pos));
                 pos += 4;
 
                 //ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef as ME1Package);

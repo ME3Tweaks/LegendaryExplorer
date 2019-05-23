@@ -437,7 +437,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             //    Debugger.Break();
             //}
 
-            Debug.WriteLine("Read bytecode " + ((byte)b).ToString("X2") + " " + b + " at " + _reader.BaseStream.Position.ToString("X8"));
+            //Debug.WriteLine("Read bytecode " + ((byte)b).ToString("X2") + " " + b + " at " + _reader.BaseStream.Position.ToString("X8"));
             BytecodeToken bct = ReadNextInternal();
             //Debug.WriteLine("Bytecode finished: " + ((byte)b).ToString("X2") + " " + b + " from " + _reader.BaseStream.Position.ToString("X8"));
 
@@ -631,9 +631,17 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     return ReadCall("Global." + ReadName());
 
                 case ME1OpCodes.EX_BoolVariable:
-                case ME1OpCodes.EX_ByteToInt:
                     return ReadNext();
-
+                case ME1OpCodes.EX_ByteToInt:
+                    int objectRefIdx = _reader.ReadInt32();
+                    if (_package.isEntry(objectRefIdx))
+                    {
+                        return Token($"ByteToInt({_package.getObjectName(objectRefIdx)})", readerpos);
+                    }
+                    else
+                    {
+                        return Token($"ByteToInt(Unknown reference {objectRefIdx})", readerpos);
+                    }
                 case ME1OpCodes.EX_DynamicCast:
                     {
                         int typeIndex = _reader.ReadInt32();

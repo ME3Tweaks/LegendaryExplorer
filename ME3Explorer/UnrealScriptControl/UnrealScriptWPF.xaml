@@ -29,13 +29,20 @@
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="300" MinWidth="200"/>
         </Grid.ColumnDefinitions>
-        <DockPanel Grid.Row="0" Grid.Column="0">
-            <DockPanel DockPanel.Dock="Top">
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition MinHeight="75" Height="75"/>
+                <RowDefinition MinHeight="3" Height="3" MaxHeight="3"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition MinHeight="3" MaxHeight="3" Height="3"/>
+                <RowDefinition MinHeight="75" Height="75"/>
+            </Grid.RowDefinitions>
+            <DockPanel Grid.Row="0">
                 <TextBlock Text="Script header" DockPanel.Dock="Top" FontWeight="Bold"/>
-                <ListBox Name="Function_Header" HorizontalAlignment="Stretch" Height="60" ItemsSource="{Binding ScriptHeaderBlocks}" SelectionChanged="FunctionHeader_ListBox_SelectionChanged">
+                <ListBox Name="Function_Header" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding ScriptHeaderBlocks}" SelectionChanged="FunctionHeader_ListBox_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                 <TextBlock Text="{Binding Path=offset, StringFormat='{}0x{0:X2}'}"/>
                                 <TextBlock Margin="4,0,0,0" Text="{Binding Path=id, StringFormat='{}{0}:'}">
                                     <TextBlock.Style>
@@ -66,9 +73,9 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </DockPanel>
-            <DockPanel DockPanel.Dock="Bottom">
+            <DockPanel Grid.Row="4">
                 <TextBlock Text="Script footer" DockPanel.Dock="Top" FontWeight="Bold"/>
-                <ListBox Name="Function_Footer" HorizontalAlignment="Stretch" Height="60" ItemsSource="{Binding ScriptFooterBlocks}" SelectionChanged="FunctionFooter_ListBox_SelectionChanged">
+                <ListBox Name="Function_Footer" HorizontalAlignment="Stretch" ItemsSource="{Binding ScriptFooterBlocks}" SelectionChanged="FunctionFooter_ListBox_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -102,9 +109,9 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </DockPanel>
-            <DockPanel>
+            <DockPanel Grid.Row="2" VerticalAlignment="Stretch">
                 <TextBlock Text="Decompiled script" DockPanel.Dock="Top" FontWeight="Bold"/>
-                <ListBox Name="Function_ListBox" HorizontalAlignment="Stretch" ItemsSource="{Binding DecompiledScriptBlocks}" SelectionChanged="Function_ListBox_SelectionChanged">
+                <ListBox Name="Function_ListBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding DecompiledScriptBlocks}" SelectionChanged="Function_ListBox_SelectionChanged">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type me3bytecode:Token}">
                             <StackPanel Orientation="Horizontal">
@@ -145,11 +152,14 @@
                     </ListBox.Resources>
                 </ListBox>
             </DockPanel>
-        </DockPanel>
+            <GridSplitter Grid.Row="1"  HorizontalAlignment="Stretch"/>
+            <GridSplitter Grid.Row="3"  HorizontalAlignment="Stretch"/>
+
+        </Grid>
         <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center" HorizontalContentAlignment="Left"/>
         <DockPanel Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" >
             <TextBlock Text="Tokens" DockPanel.Dock="Top" FontWeight="Bold" HorizontalAlignment="Left"/>
-            <ListBox Name="Tokens_ListBox" VerticalAlignment="Stretch" ItemsSource="{Binding TokenList}" SelectionChanged="Tokens_ListBox_SelectionChanged"  HorizontalContentAlignment="Left" HorizontalAlignment="Left">
+            <ListBox Name="Tokens_ListBox" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding TokenList}" SelectionChanged="Tokens_ListBox_SelectionChanged"  HorizontalContentAlignment="Left">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
