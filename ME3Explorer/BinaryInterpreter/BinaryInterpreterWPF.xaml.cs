@@ -138,10 +138,64 @@ namespace ME3Explorer
         }
         #endregion
 
-        static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class","StringRefProperty", "BioStage", "ObjectProperty", "Const",
-            "Enum", "ArrayProperty","FloatProperty", "StructProperty", "ComponentProperty", "IntProperty", "NameProperty", "BoolProperty", "ClassProperty", "ByteProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
-            "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance", "MetaData", "MaterialInstanceConstants", "Model", "Polys",
-            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "StrProperty", "World", "Texture2D", "TextureFlipBook", "State", "BioGestureRuntimeData", "BioTlkFileSet", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData", "SFXNav_LargeMantleNode", "BioCodexMap", "BioQuestMap", "BioStateEventMap", "BioOutcomeMap", "BioConsequenceMap"};
+        static readonly string[] ParsableBinaryClasses =
+        {
+            "Level",
+            "StaticMeshCollectionActor",
+            "StaticLightCollectionActor",
+            "ShaderCache",
+            "Class",
+            "StringRefProperty",
+            "BioStage",
+            "ObjectProperty",
+            "Const",
+            "Enum",
+            "ArrayProperty",
+            "FloatProperty",
+            "StructProperty",
+            "ComponentProperty",
+            "IntProperty",
+            "NameProperty",
+            "BoolProperty",
+            "ClassProperty",
+            "ByteProperty",
+            "Enum",
+            "ObjectRedirector",
+            "WwiseEvent",
+            "Material",
+            "StaticMesh",
+            "MaterialInstanceConstant",
+            "BioDynamicAnimSet",
+            "StaticMeshComponent",
+            "SkeletalMeshComponent",
+            "SkeletalMesh",
+            "PrefabInstance",
+            "MetaData",
+            "MaterialInstanceConstants",
+            "Model",
+            "Polys",
+            "WwiseStream",
+            "WwiseBank",
+            "TextureMovie",
+            "GuidCache",
+            "StrProperty",
+            "World",
+            "Texture2D",
+            "TextureFlipBook",
+            "State",
+            "BioGestureRuntimeData",
+            "BioTlkFileSet",
+            "ScriptStruct",
+            "SoundCue",
+            "SoundNodeWave",
+            "BioSoundNodeWaveStreamingData",
+            "SFXNav_LargeMantleNode",
+            "BioCodexMap",
+            "BioQuestMap",
+            "BioStateEventMap",
+            "BioOutcomeMap",
+            "BioConsequenceMap"
+        };
 
         public override bool CanParse(IExportEntry exportEntry)
         {
@@ -513,9 +567,10 @@ namespace ME3Explorer
                 };
                 subnodes.Add(embeddedShaderCount);
                 binarystart += 4;
-
+                var ShaderStartOffsets = data.Locate(Encoding.ASCII.GetBytes("CTAB")).Select(offSet => offSet - 0x2A).ToArray();
                 for (int i = 0; i < embeddedShaderFileCount; i++)
                 {
+                    binarystart = ShaderStartOffsets[i];
                     int nameIdx = BitConverter.ToInt32(data, binarystart);
                     var shaderNode = new BinaryInterpreterWPFTreeViewItem
                     {
@@ -576,7 +631,7 @@ namespace ME3Explorer
 
                     shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{binarystart:X8} Zero? {BitConverter.ToInt32(data, binarystart)}",
+                        Header = $"0x{binarystart:X8} Unknown 4 bytes {BitConverter.ToInt32(data, binarystart)}",
                         Name = "_" + binarystart,
                         Tag = NodeType.Unknown,
                         Length = 4
@@ -595,6 +650,16 @@ namespace ME3Explorer
                         Length = 16
                     });
                     binarystart += 16;
+
+                    shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} Shader Name: {CurrentLoadedExport.FileRef.getNameEntry(BitConverter.ToInt32(data, binarystart))}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.NameProperty,
+                        Length = 8
+                    });
+                    binarystart += 8;
+                    embeddedShaderCount.Items.Add(shaderNode);
 
                     //Wrong, not file size, but not sure.
                     //int shaderFileSize = BitConverter.ToInt32(data, binarystart);
@@ -615,11 +680,6 @@ namespace ME3Explorer
                     //    Tag = NodeType.Unknown,
                     //    Length = shaderFileSize
                     //});
-                    embeddedShaderCount.Items.Add(shaderNode);
-                    if (i > 2)
-                    {
-                        break;
-                    }
                     /*
                     shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
@@ -656,17 +716,6 @@ namespace ME3Explorer
                 //    });
                 //    binarystart += 12;
                 //}
-
-                var ShaderStartOffsets = data.Locate(Encoding.ASCII.GetBytes("Microsoft (R) HLSL Shader Compiler "));
-                for (int i = 0; i < ShaderStartOffsets.Length; i++)
-                {
-                    embeddedShaderCount.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Header = $"0x{ShaderStartOffsets[i]:X8} : Shader {i}",
-                        Name = "_" + ShaderStartOffsets[i],
-                        Tag = NodeType.Unknown
-                    });
-                }
             }
             catch (Exception ex)
             {
@@ -7289,6 +7338,11 @@ namespace ME3Explorer
                 if (currentData != null && start != -1 && start < size)
                 {
                     string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
+                    if (start <= currentData.Length - 2)
+                    {
+                        ushort val = BitConverter.ToUInt16(currentData, start);
+                        s += $", UShort: {val}";
+                    }
                     if (start <= currentData.Length - 4)
                     {
                         int val = BitConverter.ToInt32(currentData, start);
