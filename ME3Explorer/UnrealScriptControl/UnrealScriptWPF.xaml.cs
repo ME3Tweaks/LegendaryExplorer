@@ -20,6 +20,7 @@ using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using static ME3Explorer.ME1.Unreal.UnhoodBytecode.BytecodeReader;
 using static ME3Explorer.Unreal.Bytecode;
 
 namespace ME3Explorer
@@ -271,10 +272,14 @@ namespace ME3Explorer
                             int val = BitConverter.ToInt32(currentData, start);
                             s += $", Int: {val}";
                             s += $", Float: {BitConverter.ToSingle(currentData, start)}";
-
                             if (CurrentLoadedExport.FileRef.isName(val))
                             {
                                 s += $", Name: {CurrentLoadedExport.FileRef.getNameEntry(val)}";
+                            }
+                            if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
+                            {
+                                ME1OpCodes m = (ME1OpCodes)currentData[start];
+                                s += $", OpCode: {m}";
                             }
 
                             if (CurrentLoadedExport.FileRef.getEntry(val) is IEntry ent)
