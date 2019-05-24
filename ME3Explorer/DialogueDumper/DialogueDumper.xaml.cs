@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
+using Unreal.ME3Structs;
 
 namespace ME3Explorer.DialogueDumper
 {
@@ -512,6 +513,15 @@ namespace ME3Explorer.DialogueDumper
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
                 {
                     var GameBeingDumped = pcc.Game;
+                    //switch (GameBeingDumped)
+                    //{
+
+                    //}
+                    if ((!Path.GetFileNameWithoutExtension(File).EndsWith(@"LOC_INT")) && GameBeingDumped != MEGame.ME1)
+                    {
+                        return;
+                    }
+
                     CurrentFileProgressMaximum = pcc.ExportCount;
                     string outfolder = OutputFolder ?? Directory.GetParent(File).ToString();
 
@@ -519,24 +529,17 @@ namespace ME3Explorer.DialogueDumper
                     {
                         outfolder += @"\";
                     }
+                    
 
-                    //if (properties)
-                    //{
-                    //    UnrealObjectInfo.loadfromJSON();
-                    //}
-                    //dumps data.
                     string savepath = outfolder + System.IO.Path.GetFileNameWithoutExtension(File) + ".txt";
                     Directory.CreateDirectory(System.IO.Path.GetDirectoryName(savepath));
 
                     using (StreamWriter stringoutput = new StreamWriter(savepath))
                     {
 
-
-                        stringoutput.WriteLine("--Start of "); //DEBUG
-
                         int numDone = 1;
                         int numTotal = pcc.Exports.Count;
-                        //writeVerboseLine("Enumerating exports");
+                        
                         string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(File) + "\\";
                         foreach (IExportEntry exp in pcc.Exports)
                         {
@@ -544,19 +547,10 @@ namespace ME3Explorer.DialogueDumper
                             {
                                 return;
                             }
-                            //writeVerboseLine("Parse export #" + index);
+                            
                             CurrentFileProgressValue = exp.UIndex;
                             
                             string className = exp.ClassName;
-
-                            //int progress = ((int)(((double)numDone / numTotal) * 100));
-                            //while (progress >= (lastProgress + 10))
-                            //{
-                            //    Console.Write("..." + (lastProgress + 10) + "%");
-                            //    //needsFlush = true;
-                            //    lastProgress += 10;
-                            //}
-
                             if (className == "BioConversation")
                             {
                                 stringoutput.WriteLine("==============Convo Found ==============");  //DEBUG
@@ -564,10 +558,7 @@ namespace ME3Explorer.DialogueDumper
                                 string fileName = exp.FileRef.FileName;
                                 int convIdx = exp.UIndex;
                                 stringoutput.WriteLine($" {convName} {fileName} #{convIdx}");  //DEBUG
-                                //switch (GameBeingDumped)
-                                //{
 
-                                //}
                                 try
                                 {
                                     var convo = exp.GetProperties();
@@ -589,15 +580,38 @@ namespace ME3Explorer.DialogueDumper
 
                                         //2. Go through Entry list "m_EntryList"
                                         // Parse line TLK StrRef, TLK Line, Speaker -1 = Owner, -2 = Shepard, or from m_aSpeakerList
-                                        //read entry list from dialogue editor
 
-                                        //Unreal.Classes.ME3BioConversation.ReadEntryList();
+                                        var entries = exp.GetProperty<ArrayProperty<StructProperty>>("m_EntryList");
+                                        foreach(StructProperty entry in entries)
+                                        {
+                                            //Get and set speaker name
+                                            int speakeridx = entry.GetProp<IntProperty>("nSpeakerIndex");
+                                            string lineSpeaker = null;
+                                            if(speakeridx >= 0)
+                                            {
+                                                lineSpeaker = speakers[speakeridx].ToString();
+                                            }
+                                            else if(speakeridx == -2)
+                                            {
+                                                lineSpeaker = "Player";
+                                            }
+                                            else
+                                            {
+                                                lineSpeaker = "Owner";
+                                            }
 
+                                            //Get StringRef
+                                            int lineStrRef = entry.GetProp<IntProperty>("srText");
+
+                                            //Get StringRef Text
+                                            string lineTLKstring = ME3TalkFiles.findDataById(lineStrRef);
+
+                                            //Write output (eventually output to excel)
+                                            stringoutput.Write($" {lineSpeaker} | {lineStrRef} | {lineTLKstring} | {convName} | {fileName} #{convIdx} ");
+                                        }
 
                                         //3. Go through Reply list "m_ReplyList"
                                         // Parse line TLK StrRef, TLK Line, Speaker always Shepard
-
-
 
 
                                         // KEEP FOR DEBUG

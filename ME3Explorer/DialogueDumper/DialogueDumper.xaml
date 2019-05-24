@@ -15,7 +15,7 @@
         DragDrop.Drop="DialogueDumper_FilesDropped"
         WindowStartupLocation="CenterOwner"
         Closing="DialogueDumper_Closing"
-        Title="Package Dumper" Height="340" Width="500">
+        Title="Dialogue Dumper" Height="340" Width="500">
     <StackPanel >
         <TextBlock Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Dialogue dumps are TEXT DUMPS."/>
         <Grid Margin="12">
