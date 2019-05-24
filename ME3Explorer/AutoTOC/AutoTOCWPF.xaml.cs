@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -38,7 +40,6 @@ namespace ME3Explorer.AutoTOC
         {
             Automated = automated;
         }
-
 
         public ICommand RunAutoTOCCommand { get; private set; }
         public ICommand GenerateDLCTOCCommand { get; private set; }
@@ -314,6 +315,41 @@ namespace ME3Explorer.AutoTOC
             {
                 RunAutoTOC();
             }
+        }
+
+        private void ListBox_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var listBox = (ListBox)sender;
+
+            var scrollViewer = FindScrollViewer(listBox);
+
+            if (scrollViewer != null)
+            {
+                scrollViewer.ScrollChanged += (o, args) =>
+                {
+                    if (args.ExtentHeightChange > 0)
+                        scrollViewer.ScrollToBottom();
+                };
+            }
+        }
+
+        // Search for ScrollViewer, breadth-first
+        private static ScrollViewer FindScrollViewer(DependencyObject root)
+        {
+            var queue = new Queue<DependencyObject>(new[] { root });
+
+            do
+            {
+                var item = queue.Dequeue();
+
+                if (item is ScrollViewer)
+                    return (ScrollViewer)item;
+
+                for (var i = 0; i < VisualTreeHelper.GetChildrenCount(item); i++)
+                    queue.Enqueue(VisualTreeHelper.GetChild(item, i));
+            } while (queue.Count > 0);
+
+            return null;
         }
     }
 }
