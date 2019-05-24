@@ -902,6 +902,7 @@ namespace ME3Explorer
                     {
                         int val = BitConverter.ToInt32(currentData, start);
                         s += $", Int: {val}";
+                        s += $", Float: {BitConverter.ToSingle(currentData, start)}";
                         if (Pcc.isName(val))
                         {
                             s += $", Name: {Pcc.getNameEntry(val)}";
