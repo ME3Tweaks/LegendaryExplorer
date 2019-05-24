@@ -240,6 +240,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private bool PackageIsLoaded()
         {
+            System.Diagnostics.Debug.WriteLine("Package Is Loaded.");
             return Pcc != null;
         }
 
@@ -1646,6 +1647,7 @@ namespace ME3Explorer.Sequence_Editor
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)
         {
             graphEditor.AllowDragging();
+            Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
         }
 
         private void CurrentObjectsList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
