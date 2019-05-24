@@ -18,7 +18,7 @@
             <Button Content="Generate/Update TOC file for DLC" Command="{Binding GenerateDLCTOCCommand}"  Padding="4" Margin="2" ToolTip="Calculate and generate a PCConsoleTOC for a DLC folder (inside or outside of the game)"/>
             <Button Content="Run AutoTOC" Command="{Binding RunAutoTOCCommand}" Padding="4" Margin="2" ToolTip="Calculate and generate/update all PCConsoleTOC toc files in the current game installation"/>
         </StackPanel>
-        <ListBox ItemsSource="{Binding TOCTasks}" Height="200" Margin="3">
+        <ListBox ItemsSource="{Binding TOCTasks}" MinHeight="360"  Margin="3">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
