@@ -586,20 +586,9 @@ namespace ME3Explorer
                         Tag = NodeType.NameProperty,
                         Length = 8
                     });
-
                     binarystart += 8;
-                    byte[] shaderStartGUIDOrSomething = new byte[16];
-                    Buffer.BlockCopy(data, binarystart, shaderStartGUIDOrSomething, 0, 16);
-                    Guid g = new Guid(shaderStartGUIDOrSomething);
 
-                    shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Header = $"0x{binarystart:X8} Shader Start GUID: {g}",
-                        Name = "_" + binarystart,
-                        Tag = NodeType.Unknown,
-                        Length = 16
-                    });
-                    binarystart += 16;
+                    shaderNode.Items.Add(MakeGuidNode(data, ref binarystart, "Shader Start GUID"));
 
                     shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
@@ -638,18 +627,8 @@ namespace ME3Explorer
                     });
                     binarystart += 4;
 
-                    byte[] shaderStartGUIDOrSomething2 = new byte[16];
-                    Buffer.BlockCopy(data, binarystart, shaderStartGUIDOrSomething2, 0, 16);
-                    Guid g2 = new Guid(shaderStartGUIDOrSomething2);
 
-                    shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Header = $"0x{binarystart:X8} Shader End GUID: {g2}",
-                        Name = "_" + binarystart,
-                        Tag = NodeType.Unknown,
-                        Length = 16
-                    });
-                    binarystart += 16;
+                    shaderNode.Items.Add(MakeGuidNode(data, ref binarystart, "Shader End GUID"));
 
                     shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
@@ -690,6 +669,147 @@ namespace ME3Explorer
                     });*/
                 }
 
+                while (true)
+                {
+                    if (binarystart + 8 >= data.Length)
+                    {
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = "Unable to locate VertexFactory Name Map."
+                        });
+                        return subnodes;
+                    }
+
+                    int test1 = BitConverter.ToInt32(data, binarystart);
+                    if (test1 == 0x1C)
+                    {
+                        int test2 = BitConverter.ToInt32(data, binarystart + 4);
+                        if (Pcc.getNameEntry(test2) is string test3 && test3.StartsWith("F") && test3.Contains("VertexFactory"))
+                        {
+                            break;
+                        }
+                    }
+
+                    binarystart++;
+                }
+
+                int vertexFactoryMapCount = BitConverter.ToInt32(data, binarystart);
+                var factoryMapNode = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarystart:X8}: Vertex Factory Name Mapping, {vertexFactoryMapCount} items",
+                    Name = "_" + binarystart,
+                    Tag = NodeType.Unknown,
+                };
+                subnodes.Add(factoryMapNode);
+                binarystart += 4;
+
+                for (int i = 0; i < vertexFactoryMapCount; i++)
+                {
+                    int shaderID = BitConverter.ToInt32(data, binarystart + 8);
+                    int nameIdx = BitConverter.ToInt32(data, binarystart);
+                    factoryMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} : {shaderID:X8} {Pcc.getNameEntry(nameIdx)}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
+                        Length = 12
+                    });
+                    binarystart += 12;
+                }
+
+                int materialShaderMapcount = BitConverter.ToInt32(data, binarystart);
+                var materialShaderMaps = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarystart:X8} : Material Shader Maps, {materialShaderMapcount} items",
+                    Name = "_" + binarystart,
+                    Tag = NodeType.Unknown,
+                };
+                binarystart += 4;
+                subnodes.Add(materialShaderMaps);
+                for (int i = 0; i < materialShaderMapcount; i++)
+                {
+                    var materialShaderMap = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} : Material Shader Map {i}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
+                    };
+                    materialShaderMaps.Items.Add(materialShaderMap);
+                    materialShaderMap.Items.Add(MakeGuidNode(data, ref binarystart, "Base Material GUID"));
+                    int staticSwitchParameterCount = BitConverter.ToInt32(data, binarystart);
+                    binarystart += 4;
+                    var staticSwitchParametersNode = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} : Static Switch Parameters, {staticSwitchParameterCount} items",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
+                        Length = 32 * staticSwitchParameterCount
+                    };
+                    materialShaderMap.Items.Add(staticSwitchParametersNode);
+                    for (int j = 0; j < staticSwitchParameterCount; j++)
+                    {
+                        var parameterName = new NameReference(Pcc.getNameEntry(BitConverter.ToInt32(data, binarystart)), BitConverter.ToInt32(data, binarystart + 4));
+                        binarystart += 8;
+                        var paramVal = BitConverter.ToBoolean(data, binarystart);
+                        binarystart += 4;
+                        var paramOverride = BitConverter.ToBoolean(data, binarystart);
+                        binarystart += 4;
+                        byte[] expressionGUID = new byte[16];
+                        Buffer.BlockCopy(data, binarystart, expressionGUID, 0, 16);
+                        Guid g = new Guid(expressionGUID);
+                        binarystart += 16;
+                        staticSwitchParametersNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{binarystart - 32:X8} : {i}: Name: {parameterName}, Value: {paramVal}, Override: {paramOverride}\nGUID:{g}",
+                            Name = $"_{binarystart - 32}",
+                            Tag = NodeType.Unknown,
+                            Length = 32
+                        });
+                    }
+
+                    int staticComponentMaskParameterCount = BitConverter.ToInt32(data, binarystart);
+                    binarystart += 4;
+                    //StaticComponentMaskParameters. 
+                    binarystart += staticComponentMaskParameterCount * 44;
+                    int NormalParameterCount = BitConverter.ToInt32(data, binarystart);
+                    binarystart += 4;
+                    //NormalParameters. 
+                    binarystart += NormalParameterCount * 29;
+
+                    int unrealVersion = BitConverter.ToInt32(data, binarystart);
+                    materialShaderMap.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} :Unreal Version {unrealVersion}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
+                        Length = 4
+                    });
+                    binarystart += 4;
+                    int licenseeVersion = BitConverter.ToInt32(data, binarystart);
+                    materialShaderMap.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} :License Version {licenseeVersion}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
+                        Length = 4
+                    });
+                    binarystart += 4;
+                    int shaderMapEndOffset = BitConverter.ToInt32(data, binarystart);
+                    materialShaderMap.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} :Material Shader Map end offset {shaderMapEndOffset}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
+                        Length = 4
+                    });
+                    binarystart += 4;
+                    binarystart = shaderMapEndOffset - CurrentLoadedExport.DataOffset;
+                }
+
+                int[] versionInfo = data.Locate(new byte[]{ 0xAC, 0x02, 0x00, 0x00, 0xC2, 0x00, 0x00, 0x00 });
+                Debug.Assert(versionInfo.Length == materialShaderMapcount);
+
+
                 //binarystart += 8; //blanks?
                 //int vertexMapCount2 = BitConverter.ToInt32(data, binarystart);
 
@@ -719,10 +839,26 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = $"Error reading binary data: {ex}" });
             }
 
             return subnodes;
+        }
+
+        private static BinaryInterpreterWPFTreeViewItem MakeGuidNode(byte[] data, ref int binarystart, string nodeName)
+        {
+            byte[] shaderStartGUIDOrSomething = new byte[16];
+            Buffer.BlockCopy(data, binarystart, shaderStartGUIDOrSomething, 0, 16);
+            Guid g = new Guid(shaderStartGUIDOrSomething);
+            var node = new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarystart:X8} {nodeName}: {g}",
+                Name = "_" + binarystart,
+                Tag = NodeType.Unknown,
+                Length = 16
+            };
+            binarystart += 16;
+            return node;
         }
 
         private List<object> StartPolysScan(byte[] data, ref int binarystart)

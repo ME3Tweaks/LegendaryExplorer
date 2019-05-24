@@ -197,14 +197,14 @@ namespace ME3Explorer.Packages
         /// <param name="path">full path + file name.</param>
         public void save(string path)
         {
-            if (CanReconstruct)
-            {
+            //if (CanReconstruct)
+            //{
                 saveByReconstructing(path);
-            }
-            else
-            {
-                appendSave(path);
-            }
+            //}
+            //else
+            //{
+            //    appendSave(path);
+            //}
         }
 
         /// <summary>
@@ -260,10 +260,11 @@ namespace ME3Explorer.Packages
                 //export data
                 foreach (IExportEntry e in exports)
                 {
+                    var shaderCacheOffsets = CacheShaderCacheOffsets(e);
                     e.DataOffset = (int)m.Position;
                     e.DataSize = e.Data.Length;
 
-                    UpdateOffsets(e);
+                    UpdateOffsets(e, shaderCacheOffsets);
 
                     m.WriteBytes(e.Data);
                     //update size and offset in already-written header
@@ -388,7 +389,7 @@ namespace ME3Explorer.Packages
                 {
                     export.DataOffset = (int)newPCCStream.Position;
                     export.DataSize = export.Data.Length;
-                    UpdateOffsets(export);
+                    UpdateOffsets(export, null);
 
                     newPCCStream.WriteBytes(export.Data);
                 }
@@ -411,7 +412,19 @@ namespace ME3Explorer.Packages
             AfterSave();
         }
 
-        private static void UpdateOffsets(IExportEntry export)
+        private static readonly byte[] versionInfoBytes = { 0xAC, 0x02, 0x00, 0x00, 0xC2, 0x00, 0x00, 0x00 };
+        private List<(int offsetPosition, int endOffset)> CacheShaderCacheOffsets(IExportEntry export)
+        {
+            byte[] exportData = export.Data;
+            return exportData.Locate(versionInfoBytes).Select(versionInfoOffset =>
+            {
+                int offsetOffset = versionInfoOffset + 8;
+                int oldEndOffset = BitConverter.ToInt32(exportData, offsetOffset);
+                return (offsetOffset, oldEndOffset - export.DataOffset);
+            }).ToList();
+        }
+
+        private static void UpdateOffsets(IExportEntry export, List<(int offsetPosition, int endOffset)> shaderCacheOffsets)
         {
             if (export.ObjectName.StartsWith("Default__"))
             {
@@ -451,6 +464,18 @@ namespace ME3Explorer.Packages
                     }
                 }
                 export.setBinaryData(binData.ToArray());
+            }
+            else if (export.ClassName == "ShaderCache")
+            {
+                int baseOffset = export.DataOffset;
+                MemoryStream binData = new MemoryStream(export.Data);
+                foreach ((int offsetPosition, int endOffset) in shaderCacheOffsets)
+                {
+                    binData.Seek(offsetPosition, SeekOrigin.Begin);
+                    binData.WriteValueS32(baseOffset + endOffset);
+                }
+
+                export.Data = binData.ToArray();
             }
         }
     }
