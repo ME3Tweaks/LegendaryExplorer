@@ -17,7 +17,7 @@
         Closing="DialogueDumper_Closing"
         Title="Dialogue Dumper" Height="340" Width="500">
     <StackPanel >
-        <TextBlock Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Dialogue dumps are TEXT DUMPS."/>
+        <TextBlock Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Dialogue dumps extract all the spoken lines from game conversations into a large spreadsheet. This can then be searched and the data manipulated."/>
         <Grid Margin="12">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20"/>
@@ -31,14 +31,14 @@
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.ColumnSpan="4" FontWeight="Bold" Text="The following items are dumped into files:"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="Conversation" ToolTip="Name of conversation"/>
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="TLK string" ToolTip="Line and string"/>
-            <TextBlock Grid.Row="1" Grid.Column="1" Text="Line owner" ToolTip="Who spoke it"/>
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="4" FontWeight="Bold" Text="The following items are dumped into an Excel file:"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Speaker" ToolTip="The tag of the character who spoke the line."/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Conversation" ToolTip="The conversation name"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="TLK String Ref" ToolTip="TLK String Reference"/>
             <!--<TextBlock Grid.Row="2" Grid.Column="1" Text="Functions" ToolTip="Function dumping only works for Mass Effect and Mass Effect 3 at this time"/>-->
-            <TextBlock Grid.Row="2" Grid.Column="1" Text="Location" ToolTip="Where to find it"/>
-            <TextBlock Grid.Row="2" Grid.Column="2" Text="Blah" ToolTip="Exports that read from config will be preceeeded with [C]"/>
-            <TextBlock Grid.Row="1" Grid.Column="2" Text="Blah"  ToolTip="All names in the name table, and their index"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="File Name" ToolTip="Which file contains it"/>
+            <TextBlock Grid.Row="2" Grid.Column="2" Text="Line Text" ToolTip="The text of the line from the TLKs"/>
+            <TextBlock Grid.Row="1" Grid.Column="2" Text="Game Location"  ToolTip="Which game holds the line."/>
 
             <!--<TextBlock.Text>
                 <MultiBinding StringFormat="{}{0} ({1}%)">
