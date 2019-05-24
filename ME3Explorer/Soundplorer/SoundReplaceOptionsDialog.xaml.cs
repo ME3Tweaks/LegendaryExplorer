@@ -31,6 +31,7 @@ namespace ME3Explorer.Soundplorer
             SampleRates.AddRange(AcceptedSampleRates);
             LoadCommands();
             InitializeComponent();
+            SampleRate_Combobox.SelectedIndex = 0;
         }
 
         public SoundReplaceOptionsDialog(Window w) : this()
@@ -57,6 +58,11 @@ namespace ME3Explorer.Soundplorer
         }
 
         private bool CanReturnSettings() => SampleRate_Combobox.SelectedIndex >= 0;
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
     public class WwiseConversionSettingsPackage
     {

@@ -20,6 +20,7 @@ using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using static ME3Explorer.ME1.Unreal.UnhoodBytecode.BytecodeReader;
 using static ME3Explorer.Unreal.Bytecode;
 
 namespace ME3Explorer
@@ -178,8 +179,9 @@ namespace ME3Explorer
                 {
                     Statement s = func.Statements.statements[i];
                     DecompiledScriptBlocks.Add(s);
-                    if (s.Reader != null)
+                    if (s.Reader != null && i == 0)
                     {
+                        //Add tokens read from statement. All of them point to the same reader, so just do only the first one.
                         TokenList.AddRange(s.Reader.ReadTokens.Select(x => x.ToBytecodeSingularToken(pos)).OrderBy(x => x.StartPos));
                     }
                 }
@@ -190,7 +192,7 @@ namespace ME3Explorer
                 }
 
                 //Footer
-                pos = CurrentLoadedExport.Data.Length - (func.HasFlag("Net") ? 19 : 17);
+                pos = CurrentLoadedExport.Data.Length - (func.HasFlag("Net") ? 17 : 15);
                 string flagStr = func.GetFlags();
                 ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", BitConverter.ToInt16(CurrentLoadedExport.Data, pos), pos));
                 pos += 2;
@@ -204,15 +206,15 @@ namespace ME3Explorer
 
                 //if ((functionFlags & func._flagSet.GetMask("Net")) != 0)
                 //{
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 1 (RepOffset?)", $"0x{BitConverter.ToInt16(CurrentLoadedExport.Data, pos).ToString("X4")}", pos));
-                pos += 2;
+                //ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 1 (RepOffset?)", BitConverter.ToInt16(CurrentLoadedExport.Data, pos), pos));
+                //pos += 2;
                 //}
 
                 int friendlyNameIndex = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
                 ScriptFooterBlocks.Add(new ScriptHeaderItem("Friendly Name Table Index", $"0x{friendlyNameIndex.ToString("X8")} {CurrentLoadedExport.FileRef.getNameEntry(friendlyNameIndex)}", pos));
                 pos += 4;
 
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2", $"0x{BitConverter.ToInt32(CurrentLoadedExport.Data, pos).ToString("X8")}", pos));
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2", $"0x{BitConverter.ToInt16(CurrentLoadedExport.Data, pos).ToString("X4")}", pos));
                 pos += 4;
 
                 //ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef as ME1Package);
@@ -270,10 +272,14 @@ namespace ME3Explorer
                             int val = BitConverter.ToInt32(currentData, start);
                             s += $", Int: {val}";
                             s += $", Float: {BitConverter.ToSingle(currentData, start)}";
-
                             if (CurrentLoadedExport.FileRef.isName(val))
                             {
                                 s += $", Name: {CurrentLoadedExport.FileRef.getNameEntry(val)}";
+                            }
+                            if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
+                            {
+                                ME1OpCodes m = (ME1OpCodes)currentData[start];
+                                s += $", OpCode: {m}";
                             }
 
                             if (CurrentLoadedExport.FileRef.getEntry(val) is IEntry ent)

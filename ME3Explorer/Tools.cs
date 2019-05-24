@@ -101,14 +101,14 @@ namespace ME3Explorer
             {
                 name = "File Hex Analyzer",
                 type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzer),
-                icon = Application.Current.FindResource("iconModMaker") as ImageSource,
+                icon = Application.Current.FindResource("iconFileHexAnalyzer") as ImageSource,
                 open = () =>
                 {
                     (new FileHexViewer.FileHexViewerWPF()).Show();
                 },
-                tags = new List<string> { "utility", "toolsetdev" },
+                tags = new List<string> { "utility", "toolsetdev", "hex" },
                 subCategory = "For Toolset Devs Only",
-                description = "File Hex Analyzer is a package hex viewer that shows references in the package hex."
+                description = "File Hex Analyzer is a package hex viewer that shows references in the package hex. It also works with non-package files, but won't show any references, obviously."
             });
 #endif
             set.Add(new Tool

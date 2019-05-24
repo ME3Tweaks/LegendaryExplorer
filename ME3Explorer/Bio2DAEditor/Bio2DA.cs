@@ -430,8 +430,8 @@ namespace ME3Explorer
                         }
                         else if (float.TryParse(xlCellContents, out float floatVal))
                         {
-                            newCell.Type = Bio2DACell.Bio2DADataType.TYPE_INT;
-                            newCell.Data = BitConverter.GetBytes(intVal);
+                            newCell.Type = Bio2DACell.Bio2DADataType.TYPE_FLOAT;
+                            newCell.Data = BitConverter.GetBytes(floatVal);
                         }
                         else
                         {
