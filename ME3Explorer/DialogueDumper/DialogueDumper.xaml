@@ -37,8 +37,8 @@
             <TextBlock Grid.Row="1" Grid.Column="1" Text="TLK String Ref" ToolTip="TLK String Reference"/>
             <!--<TextBlock Grid.Row="2" Grid.Column="1" Text="Functions" ToolTip="Function dumping only works for Mass Effect and Mass Effect 3 at this time"/>-->
             <TextBlock Grid.Row="2" Grid.Column="1" Text="File Name" ToolTip="Which file contains it"/>
-            <TextBlock Grid.Row="2" Grid.Column="2" Text="Line Text" ToolTip="The text of the line from the TLKs"/>
-            <TextBlock Grid.Row="1" Grid.Column="2" Text="Game Location"  ToolTip="Which game holds the line."/>
+            <TextBlock Grid.Row="1" Grid.Column="2" Text="Line Text" ToolTip="The text of the line from the TLKs"/>
+            <TextBlock Grid.Row="2" Grid.Column="2" Text="Game"  ToolTip="Which game holds the line."/>
 
             <!--<TextBlock.Text>
                 <MultiBinding StringFormat="{}{0} ({1}%)">
@@ -49,15 +49,15 @@
 
 
         </Grid>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="10,0,0,0" Width="456">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="10,0,0,0" Width="456" MinHeight="126">
             <ListView ItemsSource="{Binding CurrentDumpingItems}" Height="{Binding ListViewHeight}">
                 <ListView.Resources>
-                    <!-- <DataTemplate DataType="{x:Type local:DialogueDumperSingleFileTask}"> bug why
+                    <DataTemplate DataType="{x:Type local:DialogueDumperSingleFileTask}">
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
                             <TextBlock Text="{Binding CurrentOverallOperationText}"/>
                             <ProgressBar Value="{Binding CurrentFileProgressValue}" Maximum="{Binding CurrentFileProgressMaximum}" Height="4" HorizontalAlignment="Stretch"/>
                         </StackPanel>
-                    </DataTemplate> -->
+                    </DataTemplate>
                 </ListView.Resources>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">

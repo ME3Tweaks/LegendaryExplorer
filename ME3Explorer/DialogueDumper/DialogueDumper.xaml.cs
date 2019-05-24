@@ -80,7 +80,7 @@ namespace ME3Explorer.DialogueDumper
                 CommonSaveFileDialog outputDlg = new CommonSaveFileDialog
                 {
                     Title = "Select excel output",
-                    DefaultFileName = "ConvoDump.xlsx",
+                    DefaultFileName = "DialogueDump.xlsx",
                     DefaultExtension = "xlsx",
                 };
                 outputDlg.Filters.Add(new CommonFileDialogFilter("Excel Files (.xlsx)", "*.xlsx"));
@@ -220,7 +220,7 @@ namespace ME3Explorer.DialogueDumper
             CommonSaveFileDialog m = new CommonSaveFileDialog
             {
                 Title = "Select excel output",
-                DefaultFileName = "ConvoDump.xlsx",
+                DefaultFileName = "DialogueDump.xlsx",
                 DefaultExtension = "xlsx",
             };
             m.Filters.Add(new CommonFileDialogFilter("Excel Files (.xlsx)", "*.xlsx"));
@@ -274,182 +274,54 @@ namespace ME3Explorer.DialogueDumper
             OverallProgressValue = 0;
 
             var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add("TLKStrings");
+            var xlstrings = workbook.Worksheets.Add("TLKStrings");
+            var xlowners = workbook.Worksheets.Add("ConvoOwners");
 
             //Setup column headers
-            worksheet.Cell(1, 1).Value = "Speaker";
-            worksheet.Cell(1, 2).Value = "TLK StringRef";
-            worksheet.Cell(1, 3).Value = "Line";
-            worksheet.Cell(1, 4).Value = "Conversation";
-            worksheet.Cell(1, 5).Value = "Game";
-            worksheet.Cell(1, 6).Value = "File";
-            worksheet.Cell(1, 7).Value = "Object #";
+            xlstrings.Cell(1, 1).Value = "Speaker";
+            xlstrings.Cell(1, 2).Value = "TLK StringRef";
+            xlstrings.Cell(1, 3).Value = "Line";
+            xlstrings.Cell(1, 4).Value = "Conversation";
+            xlstrings.Cell(1, 5).Value = "Game";
+            xlstrings.Cell(1, 6).Value = "File";
+            xlstrings.Cell(1, 7).Value = "Object #";
 
-            //DUMP FILES TEMP
+            xlowners.Cell(1, 1).Value = "Conversation";
+            xlowners.Cell(1, 2).Value = "Owner";
+            xlowners.Cell(1, 3).Value = "File";
+
+            ProcessingQueue = new ActionBlock<DialogueDumperSingleFileTask>(x =>
+            {
+                if (x.DumpCanceled) { OverallProgressValue++; return; }
+                Application.Current.Dispatcher.Invoke(new Action(() => CurrentDumpingItems.Add(x)));
+                x.dumpPackageFile(workbook); // What to do on each item
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    OverallProgressValue++; //Concurrency
+                    CurrentDumpingItems.Remove(x);
+                }));
+            },
+            new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount }); // How many items at the same time
+
+            AllDumpingItems = new List<DialogueDumperSingleFileTask>();
+            CurrentDumpingItems.ClearEx();
             foreach (var item in files)
             {
-                var File = item;
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
+                string outfolder = outputfile;
+                if (outfolder != null)
                 {
-                    var GameBeingDumped = pcc.Game;
-                    if ((Path.GetFileNameWithoutExtension(File).EndsWith(@"LOC_INT")) || GameBeingDumped == MEGame.ME1)
-                    {
-                        int numDone = 1;
-                        int numTotal = pcc.Exports.Count;
-
-                        foreach (IExportEntry exp in pcc.Exports)
-                        {
-                            if (DumpCanceled)
-                            {
-                                return;
-                            }
-
-                            //CurrentFileProgressValue = exp.UIndex;
-
-                            string className = exp.ClassName;
-                            if (className == "BioConversation")
-                            {
-                                string convName = exp.ObjectName;
-                                string fileName = Path.GetFileNameWithoutExtension(File);
-                                int convIdx = exp.UIndex;
-
-                                try
-                                {
-                                    var convo = exp.GetProperties();
-                                    if (convo.Count > 0)
-                                    {
-                                        //1.  Define speaker list "m_aSpeakerList"
-                                        List<string> speakers = new List<string>();
-                                        var a_speakers = exp.GetProperty<ArrayProperty<NameProperty>>("m_aSpeakerList");                                     //
-                                        if (a_speakers != null)
-                                        {
-                                            foreach (NameProperty n in a_speakers)
-                                            {
-                                                speakers.Add(n.ToString());
-                                            }
-                                        }
-
-                                        //2. Go through Entry list "m_EntryList"
-                                        // Parse line TLK StrRef, TLK Line, Speaker -1 = Owner, -2 = Shepard, or from m_aSpeakerList
-
-                                        var entryList = exp.GetProperty<ArrayProperty<StructProperty>>("m_EntryList");
-                                        foreach (BioDialogEntryNode entry in entryList.AsStructs<BioDialogEntryNode>())
-                                        {
-                                            //Get and set speaker name
-                                            var speakeridx = entry.nSpeakerIndex;
-                                            string lineSpeaker = null;
-                                            if (speakeridx >= 0)
-                                            {
-                                                lineSpeaker = speakers[speakeridx].ToString();
-                                            }
-                                            else if (speakeridx == -2)
-                                            {
-                                                lineSpeaker = "Shepard";
-                                            }
-                                            else
-                                            {
-                                                lineSpeaker = "Owner";
-                                            }
-
-                                            //Get StringRef
-                                            int lineStrRef = entry.srText;
-                                            if (lineStrRef > 0)
-                                            {
-
-                                                //Get StringRef Text
-                                                string lineTLKstring = ME3TalkFiles.findDataById(lineStrRef);
-
-                                                if (lineTLKstring != "No Data")
-                                                {
-                                                    int nextrow = worksheet.LastRowUsed().RowNumber() + 1;
-                                                    //Write output to excel
-                                                    worksheet.Cell(nextrow, 1).Value = lineSpeaker;
-                                                    worksheet.Cell(nextrow, 2).Value = lineStrRef;
-                                                    worksheet.Cell(nextrow, 3).Value = lineTLKstring;
-                                                    worksheet.Cell(nextrow, 4).Value = convName;
-                                                    worksheet.Cell(nextrow, 5).Value = GameBeingDumped;
-                                                    worksheet.Cell(nextrow, 6).Value = fileName;
-                                                    worksheet.Cell(nextrow, 7).Value = convIdx;
-                                                }
-                                            }
-                                        }
-                                        //3. Go through Reply list "m_ReplyList"
-                                        // Parse line TLK StrRef, TLK Line, Speaker always Shepard
-
-                                        var replyList = exp.GetProperty<ArrayProperty<StructProperty>>("m_ReplyList");
-                                        foreach (BioDialogReplyNode reply in replyList.AsStructs<BioDialogReplyNode>())
-                                        {
-                                            //Get and set speaker name
-                                            string lineSpeaker = "Shepard";
-
-                                            //Get StringRef
-                                            var lineStrRef = reply.srText;
-                                            if (lineStrRef > 0)
-                                            {
-
-                                                //Get StringRef Text
-                                                string lineTLKstring = ME3TalkFiles.findDataById(lineStrRef);
-
-                                                if (lineTLKstring != "No Data")
-                                                {
-                                                    int nextrow = worksheet.LastRowUsed().RowNumber() + 1;
-                                                    //Write output
-                                                    worksheet.Cell(nextrow, 1).Value = lineSpeaker;
-                                                    worksheet.Cell(nextrow, 2).Value = lineStrRef;
-                                                    worksheet.Cell(nextrow, 3).Value = lineTLKstring;
-                                                    worksheet.Cell(nextrow, 4).Value = convName;
-                                                    worksheet.Cell(nextrow, 5).Value = GameBeingDumped;
-                                                    worksheet.Cell(nextrow, 6).Value = fileName;
-                                                    worksheet.Cell(nextrow, 7).Value = convIdx;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                catch (Exception e)
-                                {
-                                    Debug.WriteLine(exp.UIndex);
-                                }
-                            }
-                        }
-                        numDone++;
-                    }
+                    string relative = GetRelativePath(Path.GetFullPath(item), Directory.GetParent(item).ToString());
+                    outfolder = Path.Combine(outfolder, relative);
                 }
-                OverallProgressValue++;
+
+                var threadtask = new DialogueDumperSingleFileTask(item, outfolder);
+                AllDumpingItems.Add(threadtask); //For setting cancelation value
+                ProcessingQueue.Post(threadtask); // Post all items to the block
             }
 
-            //ProcessingQueue = new ActionBlock<DialogueDumperSingleFileTask>(x =>
-            //{
-            //    if (x.DumpCanceled) { OverallProgressValue++; return; }
-            //    Application.Current.Dispatcher.Invoke(new Action(() => CurrentDumpingItems.Add(x)));
-            //    x.dumpPackageFile(worksheet); // What to do on each item
-            //    Application.Current.Dispatcher.Invoke(new Action(() =>
-            //    {
-            //        OverallProgressValue++; //Concurrency
-            //        CurrentDumpingItems.Remove(x);
-            //    }));
-            //},
-            //new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount }); // How many items at the same time
-
-            //AllDumpingItems = new List<DialogueDumperSingleFileTask>();
-            //CurrentDumpingItems.ClearEx();
-            //foreach (var item in files)
-            //{
-            //    string outfolder = outputfolder;
-            //    if (outfolder != null)
-            //    {
-            //        string relative = GetRelativePath(Path.GetFullPath(item), Directory.GetParent(item).ToString());
-            //        outfolder = Path.Combine(outfolder, relative);
-            //    }
-
-            //    var threadtask = new DialogueDumperSingleFileTask(item, outfolder);
-            //    AllDumpingItems.Add(threadtask); //For setting cancelation value
-            //    ProcessingQueue.Post(threadtask); // Post all items to the block
-            //}
-
-            //ProcessingQueue.Complete(); // Signal completion
-            //CommandManager.InvalidateRequerySuggested();
-            //await ProcessingQueue.Completion; // Asynchronously wait for completion.        }
+            ProcessingQueue.Complete(); // Signal completion
+            CommandManager.InvalidateRequerySuggested();
+            await ProcessingQueue.Completion; // Asynchronously wait for completion.        }
 
             workbook.SaveAs(outputfile);
 
@@ -656,137 +528,198 @@ namespace ME3Explorer.DialogueDumper
         /// Dumps Conversation strings to xl worksheet
         /// </summary>
         /// <worksheet>Output excel worksheet</worksheet>
-        public void dumpPackageFile(IXLWorksheet worksheet)
+        public void dumpPackageFile(XLWorkbook workbook)
         {
+            var xlstrings = workbook.Worksheet(1);
+            var xlowners = workbook.Worksheet(2);
+
             using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
             {
+                string fileName = Path.GetFileNameWithoutExtension(File);
                 var GameBeingDumped = pcc.Game;
-                if ((!Path.GetFileNameWithoutExtension(File).EndsWith(@"LOC_INT")) && GameBeingDumped != MEGame.ME1)
+                if ((fileName.EndsWith(@"LOC_INT")) || GameBeingDumped == MEGame.ME1)
                 {
-                    return;
+                    int numDone = 1;
+                    int numTotal = pcc.Exports.Count;
+
+                    foreach (IExportEntry exp in pcc.Exports)
+                    {
+                        if (DumpCanceled)
+                        {
+                            return;
+                        }
+
+                        CurrentFileProgressValue = exp.UIndex;
+
+                        string className = exp.ClassName;
+                        if (className == "BioConversation")
+                        {
+                            string convName = exp.ObjectName;
+                            
+                            int convIdx = exp.UIndex;
+
+                            try
+                            {
+                                var convo = exp.GetProperties();
+                                if (convo.Count > 0)
+                                {
+                                    //1.  Define speaker list "m_aSpeakerList"
+                                    List<string> speakers = new List<string>();
+                                    var a_speakers = exp.GetProperty<ArrayProperty<NameProperty>>("m_aSpeakerList");                                     //
+                                    if (a_speakers != null)
+                                    {
+                                        foreach (NameProperty n in a_speakers)
+                                        {
+                                            speakers.Add(n.ToString());
+                                        }
+                                    }
+
+                                    //2. Go through Entry list "m_EntryList"
+                                    // Parse line TLK StrRef, TLK Line, Speaker -1 = Owner, -2 = Shepard, or from m_aSpeakerList
+
+                                    var entryList = exp.GetProperty<ArrayProperty<StructProperty>>("m_EntryList");
+                                    foreach (StructProperty entry in entryList)
+                                    {
+                                        //Get and set speaker name
+                                        var speakeridx = entry.GetProp<IntProperty>("nSpeakerIndex");
+                                        string lineSpeaker = null;
+                                        if (speakeridx >= 0)
+                                        {
+                                            lineSpeaker = speakers[speakeridx].ToString();
+                                        }
+                                        else if (speakeridx == -2)
+                                        {
+                                            lineSpeaker = "Shepard";
+                                        }
+                                        else
+                                        {
+                                            lineSpeaker = "Owner";
+                                        }
+
+                                        //Get StringRef
+                                        int lineStrRef = entry.GetProp<StringRefProperty>("srText").Value;
+                                        if (lineStrRef > 0)
+                                        {
+
+                                            //Get StringRef Text
+                                            string lineTLKstring = ME3TalkFiles.findDataById(lineStrRef);
+
+                                            if (lineTLKstring != "No Data")
+                                            {
+                                                int nextrow = xlstrings.LastRowUsed().RowNumber() + 1;
+                                                //Write output to excel
+                                                xlstrings.Cell(nextrow, 1).Value = lineSpeaker;
+                                                xlstrings.Cell(nextrow, 2).Value = lineStrRef;
+                                                xlstrings.Cell(nextrow, 3).Value = lineTLKstring;
+                                                xlstrings.Cell(nextrow, 4).Value = convName;
+                                                xlstrings.Cell(nextrow, 5).Value = GameBeingDumped;
+                                                xlstrings.Cell(nextrow, 6).Value = fileName;
+                                                xlstrings.Cell(nextrow, 7).Value = convIdx;
+                                            }
+                                        }
+                                    }
+                                    //3. Go through Reply list "m_ReplyList"
+                                    // Parse line TLK StrRef, TLK Line, Speaker always Shepard
+
+                                    var replyList = exp.GetProperty<ArrayProperty<StructProperty>>("m_ReplyList");
+                                    foreach (StructProperty reply in replyList)
+                                    {
+                                        //Get and set speaker name
+                                        string lineSpeaker = "Shepard";
+
+                                        //Get StringRef
+                                        var lineStrRef = reply.GetProp<StringRefProperty>("srText").Value;
+                                        if (lineStrRef > 0)
+                                        {
+
+                                            //Get StringRef Text
+                                            string lineTLKstring = ME3TalkFiles.findDataById(lineStrRef);
+
+                                            if (lineTLKstring != "No Data")
+                                            {
+                                                int nextrow = xlstrings.LastRowUsed().RowNumber() + 1;
+                                                xlstrings.Cell(nextrow, 1).Value = lineSpeaker;
+                                                xlstrings.Cell(nextrow, 2).Value = lineStrRef;
+                                                xlstrings.Cell(nextrow, 3).Value = lineTLKstring;
+                                                xlstrings.Cell(nextrow, 4).Value = convName;
+                                                xlstrings.Cell(nextrow, 5).Value = GameBeingDumped;
+                                                xlstrings.Cell(nextrow, 6).Value = fileName;
+                                                xlstrings.Cell(nextrow, 7).Value = convIdx;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.WriteLine(exp.UIndex);
+                            }
+                        }
+                    }
+                    numDone++;
                 }
 
-                CurrentFileProgressMaximum = pcc.ExportCount;
+                if ( !fileName.EndsWith(@"LOC_INT")) //Build Table of conversation owner tags
+                {
+                    string ownertag = null;
+                    foreach (IExportEntry exp in pcc.Exports)
+                    {
+                        int numDone = 1;
+                        int numTotal = pcc.Exports.Count;
+                        string Class = exp.ClassName;
+                        if (Class == "BioSeqAct_Conversation" || Class == "SFXSeqAct_StartConversation" || Class == "SFXSeqAct_StartAmbientConv")
+                        {
+                            try
+                            {
+                                string convo = "not found";  //Find Conversation
+                                var iconv = exp.GetProperty<ObjectProperty>("Conv").Value;
+                                if(iconv < 0)
+                                {
+                                    convo = pcc.getUImport(iconv).ObjectName;
+                                }
+                                else
+                                {
+                                    convo = pcc.getUExport(iconv).ObjectName;
+                                }
 
-                int numDone = 1;
-                int numTotal = pcc.Exports.Count;
+                                int iownerObj = 0;
+                                var links = exp.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+                                foreach(StructProperty l in links )
+                                {
+                                    if(l.GetProp<StrProperty>("LinkDesc") == "Owner")
+                                    {
+                                        var ownerLink = l.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                                        iownerObj = ownerLink[0].Value;
+                                        break;
+                                    }
+                                }
 
-                //    foreach (IExportEntry exp in pcc.Exports)
-                //    {
-                //        if (DumpCanceled)
-                //        {
-                //            return;
-                //        }
+                                var svlink = pcc.getUExport(iownerObj);
+                                if(svlink.ClassName == "SeqVar_Object")
+                                {
+                                    var iactorlink = svlink.GetProperty<ObjectProperty>("ObjValue").Value;
+                                    var actorlink = pcc.getUExport(iactorlink);
+                                    ownertag = actorlink.GetProperty<NameProperty>("Tag").ToString();
+                                }
+                                else if (svlink.ClassName == "BioSeqVar_ObjectFindByTag")
+                                {
+                                    ownertag = svlink.GetProperty<NameProperty>("m_sObjectTagToFind").ToString();
+                                }
 
-                //        CurrentFileProgressValue = exp.UIndex;
+                                int nextrow = xlowners.LastRowUsed().RowNumber() + 1;
+                                xlowners.Cell(nextrow, 1).Value = convo;
+                                xlowners.Cell(nextrow, 2).Value = ownertag;
+                                xlowners.Cell(nextrow, 3).Value = fileName;
+                            }
+                            catch
+                            {
 
-                //        string className = exp.ClassName;
-                //        if (className == "BioConversation")
-                //        {
-                //            string convName = exp.ObjectName;
-                //            string fileName = Path.GetFileNameWithoutExtension(File);
-                //            int convIdx = exp.UIndex;
-
-                //            try
-                //            {
-                //                var convo = exp.GetProperties();
-                //                if (convo.Count > 0)
-                //                {
-                //                    //1.  Define speaker list "m_aSpeakerList"
-                //                    List<string> speakers = new List<string>();
-                //                    var a_speakers = exp.GetProperty<ArrayProperty<NameProperty>>("m_aSpeakerList");                                     //
-                //                    if (a_speakers != null)
-                //                    {
-                //                        foreach (NameProperty n in a_speakers)
-                //                        {
-                //                            speakers.Add(n.ToString());
-                //                        }
-                //                    }
-
-                //                    //2. Go through Entry list "m_EntryList"
-                //                    // Parse line TLK StrRef, TLK Line, Speaker -1 = Owner, -2 = Shepard, or from m_aSpeakerList
-
-                //                    var entryList = exp.GetProperty<ArrayProperty<StructProperty>>("m_EntryList");
-                //                    foreach (StructProperty entry in entryList)
-                //                    {
-                //                        //Get and set speaker name
-                //                        var speakeridx = entry.GetProp<IntProperty>("nSpeakerIndex");
-                //                        string lineSpeaker = null;
-                //                        if (speakeridx >= 0)
-                //                        {
-                //                            lineSpeaker = speakers[speakeridx].ToString();
-                //                        }
-                //                        else if (speakeridx == -2)
-                //                        {
-                //                            lineSpeaker = "Shepard";
-                //                        }
-                //                        else
-                //                        {
-                //                            lineSpeaker = "Owner";
-                //                        }
-
-                //                        //Get StringRef
-                //                        var lineStrRef = entry.GetProp<StringRefProperty>("srText");
-                //                        if (lineStrRef != null && lineStrRef.Value > 0)
-                //                        {
-
-                //                            //Get StringRef Text
-                //                            string lineTLKstring = ME3TalkFiles.findDataById(lineStrRef.Value);
-
-                //                            if (lineTLKstring != "No Data")
-                //                            {
-                //                                int nextrow = worksheet.RowCount() + 1;
-                //                                //Write output (eventually output to excel)
-                //                                worksheet.Cell(nextrow, 1).Value = lineSpeaker;
-                //                                worksheet.Cell(nextrow, 2).Value = lineStrRef.Value;
-                //                                worksheet.Cell(nextrow, 3).Value = lineTLKstring;
-                //                                worksheet.Cell(nextrow, 4).Value = convName;
-                //                                worksheet.Cell(nextrow, 5).Value = GameBeingDumped;
-                //                                worksheet.Cell(nextrow, 6).Value = fileName;
-                //                                worksheet.Cell(nextrow, 7).Value = convIdx;
-                //                            }
-                //                        }
-                //                    }
-                //                    //3. Go through Reply list "m_ReplyList"
-                //                    // Parse line TLK StrRef, TLK Line, Speaker always Shepard
-
-                //                    var replyList = exp.GetProperty<ArrayProperty<StructProperty>>("m_ReplyList");
-                //                    foreach (StructProperty reply in replyList)
-                //                    {
-                //                        //Get and set speaker name
-                //                        string lineSpeaker = "Shepard";
-
-                //                        //Get StringRef
-                //                        var lineStrRef = reply.GetProp<StringRefProperty>("srText");
-                //                        if (lineStrRef != null && lineStrRef.Value > 0)
-                //                        {
-
-                //                            //Get StringRef Text
-                //                            string lineTLKstring = ME3TalkFiles.findDataById(lineStrRef.Value);
-
-                //                            if (lineTLKstring != "No Data")
-                //                            {
-                //                                int nextrow = worksheet.RowCount() + 1;
-                //                                //Write output (eventually output to excel)
-                //                                worksheet.Cell(nextrow, 1).Value = lineSpeaker;
-                //                                worksheet.Cell(nextrow, 2).Value = lineStrRef.Value;
-                //                                worksheet.Cell(nextrow, 3).Value = lineTLKstring;
-                //                                worksheet.Cell(nextrow, 4).Value = convName;
-                //                                worksheet.Cell(nextrow, 5).Value = GameBeingDumped;
-                //                                worksheet.Cell(nextrow, 6).Value = fileName;
-                //                                worksheet.Cell(nextrow, 7).Value = convIdx;
-                //                            }
-                //                        }
-                //                    }
-                //                }
-                //            }
-                //            catch (Exception e)
-                //            {
-                //                Debug.WriteLine(exp.UIndex);
-                //            }
-                //        }
-                //    }
-                //    numDone++;
+                            }
+                        }
+                        numDone++;
+                    }
+                    
+                }
             }
         }
     }
