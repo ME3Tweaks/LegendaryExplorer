@@ -501,7 +501,7 @@ namespace ME3Explorer.DialogueDumper
         /// <summary>
         /// Dumps data from a pcc file to a text file
         /// </summary>
-        public void dumpPackageFile()
+        public void dumpPackageFile(string xlfile)
         {
             //if (GamePath == null)
             //{
@@ -513,10 +513,6 @@ namespace ME3Explorer.DialogueDumper
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
                 {
                     var GameBeingDumped = pcc.Game;
-                    //switch (GameBeingDumped)
-                    //{
-
-                    //}
                     if ((!Path.GetFileNameWithoutExtension(File).EndsWith(@"LOC_INT")) && GameBeingDumped != MEGame.ME1)
                     {
                         return;
@@ -555,7 +551,7 @@ namespace ME3Explorer.DialogueDumper
                             {
                                 stringoutput.WriteLine("==============Convo Found ==============");  //DEBUG
                                 string convName = exp.ObjectName;
-                                string fileName = exp.FileRef.FileName;
+                                string fileName = Path.GetFileNameWithoutExtension(File);
                                 int convIdx = exp.UIndex;
                                 stringoutput.WriteLine($" {convName} {fileName} #{convIdx}");  //DEBUG
 
@@ -581,11 +577,11 @@ namespace ME3Explorer.DialogueDumper
                                         //2. Go through Entry list "m_EntryList"
                                         // Parse line TLK StrRef, TLK Line, Speaker -1 = Owner, -2 = Shepard, or from m_aSpeakerList
 
-                                        var entries = exp.GetProperty<ArrayProperty<StructProperty>>("m_EntryList");
-                                        foreach(StructProperty entry in entries)
+                                        var entryList = exp.GetProperty<ArrayProperty<StructProperty>>("m_EntryList");
+                                        foreach(StructProperty entry in entryList)
                                         {
                                             //Get and set speaker name
-                                            int speakeridx = entry.GetProp<IntProperty>("nSpeakerIndex");
+                                            var speakeridx = entry.GetProp<IntProperty>("nSpeakerIndex");
                                             string lineSpeaker = null;
                                             if(speakeridx >= 0)
                                             {
@@ -593,7 +589,7 @@ namespace ME3Explorer.DialogueDumper
                                             }
                                             else if(speakeridx == -2)
                                             {
-                                                lineSpeaker = "Player";
+                                                lineSpeaker = "Shepard";
                                             }
                                             else
                                             {
@@ -601,43 +597,53 @@ namespace ME3Explorer.DialogueDumper
                                             }
 
                                             //Get StringRef
-                                            int lineStrRef = entry.GetProp<IntProperty>("srText");
+                                            var lineStrRef = entry.GetProp<StringRefProperty>("srText");
+                                            if(lineStrRef != null && lineStrRef.Value > 0)
+                                            {
 
                                             //Get StringRef Text
-                                            string lineTLKstring = ME3TalkFiles.findDataById(lineStrRef);
-
-                                            //Write output (eventually output to excel)
-                                            stringoutput.Write($" {lineSpeaker} | {lineStrRef} | {lineTLKstring} | {convName} | {fileName} #{convIdx} ");
+                                            string lineTLKstring = ME3TalkFiles.findDataById(lineStrRef.Value);
+                                            
+                                            if(lineTLKstring != "No Data")
+                                                {
+                                                    //Write output (eventually output to excel)
+                                                    stringoutput.Write($" {lineSpeaker} | {lineStrRef.Value} | {lineTLKstring} | {convName} | {GameBeingDumped} | {fileName} #{convIdx} ");
+                                                }
+                                            }
                                         }
-
                                         //3. Go through Reply list "m_ReplyList"
                                         // Parse line TLK StrRef, TLK Line, Speaker always Shepard
 
-
-                                        // KEEP FOR DEBUG
-                                        UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
-                                        foreach (UProperty prop in convo)
+                                        var replyList = exp.GetProperty<ArrayProperty<StructProperty>>("m_ReplyList");
+                                        foreach (StructProperty reply in replyList)
                                         {
-                                            InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, exp);
+                                            //Get and set speaker name
+                                            string lineSpeaker = "Shepard";
+
+                                            //Get StringRef
+                                            var lineStrRef = reply.GetProp<StringRefProperty>("srText");
+                                            if (lineStrRef != null && lineStrRef.Value > 0)
+                                            {
+
+                                                //Get StringRef Text
+                                                string lineTLKstring = ME3TalkFiles.findDataById(lineStrRef.Value);
+
+                                                if (lineTLKstring != "No Data")
+                                                {
+                                                    //Write output (eventually output to excel)
+                                                    stringoutput.Write($" {lineSpeaker} | {lineStrRef.Value} | {lineTLKstring} | {convName} | {GameBeingDumped} | {fileName} #{convIdx} ");
+                                                }
+                                            }
                                         }
-
-
                                     }
                                 }
                                 catch (Exception e)
                                 {
                                     Debug.WriteLine(exp.UIndex);
                                 }
-
-
                             }
-
-
-
-                            
                         }
                         numDone++;
-
                     }
                 }
             }
