@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:ME3Explorer.DialogueDumper"
         mc:Ignorable="d"
         Loaded="DialogueDumper_Loaded"
-        Icon="..\Resources\PackageDumper_256x256.ico"
+        Icon="..\Resources\DialogueDumper_256x256.ico"
         ResizeMode="NoResize"
         SizeToContent="Height"
         AllowDrop="True"
@@ -17,7 +17,7 @@
         Closing="DialogueDumper_Closing"
         Title="Dialogue Dumper" Height="340" Width="500">
     <StackPanel >
-        <TextBlock Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Dialogue dumps extract all the spoken lines from game conversations into a large spreadsheet. This can then be searched and the data manipulated."/>
+        <TextBlock Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Dialogue dumps extract all the spoken lines from game conversations into a large spreadsheet. It will only scan lines where it can find a reference in TLKs."/>
         <Grid Margin="12">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20"/>
@@ -31,14 +31,15 @@
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.ColumnSpan="4" FontWeight="Bold" Text="The following items are dumped into an Excel file:"/>
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="3" FontWeight="Bold" Text="The following items are dumped into an Excel file:"/>
             <TextBlock Grid.Row="1" Grid.Column="0" Text="Speaker" ToolTip="The tag of the character who spoke the line."/>
             <TextBlock Grid.Row="2" Grid.Column="0" Text="Conversation" ToolTip="The conversation name"/>
             <TextBlock Grid.Row="1" Grid.Column="1" Text="TLK String Ref" ToolTip="TLK String Reference"/>
             <!--<TextBlock Grid.Row="2" Grid.Column="1" Text="Functions" ToolTip="Function dumping only works for Mass Effect and Mass Effect 3 at this time"/>-->
             <TextBlock Grid.Row="2" Grid.Column="1" Text="File Name" ToolTip="Which file contains it"/>
             <TextBlock Grid.Row="1" Grid.Column="2" Text="Line Text" ToolTip="The text of the line from the TLKs"/>
-            <TextBlock Grid.Row="2" Grid.Column="2" Text="Game"  ToolTip="Which game holds the line."/>
+            <TextBlock Grid.Row="2" Grid.Column="2" Text="Owners Table"  ToolTip="Generates list of which actor is marked as the owner of anonymous conversations."/>
+            <Button Command="{Binding ManageTLKsCommand}" Content="Manage TLKs"  ToolTip="Manage which global TLKs are loaded."  Grid.Column="3" HorizontalAlignment="Center" Height="70" Margin="0,0,0,0" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Top" Width="95"/>
 
             <!--<TextBlock.Text>
                 <MultiBinding StringFormat="{}{0} ({1}%)">
@@ -55,7 +56,7 @@
                     <DataTemplate DataType="{x:Type local:DialogueDumperSingleFileTask}">
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
                             <TextBlock Text="{Binding CurrentOverallOperationText}"/>
-                            <ProgressBar Value="{Binding CurrentFileProgressValue}" Maximum="{Binding CurrentFileProgressMaximum}" Height="4" HorizontalAlignment="Stretch"/>
+                            <ProgressBar Value="{Binding CurrentFileProgressValue}" Maximum="{Binding CurrentFileProgressMaximum}" Height="4" HorizontalAlignment="Stretch" MaxWidth="400"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.Resources>

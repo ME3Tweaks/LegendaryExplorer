@@ -5,10 +5,7 @@
  */
 
 using ClosedXML.Excel;
-using Gammtek.Conduit.Extensions.IO;
 using KFreonLib.MEDirectories;
-using ME3Explorer;
-using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -19,13 +16,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
-using Unreal.ME3Structs;
+using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 
 namespace ME3Explorer.DialogueDumper
 {
@@ -59,6 +54,7 @@ namespace ME3Explorer.DialogueDumper
             DumpME3Command = new RelayCommand(DumpGameME3, CanDumpGameME3);
             DumpSpecificFilesCommand = new RelayCommand(DumpSpecificFiles, CanDumpSpecificFiles);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
+            ManageTLKsCommand = new RelayCommand(ManageTLKs);
         }
 
         private async void DumpSpecificFiles(object obj)
@@ -104,6 +100,7 @@ namespace ME3Explorer.DialogueDumper
         public ICommand DumpME3Command { get; set; }
         public ICommand DumpSpecificFilesCommand { get; set; }
         public ICommand CancelDumpCommand { get; set; }
+        public ICommand ManageTLKsCommand { get; set; }
 
         private int _overallProgressValue;
         public int OverallProgressValue
@@ -177,6 +174,13 @@ namespace ME3Explorer.DialogueDumper
         {
             DumpGame(MEGame.ME3);
         }
+
+        private void ManageTLKs(object obj)
+        {
+           var tlkmgr = new TlkManagerNS.TLKManagerWPF();
+           tlkmgr.Show();
+        }
+
 
         #endregion
 
@@ -537,10 +541,32 @@ namespace ME3Explorer.DialogueDumper
             {
                 string fileName = Path.GetFileNameWithoutExtension(File);
                 var GameBeingDumped = pcc.Game;
-                if ((fileName.EndsWith(@"LOC_INT")) || GameBeingDumped == MEGame.ME1)
+                int numDone = 1;
+                int numTotal = pcc.Exports.Count;
+                bool me1withConv = false;
+                List<int> localTlks = new List<int>();
+                List<ME1Explorer.Unreal.Classes.TalkFile> ME1tlks =  new List<ME1Explorer.Unreal.Classes.TalkFile>();  //Backup existing tlk list
+
+                if (GameBeingDumped == MEGame.ME1) //if ME1 add talkfiles
                 {
-                    int numDone = 1;
-                    int numTotal = pcc.Exports.Count;
+                    ME1tlks.AddRange(ME1Explorer.ME1TalkFiles.tlkList.GetRange(0, ME1Explorer.ME1TalkFiles.tlkList.Count));
+                    var exports = pcc.Exports;
+                    for (int i = 0; i < numTotal; i++)
+                    {
+                        if (exports[i].ObjectName == "tlk") //Int only
+                        {
+                            localTlks.Add(i + 1); //make uindex
+                            me1withConv = true;
+                        }
+                    }
+                    foreach (int t in localTlks)
+                    {
+                        ME1Explorer.ME1TalkFiles.LoadTlkData(File, t);
+                    }
+                }
+
+                if ((fileName.EndsWith(@"LOC_INT")) || me1withConv)
+                {
 
                     foreach (IExportEntry exp in pcc.Exports)
                     {
@@ -565,13 +591,26 @@ namespace ME3Explorer.DialogueDumper
                                 {
                                     //1.  Define speaker list "m_aSpeakerList"
                                     List<string> speakers = new List<string>();
-                                    var a_speakers = exp.GetProperty<ArrayProperty<NameProperty>>("m_aSpeakerList");                                     //
-                                    if (a_speakers != null)
+                                    if (GameBeingDumped == MEGame.ME2)
                                     {
-                                        foreach (NameProperty n in a_speakers)
+                                        var s_speakers = exp.GetProperty<ArrayProperty<StructProperty>>("m_SpeakerList");
+                                        foreach (StructProperty s in s_speakers)
                                         {
+                                            var n = s.GetProp<NameProperty>("sSpeakerTag");
                                             speakers.Add(n.ToString());
                                         }
+                                    }
+                                    else
+                                    {
+                                        var a_speakers = exp.GetProperty<ArrayProperty<NameProperty>>("m_aSpeakerList");                                     //
+                                        if (a_speakers != null)
+                                        {
+                                            foreach (NameProperty n in a_speakers)
+                                            {
+                                                speakers.Add(n.ToString());
+                                            }
+                                        }
+
                                     }
 
                                     //2. Go through Entry list "m_EntryList"
@@ -600,9 +639,8 @@ namespace ME3Explorer.DialogueDumper
                                         int lineStrRef = entry.GetProp<StringRefProperty>("srText").Value;
                                         if (lineStrRef > 0)
                                         {
-
                                             //Get StringRef Text
-                                            string lineTLKstring = ME3TalkFiles.findDataById(lineStrRef);
+                                            string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped);
 
                                             if (lineTLKstring != "No Data")
                                             {
@@ -633,7 +671,7 @@ namespace ME3Explorer.DialogueDumper
                                         {
 
                                             //Get StringRef Text
-                                            string lineTLKstring = ME3TalkFiles.findDataById(lineStrRef);
+                                            string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped);
 
                                             if (lineTLKstring != "No Data")
                                             {
@@ -661,17 +699,17 @@ namespace ME3Explorer.DialogueDumper
 
                 if ( !fileName.EndsWith(@"LOC_INT")) //Build Table of conversation owner tags
                 {
-                    string ownertag = null;
+                    string ownertag = "Not found";
                     foreach (IExportEntry exp in pcc.Exports)
                     {
-                        int numDone = 1;
-                        int numTotal = pcc.Exports.Count;
+                        numDone = 1;
+                        
                         string Class = exp.ClassName;
-                        if (Class == "BioSeqAct_Conversation" || Class == "SFXSeqAct_StartConversation" || Class == "SFXSeqAct_StartAmbientConv")
+                        if (Class == "BioSeqAct_StartConversation" || Class == "SFXSeqAct_StartConversation" || Class == "SFXSeqAct_StartAmbientConv")
                         {
                             try
                             {
-                                string convo = "not found";  //Find Conversation
+                                string convo = "not found";  //Find Conversation 
                                 var iconv = exp.GetProperty<ObjectProperty>("Conv").Value;
                                 if(iconv < 0)
                                 {
@@ -682,7 +720,7 @@ namespace ME3Explorer.DialogueDumper
                                     convo = pcc.getUExport(iconv).ObjectName;
                                 }
 
-                                int iownerObj = 0;
+                                int iownerObj = 0; //Find owner tag in linked actor or variable
                                 var links = exp.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
                                 foreach(StructProperty l in links )
                                 {
@@ -713,12 +751,17 @@ namespace ME3Explorer.DialogueDumper
                             }
                             catch
                             {
-
+                                Debug.WriteLine(exp.UIndex);
                             }
                         }
                         numDone++;
                     }
-                    
+                }
+
+                if (localTlks.Count > 0) //if ME1 cleanup talkfiles
+                {
+                    ME1Explorer.ME1TalkFiles.tlkList.Clear();
+                    ME1Explorer.ME1TalkFiles.tlkList.AddRange(ME1tlks.GetRange(0, ME1tlks.Count));
                 }
             }
         }

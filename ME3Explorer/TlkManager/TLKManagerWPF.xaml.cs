@@ -507,6 +507,7 @@ namespace ME3Explorer.TlkManagerNS
         /// Looks up current loaded file game ID and returns appropriate string reference.
         /// </summary>
         /// <param name="stringRefID"></param>
+        /// <param name="game"></param>
         /// <returns></returns>
         public static string GlobalFindStrRefbyID(int stringRefID, MEGame game)
         {

@@ -1593,6 +1593,7 @@
     <Resource Include="Resources\coalescededitor_256x256.ico" />
     <Resource Include="Resources\me2me3tlkeditor_256x256.ico" />
     <Resource Include="Resources\filehexanalyzer_256x256.ico" />
+    <Resource Include="Resources\dialoguedumper_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

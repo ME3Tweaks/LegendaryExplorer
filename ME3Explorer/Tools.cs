@@ -269,14 +269,14 @@ namespace ME3Explorer
             {
                 name = "Dialogue Dumper",
                 type = typeof(DialogueDumper.DialogueDumper),
-                icon = Application.Current.FindResource("iconPackageDumper") as ImageSource,
+                icon = Application.Current.FindResource("iconDialogueDumper") as ImageSource,
                 open = () =>
                 {
                     (new DialogueDumper.DialogueDumper()).Show();
                 },
                 tags = new List<string> { "utility", "convo", "dialogue", "text", "dump" },
                 subCategory = "Utilities",
-                description = "Dialogue Dumper is a utility for dumping conversation strings from games into an excel file so they can be searched."
+                description = "Dialogue Dumper is a utility for dumping conversation strings from games into an excel file."
             });
             set.Add(new Tool
             {
