@@ -186,7 +186,7 @@ namespace ME3Explorer.DialogueDumper
 
         public DialogueDumper(Window owner = null)
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Dumper", new WeakReference(this));
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Dialogue Dumper", new WeakReference(this));
             Owner = owner;
             DataContext = this;
             LoadCommands();
@@ -267,7 +267,7 @@ namespace ME3Explorer.DialogueDumper
         {
             path = Path.GetFullPath(path);
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
-            List<string> files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
+            List<string> files = Directory.GetFiles(path, "Bio*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
             await dumpPackages(files, outputfile);
         }
 
@@ -327,7 +327,7 @@ namespace ME3Explorer.DialogueDumper
             CommandManager.InvalidateRequerySuggested();
             await ProcessingQueue.Completion; // Asynchronously wait for completion.        }
 
-            workbook.SaveAs(outputfile);
+            
 
             if (DumpCanceled)
             {
@@ -343,6 +343,16 @@ namespace ME3Explorer.DialogueDumper
                 CurrentOverallOperationText = "Dump completed";
             }
             CommandManager.InvalidateRequerySuggested();
+
+            try
+            {
+                workbook.SaveAs(outputfile);
+                MessageBox.Show($"Dialogue Dump was completed.", "Success", MessageBoxButton.OK);
+            }
+            catch
+            {
+                MessageBox.Show("Unable to save excel file. Check it is not open.", "Error", MessageBoxButton.OK);
+            }
         }
 
 
@@ -541,8 +551,8 @@ namespace ME3Explorer.DialogueDumper
             {
                 string fileName = Path.GetFileNameWithoutExtension(File);
                 var GameBeingDumped = pcc.Game;
-                int numDone = 1;
-                int numTotal = pcc.Exports.Count;
+                
+                CurrentFileProgressMaximum = pcc.ExportCount;
                 bool me1withConv = false;
                 List<int> localTlks = new List<int>();
                 List<ME1Explorer.Unreal.Classes.TalkFile> ME1tlks =  new List<ME1Explorer.Unreal.Classes.TalkFile>();  //Backup existing tlk list
@@ -551,7 +561,7 @@ namespace ME3Explorer.DialogueDumper
                 {
                     ME1tlks.AddRange(ME1Explorer.ME1TalkFiles.tlkList.GetRange(0, ME1Explorer.ME1TalkFiles.tlkList.Count));
                     var exports = pcc.Exports;
-                    for (int i = 0; i < numTotal; i++)
+                    for (int i = 0; i < CurrentFileProgressMaximum; i++)
                     {
                         if (exports[i].ObjectName == "tlk") //Int only
                         {
@@ -694,7 +704,6 @@ namespace ME3Explorer.DialogueDumper
                             }
                         }
                     }
-                    numDone++;
                 }
 
                 if ( !fileName.EndsWith(@"LOC_INT")) //Build Table of conversation owner tags
@@ -702,8 +711,13 @@ namespace ME3Explorer.DialogueDumper
                     string ownertag = "Not found";
                     foreach (IExportEntry exp in pcc.Exports)
                     {
-                        numDone = 1;
-                        
+                        if (DumpCanceled)
+                        {
+                            return;
+                        }
+
+                        CurrentFileProgressValue = exp.UIndex;
+
                         string Class = exp.ClassName;
                         if (Class == "BioSeqAct_StartConversation" || Class == "SFXSeqAct_StartConversation" || Class == "SFXSeqAct_StartAmbientConv")
                         {
@@ -754,7 +768,6 @@ namespace ME3Explorer.DialogueDumper
                                 Debug.WriteLine(exp.UIndex);
                             }
                         }
-                        numDone++;
                     }
                 }
 
