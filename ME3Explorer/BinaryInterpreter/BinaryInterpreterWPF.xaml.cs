@@ -567,10 +567,8 @@ namespace ME3Explorer
                 };
                 subnodes.Add(embeddedShaderCount);
                 binarystart += 4;
-                var ShaderStartOffsets = data.Locate(Encoding.ASCII.GetBytes("CTAB")).Select(offSet => offSet - 0x2A).ToArray();
                 for (int i = 0; i < embeddedShaderFileCount; i++)
                 {
-                    binarystart = ShaderStartOffsets[i];
                     int nameIdx = BitConverter.ToInt32(data, binarystart);
                     var shaderNode = new BinaryInterpreterWPFTreeViewItem
                     {
@@ -590,14 +588,24 @@ namespace ME3Explorer
 
                     shaderNode.Items.Add(MakeGuidNode(data, ref binarystart, "Shader Start GUID"));
 
+                    int shaderEndOffset = BitConverter.ToInt32(data, binarystart);
                     shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{binarystart:X8} Shader Unknown 6 bytes",
+                        Header = $"0x{binarystart:X8} Shader End Offset: {shaderEndOffset}",
                         Name = "_" + binarystart,
                         Tag = NodeType.Unknown,
-                        Length = 6
+                        Length = 4
                     });
-                    binarystart += 6;
+                    binarystart += 4;
+
+                    shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X8} Shader Unknown 2 bytes",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.Unknown,
+                        Length = 2
+                    });
+                    binarystart += 2;
 
                     int shaderSize = BitConverter.ToInt32(data, binarystart);
                     shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
@@ -640,57 +648,7 @@ namespace ME3Explorer
                     binarystart += 8;
                     embeddedShaderCount.Items.Add(shaderNode);
 
-                    //Wrong, not file size, but not sure.
-                    //int shaderFileSize = BitConverter.ToInt32(data, binarystart);
-                    //shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                    //{
-                    //    Header = $"0x{binarystart:X8} Compiled Shader File Size: {shaderFileSize}",
-                    //    Name = "_" + binarystart,
-                    //    Tag = NodeType.IntProperty,
-                    //    Length = 4
-                    //});
-                    //binarystart += 4;
-
-
-                    //shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                    //{
-                    //    Header = $"0x{binarystart:X8} Compiled Shader File",
-                    //    Name = "_" + binarystart,
-                    //    Tag = NodeType.Unknown,
-                    //    Length = shaderFileSize
-                    //});
-                    /*
-                    shaderNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Header = $"0x{binarystart:X8} : {shaderID:X8} {Pcc.getNameEntry(nameIdx)}",
-                        Name = "_" + binarystart,
-                        Tag = NodeType.Unknown,
-                        Length = 12
-                    });*/
-                }
-
-                while (true)
-                {
-                    if (binarystart + 8 >= data.Length)
-                    {
-                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                        {
-                            Header = "Unable to locate VertexFactory Name Map."
-                        });
-                        return subnodes;
-                    }
-
-                    int test1 = BitConverter.ToInt32(data, binarystart);
-                    if (test1 == 0x1C)
-                    {
-                        int test2 = BitConverter.ToInt32(data, binarystart + 4);
-                        if (Pcc.getNameEntry(test2) is string test3 && test3.StartsWith("F") && test3.Contains("VertexFactory"))
-                        {
-                            break;
-                        }
-                    }
-
-                    binarystart++;
+                    binarystart = shaderEndOffset - CurrentLoadedExport.DataOffset;
                 }
 
                 int vertexFactoryMapCount = BitConverter.ToInt32(data, binarystart);
@@ -805,9 +763,6 @@ namespace ME3Explorer
                     binarystart += 4;
                     binarystart = shaderMapEndOffset - CurrentLoadedExport.DataOffset;
                 }
-
-                int[] versionInfo = data.Locate(new byte[]{ 0xAC, 0x02, 0x00, 0x00, 0xC2, 0x00, 0x00, 0x00 });
-                Debug.Assert(versionInfo.Length == materialShaderMapcount);
 
 
                 //binarystart += 8; //blanks?
