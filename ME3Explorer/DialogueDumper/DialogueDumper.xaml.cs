@@ -72,14 +72,13 @@ namespace ME3Explorer.DialogueDumper
 
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
             {
-
                 CommonSaveFileDialog outputDlg = new CommonSaveFileDialog
                 {
                     Title = "Select excel output",
-                    DefaultFileName = "DialogueDump.xlsx",
+                    DefaultFileName = $"DialogueDump.xlsx",
                     DefaultExtension = "xlsx",
                 };
-                outputDlg.Filters.Add(new CommonFileDialogFilter("Excel Files (.xlsx)", "*.xlsx"));
+                outputDlg.Filters.Add(new CommonFileDialogFilter("Excel Files", "*.xlsx"));
 
                 if (outputDlg.ShowDialog() == CommonFileDialogResult.Ok)
                 {
@@ -87,6 +86,7 @@ namespace ME3Explorer.DialogueDumper
                     await dumpPackages(dlg.FileNames.ToList(), outputDlg.FileName);
                 }
             }
+            this.RestoreAndBringToFront();
         }
 
         /// <summary>
@@ -224,14 +224,15 @@ namespace ME3Explorer.DialogueDumper
             CommonSaveFileDialog m = new CommonSaveFileDialog
             {
                 Title = "Select excel output",
-                DefaultFileName = "DialogueDump.xlsx",
+                DefaultFileName = $"{game}DialogueDump.xlsx",
                 DefaultExtension = "xlsx",
             };
-            m.Filters.Add(new CommonFileDialogFilter("Excel Files (.xlsx)", "*.xlsx"));
+            m.Filters.Add(new CommonFileDialogFilter("Excel Files", "*.xlsx"));
 
             if (m.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 string outputFile = m.FileName;
+                this.RestoreAndBringToFront();
                 dumpPackagesFromFolder(rootPath, outputFile);
             }
         }
@@ -331,23 +332,32 @@ namespace ME3Explorer.DialogueDumper
 
             if (DumpCanceled)
             {
-                DumpCanceled = false;
-                //CurrentFileProgressValue = 0;
                 OverallProgressMaximum = 100;
-                CurrentOverallOperationText = "Dump canceled";
+                CurrentOverallOperationText = "Dump canceled - saving excel";
             }
             else
             {
                 OverallProgressValue = 100;
                 OverallProgressMaximum = 100;
-                CurrentOverallOperationText = "Dump completed";
+                CurrentOverallOperationText = "Dump completed - saving excel";
             }
             CommandManager.InvalidateRequerySuggested();
 
             try
             {
                 workbook.SaveAs(outputfile);
-                MessageBox.Show($"Dialogue Dump was completed.", "Success", MessageBoxButton.OK);
+                if (DumpCanceled)
+                {
+                    DumpCanceled = false;
+                    MessageBox.Show($"Dialogue Dump was cancelled. Work in progress was saved.", "Cancelled", MessageBoxButton.OK);
+                    CurrentOverallOperationText = "Dump canceled";
+                }
+                else
+                {
+                    MessageBox.Show($"Dialogue Dump was completed.", "Success", MessageBoxButton.OK);
+                    CurrentOverallOperationText = "Dump completed";
+                }
+                
             }
             catch
             {
@@ -526,22 +536,22 @@ namespace ME3Explorer.DialogueDumper
             set => SetProperty(ref _shortFileName, value);
         }
 
-        public DialogueDumperSingleFileTask(string file, string outputfolder = null)
+        public DialogueDumperSingleFileTask(string file, string outputfile = null)
         {
             this.File = file;
             this.ShortFileName = Path.GetFileNameWithoutExtension(file);
-            this.OutputFolder = outputfolder;
+            this.OutputFile = outputfile;
             CurrentOverallOperationText = "Dumping " + ShortFileName;
         }
 
         public bool DumpCanceled;
         private string File;
-        private string OutputFolder;
+        private string OutputFile;
 
         /// <summary>
         /// Dumps Conversation strings to xl worksheet
         /// </summary>
-        /// <worksheet>Output excel worksheet</worksheet>
+        /// <workbook>Output excel workbook</workbook>
         public void dumpPackageFile(XLWorkbook workbook)
         {
             var xlstrings = workbook.Worksheet(1);
@@ -620,7 +630,6 @@ namespace ME3Explorer.DialogueDumper
                                                 speakers.Add(n.ToString());
                                             }
                                         }
-
                                     }
 
                                     //2. Go through Entry list "m_EntryList"
@@ -708,7 +717,7 @@ namespace ME3Explorer.DialogueDumper
 
                 if ( !fileName.EndsWith(@"LOC_INT")) //Build Table of conversation owner tags
                 {
-                    string ownertag = "Not found";
+                    
                     foreach (IExportEntry exp in pcc.Exports)
                     {
                         if (DumpCanceled)
@@ -717,7 +726,7 @@ namespace ME3Explorer.DialogueDumper
                         }
 
                         CurrentFileProgressValue = exp.UIndex;
-
+                        string ownertag = "Not found";
                         string Class = exp.ClassName;
                         if (Class == "BioSeqAct_StartConversation" || Class == "SFXSeqAct_StartConversation" || Class == "SFXSeqAct_StartAmbientConv")
                         {

@@ -50,13 +50,13 @@
 
 
         </Grid>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="10,0,0,0" Width="456" MinHeight="126">
-            <ListView ItemsSource="{Binding CurrentDumpingItems}" Height="{Binding ListViewHeight}">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="10,0,0,0" Width="456" MinHeight="126" CanHorizontallyScroll="False" CanVerticallyScroll="False">
+            <ListView ItemsSource="{Binding CurrentDumpingItems}" Height="{Binding ListViewHeight}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                 <ListView.Resources>
                     <DataTemplate DataType="{x:Type local:DialogueDumperSingleFileTask}">
-                        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer" CanHorizontallyScroll="False" CanVerticallyScroll="False">
                             <TextBlock Text="{Binding CurrentOverallOperationText}"/>
-                            <ProgressBar Value="{Binding CurrentFileProgressValue}" Maximum="{Binding CurrentFileProgressMaximum}" Height="4" HorizontalAlignment="Left" MaxWidth="420"/>
+                            <ProgressBar Value="{Binding CurrentFileProgressValue}" Maximum="{Binding CurrentFileProgressMaximum}" Height="4" HorizontalAlignment="Stretch"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.Resources>
