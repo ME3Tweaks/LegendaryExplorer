@@ -233,7 +233,7 @@ namespace ME3Explorer.DialogueDumper
             {
                 string outputFile = m.FileName;
                 this.RestoreAndBringToFront();
-                dumpPackagesFromFolder(rootPath, outputFile);
+                dumpPackagesFromFolder(rootPath, outputFile, game);
             }
         }
 
@@ -262,17 +262,17 @@ namespace ME3Explorer.DialogueDumper
         /// Dumps PCC data from all PCCs in the specified folder, recursively.
         /// </summary>
         /// <param name="path">Base path to start dumping functions from. Will search all subdirectories for package files.</param>
-        /// <param name="args">Set of arguments for what to dump. In order: imports, exports, data, scripts, coalesced, names. At least 1 of these options must be true.</param>
+        /// <param name="game">MEGame game determines.  If default then UDK, which means done as single file (always fully parsed). </param>
         /// <param name="outputfile">Output Excel document.</param>
-        public async void dumpPackagesFromFolder(string path, string outputfile = null)
+        public async void dumpPackagesFromFolder(string path, string outputfile = null, MEGame game = MEGame.UDK)
         {
             path = Path.GetFullPath(path);
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
             List<string> files = Directory.GetFiles(path, "Bio*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
-            await dumpPackages(files, outputfile);
+            await dumpPackages(files, outputfile, game);
         }
 
-        private async Task dumpPackages(List<string> files, string outputfile = null)
+        private async Task dumpPackages(List<string> files, string outputfile = null, MEGame game = MEGame.UDK)
         {
             CurrentOverallOperationText = "Dumping packages...";
             OverallProgressMaximum = files.Count;
@@ -299,14 +299,14 @@ namespace ME3Explorer.DialogueDumper
             {
                 if (x.DumpCanceled) { OverallProgressValue++; return; }
                 Application.Current.Dispatcher.Invoke(new Action(() => CurrentDumpingItems.Add(x)));
-                x.dumpPackageFile(workbook); // What to do on each item
+                x.dumpPackageFile(workbook, game); // What to do on each item
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     OverallProgressValue++; //Concurrency
                     CurrentDumpingItems.Remove(x);
                 }));
             },
-            new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount }); // How many items at the same time
+            new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 }); // How many items at the same time
 
             AllDumpingItems = new List<DialogueDumperSingleFileTask>();
             CurrentDumpingItems.ClearEx();
@@ -552,40 +552,53 @@ namespace ME3Explorer.DialogueDumper
         /// Dumps Conversation strings to xl worksheet
         /// </summary>
         /// <workbook>Output excel workbook</workbook>
-        public void dumpPackageFile(XLWorkbook workbook)
+        public void dumpPackageFile(XLWorkbook workbook, MEGame GameBeingDumped)
         {
             var xlstrings = workbook.Worksheet(1);
             var xlowners = workbook.Worksheet(2);
+            string fileName = Path.GetFileNameWithoutExtension(File).ToUpper();
+
+            //SETUP FILE FILTERS
+            bool CheckConv = false;
+            bool CheckActor = false;
+
+            if (GameBeingDumped == MEGame.UDK) //uDK = Single files or folders that always fully parse
+            {
+                CheckConv = true;
+                CheckActor = true;
+            }
+            else if (GameBeingDumped == MEGame.ME1 && !fileName.EndsWith(@"LOC_INT") && !fileName.EndsWith(@"LAY") && !fileName.EndsWith(@"SND") && !fileName.StartsWith(@"BIOG") && !fileName.StartsWith(@"BIOC"))
+            {
+                CheckConv = true;
+                CheckActor = true;
+            }
+            else if (GameBeingDumped != MEGame.ME1 && fileName.EndsWith(@"LOC_INT")) //Filter ME2/3 files with potential actors
+            {
+                CheckConv = true;
+                CheckActor = false;
+            }
+            else if (GameBeingDumped != MEGame.ME1 && !fileName.EndsWith(@"LOC_INT")) //Filter ME2/3 files with potential actors
+            {
+                CheckConv = false;
+                CheckActor = true;
+            }
+            else //Otherwise skip file
+            {
+                CurrentFileProgressValue = CurrentFileProgressMaximum;
+                return;
+            }
 
             using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
             {
-                string fileName = Path.GetFileNameWithoutExtension(File);
-                var GameBeingDumped = pcc.Game;
+                if(GameBeingDumped == MEGame.UDK) //Correct mapping
+                {
+                    GameBeingDumped = pcc.Game;
+                }
                 
                 CurrentFileProgressMaximum = pcc.ExportCount;
-                bool me1withConv = false;
-                List<int> localTlks = new List<int>();
-                List<ME1Explorer.Unreal.Classes.TalkFile> ME1tlks =  new List<ME1Explorer.Unreal.Classes.TalkFile>();  //Backup existing tlk list
 
-                if (GameBeingDumped == MEGame.ME1) //if ME1 add talkfiles
-                {
-                    ME1tlks.AddRange(ME1Explorer.ME1TalkFiles.tlkList.GetRange(0, ME1Explorer.ME1TalkFiles.tlkList.Count));
-                    var exports = pcc.Exports;
-                    for (int i = 0; i < CurrentFileProgressMaximum; i++)
-                    {
-                        if (exports[i].ObjectName == "tlk") //Int only
-                        {
-                            localTlks.Add(i + 1); //make uindex
-                            me1withConv = true;
-                        }
-                    }
-                    foreach (int t in localTlks)
-                    {
-                        ME1Explorer.ME1TalkFiles.LoadTlkData(File, t);
-                    }
-                }
-
-                if ((fileName.EndsWith(@"LOC_INT")) || me1withConv)
+                //CHECK FOR CONVERSATIONS TO DUMP
+                if (CheckConv)
                 {
 
                     foreach (IExportEntry exp in pcc.Exports)
@@ -594,14 +607,12 @@ namespace ME3Explorer.DialogueDumper
                         {
                             return;
                         }
-
                         CurrentFileProgressValue = exp.UIndex;
 
                         string className = exp.ClassName;
                         if (className == "BioConversation")
                         {
                             string convName = exp.ObjectName;
-                            
                             int convIdx = exp.UIndex;
 
                             try
@@ -611,7 +622,7 @@ namespace ME3Explorer.DialogueDumper
                                 {
                                     //1.  Define speaker list "m_aSpeakerList"
                                     List<string> speakers = new List<string>();
-                                    if (GameBeingDumped == MEGame.ME2)
+                                    if (GameBeingDumped != MEGame.ME3)
                                     {
                                         var s_speakers = exp.GetProperty<ArrayProperty<StructProperty>>("m_SpeakerList");
                                         foreach (StructProperty s in s_speakers)
@@ -632,6 +643,17 @@ namespace ME3Explorer.DialogueDumper
                                         }
                                     }
 
+                                    //If ME1 Setup Local talkfile
+                                    ME1Explorer.Unreal.Classes.TalkFile locTlk = null;
+                                    if (GameBeingDumped == MEGame.ME1)
+                                    {
+                                        var lnkTLKbinary = pcc.getUExport(exp.GetProperty<ObjectProperty>("m_oTlkFileSet").Value).getBinaryData();
+                                        int indexTlk = BitConverter.ToInt32(lnkTLKbinary, 20);
+                                        locTlk = new ME1Explorer.Unreal.Classes.TalkFile(pcc as ME1Package, indexTlk);
+                                        locTlk.LoadTlkData();
+                                    }
+                                    
+                                        
                                     //2. Go through Entry list "m_EntryList"
                                     // Parse line TLK StrRef, TLK Line, Speaker -1 = Owner, -2 = Shepard, or from m_aSpeakerList
 
@@ -654,14 +676,29 @@ namespace ME3Explorer.DialogueDumper
                                             lineSpeaker = "Owner";
                                         }
 
+
+
                                         //Get StringRef
                                         int lineStrRef = entry.GetProp<StringRefProperty>("srText").Value;
                                         if (lineStrRef > 0)
                                         {
                                             //Get StringRef Text
-                                            string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped);
+                                            string lineTLKstring = "No Data";
+                                            if (GameBeingDumped == MEGame.ME1)
+                                            {
+                                                lineTLKstring = locTlk.findDataById(lineStrRef);
+                                                if (lineTLKstring == "No Data")
+                                                {
+                                                    lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped);
+                                            }
 
-                                            if (lineTLKstring != "No Data")
+
+                                            if (lineTLKstring != "No Data" && lineTLKstring != "\"\"")
                                             {
                                                 int nextrow = xlstrings.LastRowUsed().RowNumber() + 1;
                                                 //Write output to excel
@@ -690,9 +727,22 @@ namespace ME3Explorer.DialogueDumper
                                         {
 
                                             //Get StringRef Text
-                                            string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped);
+                                            string lineTLKstring = "No Data";
+                                            if (GameBeingDumped == MEGame.ME1)
+                                            {
+                                                lineTLKstring = locTlk.findDataById(lineStrRef);
+                                                if (lineTLKstring == "No Data")
+                                                {
+                                                    lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped);
+                                            }
+                                            
 
-                                            if (lineTLKstring != "No Data")
+                                            if (lineTLKstring != "No Data" && lineTLKstring != "\"\"")
                                             {
                                                 int nextrow = xlstrings.LastRowUsed().RowNumber() + 1;
                                                 xlstrings.Cell(nextrow, 1).Value = lineSpeaker;
@@ -714,8 +764,8 @@ namespace ME3Explorer.DialogueDumper
                         }
                     }
                 }
-
-                if ( !fileName.EndsWith(@"LOC_INT")) //Build Table of conversation owner tags
+                //Build Table of conversation owner tags
+                if (CheckActor) 
                 {
                     
                     foreach (IExportEntry exp in pcc.Exports)
@@ -778,12 +828,6 @@ namespace ME3Explorer.DialogueDumper
                             }
                         }
                     }
-                }
-
-                if (localTlks.Count > 0) //if ME1 cleanup talkfiles
-                {
-                    ME1Explorer.ME1TalkFiles.tlkList.Clear();
-                    ME1Explorer.ME1TalkFiles.tlkList.AddRange(ME1tlks.GetRange(0, ME1tlks.Count));
                 }
             }
         }
