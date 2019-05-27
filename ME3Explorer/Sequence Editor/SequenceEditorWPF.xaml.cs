@@ -1380,6 +1380,7 @@ namespace ME3Explorer.Sequence_Editor
             GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
             GraphHost.Dispose();
             DataContext = null;
+            DispatcherHelper.EmptyQueue();
         }
 
         private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)

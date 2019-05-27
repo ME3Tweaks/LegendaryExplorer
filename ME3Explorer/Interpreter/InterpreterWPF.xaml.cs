@@ -98,7 +98,7 @@ namespace ME3Explorer
             EditorSetElements.Add(ParsedValue_TextBlock);
             EditorSetElements.Add(EditorSet_ArraySetSeparator);
             Set_Button.Visibility = Visibility.Collapsed;
-            EditorSet_Separator.Visibility = Visibility.Collapsed;
+            //EditorSet_Separator.Visibility = Visibility.Collapsed;
         }
 
         public UPropertyTreeViewEntry SelectedItem { get; set; }
@@ -438,7 +438,7 @@ namespace ME3Explorer
             CurrentLoadedExport = null;
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
             Set_Button.Visibility = Visibility.Collapsed;
-            EditorSet_Separator.Visibility = Visibility.Collapsed;
+            //EditorSet_Separator.Visibility = Visibility.Collapsed;
             (Interpreter_Hexbox?.ByteProvider as DynamicByteProvider)?.Bytes.Clear();
             Interpreter_Hexbox?.Refresh();
             HasUnsavedChanges = false;
@@ -453,7 +453,7 @@ namespace ME3Explorer
         {
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
             Set_Button.Visibility = Visibility.Collapsed;
-            EditorSet_Separator.Visibility = Visibility.Collapsed;
+            //EditorSet_Separator.Visibility = Visibility.Collapsed;
             HasUnsavedChanges = false;
             Interpreter_Hexbox.UnhighlightAll();
             //set rescan offset
@@ -1054,7 +1054,7 @@ namespace ME3Explorer
                 {
                     fe.Visibility = SupportedEditorSetElements.Contains(fe) ? Visibility.Visible : Visibility.Collapsed;
                 }
-                EditorSet_Separator.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+                //EditorSet_Separator.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             }
         }
