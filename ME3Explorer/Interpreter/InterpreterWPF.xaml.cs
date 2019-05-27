@@ -670,14 +670,13 @@ namespace ME3Explorer
                     }
                     break;
                 case FloatProperty fp:
-                    editableValue = $"{fp.Value:F7}";
+                    editableValue = fp.Value.ToString("0.########");
                     break;
                 case BoolProperty bp:
                     editableValue = bp.Value.ToString(); //combobox
                     break;
                 case ArrayPropertyBase ap:
                     {
-                        //todo - assign bottom text to show array type.
                         ArrayType at = UnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name.Name, parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, parsingExport);
                         editableValue = $"{at.ToString()} array";
                     }
