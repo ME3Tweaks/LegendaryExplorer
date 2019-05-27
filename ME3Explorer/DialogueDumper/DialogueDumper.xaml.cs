@@ -595,7 +595,7 @@ namespace ME3Explorer.DialogueDumper
                 CheckConv = true;
                 CheckActor = false;
             }
-            else if (GameBeingDumped != MEGame.ME1 && !fileName.EndsWith(@"LOC_INT") && !!fileName.StartsWith(@"BIOG")) //Filter ME2/3 files with potential actors
+            else if (GameBeingDumped != MEGame.ME1 && !fileName.EndsWith(@"LOC_INT") && !fileName.StartsWith(@"BIOG")) //Filter ME2/3 files with potential actors
             {
                 CheckConv = false;
                 CheckActor = true;
