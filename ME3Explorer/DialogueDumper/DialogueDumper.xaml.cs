@@ -42,9 +42,7 @@ namespace ME3Explorer.DialogueDumper
         private List<DialogueDumperSingleFileTask> AllDumpingItems;
 
         public XLWorkbook workbook = new XLWorkbook();
-
         private static BackgroundWorker xlworker = new BackgroundWorker();
-        private event EventHandler BackgroundWorkFinished;
         public BlockingCollection<List<string>> _xlqueue = new BlockingCollection<List<string>>();
         private ActionBlock<DialogueDumperSingleFileTask> ProcessingQueue;
         private string outputfile;
@@ -110,6 +108,11 @@ namespace ME3Explorer.DialogueDumper
         private bool bProcessDone;
         public int iProcessing = 0;
 
+        /// <summary>
+        /// output debug info to excel
+        /// </summary>
+        public bool bDebugOutput;
+
         #region commands
         public ICommand DumpME1Command { get; set; }
         public ICommand DumpME2Command { get; set; }
@@ -125,14 +128,12 @@ namespace ME3Explorer.DialogueDumper
             set => SetProperty(ref _overallProgressValue, value);
         }
 
-
         private int _overallProgressMaximum;
         public int OverallProgressMaximum
         {
             get => _overallProgressMaximum;
             set => SetProperty(ref _overallProgressMaximum, value);
         }
-
 
         private string _currentOverallOperationText;
         public string CurrentOverallOperationText
@@ -240,50 +241,74 @@ namespace ME3Explorer.DialogueDumper
             }
         }
 
-        private void Dump_BackgroundThread(object sender, DoWorkEventArgs e)
+        private async void DialogueDumper_FilesDropped(object sender, DragEventArgs e)
         {
-            var (rootPath, outputDir) = (ValueTuple<string, string>)e.Argument;
-        }
+            if (ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation) { return; } //Busy
 
-        private void Dump_Completed(object sender, RunWorkerCompletedEventArgs e)
-        {
-            try
+            CommonSaveFileDialog outputDlg = new CommonSaveFileDialog
             {
-                var result = e.Result;
-            }
-            catch (Exception ex)
+                Title = "Select excel output",
+                DefaultFileName = $"DialogueDump.xlsx",
+                DefaultExtension = "xlsx",
+            };
+            outputDlg.Filters.Add(new CommonFileDialogFilter("Excel Files", "*.xlsx"));
+
+            if (outputDlg.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                var exceptionMessage = ExceptionHandlerDialogWPF.FlattenException(ex);
-                Debug.WriteLine(exceptionMessage);
+                outputfile = outputDlg.FileName;
             }
+            this.RestoreAndBringToFront();
 
-            //throw new NotImplementedException();
+            OverallProgressValue = 0;
+            OverallProgressMaximum = 100;
+            CurrentOverallOperationText = "Scanning...";
+
+            string[] filenames = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (filenames.Length == 1 && Directory.Exists(filenames[0]))
+            {
+                //Directory - can drop
+                dumpPackagesFromFolder(filenames[0], outputfile);
+            }
+            else
+            {
+                await dumpPackages(filenames.ToList(), outputfile);
+            }
         }
-
 
         /// <summary>
         /// Dumps PCC data from all PCCs in the specified folder, recursively.
         /// </summary>
         /// <param name="path">Base path to start dumping functions from. Will search all subdirectories for package files.</param>
-        /// <param name="game">MEGame game determines.  If default then UDK, which means done as single file (always fully parsed). </param>
+        /// <param name="game">MEGame game determines.  If default then None, which means done as single file (always fully parsed). </param>
         /// <param name="outputfile">Output Excel document.</param>
-        public async void dumpPackagesFromFolder(string path, string outputfile = null, MEGame game = MEGame.UDK)
+        public async void dumpPackagesFromFolder(string path, string outputfile, MEGame game = MEGame.Unknown)
         {
+            OverallProgressValue = 0;
+            OverallProgressMaximum = 100;
+            CurrentOverallOperationText = "Scanning...";
+            await Task.Delay(100);  //allow dialog catch up before i/o
+
             path = Path.GetFullPath(path);
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
             List<string> files = Directory.GetFiles(path, "Bio*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
             await dumpPackages(files, outputfile, game);
         }
 
-        private async Task dumpPackages(List<string> files, string outputfile = null, MEGame game = MEGame.UDK)
+        private async Task dumpPackages(List<string> files, string outputfile, MEGame game = MEGame.Unknown)
         {
             CurrentOverallOperationText = "Dumping packages...";
             OverallProgressMaximum = files.Count;
             OverallProgressValue = 0;
+            iProcessing = 0;
+            bProcessDone = false;
             workbook = new XLWorkbook();
+            
+#if DEBUG
+            bDebugOutput = true;
+#endif
+
             var xlstrings = workbook.Worksheets.Add("TLKStrings");
             var xlowners = workbook.Worksheets.Add("ConvoOwners");
-
 
             //Setup column headers
             xlstrings.Cell(1, 1).Value = "Speaker";
@@ -298,18 +323,23 @@ namespace ME3Explorer.DialogueDumper
             xlowners.Cell(1, 2).Value = "Owner";
             xlowners.Cell(1, 3).Value = "File";
 
-            //DEBUG
-            var xldebug = workbook.Worksheets.Add("DEBUG");
-            xldebug.Cell(1, 1).Value = "Uexport";
-            xldebug.Cell(1, 2).Value = "File";
-            xldebug.Cell(1, 3).Value = "e";
+            if(bDebugOutput) //DEBUG
+            {
+                var xldebug = workbook.Worksheets.Add("DEBUG");
+                xldebug.Cell(1, 1).Value = "Uexport";
+                xldebug.Cell(1, 2).Value = "Class";
+                xldebug.Cell(1, 3).Value = "File";
+                xldebug.Cell(1, 4).Value = "e";
+            }
+
+            _xlqueue = new BlockingCollection<List<string>>(); //Reset queue for multiple operations
 
             //Background Consumer does excel work
+            xlworker = new BackgroundWorker();
             xlworker.DoWork += XlProcessor;
             xlworker.RunWorkerCompleted += Xlworker_RunWorkerCompleted;
             xlworker.WorkerSupportsCancellation = true;
             xlworker.RunWorkerAsync();
-            
 
             ProcessingQueue = new ActionBlock<DialogueDumperSingleFileTask>(x =>
             {
@@ -328,23 +358,27 @@ namespace ME3Explorer.DialogueDumper
             CurrentDumpingItems.ClearEx();
             foreach (var item in files)
             {
-                string outfolder = outputfile;
-                if (outfolder != null)
-                {
-                    string relative = GetRelativePath(Path.GetFullPath(item), Directory.GetParent(item).ToString());
-                    outfolder = Path.Combine(outfolder, relative);
-                }
-
-                var threadtask = new DialogueDumperSingleFileTask(item, outfolder);
+                var threadtask = new DialogueDumperSingleFileTask(item);
                 AllDumpingItems.Add(threadtask); //For setting cancelation value
                 ProcessingQueue.Post(threadtask); // Post all items to the block
             }
 
             ProcessingQueue.Complete(); // Signal completion
             CommandManager.InvalidateRequerySuggested();
-            
+            await ProcessingQueue.Completion;
 
-            while(!bProcessDone)
+
+            if (DumpCanceled)
+            {
+                CurrentOverallOperationText = "Dump canceled - saving excel";
+            }
+            else
+            {
+                CurrentOverallOperationText = "Dump completed - saving excel";
+            }
+            CommandManager.InvalidateRequerySuggested();
+
+            while (!bProcessDone)
             {
                 bProcessDone = await CheckProcess();
             }
@@ -353,46 +387,35 @@ namespace ME3Explorer.DialogueDumper
 
         public async Task<bool> CheckProcess()
         {
-            await ProcessingQueue.Completion; 
-            if ( iProcessing <= 0  || DumpCanceled)
+            if ( _xlqueue.IsEmpty() && ((OverallProgressValue >= OverallProgressMaximum && iProcessing <= 0) || DumpCanceled))
            {
                 _xlqueue.CompleteAdding();
                 return true;
-            }
+           }
            else
            {
                 await Task.Delay(1000);
                 return false;
-            }
+           }
         }
 
         private void Xlworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
             {
-
-            if (DumpCanceled)
-            {
-                OverallProgressMaximum = 100;
-                CurrentOverallOperationText = "Dump canceled - saving excel";
-            }
-            else
-            {
-                OverallProgressValue = 100;
-                OverallProgressMaximum = 100;
-                CurrentOverallOperationText = "Dump completed - saving excel";
-            }
-            CommandManager.InvalidateRequerySuggested();
-
+            xlworker.CancelAsync();
             try
             {
                 workbook.SaveAs(outputfile);
                 if (DumpCanceled)
                 {
                     DumpCanceled = false;
+                    OverallProgressMaximum = 100;
                     MessageBox.Show($"Dialogue Dump was cancelled. Work in progress was saved.", "Cancelled", MessageBoxButton.OK);
                     CurrentOverallOperationText = "Dump canceled";
                 }
                 else
                 {
+                    OverallProgressValue = 100;
+                    OverallProgressMaximum = 100;
                     MessageBox.Show($"Dialogue Dump was completed.", "Success", MessageBoxButton.OK);
                     CurrentOverallOperationText = "Dump completed";
                 }
@@ -408,7 +431,8 @@ namespace ME3Explorer.DialogueDumper
         {
             foreach (List<string> newrow in _xlqueue.GetConsumingEnumerable(CancellationToken.None))
             {
-
+                xlworker.Dispose();
+                xlworker.CancelAsync();
                 try
                 {
                     string sheetName = newrow[0]; 
@@ -428,59 +452,6 @@ namespace ME3Explorer.DialogueDumper
             }
         }
 
-
-        /// <summary>
-        /// Creates a relative path from one file or folder to another.
-        /// </summary>
-        /// <param name="fromPath">Contains the directory that defines the start of the relative System.IO.Path.</param>
-        /// <param name="toPath">Contains the path that defines the endpoint of the relative System.IO.Path.</param>
-        /// <returns>The relative path from the start directory to the end System.IO.Path.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="fromPath"/> or <paramref name="toPath"/> is <c>null</c>.</exception>
-        /// <exception cref="UriFormatException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        public string GetRelativePath(string fromPath, string toPath)
-        {
-            if (string.IsNullOrEmpty(fromPath))
-            {
-                throw new ArgumentNullException(nameof(fromPath));
-            }
-
-            if (string.IsNullOrEmpty(toPath))
-            {
-                throw new ArgumentNullException(nameof(toPath));
-            }
-
-            Uri fromUri = new Uri(AppendDirectorySeparatorChar(fromPath));
-            Uri toUri = new Uri(AppendDirectorySeparatorChar(toPath));
-
-            if (fromUri.Scheme != toUri.Scheme)
-            {
-                return toPath;
-            }
-
-            Uri relativeUri = fromUri.MakeRelativeUri(toUri);
-            string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
-
-            if (string.Equals(toUri.Scheme, Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase))
-            {
-                relativePath = relativePath.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
-            }
-
-            return relativePath;
-        }
-
-        private static string AppendDirectorySeparatorChar(string path)
-        {
-            // Append a slash only if the path is a directory and does not have a slash.
-            if (!System.IO.Path.HasExtension(path) &&
-                !path.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-            {
-                return path + System.IO.Path.DirectorySeparatorChar;
-            }
-
-            return path;
-        }
-
         private void DialogueDumper_Closing(object sender, CancelEventArgs e)
         {
             DumpCanceled = true;
@@ -495,19 +466,21 @@ namespace ME3Explorer.DialogueDumper
             Owner = null; //Detach from parent
         }
 
-        private async void DialogueDumper_FilesDropped(object sender, DragEventArgs e)
+        private void Dump_BackgroundThread(object sender, DoWorkEventArgs e)
         {
-            if (ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation) { return; } //Busy
+            var (rootPath, outputDir) = (ValueTuple<string, string>)e.Argument;
+        }
 
-            string[] filenames = (string[])e.Data.GetData(DataFormats.FileDrop);
-            if (filenames.Length == 1 && Directory.Exists(filenames[0]))
+        private void Dump_Completed(object sender, RunWorkerCompletedEventArgs e)
+        {
+            try
             {
-                //Directory - can drop
-                dumpPackagesFromFolder(filenames[0]);
+                var result = e.Result;
             }
-            else
+            catch (Exception ex)
             {
-                await dumpPackages(filenames.ToList());
+                var exceptionMessage = ExceptionHandlerDialogWPF.FlattenException(ex);
+                Debug.WriteLine(exceptionMessage);
             }
         }
 
@@ -587,18 +560,16 @@ namespace ME3Explorer.DialogueDumper
             set => SetProperty(ref _shortFileName, value);
         }
 
-        public DialogueDumperSingleFileTask(string file, string outputfile = null)
+        public DialogueDumperSingleFileTask(string file)
         {
             this.File = file;
             this.ShortFileName = Path.GetFileNameWithoutExtension(file);
-            this.OutputFile = outputfile;
             CurrentOverallOperationText = "Dumping " + ShortFileName;
         }
 
         public bool DumpCanceled;
         
         private string File;
-        private string OutputFile;
 
         /// <summary>
         /// Dumps Conversation strings to xl worksheet
@@ -607,20 +578,20 @@ namespace ME3Explorer.DialogueDumper
         public void dumpPackageFile(MEGame GameBeingDumped, DialogueDumper dumper)
         {
             dumper.iProcessing += 1;
-            string fileName = Path.GetFileNameWithoutExtension(File).ToUpper();
+            string fileName = ShortFileName.ToUpper();
 
             //SETUP FILE FILTERS
             bool CheckConv = false;
             bool CheckActor = false;
 
-            if (GameBeingDumped == MEGame.UDK) //uDK = Single files or folders that always fully parse
+            if (GameBeingDumped == MEGame.Unknown) //Unknown = Single files or folders that always fully parse
             {
                 CheckConv = true;
                 CheckActor = true;
             }
             else if (GameBeingDumped == MEGame.ME1 && !fileName.EndsWith(@"LOC_INT") && !fileName.EndsWith(@"LAY") && !fileName.EndsWith(@"SND") && !fileName.StartsWith(@"BIOG") && !fileName.StartsWith(@"BIOC"))
             {
-                CheckConv = true;
+                CheckConv = true; //Filter ME1 remove file types that never have convos. Levels only.
                 CheckActor = true;
             }
             else if (GameBeingDumped != MEGame.ME1 && fileName.EndsWith(@"LOC_INT")) //Filter ME2/3 files with potential actors
@@ -642,7 +613,7 @@ namespace ME3Explorer.DialogueDumper
 
             using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
             {
-                if(GameBeingDumped == MEGame.UDK) //Correct mapping
+                if(GameBeingDumped == MEGame.Unknown) //Correct mapping
                 {
                     GameBeingDumped = pcc.Game;
                 }
@@ -765,7 +736,7 @@ namespace ME3Explorer.DialogueDumper
                                             }
 
 
-                                            if (lineTLKstring != "No Data" && lineTLKstring != "\"\"")
+                                            if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" && lineTLKstring != "\" \"")
                                             {
                                                 //Write to Background thread
                                                 List<string> excelout = new List<string> { "TLKStrings", lineSpeaker, lineStrRef.ToString(), lineTLKstring, convName, GameBeingDumped.ToString(), fileName, convIdx.ToString() };
@@ -773,9 +744,9 @@ namespace ME3Explorer.DialogueDumper
                                             }
                                         }
                                     }
+
                                     //3. Go through Reply list "m_ReplyList"
                                     // Parse line TLK StrRef, TLK Line, Speaker always Shepard
-
                                     var replyList = exp.GetProperty<ArrayProperty<StructProperty>>("m_ReplyList");
                                     if (replyList != null)
                                     {
@@ -805,7 +776,7 @@ namespace ME3Explorer.DialogueDumper
                                                 }
 
 
-                                                if (lineTLKstring != "No Data" && lineTLKstring != "\"\"")
+                                                if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" && lineTLKstring != "\" \"")
                                                 {
                                                     //Write to Background thread (must be 8 strings)
                                                     List<string> excelout = new List<string> { "TLKStrings", lineSpeaker, lineStrRef.ToString(), lineTLKstring, convName, GameBeingDumped.ToString(), fileName, convIdx.ToString() };
@@ -818,8 +789,12 @@ namespace ME3Explorer.DialogueDumper
                             }
                             catch (Exception e)
                             {
-                                List<string> excelout = new List<string> { "DEBUG", exp.UIndex.ToString(), fileName, e.ToString() };
-                                dumper._xlqueue.Add(excelout);
+                                Debug.Write(dumper.iProcessing);
+                                if (dumper.bDebugOutput == true)
+                                {
+                                    List<string> excelout = new List<string> { "DEBUG", className, exp.UIndex.ToString(), fileName, e.ToString() };
+                                    dumper._xlqueue.Add(excelout);
+                                }
                             }
                         }
                     }
@@ -827,7 +802,6 @@ namespace ME3Explorer.DialogueDumper
                 //Build Table of conversation owner tags
                 if (CheckActor) 
                 {
-                    
                     foreach (IExportEntry exp in pcc.Exports)
                     {
                         if (DumpCanceled)
@@ -843,39 +817,61 @@ namespace ME3Explorer.DialogueDumper
                             try
                             {
                                 string convo = "not found";  //Find Conversation 
-                                var iconv = exp.GetProperty<ObjectProperty>("Conv").Value;
-                                if(iconv < 0)
+                                var oconv = exp.GetProperty<ObjectProperty>("Conv");
+                                if (oconv != null)
                                 {
-                                    convo = pcc.getUImport(iconv).ObjectName;
-                                }
-                                else
-                                {
-                                    convo = pcc.getUExport(iconv).ObjectName;
+                                    int iconv = oconv.Value;
+                                    if (iconv < 0)
+                                    {
+                                        convo = pcc.getUImport(iconv).ObjectName;
+                                    }
+                                    else
+                                    {
+                                        convo = pcc.getUExport(iconv).ObjectName;
+                                    }
                                 }
 
                                 int iownerObj = 0; //Find owner tag in linked actor or variable
                                 var links = exp.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
-                                foreach(StructProperty l in links )
+                                if(links != null)
                                 {
-                                    if(l.GetProp<StrProperty>("LinkDesc") == "Owner")
+                                    foreach (StructProperty l in links)
                                     {
-                                        var ownerLink = l.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
-                                        iownerObj = ownerLink[0].Value;
-                                        break;
+                                        if (l.GetProp<StrProperty>("LinkDesc") == "Owner")
+                                        {
+                                            var ownerLink = l.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                                            if (ownerLink.Count() > 0)
+                                            {
+                                                iownerObj = ownerLink[0].Value;
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
+                                if (iownerObj > 0)
+                                {
+                                    var svlink = pcc.getUExport(iownerObj);
+                                    if (svlink.ClassName == "SeqVar_Object")
+                                    {
 
-                                var svlink = pcc.getUExport(iownerObj);
-                                if(svlink.ClassName == "SeqVar_Object")
-                                {
-                                    var iactorlink = svlink.GetProperty<ObjectProperty>("ObjValue").Value;
-                                    var actorlink = pcc.getUExport(iactorlink);
-                                    ownertag = actorlink.GetProperty<NameProperty>("Tag").ToString();
-                                    
-                                }
-                                else if (svlink.ClassName == "BioSeqVar_ObjectFindByTag")
-                                {
-                                    ownertag = svlink.GetProperty<NameProperty>("m_sObjectTagToFind").ToString();
+                                        ObjectProperty oactorlink = svlink.GetProperty<ObjectProperty>("ObjValue");
+                                        if (oactorlink != null)
+                                        {
+                                            var actorlink = pcc.getUExport(oactorlink.Value);
+                                            ownertag = actorlink.GetProperty<NameProperty>("Tag").ToString();
+                                        }
+                                    }
+                                    else if (svlink.ClassName == "BioSeqVar_ObjectFindByTag")
+                                    {
+                                        if(GameBeingDumped == MEGame.ME1)
+                                        {
+                                            ownertag = svlink.GetProperty<StrProperty>("m_sObjectTagToFind").ToString();
+                                        }
+                                        else
+                                        {
+                                            ownertag = svlink.GetProperty<NameProperty>("m_sObjectTagToFind").ToString();
+                                        }
+                                    }
                                 }
 
                                 //Write to Background thread 
@@ -885,8 +881,12 @@ namespace ME3Explorer.DialogueDumper
                             }
                             catch (Exception e)
                             {
-                                List<string> excelout = new List<string> { "DEBUG", exp.UIndex.ToString(), fileName, e.ToString() };
-                                dumper._xlqueue.Add(excelout);
+                                Debug.Write(dumper.iProcessing);
+                                if(dumper.bDebugOutput == true)
+                                {
+                                    List<string> excelout = new List<string> { "DEBUG", Class, exp.UIndex.ToString(), fileName, e.ToString() };
+                                    dumper._xlqueue.Add(excelout);
+                                }
                             }
                         }
                     }
