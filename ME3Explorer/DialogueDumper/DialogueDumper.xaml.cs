@@ -279,7 +279,7 @@ namespace ME3Explorer.DialogueDumper
         /// Dumps PCC data from all PCCs in the specified folder, recursively.
         /// </summary>
         /// <param name="path">Base path to start dumping functions from. Will search all subdirectories for package files.</param>
-        /// <param name="game">MEGame game determines.  If default then None, which means done as single file (always fully parsed). </param>
+        /// <param name="game">MEGame game determines.  If default then Unknown, which means done as single file (always fully parsed). </param>
         /// <param name="outputfile">Output Excel document.</param>
         public async void dumpPackagesFromFolder(string path, string outputfile, MEGame game = MEGame.Unknown)
         {
@@ -304,7 +304,7 @@ namespace ME3Explorer.DialogueDumper
             workbook = new XLWorkbook();
             
 #if DEBUG
-            bDebugOutput = true;
+            bDebugOutput = true;  //Output for toolset devs
 #endif
 
             var xlstrings = workbook.Worksheets.Add("TLKStrings");
@@ -367,7 +367,6 @@ namespace ME3Explorer.DialogueDumper
             CommandManager.InvalidateRequerySuggested();
             await ProcessingQueue.Completion;
 
-
             if (DumpCanceled)
             {
                 CurrentOverallOperationText = "Dump canceled - saving excel";
@@ -382,7 +381,6 @@ namespace ME3Explorer.DialogueDumper
             {
                 bProcessDone = await CheckProcess();
             }
-            
         }
 
         public async Task<bool> CheckProcess()
@@ -599,7 +597,7 @@ namespace ME3Explorer.DialogueDumper
                 CheckConv = true;
                 CheckActor = false;
             }
-            else if (GameBeingDumped != MEGame.ME1 && !fileName.EndsWith(@"LOC_INT")) //Filter ME2/3 files with potential actors
+            else if (GameBeingDumped != MEGame.ME1 && !fileName.EndsWith(@"LOC_INT") && !!fileName.StartsWith(@"BIOG")) //Filter ME2/3 files with potential actors
             {
                 CheckConv = false;
                 CheckActor = true;
@@ -876,13 +874,13 @@ namespace ME3Explorer.DialogueDumper
                                     }
                                     else if (svlink.ClassName == "BioSeqVar_ObjectFindByTag")
                                     {
-                                        if(GameBeingDumped == MEGame.ME1)
+                                        if(GameBeingDumped == MEGame.ME3)
                                         {
-                                            ownertag = svlink.GetProperty<StrProperty>("m_sObjectTagToFind").ToString();
+                                            ownertag = svlink.GetProperty<NameProperty>("m_sObjectTagToFind").ToString();
                                         }
                                         else
                                         {
-                                            ownertag = svlink.GetProperty<NameProperty>("m_sObjectTagToFind").ToString();
+                                            ownertag = svlink.GetProperty<StrProperty>("m_sObjectTagToFind").ToString();
                                         }
                                     }
                                 }
