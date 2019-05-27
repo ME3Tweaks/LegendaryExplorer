@@ -857,8 +857,21 @@ namespace ME3Explorer.DialogueDumper
                                         ObjectProperty oactorlink = svlink.GetProperty<ObjectProperty>("ObjValue");
                                         if (oactorlink != null)
                                         {
-                                            var actorlink = pcc.getUExport(oactorlink.Value);
-                                            ownertag = actorlink.GetProperty<NameProperty>("Tag").ToString();
+                                            var actor = pcc.getUExport(oactorlink.Value);
+                                            var actortag = actor.GetProperty<NameProperty>("Tag");
+                                            if (actortag != null)
+                                            {
+                                                ownertag = actortag.ToString();
+                                            }
+                                            else if(actor.idxArchtype != 0)
+                                            {
+                                                var archtag = pcc.getUExport(actor.idxArchtype).GetProperty<NameProperty>("Tag");
+                                                if(archtag != null)
+                                                {
+                                                    ownertag = archtag.ToString();
+                                                }
+                                            }
+                                            
                                         }
                                     }
                                     else if (svlink.ClassName == "BioSeqVar_ObjectFindByTag")
