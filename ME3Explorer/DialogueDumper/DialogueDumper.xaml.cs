@@ -1,5 +1,5 @@
 ﻿/**
- * Package Dumper is based on ME3Tweaks Mass Effect 3 Mod Manager Command Line Tools
+ * Dialogue Dumper is based on ME3Tweaks Mass Effect 3 Mod Manager Command Line Tools
  * TransplanterLib. This is a modified version provided by Mgamerz
  * (c) Mgamerz 2019
  */
@@ -429,8 +429,6 @@ namespace ME3Explorer.DialogueDumper
         {
             foreach (List<string> newrow in _xlqueue.GetConsumingEnumerable(CancellationToken.None))
             {
-                xlworker.Dispose();
-                xlworker.CancelAsync();
                 try
                 {
                     string sheetName = newrow[0]; 
@@ -851,7 +849,6 @@ namespace ME3Explorer.DialogueDumper
                                     var svlink = pcc.getUExport(iownerObj);
                                     if (svlink.ClassName == "SeqVar_Object")
                                     {
-
                                         ObjectProperty oactorlink = svlink.GetProperty<ObjectProperty>("ObjValue");
                                         if (oactorlink != null)
                                         {
@@ -869,7 +866,6 @@ namespace ME3Explorer.DialogueDumper
                                                     ownertag = archtag.ToString();
                                                 }
                                             }
-                                            
                                         }
                                     }
                                     else if (svlink.ClassName == "BioSeqVar_ObjectFindByTag")
