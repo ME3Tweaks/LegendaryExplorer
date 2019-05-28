@@ -590,7 +590,7 @@ namespace ME3Explorer.DialogueDumper
                 CheckConv = true; //Filter ME1 remove file types that never have convos. Levels only.
                 CheckActor = true;
             }
-            else if (GameBeingDumped != MEGame.ME1 && fileName.EndsWith(@"LOC_INT")) //Filter ME2/3 files with potential actors
+            else if (GameBeingDumped != MEGame.ME1 && fileName.EndsWith(@"LOC_INT")) //Filter ME2/3 files with potential convos
             {
                 CheckConv = true;
                 CheckActor = false;
