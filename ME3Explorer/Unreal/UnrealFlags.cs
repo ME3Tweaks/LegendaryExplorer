@@ -7,16 +7,6 @@ namespace ME3Explorer.Unreal
 {
     public static class UnrealFlags
     {
-        public static IEnumerable<T> MaskToList<T>(Enum mask)
-        {
-            if (typeof(T).IsSubclassOf(typeof(Enum)) == false)
-                throw new ArgumentException();
-
-            return Enum.GetValues(typeof(T))
-                                 .Cast<Enum>()
-                                 .Where(m => mask.HasFlag(m))
-                                 .Cast<T>();
-        }
 
         /// <summary>
         /// Flags describing an class instance. This code is from UEExplorer.
@@ -88,17 +78,9 @@ namespace ME3Explorer.Unreal
             /// </summary>
             Cooked = 0x00000008U,      // @Redefined
 
-            /// <summary>
-            /// ???
-            /// <= UT
-            /// </summary>
             Unsecure = 0x00000010U,
 
-            /// <summary>
-            /// The package is encrypted.
-            /// <= UT
-            /// </summary>
-            Encrypted = 0x00000020U,
+            SavedWithNewerVersion = 0x00000020U,
 
             /// <summary>
             /// Clients must download the package.
@@ -106,12 +88,8 @@ namespace ME3Explorer.Unreal
             Need = 0x00008000U,
 
             /// <summary>
-            /// Unknown flags
-            /// -   0x20000000  -- Probably means the package contains Content(Meshes, Textures)
-            /// </summary>
-            ///
-
             /// Package holds map data.
+            /// </summary>
             Map = 0x00020000U,
 
             /// <summary>
@@ -131,8 +109,13 @@ namespace ME3Explorer.Unreal
             Debug = 0x00400000U,
             Imports = 0x00800000U,
 
+            SelfContainedLighting = 0x01000000U,
             Compressed = 0x02000000U,
             FullyCompressed = 0x04000000U,
+
+            ContainsInlinedShaders = 0x08000000U,
+
+            ContainsFaceFXData = 0x10000000U,
 
             /// <summary>
             /// Whether package has metadata exported(anything related to the editor).

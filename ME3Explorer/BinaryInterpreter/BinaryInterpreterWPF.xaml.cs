@@ -45,7 +45,7 @@ namespace ME3Explorer
         private string _selectedFileOffset;
         public string SelectedFileOffset
         {
-            get { return _selectedFileOffset; }
+            get => _selectedFileOffset;
             set
             {
                 if (_selectedFileOffset != value)
@@ -59,7 +59,7 @@ namespace ME3Explorer
         private int? _byteShiftUpDownValue;
         public int? ByteShiftUpDownValue
         {
-            get { return _byteShiftUpDownValue; }
+            get => _byteShiftUpDownValue;
             set
             {
                 if (_byteShiftUpDownValue != value)
@@ -73,7 +73,7 @@ namespace ME3Explorer
         private Visibility _genericEditorSetVisibility;
         public Visibility GenericEditorSetVisibility
         {
-            get { return _genericEditorSetVisibility; }
+            get => _genericEditorSetVisibility;
             set
             {
                 if (_genericEditorSetVisibility != value)
@@ -83,7 +83,7 @@ namespace ME3Explorer
                 }
             }
         }
-        private List<FrameworkElement> EditorSetElements = new List<FrameworkElement>();
+        private readonly List<FrameworkElement> EditorSetElements = new List<FrameworkElement>();
         public ObservableCollectionExtended<BinaryInterpreterWPFTreeViewItem> TreeViewItems { get; } = new ObservableCollectionExtended<BinaryInterpreterWPFTreeViewItem>();
         public enum InterpreterMode
         {
@@ -206,8 +206,10 @@ namespace ME3Explorer
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BinaryInterpreterWPF(), CurrentLoadedExport);
-                elhw.Title = $"Binary Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BinaryInterpreterWPF(), CurrentLoadedExport)
+                {
+                    Title = $"Binary Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}"
+                };
                 elhw.Show();
             }
         }
@@ -319,30 +321,22 @@ namespace ME3Explorer
             };
             //BinaryInterpreter_TreeView.Items.Add(topLevelTree);
 
-            ScanWorker = new BackgroundWorker();
-            ScanWorker.WorkerSupportsCancellation = true;
-            ScanWorker.DoWork += PerformScanBackground;
-            ScanWorker.WorkerReportsProgress = true;
-            ScanWorker.RunWorkerCompleted += PerformScan_Completed;
-            //We will not modify topleveltree in background thread, however we will pass it through to the completed method.
-            ScanWorker.RunWorkerAsync((topLevelTree, data, binarystart));
+            Task.Run(() => PerformScanBackground(topLevelTree, data, binarystart))
+                .ContinueWithOnUIThread(prevTask =>
+                {
+                    var result = prevTask.Result;
+                    OnDemand_Panel.Visibility = Visibility.Collapsed;
+                    LoadedContent_Panel.Visibility = Visibility.Visible;
+                    TreeViewItems.Replace(result);
+                });
         }
 
-        private void PerformScan_Completed(object sender, RunWorkerCompletedEventArgs e)
+        private BinaryInterpreterWPFTreeViewItem PerformScanBackground(BinaryInterpreterWPFTreeViewItem topLevelTree, byte[] data, int binarystart)
         {
-            var result = (BinaryInterpreterWPFTreeViewItem)e.Result;
-            OnDemand_Panel.Visibility = Visibility.Collapsed;
-            LoadedContent_Panel.Visibility = Visibility.Visible;
-            TreeViewItems.Replace(result);
-        }
-
-        private void PerformScanBackground(object sender, DoWorkEventArgs e)
-        {
-            if (CurrentLoadedExport == null) return; //Could happen due to multithread
-            (var topLevelTree, byte[] data, int binarystart) = (ValueTuple<BinaryInterpreterWPFTreeViewItem, byte[], int>)e.Argument;
+            if (CurrentLoadedExport == null) return topLevelTree; //Could happen due to multithread
             try
             {
-                List<object> subNodes = null;
+                List<object> subNodes;
                 bool isGenericScan = false;
                 bool appendGenericScan = false;
                 switch (CurrentLoadedExport.ClassName)
@@ -413,9 +407,10 @@ namespace ME3Explorer
                         appendGenericScan = true;
                         break;
                     case "Material":
-                    case "MaterialInstanceConstant":
                         subNodes = StartMaterialScan(data, ref binarystart);
-                        appendGenericScan = true;
+                        break;
+                    case "MaterialInstanceConstant":
+                        subNodes = StartMaterialInstanceConstantScan(data, ref binarystart);
                         break;
                     case "PrefabInstance":
                         subNodes = StartPrefabInstanceScan(data, ref binarystart);
@@ -485,7 +480,7 @@ namespace ME3Explorer
                 }
                 if (appendGenericScan)
                 {
-                    BinaryInterpreterWPFTreeViewItem genericContainer = new BinaryInterpreterWPFTreeViewItem() { Header = $"Generic scan data", IsExpanded = true };
+                    BinaryInterpreterWPFTreeViewItem genericContainer = new BinaryInterpreterWPFTreeViewItem { Header = "Generic scan data", IsExpanded = true };
                     subNodes.Add(genericContainer);
 
                     var genericItems = StartGenericScan(data, ref binarystart);
@@ -518,7 +513,7 @@ namespace ME3Explorer
             {
                 topLevelTree.Items.Add(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
-            e.Result = topLevelTree;
+            return topLevelTree;
         }
 
         private List<object> StartShaderCacheScan(byte[] data, ref int binarystart)
@@ -693,46 +688,9 @@ namespace ME3Explorer
                         Tag = NodeType.Unknown,
                     };
                     materialShaderMaps.Items.Add(materialShaderMap);
-                    materialShaderMap.Items.Add(MakeGuidNode(data, ref binarystart, "Base Material GUID"));
-                    int staticSwitchParameterCount = BitConverter.ToInt32(data, binarystart);
-                    binarystart += 4;
-                    var staticSwitchParametersNode = new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Header = $"0x{binarystart:X8} : Static Switch Parameters, {staticSwitchParameterCount} items",
-                        Name = "_" + binarystart,
-                        Tag = NodeType.Unknown,
-                        Length = 32 * staticSwitchParameterCount
-                    };
-                    materialShaderMap.Items.Add(staticSwitchParametersNode);
-                    for (int j = 0; j < staticSwitchParameterCount; j++)
-                    {
-                        var parameterName = new NameReference(Pcc.getNameEntry(BitConverter.ToInt32(data, binarystart)), BitConverter.ToInt32(data, binarystart + 4));
-                        binarystart += 8;
-                        var paramVal = BitConverter.ToBoolean(data, binarystart);
-                        binarystart += 4;
-                        var paramOverride = BitConverter.ToBoolean(data, binarystart);
-                        binarystart += 4;
-                        byte[] expressionGUID = new byte[16];
-                        Buffer.BlockCopy(data, binarystart, expressionGUID, 0, 16);
-                        Guid g = new Guid(expressionGUID);
-                        binarystart += 16;
-                        staticSwitchParametersNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                        {
-                            Header = $"0x{binarystart - 32:X8} : {i}: Name: {parameterName}, Value: {paramVal}, Override: {paramOverride}\nGUID:{g}",
-                            Name = $"_{binarystart - 32}",
-                            Tag = NodeType.Unknown,
-                            Length = 32
-                        });
-                    }
-
-                    int staticComponentMaskParameterCount = BitConverter.ToInt32(data, binarystart);
-                    binarystart += 4;
-                    //StaticComponentMaskParameters. 
-                    binarystart += staticComponentMaskParameterCount * 44;
-                    int NormalParameterCount = BitConverter.ToInt32(data, binarystart);
-                    binarystart += 4;
-                    //NormalParameters. 
-                    binarystart += NormalParameterCount * 29;
+                    var staticParamsetNodes = new List<object>();
+                    binarystart = ReadFStaticParameterSet(data, staticParamsetNodes, binarystart);
+                    materialShaderMap.Items.AddRange(staticParamsetNodes);
 
                     int unrealVersion = BitConverter.ToInt32(data, binarystart);
                     materialShaderMap.Items.Add(new BinaryInterpreterWPFTreeViewItem
@@ -4922,7 +4880,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
+                subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem { Header = $"Error reading binary data: {ex}" });
             }
             return subnodesTop;
         }
@@ -4940,99 +4898,443 @@ namespace ME3Explorer
             }
         }
 
-
         private List<object> StartMaterialScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var nodes = new List<object>();
 
             if (binarystart >= data.Length)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = "No Binary Data" });
-                return subnodes;
+                return new List<object> { new BinaryInterpreterWPFTreeViewItem { Header = "No Binary Data" } };
             }
             try
             {
-                int binarypos = binarystart + 0x8;
-                if (CurrentLoadedExport.FileRef.Game == MEGame.ME2)
                 {
-                    binarypos -= 4;
-                }
-                int guidcount = BitConverter.ToInt32(data, binarypos);
+                    var subnodes = new List<object>();
 
-
-
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                {
-                    Header = $"0x{binarypos:X4} GUID count: {guidcount}",
-                    Name = "_" + binarypos
-                });
-                int cappedGuidCount = Math.Min(guidcount, 1); //QUICK AND DIRTY BUG FIX #99
-                binarypos += 4;
-                for (int i = 0; i < cappedGuidCount; i++)
-                {
-                    byte[] guidData = data.Skip(binarypos).Take(16).ToArray();
-                    Guid guid = new Guid(guidData);
-                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                    nodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{binarypos:X4} GUID: {guid}",
-                        Name = "_" + binarypos
+                        Header = $"0x{binarystart:X4} Material Resource",
+                        Name = "_" + binarystart,
+                        Items = subnodes
                     });
-                    binarypos += 16;
+
+                    binarystart = ReadMaterialResource(data, subnodes, binarystart);
                 }
-                int unkcount = BitConverter.ToInt32(data, binarypos);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"0x{binarypos:X4} ??? (Count?): {unkcount}",
-                    Name = "_" + binarypos
-                });
-                binarypos += 4;
-                int count = BitConverter.ToInt32(data, binarypos);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                {
-                    Header = $"0x{binarypos:X4} Count: {count}",
-                    Name = "_" + binarypos
-                });
-                binarypos += 4;
+                    var subnodes = new List<object>();
 
-                while (binarypos <= data.Length - 4 && count > 0)
-                {
-                    int val = BitConverter.ToInt32(data, binarypos);
-                    string name = val.ToString();
-
-                    if (val > 0 && val <= CurrentLoadedExport.FileRef.Exports.Count)
+                    nodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        IExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
-                        name += $" {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
-                    }
-                    else if (val < 0 && Math.Abs(val) <= CurrentLoadedExport.FileRef.Imports.Count)
-                    {
-                        int csImportVal = Math.Abs(val) - 1;
-                        ImportEntry imp = CurrentLoadedExport.FileRef.Imports[csImportVal];
-                        name += $" {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
-
-                    }
-                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Header = $"0x{binarypos:X4} {name}",
-                        Tag = NodeType.StructLeafObject,
-                        Name = "_" + binarypos
-
+                        Header = $"0x{binarystart:X4} Legacy ShaderMap2 Resource",
+                        Name = "_" + binarystart,
+                        Items = subnodes
                     });
-                    binarypos += 4;
-                    count--;
+
+                    binarystart = ReadMaterialResource(data, subnodes, binarystart);
                 }
-
-                binarystart = binarypos;
-
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = "There's a bunch more binary in this object, guids and name refs and object refs." });
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = "Unfortunately this tool is not smart enough to understand them, but you might be able to." });
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = "This is your chance to prove that humans are still better than machines." });
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
+                nodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = $"Error reading binary data: {ex}" });
             }
-            return subnodes;
+            return nodes;
+        }
+
+        private List<object> StartMaterialInstanceConstantScan(byte[] data, ref int binarystart)
+        {
+            var nodes = new List<object>();
+
+            if (binarystart >= data.Length)
+            {
+                return new List<object> { new BinaryInterpreterWPFTreeViewItem { Header = "No Binary Data" } };
+            }
+            try
+            {
+                {
+                    var subnodes = new List<object>();
+
+                    nodes.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X4} Static Permutation Resource",
+                        Name = "_" + binarystart,
+                        Items = subnodes
+                    });
+
+                    binarystart = ReadMaterialResource(data, subnodes, binarystart);
+
+                    binarystart = ReadFStaticParameterSet(data, subnodes, binarystart);
+                }
+                {
+                    var subnodes = new List<object>();
+
+                    nodes.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarystart:X4} Legacy ShaderMap2 Resource",
+                        Name = "_" + binarystart,
+                        Items = subnodes
+                    });
+
+                    binarystart = ReadMaterialResource(data, subnodes, binarystart);
+
+                    binarystart = ReadFStaticParameterSet(data, subnodes, binarystart);
+                }
+
+                if (binarystart != data.Length)
+                {
+                    //Debugger.Break();
+                }
+            }
+            catch (Exception ex)
+            {
+                nodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = $"Error reading binary data: {ex}" });
+            }
+            return nodes;
+        }
+
+        private int ReadFStaticParameterSet(byte[] data, List<object> nodes, int binarypos)
+        {
+
+            nodes.Add(MakeGuidNode(data, ref binarypos, "Base Material GUID"));
+            int staticSwitchParameterCount = BitConverter.ToInt32(data, binarypos);
+            var staticSwitchParametersNode = new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X8} : Static Switch Parameters, {staticSwitchParameterCount} items",
+                Name = "_" + binarypos,
+                Tag = NodeType.Unknown,
+                Length = 4
+            };
+            binarypos += 4;
+            nodes.Add(staticSwitchParametersNode);
+            for (int j = 0; j < staticSwitchParameterCount; j++)
+            {
+                var parameterName = new NameReference(Pcc.getNameEntry(BitConverter.ToInt32(data, binarypos)), BitConverter.ToInt32(data, binarypos + 4));
+                binarypos += 8;
+                var paramVal = BitConverter.ToBoolean(data, binarypos);
+                binarypos += 4;
+                var paramOverride = BitConverter.ToBoolean(data, binarypos);
+                binarypos += 4;
+                var expressionGUID = new byte[16];
+                Buffer.BlockCopy(data, binarypos, expressionGUID, 0, 16);
+                Guid g = new Guid(expressionGUID);
+                binarypos += 16;
+                staticSwitchParametersNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos - 32:X8} : {j}: Name: {parameterName.InstancedString}, Value: {paramVal}, Override: {paramOverride}\nGUID:{g}",
+                    Name = $"_{binarypos - 32}",
+                    Tag = NodeType.Unknown,
+                    Length = 32
+                });
+            }
+
+            int staticComponentMaskParameterCount = BitConverter.ToInt32(data, binarypos);
+            var staticComponentMaskParametersNode = new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X8} : Static Component Mask Parameters, {staticComponentMaskParameterCount} items",
+                Name = "_" + binarypos,
+                Tag = NodeType.Unknown,
+                Length = 4
+            };
+            binarypos += 4;
+            nodes.Add(staticComponentMaskParametersNode);
+            for (int i = 0; i < staticComponentMaskParameterCount; i++)
+            {
+                var subnodes = new List<object>();
+                staticComponentMaskParametersNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X8} : Parameter {i}",
+                    Name = "_" + binarypos,
+                    Tag = NodeType.Unknown,
+                    Length = 44,
+                    Items = subnodes
+                });
+                var parameterName = new NameReference(Pcc.getNameEntry(BitConverter.ToInt32(data, binarypos)), BitConverter.ToInt32(data, binarypos + 4));
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X8} : ParameterName: {parameterName.InstancedString}",
+                    Name = "_" + binarypos,
+                    Tag = NodeType.StructLeafName,
+                    Length = 8
+                });
+                binarypos += 8;
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X8} : R: {BitConverter.ToBoolean(data, binarypos)}",
+                    Name = "_" + binarypos,
+                    Tag = NodeType.StructLeafBool,
+                    Length = 4,
+                });
+                binarypos += 4;
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X8} : G: {BitConverter.ToBoolean(data, binarypos)}",
+                    Name = "_" + binarypos,
+                    Tag = NodeType.StructLeafBool,
+                    Length = 4,
+                });
+                binarypos += 4;
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X8} : B: {BitConverter.ToBoolean(data, binarypos)}",
+                    Name = "_" + binarypos,
+                    Tag = NodeType.StructLeafBool,
+                    Length = 4,
+                });
+                binarypos += 4;
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X8} : A: {BitConverter.ToBoolean(data, binarypos)}",
+                    Name = "_" + binarypos,
+                    Tag = NodeType.StructLeafBool,
+                    Length = 4,
+                });
+                binarypos += 4;
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X8} : bOverride: {BitConverter.ToBoolean(data, binarypos)}",
+                    Name = "_" + binarypos,
+                    Tag = NodeType.StructLeafBool,
+                    Length = 4,
+                });
+                binarypos += 4;
+                subnodes.Add(MakeGuidNode(data, ref binarypos, "ExpressionGUID"));
+            }
+            int NormalParameterCount = BitConverter.ToInt32(data, binarypos);
+            var NormalParametersNode = new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X8} : Normal Parameters, {NormalParameterCount} items",
+                Name = "_" + binarypos,
+                Tag = NodeType.Unknown,
+                Length = 4
+            };
+            binarypos += 4;
+            nodes.Add(NormalParametersNode);
+            for (int i = 0; i < NormalParameterCount; i++)
+            {
+                var subnodes = new List<object>();
+                NormalParametersNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X8} : Parameter {i}",
+                    Name = "_" + binarypos,
+                    Tag = NodeType.Unknown,
+                    Length = 29,
+                    Items = subnodes
+                });
+                var parameterName = new NameReference(Pcc.getNameEntry(BitConverter.ToInt32(data, binarypos)), BitConverter.ToInt32(data, binarypos + 4));
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X8} : ParameterName: {parameterName.InstancedString}",
+                    Name = "_" + binarypos,
+                    Tag = NodeType.StructLeafName,
+                    Length = 8
+                });
+                binarypos += 8;
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X8} : CompressionSettings: {(Unreal.ME3Enums.TextureCompressionSettings)data[binarypos]}",
+                    Name = "_" + binarypos,
+                    Tag = NodeType.StructLeafByte,
+                    Length = 1
+                });
+                binarypos += 1;
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X8} : bOverride: {BitConverter.ToBoolean(data, binarypos)}",
+                    Name = "_" + binarypos,
+                    Tag = NodeType.StructLeafBool,
+                    Length = 4
+                });
+                binarypos += 4;
+                subnodes.Add(MakeGuidNode(data, ref binarypos, "ExpressionGUID"));
+            }
+
+            return binarypos;
+        }
+
+        private int ReadMaterialResource(byte[] data, List<object> subnodes, int binarypos)
+        {
+            int compileErrorsCount = BitConverter.ToInt32(data, binarypos);
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X4} Compile Error Count: {BitConverter.ToInt32(data, binarypos)}",
+                Name = "_" + binarypos
+            });
+            binarypos += 4;
+            for (int i = 0; i < compileErrorsCount; i++)
+            {
+                int strLen = -2 * BitConverter.ToInt32(data, binarypos);
+                binarypos += 4;
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X4} Compile Error {i}: {Encoding.Unicode.GetString(data, binarypos, strLen)}",
+                    Name = "_" + binarypos,
+                    Length = strLen
+                });
+                binarypos += strLen;
+            }
+
+            if (CurrentLoadedExport.FileRef.Game != MEGame.ME2)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X4} Zero: {BitConverter.ToInt32(data, binarypos)}",
+                    Name = "_" + binarypos
+                });
+                binarypos += 4;
+            }
+
+            int maxTextureDependencyLength = BitConverter.ToInt32(data, binarypos);
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X4} Max Texture Dependency Length: {maxTextureDependencyLength} (Unused?)",
+                Name = "_" + binarypos
+            });
+            binarypos += 4;
+
+            subnodes.Add(MakeGuidNode(data, ref binarypos, "GUID"));
+
+            uint numUserTexCoords = BitConverter.ToUInt32(data, binarypos);
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X4} Number of User Texture Coordinates: {numUserTexCoords}",
+                Name = "_" + binarypos
+            });
+            binarypos += 4;
+            int textureCount = BitConverter.ToInt32(data, binarypos);
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X4} Uniform Expression Texture Count: {textureCount}",
+                Name = "_" + binarypos
+            });
+            binarypos += 4;
+
+            while (binarypos <= data.Length - 4 && textureCount > 0)
+            {
+                int val = BitConverter.ToInt32(data, binarypos);
+                string name = val.ToString();
+
+                if (val > 0 && val <= CurrentLoadedExport.FileRef.Exports.Count)
+                {
+                    IExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
+                    name += $" {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
+                }
+                else if (val < 0 && Math.Abs(val) <= CurrentLoadedExport.FileRef.Imports.Count)
+                {
+                    int csImportVal = Math.Abs(val) - 1;
+                    ImportEntry imp = CurrentLoadedExport.FileRef.Imports[csImportVal];
+                    name += $" {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
+                }
+
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X4} {name}",
+                    Tag = NodeType.StructLeafObject,
+                    Name = "_" + binarypos
+                });
+                binarypos += 4;
+                textureCount--;
+            }
+
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X4} bUsesSceneColor: {BitConverter.ToBoolean(data, binarypos)}",
+                Name = "_" + binarypos
+            });
+            binarypos += 4;
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X4} bUsesSceneDepth: {BitConverter.ToBoolean(data, binarypos)}",
+                Name = "_" + binarypos
+            });
+            binarypos += 4;
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X4} bUsesDynamicParameter: {BitConverter.ToBoolean(data, binarypos)}",
+                Name = "_" + binarypos
+            });
+            binarypos += 4;
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X4} bUsesLightmapUVs: {BitConverter.ToBoolean(data, binarypos)}",
+                Name = "_" + binarypos
+            });
+            binarypos += 4;
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X4} bUsesMaterialVertexPositionOffset: {BitConverter.ToBoolean(data, binarypos)}",
+                Name = "_" + binarypos
+            });
+            binarypos += 4;
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X4} Unknown: {BitConverter.ToInt32(data, binarypos)}",
+                Name = "_" + binarypos
+            });
+            binarypos += 4;
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X4} UsingTransforms: {(ECoordTransformUsage)BitConverter.ToUInt32(data, binarypos)}",
+                Name = "_" + binarypos
+            });
+            binarypos += 4;
+
+            int textureLookupCount = BitConverter.ToInt32(data, binarypos);
+            var textureLookups = new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X4} Texture Lookup Count: {textureLookupCount}",
+                Name = "_" + binarypos,
+            };
+            subnodes.Add(textureLookups);
+            binarypos += 4;
+            for (int j = 0; j < textureLookupCount; j++)
+            {
+                textureLookups.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X4} Texture Coordinate Index: {BitConverter.ToInt32(data, binarypos)}",
+                    Name = "_" + binarypos
+                });
+                binarypos += 4;
+                textureLookups.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X4} Texture Index: {BitConverter.ToInt32(data, binarypos)} (index into Uniform Expression Texture array)",
+                    Name = "_" + binarypos
+                });
+                binarypos += 4;
+                textureLookups.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X4} UScale: {BitConverter.ToSingle(data, binarypos)}",
+                    Name = "_" + binarypos
+                });
+                binarypos += 4;
+                textureLookups.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X4} VScale: {BitConverter.ToSingle(data, binarypos)}",
+                    Name = "_" + binarypos
+                });
+                binarypos += 4;
+            }
+
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+            {
+                Header = $"0x{binarypos:X4} Zero: {BitConverter.ToInt32(data, binarypos)}",
+                Name = "_" + binarypos
+            });
+            binarypos += 4;
+            return binarypos;
+        }
+
+        [Flags]
+        public enum ECoordTransformUsage : uint
+        {
+            // no transforms used
+            UsedCoord_None = 0,
+            // local to world used
+            UsedCoord_World = 1 << 0,
+            // local to view used
+            UsedCoord_View = 1 << 1,
+            // local to local used
+            UsedCoord_Local = 1 << 2,
+            // World Position used
+            UsedCoord_WorldPos = 1 << 3
         }
 
         private List<object> StartPrefabInstanceScan(byte[] data, ref int binarystart)

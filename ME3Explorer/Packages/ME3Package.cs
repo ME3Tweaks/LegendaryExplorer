@@ -349,7 +349,7 @@ namespace ME3Explorer.Packages
                     binData.Seek(24, SeekOrigin.Current);
                     int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
                     binData.Seek(-4, SeekOrigin.Current);
-                    binData.WriteValueS32(nextShaderOffset + newDataOffset);
+                    binData.WriteInt32(nextShaderOffset + newDataOffset);
                     binData.Seek(nextShaderOffset, SeekOrigin.Begin);
                 }
 
@@ -374,7 +374,7 @@ namespace ME3Explorer.Packages
 
                     int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
                     binData.Seek(-4, SeekOrigin.Current);
-                    binData.WriteValueS32(nextMaterialShaderMapOffset + newDataOffset);
+                    binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
                     binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
                 }
 
