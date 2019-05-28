@@ -36,6 +36,21 @@ namespace ME3Explorer.TlkManagerNS
         public ObservableCollectionExtended<LoadedTLK> ME2TLKItems { get; } = new ObservableCollectionExtended<LoadedTLK>();
         public ObservableCollectionExtended<LoadedTLK> ME3TLKItems { get; } = new ObservableCollectionExtended<LoadedTLK>();
 
+        public TLKManagerWPF()
+        {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("TLK Manager WPF", new WeakReference(this));
+
+            DataContext = this;
+            LoadCommands();
+            InitializeComponent();
+            ME1TLKItems.CollectionChanged += ME1CollectionChangedEventHandler;
+            ME2TLKItems.CollectionChanged += ME2CollectionChangedEventHandler;
+            ME3TLKItems.CollectionChanged += ME3CollectionChangedEventHandler;
+            ME1TLKItems.AddRange(ME1TalkFiles.tlkList.Select(x => new LoadedTLK(x.pcc.FileName, x.uindex, x.pcc.getUExport(x.uindex).ObjectName, true)));
+            ME2TLKItems.AddRange(ME2TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
+            ME3TLKItems.AddRange(ME3TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
+        }
+
         private bool _bSaveNeededME1 = false;
         public bool bSaveNeededME1
         {
@@ -66,23 +81,6 @@ namespace ME3Explorer.TlkManagerNS
                 _bSaveNeededME3 = value;
                 btn_SaveME3.IsEnabled = value;
             }
-        }
-
-
-public TLKManagerWPF()
-        {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("TLK Manager WPF", new WeakReference(this));
-
-            DataContext = this;
-            LoadCommands();
-            InitializeComponent();
-            ME1TLKItems.CollectionChanged += ME1CollectionChangedEventHandler;
-            ME2TLKItems.CollectionChanged += ME2CollectionChangedEventHandler;
-            ME3TLKItems.CollectionChanged += ME3CollectionChangedEventHandler;
-            ME1TLKItems.AddRange(ME1TalkFiles.tlkList.Select(x => new LoadedTLK(x.pcc.FileName, x.uindex, x.pcc.getUExport(x.uindex).ObjectName, true)));
-            ME2TLKItems.AddRange(ME2TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
-            ME3TLKItems.AddRange(ME3TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
-
         }
 
         #region Commands
