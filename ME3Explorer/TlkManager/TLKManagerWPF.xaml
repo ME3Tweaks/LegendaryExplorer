@@ -8,7 +8,9 @@
         xmlns:local="clr-namespace:ME3Explorer.TlkManagerNS"
         mc:Ignorable="d"
         Title="TLK Manager WPF" Height="450" Width="800"
-        Icon="/Resources/tlkmanager_256x256.ico">
+        Icon="/Resources/tlkmanager_256x256.ico"
+        Closing="TLKManager_Closing">
+    
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel>
             <Grid Margin="5">
