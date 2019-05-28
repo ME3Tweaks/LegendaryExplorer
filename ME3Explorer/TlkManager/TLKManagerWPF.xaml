@@ -48,7 +48,7 @@
                         <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
                     <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME1AutoFindTLK}" ToolTip="Automatically finds TLK files in game directory" />
-                    <Button Content="Reload TLKs" Margin="2" Grid.Row="1"  Command="{Binding ME1ReloadTLKs}" ToolTip="Reloads strings from the selected TLKs"/>
+                    <Button Content="Reload TLKs" Margin="2" Grid.Row="1"  Command="{Binding ME1ReloadTLKs}" ToolTip="Reloads strings from the selected TLKs.&#10;Reloading TLKs will save the list of TLKs for the game to disk so they automatically load with the toolkit"/>
                     <xctk:WatermarkComboBox Name="ME1TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="ME1TLKLangCombobox_SelectionChanged">
                         <ComboBoxItem>Default - Female</ComboBoxItem>
                         <ComboBoxItem>Default - Male</ComboBoxItem>
@@ -72,7 +72,7 @@
 
                     </Grid.RowDefinitions>
                     <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME2AutoFindTLK}" ToolTip="Automatically finds TLK files in game directory"/>
-                    <Button Content="Reload TLKs" Margin="2" Grid.Row="1" Command="{Binding ME2ReloadTLKs}"  ToolTip="Reloads strings from the selected TLKs"/>
+                    <Button Content="Reload TLKs" Margin="2" Grid.Row="1" Command="{Binding ME2ReloadTLKs}"  ToolTip="Reloads strings from the selected TLKs.&#10;Reloading TLKs will save the list of TLKs for the game to disk so they automatically load with the toolkit"/>
                     <xctk:WatermarkComboBox Name="ME2TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="ME2TLKLangCombobox_SelectionChanged">
                         <ComboBoxItem>INT</ComboBoxItem>
                         <ComboBoxItem>ESN</ComboBoxItem>
@@ -100,7 +100,7 @@
                         <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
                     <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME3AutoFindTLK}"  ToolTip="Automatically finds TLK files in game directory"/>
-                    <Button Content="Reload TLKs" Margin="2" Grid.Row="1"  Command="{Binding ME3ReloadTLKs}" ToolTip="Reloads strings from the selected TLKs"/>
+                    <Button Content="Reload TLKs" Margin="2" Grid.Row="1"  Command="{Binding ME3ReloadTLKs}" ToolTip="Reloads strings from the selected TLKs.&#10;Reloading TLKs will save the list of TLKs for the game to disk so they automatically load with the toolkit"/>
                     <xctk:WatermarkComboBox Name="ME3TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="ME3TLKLangCombobox_Changed">
                         <ComboBoxItem>INT</ComboBoxItem>
                         <ComboBoxItem>ESN</ComboBoxItem>

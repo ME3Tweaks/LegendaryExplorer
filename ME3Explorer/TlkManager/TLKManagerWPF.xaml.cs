@@ -112,49 +112,49 @@ namespace ME3Explorer.TlkManagerNS
 
         private void LoadCommands()
         {
-            ME1ReloadTLKs = new RelayCommand(ME1ReloadTLKStrings, ME1GamePathExists);
-            ME2ReloadTLKs = new RelayCommand(ME2ReloadTLKStrings, ME2BIOGamePathExists);
-            ME3ReloadTLKs = new RelayCommand(ME3ReloadTLKStrings, ME3BIOGamePathExists);
+            ME1ReloadTLKs = new GenericCommand(ME1ReloadTLKStrings, ME1GamePathExists);
+            ME2ReloadTLKs = new GenericCommand(ME2ReloadTLKStrings, ME2BIOGamePathExists);
+            ME3ReloadTLKs = new GenericCommand(ME3ReloadTLKStrings, ME3BIOGamePathExists);
 
-            ME1AutoFindTLK = new RelayCommand(AutoFindTLKME1, ME1GamePathExists);
-            ME2AutoFindTLK = new RelayCommand(AutoFindTLKME2, ME2BIOGamePathExists);
-            ME3AutoFindTLK = new RelayCommand(AutoFindTLKME3, ME3BIOGamePathExists);
+            ME1AutoFindTLK = new GenericCommand(AutoFindTLKME1, ME1GamePathExists);
+            ME2AutoFindTLK = new GenericCommand(AutoFindTLKME2, ME2BIOGamePathExists);
+            ME3AutoFindTLK = new GenericCommand(AutoFindTLKME3, ME3BIOGamePathExists);
 
-            ME1AddManualTLK = new RelayCommand(AddTLKME1, ME1GamePathExists);
-            ME2AddManualTLK = new RelayCommand(AddTLKME2, ME2BIOGamePathExists);
-            ME3AddManualTLK = new RelayCommand(AddTLKME3, ME3BIOGamePathExists);
+            ME1AddManualTLK = new GenericCommand(AddTLKME1, ME1GamePathExists);
+            ME2AddManualTLK = new GenericCommand(AddTLKME2, ME2BIOGamePathExists);
+            ME3AddManualTLK = new GenericCommand(AddTLKME3, ME3BIOGamePathExists);
 
-            ME1ExportImportTLK = new RelayCommand(ImportExportTLKME1, ME1TLKListNotEmptyAndGameExists);
-            ME2ExportImportTLK = new RelayCommand(ImportExportTLKME2, ME2TLKListNotEmpty);
-            ME3ExportImportTLK = new RelayCommand(ImportExportTLKME3, ME3TLKListNotEmpty);
+            ME1ExportImportTLK = new GenericCommand(ImportExportTLKME1, ME1TLKListNotEmptyAndGameExists);
+            ME2ExportImportTLK = new GenericCommand(ImportExportTLKME2, ME2TLKListNotEmpty);
+            ME3ExportImportTLK = new GenericCommand(ImportExportTLKME3, ME3TLKListNotEmpty);
         }
 
-        private bool ME3TLKListNotEmpty(object obj)
+        private bool ME3TLKListNotEmpty()
         {
             return ME3TLKItems.Count > 0;
         }
 
-        private bool ME2TLKListNotEmpty(object obj)
+        private bool ME2TLKListNotEmpty()
         {
             return ME2TLKItems.Count > 0;
         }
 
-        private bool ME1TLKListNotEmptyAndGameExists(object obj)
+        private bool ME1TLKListNotEmptyAndGameExists()
         {
-            return ME1TLKItems.Count > 0 && ME1GamePathExists(null);
+            return ME1TLKItems.Count > 0 && ME1GamePathExists();
         }
 
-        private void ImportExportTLKME1(object obj)
+        private void ImportExportTLKME1()
         {
             new TLKManagerWPF_ExportReplaceDialog(ME1TLKItems.ToList()).Show();
         }
 
-        private void ImportExportTLKME2(object obj)
+        private void ImportExportTLKME2()
         {
             new TLKManagerWPF_ExportReplaceDialog(ME2TLKItems.ToList()).Show();
         }
 
-        private void ImportExportTLKME3(object obj)
+        private void ImportExportTLKME3()
         {
             new TLKManagerWPF_ExportReplaceDialog(ME3TLKItems.ToList()).Show();
         }
@@ -174,7 +174,7 @@ namespace ME3Explorer.TlkManagerNS
             return null;
         }
 
-        private void AddTLKME3(object obj)
+        private void AddTLKME3()
         {
             string tlk = getTLKFile();
             if (tlk != null)
@@ -185,7 +185,7 @@ namespace ME3Explorer.TlkManagerNS
             }
         }
 
-        private void AddTLKME2(object obj)
+        private void AddTLKME2()
         {
             string tlk = getTLKFile();
             if (tlk != null)
@@ -196,7 +196,7 @@ namespace ME3Explorer.TlkManagerNS
             }
         }
 
-        private void AddTLKME1(object obj)
+        private void AddTLKME1()
         {
             CommonOpenFileDialog m = new CommonOpenFileDialog
             {
@@ -247,7 +247,7 @@ namespace ME3Explorer.TlkManagerNS
         }
         #endregion
 
-        private async void ME3ReloadTLKStrings(object obj)
+        private async void ME3ReloadTLKStrings()
         {
             BusyText = "Reloading Mass Effect 3 TLK strings";
             IsBusy = true;
@@ -256,7 +256,7 @@ namespace ME3Explorer.TlkManagerNS
             IsBusy = false;
         }
 
-        private async void ME2ReloadTLKStrings(object obj)
+        private async void ME2ReloadTLKStrings()
         {
             BusyText = "Reloading Mass Effect 2 TLK strings";
             IsBusy = true;
@@ -295,7 +295,7 @@ namespace ME3Explorer.TlkManagerNS
             ME3TalkFiles.SaveTLKList();
         }
 
-        private async void ME1ReloadTLKStrings(object obj)
+        private async void ME1ReloadTLKStrings()
         {
             BusyText = "Reloading Mass Effect TLK strings";
             IsBusy = true;
@@ -305,7 +305,7 @@ namespace ME3Explorer.TlkManagerNS
 
         }
 
-        private void AutoFindTLKME3(object obj)
+        private void AutoFindTLKME3()
         {
             BusyText = "Scanning for Mass Effect 3 TLK files";
             IsBusy = true;
@@ -322,11 +322,15 @@ namespace ME3Explorer.TlkManagerNS
                 ME3TLKItems.ReplaceAll(prevTask.Result);
                 SelectLoadedTLKsME3();
                 IsBusy = false;
+                if (prevTask.Result.Count > 0 && ME1TLKItems.Any(x => x.selectedForLoad))
+                {
+                    PromptForReload(MEGame.ME3);
+                }
             });
         }
 
 
-        private void AutoFindTLKME2(object obj)
+        private void AutoFindTLKME2()
         {
             BusyText = "Scanning for Mass Effect 2 TLK files";
             IsBusy = true;
@@ -343,10 +347,34 @@ namespace ME3Explorer.TlkManagerNS
                 ME2TLKItems.ReplaceAll(prevTask.Result);
                 SelectLoadedTLKsME2();
                 IsBusy = false;
+                if (prevTask.Result.Count > 0 && ME2TLKItems.Any(x => x.selectedForLoad))
+                {
+                    PromptForReload(MEGame.ME2);
+                }
             });
         }
 
-        private void AutoFindTLKME1(object obj)
+        private void PromptForReload(MEGame game)
+        {
+            var result = MessageBox.Show(this, "Reload TLKs and save automatically found TLK list?", "Reload TLKs", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                switch (game)
+                {
+                    case MEGame.ME1:
+                        ME1ReloadTLKStrings();
+                        break;
+                    case MEGame.ME2:
+                        ME2ReloadTLKStrings();
+                        break;
+                    case MEGame.ME3:
+                        ME3ReloadTLKStrings();
+                        break;
+                }
+            }
+        }
+
+        private void AutoFindTLKME1()
         {
             BusyText = "Scanning for Mass Effect TLK files";
             IsBusy = true;
@@ -370,20 +398,24 @@ namespace ME3Explorer.TlkManagerNS
                 ME1TLKItems.ReplaceAll(prevTask.Result);
                 SelectLoadedTLKsME1();
                 IsBusy = false;
+                if (prevTask.Result.Count > 0 && ME1TLKItems.Any(x => x.selectedForLoad))
+                {
+                    PromptForReload(MEGame.ME1);
+                }
             });
         }
 
-        private static bool ME1GamePathExists(object obj)
+        private static bool ME1GamePathExists()
         {
             return ME1Directory.gamePath != null && Directory.Exists(ME1Directory.gamePath);
         }
 
-        private static bool ME2BIOGamePathExists(object obj)
+        private static bool ME2BIOGamePathExists()
         {
             return ME2Directory.BioGamePath != null && Directory.Exists(ME2Directory.BioGamePath);
         }
 
-        private static bool ME3BIOGamePathExists(object obj)
+        private static bool ME3BIOGamePathExists()
         {
             return ME3Directory.BIOGamePath != null && Directory.Exists(ME3Directory.BIOGamePath);
         }
@@ -510,14 +542,14 @@ namespace ME3Explorer.TlkManagerNS
         /// <returns></returns>
         public static string GlobalFindStrRefbyID(int stringRefID, MEGame game)
         {
-            if (stringRefID <= 0 )
+            if (stringRefID <= 0)
             {
                 return null;
             }
 
             if (game == MEGame.ME1)
             {
-               return ME1TalkFiles.findDataById(stringRefID);
+                return ME1TalkFiles.findDataById(stringRefID);
             }
             else if (game == MEGame.ME2)
             {
