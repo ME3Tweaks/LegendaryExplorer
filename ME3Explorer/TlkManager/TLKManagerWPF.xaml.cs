@@ -36,11 +36,40 @@ namespace ME3Explorer.TlkManagerNS
         public ObservableCollectionExtended<LoadedTLK> ME2TLKItems { get; } = new ObservableCollectionExtended<LoadedTLK>();
         public ObservableCollectionExtended<LoadedTLK> ME3TLKItems { get; } = new ObservableCollectionExtended<LoadedTLK>();
 
-        public bool bSaveNeededME1 = false;
-        public bool bSaveNeededME2 = false;
-        public bool bSaveNeededME3 = false;
+        private bool _bSaveNeededME1 = false;
+        public bool bSaveNeededME1
+        {
+            get => _bSaveNeededME1;
+            set
+            {
+                _bSaveNeededME1 = value;
+                btn_SaveME1.IsEnabled = value;
+            }
+        }
+        private bool _bSaveNeededME2 = false;
+        public bool bSaveNeededME2
+        {
+            get => _bSaveNeededME2;
+            set
+            {
+                _bSaveNeededME2 = value;
+                btn_SaveME2.IsEnabled = value;
+            }
+        }
 
-        public TLKManagerWPF()
+        private bool _bSaveNeededME3 = false;
+        public bool bSaveNeededME3
+        {
+            get => _bSaveNeededME3;
+            set
+            {
+                _bSaveNeededME3 = value;
+                btn_SaveME3.IsEnabled = value;
+            }
+        }
+
+
+public TLKManagerWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("TLK Manager WPF", new WeakReference(this));
 
@@ -263,6 +292,7 @@ namespace ME3Explorer.TlkManagerNS
             ME3TalkFiles.tlkList.Clear();
             await Task.Run(() => ME3ReloadTLKStringsAsync(ME3TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
+            bSaveNeededME3 = false;
         }
 
         private async void ME2ReloadTLKStrings(object obj)
@@ -272,6 +302,7 @@ namespace ME3Explorer.TlkManagerNS
             ME2TalkFiles.tlkList.Clear();
             await Task.Run(() => ME2ReloadTLKStringsAsync(ME2TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
+            bSaveNeededME2 = false;
         }
 
         private void ME1ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
@@ -282,7 +313,6 @@ namespace ME3Explorer.TlkManagerNS
             }
             ME1LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
             ME1TalkFiles.SaveTLKList();
-            bSaveNeededME1 = false;
         }
 
         private void ME2ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
@@ -293,7 +323,6 @@ namespace ME3Explorer.TlkManagerNS
             }
             ME2LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
             ME2TalkFiles.SaveTLKList();
-            bSaveNeededME2 = false;
         }
 
         private void ME3ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
@@ -304,7 +333,6 @@ namespace ME3Explorer.TlkManagerNS
             }
             ME3LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
             ME3TalkFiles.SaveTLKList();
-            bSaveNeededME3 = false;
         }
 
         private async void ME1ReloadTLKStrings(object obj)
@@ -314,6 +342,7 @@ namespace ME3Explorer.TlkManagerNS
             ME1TalkFiles.tlkList.Clear();
             await Task.Run(() => ME1ReloadTLKStringsAsync(ME1TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
+            bSaveNeededME1 = false;
         }
 
         private void AutoFindTLKME3(object obj)
@@ -448,7 +477,6 @@ namespace ME3Explorer.TlkManagerNS
                     tlkDisplayPath = $"Priority {mountpriority}: {tlkDisplayPath}";
                 }
             }
-
         }
 
         private void ME3TLKLangCombobox_Changed(object sender, SelectionChangedEventArgs e)
@@ -519,41 +547,13 @@ namespace ME3Explorer.TlkManagerNS
 
         private async void TLKManager_Closing(object sender, CancelEventArgs e)
         {
-            if(bSaveNeededME1)
+            if(bSaveNeededME1 || bSaveNeededME2 || bSaveNeededME3)
             {
-                var confirm = MessageBox.Show("You are exiting the manager without saving the changes to the TLK list for ME1. Save now?", "TLK Manager", MessageBoxButton.YesNoCancel);
+                var confirm = MessageBox.Show("You are exiting the manager without saving the changes to the TLK list(s). Save now?", "TLK Manager", MessageBoxButton.YesNoCancel);
                 if(confirm == MessageBoxResult.Yes)
                 {
                     ME1TalkFiles.tlkList.Clear();
                     await Task.Run(() => ME1ReloadTLKStringsAsync(ME1TLKItems.Where(x => x.selectedForLoad).ToList()));
-                }
-                else if (confirm == MessageBoxResult.Cancel)
-                {
-                    e.Cancel = true;
-                }
-            }
-            else if (bSaveNeededME2)
-            {
-                var confirm = MessageBox.Show("You are exiting the manager without saving the changes to the TLK list for ME2. Save now?", "TLK Manager", MessageBoxButton.YesNoCancel);
-                if (confirm == MessageBoxResult.Yes)
-                {
-                    
-                    ME2TalkFiles.tlkList.Clear();
-                    await Task.Run(() => ME2ReloadTLKStringsAsync(ME2TLKItems.Where(x => x.selectedForLoad).ToList()));
-                    
-                }
-                else if (confirm == MessageBoxResult.Cancel)
-                {
-                    e.Cancel = true;
-                }
-            }
-            else if (bSaveNeededME3)
-            {
-                var confirm = MessageBox.Show("You are exiting the manager without saving the changes to the TLK list for ME3. Save now?", "TLK Manager", MessageBoxButton.YesNoCancel);
-                if (confirm == MessageBoxResult.Yes)
-                {
-                    ME3TalkFiles.tlkList.Clear();
-                    await Task.Run(() => ME3ReloadTLKStringsAsync(ME3TLKItems.Where(x => x.selectedForLoad).ToList()));
                 }
                 else if (confirm == MessageBoxResult.Cancel)
                 {
@@ -636,6 +636,5 @@ namespace ME3Explorer.TlkManagerNS
                 return ME3TalkFiles.findDataById(stringRefID);
             }
         }
-
     }
 }
