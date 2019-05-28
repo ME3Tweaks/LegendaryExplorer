@@ -552,8 +552,21 @@ public TLKManagerWPF()
                 var confirm = MessageBox.Show("You are exiting the manager without saving the changes to the TLK list(s). Save now?", "TLK Manager", MessageBoxButton.YesNoCancel);
                 if(confirm == MessageBoxResult.Yes)
                 {
-                    ME1TalkFiles.tlkList.Clear();
-                    await Task.Run(() => ME1ReloadTLKStringsAsync(ME1TLKItems.Where(x => x.selectedForLoad).ToList()));
+                    if(bSaveNeededME1)
+                    {
+                        ME1TalkFiles.tlkList.Clear();
+                        await Task.Run(() => ME1ReloadTLKStringsAsync(ME1TLKItems.Where(x => x.selectedForLoad).ToList()));
+                    }
+                    if(bSaveNeededME2)
+                    {
+                        ME2TalkFiles.tlkList.Clear();
+                        await Task.Run(() => ME2ReloadTLKStringsAsync(ME2TLKItems.Where(x => x.selectedForLoad).ToList()));
+                    }
+                    if (bSaveNeededME3)
+                    {
+                        ME3TalkFiles.tlkList.Clear();
+                        await Task.Run(() => ME3ReloadTLKStringsAsync(ME3TLKItems.Where(x => x.selectedForLoad).ToList()));
+                    }
                 }
                 else if (confirm == MessageBoxResult.Cancel)
                 {
