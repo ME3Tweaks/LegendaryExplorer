@@ -21,6 +21,10 @@ namespace ME3Explorer.Propertydb
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Property Database", new WeakReference(this));
             InitializeComponent();
+            if (File.Exists(Properties.Settings.Default.PropertyDBPath))
+            {
+                loadDB(Properties.Settings.Default.PropertyDBPath);
+            }
         }
 
         public struct ClassDef
@@ -53,6 +57,41 @@ namespace ME3Explorer.Propertydb
             listBox1.Visible = true;
             UpdateStatus();
         }
+
+        private void loadDB(string fileName)
+        {
+            FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+
+            int count = ReadInt(fs);
+            Classes = new List<ClassDef>();
+            pb1.Maximum = count + 1;
+            for (int i = 0; i < count; i++)
+            {
+                if (i % 10 == 0)
+                {
+                    pb1.Value = i;
+                    Application.DoEvents();
+                }
+                ClassDef tmp = new ClassDef();
+                tmp.name = ReadString(fs);
+                int pcount = ReadInt(fs);
+                tmp.props = new List<PropDef>();
+                for (int j = 0; j < pcount; j++)
+                {
+                    PropDef p = new PropDef();
+                    p.name = ReadString(fs);
+                    p.type = ReadInt(fs);
+                    p.ffpath = ReadString(fs);
+                    p.ffidx = ReadInt(fs);
+                    tmp.props.Add(p);
+                }
+                Classes.Add(tmp);
+            }
+            fs.Close();
+            Sort();
+            RefreshLists();
+            Properties.Settings.Default.PropertyDBPath = fileName;
+        }       
 
         public void Sort()
         {
@@ -237,6 +276,7 @@ namespace ME3Explorer.Propertydb
                 }
                 fs.Close();
                 MessageBox.Show("Done");
+                Properties.Settings.Default.PropertyDBPath
             }
         }
 
@@ -280,39 +320,8 @@ namespace ME3Explorer.Propertydb
             d.Filter = "*.bin|*.bin";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
-                
-                int count = ReadInt(fs);
-                Classes = new List<ClassDef>();
-                pb1.Maximum = count + 1;
-                for (int i = 0; i < count; i++)
-                {
-                    if (i % 10 == 0)
-                    {
-                        pb1.Value = i;
-                        Application.DoEvents();
-                    }
-                    ClassDef tmp = new ClassDef();
-                    tmp.name = ReadString(fs);
-                    int pcount = ReadInt(fs);
-                    tmp.props = new List<PropDef>();
-                    for (int j = 0; j < pcount; j++)
-                    {
-                        PropDef p = new PropDef();
-                        p.name = ReadString(fs);
-                        p.type = ReadInt(fs);
-                        p.ffpath = ReadString(fs);
-                        p.ffidx = ReadInt(fs);
-                        tmp.props.Add(p);
-                    }
-                    Classes.Add(tmp);
-                }
-                fs.Close();
-                Sort();
-                RefreshLists();                
-                MessageBox.Show("Done");
+                loadDB(d.FileName);
             }
-
         }
 
         private void statistiksToolStripMenuItem_Click(object sender, EventArgs e)
