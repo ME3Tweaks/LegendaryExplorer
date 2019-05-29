@@ -62,7 +62,7 @@
                         <ComboBoxItem>IT - Male</ComboBoxItem>
                         <ComboBoxItem>PL - Female</ComboBoxItem>
                         <ComboBoxItem>PL - Male</ComboBoxItem>
-                        <ComboBoxItem>PLPC - Male</ComboBoxItem>
+                        <ComboBoxItem>PLPC - Female</ComboBoxItem>
                         <ComboBoxItem>PLPC - Male</ComboBoxItem>
                     </xctk:WatermarkComboBox>
                     <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding ME1AddManualTLK}"/>
