@@ -7,6 +7,7 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -35,6 +36,10 @@ namespace ME3Explorer.TlkManagerNS
         public ObservableCollectionExtended<LoadedTLK> ME2TLKItems { get; } = new ObservableCollectionExtended<LoadedTLK>();
         public ObservableCollectionExtended<LoadedTLK> ME3TLKItems { get; } = new ObservableCollectionExtended<LoadedTLK>();
 
+        private bool bSaveNeededME1 = false;
+        private bool bSaveNeededME2 = false;
+        private bool bSaveNeededME3 = false;
+
         public TLKManagerWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("TLK Manager WPF", new WeakReference(this));
@@ -42,9 +47,13 @@ namespace ME3Explorer.TlkManagerNS
             DataContext = this;
             LoadCommands();
             InitializeComponent();
+            ME1TLKItems.CollectionChanged += ME1CollectionChangedEventHandler;
+            ME2TLKItems.CollectionChanged += ME2CollectionChangedEventHandler;
+            ME3TLKItems.CollectionChanged += ME3CollectionChangedEventHandler;
             ME1TLKItems.AddRange(ME1TalkFiles.tlkList.Select(x => new LoadedTLK(x.pcc.FileName, x.uindex, x.pcc.getUExport(x.uindex).ObjectName, true)));
             ME2TLKItems.AddRange(ME2TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
             ME3TLKItems.AddRange(ME3TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
+
         }
 
         #region Commands
@@ -63,6 +72,10 @@ namespace ME3Explorer.TlkManagerNS
         public ICommand ME1ExportImportTLK { get; set; }
         public ICommand ME2ExportImportTLK { get; set; }
         public ICommand ME3ExportImportTLK { get; set; }
+
+        public ICommand ME1ApplyChanges { get; set; }
+        public ICommand ME2ApplyChanges { get; set; }
+        public ICommand ME3ApplyChanges { get; set; }
 
         private static string _me1LastReloaded;
         private static string _me2LastReloaded;
@@ -127,6 +140,10 @@ namespace ME3Explorer.TlkManagerNS
             ME1ExportImportTLK = new GenericCommand(ImportExportTLKME1, ME1TLKListNotEmptyAndGameExists);
             ME2ExportImportTLK = new GenericCommand(ImportExportTLKME2, ME2TLKListNotEmpty);
             ME3ExportImportTLK = new GenericCommand(ImportExportTLKME3, ME3TLKListNotEmpty);
+
+            ME1ApplyChanges = new GenericCommand(ME1ReloadTLKStrings, ME1CanApplyChanges);
+            ME2ApplyChanges = new GenericCommand(ME2ReloadTLKStrings, ME2CanApplyChanges);
+            ME3ApplyChanges = new GenericCommand(ME3ReloadTLKStrings, ME3CanApplyChanges);
         }
 
         private bool ME3TLKListNotEmpty()
@@ -142,6 +159,21 @@ namespace ME3Explorer.TlkManagerNS
         private bool ME1TLKListNotEmptyAndGameExists()
         {
             return ME1TLKItems.Count > 0 && ME1GamePathExists();
+        }
+
+        private bool ME1CanApplyChanges()
+        {
+            return bSaveNeededME1;
+        }
+
+        private bool ME2CanApplyChanges()
+        {
+            return bSaveNeededME2;
+        }
+
+        private bool ME3CanApplyChanges()
+        {
+            return bSaveNeededME3;
         }
 
         private void ImportExportTLKME1()
@@ -251,6 +283,7 @@ namespace ME3Explorer.TlkManagerNS
         {
             BusyText = "Reloading Mass Effect 3 TLK strings";
             IsBusy = true;
+            bSaveNeededME3 = false;
             ME3TalkFiles.tlkList.Clear();
             await Task.Run(() => ME3ReloadTLKStringsAsync(ME3TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
@@ -259,6 +292,7 @@ namespace ME3Explorer.TlkManagerNS
         private async void ME2ReloadTLKStrings()
         {
             BusyText = "Reloading Mass Effect 2 TLK strings";
+            bSaveNeededME2 = false;
             IsBusy = true;
             ME2TalkFiles.tlkList.Clear();
             await Task.Run(() => ME2ReloadTLKStringsAsync(ME2TLKItems.Where(x => x.selectedForLoad).ToList()));
@@ -298,11 +332,11 @@ namespace ME3Explorer.TlkManagerNS
         private async void ME1ReloadTLKStrings()
         {
             BusyText = "Reloading Mass Effect TLK strings";
+            bSaveNeededME1 = false;
             IsBusy = true;
             ME1TalkFiles.tlkList.Clear();
             await Task.Run(() => ME1ReloadTLKStringsAsync(ME1TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
-
         }
 
         private void AutoFindTLKME3()
@@ -327,8 +361,8 @@ namespace ME3Explorer.TlkManagerNS
                     PromptForReload(MEGame.ME3);
                 }
             });
+            bSaveNeededME3 = true;
         }
-
 
         private void AutoFindTLKME2()
         {
@@ -352,6 +386,7 @@ namespace ME3Explorer.TlkManagerNS
                     PromptForReload(MEGame.ME2);
                 }
             });
+            bSaveNeededME2 = true;
         }
 
         private void PromptForReload(MEGame game)
@@ -403,6 +438,7 @@ namespace ME3Explorer.TlkManagerNS
                     PromptForReload(MEGame.ME1);
                 }
             });
+            bSaveNeededME1 = true;
         }
 
         private static bool ME1GamePathExists()
@@ -535,10 +571,89 @@ namespace ME3Explorer.TlkManagerNS
             SelectLoadedTLKsME1();
         }
 
+        private async void TLKManager_Closing(object sender, CancelEventArgs e)
+        {
+            if(bSaveNeededME1 || bSaveNeededME2 || bSaveNeededME3)
+            {
+                var confirm = MessageBox.Show("You are exiting the manager without saving the changes to the TLK list(s). Save now?", "TLK Manager", MessageBoxButton.YesNoCancel);
+                if(confirm == MessageBoxResult.Yes)
+                {
+                    if(bSaveNeededME1)
+                    {
+                        ME1TalkFiles.tlkList.Clear();
+                        await Task.Run(() => ME1ReloadTLKStringsAsync(ME1TLKItems.Where(x => x.selectedForLoad).ToList()));
+                    }
+                    if(bSaveNeededME2)
+                    {
+                        ME2TalkFiles.tlkList.Clear();
+                        await Task.Run(() => ME2ReloadTLKStringsAsync(ME2TLKItems.Where(x => x.selectedForLoad).ToList()));
+                    }
+                    if (bSaveNeededME3)
+                    {
+                        ME3TalkFiles.tlkList.Clear();
+                        await Task.Run(() => ME3ReloadTLKStringsAsync(ME3TLKItems.Where(x => x.selectedForLoad).ToList()));
+                    }
+                }
+                else if (confirm == MessageBoxResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        void ME1CollectionChangedEventHandler(object items, NotifyCollectionChangedEventArgs e)
+        {
+            if (items != null)
+            {
+                foreach (LoadedTLK t in ME1TLKItems)
+                {
+                    t.PropertyChanged += ME1PropertyChangeHandler;
+                }
+            }
+        }
+
+        public void ME1PropertyChangeHandler(object sender, PropertyChangedEventArgs e)
+        {
+            bSaveNeededME1 = true;
+        }
+
+        void ME2CollectionChangedEventHandler(object items, NotifyCollectionChangedEventArgs e)
+        {
+            if (items != null)
+            {
+                foreach (LoadedTLK t in ME2TLKItems)
+                {
+                    t.PropertyChanged += ME2PropertyChangeHandler;
+                }
+            }
+        }
+
+        public void ME2PropertyChangeHandler(object sender, PropertyChangedEventArgs e)
+        {
+            bSaveNeededME2 = true;
+        }
+
+        void ME3CollectionChangedEventHandler(object items, NotifyCollectionChangedEventArgs e)
+        {
+            if (items != null)
+            {
+                foreach (LoadedTLK t in ME3TLKItems)
+                {
+                    t.PropertyChanged += ME3PropertyChangeHandler;
+                }
+            }
+        }
+
+        public void ME3PropertyChangeHandler(object sender, PropertyChangedEventArgs e)
+        {
+            bSaveNeededME3 = true;
+        }
+
         /// <summary>
         /// Looks up current loaded file game ID and returns appropriate string reference.
         /// </summary>
         /// <param name="stringRefID"></param>
+        /// <param name="game"></param>
         /// <returns></returns>
         public static string GlobalFindStrRefbyID(int stringRefID, MEGame game)
         {

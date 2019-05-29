@@ -276,7 +276,7 @@ namespace ME3Explorer.Propertydb
                 }
                 fs.Close();
                 MessageBox.Show("Done");
-                Properties.Settings.Default.PropertyDBPath
+                Properties.Settings.Default.PropertyDBPath = d.FileName;
             }
         }
 
