@@ -54,10 +54,6 @@ namespace ME3Explorer
                 {
                     version += "." + assemblyVersion.Build;
                 }
-                if (assemblyVersion.Revision != 0)
-                {
-                    version += "." + assemblyVersion.Revision;
-                }
 
 #if DEBUG
                 version += " DEBUG";
