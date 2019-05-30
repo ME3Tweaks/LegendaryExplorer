@@ -584,8 +584,15 @@ namespace ME3Explorer
                     int shaderMapEndOffset = bin.ReadInt32();
                     nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Material Shader Map end offset {shaderMapEndOffset}") { Length = 4 });
 
-
-                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Zero? {bin.ReadInt32()}") { Length = 4 });
+                    int unkCount = bin.ReadInt32();
+                    var unkNodes = new List<object>();
+                    nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown Count {unkCount}") { Length = 4, Items = unkNodes });
+                    for (int j = 0; j < unkCount; j++)
+                    {
+                        unkNodes.Add(new BinInterpTreeItem(bin.Position, $"Shader Name {bin.ReadNameReference(Pcc).InstancedString}") { Length = 8 });
+                        unkNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown bytes. GUID? {bin.ReadValueGuid()}") { Length = 16 });
+                        unkNodes.Add(new BinInterpTreeItem(bin.Position, $"None? {bin.ReadNameReference(Pcc).InstancedString}") { Length = 8 });
+                    }
 
                     int meshShaderMapsCount = bin.ReadInt32();
                     var meshShaderMaps = new BinInterpTreeItem(bin.Position - 4, $"Mesh Shader Maps, {meshShaderMapsCount} items") { Length = 4 };
@@ -1064,78 +1071,11 @@ namespace ME3Explorer
             var subnodes = new List<object>();
             try
             {
-                int levelIdx = BitConverter.ToInt32(data, binarystart);
 
-                string name = "Persistent Level: " + CurrentLoadedExport.FileRef.GetEntryString(levelIdx);
-                subnodes.Add(new BinInterpTreeItem
-                {
-                    Header = $"0x{binarystart:X5} : {name}",
-                    Name = "_" + binarystart,
-                    Tag = NodeType.StructLeafObject
-                });
-
-                binarystart += 8;
-
-                for (int i = 0; i < 3; i++)
-                {
-                    var count = BitConverter.ToSingle(data, binarystart);
-                    subnodes.Add(new BinInterpTreeItem
-                    {
-                        Header = $"0x{binarystart:X5}: [{i}] {count}",
-                        Name = "_" + binarystart,
-                        Tag = NodeType.StructLeafFloat
-                    });
-                    binarystart += 4;
-
-                    count = BitConverter.ToSingle(data, binarystart);
-                    subnodes.Add(new BinInterpTreeItem
-                    {
-                        Header = $"0x{binarystart:X5}: [{i}] {count}",
-                        Name = "_" + binarystart,
-                        Tag = NodeType.StructLeafFloat
-                    });
-                    binarystart += 4;
-
-                    count = BitConverter.ToSingle(data, binarystart);
-                    subnodes.Add(new BinInterpTreeItem
-                    {
-                        Header = $"0x{binarystart:X5}: [{i}] {count}",
-                        Name = "_" + binarystart,
-                        Tag = NodeType.StructLeafFloat
-                    });
-                    binarystart += 4;
-
-                    count = BitConverter.ToSingle(data, binarystart);
-                    subnodes.Add(new BinInterpTreeItem
-                    {
-                        Header = $"0x{binarystart:X5}: Unknown[{i}] 1: {count}",
-                        Name = "_" + binarystart,
-                        Tag = NodeType.StructLeafFloat
-                    });
-                    binarystart += 4;
-
-                    count = BitConverter.ToSingle(data, binarystart);
-                    subnodes.Add(new BinInterpTreeItem
-                    {
-                        Header = $"0x{binarystart:X5}: Unknown[{i}] 2: {count}",
-                        Name = "_" + binarystart,
-                        Tag = NodeType.StructLeafFloat
-                    });
-                    binarystart += 4;
-
-                    count = BitConverter.ToSingle(data, binarystart);
-                    subnodes.Add(new BinInterpTreeItem
-                    {
-                        Header = $"0x{binarystart:X5}: Unknown[{i}] 3: {count}",
-                        Name = "_" + binarystart,
-                        Tag = NodeType.StructLeafFloat
-                    });
-                    binarystart += 4;
-                }
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpTreeItem() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
             }
 
             return subnodes;
