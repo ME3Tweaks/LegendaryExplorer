@@ -1,6 +1,9 @@
 ---
 name: Bug report
 about: Document a bug with steps to reproduce it
+title: ''
+labels: ''
+assignees: ''
 
 ---
 
@@ -8,6 +11,7 @@ about: Document a bug with steps to reproduce it
 A clear and concise description of what the bug is.
 
 **To Reproduce**
+Be specific. Include tool names, filenames, export numbers and more. If we can't reproduce the bug, we probably can't fix it. **Be specific.**
 Steps to reproduce the behavior:
 1. Go to '...'
 2. Click on '....'
