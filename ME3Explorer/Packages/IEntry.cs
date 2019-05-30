@@ -18,10 +18,13 @@ namespace ME3Explorer.Packages
         int idxObjectName { get; set; }
         string ClassName { get; }
         string GetFullPath { get; }
+        string GetInstancedFullPath { get; }
         string GetIndexedFullPath { get; }
         string ObjectName { get; }
         string PackageFullName { get; }
+        string PackageFullNameInstanced { get; }
         string PackageName { get; }
+        string PackageNameInstanced { get; }
         byte[] GetHeader(); //returns clone
         bool HasParent { get; }
         IEntry Parent { get; set; }

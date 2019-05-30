@@ -437,7 +437,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             //    Debugger.Break();
             //}
 
-            Debug.WriteLine("Read bytecode " + ((byte)b).ToString("X2") + " " + b + " at " + _reader.BaseStream.Position.ToString("X8"));
+            //Debug.WriteLine("Read bytecode " + ((byte)b).ToString("X2") + " " + b + " at " + _reader.BaseStream.Position.ToString("X8"));
             BytecodeToken bct = ReadNextInternal();
             //Debug.WriteLine("Bytecode finished: " + ((byte)b).ToString("X2") + " " + b + " from " + _reader.BaseStream.Position.ToString("X8"));
 
@@ -631,9 +631,17 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     return ReadCall("Global." + ReadName());
 
                 case ME1OpCodes.EX_BoolVariable:
-                case ME1OpCodes.EX_ByteToInt:
                     return ReadNext();
-
+                case ME1OpCodes.EX_ByteToInt:
+                    int objectRefIdx = _reader.ReadInt32();
+                    if (_package.isEntry(objectRefIdx))
+                    {
+                        return Token($"ByteToInt({_package.getObjectName(objectRefIdx)})", readerpos);
+                    }
+                    else
+                    {
+                        return Token($"ByteToInt(Unknown reference {objectRefIdx})", readerpos);
+                    }
                 case ME1OpCodes.EX_DynamicCast:
                     {
                         int typeIndex = _reader.ReadInt32();
@@ -841,7 +849,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
             var array = ReadNext();
             if (IsInvalid(array)) return array;
-            var exprSize = _reader.ReadInt16();
+            //var exprSize = _reader.ReadInt16();
             var indexer = ReadNext();
             if (IsInvalid(indexer)) return WrapErrToken(array + "." + methodName + "(" + indexer, indexer);
             return Token(array + "." + methodName + "(" + indexer + ")", readerpos);
@@ -929,7 +937,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         internal IEntry ReadRef()
         {
-            return _package.getEntry(_reader.ReadInt32());
+            int idx = _reader.ReadInt32();
+            return _package.getEntry(idx);
         }
 
         internal BytecodeToken ReadRef(Func<IEntry, string> func)

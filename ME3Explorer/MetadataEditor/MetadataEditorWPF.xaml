@@ -91,7 +91,7 @@
 
         </Grid.Resources>
         <TextBlock Name="InfoTab_ObjectName_TextBlock" VerticalAlignment="Center" Text="0x0C Object name:" Grid.Row="0" Grid.Column="0"/>
-        <TextBlock Name="InfoTab_ObjectNameIndex_TextBlock" VerticalAlignment="Center" Text="0x10 Object index:" Grid.Row="1" Grid.Column="0"/>
+        <TextBlock Name="InfoTab_ObjectNameIndex_TextBlock" VerticalAlignment="Center" Text="{Binding ObjectIndexOffsetText}" Grid.Row="1" Grid.Column="0"/>
 
         <TextBlock VerticalAlignment="Center" Text="0x00 Class:" Grid.Row="2" Grid.Column="0"/>
         <TextBlock VerticalAlignment="Center" Text="0x08 Class:" Grid.Row="3" Grid.Column="0"/>

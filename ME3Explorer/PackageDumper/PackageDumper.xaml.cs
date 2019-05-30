@@ -607,7 +607,23 @@ namespace ME3Explorer.PackageDumper
                                 switch (GameBeingDumped)
                                 {
                                     case MEGame.ME1:
-                                        //stringoutput.WriteLine(UE3FunctionReader.ReadFunction(exp));
+                                        var func = UE3FunctionReader.ReadFunction(exp);
+                                        func.Decompile(new TextBuilder(), false); //parse bytecode
+                                        bool defined = func.HasFlag("Defined");
+                                        if (defined)
+                                        {
+                                            stringoutput.WriteLine(func.FunctionSignature + " {");
+                                        }
+                                        else
+                                        {
+                                            stringoutput.WriteLine(func.FunctionSignature);
+                                        }
+
+                                        for (int i = 0; i < func.Statements.statements.Count; i++)
+                                        {
+                                            Statement s = func.Statements.statements[i];
+                                            stringoutput.WriteLine(s.Token.ToString());
+                                        }
                                         break;
                                 }
                                 //Function func = new Function(exp.Data, pcc);

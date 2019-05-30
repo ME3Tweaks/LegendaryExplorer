@@ -175,6 +175,7 @@
         <BitmapImage x:Key="iconPlaceholder" UriSource="Icons/placeholder_64x64.png"/>
         <!--<BitmapImage x:Key="iconLevelEditor" UriSource="Resources/level_explorer_64x64.png"/>-->
         <BitmapImage x:Key="iconMemoryAnalyzer" UriSource="Resources/memoryanalyzer_256x256.ico"/>
+        <BitmapImage x:Key="iconFileHexAnalyzer" UriSource="Resources/filehexanalyzer_256x256.ico"/>
         <BitmapImage x:Key="iconMeshplorer" UriSource="Resources/meshplorer_256x256.ico"/>
         <BitmapImage x:Key="iconMeshDatabase" UriSource="Resources/meshdatabase_256x256.ico"/>
         <BitmapImage x:Key="iconMountEditor" UriSource="Resources/mounteditor_256x256.ico"/>

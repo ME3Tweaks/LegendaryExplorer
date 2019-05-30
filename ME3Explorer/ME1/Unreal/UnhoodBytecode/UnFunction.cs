@@ -222,7 +222,12 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     return "UClass";
                 case "ComponentProperty":
                     return "Component";
+                case "ArrayProperty":
+                    return "ArrayProperty";
+                case "DelegateProperty":
+                    return "delegate";
                 default:
+                    Debug.WriteLine("Unknown property type for ME1 Function signature parsing: " + exp.ClassName);
                     return "???";
             }
         }

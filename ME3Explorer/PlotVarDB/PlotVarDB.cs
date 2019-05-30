@@ -64,6 +64,7 @@ namespace ME3Explorer.PlotVarDB
 
         public PlotVarDB()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Plot Database", new WeakReference(this));
             InitializeComponent();
             this.plotVarTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
         }

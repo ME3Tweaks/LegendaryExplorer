@@ -9,13 +9,16 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="Sound replacement options" Height="219.854" Width="405.198">
+        SizeToContent="WidthAndHeight"
+        Title="Sound replacement options">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -23,11 +26,10 @@
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="Choose Wwise Conversion settings" Grid.Row="0" Grid.ColumnSpan="2"/>
-        <xctk:WatermarkComboBox Name="SampleRate_Combobox" Watermark="Select target bitrate" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding SampleRates}">
-
-        </xctk:WatermarkComboBox>
-
-        <Button Content="Replace audio" Command="{Binding ConvertAudioCommand}" Grid.Row="5" Grid.Column="1" IsDefault="True"/>
+        <TextBlock Text="Choose Wwise Conversion settings" Grid.Row="0" Grid.ColumnSpan="2" FontWeight="Bold"/>
+        <TextBlock Text="Samplerate" Grid.Row="2" VerticalAlignment="Center" />
+        <xctk:WatermarkComboBox Name="SampleRate_Combobox" Watermark="Select target samplerate" Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="2" ItemsSource="{Binding SampleRates}"/>
+        <Button Content="Replace audio" Command="{Binding ConvertAudioCommand}" Grid.Row="6" Grid.Column="2" IsDefault="True"/>
+        <Button Content="Cancel" Click="Cancel_Click"  Grid.Row="6" Grid.Column="1" Margin="8,0"/>
     </Grid>
 </me3explorer:NotifyPropertyChangedWindowBase>

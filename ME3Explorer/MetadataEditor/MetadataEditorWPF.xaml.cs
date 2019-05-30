@@ -57,6 +57,8 @@ namespace ME3Explorer.MetadataEditor
         private DynamicByteProvider headerByteProvider;
         private bool loadingNewData;
 
+        public string ObjectIndexOffsetText => CurrentLoadedEntry is ImportEntry ? "0x18 Object index:" : "0x10 Object index:";
+
         public MetadataEditorWPF()
         {
             DataContext = this;
@@ -100,10 +102,7 @@ namespace ME3Explorer.MetadataEditor
             }
         }
 
-        public override bool CanParse(IExportEntry exportEntry)
-        {
-            return true;
-        }
+        public override bool CanParse(IExportEntry exportEntry) => true;
 
         public void RefreshAllEntriesList(IMEPackage pcc)
         {
@@ -219,6 +218,7 @@ namespace ME3Explorer.MetadataEditor
             headerByteProvider.ReplaceBytes(CurrentLoadedEntry.Header);
             HexChanged = false;
             Header_Hexbox.Refresh();
+            OnPropertyChanged(nameof(ObjectIndexOffsetText));
             loadingNewData = false;
         }
 
@@ -267,7 +267,6 @@ namespace ME3Explorer.MetadataEditor
                 else
                 {
                     InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
-                    Debug.WriteLine($"SelectedIndex: {InfoTab_Archetype_ComboBox.SelectedIndex}");
                 }
             }
             else if (entry is ImportEntry importEntry)
@@ -314,7 +313,7 @@ namespace ME3Explorer.MetadataEditor
             headerByteProvider.ReplaceBytes(CurrentLoadedEntry.Header);
             Header_Hexbox.Refresh();
             HexChanged = false;
-
+            OnPropertyChanged(nameof(ObjectIndexOffsetText));
             loadingNewData = false;
         }
 

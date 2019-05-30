@@ -394,5 +394,20 @@ namespace ME3Explorer.Properties {
                 this["InterpreterWPF_Colorize"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PropertyDBPath
+        {
+            get
+            {
+                return ((string)(this["PropertyDBPath"]));
+            }
+            set
+            {
+                this["PropertyDBPath"] = value;
+            }
+        }
     }
 }

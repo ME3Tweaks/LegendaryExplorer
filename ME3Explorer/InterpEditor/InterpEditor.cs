@@ -16,6 +16,8 @@ namespace ME3Explorer.Matinee
 
         public InterpEditor()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("InterpViewer", new WeakReference(this));
+
             InitializeComponent();
             timeline.Scrollbar = vScrollBar1;
             timeline.GroupList.ScrollbarH = hScrollBar1;

@@ -19,7 +19,12 @@ namespace ME3Explorer.Propertydb
     {
         public PropertyDB()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Property Database", new WeakReference(this));
             InitializeComponent();
+            if (File.Exists(Properties.Settings.Default.PropertyDBPath))
+            {
+                loadDB(Properties.Settings.Default.PropertyDBPath);
+            }
         }
 
         public struct ClassDef
@@ -35,8 +40,13 @@ namespace ME3Explorer.Propertydb
             public string ffpath;
             public int ffidx;
         }
+        private void Form1_FormClosed(object sender, FormClosingEventArgs e)
+        {
+            windowOpen = false;
+        }
 
         public List<ClassDef> Classes;
+        private bool windowOpen = true;
 
         public void RefreshLists()
         {
@@ -47,6 +57,41 @@ namespace ME3Explorer.Propertydb
             listBox1.Visible = true;
             UpdateStatus();
         }
+
+        private void loadDB(string fileName)
+        {
+            FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+
+            int count = ReadInt(fs);
+            Classes = new List<ClassDef>();
+            pb1.Maximum = count + 1;
+            for (int i = 0; i < count; i++)
+            {
+                if (i % 10 == 0)
+                {
+                    pb1.Value = i;
+                    Application.DoEvents();
+                }
+                ClassDef tmp = new ClassDef();
+                tmp.name = ReadString(fs);
+                int pcount = ReadInt(fs);
+                tmp.props = new List<PropDef>();
+                for (int j = 0; j < pcount; j++)
+                {
+                    PropDef p = new PropDef();
+                    p.name = ReadString(fs);
+                    p.type = ReadInt(fs);
+                    p.ffpath = ReadString(fs);
+                    p.ffidx = ReadInt(fs);
+                    tmp.props.Add(p);
+                }
+                Classes.Add(tmp);
+            }
+            fs.Close();
+            Sort();
+            RefreshLists();
+            Properties.Settings.Default.PropertyDBPath = fileName;
+        }       
 
         public void Sort()
         {
@@ -93,12 +138,13 @@ namespace ME3Explorer.Propertydb
                 MessageBox.Show("This functionality requires ME3 to be installed. Set its path at:\n Options > Set Custom Path > Mass Effect 3");
                 return;
             }
+
             string path = ME3Directory.cookedPath;
             string[] files = Directory.GetFiles(path, "*.pcc");
             pb1.Maximum = files.Length;
             DebugOutput.Clear();
             Classes = new List<ClassDef>();
-            for (int i = 0; i < files.Length; i++)
+            for (int i = 0; i < files.Length && windowOpen; i++)
             {
                 string file = files[i];
                 DebugOutput.PrintLn(i.ToString("d4")
@@ -118,14 +164,15 @@ namespace ME3Explorer.Propertydb
                             RefreshLists();
                             Application.DoEvents();
                         }
-                        for (int j = 0; j < Exports.Count(); j++)
+                        for (int j = 0; j < Exports.Count() && windowOpen; j++)
                         {
-                            if (j % 100 == 0)//refresh
+                            if (j % 100 == 0) //refresh
                             {
                                 pb1.Value = i;
                                 pb2.Value = j;
                                 Application.DoEvents();
                             }
+
                             int f = -1;
                             for (int k = 0; k < Classes.Count(); k++)
                                 if (Classes[k].name == Exports[j].ClassName)
@@ -133,7 +180,8 @@ namespace ME3Explorer.Propertydb
                                     f = k;
                                     break;
                                 }
-                            if (f == -1)//New Class found, add
+
+                            if (f == -1) //New Class found, add
                             {
                                 ClassDef tmp = new ClassDef();
                                 tmp.name = Exports[j].ClassName;
@@ -142,6 +190,7 @@ namespace ME3Explorer.Propertydb
                                 f = Classes.Count() - 1;
                                 UpdateStatus();
                             }
+
                             List<PropertyReader.Property> props = PropertyReader.getPropList(Exports[j]);
                             ClassDef res = Classes[f];
                             foreach (PropertyReader.Property p in props)
@@ -154,11 +203,12 @@ namespace ME3Explorer.Propertydb
                                         f2 = k;
                                         break;
                                     }
+
                                 if (f2 == -1) //found new prop
                                 {
                                     PropDef ptmp = new PropDef();
                                     ptmp.name = name;
-                                    ptmp.type = (int)p.TypeVal;
+                                    ptmp.type = (int) p.TypeVal;
                                     ptmp.ffpath = Path.GetFileName(file);
                                     ptmp.ffidx = j;
                                     res.props.Add(ptmp);
@@ -172,19 +222,24 @@ namespace ME3Explorer.Propertydb
                                     //                    + PropertyTypeToString(ptmp.type));
                                 }
                             }
-                        } 
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error:\n" + ex.Message);
                     DebugOutput.PrintLn("Could not open file: " + file);
+                    break;
                 }
-            }            
-            Sort();
-            RefreshLists();
-            UpdateStatus();
-            MessageBox.Show("Done.");
+            }
+
+            if (windowOpen)
+            {
+                Sort();
+                RefreshLists();
+                UpdateStatus();
+                MessageBox.Show("Done.");
+            }
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -221,6 +276,7 @@ namespace ME3Explorer.Propertydb
                 }
                 fs.Close();
                 MessageBox.Show("Done");
+                Properties.Settings.Default.PropertyDBPath = d.FileName;
             }
         }
 
@@ -264,39 +320,8 @@ namespace ME3Explorer.Propertydb
             d.Filter = "*.bin|*.bin";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
-                
-                int count = ReadInt(fs);
-                Classes = new List<ClassDef>();
-                pb1.Maximum = count + 1;
-                for (int i = 0; i < count; i++)
-                {
-                    if (i % 10 == 0)
-                    {
-                        pb1.Value = i;
-                        Application.DoEvents();
-                    }
-                    ClassDef tmp = new ClassDef();
-                    tmp.name = ReadString(fs);
-                    int pcount = ReadInt(fs);
-                    tmp.props = new List<PropDef>();
-                    for (int j = 0; j < pcount; j++)
-                    {
-                        PropDef p = new PropDef();
-                        p.name = ReadString(fs);
-                        p.type = ReadInt(fs);
-                        p.ffpath = ReadString(fs);
-                        p.ffidx = ReadInt(fs);
-                        tmp.props.Add(p);
-                    }
-                    Classes.Add(tmp);
-                }
-                fs.Close();
-                Sort();
-                RefreshLists();                
-                MessageBox.Show("Done");
+                loadDB(d.FileName);
             }
-
         }
 
         private void statistiksToolStripMenuItem_Click(object sender, EventArgs e)

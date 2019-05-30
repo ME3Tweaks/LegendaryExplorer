@@ -1773,7 +1773,8 @@ namespace ME3Explorer
                         if (start <= memory.Length - 4)
                         {
                             int val = BitConverter.ToInt32(memory, start);
-                            s += $", Int: {val} (0x{val:X8})";
+                            float fval = BitConverter.ToSingle(memory, start);
+                            s += $", Int: {val} (0x{val:X8}) Float: {fval}";
                             HIRCObject referencedHIRCbyID = HIRCObjects.FirstOrDefault(x => x.ID == val);
 
                             if (referencedHIRCbyID != null)

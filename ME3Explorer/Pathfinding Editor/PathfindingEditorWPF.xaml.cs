@@ -2617,7 +2617,11 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             return clones;
         }
 
-        private void ContextMenu_Closed(object sender, RoutedEventArgs e) => graphEditor.AllowDragging();
+        private void ContextMenu_Closed(object sender, RoutedEventArgs e)
+        {
+            graphEditor.AllowDragging();
+            Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
+        }
 
         private void FindByTag_Click(object sender, RoutedEventArgs e) => FindByTag();
 

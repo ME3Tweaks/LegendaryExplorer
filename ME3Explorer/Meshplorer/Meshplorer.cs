@@ -33,6 +33,7 @@ namespace ME3Explorer.Meshplorer
 
         public Meshplorer()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Meshplorer", new WeakReference(this));
             InitializeComponent();
             LoadRecentList();
             RefreshRecent(false);
