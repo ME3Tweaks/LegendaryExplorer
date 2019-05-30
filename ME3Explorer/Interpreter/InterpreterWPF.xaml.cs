@@ -1299,6 +1299,9 @@ namespace ME3Explorer
                                 Interpreter_Hexbox.Highlight(np.StartOffset, np.ValueOffset + 8 - np.StartOffset);
                                 break;
                             }
+                        case StringRefProperty srefp:
+                            Interpreter_Hexbox.Highlight(srefp.StartOffset, srefp.GetLength(Pcc));
+                            break;
                         case NoneProperty nonep:
                             Interpreter_Hexbox.Highlight(nonep.StartOffset, 8);
                             break;
