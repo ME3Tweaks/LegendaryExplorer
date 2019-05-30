@@ -575,6 +575,12 @@ namespace ME3Explorer
                     return;
                 }
 
+                if (selected.Entry is IEntry ent && ent.GetFullPath.StartsWith("ME3ExplorerTrashPackage"))
+                {
+                    MessageBox.Show("Cannot trash an already trashed item.");
+                    return;
+                }
+
                 IExportEntry existingTrashTopLevel = Pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == "ME3ExplorerTrashPackage");
                 ImportEntry packageImport = Pcc.Imports.FirstOrDefault(x => x.GetFullPath == "Core.Package");
                 if (packageImport == null)
@@ -629,7 +635,6 @@ namespace ME3Explorer
             }
             else if (entry is IExportEntry exp)
             {
-                exp.Data = new byte[exp.Data.Length]; //Write all zeros to nullify the existing data. For DLC this will allow it to compress better in 7z
                 MemoryStream trashData = new MemoryStream();
                 trashData.WriteInt32(-1);
                 trashData.WriteInt32(Pcc.findName("None"));
@@ -663,6 +668,7 @@ namespace ME3Explorer
                     exp.idxLink = trashContainer.UIndex;
                     if (exp.idxLink == exp.UIndex)
                     {
+                        //This should not occur
                         Debugger.Break();
                     }
                     exp.idxObjectName = Pcc.FindNameOrAdd("Trash");
@@ -693,6 +699,11 @@ namespace ME3Explorer
         private void ReindexObjectByName()
         {
             if (!TryGetSelectedExport(out IExportEntry export)) return;
+            if (export.GetFullPath.StartsWith("ME3ExplorerTrashPackage"))
+            {
+                MessageBox.Show("Cannot reindex exports that are part of ME3ExplorerTrashPackage. All items in this package should have an object index of 0.");
+                return;
+            }
             ReindexObjectsByName(export, true);
         }
 
@@ -701,10 +712,17 @@ namespace ME3Explorer
             if (exp != null)
             {
                 bool uiConfirm = false;
+                string prefixToReindex = exp.PackageFullNameInstanced;
+                //if (numItemsInFullPath > 0)
+                //{
+                //    prefixToReindex = prefixToReindex.Substring(0, prefixToReindex.LastIndexOf('.'));
+                //}
                 string objectname = exp.ObjectName;
                 if (showUI)
                 {
-                    uiConfirm = MessageBox.Show($"Confirm reindexing of all exports with object name:\n{objectname}\n\nEnsure this file has a backup - this operation will make many changes to export indexes!",
+                    uiConfirm = MessageBox.Show($"Confirm reindexing of all exports named {objectname} within the following package path:\n{(prefixToReindex == "Package" ? "Package file root" : prefixToReindex)}\n\n" +
+                        $"Only use this reindexing feature for items that are meant to be indexed 1 and above (and not 0) as this tool will force all items to be indexed at 1 or above.\n\n" +
+                        $"Ensure this file has a backup, this operation may cause the file to stop working if you use it improperly.",
                                          "Confirm Reindexing",
                                          MessageBoxButton.YesNo) == MessageBoxResult.Yes;
                 }
@@ -717,7 +735,8 @@ namespace ME3Explorer
                     int index = 1; //we'll start at 1.
                     foreach (IExportEntry export in Pcc.Exports)
                     {
-                        if (objectname == export.ObjectName && export.ClassName != "Class")
+                        //Check object name is the same, the package path count is the same, the package prefix is the same, and the item is not of type Class
+                        if (objectname == export.ObjectName && export.PackageFullNameInstanced == prefixToReindex && export.PackageFullNameInstanced != "Class")
                         {
                             export.indexValue = index;
                             index++;
@@ -726,7 +745,7 @@ namespace ME3Explorer
                 }
                 if (showUI && uiConfirm)
                 {
-                    MessageBox.Show($"Objects named \"{objectname}\" have been reindexed.", "Reindexing completed");
+                    MessageBox.Show($"Objects named \"{objectname}\" under {prefixToReindex} have been reindexed.", "Reindexing completed");
                 }
             }
         }
@@ -965,25 +984,21 @@ namespace ME3Explorer
                 return;
             }
             var duplicates = new List<string>();
-            var nameIndexDictionary = new Dictionary<string, List<int>>();
+            var duplicatesPackagePathIndexMapping = new Dictionary<string, List<int>>();
             foreach (IExportEntry exp in Pcc.Exports)
             {
-                string key = exp.GetFullPath;
-                bool hasExistingList = nameIndexDictionary.TryGetValue(key, out List<int> indexList);
-                if (!hasExistingList)
+                string key = exp.GetInstancedFullPath;
+                if (key.StartsWith("ME3ExplorerTrashPackage")) continue; //Do not report these as requiring re-indexing.
+                if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<int> indexList))
                 {
                     indexList = new List<int>();
-                    nameIndexDictionary[key] = indexList;
-                }
-                bool isDuplicate = indexList.Contains(exp.indexValue);
-                if (isDuplicate)
+                    duplicatesPackagePathIndexMapping[key] = indexList;
+                } else
                 {
-                    duplicates.Add($"{exp.Index} {exp.GetFullPath} has duplicate index (index value {exp.indexValue})");
+                    duplicates.Add($"{exp.UIndex} {exp.GetInstancedFullPath} has duplicate index (index value {exp.indexValue})");
                 }
-                else
-                {
-                    indexList.Add(exp.indexValue);
-                }
+
+                indexList.Add(exp.UIndex);
             }
 
             if (duplicates.Count > 0)
@@ -996,7 +1011,7 @@ namespace ME3Explorer
                 }
                 //Clipboard.SetText(copy);
                 MessageBox.Show(duplicates.Count + " duplicate indexes were found.", "BAD INDEXING");
-                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes", "The following items have duplicate indexes.", this);
+                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes", "The following items have duplicate indexes. The game may choose to use the first occurance of the index it finds, or may crash if indexing is checked internally (such as pathfinding). You can reindex an object to force all same named items to be reindexed in the given unique path. You should reindex from the topmost duplicate entry first if one is found, as it may resolve lower item duplicates.", this);
                 lw.Show();
             }
             else
@@ -2320,7 +2335,7 @@ namespace ME3Explorer
                     var sentry = crossPCCObjectMap.Keys.First();
                     if (sentry.FileRef != sourceItem.Entry.FileRef)
                     {
-                        var promptResult = MessageBox.Show($"The item dropped does not come from the same package file as other items in your multi-drop relinking session:\n{sourceItem.Entry.FileRef.FileName}\n\nContinuing will drop all items in your relinking session.","Warning",MessageBoxButton.OKCancel,MessageBoxImage.Warning,MessageBoxResult.Cancel);
+                        var promptResult = MessageBox.Show($"The item dropped does not come from the same package file as other items in your multi-drop relinking session:\n{sourceItem.Entry.FileRef.FileName}\n\nContinuing will drop all items in your relinking session.", "Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
                         if (promptResult == MessageBoxResult.Cancel)
                         {
                             return;
@@ -2328,7 +2343,7 @@ namespace ME3Explorer
                         else
                         {
                             ClearRelinkingMapIfPortingContinues = true;
-                            
+
                         }
                     }
                 }
@@ -3780,6 +3795,12 @@ namespace ME3Explorer
 
             Properties.Settings.Default.PackageEditorWPF_TreeViewShowEntryIndex = !Properties.Settings.Default.PackageEditorWPF_TreeViewShowEntryIndex;
             Properties.Settings.Default.Save();
+            if (AllTreeViewNodesX.Any())
+            {
+                AllTreeViewNodesX[0].FlattenTree().ForEach(x => x.RefreshDisplayName());
+            }
+
+
         }
 
         private void EmbeddedTextureViewer_AutoLoad_Click(object sender, RoutedEventArgs e)
@@ -3836,7 +3857,7 @@ namespace ME3Explorer
                     int value = BitConverter.ToInt32(data, i - offsetStart);
                     if (value >= offsetStart && value <= offsetEnd)
                     {
-                        Debug.WriteLine($"Found embedded offset at 0x{(i-offsetStart):X8} pointing to 0x{value:X8}");
+                        Debug.WriteLine($"Found embedded offset at 0x{(i - offsetStart):X8} pointing to 0x{value:X8}");
                     }
                 }
             }
