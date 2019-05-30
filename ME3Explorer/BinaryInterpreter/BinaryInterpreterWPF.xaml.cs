@@ -1071,7 +1071,74 @@ namespace ME3Explorer
             var subnodes = new List<object>();
             try
             {
+                int levelIdx = BitConverter.ToInt32(data, binarystart);
 
+                string name = "Persistent Level: " + CurrentLoadedExport.FileRef.GetEntryString(levelIdx);
+                subnodes.Add(new BinInterpTreeItem
+                {
+                    Header = $"0x{binarystart:X5} : {name}",
+                    Name = "_" + binarystart,
+                    Tag = NodeType.StructLeafObject
+                });
+
+                binarystart += 8;
+
+                for (int i = 0; i < 3; i++)
+                {
+                    var count = BitConverter.ToSingle(data, binarystart);
+                    subnodes.Add(new BinInterpTreeItem
+                    {
+                        Header = $"0x{binarystart:X5}: [{i}] {count}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.StructLeafFloat
+                    });
+                    binarystart += 4;
+
+                    count = BitConverter.ToSingle(data, binarystart);
+                    subnodes.Add(new BinInterpTreeItem
+                    {
+                        Header = $"0x{binarystart:X5}: [{i}] {count}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.StructLeafFloat
+                    });
+                    binarystart += 4;
+
+                    count = BitConverter.ToSingle(data, binarystart);
+                    subnodes.Add(new BinInterpTreeItem
+                    {
+                        Header = $"0x{binarystart:X5}: [{i}] {count}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.StructLeafFloat
+                    });
+                    binarystart += 4;
+
+                    count = BitConverter.ToSingle(data, binarystart);
+                    subnodes.Add(new BinInterpTreeItem
+                    {
+                        Header = $"0x{binarystart:X5}: Unknown[{i}] 1: {count}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.StructLeafFloat
+                    });
+                    binarystart += 4;
+
+                    count = BitConverter.ToSingle(data, binarystart);
+                    subnodes.Add(new BinInterpTreeItem
+                    {
+                        Header = $"0x{binarystart:X5}: Unknown[{i}] 2: {count}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.StructLeafFloat
+                    });
+                    binarystart += 4;
+
+                    count = BitConverter.ToSingle(data, binarystart);
+                    subnodes.Add(new BinInterpTreeItem
+                    {
+                        Header = $"0x{binarystart:X5}: Unknown[{i}] 3: {count}",
+                        Name = "_" + binarystart,
+                        Tag = NodeType.StructLeafFloat
+                    });
+                    binarystart += 4;
+                }
             }
             catch (Exception ex)
             {
