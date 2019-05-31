@@ -118,7 +118,7 @@
       "name": "SFXNav_HarvesterMoveNode",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_HarvesterMoveNode.CollisionCylinder",
       "description": "Specialist node the allows a Harvester to make long distance jumps between points.",
-      "pathnode": true,
+      "pathnode": true
     },
 	{
       "nodetypename": "SFXNav_InteractionCannibal",
@@ -339,7 +339,7 @@
     {
       "nodetypename": "SFXNav_InteractionUseConsole",
       "fullclasspath": "SFXGameContent.SFXNav_InteractionUseConsole",
- 1     "name": "SFXNav_InteractionUseConsole",
+	  "name": "SFXNav_InteractionUseConsole",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionUseConsole.CollisionCylinder",
 	  "description": "Pathing node that a SFXPawn can be ordered to stop and stand and use a waist high console.",
       "pathnode": true
@@ -359,7 +359,7 @@
       "name": "SFXNav_JumpNode",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_JumpNode.CollisionCylinder",
       "description": "Allows jumping across a small gap. Destination jump nodes must be marked.",
-      "pathnode": true,
+      "pathnode": true
     },
     {
       "nodetypename": "SFXNav_KaiLengShield",
@@ -367,7 +367,7 @@
       "name": "SFXNav_KaiLengShield",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_KaiLengShield.CollisionCylinder",
       "description": "Marks the point that Kai Leng runs to and raises his shield on Thessia and Cronos.",
-      "pathnode": true,
+      "pathnode": true
     },
     {
       "nodetypename": "SFXNav_LadderNode",
@@ -423,7 +423,7 @@
       "name": "SFXNav_LeapNodeBase",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_LeapNodeBase.CollisionCylinder",
       "description": "SuperClass for LeapNodes. Not used in game.",
-      "pathnode": true,
+      "pathnode": true
     },
     {
       "nodetypename": "SFXNav_LeapNodeHumanoid",
@@ -431,7 +431,7 @@
       "name": "SFXNav_LeapNodeHumanoid",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_LeapNodeHumanoid.CollisionCylinder",
       "description": "Used for large leaps across gaps by humanoid pawns such as Cerberus. Used in the Citadel elevator ride during the coup. Needs destination.",
-      "pathnode": true,
+      "pathnode": true
     },
     {
       "nodetypename": "SFXNav_LeapNodeLarge",
@@ -439,7 +439,7 @@
       "name": "SFXNav_LeapNodeLarge",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_LeapNodeLarge.CollisionCylinder",
       "description": "Used for large leaps, by large creatures primarily in the Leviathan DLC.",
-      "pathnode": true,
+      "pathnode": true
     },
     {
       "nodetypename": "SFXNav_SpawnEntrance",
