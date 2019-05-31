@@ -389,7 +389,7 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Dialogue Editor",
+                name = "Dialogue Editor Classic",
                 type = typeof(DialogEditor.DialogEditor),
                 icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
                 open = () =>
@@ -412,6 +412,19 @@ namespace ME3Explorer
                 tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
                 subCategory = "Scene Shop",
                 description = "Dialogue Editor is a cross-game tool used to edit Bioconversation objects, which control the flow of dialogue during a conversation.",
+            });
+            set.Add(new Tool
+            {
+                name = "Dialogue Editor WPF",
+                type = typeof(Dialogue_Editor.DialogueEditorWPF),
+                icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
+                open = () =>
+                {
+                        (new Dialogue_Editor.DialogueEditorWPF()).Show();
+                },
+                tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
+                subCategory = "Scene Shop",
+                description = "Dialogue Editor WPF is a visual tool used to edit in game conversations. It works with all the games.",
             });
             set.Add(new Tool
             {
