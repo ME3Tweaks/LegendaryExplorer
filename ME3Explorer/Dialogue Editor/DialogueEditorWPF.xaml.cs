@@ -61,6 +61,9 @@ namespace ME3Explorer.Dialogue_Editor
         public ObservableCollectionExtended<SpeakerExtended> ActiveSpeakerList { get; } = new ObservableCollectionExtended<SpeakerExtended>();
 
         public ConversationExtended ActiveConv = null;
+
+        private static BackgroundWorker BackParser = new BackgroundWorker();
+
         // FOR REMOVAL DEBUG ONLY
         public ObservableCollectionExtended<SObj> CurrentObjects { get; } = new ObservableCollectionExtended<SObj>();
         public ObservableCollectionExtended<SObj> SelectedObjects { get; } = new ObservableCollectionExtended<SObj>();
@@ -299,12 +302,57 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void FirstParse()
         {
-            foreach (var conv in Conversations)
+            if(ActiveConv != null)
+            {
+                ActiveConv.ParseSpeakers();
+
+
+                ActiveConv.bFirstParsed = true;
+            }
+            foreach (var conv in Conversations.Where(conv => conv.bFirstParsed == false))
             {
                 conv.ParseSpeakers();
+
+
+                conv.bFirstParsed = true;
             }
 
+            BackParser = new BackgroundWorker()
+            {
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
+            };
+            BackParser.DoWork += BackParse;
+            BackParser.RunWorkerCompleted += BackParser_RunWorkerCompleted;
+            BackParser.RunWorkerAsync();
+
         }
+
+        private void BackParse(object sender, DoWorkEventArgs e)
+        {
+            //Speakers do faceFXSets
+            foreach (var conv in Conversations.Where(conv => conv.bFirstParsed == false))
+            {
+                foreach(var spkr in conv.Speakers)
+                {
+                    spkr.FaceFX_Male = conv.ParseFaceFX(spkr.SpeakerID, true);
+                    spkr.FaceFX_Female = conv.ParseFaceFX(spkr.SpeakerID, false);
+                }
+
+                conv.Sequence = conv.GetSequence();
+                conv.WwiseBank = conv.GetWwiseBank();
+                conv.bParsed = true;
+            }
+
+
+        }
+
+        private void BackParser_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+
+        }
+
+
 
         #endregion Parsing
 
@@ -316,7 +364,6 @@ namespace ME3Explorer.Dialogue_Editor
         {
 
         }
-
 
         public void GetObjects(IExportEntry export)
         {
@@ -627,7 +674,6 @@ namespace ME3Explorer.Dialogue_Editor
             LoadSequence(SelectedSequence, false);
         }
         #endregion UIGraph 
-
 
         #region Recents
 

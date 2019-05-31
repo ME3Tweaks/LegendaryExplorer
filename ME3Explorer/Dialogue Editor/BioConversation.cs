@@ -26,6 +26,7 @@ namespace ME3Explorer.Dialogue_Editor
             public string ConvName { get; set; }
 
             public bool bParsed { get; set; }
+            public bool bFirstParsed { get; set; }
 
             public ObservableCollectionExtended<SpeakerExtended> Speakers { get; set; }
             public ObservableCollectionExtended<DialogueNodeExtended> EntryList { get; set; }
@@ -48,11 +49,12 @@ namespace ME3Explorer.Dialogue_Editor
                 this.ReplyList = ReplyList;
             }
 
-            public ConversationExtended(IExportEntry export, string ConvName, bool bParsed, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, int WwiseBank, int Sequence)
+            public ConversationExtended(IExportEntry export, string ConvName, bool bParsed, bool bFirstParsed, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, int WwiseBank, int Sequence)
             {
                 this.export = export;
                 this.ConvName = ConvName;
                 this.bParsed = bParsed;
+                this.bFirstParsed = bFirstParsed;
                 this.Speakers = Speakers;
                 this.EntryList = EntryList;
                 this.ReplyList = ReplyList;
@@ -106,6 +108,46 @@ namespace ME3Explorer.Dialogue_Editor
                 if (ffxList != null)
                 {
                     return ffxList[speakerID + 2].Value;
+                }
+
+                return 0;
+            }
+            /// <summary>
+            /// Returns the Uindex of appropriate sequence
+            /// </summary>
+            public int GetSequence()
+            {
+
+                var seq = export.GetProperty<ObjectProperty>("MatineeSequence");
+                if (seq != null)
+                {
+                    return seq.Value;
+                }
+
+                return 0;
+            }
+            /// <summary>
+            /// Returns the Uindex of WwiseBank
+            /// </summary>
+            public int GetWwiseBank()
+            {
+                var Pcc = export.FileRef;
+                var ffxo = ParseFaceFX(-1, true); //find owner animset
+                if (ffxo > 0)
+                {
+                    var wwevent = Pcc.getUExport(ffxo).GetProperty<ObjectProperty>("ReferencedSoundCues"); //pull a wwiseevent
+                    if(wwevent != null)
+                    {
+                        var bank = Pcc.getUExport(wwevent.Value).GetProperty<StructProperty<ObjectProperty>>("ReferencedSoundCues"); //lookup bank
+                    }
+                }
+                
+
+
+                var seq = export.GetProperty<ObjectProperty>("MatineeSequence");
+                if (seq != null)
+                {
+                    return seq.Value;
                 }
 
                 return 0;
