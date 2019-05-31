@@ -198,15 +198,6 @@ namespace ME3Explorer.Packages
         /// <param name="path">full path + file name.</param>
         public void save(string path)
         {
-            saveByReconstructing(path);
-        }
-
-        /// <summary>
-        ///     save PCCObject to file by reconstruction from data
-        /// </summary>
-        /// <param name="path">full path + file name.</param>
-        public void saveByReconstructing(string path)
-        {
             saveByReconstructing(path, false);
         }
 

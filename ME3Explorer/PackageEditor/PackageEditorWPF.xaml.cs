@@ -1616,13 +1616,6 @@ namespace ME3Explorer
 
                 //This code can be removed when non-WPF package editor is removed.
                 var forms = System.Windows.Forms.Application.OpenForms;
-                foreach (System.Windows.Forms.Form form in forms)
-                {
-                    if (form is PackageEditor editor) //it will never be "this"
-                    {
-                        editor.RefreshRecent(false, RFiles);
-                    }
-                }
                 foreach (var form in Application.Current.Windows)
                 {
                     if (form is PackageEditorWPF wpf && this != wpf)

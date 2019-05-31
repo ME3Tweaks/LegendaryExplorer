@@ -292,26 +292,8 @@
     <Compile Include="AutoTOC\AutoTOCWPF.xaml.cs">
       <DependentUpon>AutoTOCWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.Designer.cs">
-      <DependentUpon>BinaryAddPropertyDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="BinaryInterpreter\BinaryClasses\IUDKImportable.cs" />
     <Compile Include="BinaryInterpreter\BinaryClasses\UDKStaticMesh.cs" />
-    <Compile Include="BinaryInterpreter\BinaryInterpreter.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="BinaryInterpreter\BinaryInterpreter.Designer.cs">
-      <DependentUpon>BinaryInterpreter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BinaryInterpreter\BinaryInterpreterHost.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BinaryInterpreter\BinaryInterpreterHost.Designer.cs">
-      <DependentUpon>BinaryInterpreterHost.cs</DependentUpon>
-    </Compile>
     <Compile Include="BinaryInterpreter\BinaryInterpreterWPF.xaml.cs">
       <DependentUpon>BinaryInterpreterWPF.xaml</DependentUpon>
     </Compile>
@@ -509,13 +491,7 @@
     <Compile Include="PackageEditor\EmbeddedTextureViewer.xaml.cs">
       <DependentUpon>EmbeddedTextureViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PackageEditor\PackageEditorDebugFunctions.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="PackageEditor\PackageEditorWPFRelinker.cs" />
-    <Compile Include="PackageEditor\PackageEditorRelinker.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="PackageEditor\PackageEditorWPF.xaml.cs">
       <DependentUpon>PackageEditorWPF.xaml</DependentUpon>
     </Compile>
@@ -826,7 +802,6 @@
     <Compile Include="Unreal\ME3Structs.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropertyCollection.cs" />
-    <Compile Include="Unreal\PropGrid.cs" />
     <Compile Include="Unreal\PSAFile.cs" />
     <Compile Include="Unreal\PSKFile.cs" />
     <Compile Include="Unreal\SerializingContainer.cs" />
@@ -925,24 +900,6 @@
     <Compile Include="InterpEditor\InterpTracks.cs" />
     <Compile Include="InterpEditor\Timeline.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Interpreter\AddPropertyDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Interpreter\AddPropertyDialog.Designer.cs">
-      <DependentUpon>AddPropertyDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Interpreter\Interpreter.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Interpreter\Interpreter.Designer.cs">
-      <DependentUpon>Interpreter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Interpreter\InterpreterHost.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Interpreter\InterpreterHost.Designer.cs">
-      <DependentUpon>InterpreterHost.cs</DependentUpon>
     </Compile>
     <Compile Include="Main Window\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -1210,12 +1167,6 @@
     <Compile Include="Modmaker\ModMaker.Designer.cs">
       <DependentUpon>ModMaker.cs</DependentUpon>
     </Compile>
-    <Compile Include="PackageEditor\PackageEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PackageEditor\PackageEditor.Designer.cs">
-      <DependentUpon>PackageEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlotVarDB\PlotVarDB.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1264,24 +1215,6 @@
     <EmbeddedResource Include="InterpEditor\Timeline.resx">
       <DependentUpon>Timeline.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BinaryInterpreter\BinaryAddPropertyDialog.resx">
-      <DependentUpon>BinaryAddPropertyDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BinaryInterpreter\BinaryInterpreter.resx">
-      <DependentUpon>BinaryInterpreter.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BinaryInterpreter\BinaryInterpreterHost.resx">
-      <DependentUpon>BinaryInterpreterHost.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Interpreter\AddPropertyDialog.resx">
-      <DependentUpon>AddPropertyDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Interpreter\Interpreter.resx">
-      <DependentUpon>Interpreter.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Interpreter\InterpreterHost.resx">
-      <DependentUpon>InterpreterHost.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\LevelExplorer.resx">
       <DependentUpon>LevelExplorer.cs</DependentUpon>
     </EmbeddedResource>
@@ -1320,10 +1253,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Modmaker\ModMaker.resx">
       <DependentUpon>ModMaker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PackageEditor\PackageEditor.resx">
-      <DependentUpon>PackageEditor.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="PlotVarDB\PlotVarDB.resx">
       <DependentUpon>PlotVarDB.cs</DependentUpon>

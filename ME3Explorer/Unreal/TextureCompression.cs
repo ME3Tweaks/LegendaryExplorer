@@ -22,10 +22,35 @@ using StreamHelpers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static ME3Explorer.BinaryInterpreter;
 
 namespace ME3Explorer
 {
+    /// <summary>
+    /// Storage Types for Texture2D
+    /// </summary>
+    public enum StorageTypes
+    {
+        pccUnc = StorageFlags.noFlags,                                     // ME1 (Compressed PCC), ME2 (Compressed PCC)
+        pccLZO = StorageFlags.compressedLZO,                               // ME1 (Uncompressed PCC)
+        pccZlib = StorageFlags.compressedZlib,                             // ME1 (Uncompressed PCC)
+        extUnc = StorageFlags.externalFile,                                // ME3 (DLC TFC archive)
+        extLZO = StorageFlags.externalFile | StorageFlags.compressedLZO,   // ME1 (Reference to PCC), ME2 (TFC archive)
+        extZlib = StorageFlags.externalFile | StorageFlags.compressedZlib, // ME3 (non-DLC TFC archive)
+        empty = StorageFlags.externalFile | StorageFlags.unused,           // ME1, ME2, ME3
+    }
+
+    /// <summary>
+    /// Storage type flags for Texture2D
+    /// </summary>
+    public enum StorageFlags
+    {
+        noFlags = 0,
+        externalFile = 1 << 0,
+        compressedZlib = 1 << 1,
+        compressedLZO = 1 << 4,
+        unused = 1 << 5,
+    }
+
     static public class TextureCompression
     {
         const uint textureTag = 0x9E2A83C1;
@@ -67,12 +92,14 @@ namespace ME3Explorer
             if ((compressedChunkSize + SizeOfChunk + SizeOfChunkBlock * blocksCount) != compressedSize)
                 throw new Exception("Texture header broken");
 
-            List<ChunkBlock> blocks = new List<ChunkBlock>();
+            var blocks = new List<ChunkBlock>();
             for (uint b = 0; b < blocksCount; b++)
             {
-                ChunkBlock block = new ChunkBlock();
-                block.comprSize = stream.ReadUInt32();
-                block.uncomprSize = stream.ReadUInt32();
+                ChunkBlock block = new ChunkBlock
+                {
+                    comprSize = stream.ReadUInt32(),
+                    uncomprSize = stream.ReadUInt32()
+                };
                 blocks.Add(block);
             }
 
@@ -86,7 +113,7 @@ namespace ME3Explorer
 
             Parallel.For(0, blocks.Count, b =>
             {
-                uint dstLen = 0;
+                uint dstLen;
                 ChunkBlock block = blocks[b];
                 if (type == StorageTypes.extLZO || type == StorageTypes.pccLZO)
                     dstLen = LZO2Helper.LZO2.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);

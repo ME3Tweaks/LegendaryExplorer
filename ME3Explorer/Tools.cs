@@ -360,14 +360,6 @@ namespace ME3Explorer
             //});
             set.Add(new Tool
             {
-                name = "Binary Interpreter",
-                type = typeof(BinaryInterpreterHost),
-                icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
-                tags = new List<string>(),
-                subCategory = other,
-            });
-            set.Add(new Tool
-            {
                 name = "Conditionals Editor",
                 type = typeof(Conditionals),
                 icon = Application.Current.FindResource("iconConditionalsEditor") as ImageSource,
@@ -463,14 +455,6 @@ namespace ME3Explorer
                 subCategory = "Scene Shop",
                 description = "FaceFXAnimSetEditor is the original tool for manipulating FaceFXAnimsets. It will soon be completely replaced by the more complete FaceFX Editor.",
             });
-            set.Add(new Tool
-            {
-                name = "Interpreter",
-                type = typeof(InterpreterHost),
-                icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
-                tags = new List<string>(),
-                subCategory = other,
-            });
             //Benji's tool. Uncomment when we have more progress.
             /*set.Add(new Tool
             {
@@ -524,20 +508,6 @@ namespace ME3Explorer
                 tags = new List<string> { "developer", "dialogue", "subtitle", "text", "string", "localize", "language" },
                 subCategory = "Core",
                 description = "TLK Manager WPF manages loaded TLK files that are used to display string data in editor tools. You can also use it to extract and recompile TLK files."
-            });
-            set.Add(new Tool
-            {
-                name = "Package Editor (Old)",
-                type = typeof(PackageEditor),
-                icon = Application.Current.FindResource("iconPackageEditorClassic") as ImageSource,
-                open = () =>
-                {
-                    PackageEditor pck = new PackageEditor();
-                    pck.Show();
-                },
-                tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
-                subCategory = "Core",
-                description = "Package Editor Classic is a tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited.\n\nPackage Editor Classic has been deprecated and is scheduled for removal in the next release."
             });
             set.Add(new Tool
             {

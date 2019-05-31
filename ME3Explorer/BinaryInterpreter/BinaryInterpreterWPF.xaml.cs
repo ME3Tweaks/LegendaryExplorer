@@ -29,7 +29,7 @@ using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 using StreamHelpers;
-using static ME3Explorer.BinaryInterpreter;
+using static ME3Explorer.BinaryInterpreterWPF;
 using static ME3Explorer.PackageEditorWPF;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 
@@ -3875,6 +3875,35 @@ namespace ME3Explorer
             return subnodes;
         }
 
+        public enum StateFlags : uint
+        {
+            None = 0,
+            Editable = 0x00000001U,
+            Auto = 0x00000002U,
+            Simulated = 0x00000004U,
+        }
+
+        public static string getStateFlagsStr(uint stateFlags)
+        {
+            if (stateFlags == 0)
+            {
+                return "None";
+            }
+            if ((stateFlags & (uint)StateFlags.Editable) != 0)
+            {
+                return "Editable ";
+            }
+            if ((stateFlags & (uint)StateFlags.Auto) != 0)
+            {
+                return "Auto";
+            }
+            if ((stateFlags & (uint)StateFlags.Editable) != 0)
+            {
+                return "Simulated";
+            }
+            return "";
+        }
+
         private int ClassParser_ReadComponentsTable(List<object> subnodes, byte[] data, int offset)
         {
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
@@ -7193,7 +7222,7 @@ namespace ME3Explorer
             {
                 var textureData = new MemoryStream(data);
 
-                int unrealExportIndex = ReadInt32(textureData);
+                int unrealExportIndex = textureData.ReadInt32();
                 subnodes.Add(new BinInterpTreeItem
                 {
                     Header = $"0x{textureData.Position - 4:X4} Unreal Unique Index: {unrealExportIndex}",
@@ -7214,7 +7243,7 @@ namespace ME3Explorer
                     textureData.Seek(4, SeekOrigin.Current); // position in the package
                 }
 
-                int numMipMaps = ReadInt32(textureData);
+                int numMipMaps = textureData.ReadInt32();
                 for (int l = 0; l < numMipMaps; l++)
                 {
                     var mipMapNode = new BinInterpTreeItem
@@ -7225,7 +7254,7 @@ namespace ME3Explorer
                     };
                     subnodes.Add(mipMapNode);
 
-                    StorageTypes storageType = (StorageTypes)ReadInt32(textureData);
+                    StorageTypes storageType = (StorageTypes)textureData.ReadInt32();
                     mipMapNode.Items.Add(new BinInterpTreeItem
                     {
                         Header = $"0x{textureData.Position - 4:X4} Storage Type: {storageType}",
@@ -7233,7 +7262,7 @@ namespace ME3Explorer
 
                     });
 
-                    var uncompressedSize = ReadInt32(textureData);
+                    var uncompressedSize = textureData.ReadInt32();
                     mipMapNode.Items.Add(new BinInterpTreeItem
                     {
                         Header = $"0x{textureData.Position - 4:X4} Uncompressed Size: {uncompressedSize}",
@@ -7241,7 +7270,7 @@ namespace ME3Explorer
 
                     });
 
-                    var compressedSize = ReadInt32(textureData);
+                    var compressedSize = textureData.ReadInt32();
                     mipMapNode.Items.Add(new BinInterpTreeItem
                     {
                         Header = $"0x{textureData.Position - 4:X4} Compressed Size: {compressedSize}",
@@ -7249,7 +7278,7 @@ namespace ME3Explorer
 
                     });
 
-                    var dataOffset = ReadInt32(textureData);
+                    var dataOffset = textureData.ReadInt32();
                     mipMapNode.Items.Add(new BinInterpTreeItem
                     {
                         Header = $"0x{textureData.Position - 4:X4} Data Offset: 0x{dataOffset:X8}",
@@ -7268,7 +7297,7 @@ namespace ME3Explorer
                             break;
                     }
 
-                    var mipWidth = ReadInt32(textureData);
+                    var mipWidth = textureData.ReadInt32();
                     mipMapNode.Items.Add(new BinInterpTreeItem
                     {
                         Header = $"0x{textureData.Position - 4:X4} Mip Width: {mipWidth}",
@@ -7276,7 +7305,7 @@ namespace ME3Explorer
                         Tag = NodeType.StructLeafInt
                     });
 
-                    var mipHeight = ReadInt32(textureData);
+                    var mipHeight = textureData.ReadInt32();
                     mipMapNode.Items.Add(new BinInterpTreeItem
                     {
                         Header = $"0x{textureData.Position - 4:X4} Mip Height: {mipHeight}",
@@ -7284,7 +7313,7 @@ namespace ME3Explorer
                         Tag = NodeType.StructLeafInt
                     });
                 }
-                ReadInt32(textureData); //skip
+                textureData.ReadInt32(); //skip
                 if (CurrentLoadedExport.FileRef.Game != MEGame.ME1)
                 {
                     byte[] textureGuid = Gibbed.IO.StreamHelpers.ReadBytes(textureData, 16);
