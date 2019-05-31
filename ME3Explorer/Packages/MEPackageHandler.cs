@@ -99,6 +99,12 @@ namespace ME3Explorer.Packages
             var package = sender.FileName;
             if (Path.GetFileNameWithoutExtension(package) != "Core") //Keep Core loaded as it is very often referenced
             {
+                IMEPackage pcc = sender as IMEPackage;
+                if (pcc.Game == MEGame.ME1)
+                {
+                    ME1Explorer.ME1TalkFiles.UnLoadLocalTlkData(pcc);
+                }
+
                 openPackages.TryRemove(package, out IMEPackage _);
             }
         }
@@ -107,6 +113,11 @@ namespace ME3Explorer.Packages
         {
             if (!packagesInTools.Contains(package))
             {
+                if (package.Game == MEGame.ME1)
+                {
+                    ME1Explorer.ME1TalkFiles.LoadLocalTlkData(package);
+                }
+
                 packagesInTools.Add(package);
                 package.noLongerOpenInTools += Package_noLongerOpenInTools;
             }

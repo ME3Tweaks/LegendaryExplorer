@@ -121,6 +121,8 @@ namespace ME3Explorer.Packages
             ReadNames(listsStream);
             ReadImports(listsStream);
             ReadExports(listsStream);
+
+            ME1Explorer.ME1TalkFiles.LoadLocalTlkData(this);
         }
 
         private void ReadNames(MemoryStream fs)
