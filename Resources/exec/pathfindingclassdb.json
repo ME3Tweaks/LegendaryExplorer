@@ -57,6 +57,7 @@
       "fullclasspath": "SFXGame.SFXNav_LargeMantleNode",
       "name": "SFXNav_LargeMantleNode",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_LargeMantleNode.CollisionCylinder",
+      "description": "Enemies can use large mantle nodes to climb up and onto a raised ledge.",
       "pathnode": true,
       "ensuredproperties": [
         {
@@ -82,6 +83,8 @@
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_LargeClimbNode.CollisionCylinder",
       "pathnode": true,
       "usesbtop": true,
+      "description": "Enemies can use large mantle nodes to climb up and onto a raised ledge.",
+
       "ensuredproperties": [
         {
           "name": "ClimbDest",
@@ -95,6 +98,7 @@
       "fullclasspath": "SFXGame.BioPathPoint",
       "name": "BioPathPoint",
       "cylindercomponentarchetype": "SFXGame.Default__BioPathPoint.CollisionCylinder",
+      "description": "Standard pathing node that can be toggled on or off in Kismet.",
       "pathnode": true,
       "ensuredproperties": [
         {
@@ -109,6 +113,7 @@
       "fullclasspath": "Engine.SFXDynamicCoverLink",
       "name": "SFXDynamicCoverLink",
       "cylindercomponentarchetype": "Engine.Default__SFXDynamicCoverLink.CollisionCylinder",
+      "description": "Standard coverlink node that can be toggled on or off in Kismet. Disabling this node will cause the entire block of associated cover to also be disabled.",
       "pathnode": true
     },
     {
@@ -130,6 +135,7 @@
       "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchOmniTool",
       "name": "SFXNav_InteractionHenchOmniTool",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchOmniTool.CollisionCylinder",
+      "description": "Standard pathing node that a henchman will pull their omnitool at.",
       "pathnode": true
     },
     {
@@ -231,6 +237,12 @@
       "cylindercomponentarchetype": "Engine.Default__CoverSlotMarker.CollisionCylinder",
       "description": "A node indicating where cover may be used. Information about this point of cover is defined in the owning CoverLink.",
       "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_LadderNode",
+      "fullclasspath": "SFXGame.SFXNav_LadderNode",
+      "name": "SFXNav_LadderNode",
+      "description": "A pathing node that allows climbing or descending a ladder. Note that there doesn't actually have to be a ladder art asset."
     },
     {
       "nodetypename": "TargetPoint",
