@@ -5,6 +5,7 @@
       "fullclasspath": "SFXGame.SFXEnemySpawnPoint",
       "name": "SFXEnemySpawnPoint",
       "cylindercomponentarchetype": "SFXGame.Default__SFXEnemySpawnPoint.CollisionCylinder",
+	  "description": "A basic pathfinding node that can is used to spawn enemies in Multiplayer",
       "pathnode": true
     },
     {
@@ -121,6 +122,7 @@
       "fullclasspath": "Engine.SFXDynamicCoverSlotMarker",
       "name": "SFXDynamicCoverSlotMarker",
       "cylindercomponentarchetype": "Engine.Default__SFXDynamicCoverSlotMarker.CollisionCylinder",
+      "description": "Cover node that that can be toggled on or off in Kismet.",
       "pathnode": true,
       "ensuredproperties": [
         {
@@ -135,7 +137,7 @@
       "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchOmniTool",
       "name": "SFXNav_InteractionHenchOmniTool",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchOmniTool.CollisionCylinder",
-      "description": "Standard pathing node that a henchman will pull their omnitool at.",
+      "description": "Pathing node that a henchman can be ordered using Kismet to stop and use their omnitool at.",
       "pathnode": true
     },
     {
@@ -143,6 +145,7 @@
       "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchOmniToolCrouch",
       "name": "SFXNav_InteractionHenchOmniToolCrouch",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchOmniToolCrouch.CollisionCylinder",
+      "description": "Pathing node that a henchman can be ordered using Kismet to stop and crouch at whilst using their omnitool.",
       "pathnode": true
     },
     {
@@ -150,6 +153,7 @@
       "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchBeckonFront",
       "name": "SFXNav_InteractionHenchBeckonFront",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchBeckonFront.CollisionCylinder",
+      "description": "Pathing node that a henchman can be ordered using Kismet to stop and be animated to beckon somebody from the front.",
       "pathnode": true
     },
     {
@@ -157,6 +161,7 @@
       "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchBeckonRear",
       "name": "SFXNav_InteractionHenchBeckonRear",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchBeckonRear.CollisionCylinder",
+      "description": "Pathing node that a henchman can be ordered using Kismet to stop and be animated to beckon somebody from behind them.",
       "pathnode": true
     },
     {
@@ -164,6 +169,7 @@
       "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchCustom",
       "name": "SFXNav_InteractionHenchCustom",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchCustom.CollisionCylinder",
+      "description": "Pathing node that a henchman can be ordered using Kismet to stop and invoke a custom animation.",
       "pathnode": true
     },
     {
@@ -171,6 +177,7 @@
       "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchCover",
       "name": "SFXNav_InteractionHenchCover",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchCover.CollisionCylinder",
+      "description": "Pathing node that a henchman can be ordered using Kismet to stop and enter cover animations.",
       "pathnode": true
     },
     {
@@ -178,6 +185,7 @@
       "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchCrouch",
       "name": "SFXNav_InteractionHenchCrouch",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchCrouch.CollisionCylinder",
+	  "description": "Pathing node that a henchman can be ordered using Kismet to stop and crouch at.",
       "pathnode": true
     },
     {
@@ -185,6 +193,7 @@
       "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchInteractLow",
       "name": "SFXNav_InteractionHenchInteractLow",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchInteractLow.CollisionCylinder",
+	  "description": "Pathing node that a henchman can be ordered using Kismet to stop and crouch and act as if they are interacting with something low down in front of them.",
       "pathnode": true
     },
     {
@@ -199,6 +208,7 @@
       "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchStandIdle",
       "name": "SFXNav_InteractionHenchStandIdle",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchStandIdle.CollisionCylinder",
+	  "description": "Pathing node that a henchman can be ordered using Kismet to stop and stand almost stationary.",
       "pathnode": true
     },
     {
@@ -206,6 +216,7 @@
       "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchStandTyping",
       "name": "SFXNav_InteractionHenchStandTyping",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchStandTyping.CollisionCylinder",
+	  "description": "Pathing node that a henchman can be ordered using Kismet to stop and stand and type on a waist high keyboard.",
       "pathnode": true
     },
     {
@@ -213,6 +224,7 @@
       "fullclasspath": "SFXGameContent.SFXNav_InteractionUseConsole",
       "name": "SFXNav_InteractionUseConsole",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionUseConsole.CollisionCylinder",
+	  "description": "Pathing node that a SFXPawn can be ordered to stop and stand and use a waist high console.",
       "pathnode": true
     },
     {
@@ -220,6 +232,7 @@
       "fullclasspath": "SFXGameContent.SFXNav_InteractionStandGuard",
       "name": "SFXNav_InteractionStandGuard",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionStandGuard.CollisionCylinder",
+	  "description": "Pathing node that a SFXPawn can be ordered to stop and stand guard with animations of a rifle.",
       "pathnode": true
     },
     {
