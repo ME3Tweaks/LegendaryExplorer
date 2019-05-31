@@ -21,7 +21,7 @@
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
             <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
             <MenuItem Header="Open in Interp Viewer" ToolTip="Open this export in Interp Viewer" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
-            <MenuItem Header="Open Referenced State Event in Plot Editor" Name="plotEditorMenuItem" Click="PlotEditorMenuItem_Click"/>
+            <MenuItem Header="Open in Sequence Editor" ToolTip="Open this export in Sequence Editor" Click="OpenInSequenceEditor_Clicked" Name="SewEdMenuItem"/>
             <Separator />
             <MenuItem Header="Clone Object" Click="CloneObject_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
@@ -55,12 +55,8 @@
             </MenuItem>
 
             <MenuItem Header="Tools" Padding="4">
-                <MenuItem Header="Goto #" Command="{Binding GotoCommand}" InputGestureText="Ctrl+G"/>
                 <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Dialogue Object to this Dialogue" IsEnabled="{Binding SelectedDialogue, Converter={StaticResource NullEnabledConverter}}"/>
-                <MenuItem Header="Save View" Command="{Binding SaveViewCommand}" ToolTip="Save the node layout"/>
                 <MenuItem Header="Save Image" Command="{Binding SaveImageCommand}" ToolTip="Save image of full Dialogue"/>
-                <MenuItem Header="Open Kismet Log" Command="{Binding KismetLogCommand}"/>
-                <MenuItem Header="Open Kismet Log (restricted to opened file)" Command="{Binding KismetLogCommand}" CommandParameter="{StaticResource True}"/>
             </MenuItem>
 
             <MenuItem Header="View Options" Padding="4">
@@ -98,7 +94,7 @@
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <ListBox Name="CurrentObjects_ListBox" Grid.Column="2" Grid.RowSpan="3" ItemsSource="{Binding CurrentObjects}" SelectionChanged="CurrentObjectsList_SelectedItemChanged" HorizontalContentAlignment="Stretch"
+            <ListBox Name="Conversations_ListBox" Grid.Column="2" Grid.RowSpan="3" ItemsSource="{Binding Conversations}" SelectionChanged="CurrentObjectsList_SelectedItemChanged" HorizontalContentAlignment="Stretch"
                              SelectionMode="Extended" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -121,8 +117,8 @@
                             <TextBlock Grid.Column="1">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0}_{1}">
+                                        <Binding Path="Export.UIndex" />
                                         <Binding Path="Export.ObjectName" />
-                                        <Binding Path="Export.indexValue" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -198,7 +194,30 @@
                 </Grid>
                 
                 <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"/>
-                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                <TabControl TabStripPlacement="Left"  Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}">
+                    <TabControl.Resources>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="HeaderTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <ContentPresenter Content="{TemplateBinding Content}">
+                                            <ContentPresenter.LayoutTransform>
+                                                <RotateTransform Angle="270" />
+                                            </ContentPresenter.LayoutTransform>
+                                        </ContentPresenter>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Padding" Value="3" />
+                        </Style>
+                    </TabControl.Resources>
+                    <TabItem Header="Interpreter">
+                        <global:InterpreterWPF x:Name="Properties_InterpreterWPF" />
+                    </TabItem>
+                    <TabItem Header="InterpData"></TabItem>
+                    <TabItem Header="FaceFX"></TabItem>
+                    <TabItem Header="Audio"></TabItem>
+                </TabControl>
             </Grid>
             <WindowsFormsHost Grid.Column="0" Grid.Row="0" Name="GraphHost" VerticalAlignment="Stretch">
                 <local:ConvGraphEditor/>

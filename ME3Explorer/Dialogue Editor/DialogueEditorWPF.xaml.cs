@@ -26,6 +26,8 @@ using Color = System.Drawing.Color;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using InterpEditor = ME3Explorer.Matinee.InterpEditor;
+using static ME3Explorer.Dialogue_Editor.BioConversationExtended;
+//using ConversationExtended = ME3Explorer.Dialogue_Editor.BioConversationExtended.ConversationExtended;
 using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using KFreonLib.MEDirectories;
@@ -38,6 +40,7 @@ namespace ME3Explorer.Dialogue_Editor
     /// </summary>
     public partial class DialogueEditorWPF : WPFBase
     {
+        #region Declarations
         private struct SaveData
         {
             public bool absoluteIndex;
@@ -54,6 +57,9 @@ namespace ME3Explorer.Dialogue_Editor
         private const float CLONED_SEQREF_MAGIC = 2.237777E-35f;
 
         private readonly ConvGraphEditor graphEditor;
+        public ObservableCollectionExtended<ConversationExtended> Conversations { get; } = new ObservableCollectionExtended<ConversationExtended>();
+        public ObservableCollectionExtended<SpeakerExtended> ActiveSpeakerList { get; } = new ObservableCollectionExtended<SpeakerExtended>();
+        // FOR REMOVAL DEBUG ONLY
         public ObservableCollectionExtended<SObj> CurrentObjects { get; } = new ObservableCollectionExtended<SObj>();
         public ObservableCollectionExtended<SObj> SelectedObjects { get; } = new ObservableCollectionExtended<SObj>();
         public ObservableCollectionExtended<IExportEntry> SequenceExports { get; } = new ObservableCollectionExtended<IExportEntry>();
@@ -65,9 +71,31 @@ namespace ME3Explorer.Dialogue_Editor
         private IExportEntry SelectedSequence;
         public bool RefOrRefChild;
 
-        public static readonly string DialogueEditorDataFolder = Path.Combine(App.AppDataFolder, @"SequenceEditor\");
+        public static readonly string DialogueEditorDataFolder = Path.Combine(App.AppDataFolder, @"DialogueEditor\");
+
+        private string _statusText;
+        public string StatusText
+        {
+            get => _statusText;
+            set => SetProperty(ref _statusText, $"{CurrentFile} {value}");
+        }
+
+        public float StartPosEvents;
+        public float StartPosActions;
+        public float StartPosVars;
+
+        public ICommand OpenCommand { get; set; }
+        public ICommand SaveCommand { get; set; }
+        public ICommand SaveAsCommand { get; set; }
+        public ICommand SaveImageCommand { get; set; }
+        public ICommand SaveViewCommand { get; set; }
+        public ICommand AutoLayoutCommand { get; set; }
+        public ICommand GotoCommand { get; set; }
+        public ICommand KismetLogCommand { get; set; }
+        #endregion Declarations
 
 
+        #region Startup/Exit
         public DialogueEditorWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Dialogue Editor WPF", new WeakReference(this));
@@ -95,14 +123,6 @@ namespace ME3Explorer.Dialogue_Editor
             ExportQueuedForFocusing = export;
         }
 
-        public ICommand OpenCommand { get; set; }
-        public ICommand SaveCommand { get; set; }
-        public ICommand SaveAsCommand { get; set; }
-        public ICommand SaveImageCommand { get; set; }
-        public ICommand SaveViewCommand { get; set; }
-        public ICommand AutoLayoutCommand { get; set; }
-        public ICommand GotoCommand { get; set; }
-        public ICommand KismetLogCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -110,55 +130,28 @@ namespace ME3Explorer.Dialogue_Editor
             SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
             SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
             SaveImageCommand = new GenericCommand(SaveImage, CurrentObjects.Any);
-            SaveViewCommand = new GenericCommand(() => saveView(), CurrentObjects.Any);
             AutoLayoutCommand = new GenericCommand(AutoLayout, CurrentObjects.Any);
-            GotoCommand = new GenericCommand(GoTo, PackageIsLoaded);
-            
+
         }
 
-        private bool CanOpenKismetLog(object o)
+        private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
-            if (o is true)
+            if (FileQueuedForLoad != null)
             {
-                return Pcc != null && Pcc.Game == MEGame.ME3 && File.Exists(KismetLogPath);
-            }
-
-            return File.Exists(KismetLogPath);
-        }
-
-        static readonly string KismetLogPath = Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "KismetLog.txt");
-
-
-        private void GoTo()
-        {
-            if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is IExportEntry export)
-            {
-                GoToExport(export);
-            }
-        }
-
-        private string _statusText;
-
-        public string StatusText
-        {
-            get => _statusText;
-            set => SetProperty(ref _statusText, $"{CurrentFile} {value}");
-        }
-
-        private TreeViewEntry _selectedItem;
-
-        public TreeViewEntry SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-
-
-                if (SetProperty(ref _selectedItem, value) && value != null)
+                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
-                    value.IsSelected = true;
-                    LoadSequence((IExportEntry)value.Entry);
-                }
+                    //Wait for all children to finish loading
+                    LoadFile(FileQueuedForLoad);
+                    FileQueuedForLoad = null;
+
+                    if (ExportQueuedForFocusing != null)
+                    {
+                        //GoToExport(ExportQueuedForFocusing);
+                        ExportQueuedForFocusing = null;
+                    }
+
+                    Activate();
+                }));
             }
         }
 
@@ -204,20 +197,22 @@ namespace ME3Explorer.Dialogue_Editor
         {
             try
             {
-                CurrentObjects.ClearEx();
-                SequenceExports.ClearEx();
+                Conversations.ClearEx();
+                ActiveSpeakerList.ClearEx();
                 SelectedObjects.ClearEx();
+
                 LoadMEPackage(fileName);
                 CurrentFile = System.IO.Path.GetFileName(fileName);
-                LoadSequences();
-                if (TreeViewRootNodes.IsEmpty())
+                LoadConversations();
+                if (Conversations.IsEmpty())
                 {
                     UnLoadMEPackage();
-                    MessageBox.Show("This file does not contain any Sequences!");
+                    MessageBox.Show("This file does not contain any Conversations!");
                     StatusText = "Select a package file to load";
                     return;
                 }
 
+                FirstParse();
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
 
@@ -225,71 +220,48 @@ namespace ME3Explorer.Dialogue_Editor
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
 
-                Title = $"Sequence Editor WPF - {fileName}";
+                Title = $"Dialogue Editor WPF - {fileName}";
                 StatusText = null; //no status
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error:\n" + ex.Message);
-                Title = "Sequence Editor WPF";
+                Title = "Dialogue Editor WPF";
                 CurrentFile = null;
                 UnLoadMEPackage();
             }
         }
 
-        private void LoadSequences()
-        {
+        #endregion Startup/Exit
 
+        #region Parsing
+        private void LoadConversations()
+        {
+            foreach(var exp in Pcc.Exports.Where(exp => exp.ClassName.Equals("BioConversation")))
+            {
+                Conversations.Add(new ConversationExtended(exp, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>()));
+            }
 
         }
+
+        private void FirstParse()
+        {
+            foreach (var conv in Conversations)
+            {
+                conv.ParseSpeakers();
+            }
+
+        }
+
+        #endregion Parsing
+
+        #region UIGraph
+
 
 
         private void LoadSequence(IExportEntry seqExport, bool fromFile = true)
         {
-            if (seqExport == null)
-            {
-                return;
-            }
 
-            graphEditor.Enabled = false;
-            graphEditor.UseWaitCursor = true;
-            SelectedSequence = seqExport;
-
-            var selectedExports = SelectedObjects.Select(o => o.Export).ToList();
-            if (fromFile)
-            {
-                Properties_InterpreterWPF.LoadExport(seqExport);
-                if (File.Exists(JSONpath))
-                {
-                    SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
-                }
-                else
-                {
-                    SavedPositions = new List<SaveData>();
-                }
-
-                extraSaveData.Clear();
-                selectedExports.Clear();
-            }
-#if !DEBUG
-            try
-            {
-#endif
-            GenerateGraph();
-            if (selectedExports.Count == 1 && CurrentObjects.FirstOrDefault(obj => obj.Export == selectedExports[0]) is SObj selectedObj)
-            {
-                panToSelection = false;
-                CurrentObjects_ListBox.SelectedItem = selectedObj;
-            }
-#if !DEBUG
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show($"Error loading sequences from file:\n{e.Message}");
-            }
-#endif
-            graphEditor.Enabled = true;
-            graphEditor.UseWaitCursor = false;
         }
 
 
@@ -332,9 +304,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        public float StartPosEvents;
-        public float StartPosActions;
-        public float StartPosVars;
+
 
         public SObj LoadObject(IExportEntry export)
         {
@@ -603,6 +573,8 @@ namespace ME3Explorer.Dialogue_Editor
             saveView(false);
             LoadSequence(SelectedSequence, false);
         }
+        #endregion UIGraph 
+
 
         #region Recents
 
@@ -734,6 +706,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         #endregion Recents
 
+        #region UIHandling
         private void backMouseDown_Handler(object sender, PInputEventArgs e)
         {
             if (!(e.PickedNode is PCamera) || SelectedSequence == null) return;
@@ -752,7 +725,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
             else
             {
-                CurrentObjects_ListBox.SelectedItems.Clear();
+                Conversations_ListBox.SelectedItems.Clear();
             }
         }
 
@@ -804,7 +777,7 @@ namespace ME3Explorer.Dialogue_Editor
             if (SelectedSequence != null && updatedExports.Contains(SelectedSequence.Index))
             {
                 //loaded sequence is no longer a sequence
-                if (!SelectedSequence.IsSequence())
+                if (false)
                 {
                     SelectedSequence = null;
                     graphEditor.nodeLayer.RemoveAllChildren();
@@ -816,7 +789,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
 
                 RefreshView();
-                LoadSequences();
+                LoadConversations();
                 return;
             }
 
@@ -827,11 +800,11 @@ namespace ME3Explorer.Dialogue_Editor
 
             foreach (var i in updatedExports)
             {
-                if (Pcc.getExport(i).IsSequence())
-                {
-                    LoadSequences();
-                    break;
-                }
+                //if (Pcc.getExport(i).IsSequence())
+                //{
+                //    LoadSequences();
+                //    break;
+                //}
             }
         }
 
@@ -1040,7 +1013,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void RemoveFromDialogue_Click(object sender, RoutedEventArgs e)
         {
-            if (CurrentObjects_ListBox.SelectedItem is SObj sObj)
+            if (Conversations_ListBox.SelectedItem is SObj sObj)
             {
                 //remove incoming connections
                 switch (sObj)
@@ -1098,11 +1071,11 @@ namespace ME3Explorer.Dialogue_Editor
                     panToSelection = false;
                     if (SelectedObjects.Count > 1)
                     {
-                        CurrentObjects_ListBox.SelectedItems.Clear();
+                        Conversations_ListBox.SelectedItems.Clear();
                         panToSelection = false;
                     }
 
-                    CurrentObjects_ListBox.SelectedItem = obj;
+                    Conversations_ListBox.SelectedItem = obj;
                     OpenNodeContextMenu(obj);
                 }
                 else if (e.Shift || e.Control)
@@ -1110,17 +1083,17 @@ namespace ME3Explorer.Dialogue_Editor
                     panToSelection = false;
                     if (obj.IsSelected)
                     {
-                        CurrentObjects_ListBox.SelectedItems.Remove(obj);
+                        Conversations_ListBox.SelectedItems.Remove(obj);
                     }
                     else
                     {
-                        CurrentObjects_ListBox.SelectedItems.Add(obj);
+                        Conversations_ListBox.SelectedItems.Add(obj);
                     }
                 }
                 else if (!obj.IsSelected)
                 {
                     panToSelection = false;
-                    CurrentObjects_ListBox.SelectedItem = obj;
+                    Conversations_ListBox.SelectedItem = obj;
                 }
             }
         }
@@ -1137,11 +1110,11 @@ namespace ME3Explorer.Dialogue_Editor
                         panToSelection = false;
                         if (SelectedObjects.Count > 1)
                         {
-                            CurrentObjects_ListBox.SelectedItems.Clear();
+                            Conversations_ListBox.SelectedItems.Clear();
                             panToSelection = false;
                         }
 
-                        CurrentObjects_ListBox.SelectedItem = obj;
+                        Conversations_ListBox.SelectedItem = obj;
                     }
                 }
             }
@@ -1164,7 +1137,7 @@ namespace ME3Explorer.Dialogue_Editor
             string outputFile = JsonConvert.SerializeObject(options);
             if (!Directory.Exists(DialogueEditorDataFolder))
                 Directory.CreateDirectory(DialogueEditorDataFolder);
-            
+
 
             //Code here remove these objects from leaking the window memory
             graphEditor.Camera.MouseDown -= backMouseDown_Handler;
@@ -1189,7 +1162,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
         {
-            if (CurrentObjects_ListBox.SelectedItem is SObj obj)
+            if (Conversations_ListBox.SelectedItem is SObj obj)
             {
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
@@ -1199,7 +1172,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void CloneObject_Clicked(object sender, RoutedEventArgs e)
         {
-            if (CurrentObjects_ListBox.SelectedItem is SObj obj)
+            if (Conversations_ListBox.SelectedItem is SObj obj)
             {
                 cloneObject(obj.Export, SelectedSequence);
             }
@@ -1475,14 +1448,14 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
 
-            if (SelectedObjects.Count == 1)
-            {
-                Properties_InterpreterWPF.LoadExport(SelectedObjects[0].Export);
-            }
-            else if (!(Properties_InterpreterWPF.CurrentLoadedExport?.IsSequence() ?? false))
-            {
-                Properties_InterpreterWPF.UnloadExport();
-            }
+            //if (SelectedObjects.Count == 1)
+            //{
+            //    Properties_InterpreterWPF.LoadExport(SelectedObjects[0].Export);
+            //}
+            //else if (!(Properties_InterpreterWPF.CurrentLoadedExport?.IsSequence() ?? false))
+            //{
+            //    Properties_InterpreterWPF.UnloadExport();
+            //}
 
             if (SelectedObjects.Any())
             {
@@ -1579,7 +1552,7 @@ namespace ME3Explorer.Dialogue_Editor
                 return;
             }
 
-            if (CurrentObjects_ListBox.SelectedItem is SObj obj)
+            if (Conversations_ListBox.SelectedItem is SObj obj)
             {
                 var p = new InterpEditor();
                 p.Show();
@@ -1599,125 +1572,11 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        private void GlobalSeqRefViewSavesMenuItem_OnClick(object sender, RoutedEventArgs e)
+        private void OpenInSequenceEditor_Clicked(object sender, RoutedEventArgs e)
         {
 
         }
+        #endregion UIHandling
 
-        private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (FileQueuedForLoad != null)
-            {
-                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
-                {
-                    //Wait for all children to finish loading
-                    LoadFile(FileQueuedForLoad);
-                    FileQueuedForLoad = null;
-
-                    if (ExportQueuedForFocusing != null)
-                    {
-                        GoToExport(ExportQueuedForFocusing);
-                        ExportQueuedForFocusing = null;
-                    }
-
-                    Activate();
-                }));
-            }
-        }
-
-        private void GoToExport(IExportEntry export, bool selectSequences = true)
-        {
-            foreach (IExportEntry exp in SequenceExports)
-            {
-                if (selectSequences && export == exp)
-                {
-                    if (export.ClassName == "SequenceReference")
-                    {
-                        var sequenceprop = exp.GetProperty<ObjectProperty>("oSequenceReference");
-                        if (sequenceprop != null)
-                        {
-                            export = Pcc.getUExport(sequenceprop.Value);
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-
-                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == export.UIndex);
-                    break;
-                }
-
-                IExportEntry sequence = exp;
-                if (sequence.ClassName == "SequenceReference")
-                {
-                    var sequenceprop = sequence.GetProperty<ObjectProperty>("oSequenceReference");
-                    if (sequenceprop != null)
-                    {
-                        sequence = Pcc.getUExport(sequenceprop.Value);
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-
-                var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == export.UIndex))
-                {
-                    //This is our sequence
-                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == sequence.UIndex);
-                    CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == export);
-                    break;
-                }
-            }
-        }
-        //TODO: Make this work for ME2 and ME1
-        private void PlotEditorMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            if (Pcc.Game == MEGame.ME3 &&
-                CurrentObjects_ListBox.SelectedItem is SAction sAction &&
-                sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
-                sAction.Export.GetProperty<IntProperty>("m_nIndex")?.Value is int m_nIndex)
-            {
-                var plotFiles = ME3LoadedFiles.GetEnabledDLC().OrderByDescending(ME3LoadedFiles.GetMountPriority)
-                                              .Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{ME3LoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
-                                              .Append(Path.Combine(ME3Directory.cookedPath, "SFXGameInfoSP_SF.pcc"))
-                                              .Where(File.Exists);
-                string filePath = null;
-                foreach (string plotFile in plotFiles)
-                {
-                    using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(plotFile))
-                    {
-                        if (StateEventMapView.TryFindStateEventMap(pcc, out IExportEntry export))
-                        {
-                            var stateEventMap = BinaryBioStateEventMap.Load(export);
-                            if (stateEventMap.StateEvents.ContainsKey(m_nIndex))
-                            {
-                                filePath = plotFile;
-                            }
-                        }
-                    }
-                }
-
-                if (filePath != null)
-                {
-
-                    var plotEd = new PlotEditor();
-                    plotEd.Show();
-                    plotEd.LoadFile(filePath);
-                    plotEd.GoToStateEvent(m_nIndex);
-                }
-                else
-                {
-                    MessageBox.Show($"Could not find State Event {m_nIndex}");
-                }
-            }
-        }
-    }
-
-    static class SequenceEditorExtensions
-    {
-        public static bool IsSequence(this IEntry entry) => entry.inheritsFrom("Sequence");
     }
 }
