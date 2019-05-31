@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using ME3Explorer;
+using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 using SharpDX;
 
-namespace ME3LibWV.UnrealClasses
+namespace UDKExplorer.UDK.Classes
 {
     public class SkeletalMesh
     {
@@ -35,38 +38,77 @@ namespace ME3LibWV.UnrealClasses
             public short ChunkIndex;
             public int BaseIndex;
             public int NumTriangles;
+            public byte TriangleSorting;
             public void Serialize(SerializingContainer Container)
             {
                 MaterialIndex = Container + MaterialIndex;
                 ChunkIndex = Container + ChunkIndex;
                 BaseIndex = Container + BaseIndex;
                 NumTriangles = Container + NumTriangles;
-                //TriangleSorting = Container + TriangleSorting;
+                TriangleSorting = Container + TriangleSorting;
+            }
+
+            public TreeNode ToTree(int MyIndex)
+            {
+                TreeNode res = new TreeNode("Section " + MyIndex);
+                res.Nodes.Add("Material Index : " + MaterialIndex);
+                res.Nodes.Add("Chunk Index : " + ChunkIndex);
+                res.Nodes.Add("Base Index : " + BaseIndex);
+                res.Nodes.Add("Num Triangles : " + NumTriangles);
+                res.Nodes.Add("Triangle Sorting : " + TriangleSorting);
+                return res;
             }
         }
 
         public struct MultiSizeIndexContainerStruct
         {
-            //public int NeedsCPUAccess;
-            //public byte DataTypeSize;
+            public int NeedsCPUAccess;
+            public byte DataTypeSize;
             public int IndexSize;
             public int IndexCount;
-            public List<ushort> Indexes;
+            public List<uint> Indexes; // modded
 
             public void Serialize(SerializingContainer Container)
             {
-                //NeedsCPUAccess = Container + NeedsCPUAccess;
-                //DataTypeSize = Container + DataTypeSize;
+                NeedsCPUAccess = Container + NeedsCPUAccess;
+                DataTypeSize = Container + DataTypeSize;
                 IndexSize = Container + IndexSize;
                 IndexCount = Container + IndexCount;
                 if (Container.isLoading)
                 {
-                    Indexes = new List<ushort>();
+                    Indexes = new List<uint>();
                     for (int i = 0; i < IndexCount; i++)
                         Indexes.Add(0);
                 }
-                for (int i = 0; i < IndexCount; i++)
-                    Indexes[i] = Container + Indexes[i];
+                if (IndexSize == 1)
+                {
+                    for (int i = 0; i < IndexCount; i++)
+                        Indexes[i] = Container + (byte)Indexes[i];
+                }
+                else if (IndexSize == 2)
+                {
+                    for (int i = 0; i < IndexCount; i++)
+                        Indexes[i] = Container + (ushort)Indexes[i];
+                }
+                else if (IndexSize == 4)
+                {
+                    for (int i = 0; i < IndexCount; i++)
+                        Indexes[i] = Container + (uint)Indexes[i];
+                }
+            }
+
+            public TreeNode ToTree()
+            {
+                TreeNode res = new TreeNode("MultiSizeIndexContainer");
+                res.Nodes.Add("NeedsCPUAccess : " + NeedsCPUAccess);
+                res.Nodes.Add("DataTypeSize : " + DataTypeSize);
+                res.Nodes.Add("IndexSize : " + IndexSize);
+                res.Nodes.Add("IndexCount : " + IndexCount);
+                TreeNode t = new TreeNode("Indexes");
+                for (int i = 0; i < Indexes.Count; i++)
+                    t.Nodes.Add(i + " : " + Indexes[i]);
+                res.Nodes.Add(t);
+                return res;
             }
         }
 
@@ -86,7 +128,7 @@ namespace ME3LibWV.UnrealClasses
                 Position.Z = Container + Position.Z;
                 TangentX = Container + TangentX;
                 TangentY = Container + TangentY;
-                TangentZ = Container + TangentZ;                
+                TangentZ = Container + TangentZ;
                 if (Container.isLoading)
                     UV = new Vector2[4];
                 for (int i = 0; i < 4; i++)
@@ -95,7 +137,18 @@ namespace ME3LibWV.UnrealClasses
                     UV[i].Y = Container + UV[i].Y;
                 }
                 Color = Container + Color;
-                Bone = Container + Bone;  
+                Bone = Container + Bone;
+            }
+
+            public TreeNode ToTree(int MyIndex)
+            {
+                string s = MyIndex + " : Position : X(";
+                s += Position.X + ") Y(" + Position.Y + ") Z(" + Position.Z + ") ";
+                s += "TangentX(" + TangentX.ToString("X8") + ") TangentY(" + TangentY.ToString("X8") + ") TangentZ(" + TangentZ.ToString("X8") + ") ";
+                for (int i = 0; i < 4; i++)
+                    s += "UV[" + i + "](" + UV[i].X + " " + UV[i].Y + ") ";
+                s += "Color : " + Color.ToString("X8") + " Bone : " + Bone;
+                return new TreeNode(s);
             }
         }
 
@@ -134,6 +187,22 @@ namespace ME3LibWV.UnrealClasses
                     InfluenceBones[i] = Container + InfluenceBones[i];
                 for (int i = 0; i < 4; i++)
                     InfluenceWeights[i] = Container + InfluenceWeights[i];
+            }
+            public TreeNode ToTree(int MyIndex)
+            {
+                string s = MyIndex + " : Position : X(";
+                s += Position.X + ") Y(" + Position.Y + ") Z(" + Position.Z + ") ";
+                s += "TangentX(" + TangentX.ToString("X8") + ") TangentY(" + TangentY.ToString("X8") + ") TangentZ(" + TangentZ.ToString("X8") + ") ";
+                for (int i = 0; i < 4; i++)
+                    s += "UV[" + i + "](" + UV[i].X + " " + UV[i].Y + ") ";
+                s += "Color : " + Color.ToString("X8") + " InfluenceBones (";
+                for (int i = 0; i < 3; i++)
+                    s += InfluenceBones[i] + ", ";
+                s += InfluenceBones[3] + ") InfluenceWeights (";
+                for (int i = 0; i < 3; i++)
+                    s += InfluenceWeights[i].ToString("X2") + ", ";
+                s += InfluenceWeights[3].ToString("X2") + ")";
+                return new TreeNode(s);
             }
 
         }
@@ -202,6 +271,28 @@ namespace ME3LibWV.UnrealClasses
                 NumSoftVertices = Container + NumSoftVertices;
                 MaxBoneInfluences = Container + MaxBoneInfluences;
             }
+
+            public TreeNode ToTree(int MyIndex)
+            {
+                TreeNode res = new TreeNode("SkelMeshChunk " + MyIndex);
+                res.Nodes.Add("Base Vertex Index : " + BaseVertexIndex);
+                TreeNode t = new TreeNode("RigidSkinVertices (" + RiginSkinVertices.Count() + ")");
+                for (int i = 0; i < RiginSkinVertices.Count; i++)
+                    t.Nodes.Add(RiginSkinVertices[i].ToTree(i));
+                res.Nodes.Add(t);
+                t = new TreeNode("SoftSkinVertices (" + SoftSkinVertices.Count() + ")");
+                for (int i = 0; i < SoftSkinVertices.Count; i++)
+                    t.Nodes.Add(SoftSkinVertices[i].ToTree(i));
+                res.Nodes.Add(t);
+                t = new TreeNode("BoneMap (" + BoneMap.Count() + ")");
+                for (int i = 0; i < BoneMap.Count; i++)
+                    t.Nodes.Add(i + " : " + BoneMap[i]);
+                res.Nodes.Add(t);
+                res.Nodes.Add("NumRigidVertices : " + NumRigidVertices);
+                res.Nodes.Add("NumSoftVertices : " + NumSoftVertices);
+                res.Nodes.Add("MaxBoneInfluences : " + MaxBoneInfluences);
+                return res;
+            }
         }
 
         public struct GPUSkinVertexStruct
@@ -232,13 +323,37 @@ namespace ME3LibWV.UnrealClasses
                 U = Container + U;
                 V = Container + V;
             }
+            public TreeNode ToTree(int MyIndex)
+            {
+                string s = MyIndex + " : TanX : 0x" + TangentX.ToString("X8") + " ";
+                s += "TanZ : 0x" + TangentZ.ToString("X8") + ") Position : X(";
+                s += Position.X + ") Y(" + Position.Y + ") Z(" + Position.Z + ") ";
+                s += "Influences  : [";
+                for (int i = 0; i < 4; i++)
+                    s += "(B:0x" + InfluenceBones[i].ToString("X2") + " W:" + InfluenceWeights[i].ToString("X2") + ")";
+                s += "] UV : U(" + HalfToFloat(U) + ") V(" + HalfToFloat(V) + ") ";
+                TreeNode res = new TreeNode(s);
+                return res;
+            }
+
+            private float HalfToFloat(UInt16 val)
+            {
+                UInt16 u = val;
+                int sign = (u >> 15) & 0x00000001;
+                int exp = (u >> 10) & 0x0000001F;
+                int mant = u & 0x000003FF;
+                exp = exp + (127 - 15);
+                int i = (sign << 31) | (exp << 23) | (mant << 13);
+                byte[] buff = BitConverter.GetBytes(i);
+                return BitConverter.ToSingle(buff, 0);
+            }
         }
 
         public struct VertexBufferGPUSkinStruct
         {
             public int NumTexCoords;
-            //public int UseFullPrecisionUVs;
-            //public int UsePackedPosition;
+            public int UseFullPrecisionUVs;
+            public int UsePackedPosition;
             public Vector3 Extension;
             public Vector3 Origin;
             public int VertexSize;
@@ -248,10 +363,10 @@ namespace ME3LibWV.UnrealClasses
             {
                 //NumTexCoords
                 NumTexCoords = Container + NumTexCoords;
-                ////UseFullPrecisionUVs
-                //UseFullPrecisionUVs = Container + UseFullPrecisionUVs;
-                ////UsePackedPosition
-                //UsePackedPosition = Container + UsePackedPosition;
+                //UseFullPrecisionUVs
+                UseFullPrecisionUVs = Container + UseFullPrecisionUVs;
+                //UsePackedPosition
+                UsePackedPosition = Container + UsePackedPosition;
                 //Extension
                 Extension.X = Container + Extension.X;
                 Extension.Y = Container + Extension.Y;
@@ -277,8 +392,8 @@ namespace ME3LibWV.UnrealClasses
                 {
                     GPUSkinVertexStruct v = Vertices[i];
                     v.Serialize(Container);
-                    
-                    if(VertexDiff > 0)
+
+                    if (VertexDiff > 0)
                     {
                         byte b = 0;
                         for (int j = 0; j < VertexDiff; j++)
@@ -288,19 +403,32 @@ namespace ME3LibWV.UnrealClasses
                 }
             }
 
+            public TreeNode ToTree()
+            {
+                TreeNode res = new TreeNode("VertexBufferGPUSkin");
+                res.Nodes.Add("NumTexCoords : " + NumTexCoords);
+                res.Nodes.Add("UseFullPrecisionUVs : " + UseFullPrecisionUVs);
+                res.Nodes.Add("UsePackedPosition : " + UsePackedPosition);
+                res.Nodes.Add("Extension : X(" + Extension.X + ") Y(" + Extension.Y + ") Z(" + Extension.Z + ")");
+                res.Nodes.Add("Origin : X(" + Origin.X + ") Y(" + Origin.Y + ") Z(" + Origin.Z + ")");
+                res.Nodes.Add("VertexSize : " + VertexSize);
+                TreeNode t = new TreeNode("Vertices (" + Vertices.Count + ")");
+                for (int i = 0; i < Vertices.Count; i++)
+                    t.Nodes.Add(Vertices[i].ToTree(i));
+                res.Nodes.Add(t);
+                return res;
+            }
+
         }
 
         public struct LODModelStruct
         {
             public List<SectionStruct> Sections;
             public MultiSizeIndexContainerStruct IndexBuffer;
-            public int Unk1;
             public List<ushort> ActiveBones;
-            public int Unk2;
             public List<SkelMeshChunkStruct> Chunks;
             public int Size;
             public int NumVertices;
-            public int Unk3;
             public List<byte> RequiredBones;
             public int RawPointIndicesFlag;
             public int RawPointIndicesCount;
@@ -309,7 +437,11 @@ namespace ME3LibWV.UnrealClasses
             public List<int> RawPointIndices;
             public int NumTexCoords;
             public VertexBufferGPUSkinStruct VertexBufferGPUSkin;
-            public int Unk4;
+            public int Unk1;
+            public int Unk2;
+            public byte Unk3;
+            public int IndexSize;
+            public List<ushort> IndexBufferGPUSkin;
 
             public void Serialize(SerializingContainer Container)
             {
@@ -334,8 +466,6 @@ namespace ME3LibWV.UnrealClasses
                 if (Container.isLoading)
                     IndexBuffer = new MultiSizeIndexContainerStruct();
                 IndexBuffer.Serialize(Container);
-                //unk1
-                Unk1 = Container + Unk1;
                 //Active Bones
                 if (!Container.isLoading)
                     count = ActiveBones.Count();
@@ -348,8 +478,6 @@ namespace ME3LibWV.UnrealClasses
                 }
                 for (int i = 0; i < count; i++)
                     ActiveBones[i] = Container + ActiveBones[i];
-                //unk2
-                Unk2 = Container + Unk2;
                 //Chunks
                 if (!Container.isLoading)
                     count = Chunks.Count();
@@ -370,8 +498,6 @@ namespace ME3LibWV.UnrealClasses
                 Size = Container + Size;
                 //NumVertices
                 NumVertices = Container + NumVertices;
-                //unk3
-                Unk3 = Container + Unk3;
                 //RequiredBones
                 if (!Container.isLoading)
                     count = RequiredBones.Count();
@@ -407,26 +533,69 @@ namespace ME3LibWV.UnrealClasses
                 if (Container.isLoading)
                     VertexBufferGPUSkin = new VertexBufferGPUSkinStruct();
                 VertexBufferGPUSkin.Serialize(Container);
-                //unk4
-                Unk4 = Container + Unk4;
-            }
-        }
-
-        public struct TailNamesStruct
-        {
-            public int Name;
-            public int Unk1;
-            public int Unk2;
-
-            public void Serialize(SerializingContainer Container)
-            {
-                Name = Container + Name;
+                //unknown stuff
                 Unk1 = Container + Unk1;
                 Unk2 = Container + Unk2;
+                Unk3 = Container + Unk3;
+                //GPU index buffer
+                IndexSize = Container + IndexSize;
+                if (!Container.isLoading)
+                    count = IndexBufferGPUSkin.Count();
+                count = Container + count;
+                if (Container.isLoading)
+                {
+                    IndexBufferGPUSkin = new List<ushort>();
+                    for (int i = 0; i < count; i++)
+                        IndexBufferGPUSkin.Add(0);
+                }
+                for (int i = 0; i < count; i++)
+                    IndexBufferGPUSkin[i] = Container + IndexBufferGPUSkin[i];
+            }
+
+            public TreeNode ToTree(int MyIndex)
+            {
+                TreeNode res = new TreeNode("LOD " + MyIndex);
+                TreeNode t = new TreeNode("Sections");
+                for (int i = 0; i < Sections.Count; i++)
+                    t.Nodes.Add(Sections[i].ToTree(i));
+                res.Nodes.Add(t);
+                res.Nodes.Add(IndexBuffer.ToTree());
+                t = new TreeNode("Active Bones");
+                for (int i = 0; i < ActiveBones.Count; i++)
+                    t.Nodes.Add(i + " : " + ActiveBones[i]);
+                res.Nodes.Add(t);
+                t = new TreeNode("Chunks");
+                for (int i = 0; i < Chunks.Count; i++)
+                    t.Nodes.Add(Chunks[i].ToTree(i));
+                res.Nodes.Add(t);
+                res.Nodes.Add("Size : " + Size);
+                res.Nodes.Add("NumVertices : " + NumVertices);
+                t = new TreeNode("Required Bones (" + RequiredBones.Count + ")");
+                for (int i = 0; i < RequiredBones.Count; i++)
+                    t.Nodes.Add(i + " : " + RequiredBones[i]);
+                res.Nodes.Add(t);
+                res.Nodes.Add("RawPointIndicesFlag: 0x" + RawPointIndicesFlag.ToString("X8"));
+                res.Nodes.Add("RawPointIndicesCount: 0x" + RawPointIndicesCount);
+                res.Nodes.Add("RawPointIndicesSize: 0x" + RawPointIndicesSize.ToString("X8"));
+                res.Nodes.Add("RawPointIndicesOffset: 0x" + RawPointIndicesOffset.ToString("X8"));
+                t = new TreeNode("RawPointIndices (" + RawPointIndices.Count + ")");
+                for (int i = 0; i < RawPointIndices.Count; i++)
+                    t.Nodes.Add(i + " : " + RawPointIndices[i]);
+                res.Nodes.Add(t);
+                res.Nodes.Add("NumTexCoords : " + NumTexCoords);
+                res.Nodes.Add(VertexBufferGPUSkin.ToTree());
+                res.Nodes.Add("Unknown1 : 0x" + Unk1.ToString("X8"));
+                res.Nodes.Add("Unknown2 : 0x" + Unk2.ToString("X8"));
+                res.Nodes.Add("Unknown3 : 0x" + Unk3.ToString("X2"));
+                res.Nodes.Add("Index Size : 0x" + IndexSize);
+                t = new TreeNode("IndexBufferGPUSkin (" + IndexBufferGPUSkin.Count + ")");
+                for (int i = 0; i < IndexBufferGPUSkin.Count; i++)
+                    t.Nodes.Add(i + " : " + IndexBufferGPUSkin[i]);
+                res.Nodes.Add(t);
+                return res;
             }
         }
 
-        public int Flags;
         public BoundingStruct Bounding = new BoundingStruct();
         public List<int> Materials;
         public Vector3 Origin;
@@ -434,31 +603,19 @@ namespace ME3LibWV.UnrealClasses
         public List<BoneStruct> Bones;
         public int SkeletonDepth;
         public List<LODModelStruct> LODModels;
-        public List<TailNamesStruct> TailNames;
-        public int Unk1;
-        public int Unk2;
-        public List<int> Unk3;
 
-        public PCCPackage Owner;
+        public UDKPackage Owner;
         public int MyIndex;
-        public bool Loaded = false;
-        private long ReadEnd;
+        //private int ReadEnd;
 
-        public SkeletalMesh()
+        public SkeletalMesh(UDKPackage udk, int Index)
         {
-            Loaded = true;
-        }
-
-        public SkeletalMesh(PCCPackage pcc, int Index)
-        {
-            Loaded = true;
             MyIndex = Index;
-            Owner = pcc;
-            Flags = pcc.Exports[Index].ObjectFlags >> 32;
-            int start = GetPropertyEnd();
-            byte[] buff = new byte[pcc.Exports[Index].Data.Length - start];
-            for (int i = 0; i < pcc.Exports[Index].Data.Length - start; i++)
-                buff[i] = pcc.Exports[Index].Data[i + start];
+            Owner = udk;
+            int start = GetPropertyEnd(Index);
+            byte[] buff = new byte[udk.Exports[Index].Data.Length - start];
+            for (int i = 0; i < udk.Exports[Index].Data.Length - start; i++)
+                buff[i] = udk.Exports[Index].Data[i + start];
             MemoryStream m = new MemoryStream(buff);
             SerializingContainer Container = new SerializingContainer(m);
             Container.isLoading = true;
@@ -472,8 +629,6 @@ namespace ME3LibWV.UnrealClasses
             SerializeOrgRot(Container);
             SerializeBones(Container);
             SerializeLODs(Container);
-            SerializeTail(Container);
-            ReadEnd = Container.GetPos();
         }
 
         private void SerializeBoundings(SerializingContainer Container)
@@ -511,7 +666,7 @@ namespace ME3LibWV.UnrealClasses
             Rotation.X = Container + Rotation.X;
             Rotation.Y = Container + Rotation.Y;
             Rotation.Z = Container + Rotation.Z;
-            
+
         }
 
         private void SerializeBones(SerializingContainer Container)
@@ -565,69 +720,52 @@ namespace ME3LibWV.UnrealClasses
                 lod.Serialize(Container);
                 LODModels[i] = lod;
             }
+            //ReadEnd = Container.GetPos();
         }
 
-        private void SerializeTail(SerializingContainer Container)
+        public TreeNode ToTree()
         {
-            int count = 0;
-            if (!Container.isLoading)
-                count = TailNames.Count();
-            count = Container + count;
-            if (Container.isLoading)
-            {
-                TailNames = new List<TailNamesStruct>();
-                for (int i = 0; i < count; i++)
-                    TailNames.Add(new TailNamesStruct());
-            }
-            for (int i = 0; i < count; i++)
-            {
-                TailNamesStruct t = TailNames[i];
-                t.Serialize(Container);
-                TailNames[i] = t;
-            }
-            Unk1 = Container + Unk1;
-            Unk2 = Container + Unk2;
-            if (!Container.isLoading)
-                count = Unk3.Count();
-            count = Container + count;
-            if (Container.isLoading)
-            {
-                Unk3 = new List<int>();
-                for (int i = 0; i < count; i++)
-                    Unk3.Add(0);
-            }
-            for (int i = 0; i < count; i++)
-                Unk3[i] = Container + Unk3[i];
+            TreeNode res = new TreeNode("Skeletal Mesh");
+            res.Nodes.Add(GetFlags(MyIndex));
+            res.Nodes.Add(GetProperties(MyIndex));
+            res.Nodes.Add(BoundingsToTree());
+            res.Nodes.Add(MaterialsToTree());
+            res.Nodes.Add(OrgRotToTree());
+            res.ExpandAll();
+            res.Nodes.Add(BonesToTree());
+            res.Nodes.Add(LODsToTree());
+            //res.Nodes.Add("Read End @0x" + ReadEnd.ToString("X8"));
+            return res;
         }
 
-        public int GetPropertyEnd()
+        private int GetPropertyEnd(int n)
         {
             int pos = 0x00;
             try
             {
 
-                int test = BitConverter.ToInt32(Owner.Exports[MyIndex].Data, 8);
+                int test = BitConverter.ToInt32(Owner.Exports[n].Data, 8);
                 if (test == 0)
                     pos = 0x04;
                 else
                     pos = 0x08;
-                if ((Flags & 0x02000000) != 0)
+                if ((Owner.Exports[n].ObjectFlags & 0x02000000) != 0)
                     pos = 0x1A;
                 while (true)
                 {
-                    int idxname = BitConverter.ToInt32(Owner.Exports[MyIndex].Data, pos);
-                    if (Owner.GetName(idxname) == "None" || Owner.GetName(idxname) == "")
+                    int idxname = BitConverter.ToInt32(Owner.Exports[n].Data, pos);
+                    if (Owner.getNameEntry(idxname) == "None" || Owner.getNameEntry(idxname) == "")
                         break;
-                    int idxtype = BitConverter.ToInt32(Owner.Exports[MyIndex].Data, pos + 8);
-                    int size = BitConverter.ToInt32(Owner.Exports[MyIndex].Data, pos + 16);
+                    int idxtype = BitConverter.ToInt32(Owner.Exports[n].Data, pos + 8);
+                    int size = BitConverter.ToInt32(Owner.Exports[n].Data, pos + 16);
                     if (size == 0)
                         size = 1;   //boolean fix
-                    if (Owner.GetName(idxtype) == "StructProperty")
+                    if (Owner.getNameEntry(idxtype) == "StructProperty")
                         size += 8;
-                    if (Owner.GetName(idxtype) == "ByteProperty")
+                    if (Owner.getNameEntry(idxtype) == "ByteProperty")
                         size += 8;
                     pos += 24 + size;
-                    if (pos > Owner.Exports[MyIndex].Data.Length)
+                    if (pos > Owner.Exports[n].Data.Length)
                     {
                         pos -= 24 + size;
                         break;
@@ -640,5 +778,142 @@ namespace ME3LibWV.UnrealClasses
             }
             return pos + 8;
         }
+
+        private TreeNode GetFlags(int n)
+        {
+            TreeNode res = new TreeNode("Flags 0x" + Owner.Exports[n].ObjectFlags.ToString("X8"));
+            foreach (string row in UnrealFlags.flagdesc)//0x02000000
+            {
+                string[] t = row.Split(',');
+                long l = long.Parse(t[1].Trim(), System.Globalization.NumberStyles.HexNumber);
+                l = l >> 32;
+                if ((l & (long) Owner.Exports[n].ObjectFlags) != 0)
+                    res.Nodes.Add(t[0].Trim());
+            }
+            return res;
+        }
+
+        private TreeNode GetProperties(int n)
+        {
+            TreeNode res = new TreeNode("Properties");
+            int pos = 0x00;
+            try
+            {
+
+                int test = BitConverter.ToInt32(Owner.Exports[n].Data, 8);
+                if (test == 0)
+                    pos = 0x04;
+                else
+                    pos = 0x08;
+                if ((Owner.Exports[n].ObjectFlags & 0x02000000) != 0)
+                    pos = 0x1A;
+                while (true)
+                {
+                    int idxname = BitConverter.ToInt32(Owner.Exports[n].Data, pos);
+                    if (Owner.getNameEntry(idxname) == "None" || Owner.getNameEntry(idxname) == "")
+                        break;
+                    int idxtype = BitConverter.ToInt32(Owner.Exports[n].Data, pos + 8);
+                    int size = BitConverter.ToInt32(Owner.Exports[n].Data, pos + 16);
+                    if (size == 0)
+                        size = 1;   //boolean fix
+                    if (Owner.getNameEntry(idxtype) == "StructProperty")
+                        size += 8;
+                    if (Owner.getNameEntry(idxtype) == "ByteProperty")
+                        size += 8;
+                    string s = pos.ToString("X8") + " " + Owner.getNameEntry(idxname) + " (" + Owner.getNameEntry(idxtype) + ") : ";
+                    switch (Owner.getNameEntry(idxtype))
+                    {
+                        case "ObjectProperty":
+                        case "IntProperty":
+                            int val = BitConverter.ToInt32(Owner.Exports[n].Data, pos + 24);
+                            s += val.ToString();
+                            break;
+                        case "NameProperty":
+                        case "StructProperty":
+                            int name = BitConverter.ToInt32(Owner.Exports[n].Data, pos + 24);
+                            s += Owner.getNameEntry(name);
+                            break;
+                        case "FloatProperty":
+                            float f = BitConverter.ToSingle(Owner.Exports[n].Data, pos + 24);
+                            s += f.ToString();
+                            break;
+                        case "BoolProperty":
+                            s += (Owner.Exports[n].Data[pos + 24] == 1).ToString();
+                            break;
+                        case "StrProperty":
+                            int len = BitConverter.ToInt32(Owner.Exports[n].Data, pos + 24);
+                            for (int i = 0; i < len - 1; i++)
+                                s += (char)Owner.Exports[n].Data[pos + 28 + i];
+                            break;
+                    }
+                    res.Nodes.Add(s);
+                    pos += 24 + size;
+                    if (pos > Owner.Exports[n].Data.Length)
+                    {
+                        pos -= 24 + size;
+                        break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+            res.Nodes.Add(pos.ToString("X8") + " None");
+            return res;
+        }
+
+        private TreeNode BoundingsToTree()
+        {
+            TreeNode res = new TreeNode("Boundings");
+            res.Nodes.Add("Origin : X(" + Bounding.origin.X + ") Y(" + Bounding.origin.Y + ") Z(" + Bounding.origin.Z + ")");
+            res.Nodes.Add("Size : X(" + Bounding.size.X + ") Y(" + Bounding.size.Y + ") Z(" + Bounding.size.Z + ")");
+            res.Nodes.Add("Radius : R(" + Bounding.r + ")");
+            return res;
+        }
+
+        private TreeNode MaterialsToTree()
+        {
+            TreeNode res = new TreeNode("Materials");
+            for (int i = 0; i < Materials.Count; i++)
+                res.Nodes.Add(i + " : #" + (Materials[i] - 1));
+            return res;
+        }
+
+        private TreeNode OrgRotToTree()
+        {
+            TreeNode res = new TreeNode("Origin/Rotation");
+            res.Nodes.Add("Origin : X(" + Origin.X + ") Y(" + Origin.Y + ") Z(" + Origin.Z + ")");
+            res.Nodes.Add("Rotation : X(" + Rotation.X + ") Y(" + Rotation.Y + ") Z(" + Rotation.Z + ")");
+            return res;
+        }
+
+        private TreeNode BonesToTree()
+        {
+            TreeNode res = new TreeNode("Bones (" + Bones.Count + ") Depth : " + SkeletonDepth);
+            for (int i = 0; i < Bones.Count; i++)
+            {
+                BoneStruct b = Bones[i];
+                string s = i + " : Name : \"" + Owner.getNameEntry(b.Name) + "\" ";
+                s += "Flags : 0x" + b.Flags.ToString("X8") + " ";
+                s += "Unk1 : 0x" + b.Unk1.ToString("X8") + " ";
+                s += "Orientation : X(" + b.Orientation.X + ") Y(" + b.Orientation.X + ") Z(" + b.Orientation.Z + ") W(" + b.Orientation.W + ")";
+                s += "Position : X(" + b.Position.X + ") Y(" + b.Position.X + ") Z(" + b.Position.Z + ")";
+                s += "NumChildren : " + b.NumChildren + " ";
+                s += "Parent : " + b.Parent + " ";
+                s += "Color : 0x" + b.BoneColor.ToString("X8");
+                res.Nodes.Add(s);
+            }
+            return res;
+        }
+
+        private TreeNode LODsToTree()
+        {
+            TreeNode res = new TreeNode("LOD Models");
+            for (int i = 0; i < LODModels.Count; i++)
+                res.Nodes.Add(LODModels[i].ToTree(i));
+            return res;
+        }
+
     }
 }

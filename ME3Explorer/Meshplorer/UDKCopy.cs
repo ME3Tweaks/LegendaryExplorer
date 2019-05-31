@@ -16,7 +16,7 @@ namespace ME3Explorer.Meshplorer
 {
     public partial class UDKCopy : Form
     {
-        public UDKExplorer.UDK.UDKObject udk;
+        public UDKPackage udk;
         public List<int> Objects;
         ME3Package pcc;
         int SelectedObject;
@@ -36,10 +36,10 @@ namespace ME3Explorer.Meshplorer
              d.Filter = "*.u;*.upk;*.udk|*.u;*.upk;*.udk";
              if (d.ShowDialog() == DialogResult.OK)
              {
-                 udk = new UDKExplorer.UDK.UDKObject(d.FileName);
+                 udk = new UDKPackage(d.FileName);
                  Objects = new List<int>();
                  for (int i = 0; i < udk.ExportCount; i++)
-                     if (udk.GetClass(udk.Exports[i].clas) == "SkeletalMesh")
+                     if (udk.Exports[i].ClassName == "SkeletalMesh")
                          Objects.Add(i);
                  RefreshLists();
              }
@@ -49,7 +49,7 @@ namespace ME3Explorer.Meshplorer
         {
             MeshListBox.Items.Clear();
             foreach (int Idx in Objects)
-                MeshListBox.Items.Add(Idx + " : " + udk.GetName(udk.Exports[Idx].name));
+                MeshListBox.Items.Add(Idx + " : " + udk.Exports[Idx].ObjectName);
         }
 
         private void MeshListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -99,7 +99,7 @@ namespace ME3Explorer.Meshplorer
             List<int> BoneMap = new List<int>();
             for (int i = 0; i < skmudk.Bones.Count; i++)
             {
-                string udkb = udk.GetName(skmudk.Bones[i].Name);
+                string udkb = udk.getNameEntry(skmudk.Bones[i].Name);
                 bool found = false;
                 for (int j = 0; j < skm.Bones.Count; j++)
                 {

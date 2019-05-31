@@ -31,7 +31,7 @@ namespace ME3Explorer.Meshplorer2
 
         public List<EntryStruct> Entries;
         public int DisplayStyle = 0; //0 = per file, 1 = per path
-        public UDKExplorer.UDK.UDKObject udk;
+        public UDKPackage udk;
         public List<int> Objects;
         public ModelPreview preview;
         public float PreviewRotation = 0;
@@ -586,7 +586,7 @@ namespace ME3Explorer.Meshplorer2
                 List<int> BoneMap = new List<int>();
                 for (int i = 0; i < skmudk.Bones.Count; i++)
                 {
-                    string udkb = udk.GetName(skmudk.Bones[i].Name);
+                    string udkb = udk.getNameEntry(skmudk.Bones[i].Name);
                     bool found = false;
                     for (int j = 0; j < skm.Bones.Count; j++)
                     {
@@ -689,10 +689,10 @@ namespace ME3Explorer.Meshplorer2
             d.Filter = "*.u;*.upk;*.udk|*.u;*.upk;*.udk";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                udk = new UDKExplorer.UDK.UDKObject(d.FileName);
+                udk = new UDKPackage(d.FileName);
                 Objects = new List<int>();
                 for (int i = 0; i < udk.ExportCount; i++)
-                    if (udk.GetClass(udk.Exports[i].clas) == "SkeletalMesh")
+                    if (udk.Exports[i].ClassName == "SkeletalMesh")
                         Objects.Add(i);
                 RefreshLists();
             }
@@ -702,7 +702,7 @@ namespace ME3Explorer.Meshplorer2
         {
             listBox1.Items.Clear();
             foreach (int Idx in Objects)
-                listBox1.Items.Add(Idx + " : " + udk.GetName(udk.Exports[Idx].name));
+                listBox1.Items.Add(Idx + " : " + udk.Exports[Idx].ObjectName);
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)

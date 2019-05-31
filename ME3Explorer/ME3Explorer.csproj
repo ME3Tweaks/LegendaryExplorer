@@ -299,12 +299,6 @@
     </Compile>
     <Compile Include="Bio2DAEditor\Bio2DA.cs" />
     <Compile Include="Bio2DAEditor\Bio2DACell.cs" />
-    <Compile Include="Bio2DAEditor\Bio2DAEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Bio2DAEditor\Bio2DAEditor.Designer.cs">
-      <DependentUpon>Bio2DAEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
     </Compile>
@@ -662,12 +656,6 @@
     <Compile Include="Soundplorer\KoopsAudioDecoder.cs" />
     <Compile Include="Soundplorer\SoundplorerWPFCommands.cs" />
     <Compile Include="Soundplorer\SoundpanelAudioPlayer.cs" />
-    <Compile Include="Soundplorer\DirectReplace.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Soundplorer\DirectReplace.Designer.cs">
-      <DependentUpon>DirectReplace.cs</DependentUpon>
-    </Compile>
     <Compile Include="SharedUI\ExportLoaderControl.cs" />
     <Compile Include="SharedUI\IExportLoader.cs" />
     <Compile Include="Soundplorer\Soundpanel.xaml.cs">
@@ -808,6 +796,7 @@
     <Compile Include="Unreal\TalkFile.cs" />
     <Compile Include="Unreal\TextureCompression.cs" />
     <Compile Include="Unreal\TOCBinFile.cs" />
+    <Compile Include="Unreal\UDKExplorer\SkeletalMesh.cs" />
     <Compile Include="Unreal\UDKUnrealObjectInfo.cs" />
     <Compile Include="Unreal\UnrealFlags.cs" />
     <Compile Include="Unreal\ME3UnrealObjectInfo.cs" />
@@ -1187,9 +1176,6 @@
     <EmbeddedResource Include="BIKExtract\BIKExtract.resx">
       <DependentUpon>BIKExtract.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Bio2DAEditor\Bio2DAEditor.resx">
-      <DependentUpon>Bio2DAEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Conditionals\CondEditor.resx">
       <DependentUpon>CondEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -1277,9 +1263,6 @@
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Soundplorer\DirectReplace.resx">
-      <DependentUpon>DirectReplace.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="SubtitleScanner\SubtitleScanner.resx">
       <DependentUpon>SubtitleScanner.cs</DependentUpon>
     </EmbeddedResource>
@@ -1343,10 +1326,6 @@
       <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
       <Name>KFreonLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ME3LibWV\ME3LibWV.csproj">
-      <Project>{a8e1981a-0a8c-4c7a-9175-b5f0c085f639}</Project>
-      <Name>ME3LibWV</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NAudio\NAudio.csproj">
       <Project>{da4f02e3-0b5e-42cd-b8d9-5583fa51d66e}</Project>
       <Name>NAudio</Name>
@@ -1366,14 +1345,6 @@
     <ProjectReference Include="..\Tools\Gibbed.MassEffect3.FileFormats\Gibbed.MassEffect3.FileFormats.csproj">
       <Project>{681db2ce-e3eb-4110-ac50-f53eaca66e99}</Project>
       <Name>Gibbed.MassEffect3.FileFormats</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UDKExplorer\UDKExplorer.csproj">
-      <Project>{f660e850-da7a-41a6-ae77-4ab4f21d8f33}</Project>
-      <Name>UDKExplorer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UDKLibWV\UDKLibWV.csproj">
-      <Project>{40fb6624-5444-43dc-8b73-863a3d91e1f3}</Project>
-      <Name>UDKLibWV</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -1540,10 +1511,7 @@ del /s "$(TargetDir)*.xml"
 
 move /y "$(ProjectDir)$(OutDir)CSharpImageLibrary.exe" "$(ProjectDir)$(OutDir)lib\"
 move /y "$(ProjectDir)$(OutDir)KFreonLib.dll.config" "$(ProjectDir)$(OutDir)lib\"
-move /y "$(ProjectDir)$(OutDir)ME3LibWV.dll.config" "$(ProjectDir)$(OutDir)lib\"
 del "$(ProjectDir)$(OutDir)HexConverter.exe.config"
-del "$(ProjectDir)$(OutDir)UDKExplorer.exe.config"
-REM del "$(ProjectDir)$(OutDir)ME3Creator.exe.config"
 if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBuilder.cmd" "$(TargetDir)..\ReleaseBuilder.bat" /y)
 
 if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBuilder.ps1" "$(TargetDir)..\ReleaseBuilder.ps1" /y)

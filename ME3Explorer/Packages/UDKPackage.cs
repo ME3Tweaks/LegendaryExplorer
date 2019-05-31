@@ -340,7 +340,7 @@ namespace ME3Explorer.Packages
         ///     UDKPackage class constructor. It also load namelist, importlist and exportinfo (not exportdata) from udk file
         /// </summary>
         /// <param name="UDKPackagePath">full path + file name of desired udk file.</param>
-        public UDKPackage(string UDKPackagePath, bool fullFileInMemory = false)
+        public UDKPackage(string UDKPackagePath)
         {
             string path = UDKPackagePath;
             DebugOutput.PrintLn("Load file : " + path);
@@ -439,10 +439,6 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public UDKPackage()
-        {
-        }
-
         /// <summary>
         ///     Not supported for UDK files
         /// </summary>
@@ -462,30 +458,6 @@ namespace ME3Explorer.Packages
             return; 
         }
 
-        /// <summary>
-        ///     Not supported for UDK files
-        /// </summary>
-        /// <param name="path">full path + file name.</param>
-        public void saveByReconstructing(string path)
-        {
-            //Saving is not supported for UPK files.
-            return;
-            
-        }
-
-
-
-        /// <summary>
-        /// Not supported for UDK files
-        /// </summary>
-        /// <param name="newFileName">The filename to write to</param>
-        /// <param name="attemptOverwrite">Do you wish to attempt to overwrite the existing export</param>
-        public string appendSave(string newFileName, bool attemptOverwrite, int HeadeNameOffset = 34)
-        {
-            //Saving UDK files is not supported.
-            return "";
-        }
-
         public string getMetadataString()
         {
             string str = "UDK File Metadata";
@@ -495,21 +467,5 @@ namespace ME3Explorer.Packages
             return str;
 
         }
-        /*
-        public bool canClone()
-        {
-            if (!canReconstruct)
-            {
-                var res = MessageBox.Show("This file contains a SeekFreeShaderCache. Cloning will cause a crash when ME3 attempts to load this file.\n" +
-                    "Do you want to visit a forum thread with more information and a possible solution?",
-                    "I'm sorry, Dave. I'm afraid I can't do that.", MessageBoxButtons.YesNo, MessageBoxIcon.Stop);
-                if (res == DialogResult.Yes)
-                {
-                    Process.Start("http://me3explorer.freeforums.org/research-how-to-turn-your-dlc-udk-into-a-vanilla-one-t2264.html");
-                }
-                return false;
-            }
-            return true;
-        }*/
     }
 }
