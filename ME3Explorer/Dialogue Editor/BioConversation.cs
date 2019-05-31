@@ -23,6 +23,8 @@ namespace ME3Explorer.Dialogue_Editor
         {
             public IExportEntry export { get; set; }
 
+            public string ConvName { get; set; }
+
             public bool bParsed { get; set; }
 
             public ObservableCollectionExtended<SpeakerExtended> Speakers { get; set; }
@@ -36,17 +38,20 @@ namespace ME3Explorer.Dialogue_Editor
             /// Sequence Reference UIndex
             /// </summary>
             public int Sequence { get; set; }
-            public ConversationExtended(IExportEntry export, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList)
+
+            public ConversationExtended(IExportEntry export, string ConvName, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList)
             {
                 this.export = export;
+                this.ConvName = ConvName;
                 this.Speakers = Speakers;
                 this.EntryList = EntryList;
                 this.ReplyList = ReplyList;
             }
 
-            public ConversationExtended(IExportEntry export, bool bParsed, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, int WwiseBank, int Sequence)
+            public ConversationExtended(IExportEntry export, string ConvName, bool bParsed, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, int WwiseBank, int Sequence)
             {
                 this.export = export;
+                this.ConvName = ConvName;
                 this.bParsed = bParsed;
                 this.Speakers = Speakers;
                 this.EntryList = EntryList;
@@ -63,7 +68,7 @@ namespace ME3Explorer.Dialogue_Editor
                     var s_speakers = export.GetProperty<ArrayProperty<StructProperty>>("m_SpeakerList");
                     if (s_speakers != null)
                     {
-                        for(int id = 0; id < s_speakers.Count; id++)
+                        for (int id = 0; id < s_speakers.Count; id++)
                         {
                             var spkr = new SpeakerExtended(id, s_speakers[id].GetProp<NameProperty>("sSpeakerTag").ToString());
                             Speakers.Add(spkr);
@@ -85,71 +90,89 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                 }
             }
+            /// <summary>
+            /// Returns the Uindex of FaceFXAnimSet
+            /// </summary>
+            /// <param name="speakerID">SpeakerID -1 = Owner, -2 = Player</param>
+            /// <param name="isMale">will pull female by default</param>
+            public int ParseFaceFX(int speakerID, bool isMale = false)
+            {
+                string ffxPropName = "m_aFemaleFaceSets";
+                if (isMale)
+                {
+                    ffxPropName = "m_aMaleFaceSets";
+                }
+                var ffxList = export.GetProperty<ArrayProperty<ObjectProperty>>(ffxPropName);
+                if (ffxList != null)
+                {
+                    return ffxList[speakerID + 2].Value;
+                }
+
+                return 0;
+            }
+        }
+
+
+        #endregion Convo
+
+
+        public class SpeakerExtended : NotifyPropertyChangedBase
+        {
+
+            public int SpeakerID { get; set; }
+
+            public string SpeakerName { get; set; }
+
+            /// <summary>
+            /// Male UIndex object reference
+            /// </summary>
+            public int FaceFX_Male { get; set; }
+            /// <summary>
+            /// Female UIndex object reference
+            /// </summary>
+            public int FaceFX_Female { get; set; }
+
+            public SpeakerExtended(int SpeakerID, string SpeakerName)
+            {
+                this.SpeakerID = SpeakerID;
+                this.SpeakerName = SpeakerName;
+            }
+
+            public SpeakerExtended(int SpeakerID, string SpeakerName, int FaceFX_Male, int FaceFX_Female)
+            {
+                this.SpeakerID = SpeakerID;
+                this.SpeakerName = SpeakerName;
+                this.FaceFX_Male = FaceFX_Male;
+                this.FaceFX_Female = FaceFX_Female;
+            }
+        }
+
+
+        public class DialogueNodeExtended : NotifyPropertyChangedBase
+        {
+            public int EntryID { get; set; }
+
+            /// <summary>
+            /// InterpData object reference UIndex
+            /// </summary>
+            public int Interpdata { get; set; }
+            /// <summary>
+            /// WwiseStream object reference Male UIndex
+            /// </summary>
+            public int WwiseStream_Male { get; set; }
+            /// <summary>
+            /// WwiseStream object reference Female UIndex
+            /// </summary>
+            public int WwiseStream_Female { get; set; }
+
+            public DialogueNodeExtended(int EntryID, int Interpdata, int WwiseStream_Male, int WwiseStream_Female)
+            {
+                this.EntryID = EntryID;
+                this.Interpdata = Interpdata;
+                this.WwiseStream_Male = WwiseStream_Male;
+                this.WwiseStream_Female = WwiseStream_Female;
+            }
+
         }
     }
-
-
-    #endregion Convo
-
-
-    public class SpeakerExtended : NotifyPropertyChangedBase
-    {
-
-        public int SpeakerID { get; set; }
-
-        public string SpeakerName { get; set; }
-
-        /// <summary>
-        /// Male UIndex object reference
-        /// </summary>
-        public int FaceFX_Male { get; set; }
-        /// <summary>
-        /// Female UIndex object reference
-        /// </summary>
-        public int FaceFX_Female { get; set; }
-
-        public SpeakerExtended(int SpeakerID, string SpeakerName)
-        {
-            this.SpeakerID = SpeakerID;
-            this.SpeakerName = SpeakerName;
-        }
-
-        public SpeakerExtended(int SpeakerID, string SpeakerName, int FaceFX_Male, int FaceFX_Female)
-        {
-            this.SpeakerID = SpeakerID;
-            this.SpeakerName = SpeakerName;
-            this.FaceFX_Male = FaceFX_Male;
-            this.FaceFX_Female = FaceFX_Female;
-        }
-    }
-
-
-    public class DialogueNodeExtended : NotifyPropertyChangedBase
-    {
-        public int EntryID { get; set; }
-
-        /// <summary>
-        /// InterpData object reference UIndex
-        /// </summary>
-        public int Interpdata { get; set; }
-        /// <summary>
-        /// WwiseStream object reference Male UIndex
-        /// </summary>
-        public int WwiseStream_Male { get; set; }
-        /// <summary>
-        /// WwiseStream object reference Female UIndex
-        /// </summary>
-        public int WwiseStream_Female { get; set; }
-
-        public DialogueNodeExtended(int EntryID, int Interpdata, int WwiseStream_Male, int WwiseStream_Female)
-        {
-            this.EntryID = EntryID;
-            this.Interpdata = Interpdata;
-            this.WwiseStream_Male = WwiseStream_Male;
-            this.WwiseStream_Female = WwiseStream_Female;
-        }
-
-
-    }
-
 }

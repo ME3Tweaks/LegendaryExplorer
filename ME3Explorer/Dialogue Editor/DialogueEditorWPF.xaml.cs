@@ -27,11 +27,11 @@ using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using InterpEditor = ME3Explorer.Matinee.InterpEditor;
 using static ME3Explorer.Dialogue_Editor.BioConversationExtended;
-//using ConversationExtended = ME3Explorer.Dialogue_Editor.BioConversationExtended.ConversationExtended;
 using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using KFreonLib.MEDirectories;
 using MassEffect.NativesEditor.Views;
+using ME3Explorer.Sequence_Editor;
 
 namespace ME3Explorer.Dialogue_Editor
 {
@@ -59,6 +59,8 @@ namespace ME3Explorer.Dialogue_Editor
         private readonly ConvGraphEditor graphEditor;
         public ObservableCollectionExtended<ConversationExtended> Conversations { get; } = new ObservableCollectionExtended<ConversationExtended>();
         public ObservableCollectionExtended<SpeakerExtended> ActiveSpeakerList { get; } = new ObservableCollectionExtended<SpeakerExtended>();
+
+        public ConversationExtended ActiveConv = null;
         // FOR REMOVAL DEBUG ONLY
         public ObservableCollectionExtended<SObj> CurrentObjects { get; } = new ObservableCollectionExtended<SObj>();
         public ObservableCollectionExtended<SObj> SelectedObjects { get; } = new ObservableCollectionExtended<SObj>();
@@ -91,7 +93,7 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand SaveViewCommand { get; set; }
         public ICommand AutoLayoutCommand { get; set; }
         public ICommand GotoCommand { get; set; }
-        public ICommand KismetLogCommand { get; set; }
+        public ICommand LoadTLKManagerCommand { get; set; }
         #endregion Declarations
 
 
@@ -131,7 +133,7 @@ namespace ME3Explorer.Dialogue_Editor
             SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
             SaveImageCommand = new GenericCommand(SaveImage, CurrentObjects.Any);
             AutoLayoutCommand = new GenericCommand(AutoLayout, CurrentObjects.Any);
-
+            LoadTLKManagerCommand = new GenericCommand(LoadTLKManager);
         }
 
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
@@ -169,6 +171,46 @@ namespace ME3Explorer.Dialogue_Editor
         private void SavePackage()
         {
             Pcc.save();
+        }
+
+        private void DialogueEditorWPF_Closing(object sender, CancelEventArgs e)
+        {
+            if (e.Cancel)
+                return;
+
+            if (AutoSaveView_MenuItem.IsChecked)
+                saveView();
+
+            var options = new Dictionary<string, object>
+            {
+                {"OutputNumbers", SObj.OutputNumbers},
+                {"AutoSave", AutoSaveView_MenuItem.IsChecked},
+
+            };
+            string outputFile = JsonConvert.SerializeObject(options);
+            if (!Directory.Exists(DialogueEditorDataFolder))
+                Directory.CreateDirectory(DialogueEditorDataFolder);
+
+
+            //Code here remove these objects from leaking the window memory
+            graphEditor.Camera.MouseDown -= backMouseDown_Handler;
+            graphEditor.Camera.MouseUp -= back_MouseUp;
+            graphEditor.Click -= graphEditor_Click;
+            graphEditor.DragDrop -= SequenceEditor_DragDrop;
+            graphEditor.DragEnter -= SequenceEditor_DragEnter;
+            CurrentObjects.ForEach(x =>
+            {
+                x.MouseDown -= node_MouseDown;
+                x.Click -= node_Click;
+                x.Dispose();
+            });
+            CurrentObjects.Clear();
+            graphEditor.Dispose();
+            Properties_InterpreterWPF.Dispose();
+            GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
+            GraphHost.Dispose();
+            DataContext = null;
+            DispatcherHelper.EmptyQueue();
         }
 
         private void OpenPackage()
@@ -213,6 +255,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
 
                 FirstParse();
+                RightBarColumn.Width = new GridLength(200);
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
 
@@ -227,10 +270,20 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 MessageBox.Show("Error:\n" + ex.Message);
                 Title = "Dialogue Editor WPF";
-                CurrentFile = null;
-                UnLoadMEPackage();
+                UnloadFile(); 
             }
         }
+
+        private void UnloadFile()
+        {
+            ActiveConv = null;
+            RightBarColumn.Width = new GridLength(0);
+            ActiveSpeakerList.ClearEx();
+            Properties_InterpreterWPF.UnloadExport();
+            CurrentFile = null;
+            UnLoadMEPackage();
+        }
+    
 
         #endregion Startup/Exit
 
@@ -239,7 +292,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             foreach(var exp in Pcc.Exports.Where(exp => exp.ClassName.Equals("BioConversation")))
             {
-                Conversations.Add(new ConversationExtended(exp, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>()));
+                Conversations.Add(new ConversationExtended(exp, exp.ObjectName, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>()));
             }
 
         }
@@ -707,6 +760,51 @@ namespace ME3Explorer.Dialogue_Editor
         #endregion Recents
 
         #region UIHandling
+        private void ConversationList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(Conversations_ListBox.SelectedIndex < 0)
+            {
+                ActiveConv = null;
+                ActiveSpeakerList.ClearEx();
+                Properties_InterpreterWPF.UnloadExport();
+
+            }
+            else
+            {
+                ActiveConv = Conversations[Conversations_ListBox.SelectedIndex];
+                Properties_InterpreterWPF.LoadExport(ActiveConv.export);
+
+                ActiveSpeakerList.ClearEx();
+                ActiveSpeakerList.Add(new SpeakerExtended(-2, "player", ActiveConv.ParseFaceFX(-2, true), ActiveConv.ParseFaceFX(-2)));
+                ActiveSpeakerList.Add(new SpeakerExtended(-1, "owner", ActiveConv.ParseFaceFX(-1, true), ActiveConv.ParseFaceFX(-1)));
+                foreach (var spkr in ActiveConv.Speakers)
+                {
+                    ActiveSpeakerList.Add(spkr);
+                }
+            }
+
+
+            //if (SelectedObjects.Any())
+            //{
+            //    if (panToSelection)
+            //    {
+            //        if (SelectedObjects.Count == 1)
+            //        {
+            //            graphEditor.Camera.AnimateViewToCenterBounds(SelectedObjects[0].GlobalFullBounds, false, 100);
+            //        }
+            //        else
+            //        {
+            //            RectangleF boundingBox = SelectedObjects.Select(obj => obj.GlobalFullBounds).BoundingRect();
+            //            graphEditor.Camera.AnimateViewToCenterBounds(boundingBox, true, 200);
+            //        }
+            //    }
+            //}
+
+            //panToSelection = true;
+            graphEditor.Refresh();
+        }
+
+
         private void backMouseDown_Handler(object sender, PInputEventArgs e)
         {
             if (!(e.PickedNode is PCamera) || SelectedSequence == null) return;
@@ -1120,55 +1218,6 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        private void DialogueEditorWPF_Closing(object sender, CancelEventArgs e)
-        {
-            if (e.Cancel)
-                return;
-
-            if (AutoSaveView_MenuItem.IsChecked)
-                saveView();
-
-            var options = new Dictionary<string, object>
-            {
-                {"OutputNumbers", SObj.OutputNumbers},
-                {"AutoSave", AutoSaveView_MenuItem.IsChecked},
-
-            };
-            string outputFile = JsonConvert.SerializeObject(options);
-            if (!Directory.Exists(DialogueEditorDataFolder))
-                Directory.CreateDirectory(DialogueEditorDataFolder);
-
-
-            //Code here remove these objects from leaking the window memory
-            graphEditor.Camera.MouseDown -= backMouseDown_Handler;
-            graphEditor.Camera.MouseUp -= back_MouseUp;
-            graphEditor.Click -= graphEditor_Click;
-            graphEditor.DragDrop -= SequenceEditor_DragDrop;
-            graphEditor.DragEnter -= SequenceEditor_DragEnter;
-            CurrentObjects.ForEach(x =>
-            {
-                x.MouseDown -= node_MouseDown;
-                x.Click -= node_Click;
-                x.Dispose();
-            });
-            CurrentObjects.Clear();
-            graphEditor.Dispose();
-            Properties_InterpreterWPF.Dispose();
-            GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
-            GraphHost.Dispose();
-            DataContext = null;
-            DispatcherHelper.EmptyQueue();
-        }
-
-        private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
-        {
-            if (Conversations_ListBox.SelectedItem is SObj obj)
-            {
-                PackageEditorWPF p = new PackageEditorWPF();
-                p.Show();
-                p.LoadFile(obj.Export.FileRef.FileName, obj.UIndex);
-            }
-        }
 
         private void CloneObject_Clicked(object sender, RoutedEventArgs e)
         {
@@ -1428,55 +1477,6 @@ namespace ME3Explorer.Dialogue_Editor
             Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
         }
 
-        private void CurrentObjectsList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.RemovedItems?.Cast<SObj>().ToList() is List<SObj> deselectedEntries)
-            {
-                SelectedObjects.RemoveRange(deselectedEntries);
-                foreach (SObj obj in deselectedEntries)
-                {
-                    obj.IsSelected = false;
-                }
-            }
-
-            if (e.AddedItems?.Cast<SObj>().ToList() is IList<SObj> selectedEntries)
-            {
-                SelectedObjects.AddRange(selectedEntries);
-                foreach (SObj obj in selectedEntries)
-                {
-                    obj.IsSelected = true;
-                }
-            }
-
-            //if (SelectedObjects.Count == 1)
-            //{
-            //    Properties_InterpreterWPF.LoadExport(SelectedObjects[0].Export);
-            //}
-            //else if (!(Properties_InterpreterWPF.CurrentLoadedExport?.IsSequence() ?? false))
-            //{
-            //    Properties_InterpreterWPF.UnloadExport();
-            //}
-
-            if (SelectedObjects.Any())
-            {
-                if (panToSelection)
-                {
-                    if (SelectedObjects.Count == 1)
-                    {
-                        graphEditor.Camera.AnimateViewToCenterBounds(SelectedObjects[0].GlobalFullBounds, false, 100);
-                    }
-                    else
-                    {
-                        RectangleF boundingBox = SelectedObjects.Select(obj => obj.GlobalFullBounds).BoundingRect();
-                        graphEditor.Camera.AnimateViewToCenterBounds(boundingBox, true, 200);
-                    }
-                }
-            }
-
-            panToSelection = true;
-            graphEditor.Refresh();
-        }
-
         private void SaveImage()
         {
             if (CurrentObjects.Count == 0)
@@ -1572,9 +1572,37 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
+        private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (Conversations_ListBox.SelectedItem != null)
+            {
+                PackageEditorWPF p = new PackageEditorWPF();
+                p.Show();
+                p.LoadFile(ActiveConv.export.FileRef.FileName, ActiveConv.export.UIndex);
+            }
+        }
+
         private void OpenInSequenceEditor_Clicked(object sender, RoutedEventArgs e)
         {
+            if (Conversations_ListBox.SelectedItem != null)
+            {
+                SequenceEditorWPF p = new SequenceEditorWPF();
+                p.Show();
+                p.LoadFile(ActiveConv.export.FileRef.FileName);
+            }
+        }
 
+        private void LoadTLKManager()
+        {
+            if(!Application.Current.Windows.OfType<TlkManagerNS.TLKManagerWPF>().Any())
+            {
+                TlkManagerNS.TLKManagerWPF m = new TlkManagerNS.TLKManagerWPF();
+                m.Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<TlkManagerNS.TLKManagerWPF>().First().Focus();
+            }
         }
         #endregion UIHandling
 
