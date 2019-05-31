@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using Gibbed.IO;
-using KFreonLib.Debugging;
 
 namespace ME3Explorer.Packages
 {
@@ -76,7 +75,6 @@ namespace ME3Explorer.Packages
             //Debug.WriteLine(" >> Opening me2 package " + path);
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"ME2Package {Path.GetFileName(path)}", new WeakReference(this));
 
-            DebugOutput.PrintLn("Load file : " + path);
             FileName = Path.GetFullPath(path);
             MemoryStream tempStream = new MemoryStream();
             if (!File.Exists(FileName))
@@ -104,38 +102,33 @@ namespace ME3Explorer.Packages
 
             if (magic != packageTag)
             {
-                DebugOutput.PrintLn("Magic number incorrect: " + magic);
                 throw new FormatException("This is not a pcc file. The magic number is incorrect.");
             }
 
             MemoryStream listsStream;
             if (IsCompressed)
             {
-                DebugOutput.PrintLn("File is compressed");
-                {
-                    //Aquadran: Code to decompress package on disk.
-                    //Do not set the decompressed flag as some tools use this flag
-                    //to determine if the file on disk is still compressed or not
-                    //e.g. soundplorer's offset based audio access
-                    listsStream = CompressionHelper.DecompressME1orME2(tempStream);
+                //Aquadran: Code to decompress package on disk.
+                //Do not set the decompressed flag as some tools use this flag
+                //to determine if the file on disk is still compressed or not
+                //e.g. soundplorer's offset based audio access
+                listsStream = CompressionHelper.DecompressME1orME2(tempStream);
 
-                    //Correct the header
-                    //IsCompressed = false; // DO NOT MARK FILE AS DECOMPRESSED AS THIS WILL CORRUPT FILES ON SAVE
-                    listsStream.Seek(0, SeekOrigin.Begin);
-                    listsStream.WriteBytes(header);
+                //Correct the header
+                //IsCompressed = false; // DO NOT MARK FILE AS DECOMPRESSED AS THIS WILL CORRUPT FILES ON SAVE
+                listsStream.Seek(0, SeekOrigin.Begin);
+                listsStream.WriteBytes(header);
 
-                    //Set numblocks to zero
-                    listsStream.WriteValueS32(0);
-                    //Write the magic number
-                    listsStream.WriteValueS32(1026281201);
-                    //Write 8 bytes of 0
-                    listsStream.WriteValueS32(0);
-                    listsStream.WriteValueS32(0);
-                }
+                //Set numblocks to zero
+                listsStream.WriteValueS32(0);
+                //Write the magic number
+                listsStream.WriteValueS32(1026281201);
+                //Write 8 bytes of 0
+                listsStream.WriteValueS32(0);
+                listsStream.WriteValueS32(0);
             }
             else
             {
-                DebugOutput.PrintLn("File already decompressed. Reading decompressed data.");
                 listsStream = tempStream;
             }
 

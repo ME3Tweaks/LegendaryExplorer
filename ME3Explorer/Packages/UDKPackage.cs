@@ -8,7 +8,6 @@ using AmaroK86.MassEffect3.ZlibBlock;
 using System.Diagnostics;
 using ME3Explorer.Unreal;
 using System.Windows;
-using KFreonLib.Debugging;
 
 namespace ME3Explorer.Packages
 {
@@ -343,7 +342,6 @@ namespace ME3Explorer.Packages
         public UDKPackage(string UDKPackagePath)
         {
             string path = UDKPackagePath;
-            DebugOutput.PrintLn("Load file : " + path);
             FileName = Path.GetFullPath(path);
             MemoryStream tempStream = new MemoryStream();
             if (!File.Exists(FileName))
@@ -392,7 +390,6 @@ namespace ME3Explorer.Packages
             }
             else
             {
-                DebugOutput.PrintLn("File already decompressed. Reading decompressed data.");
                 listsStream = tempStream;
             }
 

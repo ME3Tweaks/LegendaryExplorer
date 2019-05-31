@@ -272,64 +272,6 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        public void CreateModJobs()
-        {
-            if (isEdited)
-            {
-                Matrix m = MyMatrix;
-                Vector3 loc = new Vector3(m.M41, m.M42, m.M43);
-                byte[] buff = Vector3ToBuff(loc);
-                int f = -1;
-                for (int i = 0; i < Props.Count; i++)
-                    if (pcc.getNameEntry(Props[i].Name) == "location")
-                    {
-                        f = i;
-                        break;
-                    };
-                if (f != -1)//has prop
-                {
-                    int off = Props[f].offend - 12;
-                    for (int i = 0; i < 12; i++)
-                        data[off + i] = buff[i];
-                }
-                else//have to add prop
-                {
-                    DebugOutput.PrintLn(MyIndex + " : cant find location property");
-                }
-                Vector3 rot = new Vector3((float)Math.Atan2(m.M32, m.M33), (float)Math.Asin(-1 * m.M31), (float)Math.Atan2(-1 * m.M21, m.M11));
-                rot = DxToRotator(rot);
-                buff = RotatorToBuff(rot);
-                f = -1;
-                for (int i = 0; i < Props.Count; i++)
-                    if (pcc.getNameEntry(Props[i].Name) == "Rotation")
-                    {
-                        f = i;
-                        break;
-                    };
-                if (f != -1)//has prop
-                {
-                    int off = Props[f].offend - 12;
-                    for (int i = 0; i < 12; i++)
-                        data[off + i] = buff[i];
-                }
-                else//have to add prop
-                {
-                    DebugOutput.PrintLn(MyIndex + " : cant find rotation property");
-                }
-                KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
-                string currfile = Path.GetFileName(pcc.FileName);
-                mj.data = data;
-                mj.Name = "Binary Replacement for file \"" + currfile + "\" in Object #" + MyIndex + " with " + data.Length + " bytes of data";
-                string lc = Path.GetDirectoryName(Application.ExecutablePath);
-                string template = System.IO.File.ReadAllText(lc + "\\exec\\JobTemplate_Binary2.txt");
-                template = template.Replace("**m1**", MyIndex.ToString());
-                template = template.Replace("**m2**", currfile);
-                mj.Script = template;
-                KFreonLib.Scripting.ModMaker.JobList.Add(mj);
-                DebugOutput.PrintLn("Created Mod job : " + mj.Name);
-            }
-        }
-
         public byte[] Vector3ToBuff(Vector3 v)
         {
             MemoryStream m = new MemoryStream();

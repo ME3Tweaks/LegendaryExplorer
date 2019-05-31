@@ -221,46 +221,6 @@ namespace ME3Explorer.Unreal.Classes
             pcc.save();
         }
 
-        public void CreateModJobs()
-        {
-            foreach (StaticMeshCollectionActor stmca in STM_CA)
-                stmca.CreateModJobs();
-            foreach (StaticMeshActor stma in STM_A)
-                stma.CreateModJobs();
-            foreach (InterpActor ia in IA)
-                ia.CreateModJobs();
-            foreach (BlockingVolume bv in BV)
-                bv.CreateModJobs();
-            foreach (SplineActor sp in SPA)
-                sp.CreateModJobs();
-            foreach (TargetPoint tp in TP)
-                tp.CreateModJobs();
-            foreach (LightVolume lv in LV)
-                lv.CreateModJobs();
-            foreach (MantleMarker mm in MM)
-                mm.CreateModJobs();
-            foreach (PathNode pn in PN)
-                pn.CreateModJobs();
-            foreach (CoverLink cl in CL)
-                cl.CreateModJobs();
-            foreach (CoverSlotMarker csm in CSM)
-                csm.CreateModJobs();
-            foreach (Emitter em in EM)
-                em.CreateModJobs();
-            foreach (BioPlaypenVolumeAdditive bpva in BPVA)
-                bpva.CreateModJobs();
-            foreach (BioTriggerVolume btv in BTV)
-                btv.CreateModJobs();
-            foreach (BioPathPoint bpp in BPP)
-                bpp.CreateModJobs();
-            foreach (WwiseAmbientSound was in WAS)
-                was.CreateModJobs();
-            foreach (WwiseAudioVolume wav in WAV)
-                wav.CreateModJobs();
-            foreach (WwiseEnvironmentVolume wev in WEV)
-                wev.CreateModJobs();
-        }
-
         public void ProcessTreeClick(int[] path, bool AutoFocus)
         {
             int idx = path[2];//get selected levelobject

@@ -13,7 +13,6 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
 using SharpDX;
 using KFreonLib.Debugging;
-using ModJob = KFreonLib.Scripting.ModMaker.ModJob;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -145,44 +144,6 @@ namespace ME3Explorer.Unreal.Classes
                     DebugOutput.PrintLn(MyIndex + " : cant find location property");
                 }
                 pcc.Exports[MyIndex].Data = data;
-            }
-        }
-
-        public void CreateModJobs()
-        {
-            if (isEdited)
-            {
-                Matrix m = MyMatrix;
-                Vector3 loc = new Vector3(m.M41, m.M42, m.M43);
-                byte[] buff = Vector3ToBuff(loc);
-                int f = -1;
-                for (int i = 0; i < Props.Count; i++)
-                    if (pcc.getNameEntry(Props[i].Name) == "location")
-                    {
-                        f = i;
-                        break;
-                    };
-                if (f != -1)//has prop
-                {
-                    int off = Props[f].offend - 12;
-                    for (int i = 0; i < 12; i++)
-                        data[off + i] = buff[i];
-                }
-                else//have to add prop
-                {
-                    DebugOutput.PrintLn(MyIndex + " : cant find location property");
-                }
-                ModJob mj = new ModJob();
-                string currfile = Path.GetFileName(pcc.FileName);
-                mj.data = data;
-                mj.Name = "Binary Replacement for file \"" + currfile + "\" in Object #" + MyIndex + " with " + data.Length + " bytes of data";
-                string lc = Path.GetDirectoryName(Application.ExecutablePath);
-                string template = System.IO.File.ReadAllText(lc + "\\exec\\JobTemplate_Binary2.txt");
-                template = template.Replace("**m1**", MyIndex.ToString());
-                template = template.Replace("**m2**", currfile);
-                mj.Script = template;
-                KFreonLib.Scripting.ModMaker.JobList.Add(mj);
-                DebugOutput.PrintLn("Created Mod job : " + mj.Name);
             }
         }
 

@@ -198,32 +198,6 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        public void CreateModJobs()
-        {
-            if (isEdited)
-            {
-                int pos = Props[Props.Count - 1].offend;
-                for (int i = 0; i < Matrices.Count; i++)
-                {
-                    byte[] buff = MatrixToBuff(Matrices[i]);
-                    for (int j = 0; j < 64; j++)
-                        data[pos + j] = buff[j];
-                    pos += 64;
-                }
-                KFreonLib.Scripting.ModMaker.ModJob mj = new KFreonLib.Scripting.ModMaker.ModJob();
-                string currfile = Path.GetFileName(pcc.FileName);
-                mj.data = data;
-                mj.Name = "Binary Replacement for file \"" + currfile + "\" in Object #" + MyIndex + " with " + data.Length + " bytes of data";
-                string loc = Path.GetDirectoryName(Application.ExecutablePath);
-                string template = System.IO.File.ReadAllText(loc + "\\exec\\JobTemplate_Binary2.txt");
-                template = template.Replace("**m1**", MyIndex.ToString());
-                template = template.Replace("**m2**", currfile);
-                mj.Script = template;
-                KFreonLib.Scripting.ModMaker.JobList.Add(mj);
-                DebugOutput.PrintLn("Created Mod job : " + mj.Name);
-            }
-        }
-
         public void SetSelection(bool Selected)
         {
             foreach (StaticMeshComponent stmc in STMC)
