@@ -16,7 +16,6 @@ using KFreonLib;
 using KFreonLib.Textures;
 using KFreonLib.GUI;
 using KFreonLib.Debugging;
-using KFreonLib.MEDirectories;
 using System.Reflection;
 using UsefulThings;
 using CSharpImageLibrary.General;
@@ -30,7 +29,7 @@ namespace ME3Explorer
     public partial class KFreonTPFTools3 : Form
     {
         int WhichGame = 3;
-        MEDirectories MEExDirecs = new MEDirectories();
+        KFreonLib.MEDirectories.MEDirectories MEExDirecs = new KFreonLib.MEDirectories.MEDirectories();
 
         bool tooltipsVisible = false;
         List<ToolTip> tooltips = new List<ToolTip>();

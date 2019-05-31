@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3Explorer", "ME3Explorer\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.IO", "Tools\Gibbed.IO\Gibbed.IO.csproj", "{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.MassEffect3.FileFormats", "Tools\Gibbed.MassEffect3.FileFormats\Gibbed.MassEffect3.FileFormats.csproj", "{681DB2CE-E3EB-4110-AC50-F53EACA66E99}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmaroK86Lib", "AmaroK86\AmaroK86Lib.csproj", "{9010228E-4393-47E2-9DEE-FB5090A1D1AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Be.Windows.Forms.HexBox", "Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj", "{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}"
@@ -54,14 +52,6 @@ Global
 		{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}.Release|x64.ActiveCfg = Release|x64
 		{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}.Release|x64.Build.0 = Release|x64
-		{681DB2CE-E3EB-4110-AC50-F53EACA66E99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{681DB2CE-E3EB-4110-AC50-F53EACA66E99}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{681DB2CE-E3EB-4110-AC50-F53EACA66E99}.Debug|x64.ActiveCfg = Debug|x64
-		{681DB2CE-E3EB-4110-AC50-F53EACA66E99}.Debug|x64.Build.0 = Debug|x64
-		{681DB2CE-E3EB-4110-AC50-F53EACA66E99}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{681DB2CE-E3EB-4110-AC50-F53EACA66E99}.Release|Any CPU.Build.0 = Release|Any CPU
-		{681DB2CE-E3EB-4110-AC50-F53EACA66E99}.Release|x64.ActiveCfg = Release|x64
-		{681DB2CE-E3EB-4110-AC50-F53EACA66E99}.Release|x64.Build.0 = Release|x64
 		{9010228E-4393-47E2-9DEE-FB5090A1D1AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9010228E-4393-47E2-9DEE-FB5090A1D1AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9010228E-4393-47E2-9DEE-FB5090A1D1AB}.Debug|x64.ActiveCfg = Debug|x64

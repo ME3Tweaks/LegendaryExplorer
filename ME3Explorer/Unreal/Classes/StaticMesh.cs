@@ -10,7 +10,6 @@ using ME3Explorer.Unreal;
 using SharpDX;
 using lib3ds.Net;
 using KFreonLib.Debugging;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
 using System.Globalization;

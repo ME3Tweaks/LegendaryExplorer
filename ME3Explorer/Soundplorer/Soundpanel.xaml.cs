@@ -25,7 +25,6 @@ using System.Xml;
 using System.Xml.Linq;
 using Be.Windows.Forms;
 using FontAwesome.WPF;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;

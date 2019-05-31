@@ -11,7 +11,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using FontAwesome.WPF;
-using KFreonLib.MEDirectories;
 using ME3Explorer.SharedUI;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;

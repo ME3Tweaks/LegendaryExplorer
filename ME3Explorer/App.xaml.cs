@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using KFreonLib.MEDirectories;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME3Explorer.Packages;

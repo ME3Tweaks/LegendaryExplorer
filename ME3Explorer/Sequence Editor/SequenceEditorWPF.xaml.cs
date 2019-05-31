@@ -29,7 +29,6 @@ using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using InterpEditor = ME3Explorer.Matinee.InterpEditor;
 using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
-using KFreonLib.MEDirectories;
 using MassEffect.NativesEditor.Views;
 
 namespace ME3Explorer.Sequence_Editor

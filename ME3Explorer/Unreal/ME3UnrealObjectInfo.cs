@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
 using ME3Explorer.Packages;
 using ME2Explorer.Unreal;

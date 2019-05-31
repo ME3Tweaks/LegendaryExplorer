@@ -1,6 +1,5 @@
 ﻿using ByteSizeLib;
 using GongSolutions.Wpf.DragDrop;
-using KFreonLib.MEDirectories;
 using ME1Explorer.Unreal;
 using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.PackageEditorWPFControls;

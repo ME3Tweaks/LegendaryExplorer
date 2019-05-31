@@ -8,7 +8,6 @@ using System.Text;
 using System.Windows.Forms;
 using ME2Explorer.Unreal;
 using ME2Explorer.Unreal.Classes;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer;
 using ME3Explorer.SharedUI;

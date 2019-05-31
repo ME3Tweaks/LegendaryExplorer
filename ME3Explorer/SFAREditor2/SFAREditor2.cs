@@ -11,7 +11,6 @@ using Be;
 using Be.Windows.Forms;
 using ME3Explorer.Unreal;
 using KFreonLib.Debugging;
-using KFreonLib.MEDirectories;
 using ME3Explorer.SharedUI;
 using UsefulThings;
 using Microsoft.WindowsAPICodePack.Dialogs;

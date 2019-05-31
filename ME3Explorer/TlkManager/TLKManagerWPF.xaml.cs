@@ -1,5 +1,4 @@
-﻿using KFreonLib.MEDirectories;
-using ME1Explorer;
+﻿using ME1Explorer;
 using ME2Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;

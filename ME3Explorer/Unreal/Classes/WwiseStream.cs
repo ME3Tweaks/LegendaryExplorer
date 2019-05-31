@@ -8,7 +8,6 @@ using System.Media;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
 using NAudio.Wave;
-using KFreonLib.MEDirectories;
 using System.Diagnostics;
 using System.Threading.Tasks;
 

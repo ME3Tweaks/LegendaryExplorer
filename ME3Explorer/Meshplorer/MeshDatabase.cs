@@ -11,7 +11,6 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
 using KFreonLib.Debugging;
-using KFreonLib.MEDirectories;
 
 namespace ME3Explorer.Meshplorer
 {

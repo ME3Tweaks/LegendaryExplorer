@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using KFreonLib.MEDirectories;
 using ME3Explorer.SequenceObjects;
 using ME3Explorer.Packages;
 using System.Linq;

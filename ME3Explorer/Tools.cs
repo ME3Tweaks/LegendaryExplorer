@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Pathfinding_Editor;

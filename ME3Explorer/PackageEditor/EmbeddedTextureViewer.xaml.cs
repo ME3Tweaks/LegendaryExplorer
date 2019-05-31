@@ -14,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Gammtek.Conduit.Extensions.IO;
-using KFreonLib.MEDirectories;
 using KFreonLib.Textures;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -70,7 +69,7 @@ namespace ME3Explorer
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new EmbeddedTextureViewer(), CurrentLoadedExport)
                 {
-                    Title = $"Texture Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}"
+                    Title = $"Texture Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {Pcc.FileName}"
                 };
                 elhw.Show();
             }
@@ -149,12 +148,7 @@ namespace ME3Explorer
                     {
                         if (baseName != "" && !neverStream)
                         {
-                            MEDirectories MEExDirecs = new MEDirectories
-                            {
-                                WhichGame = (int)exportEntry.FileRef.Game
-                            };
-                            MEExDirecs.SetupPaths((int)exportEntry.FileRef.Game);
-                            List<string> gameFiles = MEDirectories.EnumerateGameFiles(MEExDirecs.WhichGame, System.IO.Path.GetDirectoryName(MEExDirecs.PathBIOGame));
+                            List<string> gameFiles = MEDirectories.EnumerateGameFiles(MEGame.ME1, ME1Directory.gamePath);
                             if (gameFiles.Exists(s => System.IO.Path.GetFileNameWithoutExtension(s).ToUpperInvariant() == baseName))
                             {
                                 CurrentLoadedBasePackageName = baseName;
@@ -223,15 +217,9 @@ namespace ME3Explorer
             {
                 TextureImage.Source = null;
                 string filename;
-                MEDirectories MEExDirecs = new MEDirectories
+                if (Pcc.Game == MEGame.ME1)
                 {
-                    WhichGame = (int)CurrentLoadedExport.FileRef.Game
-                };
-                MEExDirecs.SetupPaths((int)CurrentLoadedExport.FileRef.Game);
-                if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
-                {
-                    List<string> gameFiles =
-                        MEDirectories.EnumerateGameFiles(MEExDirecs.WhichGame, System.IO.Path.GetDirectoryName(MEExDirecs.PathBIOGame));
+                    List<string> gameFiles = MEDirectories.EnumerateGameFiles(MEGame.ME1, ME1Directory.gamePath);
                     filename = gameFiles.Find(s => System.IO.Path.GetFileNameWithoutExtension(s).Equals(CurrentLoadedBasePackageName, StringComparison.OrdinalIgnoreCase));
                     if (string.IsNullOrEmpty(filename))
                         throw new Exception($"File not found in game: {CurrentLoadedBasePackageName}.*");
@@ -239,8 +227,8 @@ namespace ME3Explorer
                 else
                 {
                     string archive = CurrentLoadedCacheName;
-                    filename = System.IO.Path.Combine(MEExDirecs.pathCooked, archive + ".tfc");
-                    string packagePath = CurrentLoadedExport.FileRef.FileName;
+                    filename = System.IO.Path.Combine(MEDirectories.CookedPath(Pcc.Game), archive + ".tfc");
+                    string packagePath = Pcc.FileName;
                     string currentPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(packagePath), archive + ".tfc");
                     if (File.Exists(currentPath))
                         filename = currentPath;
@@ -251,7 +239,7 @@ namespace ME3Explorer
                             filename = DLCArchiveFile;
                         else if (!File.Exists(filename))
                         {
-                            List<string> files = Directory.GetFiles(MEExDirecs.PathBIOGame, archive + ".tfc",
+                            List<string> files = Directory.GetFiles(MEDirectories.BioGamePath(Pcc.Game), archive + ".tfc",
                                 SearchOption.AllDirectories).Where(item => item.EndsWith(".tfc", StringComparison.OrdinalIgnoreCase)).ToList();
                             if (files.Count == 1)
                                 filename = files[0];
@@ -334,7 +322,7 @@ namespace ME3Explorer
         {
             if (MipList.Count > 0 && Mips_ListBox.SelectedIndex >= 0)
             {
-                Debug.WriteLine("Loading mip: " + Mips_ListBox.SelectedIndex);
+                Debug.WriteLine($"Loading mip: {Mips_ListBox.SelectedIndex}");
                 LoadMip(MipList[Mips_ListBox.SelectedIndex]);
             }
         }

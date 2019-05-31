@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
 using KFreonLib.Debugging;
-using KFreonLib.MEDirectories;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer.Propertydb

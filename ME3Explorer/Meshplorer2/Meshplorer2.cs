@@ -12,7 +12,6 @@ using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
 using AmaroK86.MassEffect3;
 using KFreonLib.Debugging;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Scene3D;
 
 namespace ME3Explorer.Meshplorer2

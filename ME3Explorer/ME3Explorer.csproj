@@ -396,6 +396,10 @@
       <DependentUpon>MemoryAnalyzer.xaml</DependentUpon>
     </Compile>
     <Compile Include="ME3LoadedFiles.cs" />
+    <Compile Include="MEDirectories\ME1Directory.cs" />
+    <Compile Include="MEDirectories\ME2Directory.cs" />
+    <Compile Include="MEDirectories\ME3Directory.cs" />
+    <Compile Include="MEDirectories\MEDirectories.cs" />
     <Compile Include="MetadataEditor\MetadataEditorWPF.xaml.cs">
       <DependentUpon>MetadataEditorWPF.xaml</DependentUpon>
     </Compile>
@@ -1341,10 +1345,6 @@
     <ProjectReference Include="..\Tools\Gibbed.IO\Gibbed.IO.csproj">
       <Project>{047857ba-daa3-4ca7-afb8-a1b082b28c6a}</Project>
       <Name>Gibbed.IO</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tools\Gibbed.MassEffect3.FileFormats\Gibbed.MassEffect3.FileFormats.csproj">
-      <Project>{681db2ce-e3eb-4110-ac50-f53eaca66e99}</Project>
-      <Name>Gibbed.MassEffect3.FileFormats</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

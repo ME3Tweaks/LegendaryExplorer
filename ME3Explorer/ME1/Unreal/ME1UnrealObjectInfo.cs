@@ -5,11 +5,11 @@ using System.IO;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using ME1Explorer.Unreal;
-using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using System.Diagnostics;
+using ME3Explorer;
 
 namespace ME1Explorer.Unreal
 {

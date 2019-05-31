@@ -74,10 +74,6 @@
       <Project>{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}</Project>
       <Name>Gibbed.IO</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tools\Gibbed.MassEffect3.FileFormats\Gibbed.MassEffect3.FileFormats.csproj">
-      <Project>{681db2ce-e3eb-4110-ac50-f53eaca66e99}</Project>
-      <Name>Gibbed.MassEffect3.FileFormats</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

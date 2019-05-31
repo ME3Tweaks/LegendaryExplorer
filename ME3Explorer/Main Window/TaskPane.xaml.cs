@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 
 namespace ME3Explorer

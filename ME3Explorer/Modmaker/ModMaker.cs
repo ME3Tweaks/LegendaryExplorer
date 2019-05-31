@@ -17,7 +17,6 @@ using ModJob = KFreonLib.Scripting.ModMaker.ModJob;
 using KFreonLib.Scripting;
 using KFreonLib.Helpers;
 using System.Diagnostics;
-using KFreonLib.MEDirectories;
 using System.Reflection;
 using UsefulThings;
 using KFreonLib.PCCObjects;
@@ -37,7 +36,7 @@ namespace ME3Explorer
         static ModMaker currentInstance;
         bool SuppressCheckEvent = true;
         object SuppressLocker = new object();
-        public MEDirectories MEExDirecs = new MEDirectories();
+        public KFreonLib.MEDirectories.MEDirectories MEExDirecs = new KFreonLib.MEDirectories.MEDirectories();
         string EmptyText = "Search in jobs, scripts, and pccs...";
 
         string ExecFolder => MEExDirecs.ExecFolder;
@@ -770,7 +769,7 @@ namespace ME3Explorer
             get
             {
                 bool alreadyExtracted = true;
-                foreach (var item in Directory.GetDirectories(ME3Directory.DLCPath))
+                foreach (var item in Directory.GetDirectories(KFreonLib.MEDirectories.ME3Directory.DLCPath))
                 {
                     // KFreon: Skip metadata
                     if (!item.Contains("__metadata") && !Directory.EnumerateFiles(item).Any(file => file.EndsWith("pcconsoletoc.bin", StringComparison.OrdinalIgnoreCase)))
@@ -1592,11 +1591,11 @@ namespace ME3Explorer
                     job.ExpIDs.Count == 0 || job.PCCs == null || job.PCCs.Count == 0 || job.PCCs.Count > 1)  // KFreon: Skip jobs that already have more than 1 pcc i.e. Someone clicked this button twice.
                     continue;
 
-                string basepath = ME3Directory.cookedPath;
+                string basepath = KFreonLib.MEDirectories.ME3Directory.cookedPath;
                 if (job.WhichGame == 2)
-                    basepath = ME2Directory.cookedPath;
+                    basepath = KFreonLib.MEDirectories.ME2Directory.cookedPath;
                 else if (job.WhichGame == 1)
-                    basepath = ME1Directory.cookedPath;
+                    basepath = KFreonLib.MEDirectories.ME1Directory.cookedPath;
 
                 string fullPCCPath = Path.Combine(basepath, job.PCCs[0]);
                 fullPCCPath = fullPCCPath.ToLower().Replace("cookedpcconsole\\cookedpcconsole", "cookedpcconsole");
@@ -1622,16 +1621,16 @@ namespace ME3Explorer
                     switch(job.WhichGame)
                     {
                         case 1:
-                            files = ME1Directory.Files.Where(f => f != fullPCCPath && f.Contains(pccName, StringComparison.OrdinalIgnoreCase));
-                            basePathLength = ME1Directory.cookedPath.Length;
+                            files = KFreonLib.MEDirectories.ME1Directory.Files.Where(f => f != fullPCCPath && f.Contains(pccName, StringComparison.OrdinalIgnoreCase));
+                            basePathLength = KFreonLib.MEDirectories.ME1Directory.cookedPath.Length;
                             break;
                         case 2:
-                            files = ME2Directory.Files.Where(f => f != fullPCCPath && f.Contains(pccName, StringComparison.OrdinalIgnoreCase));
-                            basePathLength = ME2Directory.cookedPath.Length;
+                            files = KFreonLib.MEDirectories.ME2Directory.Files.Where(f => f != fullPCCPath && f.Contains(pccName, StringComparison.OrdinalIgnoreCase));
+                            basePathLength = KFreonLib.MEDirectories.ME2Directory.cookedPath.Length;
                             break;
                         case 3:
-                            files = ME3Directory.Files.Where(f => f != fullPCCPath && f.Contains(pccName, StringComparison.OrdinalIgnoreCase));
-                            basePathLength = ME3Directory.cookedPath.Length;
+                            files = KFreonLib.MEDirectories.ME3Directory.Files.Where(f => f != fullPCCPath && f.Contains(pccName, StringComparison.OrdinalIgnoreCase));
+                            basePathLength = KFreonLib.MEDirectories.ME3Directory.cookedPath.Length;
                             break;
                     }
 

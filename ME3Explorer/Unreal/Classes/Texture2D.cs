@@ -11,7 +11,6 @@ using ME3Explorer.Packages;
 using Gibbed.IO;
 using AmaroK86.ImageFormat;
 using AmaroK86.MassEffect3.ZlibBlock;
-using KFreonLib.MEDirectories;
 using SharpDX;
 using SharpDX.Direct3D11;
 
