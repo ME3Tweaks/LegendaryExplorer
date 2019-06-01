@@ -477,6 +477,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         public void GenerateGraph()
         {
+
             graphEditor.nodeLayer.RemoveAllChildren();
             graphEditor.edgeLayer.RemoveAllChildren();
             StartPoDStarts = 0;
@@ -490,13 +491,15 @@ namespace ME3Explorer.Dialogue_Editor
                 graphEditor.addNode(new DStart(start, ActiveConv, x, y, graphEditor));
                 y += 100;
             }
-            //Layout();
+            Layout();
             foreach (DObj o in CurrentObjects)
             {
                 o.MouseDown += node_MouseDown;
                 o.Click += node_Click;
             }
 
+            graphEditor.Camera.X = 0;
+            graphEditor.Camera.Y = 0;
             //if (SavedPositions.IsEmpty() && Pcc.Game != MEGame.ME1)
             //{
             //    if (CurrentFile.Contains("_LOC_INT"))
@@ -917,7 +920,6 @@ namespace ME3Explorer.Dialogue_Editor
         #endregion Recents
 
         #region UIHandling
-
 
         private void backMouseDown_Handler(object sender, PInputEventArgs e)
         {
@@ -1699,7 +1701,34 @@ namespace ME3Explorer.Dialogue_Editor
                 Application.Current.Windows.OfType<TlkManagerNS.TLKManagerWPF>().First().Focus();
             }
         }
-        #endregion UIHandling
+#if DEBUG
+        public class DebugMouseListener : PBasicInputEventHandler, IDisposable
+        {
+            private DialogueEditorWPF dialogueEdWPF;
+
+            public DebugMouseListener(DialogueEditorWPF dialogueEdWPF)
+            {
+                this.dialogueEdWPF = dialogueEdWPF;
+            }
+
+            public void Dispose()
+            {
+                dialogueEdWPF = null;
+            }
+
+            public override void OnMouseMove(object sender, PInputEventArgs e)
+            {
+                PointF pos = e.Position;
+                int X = Convert.ToInt32(pos.X);
+                int Y = Convert.ToInt32(pos.Y);
+                dialogueEdWPF.StatusText = $"[{X},{Y}]";
+            }
+        }
+#endif
+
+#endregion UIHandling
+
+
 
     }
 }

@@ -1464,7 +1464,7 @@ namespace ME3Explorer.Dialogue_Editor
             float midW = 0;
             varLinkBox = new PPath();
            
-            GetOutputLinks();
+            //GetOutputLinks();
             outLinkBox = new PPath();
             //for (int i = 0; i < Outlinks.Count; i++)
             //{
@@ -1509,8 +1509,6 @@ namespace ME3Explorer.Dialogue_Editor
             float h = titleBox.Height + 1;
             outLinkBox.TranslateBy(titleBox.Width / 2 + midW / 2, h + 30);
             h += outLinkBox.Height + 1;
-            varLinkBox.TranslateBy(0, h);
-            h += varLinkBox.Height;
             bounds = new RectangleF(0, 0, w, h);
             AddChild(titleBox);
             //AddChild(varLinkBox);
