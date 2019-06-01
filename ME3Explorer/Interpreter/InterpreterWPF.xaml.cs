@@ -663,6 +663,11 @@ namespace ME3Explorer
                         {
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
+                        if (ip.Name == "m_nStrRefID")
+                        {
+                            parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
+                        }
+
                         if (parent.Property is StructProperty property && property.StructType == "Rotator")
                         {
                             parsedValue = $"({ip.Value.ToDegrees():0.0######} degrees)";
@@ -840,7 +845,22 @@ namespace ME3Explorer
                             return $" (0x{value:X8})";
                     }
                     break;
+            }
 
+            if (name == "m_nStrRefID")
+            {
+                switch (export.FileRef.Game)
+                {
+                    case MEGame.ME3:
+                        return ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(value);
+                    case MEGame.ME2:
+                        return ME2Explorer.ME2TalkFiles.tlkList.Count == 0
+                            ? "(.tlk not loaded)"
+                            : ME2Explorer.ME2TalkFiles.findDataById(value);
+                    case MEGame.ME1:
+                        //Todo: Support local TLKs in this file.
+                        return ME1Explorer.ME1TalkFiles.findDataById(value);
+                }
             }
             return "";
         }
