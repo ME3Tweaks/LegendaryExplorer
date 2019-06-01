@@ -1,12 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Application = System.Windows.Forms.Application;
@@ -111,7 +105,7 @@ namespace ME3Explorer
             m.IsFolderPicker = true;
             m.EnsurePathExists = true;
             m.Title = "Select Folder to Output to";
-            if (m.ShowDialog((IntPtr)0) == CommonFileDialogResult.Ok)
+            if (m.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 string dir = m.FileName;
                 for (int i = 0; i < entr.Count; i++)
