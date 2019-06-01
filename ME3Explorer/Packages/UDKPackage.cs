@@ -14,14 +14,14 @@ namespace ME3Explorer.Packages
 {
     public sealed class UDKPackage : MEPackage, IMEPackage
     {
-        public MEGame Game { get { return MEGame.UDK; } }
+        public MEGame Game => MEGame.UDK;
 
         static int headerSize = 0x8E;
         byte[] extraNamesList = null;
 
         //public bool isModified { get { return Exports.Any(entry => entry.hasChanged == true); } }
         public bool bDLCStored = false;
-        public bool bExtraNamesList { get { return extraNamesList != null; } }
+        public bool bExtraNamesList => extraNamesList != null;
         public bool Loaded = false;
 
         int idxOffsets { get { if ((flags & 8) != 0) return 24 + nameSize; else return 20 + nameSize; } } // usually = 34
@@ -42,17 +42,17 @@ namespace ME3Explorer.Packages
 
         public override int NameCount
         {
-            get { return BitConverter.ToInt32(header, idxOffsets); }
+            get => BitConverter.ToInt32(header, idxOffsets);
             protected set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets, sizeof(int));
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 68, sizeof(int));
             }
         }
-        int NameOffset
+        public int NameOffset
         {
-            get { return BitConverter.ToInt32(header, idxOffsets + 4); }
-            set
+            get => BitConverter.ToInt32(header, idxOffsets + 4);
+            private set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 4, sizeof(int));
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 100, sizeof(int));
@@ -60,23 +60,35 @@ namespace ME3Explorer.Packages
         }
         public override int ExportCount
         {
-            get { return BitConverter.ToInt32(header, idxOffsets + 8); }
+            get => BitConverter.ToInt32(header, idxOffsets + 8);
             protected set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 8, sizeof(int));
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 64, sizeof(int));
             }
         }
-        int ExportOffset { get { return BitConverter.ToInt32(header, idxOffsets + 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 12, sizeof(int)); } }
-        public override int ImportCount { get { return BitConverter.ToInt32(header, idxOffsets + 16); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 16, sizeof(int)); } }
-        public int ImportOffset { get { return BitConverter.ToInt32(header, idxOffsets + 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 20, sizeof(int)); } }
-        uint FreeZoneStart { get { return BitConverter.ToUInt32(header, idxOffsets + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(uint)); } }
-        uint FreeZoneEnd { get { return BitConverter.ToUInt32(header, idxOffsets + 28); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(uint)); } }
+        public int ExportOffset { get => BitConverter.ToInt32(header, idxOffsets + 12);
+            private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 12, sizeof(int));
+        }
+        public override int ImportCount { get => BitConverter.ToInt32(header, idxOffsets + 16);
+            protected set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 16, sizeof(int));
+        }
+        public int ImportOffset { get => BitConverter.ToInt32(header, idxOffsets + 20);
+            private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 20, sizeof(int));
+        }
+        uint FreeZoneStart { get => BitConverter.ToUInt32(header, idxOffsets + 24);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(uint));
+        }
+        uint FreeZoneEnd { get => BitConverter.ToUInt32(header, idxOffsets + 28);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(uint));
+        }
 
-        int expInfoEndOffset { get { return BitConverter.ToInt32(header, idxOffsets + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(int)); } }
+        int expInfoEndOffset { get => BitConverter.ToInt32(header, idxOffsets + 24);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(int));
+        }
         new int expDataBegOffset
         {
-            get { return BitConverter.ToInt32(header, idxOffsets + 28); }
+            get => BitConverter.ToInt32(header, idxOffsets + 28);
             set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(int));

@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Gibbed.IO;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 
 namespace ME3Explorer.CurveEd
@@ -30,8 +31,30 @@ namespace ME3Explorer.CurveEd
             InitializeComponent();
         }
 
+        public override void PopOut()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new CurveEditor(), CurrentLoadedExport)
+                {
+                    Title = $"Curve Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}"
+                };
+                elhw.Show();
+            }
+        }
+
+        public static void OpenCurveEditorInWindow(IExportEntry export)
+        {
+            ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new CurveEditor(), export)
+            {
+                Title = $"Curve Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FileName}"
+            };
+            elhw.Show();
+        }
+
         public override void LoadExport(IExportEntry exportEntry)
         {
+            graph.Clear();
             CurrentLoadedExport = exportEntry;
             Load();
         }
@@ -190,6 +213,11 @@ namespace ME3Explorer.CurveEd
                 }
             }
             return false;
+        }
+
+        public override void Dispose()
+        {
+            //nothing to dispose in this control for now
         }
     }
 }

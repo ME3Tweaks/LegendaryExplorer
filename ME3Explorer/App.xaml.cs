@@ -4,12 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using KFreonLib.MEDirectories;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME3Explorer.Packages;
+using ME3Explorer.Sequence_Editor;
+using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
@@ -21,11 +24,28 @@ namespace ME3Explorer
     /// </summary>
     public partial class App : Application
     {
-        public static string AppDataFolder { get { return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\ME3Explorer\"; } }
+        public static string AppDataFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\ME3Explorer\";
 
-        public static readonly string FileFilter = "*.pcc;*.u;*.upk;*sfm|*.pcc;*.u;*.upk;*sfm|All Files (*.*)|*.*";
+        public static string ExecFolder => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "exec");
 
-        public static string Version { get { return GetVersion(); } }
+        public static string HexConverterPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HexConverter.exe");
+
+
+        public const string FileFilter = "*.pcc;*.u;*.upk;*sfm|*.pcc;*.u;*.upk;*sfm|All Files (*.*)|*.*";
+
+        public static string Version => GetVersion();
+
+        public static Visibility IsDebug
+        {
+#if DEBUG
+            get { return Visibility.Visible; }
+#else
+        get { return Visibility.Collapsed; }
+#endif
+        }
+
+        public static string RepositoryURL => "http://github.com/ME3Tweaks/ME3Explorer/";
+        public static string BugReportURL => $"{RepositoryURL}issues/";
 
         public static string GetVersion()
         {
@@ -33,11 +53,14 @@ namespace ME3Explorer
             return "v" + ver.Major + "." + ver.Minor + "." + ver.Build + "." + ver.Revision;
         }
 
+        public static TaskScheduler SYNCHRONIZATION_CONTEXT;
+        public static int CoreCount;
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
             DispatcherHelper.Initialize();
-
+            SYNCHRONIZATION_CONTEXT = TaskScheduler.FromCurrentSynchronizationContext();
             //Winforms interop
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
@@ -49,12 +72,19 @@ namespace ME3Explorer
                 Directory.CreateDirectory(AppDataFolder);
             }
 
-            //load in data files
-            ME3TalkFiles.LoadSavedTlkList();
-            ME2Explorer.ME2TalkFiles.LoadSavedTlkList();
+            //This is in startup as it takes about 1 second to execute and will stall the UI.
+            CoreCount = 0;
+            foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_Processor").Get())
+            {
+                CoreCount += int.Parse(item["NumberOfCores"].ToString());
+            }
+            if (CoreCount == 0) { CoreCount = 2; }
+
+
             ME1UnrealObjectInfo.loadfromJSON();
             ME2UnrealObjectInfo.loadfromJSON();
             ME3UnrealObjectInfo.loadfromJSON();
+
 
             //static class setup
             Tools.Initialize();
@@ -64,7 +94,7 @@ namespace ME3Explorer
             SequenceObjects.SText.LoadFont();
 
 
-            System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
+            System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
 
             splashScreen.Close(TimeSpan.FromMilliseconds(1));
             if (HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode) == 0)
@@ -73,7 +103,7 @@ namespace ME3Explorer
             }
             else
             {
-                this.Dispatcher.UnhandledException += OnDispatcherUnhandledException; //only start handling them after bootup
+                Dispatcher.UnhandledException += OnDispatcherUnhandledException; //only start handling them after bootup
                 (new MainWindow()).Show();
             }
         }
@@ -102,17 +132,17 @@ namespace ME3Explorer
             }
             if (arg == "JUMPLIST_SEQUENCE_EDITOR")
             {
-                SequenceEditor editor = new SequenceEditor();
-                editor.BringToFront();
+                var editor = new SequenceEditorWPF();
                 editor.Show();
+                editor.Focus();
                 exitCode = 0;
                 return 1;
             }
             if (arg == "JUMPLIST_PATHFINDING_EDITOR")
             {
-                PathfindingEditor editor = new PathfindingEditor();
+                PathfindingEditorWPF editor = new PathfindingEditorWPF();
                 editor.Show();
-                editor.RestoreAndBringToFront();
+                editor.Activate();
                 exitCode = 0;
                 return 1;
             }

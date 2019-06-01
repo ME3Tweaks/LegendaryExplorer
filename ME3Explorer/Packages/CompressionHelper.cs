@@ -73,16 +73,18 @@ namespace ME3Explorer.Packages
 
             int pos = 4;
             int NumChunks = raw.ReadValueS32();
-            List<Chunk> Chunks = new List<Chunk>();
+            var Chunks = new List<Chunk>();
 
             //DebugOutput.PrintLn("Reading chunk headers...");
             for (int i = 0; i < NumChunks; i++)
             {
-                Chunk c = new Chunk();
-                c.uncompressedOffset = raw.ReadValueS32();
-                c.uncompressedSize = raw.ReadValueS32();
-                c.compressedOffset = raw.ReadValueS32();
-                c.compressedSize = raw.ReadValueS32();
+                Chunk c = new Chunk
+                {
+                    uncompressedOffset = raw.ReadValueS32(),
+                    uncompressedSize = raw.ReadValueS32(),
+                    compressedOffset = raw.ReadValueS32(),
+                    compressedSize = raw.ReadValueS32()
+                };
                 c.Compressed = new byte[c.compressedSize];
                 c.Uncompressed = new byte[c.uncompressedSize];
                 //DebugOutput.PrintLn("Chunk " + i + ", compressed size = " + c.compressedSize + ", uncompressed size = " + c.uncompressedSize);
@@ -98,13 +100,15 @@ namespace ME3Explorer.Packages
                 raw.Seek(c.compressedOffset, SeekOrigin.Begin);
                 c.Compressed = raw.ReadBytes(c.compressedSize);
 
-                ChunkHeader h = new ChunkHeader();
-                h.magic = BitConverter.ToInt32(c.Compressed, 0);
+                ChunkHeader h = new ChunkHeader
+                {
+                    magic = BitConverter.ToInt32(c.Compressed, 0),
+                    blocksize = BitConverter.ToInt32(c.Compressed, 4),
+                    compressedsize = BitConverter.ToInt32(c.Compressed, 8),
+                    uncompressedsize = BitConverter.ToInt32(c.Compressed, 12)
+                };
                 if (h.magic != -1641380927)
                     throw new FormatException("Chunk magic number incorrect");
-                h.blocksize = BitConverter.ToInt32(c.Compressed, 4);
-                h.compressedsize = BitConverter.ToInt32(c.Compressed, 8);
-                h.uncompressedsize = BitConverter.ToInt32(c.Compressed, 12);
                 //DebugOutput.PrintLn("Chunkheader read: Magic = " + h.magic + ", Blocksize = " + h.blocksize + ", Compressed Size = " + h.compressedsize + ", Uncompressed size = " + h.uncompressedsize);
                 pos = 16;
                 int blockCount = (h.uncompressedsize % h.blocksize == 0)
@@ -112,13 +116,15 @@ namespace ME3Explorer.Packages
                     h.uncompressedsize / h.blocksize
                     :
                     h.uncompressedsize / h.blocksize + 1;
-                List<Block> BlockList = new List<Block>();
+                var BlockList = new List<Block>();
                 //DebugOutput.PrintLn("\t\t" + count + " Read Blockheaders...");
                 for (int j = 0; j < blockCount; j++)
                 {
-                    Block b = new Block();
-                    b.compressedsize = BitConverter.ToInt32(c.Compressed, pos);
-                    b.uncompressedsize = BitConverter.ToInt32(c.Compressed, pos + 4);
+                    Block b = new Block
+                    {
+                        compressedsize = BitConverter.ToInt32(c.Compressed, pos),
+                        uncompressedsize = BitConverter.ToInt32(c.Compressed, pos + 4)
+                    };
                     //DebugOutput.PrintLn("Block " + j + ", compressed size = " + b.compressedsize + ", uncompressed size = " + b.uncompressedsize);
                     pos += 8;
                     BlockList.Add(b);
@@ -127,26 +133,28 @@ namespace ME3Explorer.Packages
                 //DebugOutput.PrintLn("\t\t" + count + " Read and decompress Blocks...");
                 foreach (Block b in BlockList)
                 {
-                    byte[] datain = new byte[b.compressedsize];
-                    byte[] dataout = new byte[b.uncompressedsize];
+                    var datain = new byte[b.compressedsize];
+                    var dataout = new byte[b.uncompressedsize];
                     for (int j = 0; j < b.compressedsize; j++)
                         datain[j] = c.Compressed[pos + j];
                     pos += b.compressedsize;
 
-                    if (compressionType == CompressionType.LZO)
+                    switch (compressionType)
                     {
-                        if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
-                            throw new Exception("LZO decompression failed!");
-                    }
-                    else
-                    if (compressionType == CompressionType.Zlib)
-                    {
-                        if (new ZlibHelper.Zlib().Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
-                            throw new Exception("Zlib decompression failed!");
-                    }
-                    else
-                    {
-                        throw new Exception("Unknown compression type for this package.");
+                        case CompressionType.LZO:
+                        {
+                            if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                                throw new Exception("LZO decompression failed!");
+                            break;
+                        }
+                        case CompressionType.Zlib:
+                        {
+                            if (ZlibHelper.Zlib.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                                throw new Exception("Zlib decompression failed!");
+                            break;
+                        }
+                        default:
+                            throw new Exception("Unknown compression type for this package.");
                     }
                     for (int j = 0; j < b.uncompressedsize; j++)
                         c.Uncompressed[outpos + j] = dataout[j];
@@ -302,8 +310,8 @@ namespace ME3Explorer.Packages
             }
 
             //decompress blocks in parallel
-            Task<byte[]>[] tasks = new Task<byte[]>[blockCount];
-            uint[] uncompressedOffsets = new uint[blockCount];
+            var tasks = new Task<byte[]>[blockCount];
+            var uncompressedOffsets = new uint[blockCount];
             for (int i = 0; i < blockCount; i++)
             {
                 input.Seek(headBlockOff, SeekOrigin.Begin);
@@ -393,7 +401,7 @@ namespace ME3Explorer.Packages
             var namesOffset = uncompressedPcc.ReadValueU32(endian);
             var exportCount = uncompressedPcc.ReadValueU32(endian);
             var exportInfosOffset = uncompressedPcc.ReadValueU32(endian);
-            SortedDictionary<uint, uint> exportDataOffsets = new SortedDictionary<uint, uint>();
+            var exportDataOffsets = new SortedDictionary<uint, uint>();
 
             Stream data;
             if ((packageFlags & 0x02000000) == 0)
@@ -447,10 +455,8 @@ namespace ME3Explorer.Packages
 
             outputStream.Seek(buffer.Length, SeekOrigin.Begin);
 
-            long outOffsetData;
-            long outOffsetBlockInfo;
             long inOffsetData = namesOffset;
-            List<int> blockSizes = new List<int>();
+            var blockSizes = new List<int>();
             int countSize = (int)(exportDataOffsets.Min(obj => obj.Key) - namesOffset);
 
             //count the number of blocks and relative sizes
@@ -486,15 +492,13 @@ namespace ME3Explorer.Packages
             blockSizes.Add(countSize);
 
             outputStream.WriteValueS32(blockSizes.Count);
-            outOffsetBlockInfo = outputStream.Position;
-            outOffsetData = namesOffset + (blockSizes.Count * 16);
+            long outOffsetBlockInfo = outputStream.Position;
+            long outOffsetData = namesOffset + (blockSizes.Count * 16);
 
             uncompressedPcc.Seek(namesOffset, SeekOrigin.Begin);
             //divide the block in segments
-            for (int i = 0; i < blockSizes.Count; i++)
+            foreach (int currentUncBlockSize in blockSizes)
             {
-                int currentUncBlockSize = blockSizes[i];
-
                 outputStream.Seek(outOffsetBlockInfo, SeekOrigin.Begin);
                 outputStream.WriteValueU32((uint)uncompressedPcc.Position);
                 outputStream.WriteValueS32(currentUncBlockSize);

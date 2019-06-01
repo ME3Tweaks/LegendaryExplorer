@@ -24,11 +24,11 @@ namespace ME3Explorer.CurveEd
 
         private const int LINE_SPACING = 50;
 
-        private bool dragging = false;
+        private bool dragging;
         private Point dragPos;
 
         public event RoutedPropertyChangedEventHandler<CurvePoint> SelectedPointChanged;
-        public static bool TrackLoading = false;
+        public static bool TrackLoading;
         public Curve SelectedCurve
         {
             get => (Curve)GetValue(SelectedCurveProperty);
@@ -37,7 +37,7 @@ namespace ME3Explorer.CurveEd
 
         // Using a DependencyProperty as the backing store for SelectedCurve.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedCurveProperty =
-            DependencyProperty.Register("SelectedCurve", typeof(Curve), typeof(CurveGraph), new PropertyMetadata(new Curve(), OnSelectedCurveChanged));
+            DependencyProperty.Register(nameof(SelectedCurve), typeof(Curve), typeof(CurveGraph), new PropertyMetadata(new Curve(), OnSelectedCurveChanged));
 
         private static void OnSelectedCurveChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -57,7 +57,7 @@ namespace ME3Explorer.CurveEd
 
         // Using a DependencyProperty as the backing store for SelectedPoint.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedPointProperty =
-            DependencyProperty.Register("SelectedPoint", typeof(CurvePoint), typeof(CurveGraph), new PropertyMetadata(new CurvePoint(0, 0, 0, 0, CurveMode.CIM_Linear), OnSelectedPointChanged));
+            DependencyProperty.Register(nameof(SelectedPoint), typeof(CurvePoint), typeof(CurveGraph), new PropertyMetadata(new CurvePoint(0, 0, 0, 0, CurveMode.CIM_Linear), OnSelectedPointChanged));
 
         private static void OnSelectedPointChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -84,7 +84,7 @@ namespace ME3Explorer.CurveEd
 
         // Using a DependencyProperty as the backing store for VerticalScale.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VerticalScaleProperty =
-            DependencyProperty.Register("VerticalScale", typeof(double), typeof(CurveGraph), new PropertyMetadata(50.0, OnVerticalScaleChanged));
+            DependencyProperty.Register(nameof(VerticalScale), typeof(double), typeof(CurveGraph), new PropertyMetadata(50.0, OnVerticalScaleChanged));
 
         public double HorizontalScale
         {
@@ -94,7 +94,7 @@ namespace ME3Explorer.CurveEd
 
         // Using a DependencyProperty as the backing store for HorizontalScale.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HorizontalScaleProperty =
-            DependencyProperty.Register("HorizontalScale", typeof(double), typeof(CurveGraph), new PropertyMetadata(50.0, OnHorizontalScaleChanged));
+            DependencyProperty.Register(nameof(HorizontalScale), typeof(double), typeof(CurveGraph), new PropertyMetadata(50.0, OnHorizontalScaleChanged));
 
         public double VerticalOffset
         {
@@ -104,7 +104,7 @@ namespace ME3Explorer.CurveEd
 
         // Using a DependencyProperty as the backing store for VerticalOffset.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VerticalOffsetProperty =
-            DependencyProperty.Register("VerticalOffset", typeof(double), typeof(CurveGraph), new PropertyMetadata(0.0, OnVerticalOffsetChanged));
+            DependencyProperty.Register(nameof(VerticalOffset), typeof(double), typeof(CurveGraph), new PropertyMetadata(0.0, OnVerticalOffsetChanged));
 
         public double HorizontalOffset
         {
@@ -114,7 +114,7 @@ namespace ME3Explorer.CurveEd
 
         // Using a DependencyProperty as the backing store for HorizontalOffset.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HorizontalOffsetProperty =
-            DependencyProperty.Register("HorizontalOffset", typeof(double), typeof(CurveGraph), new PropertyMetadata(0.0, OnHorizontalOffsetChanged));
+            DependencyProperty.Register(nameof(HorizontalOffset), typeof(double), typeof(CurveGraph), new PropertyMetadata(0.0, OnHorizontalOffsetChanged));
 
         public CurveGraph()
         {
@@ -179,7 +179,7 @@ namespace ME3Explorer.CurveEd
                 }
                 HorizontalScale = graph.ActualWidth / hSpan;
                 if (HorizontalOffset >= points.First().InVal - (hSpan / 10))
-                 {
+                {
                     HorizontalOffset = points.First().InVal - (hSpan / 10);
                 }
                 else if (HorizontalOffset + hSpan <= points.Last().InVal + (hSpan / 10))
@@ -272,9 +272,9 @@ namespace ME3Explorer.CurveEd
                 if (node.Previous == null)
                 {
                     line = new Line {X1 = -10};
-                    line.bind(Line.Y1Property, a, "Y", new YConverter(), ActualHeight);
-                    line.bind(Line.X2Property, a, "X");
-                    line.bind(Line.Y2Property, a, "Y", new YConverter(), ActualHeight);
+                    line.bind(Line.Y1Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.X2Property, a, nameof(Anchor.X));
+                    line.bind(Line.Y2Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     graph.Children.Add(line);
                 }
                 else
@@ -285,10 +285,10 @@ namespace ME3Explorer.CurveEd
                 if (node.Next == null)
                 {
                     line = new Line();
-                    line.bind(Line.X1Property, a, "X");
-                    line.bind(Line.Y1Property, a, "Y", new YConverter(), ActualHeight);
+                    line.bind(Line.X1Property, a, nameof(Anchor.X));
+                    line.bind(Line.Y1Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     line.X2 = ActualWidth + 10;
-                    line.bind(Line.Y2Property, a, "Y", new YConverter(), ActualHeight);
+                    line.bind(Line.Y2Property, a, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     graph.Children.Add(line);
                 }
                 lastAnchor = a;
@@ -303,24 +303,24 @@ namespace ME3Explorer.CurveEd
             {
                 case CurveMode.CIM_Linear:
                     line = new Line();
-                    line.bind(Line.X1Property, a1, "X");
-                    line.bind(Line.Y1Property, a1, "Y", new YConverter(), ActualHeight);
-                    line.bind(Line.X2Property, a2, "X");
-                    line.bind(Line.Y2Property, a2, "Y", new YConverter(), ActualHeight);
+                    line.bind(Line.X1Property, a1, nameof(Anchor.X));
+                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.X2Property, a2, nameof(Anchor.X));
+                    line.bind(Line.Y2Property, a2, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     graph.Children.Add(line);
                     break;
                 case CurveMode.CIM_Constant:
                     line = new Line();
-                    line.bind(Line.X1Property, a1, "X");
-                    line.bind(Line.Y1Property, a1, "Y", new YConverter(), ActualHeight);
-                    line.bind(Line.X2Property, a2, "X");
-                    line.bind(Line.Y2Property, a1, "Y", new YConverter(), ActualHeight);
+                    line.bind(Line.X1Property, a1, nameof(Anchor.X));
+                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.X2Property, a2, nameof(Anchor.X));
+                    line.bind(Line.Y2Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     graph.Children.Add(line);
                     line = new Line();
-                    line.bind(Line.X1Property, a2, "X");
-                    line.bind(Line.Y1Property, a1, "Y", new YConverter(), ActualHeight);
-                    line.bind(Line.X2Property, a2, "X");
-                    line.bind(Line.Y2Property, a2, "Y", new YConverter(), ActualHeight);
+                    line.bind(Line.X1Property, a2, nameof(Anchor.X));
+                    line.bind(Line.Y1Property, a1, nameof(Anchor.Y), new YConverter(), ActualHeight);
+                    line.bind(Line.X2Property, a2, nameof(Anchor.X));
+                    line.bind(Line.Y2Property, a2, nameof(Anchor.Y), new YConverter(), ActualHeight);
                     graph.Children.Add(line);
                     break;
                 case CurveMode.CIM_CurveAuto:
@@ -332,10 +332,10 @@ namespace ME3Explorer.CurveEd
                         Slope1 = a1.point.Value.LeaveTangent,
                         Slope2 = a2.point.Value.ArriveTangent
                     };
-                    bez.bind(BezierSegment.X1Property, a1, "X");
-                    bez.bind(BezierSegment.Y1Property, a1, "Y");
-                    bez.bind(BezierSegment.X2Property, a2, "X");
-                    bez.bind(BezierSegment.Y2Property, a2, "Y");
+                    bez.bind(BezierSegment.X1Property, a1, nameof(Anchor.X));
+                    bez.bind(BezierSegment.Y1Property, a1, nameof(Anchor.Y));
+                    bez.bind(BezierSegment.X2Property, a2, nameof(Anchor.X));
+                    bez.bind(BezierSegment.Y2Property, a2, nameof(Anchor.Y));
                     graph.Children.Add(bez);
                     a1.rightBez = bez;
                     a2.leftBez = bez;
@@ -399,7 +399,7 @@ namespace ME3Explorer.CurveEd
         {
             Point pos = (Point)(sender as MenuItem).Tag;
             double inVal = unrealX(pos.X);
-            string res = Microsoft.VisualBasic.Interaction.InputBox("Seconds to offset keys by", DefaultResponse: "0.0");
+            string res = SharedUI.PromptDialog.Prompt(Window.GetWindow(this), "Seconds to offset keys by", "Curve Editor", "0.0", true);
             if (float.TryParse(res, out var delta))
             {
                 LinkedListNode<CurvePoint> node = SelectedCurve.CurvePoints.First;
@@ -490,7 +490,7 @@ namespace ME3Explorer.CurveEd
             if (double.TryParse(b.Text, out var d) && b.IsFocused && b.IsKeyboardFocused && !KFreonLib.Misc.Methods.FindInStack(nameof(Anchor)))
             {
                 Anchor a = graph.Children.OfType<Anchor>().FirstOrDefault(x => x.IsSelected);
-                if (a != null && b.Name == "xTextBox")
+                if (a != null && b.Name == nameof(xTextBox))
                 {
                     float next = a.point.Next?.Value.InVal ?? float.MaxValue;
                     float prev = a.point.Previous?.Value.InVal ?? float.MinValue;
@@ -500,7 +500,7 @@ namespace ME3Explorer.CurveEd
                         Paint(true);
                     }
                 }
-                else if (a != null && b.Name == "yTextBox")
+                else if (a != null && b.Name == nameof(yTextBox))
                 {
                     a.Y = localY(d);
                     Paint(true);
@@ -530,6 +530,8 @@ namespace ME3Explorer.CurveEd
         {
             SelectedCurve = new Curve();
             Paint(true);
+            xTextBox.Clear();
+            yTextBox.Clear();
         }
     }
 

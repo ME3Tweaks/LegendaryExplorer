@@ -22,8 +22,8 @@ namespace ME3Explorer
     /// </summary>
     public partial class CreateJobFromPCCDiff : Window
     {
-        CreateModPCCVM vm;
-        ModMaker ModmakerParent;
+        readonly CreateModPCCVM vm;
+        readonly ModMaker ModmakerParent;
 
         public CreateJobFromPCCDiff()
         {
@@ -51,15 +51,10 @@ namespace ME3Explorer
                 vm.ModPCCPath = browsed;
         }
 
-        private string Browse(string title)
+        private static string Browse(string title)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Title = title;
-            ofd.Filter = "BioWare PCC's|*.pcc";
-            if (ofd.ShowDialog() == true)
-                return ofd.FileName;
-
-            return null;
+            OpenFileDialog ofd = new OpenFileDialog {Title = title, Filter = "BioWare PCC's|*.pcc"};
+            return ofd.ShowDialog() == true ? ofd.FileName : null;
         }
 
         private async void CompareButton_Click(object sender, RoutedEventArgs e)
@@ -80,40 +75,22 @@ namespace ME3Explorer
         string titleText = "Select PCC's to compare";
         public string TitleText
         {
-            get
-            {
-                return titleText;
-            }
-            set
-            {
-                SetProperty(ref titleText, value);
-            }
+            get => titleText;
+            set => SetProperty(ref titleText, value);
         }
 
-        string basePCCPath = null;
+        string basePCCPath;
         public string BasePCCPath
         {
-            get
-            {
-                return basePCCPath;
-            }
-            set
-            {
-                SetProperty(ref basePCCPath, value);
-            }
+            get => basePCCPath;
+            set => SetProperty(ref basePCCPath, value);
         }
 
-        string modPCCPath = null;
+        string modPCCPath;
         public string ModPCCPath
         {
-            get
-            {
-                return modPCCPath;
-            }
-            set
-            {
-                SetProperty(ref modPCCPath, value);
-            }
+            get => modPCCPath;
+            set => SetProperty(ref modPCCPath, value);
         }
 
         

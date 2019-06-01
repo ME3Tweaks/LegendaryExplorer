@@ -12,21 +12,25 @@ using UsefulThings.WPF;
 using System.Collections;
 using System.Diagnostics;
 using KFreonLib.Debugging;
+using System.Collections.Concurrent;
+using System.Reflection;
+using PropertyInfo = ME3Explorer.Packages.PropertyInfo;
 
 namespace ME3Explorer.Unreal
 {
     public class PropertyCollection : ObservableCollection<UProperty>
     {
-        static Dictionary<string, PropertyCollection> defaultStructValuesME3 = new Dictionary<string, PropertyCollection>();
-        static Dictionary<string, PropertyCollection> defaultStructValuesME2 = new Dictionary<string, PropertyCollection>();
-        static Dictionary<string, PropertyCollection> defaultStructValuesME1 = new Dictionary<string, PropertyCollection>();
+        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME3 = new ConcurrentDictionary<string, PropertyCollection>();
+        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME2 = new ConcurrentDictionary<string, PropertyCollection>();
+        static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME1 = new ConcurrentDictionary<string, PropertyCollection>();
 
         public int endOffset;
 
         /// <summary>
-        /// Gets the UProperty with the specified name, returns null if not found
+        /// Gets the UProperty with the specified name, returns null if not found. The property name is checked case insensitively. 
+        /// Ensure the generic type matches the result you want or you will receive a null object back.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">Name of property to find</param>
         /// <returns>specified UProperty or null if not found</returns>
         public T GetProp<T>(string name) where T : UProperty
         {
@@ -65,6 +69,16 @@ namespace ME3Explorer.Unreal
             }
         }
 
+        /// <summary>
+        /// Checks if a property with the specified name exists in this property collection
+        /// </summary>
+        /// <param name="name">Name of property to find. If an empty name is passed in, any property without a name will cause this to return true.</param>
+        /// <returns>True if property is found, false if list is empty or not found</returns>
+        public bool ContainsNamedProp(NameReference name)
+        {
+            return Count > 0 && this.Any(x => x.Name == name);
+        }
+
         public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
         {
             //Uncomment this for debugging property engine
@@ -94,7 +108,7 @@ namespace ME3Explorer.Unreal
                         stream.Seek(4, SeekOrigin.Current);
                         break;
                     }
-                    NameReference nameRef = new NameReference { Name = name, Number = stream.ReadValueS32() };
+                    NameReference nameRef = new NameReference (name, stream.ReadValueS32());
                     int typeIdx = stream.ReadValueS32();
                     stream.Seek(4, SeekOrigin.Current);
                     int size = stream.ReadValueS32();
@@ -156,11 +170,10 @@ namespace ME3Explorer.Unreal
                             {
                                 if (size != 1)
                                 {
-                                    NameReference enumType = new NameReference();
-                                    if (pcc.Game == MEGame.ME3)
+                                    NameReference enumType;
+                                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                                     {
-                                        enumType.Name = pcc.getNameEntry(stream.ReadValueS32());
-                                        enumType.Number = stream.ReadValueS32();
+                                        enumType = new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
                                     }
                                     else
                                     {
@@ -185,13 +198,13 @@ namespace ME3Explorer.Unreal
                                         }
 
                                         //Use DB info or attempt lookup
-                                        enumType.Name = enumname ?? UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName, classInfo);
+                                        enumType = new NameReference(enumname ?? UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName, classInfo));
                                     }
                                     try
                                     {
                                         props.Add(new EnumProperty(stream, pcc, enumType, nameRef) { StartOffset = propertyStartPosition });
                                     }
-                                    catch (Exception e)
+                                    catch (Exception)
                                     {
                                         //ERROR
                                         //Debugger.Break();
@@ -303,12 +316,22 @@ namespace ME3Explorer.Unreal
                         }
                         if (stripTransients)
                         {
-                            defaultStructValuesME3.Add(structType, defaultProps);
+                            defaultStructValuesME3.TryAdd(structType, defaultProps);
                         }
                     }
                     foreach (var prop in defaultProps)
                     {
-                        UProperty uProperty = ReadSpecialStructProp(pcc, stream, prop, structType);
+                        UProperty uProperty = null;
+                        if (prop is StructProperty defaultStructProperty)
+                        {
+                            //Set correct struct type
+                            uProperty = ReadImmutableStructProp(pcc, stream, prop, structType, defaultStructProperty.StructType);
+                        }
+                        else
+                        {
+                            uProperty = ReadImmutableStructProp(pcc, stream, prop, structType);
+                        }
+
                         if (uProperty.PropType != PropertyType.None)
                         {
                             props.Add(uProperty);
@@ -475,13 +498,13 @@ namespace ME3Explorer.Unreal
                             }
                             if (stripTransients)
                             {
-                                defaultStructValuesME2.Add(structType, defaultProps);
+                                defaultStructValuesME2.TryAdd(structType, defaultProps);
                             }
                         }
                         //Debug.WriteLine("ME2: Build immuatable struct properties for struct type " + structType);
                         foreach (var prop in defaultProps)
                         {
-                            UProperty uProperty = ReadSpecialStructProp(pcc, stream, prop, structType);
+                            UProperty uProperty = ReadImmutableStructProp(pcc, stream, prop, structType);
                             //Debug.WriteLine("  >> ME2: Built immutable property: " + uProperty.Name + " at 0x" + uProperty.StartOffset.ToString("X5"));
                             if (uProperty.PropType != PropertyType.None)
                             {
@@ -519,7 +542,7 @@ namespace ME3Explorer.Unreal
                             }
                             if (stripTransients)
                             {
-                                defaultStructValuesME1.Add(structType, defaultProps);
+                                defaultStructValuesME1.TryAdd(structType, defaultProps);
                             }
                         }
                         //Debug.WriteLine("ME1: Build immuatable struct properties for struct type " + structType);
@@ -527,7 +550,7 @@ namespace ME3Explorer.Unreal
                         {
                             //Debug.WriteLine("  > ME1: Building immutable property: " + prop.Name + " at 0x" + stream.Position.ToString("X5"));
 
-                            UProperty uProperty = ReadSpecialStructProp(pcc, stream, prop, structType);
+                            UProperty uProperty = ReadImmutableStructProp(pcc, stream, prop, structType);
                             //Debug.WriteLine("  >> ME1: Built immutable property: " + uProperty.Name + " at 0x" + uProperty.StartOffset.ToString("X5"));
                             if (uProperty.PropType != PropertyType.None)
                             {
@@ -547,7 +570,8 @@ namespace ME3Explorer.Unreal
             return props;
         }
 
-        static UProperty ReadSpecialStructProp(IMEPackage pcc, MemoryStream stream, UProperty template, string structType)
+        //Nested struct type is for structs in structs
+        static UProperty ReadImmutableStructProp(IMEPackage pcc, MemoryStream stream, UProperty template, string structType, string nestedStructType = null)
         {
             if (stream.Position + 1 >= stream.Length)
             {
@@ -588,7 +612,7 @@ namespace ME3Explorer.Unreal
                 case PropertyType.StructProperty:
                     long valuePos = stream.Position;
                     PropertyCollection structProps = ReadImmutableStruct(pcc, stream, UnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType).reference, 0);
-                    var structProp = new StructProperty(structType, structProps, template.Name, true);
+                    var structProp = new StructProperty(nestedStructType ?? structType, structProps, template.Name, true);
                     structProp.StartOffset = startPos;
                     structProp.ValueOffset = valuePos;
                     return structProp;//this implementation needs checked, as I am not 100% sure of it's validity.
@@ -632,8 +656,28 @@ namespace ME3Explorer.Unreal
                     }
                 case ArrayType.Enum:
                     {
+                        //Attempt to get info without lookup first
+                        var enumname = UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType);
+                        ClassInfo classInfo = null;
+                        if (enumname == null)
+                        {
+                            if (parsingEntry != null)
+                            {
+                                if (parsingEntry.FileRef.Game == MEGame.ME1)
+                                {
+                                    classInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo((IExportEntry)parsingEntry);
+                                }
+                                if (parsingEntry.FileRef.Game == MEGame.ME2)
+                                {
+                                    classInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo((IExportEntry)parsingEntry);
+                                }
+                            }
+                        }
+
+                        //Use DB info or attempt lookup
+                        NameReference enumType = new NameReference(enumname ?? UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType, classInfo));
+
                         var props = new List<EnumProperty>();
-                        NameReference enumType = new NameReference { Name = UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType) };
                         for (int i = 0; i < count; i++)
                         {
                             long startPos = stream.Position;
@@ -684,9 +728,11 @@ namespace ME3Explorer.Unreal
                                 try
                                 {
                                     PropertyCollection structProps = ReadImmutableStruct(pcc, stream, arrayStructType, arraySize / count, parsingEntry: parsingEntry);
-                                    StructProperty structP = new StructProperty(arrayStructType, structProps, isImmutable: true) { StartOffset = offset };
-                                    structP.ValueOffset = offset;
-                                    props.Add(structP);
+                                    props.Add(new StructProperty(arrayStructType, structProps, isImmutable: true)
+                                    {
+                                        StartOffset = offset,
+                                        ValueOffset = offset
+                                    });
                                 }
                                 catch (Exception e)
                                 {
@@ -701,10 +747,23 @@ namespace ME3Explorer.Unreal
                             {
                                 long structOffset = stream.Position;
                                 //Debug.WriteLine("reading array struct: " + arrayStructType + " at 0x" + stream.Position.ToString("X5"));
-                                PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties);
-                                StructProperty structP = new StructProperty(arrayStructType, structProps) { StartOffset = structOffset };
-                                structP.ValueOffset = structProps[0].StartOffset;
-                                props.Add(structP);
+                                PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties,entry: parsingEntry);
+#if DEBUG
+                                try
+                                {
+#endif
+                                    props.Add(new StructProperty(arrayStructType, structProps)
+                                    {
+                                        StartOffset = structOffset,
+                                        ValueOffset = structProps[0].StartOffset
+                                    });
+#if DEBUG
+                                }
+                                catch (Exception e)
+                                {
+                                    return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
+                                }
+#endif
                             }
                         }
                         return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
@@ -777,7 +836,7 @@ namespace ME3Explorer.Unreal
         /// <summary>
         /// Offset to the start of this property as it was read by PropertyCollection.ReadProps()
         /// </summary>
-        internal long StartOffset;
+        public long StartOffset { get; set; }
 
         public NameReference Name
         {
@@ -796,6 +855,7 @@ namespace ME3Explorer.Unreal
         /// Gets the length of this property in bytes. Do not use this if this is an ArrayProperty child object.
         /// </summary>
         /// <param name="pcc"></param>
+        /// <param name="valueOnly"></param>
         /// <returns></returns>
         public long GetLength(IMEPackage pcc, bool valueOnly = false)
         {
@@ -834,7 +894,7 @@ namespace ME3Explorer.Unreal
         public readonly bool IsImmutable;
 
         public string StructType { get; }
-        public PropertyCollection Properties { get; }
+        public PropertyCollection Properties { get; set; }
 
         public StructProperty(string structType, PropertyCollection props, NameReference? name = null, bool isImmutable = false) : base(name)
         {
@@ -886,12 +946,184 @@ namespace ME3Explorer.Unreal
                         prop.WriteTo(m, pcc, IsImmutable);
                     }
 
-                    if (!IsImmutable && (Properties.Count == 0 || (!(Properties.Last() is NoneProperty)))) //ensure ending none
+                    if (!IsImmutable && (Properties.Count == 0 || !(Properties.Last() is NoneProperty))) //ensure ending none
                     {
                         m.WriteNoneProperty(pcc);
                     }
                     return m;
                 });
+            }
+        }
+
+        /// <summary>
+        /// EXPERIMENTAL - USE WITH CAUTION - ONLY WORKS FOR ME3
+        /// </summary>
+        public T GetStruct<T>() where T : class, new()
+        {
+            T uStruct = new T();
+            MethodInfo getPropMethodInfo = this.GetType().GetMethod(nameof(GetProp));
+            if (typeof(T).Name != StructType)
+            {
+                throw new NotSupportedException($"{typeof(T).Name} does not match the StructProperty's struct type: {StructType}");
+            }
+
+            if (!ME3UnrealObjectInfo.Structs.TryGetValue(StructType, out ClassInfo classInfo))
+            {
+                throw new ArgumentException($"{StructType} is not a recognized struct!");
+            }
+            FieldInfo[] fields = typeof(T).GetFields();
+            foreach (FieldInfo info in fields)
+            {
+                if (classInfo.properties.TryGetValue(info.Name, out PropertyInfo propInfo)
+                 && getPropMethodInfo.MakeGenericMethod(getUPropertyType(propInfo)).Invoke(this, new object[]{ info.Name }) is UProperty uProp)
+                {
+                    info.SetValue(uStruct, getUPropertyValue(uProp, propInfo));
+                }
+            }
+
+            return uStruct;
+
+            Type getUPropertyType(PropertyInfo propInfo)
+            {
+                switch (propInfo.type)
+                {
+                    case PropertyType.StructProperty:
+                        return typeof(StructProperty);
+                    case PropertyType.IntProperty:
+                        return typeof(IntProperty);
+                    case PropertyType.FloatProperty:
+                        return typeof(FloatProperty);
+                    case PropertyType.DelegateProperty:
+                        return typeof(DelegateProperty);
+                    case PropertyType.ObjectProperty:
+                        return typeof(ObjectProperty);
+                    case PropertyType.NameProperty:
+                        return typeof(NameProperty);
+                    case PropertyType.BoolProperty:
+                        return typeof(BoolProperty);
+                    case PropertyType.BioMask4Property:
+                        return typeof(BioMask4Property);
+                    case PropertyType.ByteProperty when propInfo.IsEnumProp():
+                        return typeof(EnumProperty);
+                    case PropertyType.ByteProperty:
+                        return typeof(ByteProperty);
+                    case PropertyType.ArrayProperty:
+                    {
+                        if (Enum.TryParse(propInfo.reference, out PropertyType arrayType))
+                        {
+                            return typeof(ArrayProperty<>).MakeGenericType(getUPropertyType(new PropertyInfo {type = arrayType }));
+                        }
+                        if (ME3UnrealObjectInfo.Classes.ContainsKey(propInfo.reference))
+                        {
+                            return typeof(ArrayProperty<ObjectProperty>);
+                        }
+                        return typeof(ArrayProperty<StructProperty>);
+                    }
+                    case PropertyType.StrProperty:
+                        return typeof(StrProperty);
+                    case PropertyType.StringRefProperty:
+                        return typeof(StringRefProperty);
+                    case PropertyType.None:
+                    case PropertyType.Unknown:
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            object getUPropertyValue(UProperty prop, PropertyInfo propInfo)
+            {
+                switch (prop)
+                {
+                    case ArrayPropertyBase arrayPropertyBase:
+                    {
+                        List<object> objVals = arrayPropertyBase.Properties.Select(p => getUPropertyValue(p, propInfo)).ToList();
+                        Type arrayType = getArrayPropertyValueType(arrayPropertyBase, propInfo);
+                        //IEnumerable<arrayType> typedEnumerable = objVals.Cast<arrayType>();
+                        var typedEnumerable = typeof(Enumerable).InvokeGenericMethod(nameof(Enumerable.Cast), arrayType, null, objVals);
+                        //return typedEnumerable.ToArray();
+                        return typeof(Enumerable).InvokeGenericMethod(nameof(Enumerable.ToArray), arrayType, null, typedEnumerable);
+                    }
+                    case BioMask4Property bioMask4Property:
+                        return bioMask4Property.Value;
+                    case BoolProperty boolProperty:
+                        return boolProperty.Value;
+                    case ByteProperty byteProperty:
+                        return byteProperty.Value;
+                    case DelegateProperty delegateProperty:
+                        return delegateProperty.unk;
+                    case EnumProperty enumProperty:
+                        var enumType = Type.GetType($"Unreal.ME3Enums.{propInfo.reference}");
+                        return Enum.Parse(enumType, enumProperty.Value.InstancedString);
+                    case FloatProperty floatProperty:
+                        return floatProperty.Value;
+                    case IntProperty intProperty:
+                        return intProperty.Value;
+                    case NameProperty nameProperty:
+                        return nameProperty.Value;
+                    case ObjectProperty objectProperty:
+                        return objectProperty.Value;
+                    case StringRefProperty stringRefProperty:
+                        return stringRefProperty.Value;
+                    case StrProperty strProperty:
+                        return strProperty.Value;
+                    case StructProperty structProperty:
+                    {
+                        Type structType = Type.GetType($"Unreal.ME3Structs.{propInfo.reference}");
+                        //return structProperty.GetStruct<structType>();
+                        return typeof(StructProperty).InvokeGenericMethod(nameof(structProperty.GetStruct), structType, structProperty);
+                    }
+                    case UnknownProperty unknownProperty:
+                    case NoneProperty noneProperty:
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            Type getArrayPropertyValueType(ArrayPropertyBase arrProp, PropertyInfo propInfo)
+            {
+                switch (arrProp)
+                {
+                    case ArrayProperty<IntProperty> _:
+                        return typeof(int);
+                    case ArrayProperty<StringRefProperty> _:
+                        return typeof(int);
+                    case ArrayProperty<ObjectProperty> _:
+                        return typeof(int);
+                    case ArrayProperty<DelegateProperty> _:
+                        return typeof(int);
+                    case ArrayProperty<FloatProperty> _:
+                        return typeof(float);
+                    case ArrayProperty<BoolProperty> _:
+                        return typeof(bool);
+                    case ArrayProperty<StrProperty> _:
+                        return typeof(string);
+                    case ArrayProperty<ByteProperty> _:
+                        return typeof(byte);
+                    case ArrayProperty<BioMask4Property> _:
+                        return typeof(byte);
+                    case ArrayProperty<NameProperty> _:
+                        return typeof(NameReference);
+                    case ArrayProperty<EnumProperty> _:
+                        return Type.GetType($"Unreal.ME3Enums.{propInfo.reference}");
+                    case ArrayProperty<StructProperty> _:
+                        return Type.GetType($"Unreal.ME3Structs.{propInfo.reference}");
+                    default:
+                        throw new  NotImplementedException();
+                }
+            }
+        }
+    }
+
+    public static class StructArrayExtensions
+    {
+        /// <summary>
+        /// EXPERIMENTAL - ONLY WORKS FOR ME3
+        /// </summary>
+        public static IEnumerable<T> AsStructs<T>(this ArrayProperty<StructProperty> arrayProperty) where T : class, new()
+        {
+            foreach (StructProperty structProperty in arrayProperty)
+            {
+                yield return structProperty.GetStruct<T>();
             }
         }
     }
@@ -1037,6 +1269,12 @@ namespace ME3Explorer.Unreal
             PropType = PropertyType.ObjectProperty;
         }
 
+        public ObjectProperty(IEntry referencedEntry, NameReference? name = null) : base(name)
+        {
+            Value = referencedEntry.UIndex;
+            PropType = PropertyType.ObjectProperty;
+        }
+
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
@@ -1104,20 +1342,19 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public NameProperty(NameReference? name = null) : base(name)
+        public NameProperty(NameReference? propertyName = null, NameReference? value = null) : base(propertyName)
         {
             PropType = PropertyType.NameProperty;
+            if (value is NameReference name)
+            {
+                Value = name;
+            }
         }
 
-        public NameProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
+        public NameProperty(MemoryStream stream, IMEPackage pcc, NameReference? propertyName = null) : base(propertyName)
         {
             ValueOffset = stream.Position;
-            NameReference nameRef = new NameReference
-            {
-                Name = pcc.getNameEntry(stream.ReadValueS32()),
-                Number = stream.ReadValueS32()
-            };
-            Value = nameRef;
+            Value = new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
             PropType = PropertyType.NameProperty;
         }
 
@@ -1148,13 +1385,13 @@ namespace ME3Explorer.Unreal
             }
 
             // Optimization for a common success case.
-            if (object.ReferenceEquals(this, p))
+            if (ReferenceEquals(this, p))
             {
                 return true;
             }
 
             // If run-time types are not exactly the same, return false.
-            if (this.GetType() != p.GetType())
+            if (GetType() != p.GetType())
             {
                 return false;
             }
@@ -1162,7 +1399,7 @@ namespace ME3Explorer.Unreal
             // Return true if the fields match.
             // Note that the base class is not invoked because it is
             // System.Object, which defines Equals as reference equality.
-            return (Value == p.Value.Name) && (Value.Number == p.Value.Number);
+            return Value == p.Value.Name && Value.Number == p.Value.Number;
         }
 
         public override string ToString()
@@ -1184,7 +1421,7 @@ namespace ME3Explorer.Unreal
         public BoolProperty(MemoryStream stream, MEGame game, NameReference? name = null, bool isArrayContained = false) : base(name)
         {
             ValueOffset = stream.Position;
-            if (game != MEGame.ME3 && isArrayContained)
+            if (game != MEGame.ME3 && game != MEGame.UDK && isArrayContained)
             {
                 //ME2 seems to read 1 byte... sometimes...
                 //ME1 as well
@@ -1192,7 +1429,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                Value = game == MEGame.ME3 ? stream.ReadValueB8() : stream.ReadValueB32();
+                Value = (game == MEGame.ME3 || game == MEGame.UDK) ? stream.ReadValueB8() : stream.ReadValueB32();
             }
             PropType = PropertyType.BoolProperty;
         }
@@ -1307,7 +1544,7 @@ namespace ME3Explorer.Unreal
             get => _value;
             set => SetProperty(ref _value, value);
         }
-        public List<string> EnumValues { get; }
+        public List<NameReference> EnumValues { get; }
 
         public EnumProperty(MemoryStream stream, IMEPackage pcc, NameReference enumType, NameReference? name = null) : base(name)
         {
@@ -1316,14 +1553,8 @@ namespace ME3Explorer.Unreal
             var eNameIdx = stream.ReadValueS32();
             var eName = pcc.getNameEntry(eNameIdx);
             var eNameNumber = stream.ReadValueS32();
-            var eNameTEST = pcc.getNameEntry(eNameNumber);
 
-            NameReference enumVal = new NameReference
-            {
-                Name = eName,
-                Number = eNameNumber
-            };
-            Value = enumVal;
+            Value = new NameReference(eName, eNameNumber);
             EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
             PropType = PropertyType.ByteProperty;
         }
@@ -1369,20 +1600,32 @@ namespace ME3Explorer.Unreal
         }
     }
 
-    public abstract class ArrayPropertyBase : UProperty
+    public abstract class ArrayPropertyBase : UProperty, IEnumerable
     {
-        public abstract IEnumerable<UProperty> ValuesAsProperties { get; }
+        public abstract IReadOnlyList<UProperty> Properties { get; }
+        public abstract int Count { get; }
+        public bool IsReadOnly => true;
 
         protected ArrayPropertyBase(NameReference? name) : base(name)
         {
         }
+
+        public IEnumerator GetEnumerator() => Properties.GetEnumerator();
+
+        public abstract void Clear();
+
+        public abstract void RemoveAt(int index);
+
+        public UProperty this[int index] => Properties[index];
+
+        public abstract void SwapElements(int i, int j);
     }
 
     [DebuggerDisplay("ArrayProperty<{arrayType}> | {Name}, Length = {Values.Count}")]
     public class ArrayProperty<T> : ArrayPropertyBase, IList<T> where T : UProperty
     {
         public List<T> Values { get; set; }
-        public override IEnumerable<UProperty> ValuesAsProperties => Values;
+        public override IReadOnlyList<UProperty> Properties => Values;
         public readonly ArrayType arrayType;
 
         public ArrayProperty(long startOffset, List<T> values, ArrayType type, NameReference name) : base(name)
@@ -1432,7 +1675,7 @@ namespace ME3Explorer.Unreal
         }
 
         #region IEnumerable<T>
-        public IEnumerator<T> GetEnumerator()
+        public new IEnumerator<T> GetEnumerator()
         {
             return Values.GetEnumerator();
         }
@@ -1444,10 +1687,10 @@ namespace ME3Explorer.Unreal
         #endregion
 
         #region IList<T>
-        public int Count => Values.Count;
-        public bool IsReadOnly => ((ICollection<T>)Values).IsReadOnly;
+        public override int Count => Values.Count;
+        public new bool IsReadOnly => ((ICollection<T>)Values).IsReadOnly;
 
-        public T this[int index]
+        public new T this[int index]
         {
             get => Values[index];
             set => Values[index] = value;
@@ -1458,7 +1701,7 @@ namespace ME3Explorer.Unreal
             Values.Add(item);
         }
 
-        public void Clear()
+        public override void Clear()
         {
             Values.Clear();
         }
@@ -1478,7 +1721,7 @@ namespace ME3Explorer.Unreal
             return Values.Remove(item);
         }
 
-        public void RemoveAt(int index)
+        public override void RemoveAt(int index)
         {
             Values.RemoveAt(index);
         }
@@ -1492,7 +1735,22 @@ namespace ME3Explorer.Unreal
         {
             Values.Insert(index, item);
         }
+
+        public void InsertRange(int index, IEnumerable<T> collection)
+        {
+            Values.InsertRange(index, collection);
+        }
         #endregion
+
+        public override void SwapElements(int i, int j)
+        {
+            if (i == j || i < 0 || i >= Count || j < 0 || j >= Count)
+            {
+                return;
+            }
+
+            (this[i], this[j]) = (this[j], this[i]);
+        }
     }
 
     [DebuggerDisplay("StrProperty | {Name} = {Value}")]
@@ -1629,12 +1887,7 @@ namespace ME3Explorer.Unreal
         public DelegateProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
         {
             unk = stream.ReadValueS32();
-            NameReference val = new NameReference
-            {
-                Name = pcc.getNameEntry(stream.ReadValueS32()),
-                Number = stream.ReadValueS32()
-            };
-            Value = val;
+            Value = new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
             PropType = PropertyType.DelegateProperty;
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using ME3Explorer.Unreal;
 
 namespace ME3Explorer.Packages
 {
@@ -32,20 +33,18 @@ namespace ME3Explorer.Packages
         public Unreal.PropertyType type { get; set; }
         public string reference;
         public bool transient;
+
+        public bool IsEnumProp() => type == PropertyType.ByteProperty && reference != null && reference != "Class" && reference != "Object";
     }
 
     public class ClassInfo
     {
-        public Dictionary<string, PropertyInfo> properties;
+        public Dictionary<string, PropertyInfo> properties = new Dictionary<string, PropertyInfo>();
         public string baseClass;
         //Relative to BIOGame
         public string pccPath;
+        //0-based
         public int exportIndex;
-
-        public ClassInfo()
-        {
-            properties = new Dictionary<string, PropertyInfo>();
-        }
     }
 
     public interface IMEPackage : IDisposable
@@ -57,6 +56,8 @@ namespace ME3Explorer.Packages
         int ExportCount { get; }
         int ImportCount { get; }
         int ImportOffset { get; }
+        int ExportOffset { get; }
+        int NameOffset { get; }
         IReadOnlyList<IExportEntry> Exports { get; }
         IReadOnlyList<ImportEntry> Imports { get; }
         IReadOnlyList<string> Names { get; }
@@ -67,15 +68,40 @@ namespace ME3Explorer.Packages
 
         //reading
         bool isExport(int index);
-        bool isImport(int index);
+        bool isUExport(int index);
         bool isName(int index);
+        bool isUImport(int index);
+        bool isEntry(int uindex);
         /// <summary>
         ///     gets Export or Import entry, from unreal index
         /// </summary>
         /// <param name="index">unreal index</param>
         IEntry getEntry(int index);
+        /// <summary>
+        /// Gets an export based on it's 0 based index in the export list. (Not unreal indexing)
+        /// </summary>
+        /// <param name="index">0-based index in the export list</param>
+        /// <returns></returns>
         IExportEntry getExport(int index);
+
+        /// <summary>
+        /// Gets an export based on it's unreal based index in the export list.
+        /// </summary>
+        /// <param name="uIndex">unreal-based index in the export list</param>
+        IExportEntry getUExport(int uIndex);
+
+        /// <summary>
+        /// Gets an import based on it's 0 based index in the import list. (Not unreal indexing)
+        /// </summary>
+        /// <param name="index">0-based index in the import list</param>
+        /// <returns></returns>
         ImportEntry getImport(int index);
+
+        /// <summary>
+        /// Gets an import based on it's unreal based index.
+        /// </summary>
+        /// <param name="uIndex">unreal-based index</param>
+        ImportEntry getUImport(int uIndex);
         int findName(string nameToFind);
         /// <summary>
         ///     gets Export or Import name, from unreal index
@@ -102,6 +128,8 @@ namespace ME3Explorer.Packages
         /// </summary>
         void setNames(List<string> list);
 
+        string FollowLink(int Link);
+
         //saving
         void save();
         void save(string path);
@@ -109,9 +137,9 @@ namespace ME3Explorer.Packages
         ObservableCollection<GenericWindow> Tools { get; }
         void RegisterTool(GenericWindow tool);
         void Release(System.Windows.Window wpfWindow = null, System.Windows.Forms.Form winForm = null);
-        event EventHandler noLongerOpenInTools;
+        event MEPackage.MEPackageEventHandler noLongerOpenInTools;
         void RegisterUse();
-        event EventHandler noLongerUsed;
+        event MEPackage.MEPackageEventHandler noLongerUsed;
         string GetEntryString(int index);
     }
 }

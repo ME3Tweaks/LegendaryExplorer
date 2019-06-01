@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="MassEffect.NativesEditor.Views.FindObjectUsagesView"
+﻿<global:NotifyPropertyChangedControlBase x:Class="MassEffect.NativesEditor.Views.FindObjectUsagesView"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,6 +6,7 @@
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 	xmlns:views="clr-namespace:MassEffect.NativesEditor.Views"
 	xmlns:local="clr-namespace:MassEffect.NativesEditor"
+    xmlns:global="clr-namespace:ME3Explorer"
 	xmlns:stateEventMap="clr-namespace:Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap"
 	mc:Ignorable="d"
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -53,7 +54,8 @@
 				<Label Grid.Column="0" Grid.Row="0" Margin="5,5,5,0"
 					Content="Object type:" />
 
-                <ComboBox x:Name="objectTypeCombo" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5,5,5,0" SelectedIndex="0" SelectionChanged="objectTypeCombo_SelectionChanged">
+                <ComboBox x:Name="objectTypeCombo" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5,5,5,0" SelectedIndex="0"
+                          SelectedValue="{Binding TypeToFind, Mode=OneWayToSource}" SelectedValuePath="Content">
                     <ComboBoxItem Content="Plot Bool" />
                     <ComboBoxItem Content="Plot Int" />
                     <ComboBoxItem Content="Plot Float" />
@@ -67,6 +69,23 @@
                     <TextBlock Text="StateEvent" />
                 </DataTemplate>
             </ListBox.Resources>
+            <!-- https://stackoverflow.com/a/699890 -->
+            <ListBox.Style>
+                <Style TargetType="ListBox"
+                       BasedOn="{StaticResource {x:Type ListBox}}">
+                    <Style.Triggers>
+                        <Trigger Property="HasItems" Value="False">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <TextBlock>Nothing Found for <Run Text="{Binding TypeToFind}"/> <Run Text="{Binding SearchTerm}"/></TextBlock>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.Style>
         </ListBox>
 	</Grid>
-</UserControl>
+</global:NotifyPropertyChangedControlBase>

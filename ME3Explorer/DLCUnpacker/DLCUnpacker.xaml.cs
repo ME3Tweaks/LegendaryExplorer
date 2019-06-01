@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer.DLCUnpacker
 {
@@ -214,6 +215,8 @@ namespace ME3Explorer.DLCUnpacker
 
         public DLCUnpacker()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("DLC Unpacker", new WeakReference(this));
+
             LoadCommands();
             RequiredSpaceText = "Calculating...";
             InitializeComponent();

@@ -13,17 +13,49 @@ namespace ME3Explorer.Packages
     {
         const uint packageTag = 0x9E2A83C1;
 
-        public MEGame Game { get { return MEGame.ME2; } }
+        public MEGame Game => MEGame.ME2;
 
-        public override int NameCount { get { return BitConverter.ToInt32(header, nameSize + 20); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 20, sizeof(int)); } }
-        private int NameOffset { get { return BitConverter.ToInt32(header, nameSize + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 24, sizeof(int)); } }
-        public override int ExportCount { get { return BitConverter.ToInt32(header, nameSize + 28); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 28, sizeof(int)); } }
-        private int ExportOffset { get { return BitConverter.ToInt32(header, nameSize + 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 32, sizeof(int)); } }
-        public override int ImportCount { get { return BitConverter.ToInt32(header, nameSize + 36); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 36, sizeof(int)); } }
-        public int ImportOffset { get { return BitConverter.ToInt32(header, nameSize + 40); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 40, sizeof(int)); } }
-        private int FreeZoneStart { get { return BitConverter.ToInt32(header, nameSize + 44); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 44, sizeof(int)); } }
-        private int Generations { get { return BitConverter.ToInt32(header, nameSize + 64); } }
-        private int Compression { get { return BitConverter.ToInt32(header, header.Length - 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, header.Length - 4, sizeof(int)); } }
+        public override int NameCount
+        {
+            get => BitConverter.ToInt32(header, nameSize + 20);
+            protected set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 20, sizeof(int));
+        }
+        public int NameOffset
+        {
+            get => BitConverter.ToInt32(header, nameSize + 24);
+            private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 24, sizeof(int));
+        }
+        public override int ExportCount
+        {
+            get => BitConverter.ToInt32(header, nameSize + 28);
+            protected set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 28, sizeof(int));
+        }
+        public int ExportOffset
+        {
+            get => BitConverter.ToInt32(header, nameSize + 32);
+            private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 32, sizeof(int));
+        }
+        public override int ImportCount
+        {
+            get => BitConverter.ToInt32(header, nameSize + 36);
+            protected set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 36, sizeof(int));
+        }
+        public int ImportOffset
+        {
+            get => BitConverter.ToInt32(header, nameSize + 40);
+            private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 40, sizeof(int));
+        }
+        private int FreeZoneStart
+        {
+            get => BitConverter.ToInt32(header, nameSize + 44);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 44, sizeof(int));
+        }
+        private int Generations => BitConverter.ToInt32(header, nameSize + 64);
+        private int Compression
+        {
+            get => BitConverter.ToInt32(header, header.Length - 4);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, header.Length - 4, sizeof(int));
+        }
 
         static bool isInitialized;
         public static Func<string, ME2Package> Initialize()
@@ -42,6 +74,7 @@ namespace ME3Explorer.Packages
         private ME2Package(string path)
         {
             //Debug.WriteLine(" >> Opening me2 package " + path);
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"ME2Package {Path.GetFileName(path)}", new WeakReference(this));
 
             DebugOutput.PrintLn("Load file : " + path);
             FileName = Path.GetFullPath(path);

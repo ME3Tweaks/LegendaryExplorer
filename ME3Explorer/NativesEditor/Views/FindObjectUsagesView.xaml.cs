@@ -7,13 +7,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Gammtek.Conduit.MassEffect3.SFXGame;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
+using ME3Explorer;
 
 namespace MassEffect.NativesEditor.Views
 {
 	/// <summary>
 	///     Interaction logic for FindObjectUsagesDialog.xaml
 	/// </summary>
-	public partial class FindObjectUsagesView : INotifyPropertyChanged
+	public partial class FindObjectUsagesView : NotifyPropertyChangedControlBase
 	{
 		public FindObjectUsagesView()
 		{
@@ -23,38 +24,32 @@ namespace MassEffect.NativesEditor.Views
         int _searchTerm;
         public int SearchTerm
         {
-            get
-            {
-                return _searchTerm;
-            }
+            get => _searchTerm;
 
             set
             {
-                _searchTerm = value;
+                SetProperty(ref _searchTerm, value);
                 UpdateSearch();
             }
         }
-        List<BioVersionedNativeObject> searchResults;
 
-        public List<BioVersionedNativeObject> SearchResults
+        string _typeToFind;
+        public string TypeToFind
         {
-            get
-            {
-                return searchResults;
-            }
-
+            get => _typeToFind;
             set
             {
-                SetProperty(ref searchResults, value);
+                SetProperty(ref _typeToFind, value);
+                UpdateSearch();
             }
         }
 
-        public ShellView parentRef;
+        public PlotEditor parentRef;
 
         void UpdateSearch()
         {
-            string typeToFind = ((ComboBoxItem)objectTypeCombo.SelectedItem).Content as string;
-            switch (typeToFind)
+            if (parentRef == null) return;
+            switch (TypeToFind)
             {
                 case "Plot Bool":
                     int boolId = SearchTerm;
@@ -84,37 +79,7 @@ namespace MassEffect.NativesEditor.Views
                     break;
             }
         }
-
-        #region Property Changed Notification
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notifies listeners when given property is updated.
-        /// </summary>
-        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyname = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }
-
-        /// <summary>
-        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-        /// Should be called in property setters.
-        /// </summary>
-        /// <typeparam name="T">Type of given property.</typeparam>
-        /// <param name="field">Backing field to update.</param>
-        /// <param name="value">New value of property.</param>
-        /// <param name="propertyName">Name of property.</param>
-        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-        #endregion
-
+        
         private void searchResultsListBox_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (searchResultsListBox.SelectedIndex == -1)
@@ -122,19 +87,11 @@ namespace MassEffect.NativesEditor.Views
                 return;
             }
             var selectedItem = searchResultsListBox.SelectedItem;
-            if (selectedItem is KeyValuePair<int, BioStateEvent>)
+            if (selectedItem is KeyValuePair<int, BioStateEvent> pair)
             {
-                parentRef.MainTabControl.SelectedIndex = 2;
-                parentRef.StateEventMapControl.SelectedStateEvent = (KeyValuePair<int, BioStateEvent>)selectedItem;
-                parentRef.StateEventMapControl.StateEventMapListBox.ScrollIntoView(selectedItem);
-            }
-        }
-
-        private void objectTypeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (IsInitialized)
-            {
-                UpdateSearch();
+                parentRef.MainTabControl.SelectedValue = parentRef.StateEventMapControl;
+                parentRef.StateEventMapControl.SelectedStateEvent = pair;
+                parentRef.StateEventMapControl.StateEventMapListBox.ScrollIntoView(pair);
             }
         }
     }

@@ -94,7 +94,7 @@ namespace ME3Explorer.SubtitleScanner
                                         t.pathpcc = file;
                                         t.convname = Exports[i].ObjectName;
                                         if (e.SpeakerIndex >= 0 && e.SpeakerIndex < Dialog.SpeakerList.Count)
-                                            t.speaker = pcc.getNameEntry(Dialog.SpeakerList[e.SpeakerIndex]);
+                                            t.speaker = Dialog.SpeakerList[e.SpeakerIndex].InstancedString;
                                         else
                                             t.speaker = "unknown";
                                         if (t.speaker == null || t.speaker == "")
@@ -175,7 +175,7 @@ namespace ME3Explorer.SubtitleScanner
                                             t.pathpcc = file;
                                             t.convname = Exports[i].ObjectName;
                                             if (e.SpeakerIndex >= 0 && e.SpeakerIndex < Dialog.SpeakerList.Count)
-                                                t.speaker = pcc.getNameEntry(Dialog.SpeakerList[e.SpeakerIndex]);
+                                                t.speaker = Dialog.SpeakerList[e.SpeakerIndex].InstancedString;
                                             else
                                                 t.speaker = "unknown";
                                             if (t.speaker == null || t.speaker == "")
@@ -266,7 +266,7 @@ namespace ME3Explorer.SubtitleScanner
                                                     t.pathpcc = filename;
                                                     t.convname = Exports[i].ObjectName;
                                                     if (e.SpeakerIndex >= 0 && e.SpeakerIndex < Dialog.SpeakerList.Count)
-                                                        t.speaker = pcc.getNameEntry(Dialog.SpeakerList[e.SpeakerIndex]);
+                                                        t.speaker = Dialog.SpeakerList[e.SpeakerIndex].InstancedString;
                                                     else
                                                         t.speaker = "unknown";
                                                     if (t.speaker == null || t.speaker == "")

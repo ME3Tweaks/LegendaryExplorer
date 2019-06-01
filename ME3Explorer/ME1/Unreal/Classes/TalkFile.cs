@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using ME3Explorer.Packages;
+using ME1Explorer;
+using System.Diagnostics;
 
 namespace ME1Explorer.Unreal.Classes
 {
@@ -34,50 +36,89 @@ namespace ME1Explorer.Unreal.Classes
             }
         }
 
-        public struct TLKStringRef
+        [DebuggerDisplay("TLKStringRef {StringID} {Data}")]
+        public class TLKStringRef : ME3Explorer.NotifyPropertyChangedBase, IEquatable<TLKStringRef>
         {
-            public int StringID;
-            public string Data;
-            public byte[] Flags;
-            public int Index;
+            private int _stringID;
+            private string _data;
+            private int _flags;
+            private int _index;
+
+
+            public int StringID { get => _stringID; set => SetProperty(ref _stringID, value); }
+            public string Data { get => _data; set => SetProperty(ref _data, value); }
+            public int Flags { get => _flags; set => SetProperty(ref _flags, value); }
+            public int Index { get => _index; set => SetProperty(ref _index, value); }
+            /// <summary>
+            /// This is used by huffman compression
+            /// </summary>
+            public string ASCIIData
+            {
+                get
+                {
+                    if (Data == null)
+                    {
+                        return "-1\0";
+                    }
+                    if (Data.EndsWith("\0"))
+                    {
+                        return Data;
+                    }
+                    return Data + '\0';
+                }
+            }
 
             public TLKStringRef(BinaryReader r)
-                : this()
             {
                 StringID = r.ReadInt32();
-                Flags = r.ReadBytes(4);
+                Flags = r.ReadInt32();
                 Index = r.ReadInt32();
             }
-        } 
+
+            public TLKStringRef(int id, int flags, string data)
+            {
+                StringID = id;
+                Flags = flags;
+                Data = data;
+                Index = -1;
+            }
+
+            public bool Equals(TLKStringRef other)
+            {
+                return StringID == other.StringID && ASCIIData == other.ASCIIData && Flags == other.Flags /*&& Index == other.Index*/;
+            }
+        }
         #endregion
 
         private List<HuffmanNode> nodes;
         private BitArray Bits;
         private int langRef;
-        private int tlkSetIndex;
+        private readonly int tlkSetIndex;
 
         public TLKStringRef[] StringRefs;
         public ME1Package pcc;
-        public int index;
+        //public int index;
+        public int uindex;
 
         public int LangRef
         {
-            get { return langRef; }
+            get => langRef;
             set { langRef = value; language = pcc.getNameEntry(value); }
         }
 
         public string language;
         public bool male;
 
-        public string Name { get { return pcc.Exports[index].ObjectName; } }
-        public string BioTlkSetName { get { return tlkSetIndex != -1 ? (pcc.Exports[tlkSetIndex].ObjectName + ".") : null; } }
+        public string Name => pcc.getUExport(uindex).ObjectName;
+        public string BioTlkSetName => tlkSetIndex != -1 ? (pcc.Exports[tlkSetIndex].ObjectName + ".") : null;
 
 
         #region Constructors
-        public TalkFile(ME1Package _pcc, int _index)
+        public TalkFile(ME1Package _pcc, int uindex)
         {
             pcc = _pcc;
-            index = _index;
+            //index = _index;
+            this.uindex = uindex;
             tlkSetIndex = -1;
             LoadTlkData();
         }
@@ -89,15 +130,16 @@ namespace ME1Explorer.Unreal.Classes
                 throw new Exception("ME1 Unreal TalkFile cannot be initialized with a non-ME1 file");
             }
             pcc = export.FileRef as ME1Package;
-            index = export.Index;
+            uindex = export.UIndex;
             tlkSetIndex = -1;
             LoadTlkData();
         }
 
-        public TalkFile(ME1Package _pcc, int _index, bool _male, int _langRef, int _tlkSetIndex)
+        public TalkFile(ME1Package _pcc, int uindex, bool _male, int _langRef, int _tlkSetIndex)
         {
             pcc = _pcc;
-            index = _index;
+            //index = _index;
+            this.uindex = uindex;
             LangRef = _langRef;
             male = _male;
             tlkSetIndex = _tlkSetIndex;
@@ -116,7 +158,7 @@ namespace ME1Explorer.Unreal.Classes
                     data = "\"" + StringRefs[i].Data + "\"";
                     if (withFileName)
                     {
-                        data += " (" + Path.GetFileName(pcc.FileName) + " -> " + BioTlkSetName +  Name + ")";
+                        data += " (" + Path.GetFileName(pcc.FileName) + " -> " + BioTlkSetName + Name + ")";
                     }
                     break;
                 }
@@ -127,7 +169,7 @@ namespace ME1Explorer.Unreal.Classes
         #region IEquatable
         public bool Equals(TalkFile other)
         {
-            return (other?.index == index && other.pcc.FileName == pcc.FileName);
+            return (other?.uindex == uindex && other.pcc.FileName == pcc.FileName);
         }
 
         public override bool Equals(object obj)
@@ -148,10 +190,7 @@ namespace ME1Explorer.Unreal.Classes
         #region Load Data
         public void LoadTlkData()
         {
-            BinaryReader r = new BinaryReader(new MemoryStream(pcc.Exports[index].Data), Encoding.Unicode);
-
-            //skip properties
-            r.BaseStream.Seek(40, SeekOrigin.Begin);
+            BinaryReader r = new BinaryReader(new MemoryStream(pcc.getUExport(uindex).getBinaryData()), Encoding.Unicode);
 
             //hashtable
             int entryCount = r.ReadInt32();
@@ -164,10 +203,9 @@ namespace ME1Explorer.Unreal.Classes
             //Huffman tree
             nodes = new List<HuffmanNode>();
             int nodeCount = r.ReadInt32();
-            bool leaf;
             for (int i = 0; i < nodeCount; i++)
             {
-                leaf = r.ReadBoolean();
+                bool leaf = r.ReadBoolean();
                 if (leaf)
                 {
                     nodes.Add(new HuffmanNode(r.ReadChar()));
@@ -187,11 +225,10 @@ namespace ME1Explorer.Unreal.Classes
 
             //decompress encoded data with huffman tree
             int offset = 4;
-            int size;
-            List<string> rawStrings = new List<string>(stringCount);
+            var rawStrings = new List<string>(stringCount);
             while (offset * 8 < Bits.Length)
             {
-                size = BitConverter.ToInt32(data, offset);
+                int size = BitConverter.ToInt32(data, offset);
                 offset += 4;
                 string s = GetString(offset * 8);
                 offset += size + 4;
@@ -201,7 +238,7 @@ namespace ME1Explorer.Unreal.Classes
             //associate StringIDs with strings
             for (int i = 0; i < StringRefs.Length; i++)
             {
-                if (StringRefs[i].Flags[0] == 1)
+                if (StringRefs[i].Flags == 1)
                 {
                     StringRefs[i].Data = rawStrings[StringRefs[i].Index];
                 }
@@ -218,11 +255,7 @@ namespace ME1Explorer.Unreal.Classes
             for (i = bitOffset; i < Bits.Length; i++)
             {
                 /* reading bits' sequence and decoding it to Strings while traversing Huffman Tree */
-                int nextNodeID;
-                if (Bits[i])
-                    nextNodeID = curNode.RightNodeID;
-                else
-                    nextNodeID = curNode.LeftNodeID;
+                int nextNodeID = Bits[i] ? curNode.RightNodeID : curNode.LeftNodeID;
 
                 /* it's an internal node - keep looking for a leaf */
                 if (nextNodeID >= 0)
@@ -246,6 +279,26 @@ namespace ME1Explorer.Unreal.Classes
                     }
                 }
             }
+
+            if (curNode.LeftNodeID == curNode.RightNodeID)
+            {
+                char c = curNode.data;
+                //We hit edge case where final bit is on a byte boundary and there is nothing left to read. This is a leaf node.
+                if (c != '\0')
+                {
+                    /* it's not NULL */
+                    curString += c;
+                    curNode = root;
+                }
+                else
+                {
+                    /* it's a NULL terminating processed string, we're done */
+                    //skip ahead approximately 9 bytes to the next string
+                    return curString;
+                }
+            }
+
+            Debug.WriteLine("RETURNING NULL STRING (NOT NULL TERMINATED)!");
             return null;
         }
 
@@ -266,21 +319,23 @@ namespace ME1Explorer.Unreal.Classes
                 /* adds 0 to the code - process left son*/
                 code.Add(false);
                 TraverseHuffmanTree(nodes[node.LeftNodeID], code);
-                code.RemoveAt(code.Count() - 1);
+                code.RemoveAt(code.Count - 1);
 
                 /* adds 1 to the code - process right son*/
                 code.Add(true);
                 TraverseHuffmanTree(nodes[node.RightNodeID], code);
-                code.RemoveAt(code.Count() - 1);
+                code.RemoveAt(code.Count - 1);
             }
-        } 
+        }
         #endregion
 
         public void saveToFile(string fileName)
         {
-            XmlTextWriter xr = new XmlTextWriter(fileName, Encoding.UTF8);
-            xr.Formatting = Formatting.Indented;
-            xr.Indentation = 4;
+            XmlTextWriter xr = new XmlTextWriter(fileName, Encoding.UTF8)
+            {
+                Formatting = Formatting.Indented,
+                Indentation = 4
+            };
 
             xr.WriteStartDocument();
             xr.WriteStartElement("tlkFile");
@@ -293,12 +348,16 @@ namespace ME1Explorer.Unreal.Classes
                 xr.WriteStartElement("id");
                 xr.WriteValue(StringRefs[i].StringID);
                 xr.WriteEndElement(); // </id>
-
                 xr.WriteStartElement("flags");
-                xr.WriteValue(BitConverter.ToInt32(StringRefs[i].Flags, 0));
+                xr.WriteValue(StringRefs[i].Flags);
                 xr.WriteEndElement(); // </flags>
 
-                if (StringRefs[i].Flags[0] != 1)
+                //if (i == StringRefs.Length - 1)
+                //{
+                //    Debugger.Break();
+                //}
+                TLKStringRef tref = StringRefs[i];
+                if (StringRefs[i].Flags != 1)
                     xr.WriteElementString("data", "-1");
                 else
                     xr.WriteElementString("data", StringRefs[i].Data);
@@ -310,6 +369,41 @@ namespace ME1Explorer.Unreal.Classes
             xr.Flush();
             xr.Close();
         }
+        public string TLKtoXmlstring()
+        {
+            StringBuilder InputTLK = new StringBuilder();
+            using (StringWriter stringWriter = new StringWriter(InputTLK))
+            {
+                using (XmlTextWriter writer = new XmlTextWriter(stringWriter))
+                {
+                    writer.Formatting = Formatting.Indented;
+                    writer.Indentation = 4;
+
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("tlkFile");
+                    writer.WriteAttributeString("Name", Name);
+
+                    for (int i = 0; i < StringRefs.Length; i++)
+                    {
+                        writer.WriteStartElement("string");
+                        writer.WriteStartElement("id");
+                        writer.WriteValue(StringRefs[i].StringID);
+                        writer.WriteEndElement(); // </id>
+                        writer.WriteStartElement("flags");
+                        writer.WriteValue(StringRefs[i].Flags);
+                        writer.WriteEndElement(); // </flags>
+                        if (StringRefs[i].Flags != 1)
+                            writer.WriteElementString("data", "-1");
+                        else
+                            writer.WriteElementString("data", StringRefs[i].Data);
+                        writer.WriteEndElement(); // </string>
+                    }
+                    writer.WriteEndElement(); // </tlkFile>
+                }
+            }
+            return InputTLK.ToString();
+        }
+
 
     }
 }

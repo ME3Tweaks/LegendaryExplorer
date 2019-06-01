@@ -656,7 +656,7 @@ namespace ME3Explorer.Matinee
                         addTrack(new InterpTrackColorScale(i, pcc));
                         break;
                     default:
-                        MessageBox.Show(pcc.Exports[i].ClassName + " is not recognized.\nPlease make a bug report here: https://github.com/Mgamerz/ME3Explorer/issues \nwith this information: #" + i + " " + pcc.FileName.Substring(pcc.FileName.LastIndexOf(@"\")));
+                        MessageBox.Show($"{pcc.Exports[i].ClassName} is not recognized.\nPlease make a bug report here: {App.BugReportURL} \nwith this information: #{i} {pcc.FileName.Substring(pcc.FileName.LastIndexOf(@"\"))}");
                         break;
                 }
             }
@@ -691,13 +691,9 @@ namespace ME3Explorer.Matinee
 
         protected void openInPCCEd_Click(object sender, EventArgs e)
         {
-
-            PackageEditor p = new PackageEditor();
-            //p.MdiParent = Form.MdiParent;
-            p.WindowState = FormWindowState.Maximized;
+            PackageEditorWPF p = new PackageEditorWPF();
             p.Show();
-            p.LoadFile(pcc.FileName);
-            p.goToNumber(index);
+            p.LoadFile(pcc.FileName, index + 1); //To UIndex
         }
 
         public void addTrack(InterpTrack t)

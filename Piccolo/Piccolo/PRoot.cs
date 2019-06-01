@@ -33,6 +33,7 @@ using System;
 using System.Windows.Forms;
 using System.Threading;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 using UMD.HCIL.Piccolo.Activities;
@@ -214,7 +215,7 @@ namespace UMD.HCIL.Piccolo {
 		protected void ProcessActivitiesNow() {
 			ProcessInputs();
 
-			PNodeList nodes = GetAllNodes(PUtil.CAMERA_WITH_CANVAS_FILTER, null);
+			List<PNode> nodes = GetAllNodes(PUtil.CAMERA_WITH_CANVAS_FILTER, null);
 			foreach (PCamera each in nodes) {
 				each.Canvas.PaintImmediately();
 			}

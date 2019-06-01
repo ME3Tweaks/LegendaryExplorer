@@ -25,12 +25,12 @@ namespace ME3Explorer.SharedUI
             Password
         }
 
-        private InputType _inputType = InputType.Text;
+        private InputType _inputType;
 
         public PromptDialog(string question, string title, string defaultValue = "", bool selectText = false, InputType inputType = InputType.Text)
         {
             InitializeComponent();
-            this.Loaded += new RoutedEventHandler(PromptDialog_Loaded);
+            this.Loaded += PromptDialog_Loaded;
             txtQuestion.Text = question;
             Title = title;
             txtResponse.Text = defaultValue;
@@ -46,23 +46,19 @@ namespace ME3Explorer.SharedUI
             txtResponse.Focus();
         }
 
-        public static string Prompt(Window owner, string question, string title, string defaultValue = "", bool selectText = false, InputType inputType = InputType.Text)
+        public static string Prompt(Window owner, string question, string title = "", string defaultValue = "", bool selectText = false, InputType inputType = InputType.Text)
         {
-            PromptDialog inst = new PromptDialog(question, title, defaultValue, selectText, inputType);
-            inst.Owner = owner;
+            PromptDialog inst = new PromptDialog(question, title, defaultValue, selectText, inputType)
+            {
+                Owner = owner
+            };
             inst.ShowDialog();
             if (inst.DialogResult == true)
                 return inst.ResponseText;
             return null;
         }
 
-        public string ResponseText
-        {
-            get
-            {
-                return txtResponse.Text;
-            }
-        }
+        public string ResponseText => txtResponse.Text;
 
         private void btnOk_Click(object sender, RoutedEventArgs e)
         {

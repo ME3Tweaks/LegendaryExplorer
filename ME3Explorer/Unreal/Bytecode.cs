@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using ME3Explorer.Packages;
 using System.Diagnostics;
+using ME3Explorer.Pathfinding_Editor;
 
 namespace ME3Explorer.Unreal
 {
     public static class Bytecode
     {
-
         public static readonly Dictionary<short, string> byteOpnameMap = new Dictionary<short, string>
         {
              { 0x00, "EX_LocalVariable" },
@@ -317,8 +317,6 @@ namespace ME3Explorer.Unreal
              { 0x0222, "NATIVE_UpdateURL" }
 
         };
-
-        public static IMEPackage pcc;
         public static byte[] memory;
         public static int memsize;
         #region NormalToken
@@ -638,34 +636,33 @@ namespace ME3Explorer.Unreal
             NATIVE_UpdateURL = 0x0222
         };
 
-        public static Tuple<List<Token>, List<BytecodeSingularToken>> ParseBytecode(byte[] raw, IMEPackage pcc, int pos = 0x20)
+        public static (List<Token>, List<BytecodeSingularToken>) ParseBytecode(byte[] raw, IExportEntry export, int pos = 0x20)
         {
 
             string s = "";
-            Bytecode.pcc = pcc;
             memory = raw;
             memsize = raw.Length;
             DebugCounter = 0;
             _debug = new List<BytecodeSingularToken>();
-            List<Token> t = ReadAll(0);
+            List<Token> tokens = ReadAll(0, export);
 
             //calculate padding width.
             int totalLength = 32;
-            for (int i = 0; i < t.Count; i++)
+            foreach (Token tok in tokens)
             {
-                totalLength += t[i].raw.Length;
+                totalLength += tok.raw.Length;
             }
 
             //calculate block position and assign paddingwidth.
             int paddingSize = totalLength.ToString().Length;
-            for (int i = 0; i < t.Count; i++)
+            foreach (Token tok in tokens)
             {
-                t[i].pos = pos;
-                t[i].paddingSize = paddingSize;
-                pos += t[i].raw.Length;
+                tok.pos = pos;
+                tok.paddingSize = paddingSize;
+                pos += tok.raw.Length;
             }
             _debug.Sort();
-            return new Tuple<List<Token>, List<BytecodeSingularToken>>(t, _debug);
+            return (tokens, _debug);
         }
 
         private static void SortDbgMsg()
@@ -674,8 +671,8 @@ namespace ME3Explorer.Unreal
             while (!done)
             {
                 done = true;
-                for (int i = 0; i < _debug.Count() - 1; i++)
-                    if (_debug[i].tokenIndex > _debug[i + 1].tokenIndex)
+                for (int i = 0; i < _debug.Count - 1; i++)
+                    if (_debug[i].TokenIndex > _debug[i + 1].TokenIndex)
                     {
                         BytecodeSingularToken t = _debug[i];
                         _debug[i] = _debug[i + 1];
@@ -685,108 +682,110 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static List<Token> ReadAll(int start)
+        public static List<Token> ReadAll(int start, IExportEntry export)
         {
-            List<Token> res = new List<Token>();
+            var res = new List<Token>();
             int pos = start;
-            Token t = ReadToken(pos);
+            Token t = ReadToken(pos, export);
             res.Add(t);
             while (!t.stop)
             {
                 try
                 {
                     pos += t.raw.Length;
-                    t = ReadToken(pos);
+                    t = ReadToken(pos, export);
                     res.Add(t);
                 }
                 catch (Exception e)
                 {
-                    res.Add(new Token() { text = "Exception: " + e.Message, raw = new byte[] { } });
+                    res.Add(new Token { text = "Exception: " + e.Message, raw = new byte[] { } });
                 }
             }
             return res;
         }
 
-        public static Token ReadToken(int start)
+        public static Token ReadToken(int start, IExportEntry export)
         {
             int thiscount = DebugCounter;
             DebugCounter++;
-            Token res = new Token();
-            res.text = "";
-            res.raw = new byte[1];
-            res.stop = true;
-            Token newTok = new Token();
+            Token res = new Token
+            {
+                text = "",
+                raw = new byte[1],
+                stop = true
+            };
             if (start >= memsize)
                 return res;
             byte t = memory[start];
-            newTok.op = t;
+            Token newTok = new Token { op = t };
             int end = start;
             if (t <= 0x60)
+            {
                 switch (t)
                 {
                     case EX_LocalVariable: //0x00
-                        newTok = ReadLocalVar(start);
+                        newTok = ReadLocalVar(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DefaultVariable: //0x02
                     case EX_InstanceVariable: //0x01
-                        newTok = ReadInstanceVar(start);
+                        newTok = ReadInstanceVar(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Return: //0x04
-                        newTok = ReadReturn(start);
+                        newTok = ReadReturn(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Switch: //0x05
-                        newTok = ReadSwitch(start);
+                        newTok = ReadSwitch(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Jump: //0x06
-                        newTok = ReadJump(start);
+                        newTok = ReadJump(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_JumpIfNot: //0x07
-                        newTok = ReadJumpIfNot(start);
+                        newTok = ReadJumpIfNot(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Assert: // 0x09
-                        newTok = ReadAssert(start);
+                        newTok = ReadAssert(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Case: // 0x0A
-                        newTok = ReadCase(start);
+                        newTok = ReadCase(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Nothing: // 0x0B
-                        newTok = ReadNothing(start);
+                        newTok = ReadNothing(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_LabelTable: //0x0C
-                        newTok = ReadLableTable(start);
+                        newTok = ReadLableTable(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_EatReturnValue: // 0x0E
-                        newTok = ReadEatReturn(start);
+                        newTok = ReadEatReturn(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -794,386 +793,386 @@ namespace ME3Explorer.Unreal
                     case EX_Let://0x0F
                     case EX_LetBool: //0x14
                     case EX_LetDelegate: //0x44
-                        newTok = ReadLet(start);
+                        newTok = ReadLet(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_ArrayElement: // 0x1A
                     case EX_DynArrayElement: // 0x10
-                        newTok = ReadDynArrayElement(start);
+                        newTok = ReadDynArrayElement(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_New: //0x11
-                        newTok = ReadNew(start);
+                        newTok = ReadNew(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Metacast: // 0x13
-                        newTok = ReadMetacast(start);
+                        newTok = ReadMetacast(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_EndParmValue: // 0x15
-                        newTok = ReadEndParmVal(start);
+                        newTok = ReadEndParmVal(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_EndFunctionParms: // 0x16
-                        newTok = ReadEndFuncParm(start);
+                        newTok = ReadEndFuncParm(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Self: //  0x17
-                        newTok = ReadSelf(start);
+                        newTok = ReadSelf(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Skip: // 0x18
-                        newTok = ReadSkip(start);
+                        newTok = ReadSkip(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_ClassContext://0x12
                     case EX_Context: // 0x19
-                        newTok = ReadContext(start);
+                        newTok = ReadContext(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_VirtualFunction: // 0x1B
-                        newTok = ReadVirtualFunc(start);
+                        newTok = ReadVirtualFunc(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_FinalFunction: // 0x1C
-                        newTok = ReadFinalFunc(start);
+                        newTok = ReadFinalFunc(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_IntConst: // 0x1D
-                        newTok = ReadIntConst(start);
+                        newTok = ReadIntConst(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_FloatConst: // 0x1E
-                        newTok = ReadStatFloat(start);
+                        newTok = ReadStatFloat(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_StringConst: //0x1F
-                        newTok = ReadStringConst(start);
+                        newTok = ReadStringConst(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_ObjectConst: // 0x20
-                        newTok = ReadObjectConst(start);
+                        newTok = ReadObjectConst(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_NameConst: // 0x21
-                        newTok = ReadNameConst(start);
+                        newTok = ReadNameConst(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_RotationConst: // 0x22
-                        newTok = ReadRotatorConst(start);
+                        newTok = ReadRotatorConst(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_VectorConst: // 0x23
-                        newTok = ReadVectorConst(start);
+                        newTok = ReadVectorConst(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_IntConstByte: // 0x2C
                     case EX_ByteConst: //0x24
-                        newTok = ReadByteConst(start);
+                        newTok = ReadByteConst(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_IntZero: // 0x25
-                        newTok = ReadZero(start);
+                        newTok = ReadZero(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_IntOne: //0x26
-                        newTok = ReadIntOne(start);
+                        newTok = ReadIntOne(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_True: // 0x27
-                        newTok = ReadTrue(start);
+                        newTok = ReadTrue(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_False: // 0x28
-                        newTok = ReadFalse(start);
+                        newTok = ReadFalse(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_NativeParm: //0x29
-                        newTok = ReadNativeParm(start);
+                        newTok = ReadNativeParm(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_NoObject: // 0x2A
-                        newTok = ReadNone(start);
+                        newTok = ReadNone(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_BoolVariable: // 0x2D
-                        newTok = ReadBoolExp(start);
+                        newTok = ReadBoolExp(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DynamicCast: // 0x2E
-                        newTok = ReadDynCast(start);
+                        newTok = ReadDynCast(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Iterator: //0x2F
-                        newTok = ReadIterator(start);
+                        newTok = ReadIterator(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_IteratorPop: // 0x30
-                        newTok = ReadIterPop(start);
+                        newTok = ReadIterPop(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_IteratorNext: //0x31
-                        newTok = ReadIterNext(start);
+                        newTok = ReadIterNext(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_StructCmpEq: // 0x32
-                        newTok = ReadCompareStructs(start, "==");
+                        newTok = ReadCompareStructs(start, "==", export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_StructCmpNe: // 0x33
-                        newTok = ReadCompareStructs(start, "!=");
+                        newTok = ReadCompareStructs(start, "!=", export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_StructMember: //0x35
-                        newTok = ReadStruct(start);
+                        newTok = ReadStruct(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DynArrayLength: //0x36
-                        newTok = ReadDynArrayLen(start);
+                        newTok = ReadDynArrayLen(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_GlobalFunction: // 0x37
-                        newTok = ReadGlobalFunc(start);
+                        newTok = ReadGlobalFunc(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_PrimitiveCast: //0x38
-                        newTok = ReadPrimitiveCast(start);
+                        newTok = ReadPrimitiveCast(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DynArrayInsert: // 0x39
-                        newTok = ReadArrayArg2(start, "Insert", false);
+                        newTok = ReadArrayArg2(start, "Insert", false, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_ByteToInt: // 0x3A
-                        newTok = ReadByteToInt(start);
+                        newTok = ReadByteToInt(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_EqualEqual_DelDel: // 0x3B
-                        newTok = ReadEqual(start);
+                        newTok = ReadEqual(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_NotEqual_DelDel: // 0x3C
-                        newTok = ReadCompareDel(start, "!=");
+                        newTok = ReadCompareDel(start, "!=", export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_EqualEqual_DelFunc: // 0x3D
-                        newTok = ReadCompareDel2(start, "==");
+                        newTok = ReadCompareDel2(start, "==", export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_EmptyDelegate: // 0x3F
-                        newTok = ReadEmptyDel(start);
+                        newTok = ReadEmptyDel(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DynArrayRemove: // 0x40
-                        newTok = ReadArrayArg2(start, "Remove", false);
+                        newTok = ReadArrayArg2(start, "Remove", false, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DelegateFunction: // 0x42
-                        newTok = ReadDelFunc(start);
+                        newTok = ReadDelFunc(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DelegateProperty: // 0x43
-                        newTok = ReadDelegateProp(start);
+                        newTok = ReadDelegateProp(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Conditional: // 0x45
-                        newTok = ReadConditional(start);
+                        newTok = ReadConditional(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DynArrayFind:// 0x46
-                        return ReadArrayArg(start, "Find");
+                        return ReadArrayArg(start, "Find", export);
                     case EX_DynArrayFindStruct: //0x47
-                        return ReadArrayArg2(start, "Find", true);
+                        return ReadArrayArg2(start, "Find", true, export);
                     case EX_LocalOutVariable: //0x48
-                        newTok = ReadLocOutVar(start);
+                        newTok = ReadLocOutVar(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DefaultParmValue: // 0x49
-                        newTok = ReadDefaultParmVal(start);
+                        newTok = ReadDefaultParmVal(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_EmptyParmValue: //0x4A                    
-                        newTok = ReadEmptyParm(start);
+                        newTok = ReadEmptyParm(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_InstanceDelegate: // 0x4B
-                        newTok = ReadInstDelegate(start);
+                        newTok = ReadInstDelegate(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case 0x4F:
-                        newTok = Read4FAdd(start);
+                        newTok = Read4FAdd(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_GoW_DefaultValue: //0x50
-                        newTok = ReadGoWVal(start);
+                        newTok = ReadGoWVal(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_InterfaceContext:// 0x51
-                        newTok = ReadInterfaceContext(start);
+                        newTok = ReadInterfaceContext(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_InterfaceCast: // 0x52
-                        newTok = ReadUnkn1(start);
+                        newTok = ReadUnkn1(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_EndOfScript:    //0x53                    
-                        newTok = ReadEndOfScript(start);
+                        newTok = ReadEndOfScript(start, export);
                         newTok.stop = true;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DynArrayAdd: // 0x54
-                        newTok = ReadAdd(start);
+                        newTok = ReadAdd(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DynArrayAddItem: //0x55
-                        newTok = ReadArrayArg(start, "Add");
+                        newTok = ReadArrayArg(start, "Add", export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DynArrayRemoveItem: //0x56
-                        newTok = ReadArrayArg(start, "Remove");
+                        newTok = ReadArrayArg(start, "Remove", export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DynArrayInsertItem: //0x57
-                        newTok = ReadArrayArg(start, "Insert");
+                        newTok = ReadArrayArg(start, "Insert", export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_DynArrayIterator: // 0x58
-                        newTok = ReadDynArrayItr(start);
+                        newTok = ReadDynArrayItr(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Unkn15: // 0x59
-                        newTok = ReadUnkn15(start);
+                        newTok = ReadUnkn15(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Unkn14: // 0x5A
-                        newTok = ReadUnkn14(start);
+                        newTok = ReadUnkn14(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Unkn1: // 0x5E
-                        newTok = ReadUnkn1b(start);
+                        newTok = ReadUnkn1b(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -1183,60 +1182,61 @@ namespace ME3Explorer.Unreal
                     case EX_Unkn9: // 0x5D
                     case EX_Unkn10: // 0x5F
                     case EX_Unkn11: // 0x60
-                        newTok = ReadUnkn1(start);
+                        newTok = ReadUnkn1(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     default:
-                        newTok = ReadUnknown(start);
+                        newTok = ReadUnknown(start, export);
                         newTok.stop = true;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                 }
+            }
             else
             {
                 switch (t)
                 {
                     case EX_Unkn3: //0x61
-                        newTok = ReadUnkn3(start);
+                        newTok = ReadUnkn3(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Unkn4: //0x62
-                        newTok = ReadUnkn4(start);
+                        newTok = ReadUnkn4(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Unkn8: //0x63
-                        newTok = ReadUnkn8(start);
+                        newTok = ReadUnkn8(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Unkn7: //0x64
-                        newTok = ReadUnkn7(start);
+                        newTok = ReadUnkn7(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Unkn6: //0x65
-                        newTok = ReadUnkn6(start);
+                        newTok = ReadUnkn6(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Unkn12: // 0x6A
-                        newTok = ReadUnkn12(start);
+                        newTok = ReadUnkn12(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_Unkn13: // 0x6E
-                        newTok = ReadUnkn13(start);
+                        newTok = ReadUnkn13(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -1244,14 +1244,14 @@ namespace ME3Explorer.Unreal
                     default:
                         if (t < 0x70)
                         {
-                            newTok = ReadExtNative(start);
+                            newTok = ReadExtNative(start, export);
                             newTok.stop = false;
                             end = start + newTok.raw.Length;
                             res = newTok;
                         }
                         else
                         {
-                            newTok = ReadNative(start);
+                            newTok = ReadNative(start, export);
                             newTok.stop = false;
                             end = start + newTok.raw.Length;
                             res = newTok;
@@ -1260,25 +1260,24 @@ namespace ME3Explorer.Unreal
                 }
             }
             BytecodeSingularToken msg = new BytecodeSingularToken();
-            string opname;// = 
-            byteOpnameMap.TryGetValue(t < 0x60 ? (short)t : newTok.op, out opname);
-            if (opname == null || opname == "")
+            byteOpnameMap.TryGetValue(t < 0x60 ? (short)t : newTok.op, out string opname);
+            if (string.IsNullOrEmpty(opname))
             {
-                opname = "UNKNOWN(0x" + t.ToString("X2") + ")";
+                opname = $"UNKNOWN(0x{t:X2})";
             }
 
-            string op = $"[0x{t.ToString("X2")}] {opname}";
+            string op = $"[0x{t:X2}] {opname}";
             string tokenpos = "0x" + (start + 32).ToString("X");
             string data = res.text;
-            msg.opCode = op;
-            msg.currentStack = data;
-            msg.tokenIndex = thiscount;
-            msg.startPos = start + 0x20; //start of script data in ME3
+            msg.OpCode = op;
+            msg.CurrentStack = data;
+            msg.TokenIndex = thiscount;
+            msg.StartPos = start + 0x20; //start of script data in ME3
             _debug.Add(msg);
             return res;
         }
 
-        private static Token ReadNative(int start)
+        private static Token ReadNative(int start, IExportEntry export)
         {
             Token t = new Token();
             Token a = null, b = null, c = null;
@@ -1302,7 +1301,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         t.inPackageReferences.AddRange(a.inPackageReferences);
 
                         pos += a.raw.Length;
@@ -1316,285 +1315,285 @@ namespace ME3Explorer.Unreal
                     }
                     break;
                 case (int)ENatives.NATIVE_AndAnd_BoolBool: //0x0082
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = a.text + " && " + b.text;
                     break;
                 case (int)ENatives.NATIVE_XorXor_BoolBool:  //0x0083
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = a.text + " ^^ " + b.text;
                     break;
                 case (int)ENatives.NATIVE_OrOr_BoolBool://0x0084
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = a.text + " || " + b.text;
                     break;
                 case (int)ENatives.NATIVE_MultiplyEqual_ByteByte://  0x0085
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " *= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_DivideEqual_ByteByte: // 0x0086
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " /= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_AddEqual_ByteByte: // 0x0087
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " += " + b.text;
                     break;
                 case (int)ENatives.NATIVE_SubtractEqual_ByteByte: // 0x0088
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " -= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_SubtractSubtract_PreByte: // 0x008A
                 case (int)ENatives.NATIVE_SubtractSubtract_Byte: // 0x008C
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = a.text + "--";
                     break;
                 case (int)ENatives.NATIVE_AddAdd_Byte: // 0x008B
                 case (int)ENatives.NATIVE_AddAdd_PreByte: // 0x0089
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = a.text + "++";
                     break;
                 case (int)ENatives.NATIVE_Complement_PreInt: // 0x008D
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = "~(" + a.text + ")";
                     break;
                 case (int)ENatives.NATIVE_EqualEqual_RotatorRotator: // 0x008E
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " == " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Subtract_PreInt: // 0x008F
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = "-" + a.text;
                     break;
                 case (int)ENatives.NATIVE_Multiply_IntInt:// 0x0090
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " * " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Divide_IntInt:// 0x0091
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " / " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Add_IntInt:// 0x0092
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " + " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Subtract_IntInt:// 0x0093
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " - " + b.text;
                     break;
                 case (int)ENatives.NATIVE_LessLess_IntInt: // 0x0094
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " << " + b.text;
                     break;
                 case (int)ENatives.NATIVE_GreaterGreater_IntInt: // 0x0095
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " >> " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Less_IntInt: // 0x0096
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " < " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Greater_IntInt://0x0097
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " > " + b.text;
                     break;
                 case (int)ENatives.NATIVE_LessEqual_IntInt: // 0x0098
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " <= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_GreaterEqual_IntInt: // 0x0099
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " >= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_EqualEqual_IntInt: // 0x009A
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " == " + b.text;
                     break;
                 case (int)ENatives.NATIVE_NotEqual_IntInt: // 0x009B
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " != " + b.text;
                     break;
                 case (int)ENatives.NATIVE_And_IntInt: // 0x009C
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " & " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Xor_IntInt: // 0x009D
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " ^ " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Or_IntInt: // 0x009E
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " | " + b.text;
                     break;
                 case (int)ENatives.NATIVE_MultiplyEqual_IntFloat: // 0x009F
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " *= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_DivideEqual_IntFloat: // 0x00A0
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " /= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_AddEqual_IntInt: // 0x00A1
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " += " + b.text;
                     break;
                 case (int)ENatives.NATIVE_SubtractEqual_IntInt: // 0x00A2
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " -= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_AddAdd_PreInt: // 0x00A3
                 case (int)ENatives.NATIVE_AddAdd_Int: // 0x00A5
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = a.text + "++";
                     break;
                 case (int)ENatives.NATIVE_SubtractSubtract_PreInt: // 0x00A4
                 case (int)ENatives.NATIVE_SubtractSubtract_Int: // 0x00A6
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = a.text + "--";
                     break;
@@ -1603,7 +1602,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -1616,188 +1615,188 @@ namespace ME3Explorer.Unreal
                     t.text += ")";
                     break;
                 case (int)ENatives.NATIVE_At_StrStr: // 0x00A8
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " @ " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Subtract_PreFloat: // 0x00A9
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = "-" + a.text;
                     break;
                 case (int)ENatives.NATIVE_MultiplyMultiply_FloatFloat: // 0x00AA
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " ** " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Multiply_FloatFloat: // 0x00AB
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " * " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Divide_FloatFloat: // 0x00AC
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " / " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Add_FloatFloat: // 0x00AE
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " + " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Subtract_FloatFloat: // 0x00AF
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " - " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Less_FloatFloat: // 0x00B0
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " < " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Greater_FloatFloat: // 0x00B1
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " > " + b.text;
                     break;
                 case (int)ENatives.NATIVE_LessEqual_FloatFloat: // 0x00B2
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " <= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_GreaterEqual_FloatFloat: // 0x00B3
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " >= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_EqualEqual_FloatFloat: // 0x00B4
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " == " + b.text;
                     break;
                 case (int)ENatives.NATIVE_NotEqual_FloatFloat: // 0x00B5
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " != " + b.text;
                     break;
                 case (int)ENatives.NATIVE_MultiplyEqual_FloatFloat: // 0x00B6
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " *= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_DivideEqual_FloatFloat: // 0x00B7
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " /= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_AddEqual_FloatFloat: // 0x00B8
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " += " + b.text;
                     break;
                 case (int)ENatives.NATIVE_SubtractEqual_FloatFloat: // 0x00B9
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " += " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Abs: // 0x00BA
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = "Abs(" + a.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Sin: // 0x00BB
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = "Sin(" + a.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Cos: // 0x00BC
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = "Cos(" + a.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Tan: // 0x00BD
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = "Tan(" + a.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Atan: // 0x00BE
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = "ATan(" + a.text + ")";
                     break;
@@ -1806,7 +1805,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -1823,7 +1822,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -1836,9 +1835,9 @@ namespace ME3Explorer.Unreal
                     t.text += ")";
                     break;
                 case (int)ENatives.NATIVE_Sqrt: // 0x00C1
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = "Sqrt(" + a.text + ")";
                     break;
@@ -1847,7 +1846,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -1861,27 +1860,29 @@ namespace ME3Explorer.Unreal
                     break;
                 case (int)ENatives.NATIVE_FRand:// 0x00C3
                     t.text = "FRand()";
+                    pos++;
+                    ReadToken(pos, export); //EndFunctionParms
                     break;
                 case (int)ENatives.NATIVE_IsA: // 0x00C5
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = "IsA(" + a.text + ")";
                     break;
                 case (int)ENatives.NATIVE_MultiplyEqual_ByteFloat: // 0x00C6
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " *= " + b.text;
                     break;
                 case 0xC7: //unknown
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = a.text;
                     break;
@@ -1890,7 +1891,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -1903,151 +1904,151 @@ namespace ME3Explorer.Unreal
                     t.text += ")";
                     break;
                 case (int)ENatives.NATIVE_NotEqual_RotatorRotator: // 0x00CB
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " != " + b.text;
                     break;
                 case (int)ENatives.NATIVE_ComplementEqual_FloatFloat: // 0x00D2
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " ~= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Subtract_PreVector: // 0x00D3
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = "-" + a.text;
                     break;
                 case (int)ENatives.NATIVE_Divide_VectorFloat: // 0x00D6
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " / " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Multiply_VectorFloat: // 0x00D4
                 case (int)ENatives.NATIVE_Multiply_VectorVector: // 0x0128
                 case (int)ENatives.NATIVE_Multiply_FloatVector: // 0x00D5
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " * " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Add_VectorVector: // 0x00D7
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " + " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Subtract_VectorVector: //0x00D8
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " - " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_EqualEqual_VectorVector: // 0x00D9
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " == " + b.text;
                     break;
                 case (int)ENatives.NATIVE_NotEqual_VectorVector: // 0x00DA
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " != " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Dot_VectorVector: // 0x00DB
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " dot " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Cross_VectorVector: // 0x00DC
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " cross " + b.text;
                     break;
                 case (int)ENatives.NATIVE_DivideEqual_VectorFloat: // 0x00DE
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " /= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_MultiplyEqual_VectorFloat: // 0x00DD
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " *= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_AddEqual_VectorVector: // 0x00DF
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " += " + b.text;
                     break;
                 case (int)ENatives.NATIVE_SubtractEqual_VectorVector: // 0x00E0
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " -= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_VSize: // 0x00E1
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = "VSize(" + a.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Normal: // 0x00E2
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
                     t.text = "Normal(" + a.text + ")";
                     break;
@@ -2056,7 +2057,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2073,7 +2074,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2090,7 +2091,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2107,7 +2108,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2124,7 +2125,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2141,7 +2142,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2154,20 +2155,20 @@ namespace ME3Explorer.Unreal
                     t.text += ")";
                     break;
                 case (int)ENatives.NATIVE_EqualEqual_BoolBool://0x00F2
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " == " + b.text;
                     break;
                 case (int)ENatives.NATIVE_NotEqual_BoolBool://0x00F3
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " != " + b.text;
                     break;
@@ -2176,7 +2177,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2193,7 +2194,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2210,7 +2211,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2227,7 +2228,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2244,7 +2245,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2261,7 +2262,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2278,7 +2279,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2295,7 +2296,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2308,29 +2309,29 @@ namespace ME3Explorer.Unreal
                     t.text += ")";
                     break;
                 case (int)ENatives.NATIVE_Percent_FloatFloat: // 0x00FD
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " % " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_EqualEqual_NameName: // 0x00FE
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " == " + b.text;
                     break;
                 case (int)ENatives.NATIVE_NotEqual_NameName: // 0x00FF
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " != " + b.text;
                     break;
@@ -2339,7 +2340,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2356,7 +2357,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2373,7 +2374,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2390,7 +2391,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2403,20 +2404,20 @@ namespace ME3Explorer.Unreal
                     t.text += ")";
                     break;
                 case (int)ENatives.NATIVE_LessLess_VectorRotator: // 0x0113
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " << " + b.text;
                     break;
                 case (int)ENatives.NATIVE_GreaterGreater_VectorRotator: // 0x0114
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);//EndParam
+                    c = ReadToken(pos, export);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " >> " + b.text;
                     break;
@@ -2425,7 +2426,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2442,7 +2443,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2459,7 +2460,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2476,7 +2477,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2493,7 +2494,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2506,52 +2507,52 @@ namespace ME3Explorer.Unreal
                     t.text += ")";
                     break;
                 case (int)ENatives.NATIVE_GetStateName: // 0x011C
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
                     t.text = "GetStatename()";
                     break;
                 case (int)ENatives.NATIVE_Multiply_RotatorFloat: // 0x011F
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " * " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Multiply_FloatRotator: // 0x0120
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " * " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Divide_RotatorFloat: // 0x0121
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " / " + b.text;
                     break;
                 case (int)ENatives.NATIVE_MultiplyEqual_RotatorFloat: // 0x0122
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " *= " + b.text;
                     break;
                 case (int)ENatives.NATIVE_DivideEqual_RotatorFloat: // 0x0123
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " /= " + b.text;
                     break;
@@ -2560,7 +2561,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2577,7 +2578,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2594,7 +2595,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2611,7 +2612,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2628,7 +2629,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2645,7 +2646,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2662,7 +2663,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2679,7 +2680,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2696,7 +2697,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2709,38 +2710,38 @@ namespace ME3Explorer.Unreal
                     t.text += ")";
                     break;
                 case (int)ENatives.NATIVE_Add_RotatorRotator: // 0x013C
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " + " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Subtract_RotatorRotator: // 0x013D
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " - " + b.text;
                     break;
                 case (int)ENatives.NATIVE_AddEqual_RotatorRotator: // 0x013E
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " += " + b.text;
                     break;
                 case (int)ENatives.NATIVE_SubtractEqual_RotatorRotator: // 0x013F
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " -= " + b.text;
                     break;
@@ -2749,7 +2750,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2762,11 +2763,11 @@ namespace ME3Explorer.Unreal
                     t.text += ")";
                     break;
                 case (int)ENatives.NATIVE_ConcatEqual_StrStr:// 0x0142
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " $= " + b.text;
                     break;
@@ -2775,7 +2776,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2792,7 +2793,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2809,7 +2810,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2826,7 +2827,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2843,7 +2844,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2860,7 +2861,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2877,7 +2878,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2894,7 +2895,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2914,7 +2915,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2931,7 +2932,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2948,7 +2949,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -2961,74 +2962,74 @@ namespace ME3Explorer.Unreal
                     t.text += ")";
                     break;
                 case (int)ENatives.NATIVE_Concat_StrStr: // 0x0258
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " $ " + b.text;
                     break;
                 case (int)ENatives.NATIVE_Less_StrStr: // 0x0259
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " < " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_Greater_StrStr: // 0x025A
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " > " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_LessEqual_StrStr: // 0x025B
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " <= " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_GreaterEqual_StrStr: // 0x025C
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " >= " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_EqualEqual_StrStr: // 0x025D
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " == " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_NotEqual_StrStr: // 0x025E
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " != " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_ComplementEqual_StrStr: //0x025F  
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " ~= " + b.text;
                     break;
@@ -3037,33 +3038,33 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
-                        if (count != 0)
+                        if (count != 0 && a.text != "null")
                             t.text += a.text;
-                        else
+                        else if (!(a.raw.Length == 1 && a.raw[0] == 0x4A))
                             t.text += a.text;
                         count++;
                     }
                     t.text += ")";
                     break;
                 case (int)ENatives.NATIVE_EqualEqual_ObjectObject: // 0x0280
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " == " + b.text + ")";
                     break;
                 case (int)ENatives.NATIVE_NotEqual_ObjectObject: // 0x0281
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " != " + b.text + ")";
                     break;
@@ -3072,7 +3073,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -3089,7 +3090,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -3106,7 +3107,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -3123,7 +3124,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -3138,22 +3139,22 @@ namespace ME3Explorer.Unreal
                 case (int)ENatives.NATIVE_EqualEqual_StringRefStringRef: // 0x03E8
                 case (int)ENatives.NATIVE_EqualEqual_StringRefInt: // 0x03E9
                 case (int)ENatives.NATIVE_EqualEqual_IntStringRef: // 0x03EA
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " == " + b.text;
                     break;
                 case (int)ENatives.NATIVE_NotEqual_StringRefStringRef: // 0x03EB
                 case (int)ENatives.NATIVE_NotEqual_StringRefInt: // 0x03EC
                 case (int)ENatives.NATIVE_NotEqual_IntStringRef: // 0x03ED
-                    a = ReadToken(pos);
+                    a = ReadToken(pos, export);
                     pos += a.raw.Length;
-                    b = ReadToken(pos);
+                    b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    c = ReadToken(pos);
+                    c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " != " + b.text;
                     break;
@@ -3162,7 +3163,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -3179,7 +3180,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -3196,7 +3197,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -3213,7 +3214,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -3230,7 +3231,7 @@ namespace ME3Explorer.Unreal
                     count = 0;
                     while (pos < memsize - 6)
                     {
-                        a = ReadToken(pos);
+                        a = ReadToken(pos, export);
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -3267,16 +3268,16 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        //private static Token ReadClassContext(int start)
+        //private static Token ReadClassContext(int start, IExportEntry export)
         //{
         //    Token t = new Token();
         //    Token a = ReadToken(start + 2);
         //    int pos = start + a.raw.Length + 2;
         //    BitConverter.IsLittleEndian = true;
         //    //int index = BitConverter.ToInt32(memory, pos);
-        //    //string s = pcc.getObjectName(index);
+        //    //string s = export.FileRef.getObjectName(index);
         //    //pos += 4;
-        //    Token b = ReadToken(pos);
+        //    Token b = ReadToken(pos, export);
         //    pos += b.raw.Length;
         //    int len = pos - start;
         //    t.text = a.text + "." + b.text;
@@ -3287,15 +3288,15 @@ namespace ME3Explorer.Unreal
         //    return t;
         //}
 
-        private static Token ReadUnkn15(int start)
+        private static Token ReadUnkn15(int start, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             pos += a.raw.Length + 2;
-            Token b = ReadToken(pos);
+            Token b = ReadToken(pos, export);
             pos += b.raw.Length;
-            Token c = ReadToken(pos);
+            Token c = ReadToken(pos, export);
             pos += c.raw.Length;
             t.text = b.text + "(" + a.text + ");";
             int len = pos - start;
@@ -3305,11 +3306,11 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn14(int start)
+        private static Token ReadUnkn14(int start, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 3;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             t.text = a.text;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3318,11 +3319,11 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn13(int start)
+        private static Token ReadUnkn13(int start, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 2;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             t.text = a.text;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3331,11 +3332,11 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadGoWVal(int start)
+        private static Token ReadGoWVal(int start, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 2;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             t.text = a.text;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3344,11 +3345,11 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token Read4FAdd(int start)
+        private static Token Read4FAdd(int start, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 5;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             t.text = a.text;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3357,7 +3358,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadAdd(int start)
+        private static Token ReadAdd(int start, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3365,7 +3366,7 @@ namespace ME3Explorer.Unreal
             int count = 0;
             while (pos < memsize - 6)
             {
-                Token t2 = ReadToken(pos);
+                Token t2 = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
 
                 pos += t2.raw.Length;
@@ -3386,11 +3387,11 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn12(int start)
+        private static Token ReadUnkn12(int start, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 3;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             pos += a.raw.Length;
             t.text = a.text;
             int len = pos - start;
@@ -3400,13 +3401,13 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCompareDel(int start, string arg)
+        private static Token ReadCompareDel(int start, string arg, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             pos += a.raw.Length + 2;
-            Token b = ReadToken(pos);
+            Token b = ReadToken(pos, export);
             pos += b.raw.Length;
             t.text = a.text + " " + arg + " " + b.text;
             int len = pos - start;
@@ -3416,13 +3417,13 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCompareDel2(int start, string arg)
+        private static Token ReadCompareDel2(int start, string arg, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             pos += a.raw.Length;
-            Token b = ReadToken(pos);
+            Token b = ReadToken(pos, export);
             pos += b.raw.Length;
             t.text = a.text + " " + arg + " " + b.text;
             int len = pos - start;
@@ -3432,23 +3433,23 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDelFunc(int start)
+        private static Token ReadDelFunc(int start, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             pos += a.raw.Length;
             int index = (Int32)BitConverter.ToInt64(memory, pos);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(pos, Token.INPACKAGEREFTYPE_NAME, index));
+            t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_NAME, index));
             pos += 8;
-            string s = pcc.getNameEntry(index);
+            string s = export.FileRef.getNameEntry(index);
             t.text = a.text + "." + s + "(";
             int count = 0;
             while (pos < memsize - 6)
             {
-                Token t2 = ReadToken(pos);
+                Token t2 = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
 
                 pos += t2.raw.Length;
@@ -3469,18 +3470,18 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadGlobalFunc(int start)
+        private static Token ReadGlobalFunc(int start, IExportEntry export)
         {
             Token t = new Token();
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = "Global." + pcc.getNameEntry(index) + "(";
+            t.text = "Global." + export.FileRef.getNameEntry(index) + "(";
             int pos = start + 9;
             int count = 0;
             while (pos < memsize - 6)
             {
-                Token t2 = ReadToken(pos);
+                Token t2 = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
 
                 pos += t2.raw.Length;
@@ -3501,13 +3502,13 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCompareStructs(int start, string s)
+        private static Token ReadCompareStructs(int start, string s, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 5;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             pos += a.raw.Length;
-            Token b = ReadToken(pos);
+            Token b = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
             t.inPackageReferences.AddRange(b.inPackageReferences);
 
@@ -3521,11 +3522,11 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadAssert(int start)
+        private static Token ReadAssert(int start, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 4;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             pos += a.raw.Length;
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
@@ -3538,11 +3539,11 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadInterfaceContext(int start)
+        private static Token ReadInterfaceContext(int start, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             pos += a.raw.Length;
@@ -3555,17 +3556,17 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadNew(int start)
+        private static Token ReadNew(int start, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             pos += a.raw.Length;
-            Token b = ReadToken(pos);
+            Token b = ReadToken(pos, export);
             pos += b.raw.Length;
-            Token c = ReadToken(pos);
+            Token c = ReadToken(pos, export);
             pos += c.raw.Length;
-            Token d = ReadToken(pos);
+            Token d = ReadToken(pos, export);
             pos += d.raw.Length;
             t.inPackageReferences.AddRange(a.inPackageReferences);
             t.inPackageReferences.AddRange(b.inPackageReferences);
@@ -3581,17 +3582,17 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadArrayArg2(int start, string arg, bool skip2byte)
+        private static Token ReadArrayArg2(int start, string arg, bool skip2byte, IExportEntry export)
         {
             Token t = new Token();
 
             int pos = start + 1;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             pos += a.raw.Length;
             if (skip2byte) pos += 2;
-            Token b = ReadToken(pos);
+            Token b = ReadToken(pos, export);
             pos += b.raw.Length;
-            Token c = ReadToken(pos);
+            Token c = ReadToken(pos, export);
             pos += c.raw.Length;
             t.inPackageReferences.AddRange(a.inPackageReferences);
             t.inPackageReferences.AddRange(b.inPackageReferences);
@@ -3606,16 +3607,16 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadArrayArg(int start, string arg)
+        private static Token ReadArrayArg(int start, string arg, IExportEntry export)
         {
             Token t = new Token();
 
             int pos = start + 1;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             pos += a.raw.Length + 2;
-            Token b = ReadToken(pos);
+            Token b = ReadToken(pos, export);
             pos += b.raw.Length;
-            Token c = ReadToken(pos);
+            Token c = ReadToken(pos, export);
             pos += c.raw.Length;
             t.inPackageReferences.AddRange(a.inPackageReferences);
             t.inPackageReferences.AddRange(b.inPackageReferences);
@@ -3630,20 +3631,20 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn1b(int start)
+        private static Token ReadUnkn1b(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = BitConverter.ToInt32(memory, start + 1);
             //string s = "";
-            //if (index > 0 && index <= pcc.ExportCount)
-            //    s = pcc.Exports[index - 1].ClassName;
-            //if (index * -1 > 0 && index * -1 <= pcc.ImportCount)
-            //    s = pcc.Imports[index * -1 - 1].ClassName;
+            //if (index > 0 && index <= export.FileRef.ExportCount)
+            //    s = export.FileRef.Exports[index - 1].ClassName;
+            //if (index * -1 > 0 && index * -1 <= export.FileRef.ImportCount)
+            //    s = export.FileRef.Imports[index * -1 - 1].ClassName;
             //s = s.Replace("Property", "");
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            t.text = pcc.getObjectName(index);
+            t.text = export.FileRef.getObjectName(index);
             int pos = start + 5;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3653,14 +3654,14 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCase(int start)
+        private static Token ReadCase(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int pos = start + 1;
             int size = BitConverter.ToInt16(memory, pos);
             pos += 2;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             pos += a.raw.Length;
@@ -3673,18 +3674,18 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadMetacast(int start)
+        private static Token ReadMetacast(int start, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
             int index = BitConverter.ToInt32(memory, pos);
             string s = "";
-            if (index > 0 && index <= pcc.Exports.Count)
-                s = pcc.Exports[index - 1].ObjectName;
-            if (index * -1 > 0 && index * -1 <= pcc.Imports.Count)
-                s = pcc.Imports[index * -1 - 1].ObjectName;
+            if (index > 0 && index <= export.FileRef.Exports.Count)
+                s = export.FileRef.Exports[index - 1].ObjectName;
+            if (index * -1 > 0 && index * -1 <= export.FileRef.Imports.Count)
+                s = export.FileRef.Imports[index * -1 - 1].ObjectName;
             pos += 4;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             pos += a.raw.Length;
@@ -3697,7 +3698,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadVectorConst(int start)
+        private static Token ReadVectorConst(int start, IExportEntry export)
         {
             Token t = new Token();
 
@@ -3714,7 +3715,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadRotatorConst(int start)
+        private static Token ReadRotatorConst(int start, IExportEntry export)
         {
             Token t = new Token();
 
@@ -3731,25 +3732,25 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadConditional(int start)
+        private static Token ReadConditional(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int pos = start + 1;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             pos += a.raw.Length;
             pos += 2;
-            Token b = ReadToken(pos);
+            Token b = ReadToken(pos, export);
             pos += b.raw.Length;
             pos += 2;
-            Token c = ReadToken(pos);
+            Token c = ReadToken(pos, export);
             pos += c.raw.Length;
 
             t.inPackageReferences.AddRange(a.inPackageReferences);
             t.inPackageReferences.AddRange(b.inPackageReferences);
             t.inPackageReferences.AddRange(c.inPackageReferences);
 
-            //Token d = ReadToken(pos);
+            //Token d = ReadToken(pos, export);
             //pos += d.raw.Length;
             t.text = "(" + a.text + ") ? " + b.text + " : " + c.text;
             int len = pos - start;
@@ -3760,10 +3761,10 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEatReturn(int start)
+        private static Token ReadEatReturn(int start, IExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 5);
+            Token a = ReadToken(start + 5, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             t.text = a.text;
@@ -3774,16 +3775,16 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn8(int start)
+        private static Token ReadUnkn8(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = BitConverter.ToInt32(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            t.text = "If(" + pcc.getObjectName(index) + "){"; //remove == null for normal
+            t.text = "If(" + export.FileRef.getObjectName(index) + "){"; //remove == null for normal
             int pos = start + 8;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             t.text += a.text + "}";
@@ -3796,7 +3797,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIntOne(int start)
+        private static Token ReadIntOne(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "1";
@@ -3805,16 +3806,16 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn7(int start)
+        private static Token ReadUnkn7(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt32(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            t.text = "If(" + pcc.getObjectName(index) + ")\n\t{\n";
+            t.text = "If(" + export.FileRef.getObjectName(index) + ")\n\t{\n";
             int pos = start + 8;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             pos += a.raw.Length;
@@ -3825,7 +3826,7 @@ namespace ME3Explorer.Unreal
                 int offset = BitConverter.ToInt16(memory, pos + 1);
                 t.text += "\nelse\\\\Jump 0x" + offset.ToString("X") + "\n{\n";
                 pos += 3;
-                Token t2 = ReadToken(pos);
+                Token t2 = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
 
                 pos += t2.raw.Length;
@@ -3839,12 +3840,12 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEmptyDel(int start)
+        private static Token ReadEmptyDel(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int pos = start + 1;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             pos += a.raw.Length;
@@ -3857,21 +3858,21 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadStruct(int start)
+        private static Token ReadStruct(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int field = BitConverter.ToInt32(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, field));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, field));
 
             int type = BitConverter.ToInt32(memory, start + 5);
             int skip = BitConverter.ToInt16(memory, start + 7);
             int pos = start + 11;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             pos += a.raw.Length;
-            t.text = a.text + "." + pcc.getObjectName(field);
+            t.text = a.text + "." + export.FileRef.getObjectName(field);
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -3880,10 +3881,10 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadPrimitiveCast(int start)
+        private static Token ReadPrimitiveCast(int start, IExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 2);
+            Token a = ReadToken(start + 2, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             t.text = a.text;
@@ -3896,7 +3897,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadSkip(int start)
+        private static Token ReadSkip(int start, IExportEntry export)
         {
             Token t = new Token();
             Token a;
@@ -3906,7 +3907,7 @@ namespace ME3Explorer.Unreal
             int pos = start + 3;
             while (pos < memsize - 6)
             {
-                a = ReadToken(pos);
+                a = ReadToken(pos, export);
                 pos += a.raw.Length;
                 if (a.raw != null && a.raw[0] == 0x16)
                     break;
@@ -3923,19 +3924,19 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn6(int start)
+        private static Token ReadUnkn6(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
-            t.text = pcc.getNameEntry(index);
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+            t.text = export.FileRef.getNameEntry(index);
             int pos = start + 11;
             t.text += "(";
             int count = 0;
             while (pos < memsize - 6)
             {
-                Token a = ReadToken(pos);
+                Token a = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(a.inPackageReferences);
 
                 pos += a.raw.Length;
@@ -3956,14 +3957,14 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadExtNative(int start)
+        private static Token ReadExtNative(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            t.text = pcc.getObjectName(index);
+            t.text = export.FileRef.getObjectName(index);
             int pos = start + 11;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3972,14 +3973,14 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDynArrayElement(int start)
+        private static Token ReadDynArrayElement(int start, IExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 1);
+            Token a = ReadToken(start + 1, export);
             int pos = start + 1;
             t.text = "[" + a.text + "]";
             pos += a.raw.Length;
-            Token b = ReadToken(pos);
+            Token b = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
             t.inPackageReferences.AddRange(b.inPackageReferences);
 
@@ -3992,10 +3993,10 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDelLet(int start)
+        private static Token ReadDelLet(int start, IExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 2);
+            Token a = ReadToken(start + 2, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             int pos = start + 2;
@@ -4008,7 +4009,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIterNext(int start)
+        private static Token ReadIterNext(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "\\\\Next";
@@ -4017,10 +4018,10 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIterPop(int start)
+        private static Token ReadIterPop(int start, IExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 1);
+            Token a = ReadToken(start + 1, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             int len = a.raw.Length + 1;
@@ -4032,26 +4033,27 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIterator(int start)
+        private static Token ReadIterator(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int pos = start + 1;
-            Token a = ReadToken(pos);
+            Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
-            pos += a.raw.Length + 2;
-            t.text = "foreach " + a.text;
+            pos += a.raw.Length;
+            ushort jumpoffset = BitConverter.ToUInt16(memory, pos);
+            pos += 2;
+            t.text = "foreach(" + a.text + ") Goto(0x" + jumpoffset.ToString("X4") + ")";
             int len = pos - start;
             t.raw = new byte[len];
-            t.text += " )";
             if (start + len <= memsize)
                 for (int i = 0; i < len; i++)
                     t.raw[i] = memory[start + i];
             return t;
         }
 
-        private static Token ReadStringConst(int start)
+        private static Token ReadStringConst(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "";
@@ -4067,17 +4069,17 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDynCast(int start)
+        private static Token ReadDynCast(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int idx = BitConverter.ToInt32(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, idx));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, idx));
 
-            Token a = ReadToken(start + 5);
+            Token a = ReadToken(start + 5, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
-            t.text = "(" + pcc.getObjectName(idx) + ")" + a.text;
+            t.text = "(" + export.FileRef.getObjectName(idx) + ")" + a.text;
             int len = a.raw.Length + 5;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -4086,14 +4088,14 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn4(int start)
+        private static Token ReadUnkn4(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = BitConverter.ToInt32(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            t.text = pcc.getObjectName(index);
+            t.text = export.FileRef.getObjectName(index);
             t.raw = new byte[5];
             if (start + 5 <= memsize)
                 for (int i = 0; i < 5; i++)
@@ -4101,23 +4103,29 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDynArrayItr(int start)
+        private static Token ReadDynArrayItr(int start, IExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
-            Token a = ReadToken(pos);
-            pos += a.raw.Length;
-            Token b = ReadToken(pos);
-            pos += b.raw.Length;
+            Token arrayToken = ReadToken(pos, export);
+            pos += arrayToken.raw.Length;
+
+            //??? This appears to be bioware specific - 0x5E is not in unhood
+            Token iteratorVariableToken = ReadToken(pos, export);
+            pos += iteratorVariableToken.raw.Length;
             pos += 1;
-            Token c = ReadToken(pos);
+
+            Token c = ReadToken(pos, export);
             pos += c.raw.Length;
+
+            //Skip jump offset
+            ushort jumpoffset = BitConverter.ToUInt16(memory, pos);
             pos += 2;
-            t.inPackageReferences.AddRange(a.inPackageReferences);
-            t.inPackageReferences.AddRange(b.inPackageReferences);
+            t.inPackageReferences.AddRange(arrayToken.inPackageReferences);
+            t.inPackageReferences.AddRange(iteratorVariableToken.inPackageReferences);
             t.inPackageReferences.AddRange(c.inPackageReferences);
 
-            t.text = "foreach " + c.text + "(" + b.text + " IN " + a.text + ")";
+            t.text = "foreach " + (c.text != "null" ? c.text : "") + "(" + iteratorVariableToken.text + " IN " + arrayToken.text + ") //Goto (0x" + jumpoffset.ToString("X4") + ")";
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -4126,10 +4134,10 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadBoolExp(int start)
+        private static Token ReadBoolExp(int start, IExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 1);
+            Token a = ReadToken(start + 1, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             t.text = a.text;
@@ -4141,14 +4149,14 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn3(int start)
+        private static Token ReadUnkn3(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = BitConverter.ToInt32(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            t.text = pcc.getObjectName(index);
+            t.text = export.FileRef.getObjectName(index);
             t.raw = new byte[5];
             if (start + 5 <= memsize)
                 for (int i = 0; i < 5; i++)
@@ -4156,14 +4164,14 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadLocOutVar(int start)
+        private static Token ReadLocOutVar(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = BitConverter.ToInt32(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            t.text = pcc.getObjectName(index);
+            t.text = export.FileRef.getObjectName(index);
             t.raw = new byte[5];
             if (start + 5 <= memsize)
                 for (int i = 0; i < 5; i++)
@@ -4171,10 +4179,10 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDynArrayLen(int start)
+        private static Token ReadDynArrayLen(int start, IExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 1);
+            Token a = ReadToken(start + 1, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             int pos = start + a.raw.Length + 1;
@@ -4186,7 +4194,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadByteConst(int start)
+        private static Token ReadByteConst(int start, IExportEntry export)
         {
             Token t = new Token();
 
@@ -4198,7 +4206,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIntConst(int start)
+        private static Token ReadIntConst(int start, IExportEntry export)
         {
             Token t = new Token();
 
@@ -4210,7 +4218,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEmptyParm(int start)
+        private static Token ReadEmptyParm(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "null"; //normally ""
@@ -4219,65 +4227,73 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDelegateProp(int start)
+        private static Token ReadDelegateProp(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = pcc.getNameEntry(index);
+            t.text = export.FileRef.getNameEntry(index);
             t.raw = new byte[13];
             for (int i = 0; i < 13; i++)
                 t.raw[i] = memory[start + i];
             return t;
         }
 
-        private static Token ReadInstDelegate(int start)
+        private static Token ReadInstDelegate(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = pcc.getNameEntry(index);
+            t.text = export.FileRef.getNameEntry(index);
             t.raw = new byte[9];
             for (int i = 0; i < 9; i++)
                 t.raw[i] = memory[start + i];
             return t;
         }
 
-        private static Token ReadObjectConst(int start)
+        private static Token ReadObjectConst(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt32(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            t.text = " '" + pcc.getObjectName(index) + "'";
-            if (index > 0 && index <= pcc.Exports.Count)
-                t.text = pcc.Exports[index - 1].ClassName + t.text;
-            if (index * -1 > 0 && index * -1 <= pcc.Imports.Count)
-                t.text = pcc.Imports[index * -1 - 1].ClassName + t.text;
+            t.text = " '" + export.FileRef.getObjectName(index) + "'";
+            if (index > 0 && index <= export.FileRef.Exports.Count)
+                t.text = export.FileRef.Exports[index - 1].ClassName + t.text;
+            if (index * -1 > 0 && index * -1 <= export.FileRef.Imports.Count)
+                t.text = export.FileRef.Imports[index * -1 - 1].ClassName + t.text;
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
                 t.raw[i] = memory[start + i];
             return t;
         }
 
-        private static Token ReadFinalFunc(int start)
+        private static Token ReadFinalFunc(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt32(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            IEntry referenced = export.FileRef.getEntry(index);
+            if (referenced.ObjectName == export.ObjectName && referenced != export)
+            {
+                t.text = referenced.GetFullPath + "(";
+            }
+            else
+            {
+                t.text = referenced.ObjectName + "(";
+            }
 
-            t.text = pcc.getObjectName(index) + "(";
             int pos = start + 5;
             int count = 0;
             while (pos < memsize - 6)
             {
-                Token t2 = ReadToken(pos);
+                Token t2 = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
                 pos += t2.raw.Length;
                 if (t2.raw != null && t2.raw[0] == 0x16)
@@ -4296,35 +4312,35 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn1(int start)
+        private static Token ReadUnkn1(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt32(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            t.text = pcc.getObjectName(index);
+            t.text = export.FileRef.getObjectName(index);
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
                 t.raw[i] = memory[start + i];
             return t;
         }
 
-        private static Token ReadNameConst(int start)
+        private static Token ReadNameConst(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = "'" + pcc.getNameEntry(index) + "'";
+            t.text = "'" + export.FileRef.getNameEntry(index) + "'";
             t.raw = new byte[9];
             for (int i = 0; i < 9; i++)
                 t.raw[i] = memory[start + i];
             return t;
         }
 
-        private static Token ReadNone(int start)
+        private static Token ReadNone(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "None";
@@ -4333,7 +4349,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadZero(int start)
+        private static Token ReadZero(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "0";
@@ -4342,18 +4358,18 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadVirtualFunc(int start)
+        private static Token ReadVirtualFunc(int start, IExportEntry export)
         {
             Token t = new Token();
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = pcc.getNameEntry(index) + "(";
+            t.text = export.FileRef.getNameEntry(index) + "(";
             int pos = start + 9;
             int count = 0;
             while (pos < memsize - 6)
             {
-                Token t2 = ReadToken(pos);
+                Token t2 = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
 
                 pos += t2.raw.Length;
@@ -4374,7 +4390,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadSelf(int start)
+        private static Token ReadSelf(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "this";
@@ -4383,21 +4399,21 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadByteToInt(int start)
+        private static Token ReadByteToInt(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            t.text = "ByteToInt(" + pcc.getObjectName(index) + ")";
+            t.text = "ByteToInt(" + export.FileRef.getObjectName(index) + ")";
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
                 t.raw[i] = memory[start + i];
             return t;
         }
 
-        private static Token ReadStatFloat(int start)
+        private static Token ReadStatFloat(int start, IExportEntry export)
         {
             Token t = new Token();
             float f = BitConverter.ToSingle(memory, start + 1);
@@ -4408,7 +4424,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEndParmVal(int start)
+        private static Token ReadEndParmVal(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "//EndParmVal";
@@ -4417,7 +4433,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEndFuncParm(int start)
+        private static Token ReadEndFuncParm(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "";
@@ -4426,7 +4442,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadTrue(int start)
+        private static Token ReadTrue(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "True";
@@ -4435,7 +4451,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadFalse(int start)
+        private static Token ReadFalse(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "False";
@@ -4444,10 +4460,10 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadContext(int start)
+        private static Token ReadContext(int start, IExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 1);
+            Token a = ReadToken(start + 1, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             int pos = start + a.raw.Length + 1;
@@ -4455,7 +4471,7 @@ namespace ME3Explorer.Unreal
             pos += 2;
             int bSize = memory[pos];
             pos += 5;
-            Token b = ReadToken(pos);
+            Token b = ReadToken(pos, export);
             t.inPackageReferences.AddRange(b.inPackageReferences);
 
             pos += b.raw.Length;
@@ -4468,16 +4484,17 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDefaultParmVal(int start)
+        private static Token ReadDefaultParmVal(int start, IExportEntry export)
         {
             Token t = new Token();
             int size = BitConverter.ToInt16(memory, start + 1);
-            Token a = ReadToken(start + 3);
-            t.inPackageReferences.AddRange(a.inPackageReferences);
+            Token expression = ReadToken(start + 3, export);
+            t.inPackageReferences.AddRange(expression.inPackageReferences);
 
-            int pos = start + a.raw.Length + 3;
+            int pos = start + expression.raw.Length + 3;
             int len = pos - start;
-            t.text = "DefaultParameterValue(" + a.text + ")";
+            //var expression = ReadToken(pos, export);
+            t.text = "DefaultParameterValue(" + expression.text + ")";
             t.raw = new byte[len];
             if (start + len <= memsize)
                 for (int i = 0; i < len; i++)
@@ -4485,12 +4502,12 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEqual(int start)
+        private static Token ReadEqual(int start, IExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 1);
+            Token a = ReadToken(start + 1, export);
             int pos = start + a.raw.Length + 1;
-            Token b = ReadToken(pos);
+            Token b = ReadToken(pos, export);
             pos += b.raw.Length;
             t.inPackageReferences.AddRange(a.inPackageReferences);
             t.inPackageReferences.AddRange(b.inPackageReferences);
@@ -4503,10 +4520,10 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadSwitch(int start)
+        private static Token ReadSwitch(int start, IExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 6);
+            Token a = ReadToken(start + 6, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             t.text = "switch (" + a.text + ")";
@@ -4517,11 +4534,11 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadJumpIfNot(int start)
+        private static Token ReadJumpIfNot(int start, IExportEntry export)
         {
             Token t = new Token();
             int offset = BitConverter.ToInt16(memory, start + 1);
-            Token a = ReadToken(start + 3);
+            Token a = ReadToken(start + 3, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             t.text = "If (!(" + a.text + ")) Goto(0x" + offset.ToString("X") + ");";
@@ -4534,15 +4551,15 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadLet(int start)
+        private static Token ReadLet(int start, IExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 1);
+            Token a = ReadToken(start + 1, export);
             int pos = start + 1;
             t.text = a.text;
             pos += a.raw.Length;
             t.text += " = ";
-            Token b = ReadToken(pos);
+            Token b = ReadToken(pos, export);
             t.text += b.text;
             pos += b.raw.Length;
             t.text += ";";
@@ -4557,11 +4574,11 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadReturn(int start)
+        private static Token ReadReturn(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "Return (";
-            Token a = ReadToken(start + 1);
+            Token a = ReadToken(start + 1, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             t.text += a.text + ");";
@@ -4572,25 +4589,25 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadNativeParm(int start)
+        private static Token ReadNativeParm(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "";
 
             int index = BitConverter.ToInt32(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            if (index > 0 && index <= pcc.Exports.Count)
+            if (index > 0 && index <= export.FileRef.Exports.Count)
             {
-                string name = pcc.getObjectName(index);
-                string clas = pcc.Exports[index - 1].ClassName;
+                string name = export.FileRef.getObjectName(index);
+                string clas = export.FileRef.Exports[index - 1].ClassName;
                 clas = clas.Replace("Property", "");
                 t.text += clas + " " + name + ";";
             }
-            if (index * -1 > 0 && index * -1 <= pcc.Exports.Count)
+            if (index * -1 > 0 && index * -1 <= export.FileRef.Exports.Count)
             {
-                string name = pcc.getObjectName(index);
-                string clas = pcc.Imports[index * -1 - 1].ClassName;
+                string name = export.FileRef.getObjectName(index);
+                string clas = export.FileRef.Imports[index * -1 - 1].ClassName;
                 clas = clas.Replace("Property", "");
                 t.text += clas + " " + name + ";";
             }
@@ -4600,14 +4617,14 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadLocalVar(int start)
+        private static Token ReadLocalVar(int start, IExportEntry export)
         {
             Token t = new Token();
 
             int index = BitConverter.ToInt32(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            t.text = pcc.getObjectName(index);
+            t.text = export.FileRef.getObjectName(index);
             t.raw = new byte[5];
             if (start + 5 < memsize)
             {
@@ -4617,13 +4634,13 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadInstanceVar(int start)
+        private static Token ReadInstanceVar(int start, IExportEntry export)
         {
             Token t = new Token();
             int index = BitConverter.ToInt32(memory, start + 1);
-            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            t.text = pcc.getObjectName(index);
+            t.text = export.FileRef.getObjectName(index);
             t.raw = new byte[5];
             if (start + 5 <= memsize)
                 for (int i = 0; i < 5; i++)
@@ -4631,7 +4648,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadJump(int start)
+        private static Token ReadJump(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "Goto(0x";
@@ -4644,7 +4661,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadLableTable(int start)
+        private static Token ReadLableTable(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "";
@@ -4654,10 +4671,10 @@ namespace ME3Explorer.Unreal
             int index = BitConverter.ToInt32(memory, start + 1);
             index = (int)((index & 0x000000FFU) << 24 | (index & 0x0000FF00U) << 8 | (index & 0x00FF0000U) >> 8 | (index & 0xFF000000U) >> 24);
 
-            if (index >= 0 && index < pcc.Names.Count)
+            if (index >= 0 && index < export.FileRef.Names.Count)
             {
-                t.text = pcc.getNameEntry(index);
-                t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+                t.text = export.FileRef.getNameEntry(index);
+                t.inPackageReferences.Add((position: start + 1, type: Token.INPACKAGEREFTYPE_NAME, value: index));
             }
             else
                 t.text = "Label (" + index.ToString("X2") + ");";
@@ -4667,7 +4684,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnknown(int start)
+        private static Token ReadUnknown(int start, IExportEntry export)
         {
             Token t = new Token();
             t.raw = new byte[1];
@@ -4676,7 +4693,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadNothing(int start)
+        private static Token ReadNothing(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "";
@@ -4685,7 +4702,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEndOfScript(int start)
+        private static Token ReadEndOfScript(int start, IExportEntry export)
         {
             Token t = new Token();
             t.text = "\\\\End of Script";
@@ -4694,77 +4711,122 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        public static void RelinkFunctionForPorting(IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, SortedDictionary<int, int> crossPCCObjectMap)
+        public static void RelinkFunctionForPorting(IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, Dictionary<IEntry, IEntry> crossFileRefObjectMap)
         {
             //Copy function bytes
             byte[] originalData = sourceExport.Data;
             byte[] script = new byte[sourceExport.Data.Length - 0x20];
             byte[] newscript = new byte[sourceExport.Data.Length - 0x20];
-            for (int i = 0x20; i < script.Length; i++)
+            for (int i = 0; i < script.Length; i++)
             {
-                script[i - 0x20] = originalData[i];
-                newscript[i - 0x20] = originalData[i];
+                script[i] = originalData[i + 0x20];
+                newscript[i] = originalData[i + 0x20];
             }
 
             //Perform relink
-            var parsedSource = ParseBytecode(script, sourceExport.FileRef);
-            var parsedDest = ParseBytecode(script, destinationExport.FileRef);
+            var parsedSource = ParseBytecode(script, sourceExport);
+            var parsedDest = ParseBytecode(script, destinationExport);
 
-            var topLevelTokens = parsedSource.Item1;
+            (List<Token> topLevelTokens, _) = parsedSource;
             foreach (Token t in topLevelTokens)
             {
-                RelinkToken(t, newscript, sourceExport, destinationExport, relinkFailedReport, crossPCCObjectMap);
+                RelinkToken(t, newscript, sourceExport, destinationExport, relinkFailedReport, crossFileRefObjectMap);
             }
 
             //Copy relinked data to new destination
             byte[] newExpData = destinationExport.Data;
-            for (int i = 0x20; i < newscript.Length; i++)
+
+            int functionSuperclass = BitConverter.ToInt32(originalData, 0x0C);
+            if (functionSuperclass != 0)
             {
-                newExpData[i] = newscript[i - 0x20];
+                if (crossFileRefObjectMap.TryGetValue(sourceExport.FileRef.getEntry(functionSuperclass), out IEntry relinkedValue))
+                {
+                    Debug.WriteLine($"Function superclass relink hit @ 0x0C, new value {relinkedValue.GetFullPath}");
+                    newscript.OverwriteRange(0x0C, BitConverter.GetBytes(relinkedValue.UIndex));
+                }
+                else if (functionSuperclass < 0)
+                {
+                    var sourceEntry = sourceExport.FileRef.getEntry(functionSuperclass);
+                    if (SharedPathfinding.GetEntryOrAddImport(destinationExport.FileRef, sourceEntry.GetFullPath) is IEntry ent)
+                    {
+                        //Todo: Add to relink map
+                        Debug.WriteLine($"Function superclass relink crossported @ 0x0C, new value {ent.GetFullPath}");
+                        newExpData.OverwriteRange(0x0C, BitConverter.GetBytes(ent.UIndex));
+                        //crossFileRefObjectMap.Add(sourceEntry, ent); //Can't add or we will modify the enumeration of this colelction. GetEntryOrAddImport should still catch this
+                    }
+                    else
+                    {
+                        relinkFailedReport.Add($"0x0C Function superclass relink failed: Unable to get or add cross import for: {sourceExport.FileRef.getObjectName(functionSuperclass)}");
+                    }
+                }
+                else
+                {
+                    relinkFailedReport.Add($"0x0C Function superclass relink failed: Cannot relink reference to export that was not mapped from another package: {sourceExport.FileRef.getObjectName(functionSuperclass)}");
+                }
+            }
+
+            {
+                //Scoped
+                int childProbeUIndex = BitConverter.ToInt32(originalData, 0x14);
+                if (crossFileRefObjectMap.TryGetValue(sourceExport.FileRef.getEntry(childProbeUIndex), out IEntry relinkedValue))
+                {
+                    Debug.WriteLine($"Function child probe start relink hit @ 0x14, new value {relinkedValue.GetFullPath}");
+                    newExpData.OverwriteRange(0x14, BitConverter.GetBytes(relinkedValue.UIndex));
+                }
+                else
+                {
+                    relinkFailedReport.Add($"0x0C Function child probe start relink failed: Referenced object was not cross ported: {sourceExport.FileRef.getObjectName(childProbeUIndex)}");
+                }
+            }
+
+            for (int i = 0; i < newscript.Length; i++)
+            {
+                newExpData[i + 0x20] = newscript[i];
             }
             destinationExport.Data = newExpData;
         }
 
-        private static void RelinkToken(Token t, byte[] newscript, IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, SortedDictionary<int, int> crossPCCObjectMap)
+        private static void RelinkToken(Token t, byte[] newscript, IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, Dictionary<IEntry, IEntry> crossFileRefObjectMap)
         {
-            Debug.WriteLine($"Attemptng function relink on token at position {t.pos}. Number of listed relinkable items {t.inPackageReferences.Count}");
+            Debug.WriteLine($"Attempting function relink on token at position {t.pos}. Number of listed relinkable items {t.inPackageReferences.Count}");
 
-            foreach (Tuple<int, int, int> relinkableItem in t.inPackageReferences)
+            foreach ((int pos, int type, int value) relinkItem in t.inPackageReferences)
             {
-                switch (relinkableItem.Item2)
+                switch (relinkItem.type)
                 {
                     case Token.INPACKAGEREFTYPE_NAME:
-                        int newValue = destinationExport.FileRef.FindNameOrAdd(sourceExport.FileRef.getNameEntry(relinkableItem.Item3));
-                        Debug.WriteLine($"Function relink hit @ 0x{(t.pos + relinkableItem.Item1).ToString("X6")}, cross ported a name: {sourceExport.FileRef.getNameEntry(relinkableItem.Item3)}");
+                        int newValue = destinationExport.FileRef.FindNameOrAdd(sourceExport.FileRef.getNameEntry(relinkItem.value));
+                        Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported a name: {sourceExport.FileRef.getNameEntry(relinkItem.value)}");
 
-                        Pathfinding_Editor.SharedPathfinding.WriteMem(newscript, relinkableItem.Item1, BitConverter.GetBytes(newValue));
+                        newscript.OverwriteRange(relinkItem.pos, BitConverter.GetBytes(newValue));
                         break;
                     case Token.INPACKAGEREFTYPE_ENTRY:
-                        if (relinkableItem.Item3 > 0)
+                        if (relinkItem.value > 0)
                         {
                             //Export
-                            if (crossPCCObjectMap.TryGetValue(relinkableItem.Item3 - 1, out int relinkedValue))
+
+                            if (crossFileRefObjectMap.TryGetValue(sourceExport.FileRef.getEntry(relinkItem.value), out IEntry relinkedValue))
                             {
-                                Debug.WriteLine($"Function relink hit @ 0x{(t.pos + relinkableItem.Item1).ToString("X6")}, cross ported a sub export: {sourceExport.FileRef.getEntry(relinkableItem.Item3).GetFullPath}");
-                                Pathfinding_Editor.SharedPathfinding.WriteMem(newscript, relinkableItem.Item1, BitConverter.GetBytes(relinkedValue+1)); //crossPCCMapping is 0 indexed
+                                Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported a sub export: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");
+                                newscript.OverwriteRange(relinkItem.pos, BitConverter.GetBytes(relinkedValue.UIndex));
                             }
                             else
                             {
-                                relinkFailedReport.Add($"0x{(t.pos + relinkableItem.Item1).ToString("X6")} Function relink failed: Cannot relink reference to export from another package: {sourceExport.FileRef.getObjectName(relinkableItem.Item3)}");
+                                relinkFailedReport.Add($"0x{t.pos + relinkItem.pos:X6} Function relink failed: Cannot relink reference to export from another package: {sourceExport.FileRef.getObjectName(relinkItem.value)}");
                             }
                             continue;
                         }
-                        if (relinkableItem.Item3 < 0)
+                        if (relinkItem.value < 0)
                         {
                             //Import
-                            ImportEntry newCrossImport = PackageEditorWPF.getOrAddCrossImport(sourceExport.FileRef.getEntry(relinkableItem.Item3).GetFullPath, sourceExport.FileRef, destinationExport.FileRef);
+                            ImportEntry newCrossImport = PackageEditorWPF.getOrAddCrossImport(sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath, sourceExport.FileRef, destinationExport.FileRef);
                             if (newCrossImport == null)
                             {
-                                relinkFailedReport.Add($"0x{relinkableItem.Item1.ToString("X6")} Function relink failed: Could not add cross referenced import: {sourceExport.FileRef.getEntry(relinkableItem.Item3).GetFullPath}");
+                                relinkFailedReport.Add($"0x{relinkItem.pos:X6} Function relink failed: Could not add cross referenced import: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");
                                 continue;
                             }
-                            Debug.WriteLine($"Function relink hit @ 0x{(t.pos + relinkableItem.Item1).ToString("X6")}, cross ported an import: {sourceExport.FileRef.getEntry(relinkableItem.Item3).GetFullPath}");
-                            Pathfinding_Editor.SharedPathfinding.WriteMem(newscript, relinkableItem.Item1, BitConverter.GetBytes(newCrossImport.UIndex));
+                            Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported an import: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");
+                            newscript.OverwriteRange(relinkItem.pos, BitConverter.GetBytes(newCrossImport.UIndex));
                         }
                         break;
                 }
@@ -4774,19 +4836,19 @@ namespace ME3Explorer.Unreal
 
     public class BytecodeSingularToken : IComparable<BytecodeSingularToken>
     {
-        public int tokenIndex;
-        public string opCode;
-        public string currentStack;
-        internal int startPos;
+        public int TokenIndex { get; set; }
+        public string OpCode { get; set; }
+        public string CurrentStack { get; set; }
+        public int StartPos { get; set; }
 
         public override string ToString()
         {
-            return $"0x{startPos.ToString("X4")}: {opCode} {currentStack}";
+            return $"0x{StartPos.ToString("X4")}: {OpCode} {CurrentStack}";
         }
 
         public int CompareTo(BytecodeSingularToken that)
         {
-            return this.tokenIndex.CompareTo(that.tokenIndex);
+            return this.TokenIndex.CompareTo(that.TokenIndex);
         }
     }
 
@@ -4795,7 +4857,7 @@ namespace ME3Explorer.Unreal
         public const int INPACKAGEREFTYPE_NAME = 0;
         public const int INPACKAGEREFTYPE_ENTRY = 1;
 
-        public List<Tuple<int, int, int>> inPackageReferences = new List<Tuple<int, int, int>>(); //POSITION, TYPE, VALUE
+        public List<(int position, int type, int value)> inPackageReferences = new List<(int position, int type, int value)>();
         public byte[] raw;
         public string text { get; set; }
         public bool stop;

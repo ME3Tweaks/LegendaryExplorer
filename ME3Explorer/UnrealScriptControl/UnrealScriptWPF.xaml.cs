@@ -20,6 +20,7 @@ using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using static ME3Explorer.ME1.Unreal.UnhoodBytecode.BytecodeReader;
 using static ME3Explorer.Unreal.Bytecode;
 
 namespace ME3Explorer
@@ -30,12 +31,15 @@ namespace ME3Explorer
     public partial class UnrealScriptWPF : ExportLoaderControl
     {
         private HexBox ScriptEditor_Hexbox;
+        private bool ControlLoaded;
+
         public ObservableCollectionExtended<BytecodeSingularToken> TokenList { get; private set; } = new ObservableCollectionExtended<BytecodeSingularToken>();
         public ObservableCollectionExtended<object> DecompiledScriptBlocks { get; private set; } = new ObservableCollectionExtended<object>();
         public ObservableCollectionExtended<ScriptHeaderItem> ScriptHeaderBlocks { get; private set; } = new ObservableCollectionExtended<ScriptHeaderItem>();
         public ObservableCollectionExtended<ScriptHeaderItem> ScriptFooterBlocks { get; private set; } = new ObservableCollectionExtended<ScriptHeaderItem>();
 
         private bool TokenChanging = false;
+        private int BytecodeStart;
 
         private bool _bytesHaveChanged { get; set; }
         public bool BytesHaveChanged
@@ -50,6 +54,9 @@ namespace ME3Explorer
                 }
             }
         }
+
+        public bool HexBoxSelectionChanging { get; private set; }
+
         public UnrealScriptWPF()
         {
             InitializeComponent();
@@ -62,6 +69,7 @@ namespace ME3Explorer
 
         public override void LoadExport(IExportEntry exportEntry)
         {
+            BytecodeStart = 0;
             CurrentLoadedExport = exportEntry;
             ScriptEditor_Hexbox.ByteProvider = new DynamicByteProvider(CurrentLoadedExport.Data);
             ScriptEditor_Hexbox.ByteProvider.Changed += ByteProviderBytesChanged;
@@ -79,20 +87,38 @@ namespace ME3Explorer
             StartFunctionScan(CurrentLoadedExport.Data);
         }
 
+        public override void PopOut()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new UnrealScriptWPF(), CurrentLoadedExport);
+                elhw.Title = $"UnrealScript Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Show();
+            }
+        }
+
         private void StartFunctionScan(byte[] data)
         {
+            DecompiledScriptBlocks.ClearEx();
+            TokenList.ClearEx();
+            ScriptHeaderBlocks.ClearEx();
+            ScriptFooterBlocks.ClearEx();
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
-                var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef, CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32);
-                DecompiledScriptBlocks.Clear();
-                TokenList.Clear();
+                var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport, CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32);
+
 
                 func.ParseFunction();
+                DecompiledScriptBlocks.Add(func.GetSignature());
                 DecompiledScriptBlocks.AddRange(func.ScriptBlocks);
                 TokenList.AddRange(func.SingularTokenList);
 
-                ScriptHeaderBlocks.Clear();
-                int pos = 16;
+                int pos = 12;
+
+                var functionSuperclass = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Function superclass", functionSuperclass, pos, functionSuperclass != 0 ? CurrentLoadedExport.FileRef.getEntry(functionSuperclass) : null));
+
+                pos += 4;
                 var nextItemCompilingChain = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Next item in loading chain", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
 
@@ -106,7 +132,6 @@ namespace ME3Explorer
                 pos += 4;
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
 
-                ScriptFooterBlocks.Clear();
                 pos = CurrentLoadedExport.Data.Length - 6;
                 string flagStr = func.GetFlags();
                 ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", BitConverter.ToInt16(CurrentLoadedExport.Data, pos), pos));
@@ -115,10 +140,83 @@ namespace ME3Explorer
             }
             else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
             {
-                DecompiledScriptBlocks.Clear();
-                var funcoutput = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
-                var result = funcoutput.Split(new[] { '\r', '\n' }).Where(x=>x != "").ToList();
-                DecompiledScriptBlocks.AddRange(result);
+                //Header
+                int pos = 16;
+
+                var nextItemCompilingChain = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Next item in loading chain", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
+
+                pos += 8;
+                nextItemCompilingChain = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Children Probe Start", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
+
+                pos += 4;
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 1 (??)", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+
+                pos += 4;
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 2 (Line??)", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+
+                pos += 4;
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 3 (TextPos??)", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+
+                pos += 4;
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+                pos += 4;
+                BytecodeStart = pos;
+                var func = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
+                func.Decompile(new TextBuilder(), false); //parse bytecode
+
+                bool defined = func.HasFlag("Defined");
+                if (defined)
+                {
+                    DecompiledScriptBlocks.Add(func.FunctionSignature + " {");
+                }
+                else
+                {
+                    DecompiledScriptBlocks.Add(func.FunctionSignature);
+                }
+                for (int i = 0; i < func.Statements.statements.Count; i++)
+                {
+                    Statement s = func.Statements.statements[i];
+                    DecompiledScriptBlocks.Add(s);
+                    if (s.Reader != null && i == 0)
+                    {
+                        //Add tokens read from statement. All of them point to the same reader, so just do only the first one.
+                        TokenList.AddRange(s.Reader.ReadTokens.Select(x => x.ToBytecodeSingularToken(pos)).OrderBy(x => x.StartPos));
+                    }
+                }
+
+                if (defined)
+                {
+                    DecompiledScriptBlocks.Add("}");
+                }
+
+                //Footer
+                pos = CurrentLoadedExport.Data.Length - (func.HasFlag("Net") ? 17 : 15);
+                string flagStr = func.GetFlags();
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", BitConverter.ToInt16(CurrentLoadedExport.Data, pos), pos));
+                pos += 2;
+
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Operator Precedence", CurrentLoadedExport.Data[pos], pos));
+                pos++;
+
+                int functionFlags = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{functionFlags.ToString("X8")} {flagStr}", pos));
+                pos += 4;
+
+                //if ((functionFlags & func._flagSet.GetMask("Net")) != 0)
+                //{
+                //ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 1 (RepOffset?)", BitConverter.ToInt16(CurrentLoadedExport.Data, pos), pos));
+                //pos += 2;
+                //}
+
+                int friendlyNameIndex = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Friendly Name Table Index", $"0x{friendlyNameIndex.ToString("X8")} {CurrentLoadedExport.FileRef.getNameEntry(friendlyNameIndex)}", pos));
+                pos += 4;
+
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2", $"0x{BitConverter.ToInt16(CurrentLoadedExport.Data, pos).ToString("X4")}", pos));
+                pos += 4;
+
                 //ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef as ME1Package);
                 //try
                 //{
@@ -135,6 +233,20 @@ namespace ME3Explorer
             }
         }
 
+        private static string IndentString(string stringToIndent)
+        {
+            string[] lines = stringToIndent.Split(
+                new[] { Environment.NewLine },
+                StringSplitOptions.None
+            );
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string line = lines[i];
+                lines[i] = "    " + line; //textbuilder use 4 spaces
+            }
+            return string.Join("\n", lines);
+        }
+
         public override void UnloadExport()
         {
             CurrentLoadedExport = null;
@@ -144,6 +256,7 @@ namespace ME3Explorer
         {
             if (!TokenChanging)
             {
+                HexBoxSelectionChanging = true;
                 int start = (int)ScriptEditor_Hexbox.SelectionStart;
                 int len = (int)ScriptEditor_Hexbox.SelectionLength;
                 int size = (int)ScriptEditor_Hexbox.ByteProvider.Length;
@@ -158,17 +271,28 @@ namespace ME3Explorer
                         {
                             int val = BitConverter.ToInt32(currentData, start);
                             s += $", Int: {val}";
+                            s += $", Float: {BitConverter.ToSingle(currentData, start)}";
                             if (CurrentLoadedExport.FileRef.isName(val))
                             {
                                 s += $", Name: {CurrentLoadedExport.FileRef.getNameEntry(val)}";
                             }
-                            if (CurrentLoadedExport.FileRef.getEntry(val) is IExportEntry exp)
+                            if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
                             {
-                                s += $", Export: {exp.ObjectName}";
+                                ME1OpCodes m = (ME1OpCodes)currentData[start];
+                                s += $", OpCode: {m}";
                             }
-                            else if (CurrentLoadedExport.FileRef.getEntry(val) is ImportEntry imp)
+
+                            if (CurrentLoadedExport.FileRef.getEntry(val) is IEntry ent)
                             {
-                                s += $", Import: {imp.ObjectName}";
+                                string type = ent is IExportEntry ? "Export" : "Import";
+                                if (ent.ObjectName == CurrentLoadedExport.ObjectName)
+                                {
+                                    s += $", {type}: {ent.GetFullPath}";
+                                }
+                                else
+                                {
+                                    s += $", {type}: {ent.ObjectName}";
+                                }
                             }
                         }
                         s += $" | Start=0x{start.ToString("X8")} ";
@@ -205,12 +329,14 @@ namespace ME3Explorer
                     if (token != null)
                     {
                         Function_ListBox.SelectedItem = token;
+                        Function_ListBox.ScrollIntoView(token);
                     }
 
-                    BytecodeSingularToken bst = TokenList.FirstOrDefault(x => x.startPos == start);
+                    BytecodeSingularToken bst = TokenList.FirstOrDefault(x => x.StartPos == start);
                     if (bst != null)
                     {
                         Tokens_ListBox.SelectedItem = bst;
+                        Tokens_ListBox.ScrollIntoView(bst);
                     }
                     selectedBox = Function_ListBox;
                 }
@@ -243,12 +369,14 @@ namespace ME3Explorer
                     allBoxesToUpdate.Remove(selectedBox);
                 }
                 allBoxesToUpdate.ForEach(x => x.SelectedIndex = -1);
+                HexBoxSelectionChanging = false;
             }
         }
 
         private void UnrealScriptWPF_Loaded(object sender, RoutedEventArgs e)
         {
             ScriptEditor_Hexbox = (HexBox)ScriptEditor_Hexbox_Host.Child;
+            ControlLoaded = true;
         }
 
         private void ByteProviderBytesChanged(object sender, EventArgs e)
@@ -271,15 +399,14 @@ namespace ME3Explorer
         private void Tokens_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             BytecodeSingularToken selectedToken = Tokens_ListBox.SelectedItem as BytecodeSingularToken;
-            if (selectedToken != null)
+            if (selectedToken != null && !HexBoxSelectionChanging)
             {
                 TokenChanging = true;
-                ScriptEditor_Hexbox.SelectionStart = selectedToken.startPos;
+                ScriptEditor_Hexbox.SelectionStart = selectedToken.StartPos;
                 ScriptEditor_Hexbox.SelectionLength = 1;
                 TokenChanging = false;
             }
         }
-
 
         public class ScriptHeaderItem
         {
@@ -287,7 +414,7 @@ namespace ME3Explorer
             public string value { get; set; }
             public int offset { get; set; }
             public int length { get; set; }
-            public ScriptHeaderItem(string id, int value, int offset, IExportEntry callingEntry = null)
+            public ScriptHeaderItem(string id, int value, int offset, IEntry callingEntry = null)
             {
                 this.id = id;
                 this.value = $"{value}";
@@ -309,6 +436,15 @@ namespace ME3Explorer
                 this.offset = offset;
                 length = 4;
             }
+
+            public ScriptHeaderItem(string id, byte value, int offset)
+            {
+                this.id = id;
+                this.value = value.ToString();
+                this.offset = offset;
+                length = 1;
+            }
+
             public ScriptHeaderItem(string id, short value, int offset)
             {
                 this.id = id;
@@ -321,10 +457,17 @@ namespace ME3Explorer
         private void Function_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Token token = Function_ListBox.SelectedItem as Token;
+            Statement me1statement = Function_ListBox.SelectedItem as Statement;
             ScriptEditor_Hexbox.UnhighlightAll();
             if (token != null)
             {
                 ScriptEditor_Hexbox.Highlight(token.pos, token.raw.Length);
+            }
+
+            if (me1statement != null)
+            {
+                //todo: figure out how length could be calculated
+                ScriptEditor_Hexbox.Highlight(me1statement.StartOffset + BytecodeStart, me1statement.EndOffset - me1statement.StartOffset);
             }
         }
 
@@ -332,7 +475,7 @@ namespace ME3Explorer
         {
             ScriptHeaderItem token = Function_Header.SelectedItem as ScriptHeaderItem;
             ScriptEditor_Hexbox.UnhighlightAll();
-            if (token != null && !TokenChanging)
+            if (token != null && !TokenChanging && !HexBoxSelectionChanging)
             {
                 TokenChanging = true;
                 ScriptEditor_Hexbox.SelectionStart = token.offset;
@@ -345,12 +488,27 @@ namespace ME3Explorer
         {
             ScriptHeaderItem token = Function_Footer.SelectedItem as ScriptHeaderItem;
             ScriptEditor_Hexbox.UnhighlightAll();
-            if (token != null && !TokenChanging)
+            if (token != null && !TokenChanging && !HexBoxSelectionChanging)
             {
                 TokenChanging = true;
                 ScriptEditor_Hexbox.SelectionStart = token.offset;
                 ScriptEditor_Hexbox.SelectionLength = token.length;
                 TokenChanging = false;
+            }
+        }
+
+        public override void Dispose()
+        {
+            ScriptEditor_Hexbox = null;
+            ScriptEditor_Hexbox_Host.Child.Dispose();
+            ScriptEditor_Hexbox_Host.Dispose();
+        }
+
+        private void StartOffset_Changed(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (ControlLoaded)
+            {
+                ScriptEditor_PreviewScript_Click(null, null);
             }
         }
     }

@@ -10,6 +10,7 @@ using ME3Explorer.Packages;
 using Gibbed.IO;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace ME3Explorer.Unreal
 {
@@ -17,250 +18,115 @@ namespace ME3Explorer.Unreal
     [TypeConverter(typeof(ExpandableObjectConverter))]
     struct ObjectProp
     {
-        private string _name;
-        private int _nameindex;
         [DesignOnly(true)]
-        public string objectName
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string objectName { get; set; }
 
-        public int index
-        {
-            get { return _nameindex; }
-            set { _nameindex = value; }
-        }
+        public int index { get; set; }
     }
 
     [TypeConverter(typeof(ExpandableObjectConverter))]
     struct NameProp
     {
-        private string _name;
-        private int _nameindex;
         [DesignOnly(true)]
-        public string name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string name { get; set; }
 
-        public int nameindex
-        {
-            get { return _nameindex; }
-            set { _nameindex = value; }
-        }
+        public int nameindex { get; set; }
     }
 
     [TypeConverter(typeof(ExpandableObjectConverter))]
     struct StructProp
     {
-        private string _name;
-        private int _nameindex;
-        private int[] _data;
         [DesignOnly(true)]
-        public string name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string name { get; set; }
 
-        public int[] data
-        {
-            get { return _data; }
-            set { _data = value; }
-        }
+        public int[] data { get; set; }
 
-        public int nameindex
-        {
-            get { return _nameindex; }
-            set { _nameindex = value; }
-        }
+        public int nameindex { get; set; }
     }
 
     [TypeConverter(typeof(ExpandableObjectConverter))]
     struct ColorProp
     {
-        private string _name;
-        private int _nameindex;
-        private byte _a;
-        private byte _r;
-        private byte _g;
-        private byte _b;
         [DesignOnly(true)]
-        public string name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string name { get; set; }
 
-        public byte Alpha
-        {
-            get { return _a; }
-            set { _a = value; }
-        }
+        public byte Alpha { get; set; }
 
-        public byte Red
-        {
-            get { return _r; }
-            set { _r = value; }
-        }
+        public byte Red { get; set; }
 
-        public byte Green
-        {
-            get { return _g; }
-            set { _g = value; }
-        }
+        public byte Green { get; set; }
 
-        public byte Blue
-        {
-            get { return _b; }
-            set { _b = value; }
-        }
+        public byte Blue { get; set; }
 
-        public int nameindex
-        {
-            get { return _nameindex; }
-            set { _nameindex = value; }
-        }
+        public int nameindex { get; set; }
     }
 
     [TypeConverter(typeof(ExpandableObjectConverter))]
     struct VectorProp
     {
-        private string _name;
-        private int _nameindex;
-        private float _x;
-        private float _y;
-        private float _z;
         [DesignOnly(true)]
-        public string name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string name { get; set; }
 
-        public float X
-        {
-            get { return _x; }
-            set { _x = value; }
-        }
+        public float X { get; set; }
 
-        public float Y
-        {
-            get { return _y; }
-            set { _y = value; }
-        }
+        public float Y { get; set; }
 
-        public float Z
-        {
-            get { return _z; }
-            set { _z = value; }
-        }
+        public float Z { get; set; }
 
-        public int nameindex
-        {
-            get { return _nameindex; }
-            set { _nameindex = value; }
-        }
+        public int nameindex { get; set; }
     }
 
     [TypeConverter(typeof(ExpandableObjectConverter))]
     struct RotatorProp
     {
-        private string _name;
-        private int _nameindex;
-        private float _pitch;
-        private float _yaw;
-        private float _roll;
         [DesignOnly(true)]
-        public string name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string name { get; set; }
 
-        public float Pitch
-        {
-            get { return _pitch; }
-            set { _pitch = value; }
-        }
+        public float Pitch { get; set; }
 
-        public float Yaw
-        {
-            get { return _yaw; }
-            set { _yaw = value; }
-        }
+        public float Yaw { get; set; }
 
-        public float Roll
-        {
-            get { return _roll; }
-            set { _roll = value; }
-        }
+        public float Roll { get; set; }
 
-        public int nameindex
-        {
-            get { return _nameindex; }
-            set { _nameindex = value; }
-        }
+        public int nameindex { get; set; }
     }
 
     [TypeConverter(typeof(ExpandableObjectConverter))]
     struct LinearColorProp
     {
-        private string _name;
-        private int _nameindex;
-        private float _r;
-        private float _g;
-        private float _b;
-        private float _a;
         [DesignOnly(true)]
-        public string name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string name { get; set; }
 
-        public float Red
-        {
-            get { return _r; }
-            set { _r = value; }
-        }
+        public float Red { get; set; }
 
-        public float Green
-        {
-            get { return _g; }
-            set { _g = value; }
-        }
+        public float Green { get; set; }
 
-        public float Blue
-        {
-            get { return _b; }
-            set { _b = value; }
-        }
+        public float Blue { get; set; }
 
-        public float Alpha
-        {
-            get { return _a; }
-            set { _a = value; }
-        }
+        public float Alpha { get; set; }
 
-        public int nameindex
-        {
-            get { return _nameindex; }
-            set { _nameindex = value; }
-        }
+        public int nameindex { get; set; }
     }
     #endregion
 
-    public struct NameReference : INotifyPropertyChanged
+    public struct NameReference
     {
-        public string Name { get; set; }
-        public int Number { get; set; }
+        public string Name { get; }
+        public int Number { get; }
+
+        public NameReference(string name, int number = 0)
+        {
+            Name = name;
+            Number = number;
+        }
+
+        //https://api.unrealengine.com/INT/API/Runtime/Core/UObject/FName/index.html
+        [JsonIgnore]
+        public string InstancedString => Number > 0 ? $"{Name}_{Number - 1}" : Name;
 
         public static implicit operator NameReference(string s)
         {
-            return new NameReference { Name = s };
+            return new NameReference(s);
         }
 
         public static implicit operator string(NameReference n)
@@ -282,36 +148,23 @@ namespace ME3Explorer.Unreal
         {
             return s != r.Name;
         }
-
-        #region Property Changed Notification
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notifies listeners when given property is updated.
-        /// </summary>
-        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-        private void OnPropertyChanged([CallerMemberName] string propertyname = null)
+        public bool Equals(NameReference other)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+            return string.Equals(Name, other.Name) && Number == other.Number;
         }
 
-        /// <summary>
-        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-        /// Should be called in property setters.
-        /// </summary>
-        /// <typeparam name="T">Type of given property.</typeparam>
-        /// <param name="field">Backing field to update.</param>
-        /// <param name="value">New value of property.</param>
-        /// <param name="propertyName">Name of property.</param>
-        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-        private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+        public override bool Equals(object obj)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
+            return obj is NameReference other && Equals(other);
         }
-        #endregion
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Name.GetHashCode() * 397) ^ Number;
+            }
+        }
     }
 
     public enum PropertyType
@@ -356,32 +209,6 @@ namespace ME3Explorer.Unreal
             public List<PropertyValue> Array;
         }
 
-        public static Property getPropOrNull(IExportEntry export, string propName)
-        {
-            List<Property> props = getPropList(export);
-            foreach (Property prop in props)
-            {
-                if (export.FileRef.getNameEntry(prop.Name) == propName)
-                {
-                    return prop;
-                }
-            }
-            return null;
-        }
-
-        public static Property getPropOrNull(IMEPackage pcc, byte[] data, int start, string propName)
-        {
-            List<Property> props = ReadProp(pcc, data, start);
-            foreach (Property prop in props)
-            {
-                if (pcc.getNameEntry(prop.Name) == propName)
-                {
-                    return prop;
-                }
-            }
-            return null;
-        }
-
         public static List<Property> getPropList(IExportEntry export)
         {
             Application.DoEvents();
@@ -406,46 +233,6 @@ namespace ME3Explorer.Unreal
                 case 10: return "String Ref Property";
                 default: return "Unknown/None";
             }
-        }
-
-        public static string PropertyToText(Property p, IMEPackage pcc)
-        {
-            string s = "";
-            s = "Name: " + pcc.getNameEntry(p.Name);
-            s += " Type: " + TypeToString((int)p.TypeVal);
-            s += " Size: " + p.Size;
-            switch (p.TypeVal)
-            {
-                case PropertyType.StructProperty:
-                    s += " \"" + pcc.getNameEntry(p.Value.IntValue) + "\" with " + p.Value.Array.Count + " bytes";
-                    break;
-                case PropertyType.IntProperty:
-                case PropertyType.ObjectProperty:
-                case PropertyType.StringRefProperty:
-                    s += " Value: " + p.Value.IntValue;
-                    break;
-                case PropertyType.BoolProperty:
-                    s += " Value: " + (p.raw[24] == 1);
-                    break;
-                case PropertyType.FloatProperty:
-                    s += " Value: " + p.Value.FloatValue;
-                    break;
-                case PropertyType.NameProperty:
-                    s += " " + pcc.getNameEntry(p.Value.IntValue);
-                    break;
-                case PropertyType.ByteProperty:
-                    s += " Value: \"" + p.Value.StringValue + "\" with \"" + pcc.getNameEntry(p.Value.IntValue) + "\"";
-                    break;
-                case PropertyType.ArrayProperty:
-                    s += " bytes"; //Value: " + p.Value.Array.Count.ToString() + " Elements";
-                    break;
-                case PropertyType.StrProperty:
-                    if (p.Value.StringValue.Length == 0)
-                        break;
-                    s += " Value: " + p.Value.StringValue;
-                    break;
-            }
-            return s;
         }
 
         public static CustomProperty PropertyToGrid(Property p, IMEPackage pcc)
@@ -526,9 +313,9 @@ namespace ME3Explorer.Unreal
                             {
                                 name = structType,
                                 nameindex = p.Value.IntValue,
-                                Pitch = BitConverter.ToInt32(p.raw, 32) * 360f / 65536f,
-                                Yaw = BitConverter.ToInt32(p.raw, 36) * 360f / 65536f,
-                                Roll = BitConverter.ToInt32(p.raw, 40) * 360f / 65536f
+                                Pitch = BitConverter.ToInt32(p.raw, 32).ToDegrees(),
+                                Yaw = BitConverter.ToInt32(p.raw, 36).ToDegrees(),
+                                Roll = BitConverter.ToInt32(p.raw, 40).ToDegrees()
                             };
                             pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, rp, typeof(RotatorProp), false, true);
                             break;
@@ -567,23 +354,6 @@ namespace ME3Explorer.Unreal
                     break;
             }
             return pg;
-        }
-
-        public static List<List<Property>> ReadStructArrayProp(IMEPackage pcc, Property p)
-        {
-            List<List<Property>> res = new List<List<Property>>();
-            int pos = 28;
-            int linkCount = BitConverter.ToInt32(p.raw, 24);
-            for (int i = 0; i < linkCount; i++)
-            {
-                List<Property> p2 = ReadProp(pcc, p.raw, pos);
-                for (int j = 0; j < p2.Count(); j++)
-                {
-                    pos += p2[j].raw.Length;
-                }
-                res.Add(p2);
-            }
-            return res;
         }
 
         public static List<Property> ReadProp(IMEPackage pcc, byte[] raw, int start)
@@ -845,13 +615,8 @@ namespace ME3Explorer.Unreal
                     break;
                 case "NameProperty":
                     v.IntValue = BitConverter.ToInt32(raw, start);
-                    var nameRef = new NameReference();
-                    nameRef.Name = pcc.getNameEntry(v.IntValue);
-                    nameRef.Number = BitConverter.ToInt32(raw, start + 4);
-                    if (nameRef.Number > 0)
-                        nameRef.Name += "_" + (nameRef.Number - 1);
-                    v.NameValue = nameRef;
-                    v.StringValue = nameRef.Name;
+                    v.NameValue = new NameReference(pcc.getNameEntry(v.IntValue), BitConverter.ToInt32(raw, start + 4));
+                    v.StringValue = v.NameValue.InstancedString;
                     v.len = 8;
                     break;
             }
@@ -1314,18 +1079,6 @@ namespace ME3Explorer.Unreal
             stream.WriteByte(value);
         }
 
-        public static void WriteEnumProperty(this Stream stream, IMEPackage pcc, string propName, string enumName, string enumValue, int index = 0)
-        {
-            stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 8);
-            if (pcc.Game == MEGame.ME3)
-            {
-                stream.WriteValueS32(pcc.FindNameOrAdd(enumName));
-                stream.WriteValueS32(0);
-            }
-            stream.WriteValueS32(pcc.FindNameOrAdd(enumValue));
-            stream.WriteValueS32(index);
-        }
-
         public static void WriteEnumProperty(this Stream stream, IMEPackage pcc, string propName, NameReference enumName, NameReference enumValue)
         {
             stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 8);
@@ -1336,13 +1089,6 @@ namespace ME3Explorer.Unreal
             }
             stream.WriteValueS32(pcc.FindNameOrAdd(enumValue.Name));
             stream.WriteValueS32(enumValue.Number);
-        }
-
-        public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, string propName, int count, byte[] value)
-        {
-            stream.WritePropHeader(pcc, propName, PropertyType.ArrayProperty, 4 + value.Length);
-            stream.WriteValueS32(count);
-            stream.WriteBytes(value);
         }
 
         public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, string propName, int count, MemoryStream value)

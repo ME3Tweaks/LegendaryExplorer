@@ -828,7 +828,7 @@ namespace ME3Explorer
                 for (int i = 0; i < 3; i++)
                 {
                     val = BitConverter.ToInt32(memory, readerpos);
-                    node = new TreeNode(readerpos.ToString("X4") + ": " + labels[i] + " : " + val + " (" + (val * 360f / 65536f).ToString("0.0######") + " degrees)");
+                    node = new TreeNode(readerpos.ToString("X4") + ": " + labels[i] + " : " + val + " (" + (val.ToDegrees()).ToString("0.0######") + " degrees)");
                     node.Name = readerpos.ToString();
                     node.Tag = NodeType.StructLeafDeg;
                     t.Nodes.Add(node);
@@ -1567,14 +1567,14 @@ namespace ME3Explorer
                             break;
                         case ArrayType.Enum:
                             string enumName = getEnclosingType(e.Node);
-                            List<string> values = GetEnumValues(enumName, BitConverter.ToInt32(memory, getPosFromNode(e.Node.Parent.Name)));
+                            List<NameReference> values = GetEnumValues(enumName, BitConverter.ToInt32(memory, getPosFromNode(e.Node.Parent.Name)));
                             if (values == null)
                             {
                                 addArrayElementButton.Visible = false;
                                 return;
                             }
                             propDropdown.Items.Clear();
-                            propDropdown.Items.AddRange(values.ToArray());
+                            propDropdown.Items.AddRange(values.Select(nRef => (object)nRef.Name).ToArray());
                             propDropdown.Visible = true;
                             break;
                         case ArrayType.Struct:
@@ -1695,11 +1695,11 @@ namespace ME3Explorer
                         {
                             try
                             {
-                                List<string> values = GetEnumValues(enumName, BitConverter.ToInt32(memory, pos));
+                                List<NameReference> values = GetEnumValues(enumName, BitConverter.ToInt32(memory, pos));
                                 if (values != null)
                                 {
                                     propDropdown.Items.Clear();
-                                    propDropdown.Items.AddRange(values.ToArray());
+                                    propDropdown.Items.AddRange(values.Select(nRef => (object)nRef.Name).ToArray());
                                     propDropdown.SelectedItem = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + valOffset));
                                     propDropdown.Visible = true;
                                 }
@@ -1799,18 +1799,18 @@ namespace ME3Explorer
                         {
                             enumName = getEnclosingType(node.Parent);
                         }
-                        List<string> values = GetEnumValues(enumName, BitConverter.ToInt32(memory, getPosFromNode(node.Parent)));
+                        List<NameReference> values = GetEnumValues(enumName, BitConverter.ToInt32(memory, getPosFromNode(node.Parent)));
                         if (values == null)
                         {
                             return;
                         }
                         propDropdown.Items.Clear();
-                        propDropdown.Items.AddRange(values.ToArray());
+                        propDropdown.Items.AddRange(values.Select(nRef => (object)nRef.Name).ToArray());
                         setPropertyButton.Visible = propDropdown.Visible = true;
                         propDropdown.SelectedItem = pcc.getNameEntry(BitConverter.ToInt32(memory, pos));
                         break;
                     case NodeType.StructLeafDeg:
-                        proptext.Text = (BitConverter.ToInt32(memory, pos) * 360f / 65536f).ToString();
+                        proptext.Text = BitConverter.ToInt32(memory, pos).ToDegrees().ToString();
                         proptext.Visible = true;
                         break;
                     case NodeType.ArrayLeafStruct:
@@ -1896,7 +1896,7 @@ namespace ME3Explorer
                     case NodeType.StructLeafDeg:
                         if (float.TryParse(proptext.Text, out f))
                         {
-                            WriteMem(pos, BitConverter.GetBytes(Convert.ToInt32(f * 65536f / 360f)));
+                            WriteMem(pos, BitConverter.GetBytes(f.ToUnrealRotationUnits()));
                             UpdateMem(pos);
                         }
                         break;
@@ -2661,8 +2661,8 @@ namespace ME3Explorer
                 return;
             }
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
-            var prop = AddPropertyDialogWPF.GetProperty(export, props, pcc.Game);
-            if (prop != null)
+            (string propName, PropertyInfo)? prop = AddPropertyDialogWPF.GetProperty(export, props, pcc.Game);
+            if (prop.HasValue)
             {
                 string origname = export.ClassName;
                 string temp = export.ClassName;
@@ -2702,7 +2702,7 @@ namespace ME3Explorer
                     currentInfo.baseClass = exportTemp.ClassParent;
                 }
 
-                AddProperty(prop.Item1, currentInfo);
+                AddProperty(prop.Value.propName, currentInfo);
                 RefreshMem();
             }
         }
@@ -2791,7 +2791,7 @@ namespace ME3Explorer
                         buff.AddRange(BitConverter.GetBytes(0));
                         break;
                     case PropertyType.ByteProperty:
-                        if (info.reference == null)
+                        if (!info.IsEnumProp())
                         {
                             //size
                             buff.AddRange(BitConverter.GetBytes(1));
@@ -3010,7 +3010,7 @@ namespace ME3Explorer
             return ArrayType.Int;
         }
 
-        private List<string> GetEnumValues(string enumName, int propName)
+        private List<NameReference> GetEnumValues(string enumName, int propName)
         {
             switch (pcc.Game)
             {

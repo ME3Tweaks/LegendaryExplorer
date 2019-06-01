@@ -13,7 +13,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] memory;
         public int memsize;
         public IExportEntry export;
-        public int MyIndex;
+        public int ExportIndex;
         public IMEPackage pcc;
         public List<byte[]> Chunks;
         public List<byte[]> HIRCObjects;
@@ -24,7 +24,7 @@ namespace ME3Explorer.Unreal.Classes
         public WwiseBank(IExportEntry export)
         {
             this.export = export;
-            MyIndex = export.Index;
+            ExportIndex = export.Index;
             pcc = export.FileRef;
             memory = export.Data;
             memsize = memory.Length;
@@ -59,9 +59,9 @@ namespace ME3Explorer.Unreal.Classes
         /// Gets DIDX information for this soundbank. 
         /// </summary>
         /// <returns>List of Tuple of ID, Offset, Datasize</returns>
-        public List<Tuple<uint, int, int>> GetWEMFilesMetadata()
+        public List<(uint, int, int)> GetWEMFilesMetadata()
         {
-            var returnData = new List<Tuple<uint, int, int>>();
+            var returnData = new List<(uint, int, int)>();
             foreach (byte[] buff in Chunks)
             {
                 if (GetID(buff) == "DIDX")
@@ -73,7 +73,7 @@ namespace ME3Explorer.Unreal.Classes
                         uint wemID = BitConverter.ToUInt32(buff, 0x8 + i * 0xC);
                         int offset = BitConverter.ToInt32(buff, 0xC + i * 0xC);
                         int size = BitConverter.ToInt32(buff, 0x10 + i * 0xC);
-                        returnData.Add(new Tuple<uint, int, int>(wemID, offset, size));
+                        returnData.Add((wemID, offset, size));
                     }
                     break;
                 }
@@ -211,7 +211,7 @@ namespace ME3Explorer.Unreal.Classes
             return res;
         }
 
-        public class HIRCObject
+        public class HIRCObject : NotifyPropertyChangedBase
         {
             public const byte TYPE_SOUNDSFXVOICE = 0x2;
             public const byte TYPE_EVENTACTION = 0x3;
@@ -242,7 +242,34 @@ namespace ME3Explorer.Unreal.Classes
             //typeinfo
             public int cnt, unk1, IDaudio, IDsource;//scope,atype;
             public List<int> eventIDs { get; set; }
-            public byte[] Data { get; internal set; }
+
+            private byte[] _data;
+            public byte[] Data
+            {
+                get => _data;
+                internal set
+                {
+                    if (_data != null && value != null && _data.SequenceEqual(value))
+                    {
+                        return; //if the data is the same don't write it and trigger the side effects
+                    }
+
+                    bool isFirstLoad = _data == null;
+                    _data = value;
+                    if (!isFirstLoad)
+                    {
+                        DataChanged = true;
+                    }
+                }
+            }
+
+            private bool _dataChanged;
+
+            public bool DataChanged
+            {
+                get => _dataChanged;
+                internal set => SetProperty(ref _dataChanged, value);
+            }
         }
 
         public List<HIRCObject> ParseHIRCObjects(byte[] buff)
@@ -412,7 +439,7 @@ namespace ME3Explorer.Unreal.Classes
             HIRCObjects.Add(tmp);
         }
 
-        public byte[] RecreateBinary()
+        public byte[] RecreateBinary(List<byte[]> hircs = null)
         {
 
             MemoryStream res = new MemoryStream();
@@ -423,7 +450,7 @@ namespace ME3Explorer.Unreal.Classes
                 switch (GetID(buff))
                 {
                     case "HIRC":
-                        tmp = RecreateHIRC(buff);
+                        tmp = RecreateHIRC(buff, hircs);
                         size += tmp.Length;
                         res.Write(tmp, 0, tmp.Length);
                         break;
@@ -438,14 +465,15 @@ namespace ME3Explorer.Unreal.Classes
             return res.ToArray();
         }
 
-        public byte[] RecreateHIRC(byte[] buff)
+        public byte[] RecreateHIRC(byte[] buff, List<byte[]> HIRCOverrides)
         {
+            List<byte[]> hircs = HIRCOverrides ?? HIRCObjects;
             MemoryStream res = new MemoryStream();
             res.Write(buff, 0, 0x8);
-            res.Write(BitConverter.GetBytes(HIRCObjects.Count), 0, 4);
+            res.Write(BitConverter.GetBytes(hircs.Count), 0, 4);
             int size = 4;
             int index = 0;
-            foreach (byte[] obj in HIRCObjects)
+            foreach (byte[] obj in hircs)
             {
                 res.Write(obj, 0, obj.Length);
                 size += obj.Length;

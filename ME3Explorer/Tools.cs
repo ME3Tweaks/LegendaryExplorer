@@ -7,7 +7,11 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Sequence_Editor;
+using ME3Explorer.SharedUI;
+using ME3Explorer.Pathfinding_Editor;
 using Newtonsoft.Json;
+using ME3Explorer.AutoTOC;
 
 namespace ME3Explorer
 {
@@ -22,13 +26,13 @@ namespace ME3Explorer
         public Type type { get; set; }
         public bool IsFavorited
         {
-            get { return (bool)GetValue(IsFavoritedProperty); }
-            set { SetValue(IsFavoritedProperty, value); }
+            get => (bool)GetValue(IsFavoritedProperty);
+            set => SetValue(IsFavoritedProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for IsFavorited.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsFavoritedProperty =
-            DependencyProperty.Register("IsFavorited", typeof(bool), typeof(Tool), new PropertyMetadata(false, OnIsFavoritedChanged));
+            DependencyProperty.Register(nameof(IsFavorited), typeof(bool), typeof(Tool), new PropertyMetadata(false, OnIsFavoritedChanged));
 
         private static void OnIsFavoritedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -46,13 +50,7 @@ namespace ME3Explorer
 
         public static event EventHandler FavoritesChanged;
 
-        public static IReadOnlyCollection<Tool> Items
-        {
-            get
-            {
-                return items;
-            }
-        }
+        public static IReadOnlyCollection<Tool> Items => items;
 
         public static void Initialize()
         {
@@ -62,18 +60,18 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "AutoTOC",
-                type = typeof(AutoTOC),
+                type = typeof(AutoTOCWPF),
                 icon = Application.Current.FindResource("iconAutoTOC") as ImageSource,
                 open = () =>
                 {
-                    (new AutoTOC()).Show();
+                    (new AutoTOCWPF()).Show();
                 },
                 tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
-                description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
+                description = "AutoTOC WPF is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
             });
             set.Add(new Tool
             {
-                name = "ModMaker",
+                name = "Mod Maker",
                 type = typeof(ModMaker),
                 icon = Application.Current.FindResource("iconModMaker") as ImageSource,
                 open = () =>
@@ -82,8 +80,37 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", ".mod", "mod", "mesh" },
                 subCategory = "Mod Packagers",
-                description = "MODMAKER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nModMaker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources."
+                description = "MOD MAKER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nMod Maker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources."
             });
+#if DEBUG
+            set.Add(new Tool
+            {
+                name = "Memory Analyzer",
+                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzer),
+                icon = Application.Current.FindResource("iconMemoryAnalyzer") as ImageSource,
+                open = () =>
+                {
+                    (new ME3ExpMemoryAnalyzer.MemoryAnalyzer()).Show();
+                },
+                tags = new List<string> { "utility", "toolsetdev" },
+                subCategory = "For Toolset Devs Only",
+                description = "Memory Analyzer allows you to track references to objects to help trace memory leaks."
+            });
+
+            set.Add(new Tool
+            {
+                name = "File Hex Analyzer",
+                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzer),
+                icon = Application.Current.FindResource("iconFileHexAnalyzer") as ImageSource,
+                open = () =>
+                {
+                    (new FileHexViewer.FileHexViewerWPF()).Show();
+                },
+                tags = new List<string> { "utility", "toolsetdev", "hex" },
+                subCategory = "For Toolset Devs Only",
+                description = "File Hex Analyzer is a package hex viewer that shows references in the package hex. It also works with non-package files, but won't show any references, obviously."
+            });
+#endif
             set.Add(new Tool
             {
                 name = "TPF Tools",
@@ -112,34 +139,6 @@ namespace ME3Explorer
                 tags = new List<string> { "utility", "animation", "gesture", "bone" },
                 subCategory = "Explorers",
                 description = "Animation Explorer can build a database of all the files containing animtrees and complete animsets in Mass Effect 3. You can import and export Animsets to PSA files."
-            });
-            set.Add(new Tool
-            {
-                name = "Asset Explorer",
-                type = typeof(AssetExplorer),
-                icon = Application.Current.FindResource("iconAssetExplorer") as ImageSource,
-                open = () =>
-                {
-                    AssetExplorer assExp = new AssetExplorer();
-                    assExp.Show();
-                    assExp.LoadMe();
-                },
-                tags = new List<string> { "utility", "novice", "friendly", "user-friendly", "new", "help" },
-                subCategory = "Explorers",
-                description = "Asset Explorer is a useful utility for newcomers to modding Mass Effect. It allows for the browsing of ME3 PCC files via a somewhat user-friendly GUI.\n\nAttention: this tool is in archival state and may contain features that no longer function.",
-            });
-            set.Add(new Tool
-            {
-                name = "Audio Extractor",
-                type = typeof(AFCExtract),
-                icon = Application.Current.FindResource("iconAudioExtractor") as ImageSource,
-                open = () =>
-                {
-                    (new AFCExtract()).Show();
-                },
-                tags = new List<string> { "utility", "afc", "music", "ogg", "wav", "sound", "dialogue" },
-                subCategory = "Extractors + Repackers",
-                description = "Audio Extractor extracts sound data from ME3 AFC files."
             });
             set.Add(new Tool
             {
@@ -194,9 +193,8 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconHexConverter") as ImageSource,
                 open = () =>
                 {
-                    string loc = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                    if (File.Exists(loc + "\\HexConverterWPF.exe"))
-                        Process.Start(loc + "\\HexConverterWPF.exe");
+                    if (File.Exists(App.HexConverterPath))
+                        Process.Start(App.HexConverterPath);
                 },
                 tags = new List<string> { "utility", "code", "endian", "convert", "integer", "float" },
                 subCategory = "Converters",
@@ -256,21 +254,8 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "ME1 TLK Editor",
-                type = typeof(TlkManager),
-                icon = Application.Current.FindResource("iconTLKEditorME1") as ImageSource,
-                open = () =>
-                {
-                    (new ME1Explorer.TlkManager(true)).Show();
-                },
-                tags = new List<string> { "utility", "dialogue", "subtitle", "text" },
-                subCategory = "Extractors + Repackers",
-                description = "ME1 TLK Editor extracts and repackages TLK data, allowing users to edit the display of all game text in ME1. Extracted data is stored in XML format and must be edited with an external program, such as Notepad++.",
-            });
-            set.Add(new Tool
-            {
                 name = "Package Dumper",
-                type = typeof(AnimationExplorer.AnimationExplorer),
+                type = typeof(PackageDumper.PackageDumper),
                 icon = Application.Current.FindResource("iconPackageDumper") as ImageSource,
                 open = () =>
                 {
@@ -305,32 +290,6 @@ namespace ME3Explorer
                 tags = new List<string> { "utility" },
                 subCategory = "Databases",
                 description = "Scans ME3 and creates a database of all the classes and properties for those classes that Bioware uses.\n\nThis is different than Package Dumper, as it looks across all instances of the class and what is actually used."
-            });
-            set.Add(new Tool
-            {
-                name = "Property Dumper",
-                type = typeof(Property_Dumper.PropDumper),
-                icon = Application.Current.FindResource("iconPropertyDumper") as ImageSource,
-                open = () =>
-                {
-                    (new Property_Dumper.PropDumper()).Show();
-                },
-                tags = new List<string> { "utility" },
-                subCategory = "Properties",
-                description = "Dumps property information.\n\nThis tool has been replaced by Package Dumper and will be removed in the next release."
-            });
-            set.Add(new Tool
-            {
-                name = "Property Manager",
-                type = typeof(PropertyManager),
-                icon = Application.Current.FindResource("iconPropertyManager") as ImageSource,
-                open = () =>
-                {
-                    (new PropertyManager()).Show();
-                },
-                tags = new List<string> { "utility" },
-                subCategory = "Properties",
-                description = "Allos you to create a custom database of properties.\n\nThis tool is deprecated and will be removed in the next release."
             });
             set.Add(new Tool
             {
@@ -435,7 +394,7 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
                 open = () =>
                 {
-                    string result = InputComboBox.GetValue("Which game's files do you want to edit?", new string[] { "ME3", "ME2", "ME1" }, "ME3", true);
+                    string result = InputComboBox.GetValue("Which game's files do you want to edit?", new[] { "ME3", "ME2", "ME1" }, "ME3", true);
                     switch (result)
                     {
                         case "ME3":
@@ -531,7 +490,7 @@ namespace ME3Explorer
             {
                 name = "Mesh Database",
                 type = typeof(Meshplorer2.MeshDatabase),
-                icon = Application.Current.FindResource("iconMeshplorer2") as ImageSource,
+                icon = Application.Current.FindResource("iconMeshDatabase") as ImageSource,
                 open = () =>
                 {
                     (new Meshplorer2.MeshDatabase()).Show();
@@ -542,7 +501,33 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Package Editor",
+                name = "Mount Editor",
+                type = typeof(MountEditor.MountEditorWPF),
+                icon = Application.Current.FindResource("iconMountEditor") as ImageSource,
+                open = () =>
+                {
+                    new MountEditor.MountEditorWPF().Show();
+                },
+                tags = new List<string> { "developer", "mount", "dlc", "me2", "me3" },
+                subCategory = "Core",
+                description = "Mount Editor allows you to create or modify mount.dlc files, which are used in DLC for Mass Effect 2 and Mass Effect 3."
+            });
+            set.Add(new Tool
+            {
+                name = "TLK Manager WPF",
+                type = typeof(TlkManagerNS.TLKManagerWPF),
+                icon = Application.Current.FindResource("iconTLKManager") as ImageSource,
+                open = () =>
+                {
+                    new TlkManagerNS.TLKManagerWPF().Show();
+                },
+                tags = new List<string> { "developer", "dialogue", "subtitle", "text", "string", "localize", "language" },
+                subCategory = "Core",
+                description = "TLK Manager WPF manages loaded TLK files that are used to display string data in editor tools. You can also use it to extract and recompile TLK files."
+            });
+            set.Add(new Tool
+            {
+                name = "Package Editor (Old)",
                 type = typeof(PackageEditor),
                 icon = Application.Current.FindResource("iconPackageEditorClassic") as ImageSource,
                 open = () =>
@@ -552,17 +537,16 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 subCategory = "Core",
-                description = "Package Editor Classic is a tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited.\n\nPackage Editor Classic has been mostly replaced by Package Editor WPF, and will eventually placed into a deprecated status."
+                description = "Package Editor Classic is a tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited.\n\nPackage Editor Classic has been deprecated and is scheduled for removal in the next release."
             });
             set.Add(new Tool
             {
-                name = "Package Editor WPF",
+                name = "Package Editor",
                 type = typeof(PackageEditorWPF),
                 icon = Application.Current.FindResource("iconPackageEditor") as ImageSource,
                 open = () =>
                 {
-                    PackageEditorWPF pck = new PackageEditorWPF();
-                    pck.Show();
+                    new PackageEditorWPF().Show();
                 },
                 tags = new List<string> { "user", "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 subCategory = "Core",
@@ -571,25 +555,25 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Pathfinding Editor",
-                type = typeof(PathfindingEditor),
+                type = typeof(PathfindingEditorWPF),
                 icon = Application.Current.FindResource("iconPathfindingEditor") as ImageSource,
                 open = () =>
                 {
-                    (new PathfindingEditor()).Show();
+                    (new PathfindingEditorWPF()).Show();
                 },
                 tags = new List<string> { "user", "developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level" },
                 subCategory = "Core",
-                description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
+                description = "Pathfinding Editor WPF allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
             });
             set.Add(new Tool
             {
                 name = "Plot Editor",
-                type = typeof(MassEffect.NativesEditor.Views.ShellView),
+                type = typeof(MassEffect.NativesEditor.Views.PlotEditor),
                 icon = Application.Current.FindResource("iconPlotEditor") as ImageSource,
                 open = () =>
                 {
-                    var shellView = new MassEffect.NativesEditor.Views.ShellView();
-                    shellView.Show();
+                    var plotEd = new MassEffect.NativesEditor.Views.PlotEditor();
+                    plotEd.Show();
                 },
                 tags = new List<string> { "developer", "codex", "state transition", "quest", "natives" },
                 subCategory = "Core",
@@ -598,54 +582,41 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Sequence Editor",
-                type = typeof(SequenceEditor),
+                type = typeof(SequenceEditorWPF),
                 icon = Application.Current.FindResource("iconSequenceEditor") as ImageSource,
                 open = () =>
                 {
-                    (new SequenceEditor()).Show();
+                    (new SequenceEditorWPF()).Show();
                 },
                 tags = new List<string> { "user", "developer", "kismet", "me1", "me2", "me3" },
                 subCategory = "Core",
-                description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
+                description = "Sequence Editor WPF is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
             set.Add(new Tool
             {
-                name = "SFAR Editor 2",
+                name = "SFAR Editor",
                 type = typeof(SFAREditor2),
-                icon = Application.Current.FindResource("iconSFAREditor2") as ImageSource,
+                icon = Application.Current.FindResource("iconSFAREditor") as ImageSource,
                 open = () =>
                 {
                     (new SFAREditor2()).Show();
                 },
                 tags = new List<string> { "developer", "dlc" },
                 subCategory = other,
-                description = "SFAR Editor 2 allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
+                description = "SFAR Editor allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
             });
             set.Add(new Tool
             {
-                name = "Soundplorer Classic",
-                type = typeof(SoundplorerWinforms),
-                icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
-                open = () =>
-                {
-                    (new SoundplorerWinforms()).Show();
-                },
-                tags = new List<string> { "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
-                subCategory = "Scene Shop",
-                description = "Soundplorer provides access to all Wwisestream and Wwisebank objects inside an ME3 PCC. Sounds can be played within the tool, exported, and changed via import.\n\nThis tool is deprecated and has been replaced by Soundplorer WPF.",
-            });
-            set.Add(new Tool
-            {
-                name = "Soundplorer WPF",
+                name = "Soundplorer",
                 type = typeof(Soundplorer.SoundplorerWPF),
                 icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
                 open = () =>
                 {
-                    (new ME3Explorer.Soundplorer.SoundplorerWPF()).Show();
+                    (new Soundplorer.SoundplorerWPF()).Show();
                 },
                 tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
                 subCategory = "Scene Shop",
-                description = "Soundplorer WPF is the newly rewritten version of Soundplorer. Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
+                description = "Soundplorer WPF is a complete rewrite of the original  Soundplorer. Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
             });
             set.Add(new Tool
             {
@@ -660,6 +631,7 @@ namespace ME3Explorer
                 subCategory = "Meshes + Textures",
                 description = "TEXPLORER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nTexplorer is a texturing utility that allows users to browse and install textures for all 3 Mass Effect trilogy games. It has been superceded by Mass Effect Modder (MEM) in most regards."
             });
+
             set.Add(new Tool
             {
                 name = "WwiseBank Editor",
@@ -704,7 +676,7 @@ namespace ME3Explorer
                 if (File.Exists(FavoritesPath))
                 {
                     string raw = File.ReadAllText(FavoritesPath);
-                    HashSet<string> favorites = JsonConvert.DeserializeObject<HashSet<string>>(raw);
+                    var favorites = JsonConvert.DeserializeObject<HashSet<string>>(raw);
                     foreach (var tool in items)
                     {
                         if (favorites.Contains(tool.name))
@@ -728,7 +700,7 @@ namespace ME3Explorer
                 FavoritesChanged.Invoke(null, EventArgs.Empty);
                 try
                 {
-                    HashSet<string> favorites = new HashSet<string>();
+                    var favorites = new HashSet<string>();
                     foreach (var tool in items)
                     {
                         if (tool.IsFavorited)

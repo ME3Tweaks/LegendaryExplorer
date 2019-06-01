@@ -8,6 +8,7 @@ using System.Windows.Forms.VisualStyles;
 using System.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace Be.Windows.Forms
 {
@@ -1524,7 +1525,7 @@ namespace Be.Windows.Forms
                     break;
                 case ScrollEventType.ThumbPosition:
                     long lPos = FromScrollPos(e.NewValue);
-                    PerformScrollThumpPosition(lPos);
+                    PerformScrollThumbPosition(lPos);
                     break;
                 case ScrollEventType.ThumbTrack:
                     // to avoid performance problems use a refresh delay implemented with a timer
@@ -1559,7 +1560,7 @@ namespace Be.Windows.Forms
         void PerformScrollThumbTrack(object sender, EventArgs e)
         {
             _thumbTrackTimer.Enabled = false;
-            PerformScrollThumpPosition(_thumbTrackPosition);
+            PerformScrollThumbPosition(_thumbTrackPosition);
             _lastThumbtrack = Environment.TickCount;
         }
 
@@ -1572,6 +1573,11 @@ namespace Be.Windows.Forms
             {
                 long scrollmax = (long)Math.Ceiling((double)(_byteProvider.Length + 1) / (double)_iHexMaxHBytes - (double)_iHexMaxVBytes);
                 scrollmax = Math.Max(0, scrollmax);
+
+                if (scrollmax != 0)
+                {
+                    scrollmax += _vScrollBar.LargeChange - 1;
+                }
 
                 long scrollpos = _startByte / _iHexMaxHBytes;
 
@@ -1673,12 +1679,17 @@ namespace Be.Windows.Forms
             Invalidate();
         }
 
+        
+        /// <summary>
+        /// Scrolls the view up or down the indicates amount of lines.
+        /// </summary>
+        /// <param name="lines">Number of lines to scroll. Negative numbers scroll up, positive scrolls down.</param>
         void PerformScrollLines(int lines)
         {
             long pos;
             if (lines > 0)
             {
-                pos = Math.Min(_scrollVmax, _scrollVpos + lines);
+                pos = Math.Min(_scrollVmax - (_vScrollBar.LargeChange - 1), _scrollVpos + lines);
             }
             else if (lines < 0)
             {
@@ -1712,7 +1723,7 @@ namespace Be.Windows.Forms
             this.PerformScrollLines(-_iHexMaxVBytes);
         }
 
-        void PerformScrollThumpPosition(long pos)
+        void PerformScrollThumbPosition(long pos)
         {
             // Bug fix: Scroll to end, do not scroll to end
             int difference = (_scrollVmax > 65535) ? 10 : 9;
@@ -1721,7 +1732,7 @@ namespace Be.Windows.Forms
                 pos = _scrollVmax;
             // End Bug fix
 
-
+            pos = Math.Min(pos, _scrollVmax - (_vScrollBar.LargeChange - 1));
             PerformScrollToLine(pos);
         }
 
@@ -1749,13 +1760,13 @@ namespace Be.Windows.Forms
             if (index < _startByte)
             {
                 long line = (long)Math.Floor((double)index / (double)_iHexMaxHBytes);
-                PerformScrollThumpPosition(line);
+                PerformScrollThumbPosition(line);
             }
             else if (index > _endByte)
             {
                 long line = (long)Math.Floor((double)index / (double)_iHexMaxHBytes);
                 line -= _iHexMaxVBytes - 1;
-                PerformScrollThumpPosition(line);
+                PerformScrollThumbPosition(line);
             }
         }
         #endregion
@@ -3095,6 +3106,7 @@ namespace Be.Windows.Forms
             RequiredWidth = requiredWidth;
 
             int vmax = (int)Math.Floor((double)_recHex.Height / (double)_charSize.Height);
+            //Debug.WriteLine("Vmax: " + vmax);
             SetVerticalByteCount(vmax);
 
             _iHexMaxBytes = _iHexMaxHBytes * _iHexMaxVBytes;

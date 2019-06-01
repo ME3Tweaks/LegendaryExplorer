@@ -10,50 +10,99 @@ using System.Diagnostics;
 
 namespace ME3Explorer.Packages
 {
-    [DebuggerDisplay("ME3Package | {FileName}")]
+    [DebuggerDisplay("ME3Package | {" + nameof(FileName) + "}")]
     public sealed class ME3Package : MEPackage, IMEPackage
     {
         const uint packageTag = 0x9E2A83C1;
 
-        public MEGame Game { get { return MEGame.ME3; } }
+        public MEGame Game => MEGame.ME3;
 
-        static int headerSize = 0x8E;
+        private const int headerSize = 0x8E;
 
-        private int idxOffsets { get { if ((flags & 8) != 0) return 24 + nameSize; else return 20 + nameSize; } } // usually = 34
+        private int idxOffsets
+        {
+            get
+            {
+                if ((flags & 8) != 0) return 24 + nameSize;
+                return 20 + nameSize;
+            }
+        } // usually = 34
+
         public override int NameCount
         {
-            get { return BitConverter.ToInt32(header, idxOffsets); }
+            get => BitConverter.ToInt32(header, idxOffsets);
             protected set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets, sizeof(int));
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 68, sizeof(int));
+                SetHeaderValue(value, 0);
+                SetHeaderValue(value, 68);
             }
         }
-        int NameOffset
+        public int NameOffset
         {
-            get { return BitConverter.ToInt32(header, idxOffsets + 4); }
-            set
+            get => BitConverter.ToInt32(header, idxOffsets + 4);
+            private set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 4, sizeof(int));
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 100, sizeof(int));
+                SetHeaderValue(value, 4);
+                SetHeaderValue(value, 100);
             }
         }
         public override int ExportCount
         {
-            get { return BitConverter.ToInt32(header, idxOffsets + 8); }
+            get => BitConverter.ToInt32(header, idxOffsets + 8);
             protected set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 8, sizeof(int));
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 64, sizeof(int));
+                SetHeaderValue(value, 8);
+                SetHeaderValue(value, 64);
             }
         }
-        int ExportOffset { get { return BitConverter.ToInt32(header, idxOffsets + 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 12, sizeof(int)); } }
-        public override int ImportCount { get { return BitConverter.ToInt32(header, idxOffsets + 16); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 16, sizeof(int)); } }
-        public int ImportOffset { get { return BitConverter.ToInt32(header, idxOffsets + 20); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 20, sizeof(int)); } }
-        public int DependsOffset { get { return BitConverter.ToInt32(header, idxOffsets + 24); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(int)); } }
+        public int ExportOffset
+        {
+            get => BitConverter.ToInt32(header, idxOffsets + 12);
+            private set => SetHeaderValue(value, 12);
+        }
+        public override int ImportCount
+        {
+            get => BitConverter.ToInt32(header, idxOffsets + 16);
+            protected set => SetHeaderValue(value, 16);
+        }
+        public int ImportOffset
+        {
+            get => BitConverter.ToInt32(header, idxOffsets + 20);
+            private set => SetHeaderValue(value, 20);
+        }
+        public int DependsOffset
+        {
+            get => BitConverter.ToInt32(header, idxOffsets + 24);
+            private set => SetHeaderValue(value, 24);
+        }
+        int DependencyTableStart
+        {
+            get => BitConverter.ToInt32(header, idxOffsets + 24);
+            set => SetHeaderValue(value, 24);
+        }
+        int DependencyTableEnd
+        {
+            get => BitConverter.ToInt32(header, idxOffsets + 28);
+            set => SetHeaderValue(value, 28);
+        }
 
-        int FreeZoneStart { get { return BitConverter.ToInt32(header, idxOffsets + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(uint)); } }
-        int FreeZoneEnd { get { return BitConverter.ToInt32(header, idxOffsets + 28); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(uint)); } }
+
+        int Generations0ExportCount
+        {
+            get => BitConverter.ToInt32(header, idxOffsets + 0x40);
+            set => SetHeaderValue(value, 0x40);
+        }
+
+        public int Generations0NameCount
+        {
+            get => BitConverter.ToInt32(header, idxOffsets+0x44 );
+            set => SetHeaderValue(value, 0x44);
+        }
+
+        void SetHeaderValue(int val, int offset)
+        {
+            Buffer.BlockCopy(BitConverter.GetBytes(val), 0, header, idxOffsets + offset, sizeof(int));
+        }
 
 
         static bool isInitialized;
@@ -76,6 +125,8 @@ namespace ME3Explorer.Packages
         /// <param name="pccFilePath">full path + file name of desired pcc file.</param>
         private ME3Package(string pccFilePath)
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"ME3Package {Path.GetFileName(pccFilePath)}", new WeakReference(this));
+
             //Debug.WriteLine(" >> Opening me3 package " + pccFilePath);
             FileName = Path.GetFullPath(pccFilePath);
             MemoryStream inStream;
@@ -118,8 +169,7 @@ namespace ME3Explorer.Packages
             inStream.Seek(ImportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ImportCount; i++)
             {
-                ImportEntry imp = new ImportEntry(this, inStream);
-                imp.Index = i;
+                ImportEntry imp = new ImportEntry(this, inStream) { Index = i };
                 imp.PropertyChanged += importChanged;
                 imports.Add(imp);
             }
@@ -127,8 +177,7 @@ namespace ME3Explorer.Packages
             inStream.Seek(ExportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ExportCount; i++)
             {
-                ME3ExportEntry e = new ME3ExportEntry(this, inStream);
-                e.Index = i;
+                ME3ExportEntry e = new ME3ExportEntry(this, inStream) { Index = i };
                 e.PropertyChanged += exportChanged;
                 exports.Add(e);
             }
@@ -202,10 +251,12 @@ namespace ME3Explorer.Packages
                     m.WriteBytes(e.Header);
                 }
                 //freezone
-                int FreeZoneSize = FreeZoneEnd - FreeZoneStart;
-                FreeZoneStart = (int)m.Position;
-                m.WriteBytes(new byte[FreeZoneSize]);
-                FreeZoneEnd = expDataBegOffset = (int)m.Position;
+                int DependencyTableSize = DependencyTableEnd - DependencyTableStart; //Should be ExportsCount * 4, technically.
+                DependencyTableStart = (int)m.Position;
+                m.WriteBytes(new byte[DependencyTableSize]);
+                DependencyTableEnd = expDataBegOffset = (int)m.Position;
+                Generations0ExportCount = ExportCount;
+                Generations0NameCount = NameCount;
                 //export data
                 foreach (IExportEntry e in exports)
                 {
@@ -222,7 +273,7 @@ namespace ME3Explorer.Packages
                     m.WriteValueS32(e.DataOffset);
                     m.Seek(pos, SeekOrigin.Begin);
                 }
-                
+
                 //update header
                 m.Seek(0, SeekOrigin.Begin);
                 m.WriteBytes(header);
@@ -255,17 +306,17 @@ namespace ME3Explorer.Packages
             IEnumerable<IExportEntry> replaceExports;
             IEnumerable<IExportEntry> appendExports;
 
-            int lastDataOffset;
             int max;
             if (IsAppend)
             {
                 replaceExports = exports.Where(export => export.DataChanged && export.DataOffset < NameOffset && export.DataSize <= export.OriginalDataSize);
                 appendExports = exports.Where(export => export.DataOffset > NameOffset || (export.DataChanged && export.DataSize > export.OriginalDataSize));
                 var exportsBeforeNameTable = exports.Where(exp => exp.DataOffset < NameOffset);
-                if (exportsBeforeNameTable.Count() > 0)
+                if (exportsBeforeNameTable.Any())
                 {
                     max = exportsBeforeNameTable.Max(e => e.DataOffset);
-                } else
+                }
+                else
                 {
                     //doesn't seem to be actual append... seems to be some sort of bug with mem/me3explorer mixing, or maybe just me3exp, where sequence = 0 lenght
                     max = exports.Max(maxExport => maxExport.DataOffset);
@@ -281,7 +332,7 @@ namespace ME3Explorer.Packages
             }
 
             IExportEntry lastExport = exports.Find(export => export.DataOffset == max);
-            lastDataOffset = lastExport.DataOffset + lastExport.DataSize;
+            int lastDataOffset = lastExport.DataOffset + lastExport.DataSize;
 
             byte[] oldPCC = new byte[lastDataOffset];
             if (IsCompressed)
@@ -349,7 +400,8 @@ namespace ME3Explorer.Packages
                 {
                     newPCCStream.WriteBytes(export.Header);
                 }
-
+                Generations0ExportCount = ExportCount;
+                Generations0NameCount = NameCount;
                 IsAppend = true;
 
                 //write the updated header

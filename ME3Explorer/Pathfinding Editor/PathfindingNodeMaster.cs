@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Drawing;
-using System.Drawing.Text;
 using System.Linq;
-using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
 
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Util;
-using UMD.HCIL.PathingGraphEditor;
 using ME3Explorer.SequenceObjects;
 using System.Numerics;
 using System.Diagnostics;
+using ME3Explorer.PathfindingNodes;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -24,61 +19,77 @@ namespace ME3Explorer.Pathfinding_Editor
         public PPath shape;
         public IMEPackage pcc;
         public PathingGraphEditor g;
-        public static ME1Explorer.TalkFiles talkfiles { get; set; }
-        static Color commentColor = Color.FromArgb(74, 63, 190);
-        static Color intColor = Color.FromArgb(34, 218, 218);//cyan
-        static Color floatColor = Color.FromArgb(23, 23, 213);//blue
-        static Color boolColor = Color.FromArgb(215, 37, 33); //red
-        static Color objectColor = Color.FromArgb(219, 39, 217);//purple
-        static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
+        //public static ME1Explorer.TalkFiles talkfiles { get; set; }
+        protected static Color commentColor = Color.FromArgb(74, 63, 190);
         public static Brush sfxCombatZoneBrush = new SolidBrush(Color.FromArgb(255, 0, 0));
         public static Brush highlightedCoverSlotBrush = new SolidBrush(Color.FromArgb(219, 137, 6));
+        public static Brush directionBrush = new SolidBrush(Color.FromArgb(15, 95, 15));
+        public static Brush OverlayBrush = new SolidBrush(Color.FromArgb(128, 128, 175));
+        public static Brush OverlayOutlineBrush = new SolidBrush(Color.FromArgb(148, 148, 175));
 
-        protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         protected static Brush actorNodeBrush = new SolidBrush(Color.FromArgb(80, 80, 80));
         protected static Brush splineNodeBrush = new SolidBrush(Color.FromArgb(255, 60, 200));
         public static Brush pathfindingNodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static Brush dynamicPathfindingNodeBrush = new SolidBrush(Color.FromArgb(46, 184, 25));
+        protected static Brush medkitBrush = new SolidBrush(Color.FromArgb(200, 15, 15));
         protected static Brush dynamicPathnodefindingNodeBrush = new SolidBrush(Color.FromArgb(80, 184, 25));
 
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
-        public static bool draggingOutlink = false;
-        public static bool draggingVarlink = false;
-        public static PNode dragTarget;
-        public static bool OutputNumbers;
-
-        public int Index { get { return index; } }
-        //public float Width { get { return shape.Width; } }
-        //public float Height { get { return shape.Height; } }
+        public List<IExportEntry> SequenceReferences = new List<IExportEntry>();
+        public int UIndex => index;
 
         protected int index;
         public IExportEntry export;
         protected Pen outlinePen;
         public SText comment;
-        public List<IExportEntry> ReachSpecs = new List<IExportEntry>();
         public string NodeTag;
+        internal bool Selected;
+
+        private bool isOverlay;
+        public bool IsOverlay
+        {
+            //This is not used for NotifyPropertyChanged.
+            get => isOverlay;
+            set
+            {
+                if (value)
+                {
+                    shape.Pen = new Pen(OverlayOutlineBrush);
+                    shape.Brush = OverlayBrush;
+                }
+                isOverlay = value;
+            }
+        }
+
+        /// <summary>
+        /// List of all outbound connections between two PNodes (since some code requires this)
+        /// </summary>
+        public List<PathfindingEditorEdge> Edges = new List<PathfindingEditorEdge>();
 
         public void Select()
         {
+            Selected = true;
             shape.Pen = selectedPen;
+            MoveToFront();
         }
 
         public void Deselect()
         {
+            Selected = false;
             if (shape.Pen != outlinePen)
             {
                 shape.Pen = outlinePen;
             }
         }
 
-        public override bool Intersects(RectangleF bounds)
+        public override bool Intersects(RectangleF _bounds)
         {
             Region ellipseRegion = new Region(shape.PathReference);
-            return ellipseRegion.IsVisible(bounds);
+            return ellipseRegion.IsVisible(_bounds);
         }
 
         //Empty implementation
-        public virtual void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public virtual void CreateConnections(List<PathfindingNodeMaster> Objects)
         {
 
         }
@@ -118,7 +129,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     return -1;
                 }
-                IExportEntry brush = export.FileRef.getExport(brushComponent.Value - 1);
+                IExportEntry brush = export.FileRef.getUExport(brushComponent.Value);
                 List<PointF> graphVertices = new List<PointF>();
                 List<Vector3> brushVertices = new List<Vector3>();
                 PropertyCollection brushProps = brush.GetProperties();
@@ -206,8 +217,8 @@ namespace ME3Explorer.Pathfinding_Editor
                     return null;
                 }
                 IExportEntry brush = export.FileRef.getExport(brushComponent.Value - 1);
-                List<PointF> graphVertices = new List<PointF>();
-                List<Vector3> brushVertices = new List<Vector3>();
+                var graphVertices = new List<PointF>();
+                var brushVertices = new List<Vector3>();
                 PropertyCollection brushProps = brush.GetProperties();
                 var brushAggGeom = brushProps.GetProp<StructProperty>("BrushAggGeom");
                 if (brushAggGeom == null)
@@ -220,16 +231,16 @@ namespace ME3Explorer.Pathfinding_Editor
                 var verticiesList = convexList[0].Properties.GetProp<ArrayProperty<StructProperty>>("VertexData");
                 foreach (StructProperty vertex in verticiesList)
                 {
-                    Vector3 point = new Vector3();
-                    point.X = vertex.GetProp<FloatProperty>("X") * xScalar;
-                    point.Y = vertex.GetProp<FloatProperty>("Y") * yScalar;
-                    point.Z = vertex.GetProp<FloatProperty>("Z");
-                    brushVertices.Add(point);
+                    brushVertices.Add(new Vector3
+                    {
+                        X = vertex.GetProp<FloatProperty>("X") * xScalar,
+                        Y = vertex.GetProp<FloatProperty>("Y") * yScalar,
+                        Z = vertex.GetProp<FloatProperty>("Z")
+                    });
                 }
 
                 //FaceTris
                 var faceTriData = convexList[0].Properties.GetProp<ArrayProperty<IntProperty>>("FaceTriData");
-                Vector3 previousVertex = new Vector3();
                 float prevX = float.MinValue;
                 float prevY = float.MinValue;
                 foreach (IntProperty triPoint in faceTriData)
@@ -256,7 +267,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        protected virtual string GetComment()
+        protected string GetComment()
         {
             NameProperty tagProp = export.GetProperty<NameProperty>("Tag");
             if (tagProp != null)
@@ -268,7 +279,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                     if (tagProp.Value.Number != 0)
                     {
-                        retval += "_" + tagProp.Value.Number;
+                        retval += $"_{tagProp.Value.Number}";
                     }
                     NodeTag = retval;
                     return retval;
@@ -277,5 +288,62 @@ namespace ME3Explorer.Pathfinding_Editor
             return "";
         }
 
+        public override string ToString()
+        {
+            return $"{GetType().Name} - {UIndex}";
+        }
+    }
+
+    [DebuggerDisplay("PathfindingEdge - {" + nameof(DebugTarget) + "}")]
+    public class PathfindingEditorEdge : PPath
+    {
+        public bool[] OutboundConnections = new bool[2];
+        public PNode[] EndPoints = new PNode[2];
+
+        public string DebugTarget => $"{EndPoints[0]} to {EndPoints[1]}, {EndPoints.Length} tags";
+
+        public bool DoesEdgeConnectSameNodes(PathfindingEditorEdge otherEdge)
+        {
+            return EndPoints.All(otherEdge.EndPoints.Contains);
+        }
+
+        internal bool HasAnyOutboundConnections()
+        {
+            return OutboundConnections[0] || OutboundConnections[1];
+        }
+
+        internal bool IsOneWayOnly()
+        {
+            return OutboundConnections[0] != OutboundConnections[1]; //one has to be true here
+        }
+
+        internal PNode GetOtherEnd(PathfindingNodeMaster currentPoint)
+        {
+            return EndPoints[0] == currentPoint ? EndPoints[1] : EndPoints[0];
+        }
+
+        internal void RemoveOutboundFrom(PathfindingNode pn)
+        {
+            if (EndPoints[0] == pn)
+            {
+                OutboundConnections[0] = false;
+            }
+            else if (EndPoints[1] == pn)
+            {
+                OutboundConnections[1] = false;
+            }
+        }
+
+        internal void ReAttachEdgesToEndpoints()
+        {
+            if (EndPoints[0] is PathfindingNode pn0 && !pn0.Edges.Contains(this))
+            {
+                pn0.Edges.Add(this);
+            }
+            if (EndPoints[1] is PathfindingNode pn1 && !pn1.Edges.Contains(this))
+            {
+                pn1.Edges.Add(this);
+            }
+        }
     }
 }

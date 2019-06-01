@@ -17,7 +17,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 		
 		public static BioCodexMap Load( string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}
@@ -55,7 +55,8 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 					var codexPage = new BioCodexPage
 					{
 						CodexSound = (int?) xCodexPage.Attribute("CodexSound") ?? BioCodexEntry.DefaultCodexSound,
-						Description = (int?) xCodexPage.Attribute("Description") ?? BioCodexEntry.DefaultDescription,
+                        CodexSoundString = (string)xCodexPage.Attribute("CodexSoundString") ?? BioCodexEntry.DefaultCodexSoundString,
+                        Description = (int?) xCodexPage.Attribute("Description") ?? BioCodexEntry.DefaultDescription,
 						InstanceVersion = (int?) xCodexPage.Attribute("InstanceVersion") ?? BioCodexEntry.DefaultInstanceVersion,
 						Priority = (int?) xCodexPage.Attribute("Priority") ?? BioCodexEntry.DefaultPriority,
 						Section = (int?) xCodexPage.Attribute("Section") ?? BioCodexPage.DefaultSection,
@@ -85,7 +86,8 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 					var codexSection = new BioCodexSection
 					{
 						CodexSound = (int?) xCodexSection.Attribute("CodexSound") ?? BioCodexEntry.DefaultCodexSound,
-						Description = (int?) xCodexSection.Attribute("Description") ?? BioCodexEntry.DefaultDescription,
+                        CodexSoundString = (string)xCodexSection.Attribute("CodexSoundString") ?? BioCodexEntry.DefaultCodexSoundString,
+                        Description = (int?) xCodexSection.Attribute("Description") ?? BioCodexEntry.DefaultDescription,
 						InstanceVersion = (int?) xCodexSection.Attribute("InstanceVersion") ?? BioCodexEntry.DefaultInstanceVersion,
 						IsPrimary = (bool?) xCodexSection.Attribute("IsPrimary") ?? BioCodexSection.DefaultIsPrimary,
 						Priority = (int?) xCodexSection.Attribute("Priority") ?? BioCodexEntry.DefaultPriority,
@@ -102,7 +104,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 
 		public void Save( string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}
@@ -122,7 +124,8 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 					new XAttribute("TextureIndex", section.Value.TextureIndex),
 					new XAttribute("Priority", section.Value.Priority),
 					new XAttribute("CodexSound", section.Value.CodexSound),
-					new XAttribute("InstanceVersion", section.Value.InstanceVersion)));
+                    new XAttribute("CodexSoundString", section.Value.CodexSoundString),
+                    new XAttribute("InstanceVersion", section.Value.InstanceVersion)));
 			}
 
 			rootElement.Add(sectionsElement);
@@ -137,7 +140,8 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 					new XAttribute("TextureIndex", section.Value.TextureIndex),
 					new XAttribute("Priority", section.Value.Priority),
 					new XAttribute("CodexSound", section.Value.CodexSound),
-					new XAttribute("InstanceVersion", section.Value.InstanceVersion)));
+                    new XAttribute("CodexSoundString", section.Value.CodexSoundString),
+                    new XAttribute("InstanceVersion", section.Value.InstanceVersion)));
 			}
 
 			rootElement.Add(pagesElement);

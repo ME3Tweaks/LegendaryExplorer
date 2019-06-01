@@ -34,24 +34,16 @@ namespace ME3Explorer
         private Bio2DA CachedME12DA_ClassTalents_Talents;
         private Bio2DA CachedME12DA_TalentEffectLevels;
 
-        static ME1Explorer.TalkFiles talkFiles = new ME1Explorer.TalkFiles();
         private Bio2DA _table2da;
         public Bio2DA Table2DA
         {
-            get
-            {
-                return _table2da;
-            }
-            private set
-            {
-                SetProperty(ref _table2da, value);
-            }
+            get => _table2da;
+            private set => SetProperty(ref _table2da, value);
         }
 
         public Bio2DAEditorWPF()
         {
             InitializeComponent();
-            talkFiles.LoadGlobalTlk();
         }
 
         private void StartBio2DAScan()
@@ -76,6 +68,15 @@ namespace ME3Explorer
             CurrentLoadedExport = null;
         }
 
+        public override void PopOut()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Bio2DAEditorWPF(), CurrentLoadedExport);
+                elhw.Title = $"Bio2DA Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Show();
+            }
+        }
         private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             if (CachedME12DA_TalentEffectLevels == null && CurrentLoadedExport.FileRef.FileName.Contains("Engine.u"))
@@ -119,7 +120,7 @@ namespace ME3Explorer
                             }
                             else
                             {
-                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = talkFiles.findDataById(item.GetIntValue());
+                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = ME1Explorer.ME1TalkFiles.findDataById(item.GetIntValue());
                             }
                         }
                     }
@@ -158,9 +159,11 @@ namespace ME3Explorer
 
         private void ExportToExcel_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = $"Excel spreadsheet|*.xlsx";
-            d.FileName = CurrentLoadedExport.ObjectName;
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = "Excel spreadsheet|*.xlsx",
+                FileName = CurrentLoadedExport.ObjectName
+            };
             var result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {
@@ -173,6 +176,37 @@ namespace ME3Explorer
         {
             ParentNameList = namesList;
         }
-    }
 
+        public override void Dispose()
+        {
+            //Nothing to dispose in this control
+        }
+
+        private void ImportToExcel_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Excel sheet must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers. \r\nIf using a multisheet excel file, the sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:" );
+            OpenFileDialog oDlg = new OpenFileDialog
+            {
+                Filter = "Excel Files (*.xlsx)|*.xlsx"
+            };
+            oDlg.Title = "Import Excel table";
+            var result = oDlg.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                if (MessageBox.Show("This will overwrite the existing 2DA table.", "WARNING", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                {
+                    Bio2DA resulting2DA = Bio2DA.ReadExcelTo2DA(CurrentLoadedExport, oDlg.FileName);
+                    if (resulting2DA != null)
+                    {
+                        if (resulting2DA.IsIndexed != Table2DA.IsIndexed)
+                        {
+                            if (resulting2DA.IsIndexed == true) { MessageBox.Show("Warning: Imported sheet contains blank cells. Underlying sheet does not."); }
+                            else { MessageBox.Show("Warning: Underlying sheet contains blank cells. Imported sheet does not."); }
+                        }
+                        resulting2DA.Write2DAToExport();
+                    }
+                }
+            }
+        }
+    }
 }

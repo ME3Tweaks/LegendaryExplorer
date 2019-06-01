@@ -20,10 +20,12 @@ using TreeTexInfo = KFreonLib.Textures.TreeTexInfo;
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
+using System.Windows.Threading;
 using UsefulThings;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using CSharpImageLibrary;
 using CSharpImageLibrary.General;
+using ME3Explorer.AutoTOC;
 
 namespace ME3Explorer
 {
@@ -1025,7 +1027,7 @@ namespace ME3Explorer
                 }
             }
 
-            DebugOutput.PrintLn(string.Format("Starting FTS Window with parameters: Game: {0}  DLCPath: {1}  Cooked: {2}", WhichGame, DLCPath, pathCooked));
+            DebugOutput.PrintLn($"Starting FTS Window with parameters: Game: {WhichGame}  DLCPath: {DLCPath}  Cooked: {pathCooked}");
 
             using (TexplorerFirstTimeSetup fts = new TexplorerFirstTimeSetup(WhichGame, DLCPath, pathCooked))
             {
@@ -1354,7 +1356,11 @@ namespace ME3Explorer
             if (WhichGame == 3)
             {
                 DebugOutput.PrintLn("Updating TOCs...");
-                AutoTOC.GenerateAllTOCs();
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    AutoTOCWPF auto = new AutoTOCWPF(true);
+                    auto.ShowDialog();
+                }); 
                 DebugOutput.PrintLn("TOCs updated.");
             }
         }

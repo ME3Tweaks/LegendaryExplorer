@@ -1,4 +1,5 @@
 ﻿using ME3Explorer.Packages;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -9,7 +10,7 @@ namespace ME3Explorer
     /// <summary>
     /// Subclass of UserControl that also sets up the CurrentLoadedExport, LoadExport(), UnloadExport() and more methods
     /// </summary>
-    public abstract class ExportLoaderControl : UserControl, INotifyPropertyChanged
+    public abstract class ExportLoaderControl : NotifyPropertyChangedControlBase, IDisposable
     {
         /// <summary>
         /// Method to determine if an export is parsable by this control
@@ -27,14 +28,24 @@ namespace ME3Explorer
         /// </summary>
         public IExportEntry CurrentLoadedExport
         {
-            get
-            {
-                return _currentLoadedExport;
-            }
-            protected set
-            {
-                SetProperty(ref _currentLoadedExport, value);
-            }
+            get => _currentLoadedExport;
+            protected set => SetProperty(ref _currentLoadedExport, value);
+        }
+
+        /// <summary>
+        /// The currently loaded export's file, or null if none is currently loaded
+        /// </summary>
+        public IMEPackage Pcc => CurrentLoadedExport?.FileRef;
+
+        /// <summary>
+        /// Signals to the export loader that namelist is about to be modified
+        /// and that anything selected that is bound to a namelist (typically IndexedName)
+        /// should cached their current values until the change has completed
+        /// and SignalNamelistChanged() fires.
+        /// </summary>
+        public virtual void SignalNamelistAboutToUpdate()
+        {
+
         }
 
         /// <summary>
@@ -44,39 +55,29 @@ namespace ME3Explorer
         public abstract void LoadExport(IExportEntry exportEntry);
 
         /// <summary>
+        /// Signals to the export loader control that the namelist has changed, and that
+        /// anything that is bound to a list of names (typically IndexedName) should have its
+        /// selected item restored.
+        /// </summary>
+        public virtual void SignalNamelistChanged()
+        {
+            
+        }
+
+        /// <summary>
         /// Unloads any loaded exports from this control and resets the control UI
         /// </summary>
         public abstract void UnloadExport();
 
-
-        #region Property Changed Notification
-        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// Creates a new ExportLoaderHostedWindow to pop open with a new instance of the export loader
+        /// pointing to the current export
+        /// </summary>
+        public abstract void PopOut();
 
         /// <summary>
-        /// Notifies listeners when given property is updated.
+        /// Free resources for this control
         /// </summary>
-        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyname = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }
-
-        /// <summary>
-        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-        /// Should be called in property setters.
-        /// </summary>
-        /// <typeparam name="T">Type of given property.</typeparam>
-        /// <param name="field">Backing field to update.</param>
-        /// <param name="value">New value of property.</param>
-        /// <param name="propertyName">Name of property.</param>
-        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-        #endregion
+        public abstract void Dispose();
     }
 }

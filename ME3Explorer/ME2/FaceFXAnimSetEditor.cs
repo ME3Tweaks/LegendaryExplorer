@@ -8,14 +8,15 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using Be.Windows.Forms;
+using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.FaceFX;
+using ME3Explorer.SharedUI;
 
 namespace ME2Explorer
 {
-    public partial class FaceFXAnimSetEditor : Form
+    public partial class FaceFXAnimSetEditor : WinFormsBase
     {
-        public ME2Package pcc;
         public List<int> Objects;
         public ME2FaceFXAnimSet FaceFX;
 
@@ -26,18 +27,20 @@ namespace ME2Explorer
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.pcc|*.pcc";
+            OpenFileDialog d = new OpenFileDialog {Filter = "*.pcc|*.pcc"};
             if (d.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
-                    pcc = MEPackageHandler.OpenME2Package(d.FileName);
+                    LoadME2Package(d.FileName);
                     Objects = new List<int>();
-                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                    IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
                     for (int i = 0; i < Exports.Count; i++)
+                    {
                         if (Exports[i].ClassName == "FaceFXAnimSet")
                             Objects.Add(i);
+                    }
+
                     ListRefresh();
                 }
                 catch (Exception ex)
@@ -51,14 +54,14 @@ namespace ME2Explorer
         {
             listBox1.Items.Clear();
             foreach(int n in Objects)
-                listBox1.Items.Add("#" + n + " : " + pcc.Exports[n].GetFullPath);
+                listBox1.Items.Add($"#{n} : {Pcc.Exports[n].GetFullPath}");
         }
 
         private void FaceFXRefresh(int n, IEnumerable<string> expandedNodes = null, string topNodeName = null)
         {
             if (FaceFX == null)
                 return;
-            hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[Objects[n]].Data);
+            hb1.ByteProvider = new DynamicByteProvider(Pcc.Exports[Objects[n]].Data);
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(FaceFX.HeaderToTree());
             nameAllNodes(treeView1.Nodes);
@@ -87,11 +90,11 @@ namespace ME2Explorer
             }
         }
 
-        private void nameAllNodes(TreeNodeCollection Nodes)
+        private static void nameAllNodes(TreeNodeCollection Nodes)
         {
             List<TreeNode> allNodes = Nodes.Cast<TreeNode>().ToList();
             //flatten tree of nodes into list.
-            for (int i = 0; i < allNodes.Count(); i++)
+            for (int i = 0; i < allNodes.Count; i++)
             {
                 allNodes[i].Name = i.ToString();
                 allNodes.AddRange(allNodes[i].Nodes.Cast<TreeNode>());
@@ -103,7 +106,7 @@ namespace ME2Explorer
             int n = listBox1.SelectedIndex;
             if (n == -1)
                 return;
-            FaceFX = new ME2FaceFXAnimSet(pcc, pcc.Exports[Objects[n]]);
+            FaceFX = new ME2FaceFXAnimSet(Pcc, Pcc.Exports[Objects[n]]);
             FaceFXRefresh(n);
         }
 
@@ -112,9 +115,11 @@ namespace ME2Explorer
             int n = listBox1.SelectedIndex;
             if (n == -1)
                 return;
-            SaveFileDialog d = new SaveFileDialog();
-            d.FileName = pcc.Exports[Objects[n]].ObjectName + ".fxa";
-            d.Filter = "*.fxa|*.fxa";
+            SaveFileDialog d = new SaveFileDialog
+            {
+                FileName = Pcc.Exports[Objects[n]].ObjectName + ".fxa",
+                Filter = "*.fxa|*.fxa"
+            };
             if(d.ShowDialog() == DialogResult.OK)
             {
                 FaceFX.DumpToFile(d.FileName);
@@ -124,9 +129,9 @@ namespace ME2Explorer
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
                 return;
-            pcc.save();
+            Pcc.save();
             MessageBox.Show("Done.");
         }
 
@@ -158,35 +163,35 @@ namespace ME2Explorer
             //    switch (subidx)
             //    {
             //        case 0://unk1
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.Name.ToString(), 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.Name.ToString(), true);
             //            i = -1;
             //            if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
             //                d.Name = i;
             //            break;
             //        case 4://FadeInTime
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.FadeInTime.ToString(), 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.FadeInTime.ToString(), true);
             //            if (float.TryParse(result, out f))
             //                d.FadeInTime = f;
             //            break;
             //        case 5://FadeInTime
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.FadeOutTime.ToString(), 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.FadeOutTime.ToString(), true);
             //            if (float.TryParse(result, out f))
             //                d.FadeOutTime = f;
             //            break;
             //        case 6://unk2
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.unk2.ToString(), 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.unk2.ToString(), true);
             //            i = -1;
             //            if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
             //                d.unk2 = i;
             //            break;
             //        case 7://Path
-            //            d.path = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.path, 0, 0);
+            //            d.path = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.path, true);
             //            break;
             //        case 8://ID
-            //            d.ID = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.ID, 0, 0);
+            //            d.ID = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.ID, true);
             //            break;
             //        case 9://unk3
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.unk3.ToString(), 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.unk3.ToString(), true);
             //            i = -1;
             //            if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
             //                d.unk3 = i;
@@ -206,7 +211,7 @@ namespace ME2Explorer
             //    {
             //        case 1:
             //            FaceFXAnimSet.NameRef u = d.animations[subsubidx];
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", u.index + " ; " + u.unk2, 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", u.index + " ; " + u.unk2, true);
             //            string[] reslist = result.Split(';');
             //            if (reslist.Length != 2)
             //                return;
@@ -222,7 +227,7 @@ namespace ME2Explorer
             //            break;
             //        case 2:
             //            FaceFXAnimSet.ControlPoint u2 = d.points[subsubidx];
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", u2.time + " ; " + u2.weight + " ; " + u2.inTangent + " ; " + u2.leaveTangent, 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", u2.time + " ; " + u2.weight + " ; " + u2.inTangent + " ; " + u2.leaveTangent, true);
             //            reslist = result.Split(';');
             //            if (reslist.Length != 4)
             //                return;
@@ -245,7 +250,7 @@ namespace ME2Explorer
             //            d.points[subsubidx] = u2;
             //            break;
             //        case 3:
-            //            result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.numKeys[subsubidx].ToString(), 0, 0);
+            //            result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.numKeys[subsubidx].ToString(), true);
             //            if (int.TryParse(result.Trim(), out i))
             //                d.numKeys[subsubidx] = i;
             //            else
@@ -270,9 +275,7 @@ namespace ME2Explorer
         private void cloneEntryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TreeNode t = treeView2.SelectedNode;
-            if (t == null || t.Parent == null)
-                return;
-            TreeNode t1 = t.Parent;
+            TreeNode t1 = t?.Parent;
             if (t1 == null || t1.Text != "Entries" || FaceFX == null)
                 return;
             FaceFX.CloneEntry(t.Index);
@@ -285,9 +288,7 @@ namespace ME2Explorer
         private void deleteEntryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TreeNode t = treeView2.SelectedNode;
-            if (t == null || t.Parent == null)
-                return;
-            TreeNode t1 = t.Parent;
+            TreeNode t1 = t?.Parent;
             if (t1 == null || t1.Text != "Entries" || FaceFX == null)
                 return;
             FaceFX.RemoveEntry(t.Index);
@@ -300,14 +301,11 @@ namespace ME2Explorer
         private void moveEntryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TreeNode t = treeView2.SelectedNode;
-            if (t == null || t.Parent == null)
-                return;
-            TreeNode t1 = t.Parent;
+            TreeNode t1 = t?.Parent;
             if (t1 == null || t1.Text != "Entries" || FaceFX == null)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new index", "ME3Explorer", t.Index.ToString(), 0, 0);
-            int i = 0;
-            if (int.TryParse(result, out i))
+            string result = PromptDialog.Prompt(null, "Please enter new index", "ME3Explorer", t.Index.ToString(), true);
+            if (int.TryParse(result, out int i))
             {
                 FaceFX.MoveEntry(t.Index, i);
                 FaceFX.Save();
@@ -321,7 +319,7 @@ namespace ME2Explorer
         {
             if (FaceFX == null)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name to add", "ME3Explorer", "", 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new name to add", "ME3Explorer", "", true);
             if (result != "")
             {
                 FaceFX.AddName(result);

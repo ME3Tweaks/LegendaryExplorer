@@ -5,31 +5,33 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
+using static ME1Explorer.Unreal.Classes.TalkFile;
 
 namespace ME1Explorer
 {
     class HuffmanCompression
     {
-        private List<TLKEntry> _inputData = new List<TLKEntry>();
+        private List<TLKStringRef> _inputData = new List<TLKStringRef>();
         private Dictionary<char, int> frequencyCount = new Dictionary<char, int>();
         private List<HuffmanNode> _huffmanTree = new List<HuffmanNode>();
         private Dictionary<char, BitArray> _huffmanCodes = new Dictionary<char, BitArray>();
 
-        private class TLKEntry
-        {
-            public int StringID;
-            public int Flags;
-            public string data;
-            public int index;
+        //private class TLKEntry
+        //{
+        //    public int StringID;
+        //    public int Flags;
+        //    public string data;
+        //    public int index;
 
-            public TLKEntry(int StringID, int flags, string data)
-            {
-                this.StringID = StringID;
-                this.Flags = flags;
-                this.data = data;
-                index = -1;
-            }
-        }
+        //    public TLKEntry(int StringID, int flags, string data)
+        //    {
+        //        this.StringID = StringID;
+        //        this.Flags = flags;
+        //        this.data = data;
+        //        index = -1;
+        //    }
+        //}
 
         private class HuffmanNode
         {
@@ -82,57 +84,67 @@ namespace ME1Explorer
             PrepareHuffmanCoding();
         }
 
-        public void replaceTlkwithFile(ME1Package pcc, int Index)
+        public void LoadInputData(List<TLKStringRef> tlkEntries)
+        {
+            _inputData = tlkEntries;
+            PrepareHuffmanCoding();
+        }
+
+        public void serializeTLKStrListToExport(IExportEntry export, bool savePackage = false)
+        {
+            if (export.FileRef.Game != MEGame.ME1)
+            {
+                throw new Exception("Cannot save a ME1 TLK to a game that is not Mass Effect 1.");
+            }
+            serializeTalkfileToExport(export.FileRef as ME1Package, export, savePackage);
+        }
+
+        public void serializeTalkfileToExport(ME1Package pcc, IExportEntry export, bool savePackage = false)
         {
             /* converts Huffmann Tree to binary form */
             byte[] treeBuffer = ConvertHuffmanTreeToBuffer();
 
-            List<EncodedString> encodedStrings = new List<EncodedString>();
+            var encodedStrings = new List<EncodedString>();
             int i = 0;
             foreach (var entry in _inputData)
             {
                 if (entry.Flags == 0)
                 {
                     if (entry.StringID > 0)
-                        entry.index = -1;
+                        entry.Index = -1;
                     else
-                        entry.index = 0;
+                        entry.Index = 0;
                 }
                 else
                 {
-                    entry.index = i;
+                    entry.Index = i;
                     i++;
-                    List<BitArray> binaryData = new List<BitArray>();
+                    var binaryData = new List<BitArray>();
                     int binaryLength = 0;
+                    
                     /* for every character in a string, put it's binary code into data array */
-                    foreach (char c in entry.data)
+                    foreach (char c in entry.ASCIIData)
                     {
                         binaryData.Add(_huffmanCodes[c]);
                         binaryLength += _huffmanCodes[c].Count;
                     }
                     byte[] buffer = BitArrayListToByteArray(binaryData, binaryLength);
-                    encodedStrings.Add(new EncodedString(entry.data.Length, buffer.Length, buffer));
+                    encodedStrings.Add(new EncodedString(entry.ASCIIData.Length, buffer.Length, buffer));
                 }
             }
 
-            /* get properties from object we're replacing*/
-            byte[] properties = pcc.Exports[Index].Data.Take(40).ToArray();
-
-            MemoryStream m = new MemoryStream();
 
             /* writing properties */
-            m.Write(properties, 0, 40);
-            m.Seek(0x1C, SeekOrigin.Begin);
-            m.Write(BitConverter.GetBytes(_inputData.Count), 0, 4);
-            m.Seek(0, SeekOrigin.End);
+            export.WriteProperty(new IntProperty(_inputData.Count, "m_nHashTableSize"));
 
+            MemoryStream m = new MemoryStream();
             /* writing entries */
             m.Write(BitConverter.GetBytes(_inputData.Count), 0, 4);
-            foreach (TLKEntry entry in _inputData)
+            foreach (TLKStringRef entry in _inputData)
             {
                 m.Write(BitConverter.GetBytes(entry.StringID), 0, 4);
                 m.Write(BitConverter.GetBytes(entry.Flags), 0, 4);
-                m.Write(BitConverter.GetBytes(entry.index), 0, 4);
+                m.Write(BitConverter.GetBytes(entry.Index), 0, 4);
             }
 
             /* writing HuffmanTree */
@@ -148,8 +160,11 @@ namespace ME1Explorer
             }
 
             byte[] buff = m.ToArray();
-            pcc.Exports[Index].Data = buff;
-            pcc.save(pcc.FileName); 
+            export.setBinaryData(buff);
+            if (savePackage)
+            {
+                pcc.save(pcc.FileName);
+            }
         }
 
         /// <summary>
@@ -181,7 +196,7 @@ namespace ME1Explorer
                     /* every string should be NULL-terminated */
                     if (id > 0)
                         data += '\0';
-                    _inputData.Add(new TLKEntry(id, flags, data));
+                    _inputData.Add(new TLKStringRef(id, flags, data));
                 }
             }
             xmlReader.Close();
@@ -199,7 +214,7 @@ namespace ME1Explorer
             {
                 if (entry.StringID <= 0)
                     continue;
-                foreach (char c in entry.data)
+                foreach (char c in entry.ASCIIData)
                 {
                     if (!frequencyCount.ContainsKey(c))
                         frequencyCount.Add(c, 0);

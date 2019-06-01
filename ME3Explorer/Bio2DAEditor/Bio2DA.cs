@@ -10,17 +10,38 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ME3Explorer
 {
     public class Bio2DA
     {
-        bool IsIndexed = false;
-        int CellCount = 0;
+        public bool IsIndexed = false;
+        /// <summary>
+        /// Number of cells that the Bio2DA says exist in the table
+        /// </summary>
+        int PopulatedCellCount = 0;
         static string[] stringRefColumns = { "StringRef", "SaveGameStringRef", "Title", "LabelRef", "Name", "ActiveWorld", "Description", "ButtonLabel" };
         public Bio2DACell[,] Cells { get; set; }
         public List<string> RowNames { get; set; }
         public List<string> ColumnNames { get; set; }
+
+        public int RowCount
+        {
+            get
+            {
+                return RowNames == null ? 0 : RowNames.Count;
+            }
+        }
+
+        public int ColumnCount
+        {
+            get
+            {
+                return ColumnNames == null ? 0 : ColumnNames.Count;
+            }
+        }
+
         IExportEntry export;
         public Bio2DA(IExportEntry export)
         {
@@ -51,8 +72,7 @@ namespace ME3Explorer
             }
             else
             {
-                string rowLabelsVar = "m_lstRowNumbers"; //Bio2DANumberedRows
-                var props = export.GetProperty<ArrayProperty<IntProperty>>(rowLabelsVar);
+                var props = export.GetProperty<ArrayProperty<IntProperty>>("m_lstRowNumbers");//Bio2DANumberedRows
                 if (props != null)
                 {
                     foreach (IntProperty n in props)
@@ -62,7 +82,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    Console.WriteLine("Unable to find row names property!");
+                    Debug.WriteLine("Unable to find row names property (m_lstRowNumbers)!");
                     Debugger.Break();
                     return;
                 }
@@ -82,7 +102,7 @@ namespace ME3Explorer
                 ColumnNames.Insert(0, name);
                 colcount--;
             }
-            Cells = new Bio2DACell[RowNames.Count(), ColumnNames.Count()];
+            Cells = new Bio2DACell[RowCount, ColumnCount];
 
             currentcoloffset += 4;  //column count.
             int infilecolcount = BitConverter.ToInt32(data, data.Length - currentcoloffset);
@@ -92,15 +112,14 @@ namespace ME3Explorer
             int curroffset = binstartoffset;
 
             int cellcount = BitConverter.ToInt32(data, curroffset);
-            if (cellcount > 0)
+            if ( cellcount > 0 ) 
             {
                 curroffset += 4;
-                for (int rowindex = 0; rowindex < RowNames.Count(); rowindex++)
+                for (int rowindex = 0; rowindex < RowCount; rowindex++)
                 {
-                    for (int colindex = 0; colindex < ColumnNames.Count() && curroffset < data.Length - currentcoloffset; colindex++)
+                    for (int colindex = 0; colindex < ColumnCount && curroffset < data.Length - currentcoloffset; colindex++)
                     {
-                        byte dataType = 255;
-                        dataType = data[curroffset];
+                        byte dataType = data[curroffset];
                         curroffset++;
                         int dataSize = dataType == (byte)Bio2DACell.Bio2DADataType.TYPE_NAME ? 8 : 4;
                         byte[] celldata = new byte[dataSize];
@@ -110,7 +129,7 @@ namespace ME3Explorer
                         curroffset += dataSize;
                     }
                 }
-                CellCount = RowNames.Count() * ColumnNames.Count();
+                PopulatedCellCount = RowCount * ColumnCount;  //Required for edits to write correct count if SaveToExport
             }
             else
             {
@@ -120,11 +139,11 @@ namespace ME3Explorer
                 curroffset += 4;
 
                 //curroffset += 4;
-                while (CellCount < cellcount)
+                while (PopulatedCellCount < cellcount)
                 {
                     int index = BitConverter.ToInt32(data, curroffset);
-                    int row = index / ColumnNames.Count();
-                    int col = index % ColumnNames.Count();
+                    int row = index / ColumnCount;
+                    int col = index % ColumnCount;
                     curroffset += 4;
                     byte dataType = data[curroffset];
                     int dataSize = dataType == (byte)Bio2DACell.Bio2DADataType.TYPE_NAME ? 8 : 4;
@@ -132,19 +151,27 @@ namespace ME3Explorer
                     byte[] celldata = new byte[dataSize];
                     Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
                     Bio2DACell cell = new Bio2DACell(pcc, curroffset, dataType, celldata);
-                    Cells[row, col] = cell;
-                    CellCount++;
+                    this[row, col] = cell;
                     curroffset += dataSize;
                 }
             }
             //Console.WriteLine("Finished loading " + export.ObjectName);
         }
 
+        /// <summary>
+        /// Initializes a blank Bio2DA. Cells is not initialized, the caller must set up this Bio2DA.
+        /// </summary>
+        public Bio2DA()
+        {
+            ColumnNames = new List<string>();
+            RowNames = new List<string>();
+        }
+
         internal string GetColumnNameByIndex(int columnIndex)
         {
             if (columnIndex < ColumnNames.Count && columnIndex >= 0)
             {
-             return   ColumnNames[columnIndex];
+                return ColumnNames[columnIndex];
             }
             return null;
         }
@@ -166,9 +193,9 @@ namespace ME3Explorer
 
         internal void MarkAsUnmodified()
         {
-            for (int rowindex = 0; rowindex < RowNames.Count(); rowindex++)
+            for (int rowindex = 0; rowindex < RowCount; rowindex++)
             {
-                for (int colindex = 0; colindex < ColumnNames.Count(); colindex++)
+                for (int colindex = 0; colindex < ColumnCount; colindex++)
                 {
                     Bio2DACell cell = Cells[rowindex, colindex];
                     if (cell != null)
@@ -185,20 +212,20 @@ namespace ME3Explorer
             var worksheet = workbook.Worksheets.Add(export.ObjectName.Truncate(30));
 
             //write labels
-            for (int rowindex = 0; rowindex < RowNames.Count(); rowindex++)
+            for (int rowindex = 0; rowindex < RowCount; rowindex++)
             {
                 worksheet.Cell(rowindex + 2, 1).Value = RowNames[rowindex];
             }
 
-            for (int colindex = 0; colindex < ColumnNames.Count(); colindex++)
+            for (int colindex = 0; colindex < ColumnCount; colindex++)
             {
                 worksheet.Cell(1, colindex + 2).Value = ColumnNames[colindex];
             }
 
             //write data
-            for (int rowindex = 0; rowindex < RowNames.Count(); rowindex++)
+            for (int rowindex = 0; rowindex < RowCount; rowindex++)
             {
-                for (int colindex = 0; colindex < ColumnNames.Count(); colindex++)
+                for (int colindex = 0; colindex < ColumnCount; colindex++)
                 {
                     if (Cells[rowindex, colindex] != null)
                     {
@@ -207,7 +234,7 @@ namespace ME3Explorer
                         if (cell.Type == Bio2DACell.Bio2DADataType.TYPE_INT && cell.GetIntValue() > 0)
                         {
                             int stringId = cell.GetIntValue();
-                            string tlkLookup = ME1Explorer.TlkManager.GetStringById(stringId);
+                            string tlkLookup = ME1Explorer.ME1TalkFiles.findDataById(stringId);
                             if (tlkLookup != "No Data" && tlkLookup != "")
                             {
                                 worksheet.Cell(rowindex + 2, colindex + 2).Comment.AddText(tlkLookup);
@@ -233,12 +260,12 @@ namespace ME3Explorer
                     //Indexed ones seem to have 0 at start
                     stream.WriteBytes(BitConverter.GetBytes(0));
                 }
-                stream.WriteBytes(BitConverter.GetBytes(CellCount));
+                stream.WriteBytes(BitConverter.GetBytes(PopulatedCellCount));
 
                 //Write cell data
-                for (int rowindex = 0; rowindex < RowNames.Count(); rowindex++)
+                for (int rowindex = 0; rowindex < RowCount; rowindex++)
                 {
-                    for (int colindex = 0; colindex < ColumnNames.Count(); colindex++)
+                    for (int colindex = 0; colindex < ColumnCount; colindex++)
                     {
                         Bio2DACell cell = Cells[rowindex, colindex];
                         if (cell != null)
@@ -246,7 +273,7 @@ namespace ME3Explorer
                             if (IsIndexed)
                             {
                                 //write index
-                                int index = (rowindex * ColumnNames.Count()) + colindex; //+1 because they are not zero based indexes since they are numerals
+                                int index = (rowindex * ColumnCount) + colindex; //+1 because they are not zero based indexes since they are numerals
                                 stream.WriteBytes(BitConverter.GetBytes(index));
                             }
                             stream.WriteByte((byte)cell.Type);
@@ -261,7 +288,9 @@ namespace ME3Explorer
                             }
                             else
                             {
-                                Console.WriteLine("THIS SHOULDN'T OCCUR!");
+                                Debug.WriteLine("THIS SHOULDN'T OCCUR!");
+                                Debugger.Break();
+                                throw new Exception("A non-indexed Bio2DA cannot have null cells.");
                             }
                         }
                     }
@@ -273,11 +302,11 @@ namespace ME3Explorer
                     stream.WriteBytes(BitConverter.GetBytes(0)); //seems to be a 0 before column definitions
                 }
                 //Console.WriteLine("Columns defs start at " + stream.Position.ToString("X6"));
-                stream.WriteBytes(BitConverter.GetBytes(ColumnNames.Count()));
-                for (int colindex = 0; colindex < ColumnNames.Count(); colindex++)
+                stream.WriteBytes(BitConverter.GetBytes(ColumnCount));
+                for (int colindex = 0; colindex < ColumnCount; colindex++)
                 {
                     //Console.WriteLine("Writing column definition " + columnNames[colindex]);
-                    int nameIndexForCol = export.FileRef.findName(ColumnNames[colindex]);
+                    int nameIndexForCol = export.FileRef.FindNameOrAdd(ColumnNames[colindex]);
                     stream.WriteBytes(BitConverter.GetBytes(nameIndexForCol));
                     stream.WriteBytes(BitConverter.GetBytes(0)); //second half of name reference in 2da is always zero since they're always indexed at 0
                     stream.WriteBytes(BitConverter.GetBytes(colindex));
@@ -285,19 +314,140 @@ namespace ME3Explorer
 
                 int propsEnd = export.propsEnd();
                 byte[] binarydata = stream.ToArray();
-                byte[] propertydata = export.Data.Take(propsEnd).ToArray();
-                var newExportData = new byte[propertydata.Length + binarydata.Length];
-                propertydata.CopyTo(newExportData, 0);
-                binarydata.CopyTo(newExportData, propertydata.Length);
+
+                //Todo: Rewrite properties here
+                PropertyCollection props = new PropertyCollection();
+                if (export.ClassName == "Bio2DA")
+                {
+                    var indicies = new ArrayProperty<NameProperty>(ArrayType.Name, "m_sRowLabel");
+                    foreach (var rowname in RowNames)
+                    {
+                        indicies.Add(new NameProperty { Value = rowname });
+                    }
+                    props.Add(indicies);
+                }
+                else
+                {
+                    var indices = new ArrayProperty<IntProperty>(ArrayType.Int, "m_lstRowNumbers");
+                    foreach (var rowname in RowNames)
+                    {
+                        indices.Add(new IntProperty(int.Parse(rowname)));
+                    }
+                    props.Add(indices);
+                }
+
+                MemoryStream propsStream = new MemoryStream();
+                props.WriteTo(propsStream, export.FileRef);
+                MemoryStream currentDataStream = new MemoryStream(export.Data);
+                byte[] propertydata = propsStream.ToArray();
+                int propertyStartOffset = export.GetPropertyStart();
+                var newExportData = new byte[propertyStartOffset + propertydata.Length + binarydata.Length];
+                Buffer.BlockCopy(export.Data, 0, newExportData, 0, propertyStartOffset);
+                propertydata.CopyTo(newExportData, propertyStartOffset);
+                binarydata.CopyTo(newExportData, propertyStartOffset + propertydata.Length);
                 //Console.WriteLine("Old data size: " + export.Data.Length);
                 //Console.WriteLine("NEw data size: " + newExportData.Length);
-                if (export.Data.Length != newExportData.Length)
-                {
-                    Console.WriteLine("FILES ARE WRONG SIZE");
-                    Debugger.Break();
-                }
+
+                //This assumes the input and output data sizes are the same. We should not assume this with new functionality
+                //if (export.Data.Length != newExportData.Length)
+                //{
+                //    Debug.WriteLine("FILES ARE WRONG SIZE");
+                //    Debugger.Break();
+                //}
                 export.Data = newExportData;
             }
+        }
+
+        public static Bio2DA ReadExcelTo2DA(IExportEntry export, string Filename)
+        {
+            var Workbook = new XLWorkbook(Filename);
+            IXLWorksheet iWorksheet = null;
+            if ( Workbook.Worksheets.Count() > 1)
+            {
+                try
+                {
+                    iWorksheet = Workbook.Worksheet("Import");
+                }
+                catch
+                {
+                    MessageBox.Show("Import Sheet not found");
+                    return null;
+                }
+            }
+            else
+            {
+                iWorksheet = Workbook.Worksheet(1);
+            }
+
+            //Do we want to limit user to importing same column structure as existing?  Who would be stupid enough to do something else??? ME.
+            // - Kinkojiro, 2019
+
+            //STEP 1 Clear existing data
+            Bio2DA bio2da = new Bio2DA();
+            bio2da.export = export;
+
+            //STEP 2 Read columns and row names
+
+            //Column names
+            IXLRow hRow = iWorksheet.Row(1);
+            foreach (IXLCell cell in hRow.Cells(hRow.FirstCellUsed().Address.ColumnNumber, hRow.LastCellUsed().Address.ColumnNumber))
+            {
+                if (cell.Address.ColumnNumber > 1) //ignore excel column 1
+                {
+                    bio2da.ColumnNames.Add(cell.Value.ToString());
+                }
+            }
+
+            //Row names 
+            IXLColumn column = iWorksheet.Column(1);
+            foreach (IXLCell cell in column.Cells())
+            {
+                if (cell.Address.RowNumber > 1) //ignore excel row 1
+                {
+                    bio2da.RowNames.Add(cell.Value.ToString());
+                }
+            }
+
+            //Populate the Bio2DA now that we know the size
+            bio2da.Cells = new Bio2DACell[bio2da.RowCount, bio2da.ColumnCount];
+
+
+            //Step 3 Populate the table.
+            //indices here are excel based. Subtract two to get Bio2DA based.
+            for (int rowIndex = 2; rowIndex < (bio2da.RowCount + 2); rowIndex++)
+            {
+                for (int columnIndex = 2; columnIndex < bio2da.ColumnCount + 2; columnIndex++)
+                {
+                    IXLCell xlCell = iWorksheet.Cell(rowIndex, columnIndex);
+                    string xlCellContents = xlCell.Value.ToString();
+                    if (!string.IsNullOrEmpty(xlCellContents))
+                    {
+                        Bio2DACell newCell = new Bio2DACell();
+                        if (int.TryParse(xlCellContents, out int intVal))
+                        {
+                            newCell.Type = Bio2DACell.Bio2DADataType.TYPE_INT;
+                            newCell.Data = BitConverter.GetBytes(intVal);
+                        }
+                        else if (float.TryParse(xlCellContents, out float floatVal))
+                        {
+                            newCell.Type = Bio2DACell.Bio2DADataType.TYPE_FLOAT;
+                            newCell.Data = BitConverter.GetBytes(floatVal);
+                        }
+                        else
+                        {
+                            newCell.Type = Bio2DACell.Bio2DADataType.TYPE_NAME;
+                            newCell.Pcc = export.FileRef; //for displaying, if this displays before the export is reloaded and 2da is refreshed
+                            newCell.Data = BitConverter.GetBytes((long)export.FileRef.FindNameOrAdd(xlCellContents)); //long because names are 8 bytes not 4
+                        }
+                        bio2da[rowIndex - 2, columnIndex - 2] = newCell;
+                    }
+                    else
+                    {
+                        bio2da.IsIndexed = true;  //Null cells = indexing
+                    }
+                }
+            }
+            return bio2da;
         }
 
         public Bio2DACell this[int rowindex, int colindex]
@@ -309,7 +459,15 @@ namespace ME3Explorer
             }
             set
             {
-                // set the item for this index. value will be of type Thing.
+                // set the item for this index. value will be of type Bio2DACell.
+                if (Cells[rowindex, colindex] == null && value != null)
+                {
+                    PopulatedCellCount++;
+                }
+                if (Cells[rowindex, colindex] != null && value == null)
+                {
+                    PopulatedCellCount--;
+                }
                 Cells[rowindex, colindex] = value;
             }
         }

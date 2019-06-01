@@ -34,8 +34,8 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame
 		/// </summary>
 		public int InstanceVersion
 		{
-			get { return _instanceVersion; }
-			set { SetProperty(ref _instanceVersion, value); }
+			get => _instanceVersion;
+		    set => SetProperty(ref _instanceVersion, value);
 		}
 	}
 }

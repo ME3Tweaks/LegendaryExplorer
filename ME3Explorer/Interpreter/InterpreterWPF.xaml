@@ -5,14 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+             xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
              xmlns:global="clr-namespace:ME3Explorer"
              xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
+             xmlns:unreal="clr-namespace:ME3Explorer.Unreal"
              xmlns:Commands="clr-namespace:ME3Explorer.Commands"
              xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
              mc:Ignorable="d" 
              Loaded="Interpreter_Loaded"
              xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+             xmlns:properties="clr-namespace:ME3Explorer.Properties"
                             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                            xmlns:fa="http://schemas.fontawesome.io/icons/"
                             DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignWidth="800"
              d:DesignHeight="500">
@@ -26,14 +30,26 @@
     </UserControl.Resources>
     <DockPanel Name="InterpreterWPF_DockPanel">
         <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
-            <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the export" Content="Save Hex Changes" Foreground="{Binding HasUnsavedChanges, Converter={StaticResource UnsavedChangesForegroundConverter}}" Click="Interpreter_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
-            <Button Content="Toggle Hexbox Width" ToolTip="Toggle between 4 and 16 byte widths" Click="Interpreter_ToggleHexboxWidth_Click"/>
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the export" Content="Save Hex Changes" Command="{Binding SaveHexChangesCommand}"
+                    Foreground="{Binding HasUnsavedChanges, Converter={StaticResource UnsavedChangesForegroundConverter}}"/>
+            <Button Name="ToggleHexboxWidth_Button" Content="Toggle Hexbox Width" ToolTip="Toggle between 4 and 16 byte widths" Command="{Binding ToggleHexBoxWidthCommand}"/>
+            <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Content="Add Property" ToolTip="Add a property from this class or a superclass to this object" Command="{Binding AddPropertyCommand}"/>
             <Separator Name="EditorSet_ArraySetSeparator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-            <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array" Content="Add Array Element" Click="AddArrayElement_Button_Click" VerticalAlignment="Center"/>
-            <Button Name="RemoveArrayElement_Button" ToolTip="Remove the selected element from the array" Content="Remove Array Element" Click="RemoveArrayElement_Button_Click" VerticalAlignment="Center"/>
-            <Separator Name="EditorSet_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array" Content="Add Array Element" Command="{Binding AddArrayElementCommand}"
+                    SharedUI:Bindings.VisibilityToEnabled="True" VerticalAlignment="Center"/>
+            <Button Name="RemoveArrayElement_Button" ToolTip="Remove the selected element from the array" Content="Remove Array Element" Command="{Binding RemoveArrayElementCommand}"
+                    SharedUI:Bindings.VisibilityToEnabled="True" VerticalAlignment="Center"/>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+            <Button Name="ArrayElement_MoveUp_Button" ToolTip="Move the selected array element up in the list" VerticalAlignment="Center" Width="30"
+                    Command="{Binding MoveArrayElementUpCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
+                <fa:ImageAwesome Icon="ArrowUp" Height="16" Width="16" Foreground="CornflowerBlue"/>
+            </Button>
+            <Button Name="ArrayElement_MoveDown_Button" ToolTip="Move the selected array element down in the list" VerticalAlignment="Center"  Width="30"
+                    Command="{Binding MoveArrayElementDownCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
+                <fa:ImageAwesome Icon="ArrowDown" Height="16" Width="16" Foreground="CornflowerBlue"/>
+            </Button>
+            <!--<Separator Name="EditorSet_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>-->
             <TextBox Width="80" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Margin="0" Style="{StaticResource {x:Type TextBox}}"/>
             <ComboBox Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True">
                 <ComboBox.ItemsPanel>
@@ -48,9 +64,14 @@
                             <TextBlock Text="{Binding Path=Name.Name}" Foreground="Black" Margin="5,0,0,0"/>
                         </StackPanel>
                     </DataTemplate>
+                    <DataTemplate DataType="{x:Type unreal:NameReference}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=InstancedString}" Foreground="Black" Margin="5,0,0,0"/>
+                        </StackPanel>
+                    </DataTemplate>
                 </ComboBox.Resources>
             </ComboBox>
-            <TextBlock Text="Index:" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center"/>
+            <TextBlock Text="Index:" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center" Margin="5,0,2,0"/>
             <TextBox Width="30" Name="NameIndex_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"/>
             <Button Name="Set_Button" Content="Set" ToolTip="Sets the selected property to this value" Click="SetValue_Click" VerticalAlignment="Stretch" Padding="10,0,10,0" Style="{StaticResource {x:Type Button}}"/>
             <TextBlock Name="ParsedValue_TextBlock" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
@@ -60,103 +81,143 @@
                 <TextBlock Name="StatusBar_LeftMostText" Text="Nothing selected"/>
             </StatusBarItem>
         </StatusBar>
-<Grid Margin="0,1,0,-1">
-    <Grid.RowDefinitions>
-        <RowDefinition Height="*" MaxHeight="1080"/>
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-        <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
-        <ColumnDefinition Width="1" />
-        <ColumnDefinition Width="*" />
-    </Grid.ColumnDefinitions>
-    <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
-    <WindowsFormsHost Grid.Row="0" Grid.ColumnSpan="2"   Name="Interpreter_Hexbox_Host" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
-        </hb1:HexBox>
-    </WindowsFormsHost>
-            <GridSplitter Grid.Column="1" 
-                      Grid.Row="1" HorizontalAlignment="Stretch" 
-                      Margin="-5,0"
-                      BorderThickness="5,0"
-                      BorderBrush="Transparent"
-                      Panel.ZIndex="60"/>
-            <SharedUI:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" ItemsSource="{Binding PropertyNodes}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+        <Grid Margin="0,1,0,-1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" MaxHeight="1080"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
+                <ColumnDefinition Width="1" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
+            <WindowsFormsHost Grid.Row="0" Grid.ColumnSpan="2"   Name="Interpreter_Hexbox_Host" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
+                </hb1:HexBox>
+            </WindowsFormsHost>
+            <GridSplitter
+                Name="HexProps_GridSplitter"
+                Grid.Column="1"
+                HorizontalAlignment="Stretch"
+                Margin="-5,0"
+                BorderThickness="5,0"
+                BorderBrush="Transparent"
+                Panel.ZIndex="60" />
+            <SharedUI:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" ItemsSource="{Binding PropertyNodes}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                 <SharedUI:StretchingTreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type global:UPropertyTreeViewEntry}" ItemsSource="{Binding ChildrenProperties}">
-                        <StackPanel x:Name="PropertyItem_Container" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="1">
-                            <StackPanel>
+                        <Border x:Name="PropertyItem_Container" Margin="1" Padding="{Binding Path=(SharedUI:TouchComfySettings.InterpreterWPFNodeMargin)}">
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center" FontStyle="Italic"/>
+                                    <TextBlock x:Name="PropertyItem_Offset" Text="{Binding Property.StartOffset, StringFormat='{}{0:X5}: '}" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_AdvancedDisplay, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}}" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center"/>
                                     <TextBlock x:Name="PropertyItem_EditableValue" Margin="5,0,0,0" Text="{Binding EditableValue}" VerticalAlignment="Center" FontWeight="Bold" Visibility="{Binding EditableValue, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
                                     <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0" Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
                                     <xctk:ColorPicker Margin="5,0,0,0" Visibility="{Binding Property, Converter={StaticResource UPropertyColorPickerVisibilityConverter}}" SelectedColor="{Binding ColorStructCode,Converter={StaticResource ColorCodeConverter}}" Width="60"/>
                                 </StackPanel>
-                                <TextBlock x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                <TextBlock Grid.Row="1" x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_AdvancedDisplay, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="PreviewMouseRightButtonDown">
                                         <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
-                            </StackPanel>
-                        </StackPanel>
+                            </Grid>
+                        </Border>
                         <HierarchicalDataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="ObjectProperty">
-                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#6d6c3f"/>-->
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="ObjectProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d6c3f"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88fffec4"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="FloatProperty">
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="FloatProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#004f46"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#4400ffaa"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="IntProperty">
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="IntProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#664f46"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#AAffeae2"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="StrProperty">
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="StrProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#071f06"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#6632aaf4"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="ArrayProperty">
-                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#382c4c"/>-->
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="ArrayProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#382c4c"/>
-                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#BBffe2ba"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="BoolProperty">
-                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#43563a"/>-->
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#99ffe2ba"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="BoolProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#43563a"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ecffe2"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="StructProperty">
-                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#593953"/>-->
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="StructProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#593953"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88f4beea"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="ByteProperty">
+                            </MultiDataTrigger>
+                             <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="ByteProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#474647"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88afaeaf"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="NameProperty">
-                                <!--<Setter TargetName="PropertyItem_EditorSet" Property="ContentTemplate" Value="{StaticResource EditorSet_NamePropertyTemplate}"/>-->
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="NameProperty" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#4a5568"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88e2edff"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="Unknown">
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="Unknown" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="White"/>
                                 <Setter TargetName="PropertyItem_EditableValue" Property="Foreground" Value="White"/>
                                 <Setter TargetName="PropertyItem_ParsedValue" Property="Foreground" Value="White"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="Red"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RawPropertyType}" Value="None">
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="None" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d4818"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ffb759"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding HasChanges}" Value="True">
-                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="Maroon"/>
-                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="Yellow"/>
-                            </DataTrigger>
-
-
+                            </MultiDataTrigger>
                         </HierarchicalDataTemplate.Triggers>
                     </HierarchicalDataTemplate>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
@@ -173,28 +234,32 @@
                         <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
                         <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
                     </Style>
-                    
                 </SharedUI:StretchingTreeView.ItemContainerStyle>
                 <SharedUI:StretchingTreeView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Sort children properties alphabetically" ToolTip="Sorts properties alphabetically. This is a cosmetic only change." Command="{Binding SortChildrenCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                        <MenuItem Header="Array sorting: By ascending parsed value" ToolTip="Sorts an array property by its parsed value, in ascending order." Command="{Binding SortParsedArrayAscendingCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                        <MenuItem Header="Array sorting: By descending parsed value" ToolTip="Sorts an array property by its parsed value, in descending order." Command="{Binding SortParsedArrayDescendingCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                        <MenuItem Header="Array sorting: By ascending value" ToolTip="Sorts an array property by its value, in ascending order." Command="{Binding SortValueArrayAscendingCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                        <MenuItem Header="Array sorting: By descending value" ToolTip="Sorts an array property by its value, in descending order." Command="{Binding SortValueArrayDescendingCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <MenuItem Header="Sort children properties alphabetically" ToolTip="Sorts properties alphabetically. This is a cosmetic only change." Command="{Binding SortChildrenCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Array sorting: By ascending parsed value" ToolTip="Sorts an array property by its parsed value, in ascending order." Command="{Binding SortParsedArrayAscendingCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Array sorting: By descending parsed value" ToolTip="Sorts an array property by its parsed value, in descending order." Command="{Binding SortParsedArrayDescendingCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Array sorting: By ascending value" ToolTip="Sorts an array property by its value, in ascending order." Command="{Binding SortValueArrayAscendingCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Array sorting: By descending value" ToolTip="Sorts an array property by its value, in descending order." Command="{Binding SortValueArrayDescendingCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Clear Array" ToolTip="Removes all values from the array." Command="{Binding ClearArrayCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
+                        <MenuItem Header="View referenced object in pop out Interpreter" ToolTip="Opens a new Interpreter window displaying the referenced object value" Command="{Binding PopoutInterpreterForObjectValueCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
-                        <MenuItem Header="Expand children" ToolTip="Expands all children of this property" Command="{Binding ExpandChildrenCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                        <MenuItem Header="Collapse children" ToolTip="Collapses all children of this property" Command="{Binding CollapseChildrenCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <MenuItem Header="Expand children" ToolTip="Expands all children of this property" Command="{Binding ExpandChildrenCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Collapse children" ToolTip="Collapses all children of this property" Command="{Binding CollapseChildrenCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
-                        <MenuItem Header="Remove property" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <MenuItem Header="Remove property" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <!--<MenuItem Header="Order array...">
-                            <MenuItem Header="By value" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" Visibility="{Binding Path=IsEnabled,Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <MenuItem Header="By value" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
 
                         </MenuItem>-->
                     </ContextMenu>
                 </SharedUI:StretchingTreeView.ContextMenu>
+                <i:Interaction.Behaviors>
+                    <vhelp:TreeViewHelper BoundSelectedItem="{Binding SelectedItem}" />
+                </i:Interaction.Behaviors>
             </SharedUI:StretchingTreeView>
         </Grid>
     </DockPanel>

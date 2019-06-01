@@ -58,7 +58,7 @@ namespace MassEffect3.Coalesce
             var sourcePath = source;
             var destinationPath = destination;
 
-            if (destinationPath.IsNullOrWhiteSpace())
+            if (string.IsNullOrEmpty(destinationPath))
             {
                 destinationPath = Path.ChangeExtension(sourcePath, null);
             }
@@ -96,7 +96,7 @@ namespace MassEffect3.Coalesce
                     var fileId = Path.GetFileNameWithoutExtension(file.Name);
                     fileId = ProperNames.FirstOrDefault(s => s.Equals(fileId, StringComparison.InvariantCultureIgnoreCase));
 
-                    var iniPath = string.Format("{0}/{1}.xml", destinationPath, fileId);
+                    var iniPath = $"{destinationPath}/{fileId}.xml";
 
                     OutputFileNames.Add(Path.GetFileName(iniPath));
 
@@ -132,7 +132,7 @@ namespace MassEffect3.Coalesce
                                     var propertyValue = value.Value;
                                     valueElement.SetAttributeValue("type", value.Type);
 
-                                    if (!propertyValue.IsNullOrWhiteSpace())
+                                    if (!string.IsNullOrEmpty(propertyValue))
                                     {
                                         propertyValue = SpecialCharacters.Aggregate(propertyValue, (current, c) => current.Replace(c.Key, c.Value));
                                     }
@@ -151,7 +151,7 @@ namespace MassEffect3.Coalesce
                                             propertyElement.SetAttributeValue("type", property.Value[0].Type);
                                             var propertyValue = property.Value[0].Value;
 
-                                            if (!propertyValue.IsNullOrWhiteSpace())
+                                            if (!string.IsNullOrEmpty(propertyValue))
                                             {
                                                 propertyValue = SpecialCharacters.Aggregate(propertyValue, (current, c) => current.Replace(c.Key, c.Value));
                                             }
@@ -205,7 +205,7 @@ namespace MassEffect3.Coalesce
                 foreach (var file in OutputFileNames)
                 {
                     var assetElement = new XElement("Asset");
-                    var path = string.Format("{0}", file);
+                    var path = $"{file}";
                     assetElement.SetAttributeValue("source", path);
 
                     assetsElement.Add(assetElement);
@@ -215,7 +215,7 @@ namespace MassEffect3.Coalesce
                 xDoc.Add(rootElement);
 
                 //
-                using (var writer = new XmlTextWriter(Path.Combine(destinationPath, string.Format("{0}.xml", inputId)), Encoding.UTF8))
+                using (var writer = new XmlTextWriter(Path.Combine(destinationPath, $"{inputId}.xml"), Encoding.UTF8))
                 {
                     writer.IndentChar = '\t';
                     writer.Indentation = 1;
@@ -233,7 +233,7 @@ namespace MassEffect3.Coalesce
         public static void ConvertToBin(string source, string destination)
         {
             var inputPath = Path.IsPathRooted(source) ? source : Path.Combine(GetExePath(), source);
-            var outputPath = !destination.IsNullOrWhiteSpace() ? destination : Path.ChangeExtension(inputPath, ".bin");
+            var outputPath = !string.IsNullOrEmpty(destination) ? destination : Path.ChangeExtension(inputPath, ".bin");
 
             if (!Path.IsPathRooted(outputPath))
             {
@@ -278,7 +278,7 @@ namespace MassEffect3.Coalesce
 
                             var valueValue = value.Value;
 
-                            if (!valueValue.IsNullOrWhiteSpace())
+                            if (!string.IsNullOrEmpty(valueValue))
                             {
                                 valueValue = SpecialCharacters.Aggregate(valueValue, (current, c) => current.Replace(c.Value, c.Key));
                             }

@@ -11,7 +11,7 @@ using ME3Explorer.Packages;
 
 namespace ME3Explorer
 {
-    public abstract class WPFBase : Window, INotifyPropertyChanged
+    public abstract class WPFBase : NotifyPropertyChangedWindowBase
     {
         private IMEPackage pcc;
         /// <summary>
@@ -19,14 +19,8 @@ namespace ME3Explorer
         /// </summary>
         public IMEPackage Pcc
         {
-            get
-            {
-                return pcc;
-            }
-            set
-            {
-                SetProperty(ref pcc, value);
-            }
+            get => pcc;
+            private set => SetProperty(ref pcc, value);
         }
 
         protected WPFBase()
@@ -41,50 +35,30 @@ namespace ME3Explorer
             {
                 e.Cancel = true;
             }
+            else
+            {
+                DataContext = null; //Remove all binding sources
+            }
         }
 
         public void LoadMEPackage(string s)
         {
-            pcc?.Release(wpfWindow: this);
+            UnLoadMEPackage();
             Pcc = MEPackageHandler.OpenMEPackage(s, wpfWindow: this);
         }
 
         public void LoadME3Package(string s)
         {
-            pcc?.Release(wpfWindow: this);
+            UnLoadMEPackage();
             Pcc = MEPackageHandler.OpenME3Package(s, wpfWindow: this);
         }
 
+        protected void UnLoadMEPackage()
+        {
+            pcc?.Release(wpfWindow: this);
+            Pcc = null;
+        }
+
         public abstract void handleUpdate(List<PackageUpdate> updates);
-
-        #region Property Changed Notification
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notifies listeners when given property is updated.
-        /// </summary>
-        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyname = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }
-
-        /// <summary>
-        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-        /// Should be called in property setters.
-        /// </summary>
-        /// <typeparam name="T">Type of given property.</typeparam>
-        /// <param name="field">Backing field to update.</param>
-        /// <param name="value">New value of property.</param>
-        /// <param name="propertyName">Name of property.</param>
-        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-        #endregion
     }
 }

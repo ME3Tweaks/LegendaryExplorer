@@ -7,7 +7,7 @@
              xmlns:curveEd="clr-namespace:ME3Explorer.CurveEd"
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              mc:Ignorable="d" 
-             d:DesignHeight="411.124" d:DesignWidth="827.446" Icon="/ME3Explorer;component/Resources/fxa_editor_64x64.png" Title="FaceFX Editor" KeyDown="Window_KeyDown">
+             d:DesignHeight="411.124" d:DesignWidth="827.446" Icon="/ME3Explorer;component/Resources/facefxeditor_256x256.ico" Title="FaceFX Editor" KeyDown="Window_KeyDown">
     <Window.CommandBindings>
         <CommandBinding Command="Open" CanExecute="Open_CanExecute" Executed="Open_Executed"/>
         <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>

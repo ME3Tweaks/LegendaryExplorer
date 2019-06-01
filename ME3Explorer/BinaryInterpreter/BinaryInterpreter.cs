@@ -316,6 +316,9 @@ Floats*/
                     StartBioDynamicAnimSetScan();
                     break;
                 case "Texture2D":
+                case "LightMapTexture2D":
+                case "ShadowMapTexture2D":
+                case "TextureFlipBook":
                     StartTextureBinaryScan();
                     break;
                 case "WwiseEvent":
@@ -2981,14 +2984,14 @@ Floats*/
                             break;
                         case ArrayType.Enum:
                             string enumName = getEnclosingType(e.Node);
-                            List<string> values = GetEnumValues(enumName, BitConverter.ToInt32(memory, getPosFromNode(e.Node.Parent.Name)));
+                            List<NameReference> values = GetEnumValues(enumName, BitConverter.ToInt32(memory, getPosFromNode(e.Node.Parent.Name)));
                             if (values == null)
                             {
                                 addArrayElementButton.Visible = false;
                                 return;
                             }
                             propDropdown.Items.Clear();
-                            propDropdown.Items.AddRange(values.ToArray());
+                            propDropdown.Items.AddRange(values.Select(nRef => (object)nRef.InstancedString).ToArray());
                             propDropdown.Visible = true;
                             break;
                         case ArrayType.Struct:
@@ -3098,12 +3101,13 @@ Floats*/
                         {
                             try
                             {
-                                List<string> values = GetEnumValues(enumName, BitConverter.ToInt32(memory, pos));
+                                List<NameReference> values = GetEnumValues(enumName, BitConverter.ToInt32(memory, pos));
                                 if (values != null)
                                 {
                                     propDropdown.Items.Clear();
-                                    propDropdown.Items.AddRange(values.ToArray());
-                                    propDropdown.SelectedItem = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + valOffset));
+                                    propDropdown.Items.AddRange(values.Select(nRef => (object)nRef.InstancedString).ToArray());
+                                    propDropdown.SelectedItem = new NameReference(pcc.getNameEntry(BitConverter.ToInt32(memory, pos + valOffset)),
+                                                                                  BitConverter.ToInt32(memory, pos + valOffset + 4));
                                     propDropdown.Visible = true;
                                 }
                             }
@@ -3204,18 +3208,19 @@ Floats*/
                         {
                             enumName = getEnclosingType(node.Parent);
                         }
-                        List<string> values = GetEnumValues(enumName, BitConverter.ToInt32(memory, getPosFromNode(node.Parent)));
+                        List<NameReference> values = GetEnumValues(enumName, BitConverter.ToInt32(memory, getPosFromNode(node.Parent)));
                         if (values == null)
                         {
                             return;
                         }
                         propDropdown.Items.Clear();
-                        propDropdown.Items.AddRange(values.ToArray());
+                        propDropdown.Items.AddRange(values.Select(nRef => (object)nRef.InstancedString).ToArray());
                         setPropertyButton.Visible = propDropdown.Visible = true;
-                        propDropdown.SelectedItem = pcc.getNameEntry(BitConverter.ToInt32(memory, pos));
+                        propDropdown.SelectedItem = new NameReference(pcc.getNameEntry(BitConverter.ToInt32(memory, pos)),
+                                                                      BitConverter.ToInt32(memory, pos + 4));
                         break;
                     case NodeType.StructLeafDeg:
-                        proptext.Text = (BitConverter.ToInt32(memory, pos) * 360f / 65536f).ToString();
+                        proptext.Text = BitConverter.ToInt32(memory, pos).ToDegrees().ToString();
                         proptext.Visible = true;
                         break;
                     case NodeType.ArrayLeafStruct:
@@ -3302,7 +3307,7 @@ Floats*/
                     case NodeType.StructLeafDeg:
                         if (float.TryParse(proptext.Text, out f))
                         {
-                            WriteMem(pos, BitConverter.GetBytes(Convert.ToInt32(f * 65536f / 360f)));
+                            WriteMem(pos, BitConverter.GetBytes(f.ToUnrealRotationUnits()));
                             UpdateMem(pos);
                         }
                         break;
@@ -4033,7 +4038,7 @@ Floats*/
             return ArrayType.Int;
         }
 
-        private List<string> GetEnumValues(string enumName, int propName)
+        private List<NameReference> GetEnumValues(string enumName, int propName)
         {
             switch (pcc.Game)
             {

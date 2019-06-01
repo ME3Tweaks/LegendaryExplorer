@@ -10,6 +10,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Be.Windows.Forms;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer.FaceFX
 {
@@ -44,13 +45,13 @@ namespace ME3Explorer.FaceFX
         public void ListRefresh()
         {
             Objects = new List<int>();
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             for (int i = 0; i < Exports.Count; i++)
                 if (Exports[i].ClassName == "FaceFXAnimSet")
                     Objects.Add(i);
             listBox1.Items.Clear();
             foreach(int n in Objects)
-                listBox1.Items.Add("#" + n + " : " + pcc.Exports[n].GetFullPath);
+                listBox1.Items.Add("#" + n + " : " + Pcc.Exports[n].GetFullPath);
         }
 
         private void FaceFXRefresh(int n)
@@ -69,8 +70,8 @@ namespace ME3Explorer.FaceFX
                 topNodeName = treeView2.TopNode.Name;
 
             }
-            IExportEntry exportEntry = pcc.Exports[n];
-            FaceFX = new ME3FaceFXAnimSet(pcc, exportEntry);
+            IExportEntry exportEntry = Pcc.Exports[n];
+            FaceFX = new ME3FaceFXAnimSet(Pcc, exportEntry);
             hb1.ByteProvider = new DynamicByteProvider(exportEntry.Data);
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(FaceFX.HeaderToTree());
@@ -135,9 +136,9 @@ namespace ME3Explorer.FaceFX
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
                 return;
-            pcc.save();
+            Pcc.save();
             MessageBox.Show("Done.");
         }
 
@@ -161,7 +162,7 @@ namespace ME3Explorer.FaceFX
                 switch (subidx)
                 {
                     case 0://unk1
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.Name.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.Name.ToString(), true);
                         i = -1;
                         if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
                         {
@@ -171,29 +172,29 @@ namespace ME3Explorer.FaceFX
 
                         break;
                     case 4://FadeInTime
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.FadeInTime.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.FadeInTime.ToString(), true);
                         if (float.TryParse(result, out f))
                             d.FadeInTime = f;
                         break;
                     case 5://FadeInTime
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.FadeOutTime.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.FadeOutTime.ToString(), true);
                         if (float.TryParse(result, out f))
                             d.FadeOutTime = f;
                         break;
                     case 6://unk2
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.unk2.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.unk2.ToString(), true);
                         i = -1;
                         if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
                             d.unk2 = i;
                         break;
                     case 7://Path
-                        d.path = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.path, 0, 0);
+                        d.path = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.path, true);
                         break;
                     case 8://ID
-                        d.ID = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.ID, 0, 0);
+                        d.ID = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.ID, true);
                         break;
                     case 9://unk3
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.index.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.index.ToString(), true);
                         i = -1;
                         if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
                             d.index = i;
@@ -214,7 +215,7 @@ namespace ME3Explorer.FaceFX
                 {
                     case 1:
                         ME3NameRef u = d.animations[subsubidx];
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", u.index + " ; " + u.unk2, 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", u.index + " ; " + u.unk2, true);
                         string[] reslist = result.Split(';');
                         if (reslist.Length != 2)
                             return;
@@ -230,7 +231,7 @@ namespace ME3Explorer.FaceFX
                         break;
                     case 2:
                         ControlPoint u2 = d.points[subsubidx];
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", u2.time + " ; " + u2.weight + " ; " + u2.inTangent + " ; " + u2.leaveTangent, 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", u2.time + " ; " + u2.weight + " ; " + u2.inTangent + " ; " + u2.leaveTangent, true);
                         reslist = result.Split(';');
                         if (reslist.Length != 4)
                             return;
@@ -253,7 +254,7 @@ namespace ME3Explorer.FaceFX
                         d.points[subsubidx] = u2;
                         break;
                     case 3:
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", d.numKeys[subsubidx].ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", d.numKeys[subsubidx].ToString(), true);
                         if (int.TryParse(result.Trim(), out i))
                             d.numKeys[subsubidx] = i;
                         else
@@ -297,7 +298,7 @@ namespace ME3Explorer.FaceFX
             TreeNode t1 = t.Parent;
             if (t1 == null || t1.Text != "Entries" || FaceFX == null)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new index", "ME3Explorer", t.Index.ToString(), 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new index", "ME3Explorer", t.Index.ToString(), true);
             int i = 0;
             if (int.TryParse(result, out i))
             {
@@ -310,7 +311,7 @@ namespace ME3Explorer.FaceFX
         {
             if (FaceFX == null)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name to add", "ME3Explorer", "", 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new name to add", "ME3Explorer", "", true);
             if (result != "")
             {
                 FaceFX.AddName(result);
@@ -333,7 +334,7 @@ namespace ME3Explorer.FaceFX
                     FaceFX = null;
                     treeView1.Nodes.Clear();
                     treeView2.Nodes.Clear();
-                    hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
+                    hb1.ByteProvider = new DynamicByteProvider();
                     ListRefresh();
                 }
                 else
@@ -342,7 +343,7 @@ namespace ME3Explorer.FaceFX
                 }
                 updatedExports.Remove(index);
             }
-            if (updatedExports.Intersect(Objects).Count() > 0)
+            if (updatedExports.Intersect(Objects).Any())
             {
                 ListRefresh();
             }
@@ -350,7 +351,7 @@ namespace ME3Explorer.FaceFX
             {
                 foreach (var i in updatedExports)
                 {
-                    if (pcc.getExport(i).ClassName == "FaceFXAnimSet")
+                    if (Pcc.getExport(i).ClassName == "FaceFXAnimSet")
                     {
                         ListRefresh();
                         break;

@@ -19,6 +19,7 @@ namespace ME3Explorer.PSKViewer
 
         public PSKViewer()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("PSK Viewer", new WeakReference(this));
             InitializeComponent();
         }
 

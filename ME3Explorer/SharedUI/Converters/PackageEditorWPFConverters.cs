@@ -18,9 +18,9 @@ namespace ME3Explorer.SharedUI.Converters
         {
             if (!(value is PackageEditorWPF.CurrentViewMode))
             {
-                return Brushes.Transparent; ;
+                return Brushes.Transparent;
             }
-            if (parameter == null || !(parameter is string))
+            if (!(parameter is string))
             {
                 return Brushes.Transparent;
             }
@@ -120,6 +120,25 @@ namespace ME3Explorer.SharedUI.Converters
             if (value is IExportEntry exp && PackageEditorWPF.ExportFileTypes.Contains(exp.ClassName))
             {
                 return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {    // Don't need any convert back
+            return null;
+        }
+    }
+
+    [ValueConversion(typeof(IEntry), typeof(Visibility))]
+    public class EntryClassVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is IExportEntry exp && parameter is string type)
+            {
+                return exp.ClassName == type ? Visibility.Visible : Visibility.Collapsed;
             }
 
             return Visibility.Collapsed;

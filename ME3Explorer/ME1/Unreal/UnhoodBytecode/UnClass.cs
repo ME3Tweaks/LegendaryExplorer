@@ -40,12 +40,13 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 {
                     bc = bcReader.ReadNext();
                 }
-                catch (EndOfStreamException)
+                catch (Exception)
                 {
+                    //extra bytes at the end can trigger this. They are not used. may be something like byte aligning or something
                     break;
                 }
                 if (bc == null || bc is EndOfScriptToken) break;
-                statements.Add(new Statement(startOffset, (int)s.Position, bc));
+                statements.Add(new Statement(startOffset, (int)s.Position, bc, bcReader));
                 if (bc is ErrorBytecodeToken)
                 {
                     var errorToken = (ErrorBytecodeToken)bc;
@@ -64,7 +65,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             return statements;
         }
 
-        protected void DecompileBytecode(StatementList statements, TextBuilder result, bool createControlStatements)
+        public void DecompileBytecode(StatementList statements, TextBuilder result, bool createControlStatements)
         {
             var labelTableStatement = statements.Find(s => s.Token is LabelTableToken);
             var labelTable = labelTableStatement != null ? (LabelTableToken)labelTableStatement.Token : null;

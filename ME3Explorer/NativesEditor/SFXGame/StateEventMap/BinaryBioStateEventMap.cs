@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Gammtek.Conduit.Extensions;
 using Gammtek.Conduit.IO;
+using ME3Explorer.Packages;
 
 namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 {
@@ -15,18 +16,21 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 
 		public long StateEventsOffset
 		{
-			get { return _stateEventsOffset; }
-			set { SetProperty(ref _stateEventsOffset, value); }
+			get => _stateEventsOffset;
+		    set => SetProperty(ref _stateEventsOffset, value);
 		}
 
-		public static BinaryBioStateEventMap Load(string path)
+		public static BinaryBioStateEventMap Load(IExportEntry export)
 		{
-			if (path.IsNullOrEmpty())
+			if (export == null)
 			{
-				throw new ArgumentNullException(nameof(path));
+				throw new ArgumentNullException(nameof(export));
 			}
 
-			return !File.Exists(path) ? null : Load(File.Open(path, FileMode.Open));
+            using (var stream = new MemoryStream(export.getBinaryData()))
+            {
+                return Load(stream);
+            }
 		}
 
 		public static BinaryBioStateEventMap Load(Stream stream)
@@ -64,7 +68,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 
 		public void Save(string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}

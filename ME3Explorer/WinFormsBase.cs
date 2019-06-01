@@ -11,7 +11,7 @@ namespace ME3Explorer
 {
     public class WinFormsBase : Form
     {
-        public IMEPackage pcc;
+        public IMEPackage Pcc { get; private set; }
 
         //class really ought to be abstract, but it can't be for the designer to work
         protected WinFormsBase()
@@ -21,8 +21,8 @@ namespace ME3Explorer
 
         private void WinFormsBase_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (pcc != null && pcc.IsModified && pcc.Tools.Count == 1 && e.CloseReason == CloseReason.UserClosing &&
-                DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.FileName)} has unsaved changes. Do you really want to close {Name}?", "Unsaved changes", MessageBoxButtons.YesNo))
+            if (Pcc != null && Pcc.IsModified && Pcc.Tools.Count == 1 && e.CloseReason == CloseReason.UserClosing &&
+                DialogResult.No == MessageBox.Show($"{Path.GetFileName(Pcc.FileName)} has unsaved changes. Do you really want to close {Name}?", "Unsaved changes", MessageBoxButtons.YesNo))
             {
                 e.Cancel = true;
             }
@@ -30,26 +30,26 @@ namespace ME3Explorer
 
         public void LoadMEPackage(string s)
         {
-            pcc?.Release(winForm: this);
-            pcc = MEPackageHandler.OpenMEPackage(s, winForm: this);
+            Pcc?.Release(winForm: this);
+            Pcc = MEPackageHandler.OpenMEPackage(s, winForm: this);
         }
 
         public void LoadME1Package(string s)
         {
-            pcc?.Release(winForm: this);
-            pcc = MEPackageHandler.OpenME1Package(s, winForm: this);
+            Pcc?.Release(winForm: this);
+            Pcc = MEPackageHandler.OpenME1Package(s, winForm: this);
         }
 
         public void LoadME2Package(string s)
         {
-            pcc?.Release(winForm: this);
-            pcc = MEPackageHandler.OpenME2Package(s, winForm: this);
+            Pcc?.Release(winForm: this);
+            Pcc = MEPackageHandler.OpenME2Package(s, winForm: this);
         }
 
         public void LoadME3Package(string s)
         {
-            pcc?.Release(winForm: this);
-            pcc = MEPackageHandler.OpenME3Package(s, winForm: this);
+            Pcc?.Release(winForm: this);
+            Pcc = MEPackageHandler.OpenME3Package(s, winForm: this);
         }
 
         public virtual void handleUpdate(List<PackageUpdate> updates) { }

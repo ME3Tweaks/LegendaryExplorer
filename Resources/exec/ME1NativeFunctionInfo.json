@@ -7,7 +7,7 @@
       "Operator": true,
       "Name": "Concat_StrStr",
       "Filename": "Core.u",
-      "HumanReadableControlToken": null
+      "HumanReadableControlToken": "$"
     },
     "113": {
       "nativeIndex": 113,
@@ -1528,7 +1528,7 @@
       "Operator": true,
       "Name": "ConcatEqual_StrStr",
       "Filename": "Core.u",
-      "HumanReadableControlToken": null
+      "HumanReadableControlToken": "$="
     },
     "323": {
       "nativeIndex": 323,

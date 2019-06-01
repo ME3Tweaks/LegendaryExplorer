@@ -271,14 +271,13 @@ namespace ME3Explorer.Unreal.Classes
         public string CreateWave(string afcPath)
         {
             string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
-            if (ExtractRawFromStream(basePath + ".dat", getPathToAFC()))
+            if (ExtractRawFromSource(basePath + ".dat", getPathToAFC(), DataSize, DataOffset))
             {
                 MemoryStream dataStream = ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
                 File.WriteAllBytes(basePath + ".wav", dataStream.ToArray());
             }
             return basePath + ".wav";
         }
-
 
         /// <summary>
         /// Creates wav stream from this WwiseStream
@@ -288,12 +287,28 @@ namespace ME3Explorer.Unreal.Classes
         public Stream CreateWaveStream(string afcPath)
         {
             string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
-            if (ExtractRawFromStream(basePath + ".dat", afcPath))
+            if (ExtractRawFromSource(basePath + ".dat", afcPath, DataSize, DataOffset))
             {
                 return ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
             }
             return null;
         }
+
+        /// <summary>
+        /// Creates wav stream from this WwiseStream
+        /// </summary>
+        /// <param name="afcPath"></param>
+        /// <returns></returns>
+        public static Stream CreateWaveStreamFromRaw(string afcPath, int offset, int datasize, bool ME2)
+        {
+            string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
+            if (ExtractRawFromSource(basePath + ".dat", afcPath, datasize, offset))
+            {
+                return ConvertRiffToWav(basePath + ".dat", ME2);
+            }
+            return null;
+        }
+
         private void PlayWave(string path)
         {
             Stream waveStream = CreateWaveStream(path);
@@ -360,11 +375,10 @@ namespace ME3Explorer.Unreal.Classes
         public static MemoryStream ConvertOggToWave(string oggPath)
         {
             //convert OGG to WAV
-            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             MemoryStream outputData = new MemoryStream();
 
-            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", "--stdout " + oggPath);
-            procStartInfo.WorkingDirectory = loc;
+            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(Path.Combine(App.ExecFolder, "oggdec.exe"), $"--stdout \"{oggPath}\"");
+            procStartInfo.WorkingDirectory = App.ExecFolder;
             procStartInfo.RedirectStandardOutput = true;
             procStartInfo.UseShellExecute = false;
             procStartInfo.CreateNoWindow = true;
@@ -412,17 +426,16 @@ namespace ME3Explorer.Unreal.Classes
                 System.Diagnostics.Debug.WriteLine("Error: input file does not exist");
             }
 
-            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             System.Diagnostics.ProcessStartInfo procStartInfo = null;
             if (!fullSetup)
             {
-                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", "--stdout \"" + riffPath + "\"");
+                procStartInfo = new System.Diagnostics.ProcessStartInfo(Path.Combine(App.ExecFolder, "ww2ogg.exe"), "--stdout \"" + riffPath + "\"");
             }
             else
             {
-                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", "--stdout --full-setup \"" + riffPath + "\"");
+                procStartInfo = new System.Diagnostics.ProcessStartInfo(Path.Combine(App.ExecFolder, "ww2ogg.exe"), "--stdout --full-setup \"" + riffPath + "\"");
             }
-            procStartInfo.WorkingDirectory = loc;
+            procStartInfo.WorkingDirectory = App.ExecFolder;
             procStartInfo.RedirectStandardOutput = true;
             procStartInfo.RedirectStandardError = true;
 
@@ -455,7 +468,12 @@ namespace ME3Explorer.Unreal.Classes
             //            return Path.Combine(Directory.GetParent(riffPath).FullName, Path.GetFileNameWithoutExtension(riffPath)) + ".ogg";
         }
 
-        public bool ExtractRawFromStream(string outputFile, string afcPath)
+        public bool ExtractRawFromSource(string outputFile, string afcPath)
+        {
+            return ExtractRawFromSource(outputFile, afcPath, DataSize, DataOffset);
+        }
+
+        public static bool ExtractRawFromSource(string outputFile, string afcPath, int DataSize, int DataOffset)
         {
             if (!File.Exists(afcPath))
                 return false;

@@ -59,12 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Piccolo\PathingGraphEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Piccolo\GraphEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Piccolo\Extensions.cs" />
     <Compile Include="Piccolo\Activities\NamespaceDoc.cs" />
     <Compile Include="Piccolo\Activities\PActivity.cs" />
     <Compile Include="Piccolo\Activities\PActivityScheduler.cs" />
@@ -102,7 +97,6 @@
     <Compile Include="Piccolo\Util\PLayerList.cs" />
     <Compile Include="Piccolo\Util\PMatrix.cs" />
     <Compile Include="Piccolo\Util\PNodeFilter.cs" />
-    <Compile Include="Piccolo\Util\PNodeList.cs" />
     <Compile Include="Piccolo\Util\PPaintContext.cs" />
     <Compile Include="Piccolo\Util\PPickPath.cs" />
     <Compile Include="Piccolo\Util\PStream.cs" />
@@ -113,9 +107,6 @@
     <EmbeddedResource Include="Piccolo\PCanvas.resx">
       <DependentUpon>PCanvas.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Piccolo\UMD.HCIL.Piccolo.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -30,7 +30,7 @@ namespace ME3Explorer.CurveEd
         }
         
         public static readonly DependencyProperty X1Property =
-            DependencyProperty.Register("X1", typeof(double), typeof(BezierSegment), new PropertyMetadata(0.0, OnChanged));
+            DependencyProperty.Register(nameof(X1), typeof(double), typeof(BezierSegment), new PropertyMetadata(0.0, OnChanged));
 
         public double Y1
         {
@@ -39,7 +39,7 @@ namespace ME3Explorer.CurveEd
         }
         
         public static readonly DependencyProperty Y1Property =
-            DependencyProperty.Register("Y1", typeof(double), typeof(BezierSegment), new PropertyMetadata(0.0, OnChanged));
+            DependencyProperty.Register(nameof(Y1), typeof(double), typeof(BezierSegment), new PropertyMetadata(0.0, OnChanged));
 
         public double X2
         {
@@ -48,7 +48,7 @@ namespace ME3Explorer.CurveEd
         }
         
         public static readonly DependencyProperty X2Property =
-            DependencyProperty.Register("X2", typeof(double), typeof(BezierSegment), new PropertyMetadata(0.0, OnChanged));
+            DependencyProperty.Register(nameof(X2), typeof(double), typeof(BezierSegment), new PropertyMetadata(0.0, OnChanged));
 
         public double Y2
         {
@@ -57,7 +57,7 @@ namespace ME3Explorer.CurveEd
         }
         
         public static readonly DependencyProperty Y2Property =
-            DependencyProperty.Register("Y2", typeof(double), typeof(BezierSegment), new PropertyMetadata(0.0, OnChanged));
+            DependencyProperty.Register(nameof(Y2), typeof(double), typeof(BezierSegment), new PropertyMetadata(0.0, OnChanged));
 
         public double Slope1
         {
@@ -66,7 +66,7 @@ namespace ME3Explorer.CurveEd
         }
         
         public static readonly DependencyProperty Slope1Property =
-            DependencyProperty.Register("Slope1", typeof(double), typeof(BezierSegment), new PropertyMetadata(0.0, OnChanged));
+            DependencyProperty.Register(nameof(Slope1), typeof(double), typeof(BezierSegment), new PropertyMetadata(0.0, OnChanged));
 
         public double Slope2
         {
@@ -75,7 +75,7 @@ namespace ME3Explorer.CurveEd
         }
         
         public static readonly DependencyProperty Slope2Property =
-            DependencyProperty.Register("Slope2", typeof(double), typeof(BezierSegment), new PropertyMetadata(0.0, OnChanged));
+            DependencyProperty.Register(nameof(Slope2), typeof(double), typeof(BezierSegment), new PropertyMetadata(0.0, OnChanged));
         
         private static void OnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

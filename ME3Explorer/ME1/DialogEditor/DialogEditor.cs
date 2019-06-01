@@ -11,21 +11,24 @@ using ME1Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer;
+using ME3Explorer.SharedUI;
+using ME3Explorer.TlkManagerNS;
+using ME3Explorer.Unreal;
 
 namespace ME1Explorer
 {
     public partial class DialogEditor : WinFormsBase
     {
         public BioTlkFileSet tlkFileSet;
-        public TalkFiles tlkFiles;
+        //public TalkFiles tlkFiles;
         public ITalkFile tlkFile;
         public ME1BioConversation Dialog;
         public List<int> Objs;
 
         public void InitBioTlkFileSet()
         {
-            tlkFileSet = new BioTlkFileSet(pcc as ME1Package);
-            tlkFiles = new TalkFiles();
+            tlkFileSet = new BioTlkFileSet(Pcc as ME1Package);
+            //tlkFiles = new TalkFiles();
             tlkFile = tlkFileSet;
         }
 
@@ -42,31 +45,35 @@ namespace ME1Explorer
             d.Filter = "*.u;*.upk;*sfm|*.u;*.upk;*sfm";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                try
-                {
-                    LoadME1Package(d.FileName);
-                    manageTLKSetToolStripMenuItem.Enabled = true;
-                    InitBioTlkFileSet();
-                    Objs = new List<int>();
-                    for (int i = 0; i < pcc.Exports.Count; i++)
-                        if (pcc.Exports[i].ClassName == "BioConversation")
-                            Objs.Add(i);
-                    RefreshCombo();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error:\n" + ex.Message);
-                }
+                LoadFile(d.FileName);
             }
         }
 
+        public void LoadFile(string fileName)
+        {
+            try
+            {
+                LoadME1Package(fileName);
+                manageTLKSetToolStripMenuItem.Enabled = true;
+                InitBioTlkFileSet();
+                Objs = new List<int>();
+                for (int i = 0; i < Pcc.Exports.Count; i++)
+                    if (Pcc.Exports[i].ClassName == "BioConversation")
+                        Objs.Add(i);
+                RefreshCombo();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
+        }
         public void RefreshCombo()
         {
             if (Objs == null)
                 return;
             toolStripComboBox1.Items.Clear();
             foreach (int i in Objs)
-                toolStripComboBox1.Items.Add("#" + i + " : " + pcc.Exports[i].ObjectName);
+                toolStripComboBox1.Items.Add("#" + i + " : " + Pcc.Exports[i].ObjectName);
             if (toolStripComboBox1.Items.Count != 0)
                 toolStripComboBox1.SelectedIndex = 0;
         }
@@ -76,11 +83,11 @@ namespace ME1Explorer
             int n = toolStripComboBox1.SelectedIndex;
             if (n == -1)
                 return;
-            Dialog = new ME1BioConversation(pcc as ME1Package, Objs[n]);
+            Dialog = new ME1BioConversation(Pcc as ME1Package, Objs[n]);
             tlkFileSet.loadData(Dialog.TlkFileSet - 1);
-            if (!tlkFiles.tlkList.Contains(tlkFileSet.talkFiles[tlkFileSet.selectedTLK]))
+            if (!ME1TalkFiles.tlkList.Contains(tlkFileSet.talkFiles[tlkFileSet.selectedTLK]))
             {
-                tlkFiles.tlkList.Add(tlkFileSet.talkFiles[tlkFileSet.selectedTLK]);
+                ME1TalkFiles.tlkList.Add(tlkFileSet.talkFiles[tlkFileSet.selectedTLK]);
             }
             RefreshTabs();
         }
@@ -101,16 +108,16 @@ namespace ME1Explorer
                 listBox1.Items.Add((count++) + " : " + i);
             count = 0;
             foreach (ME1BioConversation.EntryListStuct e in Dialog.EntryList)
-                treeView1.Nodes.Add(e.ToTree(count++, tlkFile, pcc as ME1Package));
+                treeView1.Nodes.Add(e.ToTree(count++, tlkFile, Pcc as ME1Package));
             count = 0;
             foreach (ME1BioConversation.ReplyListStruct r in Dialog.ReplyList)
-                treeView2.Nodes.Add(r.ToTree(count++, tlkFile, pcc as ME1Package));
+                treeView2.Nodes.Add(r.ToTree(count++, tlkFile, Pcc as ME1Package));
             count = 0;
             foreach (ME1BioConversation.SpeakerListStruct sp in Dialog.SpeakerList)
-                listBox2.Items.Add((count++) + " : " + sp.SpeakerTag + " , " + sp.Text);
+                listBox2.Items.Add((count++) + " : " + sp.SpeakerTag.InstancedString);
             count = 0;
             foreach (ME1BioConversation.ScriptListStruct sd in Dialog.ScriptList)
-                listBox3.Items.Add((count++) + " : " + sd.ScriptTag + " , " + sd.Text);
+                listBox3.Items.Add((count++) + " : " + sd.ScriptTag.InstancedString);
             count = 0;
             foreach (int i in Dialog.MaleFaceSets)
                 listBox4.Items.Add((count++) + " : " + i);
@@ -124,16 +131,16 @@ namespace ME1Explorer
             if (Dialog == null)
                 return;
             Dialog.Save();
-            pcc.save();
+            Pcc.save();
             MessageBox.Show("Done.");
         }
 
         private void listBox1_DoubleClick(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox1.SelectedIndex) == -1)
+            if (Pcc == null || Dialog == null || (n = listBox1.SelectedIndex) == -1)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", Dialog.StartingList[n].ToString(), 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", Dialog.StartingList[n].ToString(), true);
             if (result == "")
                 return;
             int i = 0;
@@ -147,17 +154,18 @@ namespace ME1Explorer
         private void listBox2_DoubleClick(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox2.SelectedIndex) == -1)
+            if (Pcc == null || Dialog == null || (n = listBox2.SelectedIndex) == -1)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name entry", "ME1Explorer", Dialog.SpeakerList[n].SpeakerTag.ToString(), 0, 0);
-            if (result == "")
+            string nameResult = PromptDialog.Prompt(null, "Please enter new name", "ME1Explorer", Dialog.SpeakerList[n].SpeakerTag.Name, true);
+            if (nameResult == "")
                 return;
-            int i = 0;
-            if (int.TryParse(result, out i) && pcc.isName(i))
+            string numberResult = PromptDialog.Prompt(null, "Please enter new name index", "ME1Explorer", Dialog.SpeakerList[n].SpeakerTag.Number.ToString(), true);
+            if (numberResult == "")
+                return;
+            if (int.TryParse(numberResult, out int i) && i >= 0)
             {
                 ME1BioConversation.SpeakerListStruct sp = new ME1BioConversation.SpeakerListStruct();
-                sp.SpeakerTag = i;
-                sp.Text = pcc.getNameEntry(i);
+                sp.SpeakerTag = new NameReference(nameResult, i);
                 Dialog.SpeakerList[n] = sp;
                 Dialog.Save();
             }
@@ -166,9 +174,9 @@ namespace ME1Explorer
         private void listBox4_DoubleClick(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox4.SelectedIndex) == -1)
+            if (Pcc == null || Dialog == null || (n = listBox4.SelectedIndex) == -1)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", Dialog.MaleFaceSets[n].ToString(), 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", Dialog.MaleFaceSets[n].ToString(), true);
             if (result == "")
                 return;
             int i = 0;
@@ -182,9 +190,9 @@ namespace ME1Explorer
         private void listBox5_DoubleClick(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox5.SelectedIndex) == -1)
+            if (Pcc == null || Dialog == null || (n = listBox5.SelectedIndex) == -1)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", Dialog.FemaleFaceSets[n].ToString(), 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", Dialog.FemaleFaceSets[n].ToString(), true);
             if (result == "")
                 return;
             int i = 0;
@@ -197,9 +205,9 @@ namespace ME1Explorer
 
         private void toStartingListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null || Dialog == null)
+            if (Pcc == null || Dialog == null)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", "", 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", "", true);
             if (result == "")
                 return;
             int i = 0;
@@ -212,17 +220,18 @@ namespace ME1Explorer
 
         private void toSpeakerListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null || Dialog == null)
+            if (Pcc == null || Dialog == null)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", "", 0, 0);
-            if (result == "")
+            string nameResult = PromptDialog.Prompt(null, "Please enter new name", "ME1Explorer", "", true);
+            if (nameResult == "")
                 return;
-            int i = 0;
-            if (int.TryParse(result, out i) && pcc.isName(i))
+            string numberResult = PromptDialog.Prompt(null, "Please enter new name index", "ME1Explorer", "", true);
+            if (numberResult == "")
+                return;
+            if (int.TryParse(numberResult, out int i) && i >= 0)
             {
                 ME1BioConversation.SpeakerListStruct sp = new ME1BioConversation.SpeakerListStruct();
-                sp.SpeakerTag = i;
-                sp.Text = pcc.getNameEntry(i);
+                sp.SpeakerTag = new NameReference(nameResult, i);
                 Dialog.SpeakerList.Add(sp);
                 Dialog.Save();
             }
@@ -230,9 +239,9 @@ namespace ME1Explorer
 
         private void toMaleFaceSetsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null || Dialog == null)
+            if (Pcc == null || Dialog == null)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", "", 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", "", true);
             if (result == "")
                 return;
             int i = 0;
@@ -245,9 +254,9 @@ namespace ME1Explorer
 
         private void toFemaleFaceSetsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null || Dialog == null)
+            if (Pcc == null || Dialog == null)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", "", 0, 0);
+            string result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", "", true);
             if (result == "")
                 return;
             int i = 0;
@@ -261,7 +270,7 @@ namespace ME1Explorer
         private void fromStartingListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox1.SelectedIndex) == -1)
+            if (Pcc == null || Dialog == null || (n = listBox1.SelectedIndex) == -1)
                 return;
             Dialog.StartingList.RemoveAt(n);
             Dialog.Save();
@@ -270,7 +279,7 @@ namespace ME1Explorer
         private void fromSpeakerListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox2.SelectedIndex) == -1)
+            if (Pcc == null || Dialog == null || (n = listBox2.SelectedIndex) == -1)
                 return;
             Dialog.SpeakerList.RemoveAt(n);
             Dialog.Save();
@@ -279,7 +288,7 @@ namespace ME1Explorer
         private void fromMaleFaceSetsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox4.SelectedIndex) == -1)
+            if (Pcc == null || Dialog == null || (n = listBox4.SelectedIndex) == -1)
                 return;
             Dialog.MaleFaceSets.RemoveAt(n);
             Dialog.Save();
@@ -288,7 +297,7 @@ namespace ME1Explorer
         private void fromFemalFaceSetsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox5.SelectedIndex) == -1)
+            if (Pcc == null || Dialog == null || (n = listBox5.SelectedIndex) == -1)
                 return;
             Dialog.FemaleFaceSets.RemoveAt(n);
             Dialog.Save();
@@ -297,18 +306,18 @@ namespace ME1Explorer
         private void listBox3_DoubleClick(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox3.SelectedIndex) == -1)
+            if (Pcc == null || Dialog == null || (n = listBox3.SelectedIndex) == -1)
                 return;
-            ME1BioConversation.ScriptListStruct sd = Dialog.ScriptList[n];
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new name entry", "ME1Explorer", Dialog.ScriptList[n].ScriptTag.ToString(), 0, 0);
-            if (result == "")
+            string nameResult = PromptDialog.Prompt(null, "Please enter new name", "ME1Explorer", Dialog.ScriptList[n].ScriptTag.Name, true);
+            if (nameResult == "")
                 return;
-            int i = 0;
-            if (int.TryParse(result, out i) && pcc.isName(i))
+            string numberResult = PromptDialog.Prompt(null, "Please enter new name index", "ME1Explorer", Dialog.ScriptList[n].ScriptTag.Number.ToString(), true);
+            if (numberResult == "")
+                return;
+            if (int.TryParse(numberResult, out int i) && i >= 0)
             {
                 ME1BioConversation.ScriptListStruct sp = new ME1BioConversation.ScriptListStruct();
-                sp.ScriptTag = i;
-                sp.Text = pcc.getNameEntry(i);
+                sp.ScriptTag = new NameReference(nameResult, i);
                 Dialog.ScriptList[n] = sp;
                 Dialog.Save();
             }
@@ -317,11 +326,10 @@ namespace ME1Explorer
         private void scriptListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || Dialog == null || (n = listBox3.SelectedIndex) == -1)
+            if (Pcc == null || Dialog == null || (n = listBox3.SelectedIndex) == -1)
                 return;
             ME1BioConversation.ScriptListStruct sc = new ME1BioConversation.ScriptListStruct();
             sc.ScriptTag = Dialog.ScriptList[n].ScriptTag;
-            sc.Text = pcc.getNameEntry(sc.ScriptTag);
             Dialog.ScriptList.Add(sc);
             Dialog.Save();
         }
@@ -342,94 +350,94 @@ namespace ME1Explorer
                 switch (propname)
                 {
                     case "Listener Index":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", Dialog.ReplyList[n].ListenerIndex.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", Dialog.ReplyList[n].ListenerIndex.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) rp.ListenerIndex = i;
                         break;
                     case "Unskippable":
                         if (Dialog.ReplyList[n].Unskippable) i = 1; else i = 0;
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", i.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", i.ToString(), true);
                         if (result == "") return;
                         rp.Unskippable = (result == "1");
                         break;
                     case "ReplyType":
-                        result = InputComboBox.GetValue("Please select new value", ME1UnrealObjectInfo.getEnumValues("EReplyTypes"), pcc.getNameEntry(Dialog.ReplyList[n].ReplyTypeValue));
+                        result = InputComboBox.GetValue("Please select new value", ME1UnrealObjectInfo.getEnumValues("EReplyTypes").Select(nRef => nRef.Name), Pcc.getNameEntry(Dialog.ReplyList[n].ReplyTypeValue));
                         if (result == "") return;
-                        rp.ReplyTypeValue = pcc.FindNameOrAdd(result);
+                        rp.ReplyTypeValue = Pcc.FindNameOrAdd(result);
                         break;
                     case "Text":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new string", "ME1Explorer", Dialog.ReplyList[n].Text, 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new string", "ME1Explorer", Dialog.ReplyList[n].Text, true);
                         if (result == "") return;
                         rp.Text = result;
                         break;
                     case "refText":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", Dialog.ReplyList[n].refText.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", Dialog.ReplyList[n].refText.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) rp.refText = i;
                         break;
                     case "ConditionalFunc":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", Dialog.ReplyList[n].ConditionalFunc.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", Dialog.ReplyList[n].ConditionalFunc.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) rp.ConditionalFunc = i;
                         break;
                     case "ConditionalParam":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", Dialog.ReplyList[n].ConditionalParam.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", Dialog.ReplyList[n].ConditionalParam.ToString(), true);
                         if (result == "") return;                        
                         if (int.TryParse(result, out i)) rp.ConditionalParam = i;                        
                         break;
                     case "StateTransition":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", Dialog.ReplyList[n].StateTransition.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", Dialog.ReplyList[n].StateTransition.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) rp.StateTransition = i;                        
                         break;
                     case "StateTransitionParam":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", Dialog.ReplyList[n].StateTransitionParam.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", Dialog.ReplyList[n].StateTransitionParam.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) rp.StateTransitionParam = i;                        
                         break;
                     case "ExportID":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", Dialog.ReplyList[n].ExportID.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", Dialog.ReplyList[n].ExportID.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) rp.ExportID = i;                        
                         break;
                     case "ScriptIndex":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", Dialog.ReplyList[n].ScriptIndex.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", Dialog.ReplyList[n].ScriptIndex.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) rp.ScriptIndex = i;                        
                         break;
                     case "CameraIntimacy":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", Dialog.ReplyList[n].CameraIntimacy.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", Dialog.ReplyList[n].CameraIntimacy.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) rp.CameraIntimacy = i;
                         break;
                     case "FireConditional":
                         if (Dialog.ReplyList[n].FireConditional) i = 1; else i = 0;
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", i.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", i.ToString(), true);
                         if (result == "") return;
                         rp.FireConditional = (result == "1");
                         break;
                     case "Ambient":
                         if (Dialog.ReplyList[n].Ambient) i = 1; else i = 0;
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", i.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", i.ToString(), true);
                         if (result == "") return;
                         rp.Ambient = (result == "1");
                         break;
                     case "NonTextline":
                         if (Dialog.ReplyList[n].NonTextLine) i = 1; else i = 0;
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", i.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", i.ToString(), true);
                         if (result == "") return;
                         rp.NonTextLine = (result == "1");
                         break;
                     case "IgnoreBodyGestures":
                         if (Dialog.ReplyList[n].IgnoreBodyGestures) i = 1; else i = 0;
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", i.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", i.ToString(), true);
                         if (result == "") return;
                         rp.IgnoreBodyGestures = (result == "1");
                         break;
                     case "GUIStyle":
-                        result = InputComboBox.GetValue("Please select new value", ME1UnrealObjectInfo.getEnumValues("EConvGUIStyles"), pcc.getNameEntry(Dialog.ReplyList[n].GUIStyleValue));
+                        result = InputComboBox.GetValue("Please select new value", ME1UnrealObjectInfo.getEnumValues("EConvGUIStyles").Select(nRef => nRef.Name), Pcc.getNameEntry(Dialog.ReplyList[n].GUIStyleValue));
                         if (result == "") return;
-                        rp.GUIStyleValue = pcc.FindNameOrAdd(result);
+                        rp.GUIStyleValue = Pcc.FindNameOrAdd(result);
                         break;
                 }
                 Dialog.ReplyList[n] = rp;
@@ -442,7 +450,7 @@ namespace ME1Explorer
                 n = p.Parent.Index;
                 rp = Dialog.ReplyList[n];
                 int m = t.Index;
-                result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", Dialog.ReplyList[n].EntryList[m].ToString(), 0, 0);
+                result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", Dialog.ReplyList[n].EntryList[m].ToString(), true);
                 if (result == "") return;
                 if (int.TryParse(result, out i))
                 {
@@ -464,7 +472,7 @@ namespace ME1Explorer
             {
                 ME1BioConversation.ReplyListStruct rp = Dialog.ReplyList[p.Index];
                 int i = 0;
-                string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", "0", 0, 0);
+                string result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", "0", true);
                 if (result == "") return;
                 if (int.TryParse(result, out i)) rp.EntryList.Add(i);
                 Dialog.ReplyList[p.Index] = rp;
@@ -474,7 +482,7 @@ namespace ME1Explorer
             {
                 ME1BioConversation.ReplyListStruct rp = Dialog.ReplyList[p.Parent.Index];
                 int i = 0;
-                string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer","0", 0, 0);
+                string result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer","0", true);
                 if (result == "") return;
                 if (int.TryParse(result, out i)) rp.EntryList.Add(i);
                 Dialog.ReplyList[p.Parent.Index] = rp;
@@ -541,94 +549,94 @@ namespace ME1Explorer
                 switch (propname)
                 {
                     case "SpeakerIndex":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", el.SpeakerIndex.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", el.SpeakerIndex.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) el.SpeakerIndex = i;
                         break;
                     case "ListenerIndex":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", el.ListenerIndex.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", el.ListenerIndex.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) el.ListenerIndex = i;
                         break;
                     case "Skippable":
                         if (el.Skippable) i = 1; else i = 0;
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", i.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", i.ToString(), true);
                         if (result == "") return;
                         el.Skippable = (result == "1");
                         break;
                     case "Text":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new string", "ME1Explorer", el.Text, 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new string", "ME1Explorer", el.Text, true);
                         if (result == "") return;
                         el.Text = result;
                         break;
                     case "refText":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", el.refText.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", el.refText.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) el.refText = i;
                         break;
                     case "ConditionalFunc":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", el.ConditionalFunc.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", el.ConditionalFunc.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) el.ConditionalFunc = i;
                         break;
                     case "ConditionalParam":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", el.ConditionalParam.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", el.ConditionalParam.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) el.ConditionalParam = i;
                         break;
                     case "StateTransition":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", el.StateTransition.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", el.StateTransition.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) el.StateTransition = i;
                         break;
                     case "StateTransitionParam":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", el.StateTransitionParam.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", el.StateTransitionParam.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) el.StateTransitionParam = i;
                         break;
                     case "ExportID":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", el.ExportID.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", el.ExportID.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) el.ExportID = i;
                         break;
                     case "ScriptIndex":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", el.ScriptIndex.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", el.ScriptIndex.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) el.ScriptIndex = i;
                         break;
                     case "CameraIntimacy":
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", el.CameraIntimacy.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", el.CameraIntimacy.ToString(), true);
                         if (result == "") return;
                         if (int.TryParse(result, out i)) el.CameraIntimacy = i;
                         break;
                     case "FireConditional":
                         if (el.FireConditional) i = 1; else i = 0;
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", i.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", i.ToString(), true);
                         if (result == "") return;
                         el.FireConditional = (result == "1");
                         break;
                     case "Ambient":
                         if (el.Ambient) i = 1; else i = 0;
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", i.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", i.ToString(), true);
                         if (result == "") return;
                         el.Ambient = (result == "1");
                         break;
                     case "NonTextline":
                         if (el.NonTextline) i = 1; else i = 0;
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", i.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", i.ToString(), true);
                         if (result == "") return;
                         el.NonTextline = (result == "1");
                         break;
                     case "IgnoreBodyGestures":
                         if (el.IgnoreBodyGestures) i = 1; else i = 0;
-                        result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", i.ToString(), 0, 0);
+                        result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", i.ToString(), true);
                         if (result == "") return;
                         el.IgnoreBodyGestures = (result == "1");
                         break;
                     case "GUIStyle":
-                        result = InputComboBox.GetValue("Please select new value", ME1UnrealObjectInfo.getEnumValues("EConvGUIStyles"), pcc.getNameEntry(el.GUIStyleValue));
+                        result = InputComboBox.GetValue("Please select new value", ME1UnrealObjectInfo.getEnumValues("EConvGUIStyles").Select(nRef => nRef.Name), Pcc.getNameEntry(el.GUIStyleValue));
                         if (result == "") return;
-                        el.GUIStyleValue = pcc.FindNameOrAdd(result);
+                        el.GUIStyleValue = Pcc.FindNameOrAdd(result);
                         break;
                 }
                 Dialog.EntryList[n] = el;
@@ -644,23 +652,23 @@ namespace ME1Explorer
                 if (p.Index == 0) //ReplyList
                 {
                     ME1BioConversation.EntryListReplyListStruct rpe = el.ReplyList[m];
-                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new string for \"Paraphrase\"", "ME1Explorer", rpe.Paraphrase.ToString(), 0, 0);
+                    result = PromptDialog.Prompt(null, "Please enter new string for \"Paraphrase\"", "ME1Explorer", rpe.Paraphrase.ToString(), true);
                     rpe.Paraphrase = result;
-                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value for \"Index\"", "ME1Explorer", rpe.Index.ToString(), 0, 0);
+                    result = PromptDialog.Prompt(null, "Please enter new value for \"Index\"", "ME1Explorer", rpe.Index.ToString(), true);
                     if (result == "") return;
                     if (int.TryParse(result, out i)) rpe.Index = i;
-                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new StringRef value for \"refParaphrase\"", "ME1Explorer", rpe.refParaphrase.ToString(), 0, 0);
+                    result = PromptDialog.Prompt(null, "Please enter new StringRef value for \"refParaphrase\"", "ME1Explorer", rpe.refParaphrase.ToString(), true);
                     if (result == "") return;
                     if (int.TryParse(result, out i)) rpe.refParaphrase = i;
-                    result = InputComboBox.GetValue("Please select new value for \"Category\"", ME1UnrealObjectInfo.getEnumValues("EReplyCategory"), pcc.getNameEntry(rpe.CategoryValue));
+                    result = InputComboBox.GetValue("Please select new value for \"Category\"", ME1UnrealObjectInfo.getEnumValues("EReplyCategory").Select(nRef => nRef.Name), Pcc.getNameEntry(rpe.CategoryValue));
                     if (result == "") return;
-                    rpe.CategoryValue = pcc.FindNameOrAdd(result);
+                    rpe.CategoryValue = Pcc.FindNameOrAdd(result);
                     el.ReplyList[m] = rpe;
                     Dialog.Save();
                 }
                 else if (p.Index == 1) //Speaker List
                 {
-                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", el.SpeakerList[m].ToString(), 0, 0);
+                    result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", el.SpeakerList[m].ToString(), true);
                     if (result == "") return;
                     if (int.TryParse(result, out i))
                     {
@@ -682,7 +690,7 @@ namespace ME1Explorer
             {
                 ME1BioConversation.EntryListStuct el = Dialog.EntryList[p.Index];
                 int i = 0;
-                string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", "0", 0, 0);
+                string result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", "0", true);
                 if (result == "") return;
                 if (el.SpeakerList == null)
                     el.SpeakerList = new List<int>();
@@ -694,7 +702,7 @@ namespace ME1Explorer
             {
                 ME1BioConversation.EntryListStuct el = Dialog.EntryList[p.Parent.Index];
                 int i = 0;
-                string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME1Explorer", "0", 0, 0);
+                string result = PromptDialog.Prompt(null, "Please enter new value", "ME1Explorer", "0", true);
                 if (result == "") return;
                 if (el.SpeakerList == null)
                     el.SpeakerList = new List<int>();
@@ -827,13 +835,13 @@ namespace ME1Explorer
             }
             ME1BioConversation.EntryListStuct el = Dialog.EntryList[Index];
             AddReply ar = new AddReply();
-            ar.pcc = pcc as ME1Package;
+            ar.pcc = Pcc as ME1Package;
             if (SubIndx != -1)
             {
                 ME1BioConversation.EntryListReplyListStruct tr = el.ReplyList[SubIndx];
                 ar.textBox1.Text = tr.Paraphrase;
                 ar.textBox2.Text = tr.refParaphrase.ToString();
-                ar.comboBox1.SelectedItem = pcc.getNameEntry(tr.CategoryValue);
+                ar.comboBox1.SelectedItem = Pcc.getNameEntry(tr.CategoryValue);
                 ar.textBox4.Text = tr.Index.ToString();
             }
             ar.Show();
@@ -870,11 +878,7 @@ namespace ME1Explorer
 
         private void manageTLKSetToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TlkManager tm = new TlkManager();
-            tm.InitTlkManager(pcc as ME1Package, tlkFileSet, tlkFiles);
-            tlkFiles = tm.selectedTlks;
-            tlkFile = tlkFiles;
-            tm.Show();
+            new TLKManagerWPF().Show();
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
@@ -886,7 +890,7 @@ namespace ME1Explorer
             if (Dialog != null && updatedExports.Contains(Dialog.MyIndex))
             {
                 //loaded dialog is no longer a dialog
-                if (pcc.getExport(Dialog.MyIndex).ClassName != "BioConversation")
+                if (Pcc.getExport(Dialog.MyIndex).ClassName != "BioConversation")
                 {
                     listBox1.Items.Clear();
                     listBox2.Items.Clear();
@@ -898,7 +902,7 @@ namespace ME1Explorer
                 }
                 else
                 {
-                    Dialog = new ME1BioConversation(pcc as ME1Package, Dialog.MyIndex);
+                    Dialog = new ME1BioConversation(Pcc as ME1Package, Dialog.MyIndex);
                     RefreshTabs();
                 }
                 updatedExports.Remove(Dialog.MyIndex);
@@ -906,8 +910,8 @@ namespace ME1Explorer
             if (updatedExports.Intersect(Objs).Count() > 0)
             {
                 Objs = new List<int>();
-                for (int i = 0; i < pcc.Exports.Count; i++)
-                    if (pcc.Exports[i].ClassName == "BioConversation")
+                for (int i = 0; i < Pcc.Exports.Count; i++)
+                    if (Pcc.Exports[i].ClassName == "BioConversation")
                         Objs.Add(i);
                 RefreshCombo();
             }
@@ -915,11 +919,11 @@ namespace ME1Explorer
             {
                 foreach (var i in updatedExports)
                 {
-                    if (pcc.getExport(i).ClassName == "BioConversation")
+                    if (Pcc.getExport(i).ClassName == "BioConversation")
                     {
                         Objs = new List<int>();
-                        for (int j = 0; j < pcc.Exports.Count; j++)
-                            if (pcc.Exports[j].ClassName == "BioConversation")
+                        for (int j = 0; j < Pcc.Exports.Count; j++)
+                            if (Pcc.Exports[j].ClassName == "BioConversation")
                                 Objs.Add(j);
                         RefreshCombo();
                         break;

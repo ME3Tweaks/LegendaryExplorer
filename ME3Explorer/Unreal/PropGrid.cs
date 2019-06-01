@@ -212,7 +212,7 @@ namespace ME3Explorer.Unreal
                         }
                         if (offset != 0)
                         {
-                            int val = Convert.ToInt32(Convert.ToSingle(e.ChangedItem.Value) * 65536f / 360f);
+                            int val = Convert.ToSingle(e.ChangedItem.Value).ToUnrealRotationUnits();
                             buff2 = BitConverter.GetBytes(val);
                             for (int i = 0; i < 4; i++)
                                 data[p[m].offsetval + offset + i] = buff2[i];

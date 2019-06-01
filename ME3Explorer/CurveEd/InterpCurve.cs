@@ -8,6 +8,7 @@ using ME3Explorer.Unreal;
 using Gibbed.IO;
 using System.IO;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer.CurveEd
 {
@@ -42,15 +43,15 @@ namespace ME3Explorer.CurveEd
         private readonly CurveType curveType;
 
         public string Name { get; set; }
-        public ObservableCollection<Curve> Curves { get; set; }
+        public ObservableCollectionExtended<Curve> Curves { get; set; }
 
         public InterpCurve(IMEPackage _pcc, StructProperty prop)
         {
             pcc = _pcc;
 
-            Curves = new ObservableCollection<Curve>();
+            Curves = new ObservableCollectionExtended<Curve>();
             Name = prop.Name;
-            curveType = (CurveType)Enum.Parse(typeof(CurveType), prop.StructType);
+            curveType = Enums.Parse<CurveType>(prop.StructType);
 
             float InVal = 0f;
             CurveMode InterpMode = CurveMode.CIM_Linear;
@@ -180,7 +181,7 @@ namespace ME3Explorer.CurveEd
                             float outVal = prevNode.Value.OutVal;
                             if (prevNode.Next != null)
                             {
-                                outVal = outVal + (prevNode.Next.Value.OutVal - outVal) / 2;
+                                outVal += (prevNode.Next.Value.OutVal - outVal) / 2;
                             }
                             curve.CurvePoints.AddAfter(prevNode, new CurvePoint(p.InVal, outVal, 0, 0, p.InterpMode));
                         }

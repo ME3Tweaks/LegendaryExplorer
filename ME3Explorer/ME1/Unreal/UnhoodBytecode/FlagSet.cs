@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 {
-    class FlagSet
+    public class FlagSet
     {
         private readonly Dictionary<string, int> _masks = new Dictionary<string, int>();
 
@@ -78,6 +78,24 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     }
                 }
             }
+        }
+
+        public string GetFlagsString()
+        {
+            string result = "";
+            for (int i = 0; i < _set.Flags.Length; i++)
+            {
+                var mask = (_flags & (1 << i));
+                if (mask != 0)
+                {
+                    if (_set.Flags[i] != null)
+                    {
+                        result += _set.Flags[i].ToString() + " ";
+                    }
+                }
+            }
+
+            return result;
         }
     }
 

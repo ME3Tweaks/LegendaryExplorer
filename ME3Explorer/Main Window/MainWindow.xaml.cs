@@ -1,26 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
+using System.Threading.Tasks;
 using FontAwesome.WPF;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace ME3Explorer
 {
@@ -31,21 +25,45 @@ namespace ME3Explorer
     public partial class MainWindow : Window
     {
         private bool CICOpen = true;
-        private bool SearchOpen = false;
-        private bool AdvancedOpen = false;
-        private bool UtilitiesOpen = false;
-        private bool CreateModsOpen = false;
-        private bool TaskPaneOpen = false;
-        private bool ToolInfoPanelOpen = false;
-        private bool PathsPanelOpen = false;
-        private bool TaskPaneInfoPanelOpen = false;
+        private bool SearchOpen;
+        private bool AdvancedOpen;
+        private bool UtilitiesOpen;
+        private bool CreateModsOpen;
+        private bool TaskPaneOpen;
+        private bool ToolInfoPanelOpen;
+        private bool PathsPanelOpen;
+        private bool TaskPaneInfoPanelOpen;
 
-        Brush HighlightBrush = Application.Current.FindResource("HighlightColor") as Brush;
-        Brush LabelTextBrush = Application.Current.FindResource("LabelTextBrush") as Brush;
+        readonly Brush HighlightBrush = Application.Current.FindResource("HighlightColor") as Brush;
+        readonly Brush LabelTextBrush = Application.Current.FindResource("LabelTextBrush") as Brush;
         public static double dpiScaleX = 1;
         public static double dpiScaleY = 1;
 
         private static FieldInfo _menuDropAlignmentField;
+
+        /// <summary>
+        /// Displayed version in the UI. About page will be more detailed.
+        /// </summary>
+        public string DisplayedVersion
+        {
+            get
+            {
+                Version assemblyVersion = Assembly.GetEntryAssembly().GetName().Version;
+                string version = $"{assemblyVersion.Major}.{assemblyVersion.Minor}";
+                if (assemblyVersion.Build != 0)
+                {
+                    version += "." + assemblyVersion.Build;
+                }
+
+#if DEBUG
+                version += " DEBUG";
+#else
+                //Commented out as this is a stable build
+                //version += ""; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
+#endif
+                return version;
+            }
+        }
 
         public MainWindow()
         {
@@ -58,6 +76,15 @@ namespace ME3Explorer
             {
                 MessageBox.Show(e.Message);
                 SystemCommands.CloseWindow(this);
+            }
+            var buildDate = SharedUI.BuildInfo.GetBuildDateTime(Assembly.GetExecutingAssembly().Location);
+            if (DateTime.Compare(buildDate, default) != 0)
+            {
+                VersionBar_BuildDate_Label.Content = buildDate.Date;
+            }
+            else
+            {
+                VersionBar_BuildDate_Label.Content = "Unknown build date";
             }
 
             //make menu's appear right side, which is busted on WPF with touchscreens
@@ -82,7 +109,70 @@ namespace ME3Explorer
                 (new InitialSetup()).ShowDialog();
             }
             UpdateGamePathWarningIconStatus();
+            StartLoadingTLKs();
+            //File.WriteAllText(Path.Combine(App.ExecFolder, "LoadedFiles.json"), JsonConvert.SerializeObject(ME3LoadedFiles.GetFilesLoadedInGame(), Formatting.Indented));
+        }
 
+        private void StartLoadingTLKs()
+        {
+            Task.Run(() =>
+            {
+                // load TLK strings
+                try
+                {
+                    ME1Explorer.ME1TalkFiles.LoadSavedTlkList();
+                    TlkManagerNS.TLKManagerWPF.ME1LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
+                }
+                catch
+                {
+                    //?
+                }
+
+                try
+                {
+                    ME2Explorer.ME2TalkFiles.LoadSavedTlkList();
+                    TlkManagerNS.TLKManagerWPF.ME2LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
+                }
+                catch
+                {
+                    //?
+                }
+
+                try
+                {
+                    ME3TalkFiles.LoadSavedTlkList();
+                    TlkManagerNS.TLKManagerWPF.ME3LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
+                }
+                catch
+                {
+                    //?
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                //StartingUpPanel.Visibility = Visibility.Invisible;
+                DoubleAnimation fadeout = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 0,
+                    EasingFunction = new ExponentialEase(),
+                    Duration = new Duration(TimeSpan.FromSeconds(1))
+                };
+                fadeout.Completed += delegate
+                {
+                    LoadingPanel.Visibility = Visibility.Collapsed;
+                    ME3TweaksLogoButton.Visibility = Visibility.Visible;
+                    DoubleAnimation fadein = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 1,
+                        EasingFunction = new ExponentialEase(),
+                        Duration = new Duration(TimeSpan.FromSeconds(1))
+                    };
+                    ME3TweaksLogoButton.BeginAnimation(OpacityProperty, fadein);
+                };
+                //da.RepeatBehavior=new RepeatBehavior(3);
+                LoadingPanel.BeginAnimation(OpacityProperty, fadeout);
+            });
         }
 
         private static void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -140,11 +230,6 @@ namespace ME3Explorer
         private void About_Click(object sender, RoutedEventArgs e)
         {
             (new About()).Show();
-        }
-
-        private void Debug_Click(object sender, RoutedEventArgs e)
-        {
-            KFreonLib.Debugging.DebugOutput.StartDebugger("ME3Explorer Main Window");
         }
 
         private void Logo_MouseDown(object sender, MouseButtonEventArgs e)
@@ -221,20 +306,16 @@ namespace ME3Explorer
                 searchPanel.BeginDoubleAnimation(WidthProperty, 300, 200);
             }
 
-            List<Tool> results = new List<Tool>();
+            var results = new List<Tool>();
             string[] words = SearchBox.Text.ToLower().Split(' ');
             foreach (Tool tool in Tools.Items)
             {
                 if (tool.open != null)
                 {
                     //for each word we've typed in
-                    foreach (string word in words)
+                    if (words.Any(word => tool.tags.FuzzyMatch(word) || tool.name.ToLower().Contains(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word)))
                     {
-                        if (tool.tags.FuzzyMatch(word) || tool.name.ToLower().Contains(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word))
-                        {
-                            results.Add(tool);
-                            break;
-                        }
+                        results.Add(tool);
                     }
                 }
             }
@@ -253,7 +334,7 @@ namespace ME3Explorer
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            List<GenericWindow> tools = new List<GenericWindow>();
+            var tools = new List<GenericWindow>();
             foreach (var package in MEPackageHandler.packagesInTools)
             {
                 foreach (var tool in package.Tools)
@@ -406,7 +487,7 @@ namespace ME3Explorer
         {
             if (ToolInfoPanelOpen)
             {
-                closeToolInfo(50);
+                closeToolInfo();
             }
             CreateModsOpen = false;
             createModsPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
@@ -470,7 +551,7 @@ namespace ME3Explorer
             {
                 me3Path = me3PathBox.Text;
             }
-            List<string> directories = new List<string> { me1Path, me2Path, me3Path };
+            var directories = new List<string> { me1Path, me2Path, me3Path };
             MEDirectories.SaveSettings(directories);
 
             gamePathsWarningIcon.Visibility = directories.All(item => item == null || !Directory.Exists(item)) ? Visibility.Visible : Visibility.Collapsed;
@@ -498,8 +579,10 @@ namespace ME3Explorer
             }
             if (game != "")
             {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Title = $"Select {game} executable.";
+                OpenFileDialog ofd = new OpenFileDialog
+                {
+                    Title = $"Select {game} executable."
+                };
                 game = game.Replace(" ", "");
                 ofd.Filter = $"{game}.exe|{game}.exe";
 
@@ -660,7 +743,7 @@ namespace ME3Explorer
 
         private void ME3TweaksDiscord_Clicked(object sender, RoutedEventArgs e)
         {
-            string link = "https://discordapp.com/invite/s8HA6dc";
+            const string link = "https://discordapp.com/invite/s8HA6dc";
             try
             {
                 System.Diagnostics.Process.Start(link);
@@ -669,7 +752,7 @@ namespace ME3Explorer
             {
                 try
                 {
-                    System.Windows.Clipboard.SetText(link);
+                    Clipboard.SetText(link);
                 }
                 catch
                 {

@@ -147,18 +147,18 @@ namespace ME3Explorer
             dataGridView1.Columns.Clear();
             table2da = new Bio2DA(export);
             //Add columns
-            for (int j = 0; j < table2da.ColumnNames.Count(); j++)
+            for (int j = 0; j < table2da.ColumnNames.Count; j++)
             {
                 dataGridView1.Columns.Add(table2da.ColumnNames[j], table2da.ColumnNames[j]);
             }
 
 
             //Add rows
-            for (int i = 0; i < table2da.RowNames.Count(); i++)
+            for (int i = 0; i < table2da.RowNames.Count; i++)
             {
                 //defines row data. If you add columns, you need to add them here in order
-                List<Object> rowData = new List<object>();
-                for (int j = 0; j < table2da.ColumnNames.Count(); j++)
+                var rowData = new List<object>();
+                for (int j = 0; j < table2da.ColumnNames.Count; j++)
                 {
                     Bio2DACell cell = table2da[i, j];
                     if (cell != null)
@@ -176,7 +176,7 @@ namespace ME3Explorer
             }
 
             //Add row headers
-            for (int i = 0; i < table2da.RowNames.Count(); i++)
+            for (int i = 0; i < table2da.RowNames.Count; i++)
             {
                 dataGridView1.Rows[i].HeaderCell.Value = table2da.RowNames[i];
             }
@@ -236,11 +236,11 @@ namespace ME3Explorer
                     {
                         s += $", Int: {BitConverter.ToInt32(memory, start)}";
                     }
-                    s += $" | Start=0x{start.ToString("X8")} ";
+                    s += $" | Start=0x{start:X8} ";
                     if (len > 0)
                     {
-                        s += $"Length=0x{len.ToString("X8")} ";
-                        s += $"End=0x{(start + len - 1).ToString("X8")}";
+                        s += $"Length=0x{len:X8} ";
+                        s += $"End=0x{(start + len - 1):X8}";
                     }
                     selectionStatus.Text = s;
                 }
@@ -253,84 +253,6 @@ namespace ME3Explorer
             {
             }
         }
-
-
-
-        #region UnrealObjectInfo
-        private PropertyInfo GetPropertyInfo(int propName)
-        {
-            switch (pcc.Game)
-            {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getPropertyInfo(className, pcc.getNameEntry(propName));
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getPropertyInfo(className, pcc.getNameEntry(propName));
-                case MEGame.ME3:
-                    return ME3UnrealObjectInfo.getPropertyInfo(className, pcc.getNameEntry(propName));
-            }
-            return null;
-        }
-
-        private PropertyInfo GetPropertyInfo(string propname, string typeName, bool inStruct = false)
-        {
-            switch (pcc.Game)
-            {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
-                case MEGame.ME3:
-                    return ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
-            }
-            return null;
-        }
-
-        private ArrayType GetArrayType(PropertyInfo propInfo)
-        {
-            switch (pcc.Game)
-            {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getArrayType(propInfo);
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(propInfo);
-                case MEGame.ME3:
-                    return ME3UnrealObjectInfo.getArrayType(propInfo);
-            }
-            return ArrayType.Int;
-        }
-
-        private ArrayType GetArrayType(int propName, string typeName = null)
-        {
-            if (typeName == null)
-            {
-                typeName = className;
-            }
-            switch (pcc.Game)
-            {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName));
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName));
-                case MEGame.ME3:
-                    return ME3UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName));
-            }
-            return ArrayType.Int;
-        }
-
-        private List<string> GetEnumValues(string enumName, int propName)
-        {
-            switch (pcc.Game)
-            {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getEnumfromProp(className, pcc.getNameEntry(propName));
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getEnumfromProp(className, pcc.getNameEntry(propName));
-                case MEGame.ME3:
-                    return ME3UnrealObjectInfo.getEnumValues(enumName, true);
-            }
-            return null;
-        }
-        #endregion
 
         private void FindButton_Click(object sender, EventArgs e)
         {
@@ -358,8 +280,10 @@ namespace ME3Explorer
         {
             if (pcc == null)
                 return;
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = $"Excel file|*.xlsx";
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = "Excel file|*.xlsx"
+            };
             if (d.ShowDialog() == DialogResult.OK)
             {
                 table2da.Write2DAToExcel(d.FileName);
@@ -377,8 +301,6 @@ namespace ME3Explorer
                 Bio2DACell cell = table2da[seelctedcell.RowIndex, seelctedcell.ColumnIndex];
                 if (cell != null)
                 {
-                    string text = "";
-                    
                     Label_CellType.Text = cell.GetTypeString();
                 }
                 else

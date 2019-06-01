@@ -269,7 +269,8 @@ namespace UMD.HCIL.Piccolo.Event {
 		/// <value>The picked node.</value>
 		public virtual PNode PickedNode {
 			get { return Path.PickedNode; }
-		}
+            set { Path.PushNode(value); }
+        }
 		#endregion
 
 		#region Basics
@@ -367,7 +368,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					KeyEventArgs ke = (KeyEventArgs)e;
 					return ke.Shift;
 				}
-				throw new InvalidOperationException("Can't get Shift from a " + type + " event");
+			    return Modifiers.HasFlag(Keys.Shift);
 			}
 		}
 
@@ -384,7 +385,7 @@ namespace UMD.HCIL.Piccolo.Event {
 					KeyEventArgs ke = (KeyEventArgs)e;
 					return ke.Alt;
 				}
-				throw new InvalidOperationException("Can't get Alt from a " + type + " event");
+				return Modifiers.HasFlag(Keys.Alt);
 			}
 		}
 
@@ -401,7 +402,8 @@ namespace UMD.HCIL.Piccolo.Event {
 					KeyEventArgs ke = (KeyEventArgs)e;
 					return ke.Control;
 				}
-				throw new InvalidOperationException("Can't get Control from a " + type + " event");
+
+			    return Modifiers.HasFlag(Keys.Control);
 			}
 		}
 

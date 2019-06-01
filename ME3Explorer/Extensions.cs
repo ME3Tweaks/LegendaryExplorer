@@ -22,6 +22,33 @@ using ME3Explorer.Unreal;
 
 namespace ME3Explorer
 {
+    public static class TaskExtensions
+    {
+        //no argument passed to continuation
+        public static Task ContinueWithOnUIThread(this Task task, Action<Task> continuationAction)
+        {
+            return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
+        }
+
+        //no argument passed to and result returned from continuation
+        public static Task<TNewResult> ContinueWithOnUIThread<TNewResult>(this Task task, Func<Task, TNewResult> continuationAction)
+        {
+            return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
+        }
+
+        //argument passed to continuationn>
+        public static Task ContinueWithOnUIThread<TResult>(this Task<TResult> task, Action<Task<TResult>> continuationAction)
+        {
+            return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
+        }
+
+        //argument passed to and result returned from continuation
+        public static Task<TNewResult> ContinueWithOnUIThread<TResult, TNewResult>(this Task<TResult> task, Func<Task<TResult>, TNewResult> continuationAction)
+        {
+            return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
+        }
+    }
+
     public static class TreeViewExtension
     {
         public static IEnumerable<System.Windows.Forms.TreeNode> FlattenTreeView(this System.Windows.Forms.TreeView tv)
@@ -73,8 +100,7 @@ namespace ME3Explorer
     {
         public static TreeViewItem ContainerFromItemRecursive(this ItemContainerGenerator root, object item)
         {
-            var treeViewItem = root.ContainerFromItem(item) as TreeViewItem;
-            if (treeViewItem != null)
+            if (root.ContainerFromItem(item) is TreeViewItem treeViewItem)
                 return treeViewItem;
             foreach (var subItem in root.Items)
             {
@@ -98,15 +124,6 @@ namespace ME3Explorer
                 idx = list.Count - 1;
             }
             return idx;
-        }
-
-        public static IEnumerable<T> Concat<T>(this IEnumerable<T> first, T second)
-        {
-            foreach (T element in first)
-            {
-                yield return element;
-            }
-            yield return second;
         }
 
         /// <summary>
@@ -185,10 +202,11 @@ namespace ME3Explorer
 
         /// <summary>
         /// Overwrites a portion of an array starting at offset with the contents of another array.
+        /// Accepts negative indexes
         /// </summary>
         /// <typeparam name="T">Content of array.</typeparam>
         /// <param name="dest">Array to write to</param>
-        /// <param name="offset">Start index in dest</param>
+        /// <param name="offset">Start index in dest. Can be negative (eg. last element is -1)</param>
         /// <param name="source">data to write to dest</param>
         public static void OverwriteRange<T>(this IList<T> dest, int offset, IList<T> source)
         {
@@ -245,6 +263,66 @@ namespace ME3Explorer
             }
             return -1;
         }
+
+        public static bool IsEmpty<T>(this ICollection<T> list)
+        {
+            return list.Count == 0;
+        }
+
+        public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
+        {
+            return !enumerable.Any();
+        }
+        /// <summary>
+        /// Creates a sequence of tuples by combining the two sequences. The resulting sequence will length of the shortest of the two.
+        /// </summary>
+        public static IEnumerable<(TFirst, TSecond)> ZipTuple<TFirst, TSecond>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second)
+        {
+            return first.Zip(second, ValueTuple.Create);
+        }
+
+        public static bool HasExactly<T>(this IEnumerable<T> src, int count)
+        {
+            if (count < 0) return false;
+            foreach (var _ in src)
+            {
+                if (count <= 0)
+                {
+                    return false;
+                }
+
+                --count;
+            }
+
+            return count == 0;
+        }
+
+        public static IEnumerable<T> NonNull<T>(this IEnumerable<T> src) where T : class
+        {
+            return src.Where(obj => obj != null);
+        }
+    }
+
+    public static class DictionaryExtensions
+    {
+        /// <summary>
+        /// Adds <paramref name="value"/> to List&lt;<typeparamref name="TValue"/>&gt; associated with <paramref name="key"/>. Creates List&lt;<typeparamref name="TValue"/>&gt; if neccesary.
+        /// </summary>
+        public static void AddToListAt<TKey, TValue>(this Dictionary<TKey, List<TValue>> dict, TKey key, TValue value)
+        {
+            if (!dict.TryGetValue(key, out List<TValue> list))
+            {
+                list = new List<TValue>();
+                dict[key] = list;
+            }
+            list.Add(value);
+        }
+
+        public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value)
+        {
+            key = kvp.Key;
+            value = kvp.Value;
+        }
     }
 
     public static class StringExtensions
@@ -265,12 +343,12 @@ namespace ME3Explorer
             {
                 return m;
             }
-            else if (m == 0)
+            if (m == 0)
             {
                 return n;
             }
-            int[] v0;
-            int[] v1 = new int[m + 1];
+
+            var v1 = new int[m + 1];
             for (int i = 0; i <= m; i++)
             {
                 v1[i] = i;
@@ -278,7 +356,7 @@ namespace ME3Explorer
 
             for (int i = 1; i <= n; i++)
             {
-                v0 = v1;
+                int[] v0 = v1;
                 v1 = new int[m + 1];
                 v1[0] = i;
                 for (int j = 1; j <= m; j++)
@@ -370,6 +448,11 @@ namespace ME3Explorer
             bitmapImage.EndInit();
             bitmapImage.Freeze();
             return bitmapImage;
+        }
+
+        public static FrameworkElement GetChild(this ItemsControl itemsControl, string withName)
+        {
+            return itemsControl.Items.OfType<FrameworkElement>().FirstOrDefault(m => m.Name == withName);
         }
     }
 
@@ -535,6 +618,50 @@ namespace ME3Explorer
         }
     }
 
+    public static class ByteArrayExtensions
+    {
+        static readonly int[] Empty = new int[0];
+
+        public static int[] Locate(this byte[] self, byte[] candidate)
+        {
+            if (IsEmptyLocate(self, candidate))
+                return Empty;
+
+            var list = new List<int>();
+
+            for (int i = 0; i < self.Length; i++)
+            {
+                if (!IsMatch(self, i, candidate))
+                    continue;
+
+                list.Add(i);
+            }
+
+            return list.Count == 0 ? Empty : list.ToArray();
+        }
+
+        static bool IsMatch(byte[] array, int position, byte[] candidate)
+        {
+            if (candidate.Length > (array.Length - position))
+                return false;
+
+            for (int i = 0; i < candidate.Length; i++)
+                if (array[position + i] != candidate[i])
+                    return false;
+
+            return true;
+        }
+
+        static bool IsEmptyLocate(byte[] array, byte[] candidate)
+        {
+            return array == null
+                   || candidate == null
+                   || array.Length == 0
+                   || candidate.Length == 0
+                   || candidate.Length > array.Length;
+        }
+    }
+
     public static class UnrealExtensions
     {
         /// <summary>
@@ -559,19 +686,28 @@ namespace ME3Explorer
         }
 
         /// <summary>
-        /// Checks if this object is of a specific generic type (e.g. List<IntProperty>)
+        /// Converts Degrees to Unreal rotation units
+        /// </summary>
+        public static int ToUnrealRotationUnits(this float degrees) => Convert.ToInt32(degrees * 65536f / 360f);
+
+        /// <summary>
+        /// Converts Unreal rotation units to Degrees
+        /// </summary>
+        public static float ToDegrees(this int unrealRotationUnits) => unrealRotationUnits * 360f / 65536f;
+
+        /// <summary>
+        /// Checks if this object is of a specific generic type (e.g. List&lt;IntProperty&gt;)
         /// </summary>
         /// <param name="typeToCheck">typeof() of the item you are checking</param>
         /// <param name="genericType">typeof() of the value you are checking against</param>
         /// <returns>True if type matches, false otherwise</returns>
         public static bool IsOfGenericType(this Type typeToCheck, Type genericType)
         {
-            Type concreteType;
-            return typeToCheck.IsOfGenericType(genericType, out concreteType);
+            return typeToCheck.IsOfGenericType(genericType, out Type _);
         }
 
         /// <summary>
-        /// Checks if this object is of a specific generic type (e.g. List<IntProperty>)
+        /// Checks if this object is of a specific generic type (e.g. List&lt;IntProperty&gt;)
         /// </summary>
         /// <param name="typeToCheck">typeof() of the item you are checking</param>
         /// <param name="genericType">typeof() of the value you are checking against</param>
@@ -614,40 +750,33 @@ namespace ME3Explorer
         }
     }
 
-    public static class EnumExtensions
+    public static class Enums
     {
         public static T[] GetValues<T>() where T : Enum
         {
             return (T[])Enum.GetValues(typeof(T));
         }
-    }
 
-    public static class EnumHelper<T> where T : struct
-    {
-        // ReSharper disable StaticFieldInGenericType
-        private static readonly Enum[] Values;
-        // ReSharper restore StaticFieldInGenericType
-        private static readonly T DefaultValue;
-
-        static EnumHelper()
+        public static T Parse<T>(string val) where T : Enum
         {
-            var type = typeof(T);
-            if (type.IsSubclassOf(typeof(Enum)) == false)
-            {
-                throw new ArgumentException();
-            }
-            Values = Enum.GetValues(type).Cast<Enum>().ToArray();
-            DefaultValue = default(T);
+            return (T)Enum.Parse(typeof(T), val);
         }
-
-        public static T[] MaskToList(Enum mask, bool ignoreDefault = true)
+        public static T[] MaskToList<T>(this T mask, bool ignoreDefault = true) where T : Enum
         {
-            var q = Values.Where(mask.HasFlag);
+            var q = GetValues<T>().Where(t => mask.HasFlag(t));
             if (ignoreDefault)
             {
-                q = q.Where(v => !v.Equals(DefaultValue));
+                q = q.Where(v => !v.Equals(default(T)));
             }
-            return q.Cast<T>().ToArray();
+            return q.ToArray();
+        }
+    }
+
+    public static class TypeExtension
+    {
+        public static object InvokeGenericMethod(this Type type, string methodName, Type genericType, object invokeOn, params object[] parameters)
+        {
+            return type.GetMethod(methodName).MakeGenericMethod(genericType).Invoke(invokeOn, parameters);
         }
     }
 }

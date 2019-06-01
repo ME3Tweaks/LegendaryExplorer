@@ -12,7 +12,7 @@ namespace ME3Explorer.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.0.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -284,6 +284,129 @@ namespace ME3Explorer.Properties {
             }
             set {
                 this["BinaryInterpreterWPFAutoScanAlways"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PropertyParsingME3UnknownArrayAsObject {
+            get {
+                return ((bool)(this["PropertyParsingME3UnknownArrayAsObject"]));
+            }
+            set {
+                this["PropertyParsingME3UnknownArrayAsObject"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PropertyParsingME2UnknownArrayAsObject {
+            get {
+                return ((bool)(this["PropertyParsingME2UnknownArrayAsObject"]));
+            }
+            set {
+                this["PropertyParsingME2UnknownArrayAsObject"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PropertyParsingME1UnknownArrayAsObject {
+            get {
+                return ((bool)(this["PropertyParsingME1UnknownArrayAsObject"]));
+            }
+            set {
+                this["PropertyParsingME1UnknownArrayAsObject"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PathfindingEditorShowNodeSizes {
+            get {
+                return ((bool)(this["PathfindingEditorShowNodeSizes"]));
+            }
+            set {
+                this["PathfindingEditorShowNodeSizes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PackageEditorWPF_TreeViewShowEntryIndex {
+            get {
+                return ((bool)(this["PackageEditorWPF_TreeViewShowEntryIndex"]));
+            }
+            set {
+                this["PackageEditorWPF_TreeViewShowEntryIndex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EmbeddedTextureViewer_AutoLoad {
+            get {
+                return ((bool)(this["EmbeddedTextureViewer_AutoLoad"]));
+            }
+            set {
+                this["EmbeddedTextureViewer_AutoLoad"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InterpreterWPF_AdvancedDisplay {
+            get {
+                return ((bool)(this["InterpreterWPF_AdvancedDisplay"]));
+            }
+            set {
+                this["InterpreterWPF_AdvancedDisplay"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TouchComfyMode {
+            get {
+                return ((bool)(this["TouchComfyMode"]));
+            }
+            set {
+                this["TouchComfyMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InterpreterWPF_Colorize {
+            get {
+                return ((bool)(this["InterpreterWPF_Colorize"]));
+            }
+            set {
+                this["InterpreterWPF_Colorize"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PropertyDBPath
+        {
+            get
+            {
+                return ((string)(this["PropertyDBPath"]));
+            }
+            set
+            {
+                this["PropertyDBPath"] = value;
             }
         }
     }

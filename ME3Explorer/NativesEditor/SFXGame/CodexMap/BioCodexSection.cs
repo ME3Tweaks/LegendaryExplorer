@@ -8,9 +8,13 @@
 		/// </summary>
 		public new const int DefaultCodexSound = BioCodexEntry.DefaultCodexSound;
 
-		/// <summary>
-		/// </summary>
-		public new const int DefaultDescription = BioCodexEntry.DefaultDescription;
+        /// <summary>
+        /// </summary>
+        public new const string DefaultCodexSoundString = BioCodexEntry.DefaultCodexSoundString;
+
+        /// <summary>
+        /// </summary>
+        public new const int DefaultDescription = BioCodexEntry.DefaultDescription;
 
 		/// <summary>
 		/// </summary>
@@ -34,19 +38,20 @@
 
 		private bool _isPrimary;
 
-		/// <summary>
-		/// </summary>
-		/// <param name="title"></param>
-		/// <param name="description"></param>
-		/// <param name="isPrimary"></param>
-		/// <param name="textureIndex"></param>
-		/// <param name="priority"></param>
-		/// <param name="codexSound"></param>
-		/// <param name="instanceVersion"></param>
-		public BioCodexSection(int title = DefaultTitle, int description = DefaultDescription, bool isPrimary = DefaultIsPrimary,
-			int textureIndex = DefaultTextureIndex, int priority = DefaultPriority, int codexSound = DefaultCodexSound,
-			int instanceVersion = DefaultInstanceVersion)
-			: base(title, description, textureIndex, priority, codexSound, instanceVersion)
+        /// <summary>
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="description"></param>
+        /// <param name="isPrimary"></param>
+        /// <param name="textureIndex"></param>
+        /// <param name="priority"></param>
+        /// <param name="codexSound">instance version 3/4</param>
+        /// <param name="codexSoundString">instance version 2 only </param>
+        /// <param name="instanceVersion"></param>
+        public BioCodexSection(int title = DefaultTitle, int description = DefaultDescription, bool isPrimary = DefaultIsPrimary,
+			int textureIndex = DefaultTextureIndex, int priority = DefaultPriority, int codexSound = DefaultCodexSound, string codexSoundString = DefaultCodexSoundString,
+            int instanceVersion = DefaultInstanceVersion)
+			: base(title, description, textureIndex, priority, codexSound, codexSoundString, instanceVersion)
 		{
 			IsPrimary = isPrimary;
 		}

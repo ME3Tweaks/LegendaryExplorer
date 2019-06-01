@@ -7,14 +7,15 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using MassEffect3.Coalesce;
+using ME3Explorer;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace MassEffect3.CoalesceTool
 {
-	/// <summary>
-	///     Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class CoalescedEditor : INotifyPropertyChanged
+    /// <summary>
+    ///     Interaction logic for CoalescedEditor.xaml
+    /// </summary>
+    public partial class CoalescedEditor : NotifyPropertyChangedWindowBase
 	{
 		private string _destinationPath;
 		private CoalescedType _destinationType;
@@ -30,60 +31,50 @@ namespace MassEffect3.CoalesceTool
 
 		public string DestinationPath
 		{
-			get { return _destinationPath; }
-			set { SetProperty(ref _destinationPath, value); }
+			get => _destinationPath;
+		    set => SetProperty(ref _destinationPath, value);
 		}
 
 		public CoalescedType DestinationType
 		{
-			get { return _destinationType; }
-			set { SetProperty(ref _destinationType, value); }
+			get => _destinationType;
+		    set => SetProperty(ref _destinationType, value);
 		}
 
 		public string SourcePath
 		{
-			get { return _sourcePath; }
-			set { SetProperty(ref _sourcePath, value); }
+			get => _sourcePath;
+		    set => SetProperty(ref _sourcePath, value);
 		}
 
 		public CoalescedType SourceType
 		{
-			get { return _sourceType; }
-			set { SetProperty(ref _sourceType, value); }
+			get => _sourceType;
+		    set => SetProperty(ref _sourceType, value);
 		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
 
 		private void Browse_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
-			var parameter = e.Parameter as string;
-
-			if (parameter == null)
+		    if (!(e.Parameter is string parameter))
 			{
 				return;
 			}
 
 			//var isSource = (parameter.Equals("Source", StringComparison.OrdinalIgnoreCase));
-			var isDestination = (parameter.Equals("Destination", StringComparison.OrdinalIgnoreCase));
+			var isDestination = parameter.Equals("Destination", StringComparison.OrdinalIgnoreCase);
+            if (isDestination && string.IsNullOrEmpty(SourcePath))
+            {
+                e.CanExecute = false;
 
-			if (isDestination)
-			{
-				if (string.IsNullOrEmpty(SourcePath))
-				{
-					e.CanExecute = false;
+                return;
+            }
 
-					return;
-				}
-			}
-
-			e.CanExecute = true;
+            e.CanExecute = true;
 		}
 
 		private void Browse_OnExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			var parameter = e.Parameter as string;
-
-			if (parameter == null)
+		    if (!(e.Parameter is string parameter))
 			{
 				return;
 			}
@@ -98,7 +89,7 @@ namespace MassEffect3.CoalesceTool
 				dlg.Filters.Add(new CommonFileDialogFilter("Binary Coalesced Files", "*.bin"));
 				dlg.Filters.Add(new CommonFileDialogFilter("XML Coalesced Files", "*.xml"));
 
-				if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+				if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
 				{
 					return;
 				}
@@ -156,7 +147,7 @@ namespace MassEffect3.CoalesceTool
 							IsFolderPicker = true
 						};
 
-						if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+						if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
 						{
 							return;
 						}
@@ -173,7 +164,7 @@ namespace MassEffect3.CoalesceTool
 						dlg.Filters.Add(new CommonFileDialogFilter("Binary Coalesced Files", "*.bin"));
 						dlg.Filters.Add(new CommonFileDialogFilter("XML Coalesced Files", "*.xml"));
 
-						if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+						if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
 						{
 							return;
 						}
@@ -265,30 +256,6 @@ namespace MassEffect3.CoalesceTool
 		private void Exit_OnExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
 			Application.Current.Shutdown();
-		}
-        
-		protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
-		{
-			if (Equals(storage, value))
-			{
-				return false;
-			}
-
-			storage = value;
-
-			if (propertyName != null)
-			{
-				OnPropertyChanged(propertyName);
-			}
-
-			return true;
-		}
-        
-		protected void OnPropertyChanged(string propertyName)
-		{
-			var handler = PropertyChanged;
-
-			handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }

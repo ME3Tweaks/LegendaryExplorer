@@ -109,6 +109,16 @@ namespace ME3Explorer.SharedUI.PeregrineTreeView
             return result;
         }
 
+        // Return the highest / lowest value from the top of the heap, then re-arrange the remaining
+        // items so that the next highest / lowest item is moved to the top.
+        public void Clear()
+        {
+            while (Count > 0)
+            {
+                Remove();
+            }
+        }
+
         // Return the highest / lowest item without removing it.
         public T Peek()
         {

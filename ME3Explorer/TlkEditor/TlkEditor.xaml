@@ -2,8 +2,11 @@
     x:Name="root"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="ME3 + ME2 TLK Editor" Height="335" Width="612"
-    Closed="Root_Closed" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Background="WhiteSmoke" Icon="/ME3Explorer;component/Resources/TLK_ME23_editor_icon.ico" >
+    Title="ME2 + ME3 TLK Editor" Height="335" Width="612"
+    Closed="Root_Closed" ResizeMode="CanMinimize" 
+        WindowStartupLocation="CenterScreen" 
+        Background="WhiteSmoke" 
+        Icon="/Resources/me2me3tlkeditor_256x256.ico" >
     
     <StackPanel Name="stackPanel1" >
 

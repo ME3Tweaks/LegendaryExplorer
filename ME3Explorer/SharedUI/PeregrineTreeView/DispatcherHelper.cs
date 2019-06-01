@@ -57,6 +57,12 @@ namespace ME3Explorer.SharedUI.PeregrineTreeView
             _priorityQueue.Add(new perDispatcherItemPair(action, dispatcherPriority));
         }
 
+        public static void EmptyQueue()
+        {
+            _priorityQueue.Clear();
+        }
+
+
         // execute each operation from the operations queue in order.
         // An operation may result in more items being added to the queue, which will be executed in the appropriate order.
         public static async Task ProcessQueueAsync()

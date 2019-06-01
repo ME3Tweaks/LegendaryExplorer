@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ME3Explorer.CurveEd;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 
@@ -67,8 +68,7 @@ namespace ME3Explorer.FaceFX
             }
             catch (Exception ex)
             {
-                Pcc?.Release(wpfWindow: this);
-                Pcc = null;
+                UnLoadMEPackage();
                 MessageBox.Show("Error:\n" + ex.Message);
             }
         }
@@ -299,7 +299,7 @@ namespace ME3Explorer.FaceFX
                         index = names.FindOrAdd(sourceNames[x.index]),
                         unk2 = x.unk2
                     }).ToArray();
-                    FaceFX.Data.Data = FaceFX.Data.Data.Concat(line).ToArray();
+                    FaceFX.Data.Data = FaceFX.Data.Data.Append(line).ToArray();
                     FaceFX.Header.Names = names.ToArray();
                     linesListBox.ItemsSource = FaceFX.Data.Data;
                 }
@@ -307,7 +307,13 @@ namespace ME3Explorer.FaceFX
                 {
                     if (!(line is ME2FaceFXLine))
                     {
-                        MessageBox.Show("Cannot add ME3 FaceFX lines to ME2 FaceFXAnimsets. If you require this feature, please make an issue on the project's Github page");
+                        var result = MessageBox.Show("Cannot add ME3 FaceFX lines to ME2 FaceFXAnimsets. " +
+                                                     "If you require this feature, please make an issue on the project's Github page. Would you like to go the Github page now?",
+                                                     "Feature Not Implemented", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            System.Diagnostics.Process.Start(App.BugReportURL);
+                        }
                         return;
                     }
                     line.animations = line.animations.Select(x => new ME2NameRef
@@ -316,7 +322,7 @@ namespace ME3Explorer.FaceFX
                         unk2 = x.unk2
                     }).ToArray();
                     ME2DataAnimSetStruct me2DataAnimSetStruct = (FaceFX.Data as ME2DataAnimSetStruct);
-                    me2DataAnimSetStruct.Data = me2DataAnimSetStruct.Data.Concat(line as ME2FaceFXLine).ToArray();
+                    me2DataAnimSetStruct.Data = me2DataAnimSetStruct.Data.Append(line as ME2FaceFXLine).ToArray();
                     FaceFX.Header.Names = names.ToArray();
                     linesListBox.ItemsSource = me2DataAnimSetStruct.Data;
                 }
@@ -375,11 +381,11 @@ namespace ME3Explorer.FaceFX
                 List<string> names = FaceFX.Header.Names.ToList();
                 if (Pcc.Game == MEGame.ME3)
                 {
-                    selectedLine.animations = selectedLine.animations.Concat(new ME3NameRef { index = names.FindOrAdd(a.Name), unk2 = 0 }).ToArray();
+                    selectedLine.animations = selectedLine.animations.Append(new ME3NameRef { index = names.FindOrAdd(a.Name), unk2 = 0 }).ToArray();
                 }
                 else
                 {
-                    selectedLine.animations = selectedLine.animations.Concat(new ME2NameRef { index = names.FindOrAdd(a.Name), unk1 = 1 }).ToArray();
+                    selectedLine.animations = selectedLine.animations.Append(new ME2NameRef { index = names.FindOrAdd(a.Name), unk1 = 1 }).ToArray();
                 }
                 FaceFX.Header.Names = names.ToArray();
                 selectedLine.points = selectedLine.points.Concat(a.points.Select(x => new ControlPoint
@@ -389,7 +395,7 @@ namespace ME3Explorer.FaceFX
                     inTangent = x.ArriveTangent,
                     leaveTangent = x.LeaveTangent
                 })).ToArray();
-                selectedLine.numKeys = selectedLine.numKeys.Concat(group).ToArray();
+                selectedLine.numKeys = selectedLine.numKeys.Append(group).ToArray();
                 updateAnimListBox();
             }
             SaveChanges();
@@ -437,7 +443,7 @@ namespace ME3Explorer.FaceFX
             switch (subidx)
             {
                 case 0://Name
-                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", FaceFX.Header.Names.ElementAtOrDefault(selectedLine.Name), 0, 0);
+                    result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", FaceFX.Header.Names.ElementAtOrDefault(selectedLine.Name), true);
                     if (result == string.Empty)
                     {
                         break;
@@ -448,34 +454,34 @@ namespace ME3Explorer.FaceFX
                     }
                     else if (MessageBoxResult.Yes == MessageBox.Show($"The names list does not contain the name \"{result}\", do you want to add it?", "", MessageBoxButton.YesNo))
                     {
-                        FaceFX.Header.Names = FaceFX.Header.Names.Concat(result).ToArray();
+                        FaceFX.Header.Names = FaceFX.Header.Names.Append(result).ToArray();
                         selectedLine.Name = FaceFX.Header.Names.Length - 1;
                     }
                     break;
                 case 1://FadeInTime
-                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.FadeInTime.ToString(), 0, 0);
+                    result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", selectedLine.FadeInTime.ToString(), true);
                     if (float.TryParse(result, out f))
                         selectedLine.FadeInTime = f;
                     break;
                 case 2://FadeInTime
-                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.FadeOutTime.ToString(), 0, 0);
+                    result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", selectedLine.FadeOutTime.ToString(), true);
                     if (float.TryParse(result, out f))
                         selectedLine.FadeOutTime = f;
                     break;
                 case 3://unk2
-                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.unk2.ToString(), 0, 0);
+                    result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", selectedLine.unk2.ToString(), true);
                     i = -1;
                     if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
                         selectedLine.unk2 = i;
                     break;
                 case 4://Path
-                    selectedLine.path = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.path, 0, 0);
+                    selectedLine.path = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", selectedLine.path, true);
                     break;
                 case 5://ID
-                    selectedLine.ID = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.ID, 0, 0);
+                    selectedLine.ID = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", selectedLine.ID, true);
                     break;
                 case 6://unk3
-                    result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new value", "ME3Explorer", selectedLine.index.ToString(), 0, 0);
+                    result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", selectedLine.index.ToString(), true);
                     i = -1;
                     if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
                         selectedLine.index = i;
@@ -539,8 +545,8 @@ namespace ME3Explorer.FaceFX
 
         (float start, float end, float span) getTimeRange()
         {
-            string startS = Microsoft.VisualBasic.Interaction.InputBox("Please enter start time:");
-            string endS = Microsoft.VisualBasic.Interaction.InputBox("Please enter end time:");
+            string startS = PromptDialog.Prompt(this, "Please enter start time:");
+            string endS = PromptDialog.Prompt(this, "Please enter end time:");
             if (!(float.TryParse(startS, out float start) && float.TryParse(endS, out float end)))
             {
                 MessageBox.Show("You must enter two valid time values. For example, 3 and a half seconds would be entered as: 3.5");
@@ -599,7 +605,7 @@ namespace ME3Explorer.FaceFX
 
         private void ImpLineSec_Click(object sender, RoutedEventArgs e)
         {
-            string startS = Microsoft.VisualBasic.Interaction.InputBox("Please enter the time to insert at");
+            string startS = PromptDialog.Prompt(this, "Please enter the time to insert at");
             if (!float.TryParse(startS, out float start))
             {
                 MessageBox.Show("You must enter two valid time values. For example, 3 and a half seconds would be entered as: 3.5");
@@ -706,8 +712,8 @@ namespace ME3Explorer.FaceFX
 
         private void OffsetKeysAfterTime_Click(object sender, RoutedEventArgs e)
         {
-            string startS = Microsoft.VisualBasic.Interaction.InputBox("Please enter the start time (keys at or after this time will be offset):");
-            string offsetS = Microsoft.VisualBasic.Interaction.InputBox("Please enter offset amount:");
+            string startS = PromptDialog.Prompt(this, "Please enter the start time (keys at or after this time will be offset):");
+            string offsetS = PromptDialog.Prompt(this, "Please enter offset amount:");
             if (!(float.TryParse(startS, out float start) && float.TryParse(offsetS, out float offset)))
             {
                 MessageBox.Show("You must enter two valid time values. For example, 3 and a half seconds would be entered as: 3.5");

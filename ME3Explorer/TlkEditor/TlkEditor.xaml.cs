@@ -245,7 +245,7 @@ namespace ME3Explorer
 
         private void ReportBugs_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/Mgamerz/ME3Explorer/issues");
+            Process.Start(App.BugReportURL);
         }
 
         private void HowTo_Click(object sender, RoutedEventArgs e)

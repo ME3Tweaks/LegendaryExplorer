@@ -14,6 +14,7 @@ using ME3Explorer;
 using Be.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Diagnostics;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer.WwiseBankEditor
 {
@@ -53,7 +54,7 @@ namespace ME3Explorer.WwiseBankEditor
         public void ListRefresh()
         {
             objects = new List<int>();
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             for (int i = 0; i < Exports.Count; i++)
                 if (Exports[i].ClassName == "WwiseBank")
                     objects.Add(i);
@@ -61,7 +62,7 @@ namespace ME3Explorer.WwiseBankEditor
             listBox1.Items.Clear();
             listBox2.Items.Clear();
             for (int i = 0; i < objects.Count; i++)
-                listBox1.Items.Add(objects[i] + " : " + pcc.Exports[objects[i]].ObjectName);
+                listBox1.Items.Add(objects[i] + " : " + Pcc.Exports[objects[i]].ObjectName);
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -85,15 +86,15 @@ namespace ME3Explorer.WwiseBankEditor
                     {
                         int val = BitConverter.ToInt32(memory, start);
                         s += $", Int: {val} (0x{val.ToString("X8")})";
-                        if (pcc.isName(val))
+                        if (Pcc.isName(val))
                         {
-                            s += $", Name: {pcc.getNameEntry(val)}";
+                            s += $", Name: {Pcc.getNameEntry(val)}";
                         }
-                        if (pcc.getEntry(val) is IExportEntry exp)
+                        if (Pcc.getEntry(val) is IExportEntry exp)
                         {
                             s += $", Export: {exp.ObjectName}";
                         }
-                        else if (pcc.getEntry(val) is ImportEntry imp)
+                        else if (Pcc.getEntry(val) is ImportEntry imp)
                         {
                             s += $", Import: {imp.ObjectName}";
                         }
@@ -122,7 +123,7 @@ namespace ME3Explorer.WwiseBankEditor
             if (n == -1)
                 return;
             int index = objects[n];
-            bank = new WwiseBank(pcc.Exports[index]);
+            bank = new WwiseBank(Pcc.Exports[index]);
             hb1.ByteProvider = new DynamicByteProvider(bank.export.getBinaryData());
             rtb1.Text = bank.GetQuickScan();
             ListRefresh2();
@@ -233,7 +234,7 @@ namespace ME3Explorer.WwiseBankEditor
                 int ID3 = BitConverter.ToInt32(buff, 21);
                 int tp = buff[25];
                 string s = ID1 + ", " + opt + ", " + ID2 + ", " + ID3 + ", " + tp;
-                string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter new values[Object ID, Stream Option, ID audio, ID source, Sound Type", "ME3Explorer", s, 0, 0);
+                string result = PromptDialog.Prompt(null, "Please enter new values[Object ID, Stream Option, ID audio, ID source, Sound Type", "ME3Explorer", s, true);
                 string[] sres = result.Split(',');
                 if (sres.Length != 5)
                     return;
@@ -264,9 +265,9 @@ namespace ME3Explorer.WwiseBankEditor
         {
             if (bank == null)
                 return;
-            int n = bank.MyIndex;
+            int n = bank.ExportIndex;
             byte[] tmp = bank.RecreateBinary();
-            pcc.Exports[n].Data = tmp;
+            Pcc.Exports[n].Data = tmp;
         }
 
         private void savePccToolStripMenuItem_Click(object sender, EventArgs e)
@@ -274,7 +275,7 @@ namespace ME3Explorer.WwiseBankEditor
             SaveFileDialog d = new SaveFileDialog { Filter = "*.pcc|*.pcc" };
             if (d.ShowDialog() == DialogResult.OK)
             {
-                pcc.save(d.FileName);
+                Pcc.save(d.FileName);
                 MessageBox.Show("Done.");
             }
         }
@@ -312,7 +313,7 @@ namespace ME3Explorer.WwiseBankEditor
             string hexString = searchHexTextBox.Text.Replace(" ", string.Empty);
             if (hexString.Length == 0)
                 return;
-            if (isHexString(hexString))
+            if (!isHexString(hexString))
             {
                 searchHexStatus.Text = "Illegal characters in Hex String";
                 return;
@@ -352,17 +353,17 @@ namespace ME3Explorer.WwiseBankEditor
                                                                             x.change != PackageChange.ImportAdd &&
                                                                             x.change != PackageChange.Names);
             List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (updatedExports.Contains(bank.MyIndex))
+            if (updatedExports.Contains(bank.ExportIndex))
             {
-                int index = bank.MyIndex;
+                int index = bank.ExportIndex;
                 //loaded sequence is no longer a sequence
-                if (pcc.getExport(index).ClassName != "WwiseBank")
+                if (Pcc.getExport(index).ClassName != "WwiseBank")
                 {
                     bank = null;
                     listBox2.Items.Clear();
                     rtb1.Text = "";
-                    hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
-                    hircHexBox.ByteProvider = new DynamicByteProvider(new List<byte>());
+                    hb1.ByteProvider = new DynamicByteProvider();
+                    hircHexBox.ByteProvider = new DynamicByteProvider();
                 }
                 RefreshSelected();
                 updatedExports.Remove(index);
@@ -373,7 +374,7 @@ namespace ME3Explorer.WwiseBankEditor
             }
             foreach (var i in updatedExports)
             {
-                if (pcc.getExport(i).ClassName.Contains("WwiseBank"))
+                if (Pcc.getExport(i).ClassName.Contains("WwiseBank"))
                 {
                     ListRefresh();
                     break;
