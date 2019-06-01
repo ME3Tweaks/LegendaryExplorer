@@ -1254,6 +1254,10 @@
       <Project>{ccf590b8-e6bf-4d31-85bf-afea7d075edf}</Project>
       <Name>Helpers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HexConverterWPF\HexConverterWPF.csproj">
+      <Project>{947a6918-ad71-4f61-bc63-8da7997e10e6}</Project>
+      <Name>HexConverterWPF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NAudio\NAudio.csproj">
       <Project>{da4f02e3-0b5e-42cd-b8d9-5583fa51d66e}</Project>
       <Name>NAudio</Name>
@@ -1261,10 +1265,6 @@
     <ProjectReference Include="..\Piccolo\Piccolo.csproj">
       <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>
       <Name>Piccolo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SaltTPF\SaltTPF.csproj">
-      <Project>{8637a2aa-e1fb-4ec9-88a5-688d7d1f7921}</Project>
-      <Name>SaltTPF</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tools\Gibbed.IO\Gibbed.IO.csproj">
       <Project>{047857ba-daa3-4ca7-afb8-a1b082b28c6a}</Project>

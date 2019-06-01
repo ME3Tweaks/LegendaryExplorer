@@ -28,6 +28,7 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.ME3Enums;
 using StreamHelpers;
 using static ME3Explorer.BinaryInterpreterWPF;
 using static ME3Explorer.PackageEditorWPF;
@@ -507,7 +508,8 @@ namespace ME3Explorer
 
                 subnodes.Add(new BinInterpTreeItem(bin.Position, $"Platform: {(EShaderPlatform)bin.ReadByte()}") { Length = 1 });
 
-                for (int mapCount = 0; mapCount < 2; mapCount++)
+                int mapCount = Pcc.Game == MEGame.ME3 ? 2 : 1;
+                for (; mapCount > 0; mapCount--)
                 {
                     int vertexMapCount = bin.ReadInt32();
                     var mappingNode = new BinInterpTreeItem(bin.Position - 4, $"Name Mapping {mapCount}, {vertexMapCount} items");
@@ -578,8 +580,11 @@ namespace ME3Explorer
                     materialShaderMaps.Items.Add(new BinInterpTreeItem(bin.Position, $"Material Shader Map {i}") {Items = nodes});
                     nodes.AddRange(ReadFStaticParameterSetStream(bin));
 
-                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Unreal Version {bin.ReadInt32()}") {Length = 4});
-                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Licensee Version {bin.ReadInt32()}") { Length = 4 });
+                    if (Pcc.Game == MEGame.ME3)
+                    {
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unreal Version {bin.ReadInt32()}") { Length = 4 });
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Licensee Version {bin.ReadInt32()}") { Length = 4 });
+                    }
 
                     int shaderMapEndOffset = bin.ReadInt32();
                     nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Material Shader Map end offset {shaderMapEndOffset}") { Length = 4 });
@@ -618,29 +623,42 @@ namespace ME3Explorer
                     }
 
                     nodes.Add(new BinInterpTreeItem(bin.Position, $"MaterialId: {bin.ReadValueGuid()}") { Length = 16 });
-                    int friendlyNameLen = -2 * bin.ReadInt32();
-                    nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Friendly Name: {bin.ReadStringUnicodeNull(friendlyNameLen)}") { Length = friendlyNameLen + 4 });
+
+                    int friendlyNameLen = bin.ReadInt32();
+                    if (Pcc.Game == MEGame.ME3)
+                    {
+                        friendlyNameLen *= -2;
+                        nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Friendly Name: {bin.ReadStringUnicodeNull(friendlyNameLen)}") { Length = friendlyNameLen + 4 });
+                    }
+                    else
+                    {
+                        nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Friendly Name: {bin.ReadStringASCIINull()}") { Length = friendlyNameLen + 4 });
+                    }
+
                     nodes.AddRange(ReadFStaticParameterSetStream(bin));
 
-                    string[] uniformExpressionArrays =
+                    if (Pcc.Game == MEGame.ME3)
                     {
-                        "UniformPixelVectorExpressions",
-                        "UniformPixelScalarExpressions",
-                        "Uniform2DTextureExpressions",
-                        "UniformCubeTextureExpressions",
-                        "UniformVertexVectorExpressions",
-                        "UniformVertexScalarExpressions"
-                    };
-
-                    foreach (string uniformExpressionArrayName in uniformExpressionArrays)
-                    {
-                        int expressionCount = bin.ReadInt32();
-                        nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"{uniformExpressionArrayName}, {expressionCount} expressions")
+                        string[] uniformExpressionArrays =
                         {
-                            Items = Enumerable.Range(0, expressionCount).Select(x => ReadMaterialUniformExpression(bin)).Cast<object>().ToList()
-                        });
+                            "UniformPixelVectorExpressions",
+                            "UniformPixelScalarExpressions",
+                            "Uniform2DTextureExpressions",
+                            "UniformCubeTextureExpressions",
+                            "UniformVertexVectorExpressions",
+                            "UniformVertexScalarExpressions"
+                        };
+
+                        foreach (string uniformExpressionArrayName in uniformExpressionArrays)
+                        {
+                            int expressionCount = bin.ReadInt32();
+                            nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"{uniformExpressionArrayName}, {expressionCount} expressions")
+                            {
+                                Items = Enumerable.Range(0, expressionCount).Select(x => ReadMaterialUniformExpression(bin)).Cast<object>().ToList()
+                            });
+                        }
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Platform: {(EShaderPlatform)bin.ReadInt32()}") { Length = 4 });
                     }
-                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Platform: {(EShaderPlatform)bin.ReadInt32()}") { Length = 4 });
 
                     bin.JumpTo(shaderMapEndOffset - dataOffset);
                 }
@@ -5024,24 +5042,28 @@ namespace ME3Explorer
                 subnodes.Add(new BinInterpTreeItem(bin.Position, $"bOverride: {bin.ReadBooleanInt()}") { Length = 4 });
                 subnodes.Add(new BinInterpTreeItem(bin.Position, $"ExpressionGUID: {bin.ReadValueGuid()}") { Length = 16 });
             }
-            int NormalParameterCount = bin.ReadInt32();
-            var NormalParametersNode = new BinInterpTreeItem(bin.Position - 4, $"Normal Parameters, {NormalParameterCount} items")
+
+            if (Pcc.Game == MEGame.ME3)
             {
-                Length = 4
-            };
-            nodes.Add(NormalParametersNode);
-            for (int i = 0; i < NormalParameterCount; i++)
-            {
-                var subnodes = new List<object>();
-                NormalParametersNode.Items.Add(new BinInterpTreeItem(bin.Position, $"Parameter {i}")
+                int NormalParameterCount = bin.ReadInt32();
+                var NormalParametersNode = new BinInterpTreeItem(bin.Position - 4, $"Normal Parameters, {NormalParameterCount} items")
                 {
-                    Length = 29,
-                    Items = subnodes
-                });
-                subnodes.Add(new BinInterpTreeItem(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).InstancedString}") { Length = 8 });
-                subnodes.Add(new BinInterpTreeItem(bin.Position, $"CompressionSettings: {(Unreal.ME3Enums.TextureCompressionSettings)bin.ReadByte()}") { Length = 1 });
-                subnodes.Add(new BinInterpTreeItem(bin.Position, $"bOverride: {bin.ReadBooleanInt()}") { Length = 4 });
-                subnodes.Add(new BinInterpTreeItem(bin.Position, $"ExpressionGUID: {bin.ReadValueGuid()}") { Length = 16 });
+                    Length = 4
+                };
+                nodes.Add(NormalParametersNode);
+                for (int i = 0; i < NormalParameterCount; i++)
+                {
+                    var subnodes = new List<object>();
+                    NormalParametersNode.Items.Add(new BinInterpTreeItem(bin.Position, $"Parameter {i}")
+                    {
+                        Length = 29,
+                        Items = subnodes
+                    });
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).InstancedString}") { Length = 8 });
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"CompressionSettings: {(TextureCompressionSettings)bin.ReadByte()}") { Length = 1 });
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"bOverride: {bin.ReadBooleanInt()}") { Length = 4 });
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"ExpressionGUID: {bin.ReadValueGuid()}") { Length = 16 });
+                }
             }
 
             return nodes;
