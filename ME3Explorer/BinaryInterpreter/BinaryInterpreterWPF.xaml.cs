@@ -3343,48 +3343,116 @@ namespace ME3Explorer
         private List<object> Scan_WwiseEvent(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
-            if (CurrentLoadedExport.FileRef.Game != MEGame.ME3)
-            {
-                subnodes.Add("Only ME3 is supported for this scan.");
-                return subnodes;
-            }
+            int binarypos = binarystart;
             try
             {
-                int binarypos = binarystart;
-                int count = BitConverter.ToInt32(data, binarypos);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = $"0x{binarypos:X4} Count: {count.ToString()}", Name = "_" + binarypos });
-                binarypos += 4; //+ int
-                for (int i = 0; i < count; i++)
+                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 )
                 {
-                    string nodeText = $"0x{binarypos:X4} ";
-                    int val = BitConverter.ToInt32(data, binarypos);
-                    string name = val.ToString();
-                    if (val > 0 && val <= CurrentLoadedExport.FileRef.Exports.Count)
+                    int count = BitConverter.ToInt32(data, binarypos);
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = $"0x{binarypos:X4} Count: {count.ToString()}", Name = "_" + binarypos });
+                    binarypos += 4; //+ int
+                    for (int i = 0; i < count; i++)
                     {
-                        IExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
-                        nodeText += $"{i}: {name} {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
-                    }
-                    else if (val < 0 && val != int.MinValue && Math.Abs(val) <= CurrentLoadedExport.FileRef.Imports.Count)
-                    {
-                        int csImportVal = Math.Abs(val) - 1;
-                        ImportEntry imp = CurrentLoadedExport.FileRef.Imports[csImportVal];
-                        nodeText += $"{i}: {name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
-                    }
+                        string nodeText = $"0x{binarypos:X4} ";
+                        int val = BitConverter.ToInt32(data, binarypos);
+                        string name = val.ToString();
+                        if (val > 0 && val <= CurrentLoadedExport.FileRef.Exports.Count)
+                        {
+                            IExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
+                            nodeText += $"{i}: {name} {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
+                        }
+                        else if (val < 0 && val != int.MinValue && Math.Abs(val) <= CurrentLoadedExport.FileRef.Imports.Count)
+                        {
+                            int csImportVal = Math.Abs(val) - 1;
+                            ImportEntry imp = CurrentLoadedExport.FileRef.Imports[csImportVal];
+                            nodeText += $"{i}: {name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
+                        }
 
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = nodeText,
+                            Tag = NodeType.StructLeafObject,
+                            Name = "_" + binarypos
+                        });
+                        binarypos += 4;
+                        /*
+                        int objectindex = BitConverter.ToInt32(data, binarypos);
+                        IEntry obj = pcc.getEntry(objectindex);
+                        string nodeValue = obj.GetFullPath;
+                        node.Tag = nodeType.StructLeafObject;
+                        */
+                    }
+                }
+                if(CurrentLoadedExport.FileRef.Game == MEGame.ME2)
+                {
+                    var wwiseID = data.Skip(binarypos).Take(4).ToArray();
                     subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = nodeText,
-                        Tag = NodeType.StructLeafObject,
+                        Header = $"0x{binarypos:X4} WwiseEventID: {wwiseID[0]:X2}{wwiseID[1]:X2}{wwiseID[2]:X2}{wwiseID[3]:X2}",
+                        Tag = NodeType.Unknown,
                         Name = "_" + binarypos
                     });
                     binarypos += 4;
-                    /*
-                    int objectindex = BitConverter.ToInt32(data, binarypos);
-                    IEntry obj = pcc.getEntry(objectindex);
-                    string nodeValue = obj.GetFullPath;
-                    node.Tag = nodeType.StructLeafObject;
-                    */
+
+                    int count = BitConverter.ToInt32(data, binarypos);
+                    var Streams = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarypos:X4} Link Count: {count}",
+                        Name = "_" + binarypos,
+                        Tag = NodeType.StructLeafInt
+                    };
+                    binarypos += 4;
+                    subnodes.Add(Streams);
+
+                    for (int s = 0; s < count; s++)
+                    {
+                        int bankcount = BitConverter.ToInt32(data, binarypos);
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{binarypos:X4} BankCount: {bankcount}",
+                            Tag = NodeType.StructLeafInt,
+                            Name = "_" + binarypos
+                        });
+                        binarypos += 4;
+                        for (int b = 0; b < count; b++)
+                        {
+                            int bank = BitConverter.ToInt32(data, binarypos);
+                            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{binarypos:X4} WwiseBank: {bank} {CurrentLoadedExport.FileRef.GetEntryString(bank)}",
+                                Tag = NodeType.StructLeafObject,
+                                Name = "_" + binarypos
+                            });
+                            binarypos += 4;
+                        }
+
+                        int streamcount = BitConverter.ToInt32(data, binarypos);
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{binarypos:X4} StreamCount: {streamcount}",
+                            Tag = NodeType.StructLeafInt,
+                            Name = "_" + binarypos
+                        });
+                        binarypos += 4;
+                        for (int w = 0; w < count; w++)
+                        {
+                            int wwstream = BitConverter.ToInt32(data, binarypos);
+                            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{binarypos:X4} WwiseStream: {wwstream} {CurrentLoadedExport.FileRef.GetEntryString(wwstream)}",
+                                Tag = NodeType.StructLeafObject,
+                                Name = "_" + binarypos
+                            });
+                            binarypos += 4;
+                        }
+                    }
                 }
+                else
+                {
+                    subnodes.Add("Only ME3 and ME2 are supported for this scan.");
+                    return subnodes;
+                }
+
             }
             catch (Exception ex)
             {
