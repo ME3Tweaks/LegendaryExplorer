@@ -11,7 +11,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
 using AmaroK86.MassEffect3;
-using KFreonLib.Debugging;
+using ME3Explorer.Debugging;
 using ME3Explorer.Scene3D;
 
 namespace ME3Explorer.Meshplorer2
@@ -51,9 +51,7 @@ namespace ME3Explorer.Meshplorer2
             int count = 0;
             timer1.Enabled = false;
             Entries = new List<EntryStruct>();
-            bool ScanDLC = false;
-            if (MessageBox.Show("Scan DLCs too?", "Meshplorer 2", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                ScanDLC = true;
+            bool ScanDLC = MessageBox.Show("Scan DLCs too?", "Meshplorer 2", MessageBoxButtons.YesNo) == DialogResult.Yes;
             if (ScanDLC)
             {
                 #region DLC Stuff

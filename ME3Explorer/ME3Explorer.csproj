@@ -303,6 +303,13 @@
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="CodeWriter.cs" />
+    <Compile Include="Debugging\DebugOutput.cs" />
+    <Compile Include="Debugging\DebugWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Debugging\DebugWindow.Designer.cs">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="DLCUnpacker\DLCUnpacker.xaml.cs">
       <DependentUpon>DLCUnpacker.xaml</DependentUpon>
     </Compile>
@@ -751,37 +758,13 @@
     <Compile Include="Unreal\Classes\AnimTree.cs" />
     <Compile Include="Unreal\Classes\BioAnimSetData.cs" />
     <Compile Include="DialogEditor\ME3BioConversation.cs" />
-    <Compile Include="Unreal\Classes\BioPathPoint.cs" />
-    <Compile Include="Unreal\Classes\BioPlaypenVolumeAdditive.cs" />
-    <Compile Include="Unreal\Classes\BioTriggerVolume.cs" />
-    <Compile Include="Unreal\Classes\BlockingVolume.cs" />
-    <Compile Include="Unreal\Classes\BrushComponent.cs" />
-    <Compile Include="Unreal\Classes\CoverLink.cs" />
-    <Compile Include="Unreal\Classes\CoverSlotMarker.cs" />
-    <Compile Include="Unreal\Classes\DecalActor.cs" />
-    <Compile Include="Unreal\Classes\DecalComponent.cs" />
-    <Compile Include="Unreal\Classes\Emitter.cs" />
     <Compile Include="FaceFXAnimSetEditor\ME3FaceFXAnimSet.cs" />
     <Compile Include="Unreal\Classes\Function.cs" />
-    <Compile Include="Unreal\Classes\InterpActor.cs" />
-    <Compile Include="Unreal\Classes\Level.cs" />
-    <Compile Include="Unreal\Classes\LightVolume.cs" />
-    <Compile Include="Unreal\Classes\MantleMarker.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
-    <Compile Include="Unreal\Classes\PathNode.cs" />
     <Compile Include="Unreal\Classes\SkeletalMesh.cs" />
-    <Compile Include="Unreal\Classes\SplineActor.cs" />
     <Compile Include="Unreal\Classes\StaticMesh.cs" />
-    <Compile Include="Unreal\Classes\StaticMeshActor.cs" />
-    <Compile Include="Unreal\Classes\StaticMeshCollectionActor.cs" />
-    <Compile Include="Unreal\Classes\StaticMeshComponent.cs" />
-    <Compile Include="Unreal\Classes\TargetPoint.cs" />
     <Compile Include="Unreal\Classes\Texture2D.cs" />
-    <Compile Include="Unreal\Classes\TextureGroup.cs" />
-    <Compile Include="Unreal\Classes\WwiseAmbientSound.cs" />
-    <Compile Include="Unreal\Classes\WwiseAudioVolume.cs" />
     <Compile Include="Unreal\Classes\WwiseBank.cs" />
-    <Compile Include="Unreal\Classes\WwiseEnvironmentVolume.cs" />
     <Compile Include="Unreal\Classes\WwiseStream.cs" />
     <Compile Include="Unreal\DLCPackage.cs" />
     <Compile Include="Unreal\DLCUnpacker.cs" />
@@ -1186,6 +1169,9 @@
     <EmbeddedResource Include="Conditionals\Conditionals.resx">
       <DependentUpon>Conditionals.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Debugging\DebugWindow.resx">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DialogEditor\AddReply.resx">
       <DependentUpon>AddReply.cs</DependentUpon>

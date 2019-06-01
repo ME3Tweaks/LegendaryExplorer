@@ -9,7 +9,6 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
-using KFreonLib.Debugging;
 using ME3Explorer.Packages;
 
 namespace ME3Explorer.Meshplorer
@@ -120,7 +119,6 @@ namespace ME3Explorer.Meshplorer
                 }
                 if (!found)
                 {
-                    DebugOutput.PrintLn("ERROR: Cant Match Bone \"" + udkb + "\"");
                     BoneMap.Add(0);
                 }
             }
@@ -271,7 +269,6 @@ namespace ME3Explorer.Meshplorer
                     }
                     if (!found)
                     {
-                        DebugOutput.PrintLn("ERROR: Cant Match Bone \"" + sourceName + "\"");
                         BoneMap.Add(0);
                     }
                 }*/

@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
-using KFreonLib.Debugging;
 
 namespace ME3Explorer.Meshplorer
 {
@@ -47,13 +46,11 @@ namespace ME3Explorer.Meshplorer
             string path = ME3Directory.cookedPath;
             string[] files = Directory.GetFiles(path, "*.pcc");
             pb1.Maximum = files.Length;
-            DebugOutput.Clear();
             database = new List<DBEntry>();
             int count = 0;
             foreach (string file in files)
             {
                 pb1.Value = count++;
-                DebugOutput.PrintLn("Scanning file : " + Path.GetFileName(file) + " ...");
                 try
                 {
                     using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
@@ -86,22 +83,13 @@ namespace ME3Explorer.Meshplorer
                         }
                         if (ent.Objects.Count != 0)
                         {
-                            DebugOutput.PrintLn("Found " + ent.Objects.Count + " Objects:", false);
-                            //foreach (ObjInf o in ent.Objects)
-                            //    DebugOutput.PrintLn("\t" + o.Index + " : " + o.name + " (" + TypeToString(o.Type) + ")", false);
-                            //DebugOutput.Update();
                             database.Add(ent);
-                        }
-                        else
-                        {
-                            DebugOutput.PrintLn("Nothing...", false);
                         } 
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error:\n" + ex.Message);
-                    DebugOutput.PrintLn("Could not open file : " + Path.GetFileName(file));
+                    MessageBox.Show($"Error: Could not open {Path.GetFileName(file)}\n{ex.Message}");
                 }
             }
             RefreshLists();

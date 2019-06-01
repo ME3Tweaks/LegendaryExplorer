@@ -9,7 +9,7 @@ using System.Media;
 using ME3Explorer.Unreal;
 using SharpDX;
 using lib3ds.Net;
-using KFreonLib.Debugging;
+using ME3Explorer.Debugging;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
 using System.Globalization;
