@@ -65,8 +65,8 @@ namespace ME3Explorer.Dialogue_Editor
         private static BackgroundWorker BackParser = new BackgroundWorker();
 
         // FOR REMOVAL DEBUG ONLY
-        public ObservableCollectionExtended<SObj> CurrentObjects { get; } = new ObservableCollectionExtended<SObj>();
-        public ObservableCollectionExtended<SObj> SelectedObjects { get; } = new ObservableCollectionExtended<SObj>();
+        public ObservableCollectionExtended<DObj> CurrentObjects { get; } = new ObservableCollectionExtended<DObj>();
+        public ObservableCollectionExtended<DObj> SelectedObjects { get; } = new ObservableCollectionExtended<DObj>();
         public ObservableCollectionExtended<IExportEntry> SequenceExports { get; } = new ObservableCollectionExtended<IExportEntry>();
         public ObservableCollectionExtended<TreeViewEntry> TreeViewRootNodes { get; set; } = new ObservableCollectionExtended<TreeViewEntry>();
         public string CurrentFile;
@@ -85,7 +85,7 @@ namespace ME3Explorer.Dialogue_Editor
             set => SetProperty(ref _statusText, $"{CurrentFile} {value}");
         }
 
-        public float StartPosEvents;
+        public float StartPoDStarts;
         public float StartPosActions;
         public float StartPosVars;
 
@@ -186,7 +186,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             var options = new Dictionary<string, object>
             {
-                {"OutputNumbers", SObj.OutputNumbers},
+                {"OutputNumbers", DObj.OutputNumbers},
                 {"AutoSave", AutoSaveView_MenuItem.IsChecked},
 
             };
@@ -479,16 +479,19 @@ namespace ME3Explorer.Dialogue_Editor
         {
             graphEditor.nodeLayer.RemoveAllChildren();
             graphEditor.edgeLayer.RemoveAllChildren();
-            StartPosEvents = 0;
+            StartPoDStarts = 0;
             StartPosActions = 0;
             StartPosVars = 0;
             //GetObjects(SelectedSequence);
-            foreach(int list in ActiveConv.GetStartingList())
+            float x = 0;
+            float y = 0;
+            foreach(int start in ActiveConv.GetStartingList())
             {
-                graphEditor.addNode(new PNode());
+                graphEditor.addNode(new DStart(start, ActiveConv, x, y, graphEditor));
+                y += 100;
             }
-            Layout();
-            foreach (SObj o in CurrentObjects)
+            //Layout();
+            foreach (DObj o in CurrentObjects)
             {
                 o.MouseDown += node_MouseDown;
                 o.Click += node_Click;
@@ -509,7 +512,7 @@ namespace ME3Explorer.Dialogue_Editor
 
 
 
-        public SObj LoadObject(IExportEntry export)
+        public DObj LoadObject(IExportEntry export)
         {
             string s = export.ObjectName;
             int x = 0, y = 0;
@@ -528,7 +531,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             //if (s.StartsWith("BioSeqEvt_") || s.StartsWith("SeqEvt_") || s.StartsWith("SFXSeqEvt_") || s.StartsWith("SeqEvent_"))
             //{
-            //    return new SEvent(export, x, y, graphEditor);
+            //    return new DStart(export, x, y, graphEditor);
             //}
             //else if (s.StartsWith("SeqVar_") || s.StartsWith("BioSeqVar_") || s.StartsWith("SFXSeqVar_") || s.StartsWith("InterpData"))
             //{
@@ -550,12 +553,12 @@ namespace ME3Explorer.Dialogue_Editor
             float StartPosDialog = 0;
             try
             {
-                foreach (SObj obj in CurrentObjects)
+                foreach (DObj obj in CurrentObjects)
                 {
                     if (obj.Export.ObjectName.StartsWith("BioSeqEvt_ConvNode"))
                     {
                         obj.SetOffset(StartPosDialog, 600); //Startconv event
-                        SAction interp = (SAction)CurrentObjects.First(o => o.UIndex == ((SEvent)obj).Outlinks[0].Links[0]);
+                        SAction interp = (SAction)CurrentObjects.First(o => o.UIndex == ((DStart)obj).Outlinks[0].Links[0]);
                         interp.SetOffset(StartPosDialog + 150, 600); //Interp
                         CurrentObjects.First(o => o.UIndex == interp.Varlinks[0].Links[0]).SetOffset(StartPosDialog + 165, 770); //Interpdata
                         StartPosDialog += interp.Width + 200;
@@ -581,19 +584,19 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if (CurrentObjects != null && CurrentObjects.Any())
             {
-                foreach (SObj obj in CurrentObjects)
+                foreach (DObj obj in CurrentObjects)
                 {
                     graphEditor.addNode(obj);
                 }
 
-                foreach (SObj obj in CurrentObjects)
+                foreach (DObj obj in CurrentObjects)
                 {
                     obj.CreateConnections(CurrentObjects);
                 }
 
                 for (int i = 0; i < CurrentObjects.Count; i++)
                 {
-                    SObj obj = CurrentObjects[i];
+                    DObj obj = CurrentObjects[i];
                     SaveData savedInfo = new SaveData(-1);
                     if (SavedPositions.Any())
                     {
@@ -617,9 +620,9 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         switch (obj)
                         {
-                            case SEvent _:
-                                obj.Layout(StartPosEvents, 0);
-                                StartPosEvents += obj.Width + 20;
+                            case DStart _:
+                                obj.Layout(StartPoDStarts, 0);
+                                StartPoDStarts += obj.Width + 20;
                                 break;
                             case SAction _:
                                 obj.Layout(StartPosActions, 250);
@@ -642,7 +645,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void AutoLayout()
         {
-            foreach (SObj obj in CurrentObjects)
+            foreach (DObj obj in CurrentObjects)
             {
                 obj.SetOffset(0, 0); //remove existing positioning
             }
@@ -651,18 +654,18 @@ namespace ME3Explorer.Dialogue_Editor
             const float VERTICAL_SPACING = 20;
             const float VAR_SPACING = 10;
             var visitedNodes = new HashSet<int>();
-            var eventNodes = CurrentObjects.OfType<SEvent>().ToList();
-            SObj firstNode = eventNodes.FirstOrDefault();
+            var eventNodes = CurrentObjects.OfType<DStart>().ToList();
+            DObj firstNode = eventNodes.FirstOrDefault();
             var varNodeLookup = CurrentObjects.OfType<SVar>().ToDictionary(obj => obj.UIndex);
-            var opNodeLookup = CurrentObjects.OfType<SBox>().ToDictionary(obj => obj.UIndex);
-            var rootTree = new List<SObj>();
-            //SEvents are natural root nodes. ALmost everything will proceed from one of these
-            foreach (SEvent eventNode in eventNodes)
+            var opNodeLookup = CurrentObjects.OfType<DBox>().ToDictionary(obj => obj.UIndex);
+            var rootTree = new List<DObj>();
+            //DStarts are natural root nodes. ALmost everything will proceed from one of these
+            foreach (DStart eventNode in eventNodes)
             {
                 LayoutTree(eventNode, 5 * VERTICAL_SPACING);
             }
 
-            //Find SActions with no inputs. These will not have been reached from an SEvent
+            //Find SActions with no inputs. These will not have been reached from an DStart
             var orphanRoots = CurrentObjects.OfType<SAction>().Where(node => node.InputEdges.IsEmpty());
             foreach (SAction orphan in orphanRoots)
             {
@@ -693,7 +696,7 @@ namespace ME3Explorer.Dialogue_Editor
                 ConvGraphEditor.UpdateEdge(edge);
 
 
-            void LayoutTree(SBox sAction, float verticalSpacing)
+            void LayoutTree(DBox sAction, float verticalSpacing)
             {
                 if (firstNode == null) firstNode = sAction;
                 visitedNodes.Add(sAction.UIndex);
@@ -706,10 +709,10 @@ namespace ME3Explorer.Dialogue_Editor
                 rootTree.AddRange(subTree);
             }
 
-            List<SObj> LayoutSubTree(SBox root)
+            List<DObj> LayoutSubTree(DBox root)
             {
                 //Task.WaitAll(Task.Delay(1500));
-                var tree = new List<SObj>();
+                var tree = new List<DObj>();
                 var vars = new List<SVar>();
                 foreach (var varLink in root.Varlinks)
                 {
@@ -727,14 +730,14 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                 }
 
-                var childTrees = new List<List<SObj>>();
+                var childTrees = new List<List<DObj>>();
                 var children = root.Outlinks.SelectMany(link => link.Links).Where(uIndex => !visitedNodes.Contains(uIndex));
                 foreach (int uIndex in children)
                 {
                     visitedNodes.Add(uIndex);
-                    if (opNodeLookup.TryGetValue(uIndex, out SBox node))
+                    if (opNodeLookup.TryGetValue(uIndex, out DBox node))
                     {
-                        List<SObj> subTree = LayoutSubTree(node);
+                        List<DObj> subTree = LayoutSubTree(node);
                         childTrees.Add(subTree);
                     }
                 }
@@ -742,7 +745,7 @@ namespace ME3Explorer.Dialogue_Editor
                 if (childTrees.Any())
                 {
                     float dx = root.GlobalFullWidth + (HORIZONTAL_SPACING * (1 + childTrees.Count * 0.4f));
-                    foreach (List<SObj> subTree in childTrees)
+                    foreach (List<DObj> subTree in childTrees)
                     {
                         float subTreeWidth = subTree.BoundingRect().Width + HORIZONTAL_SPACING + dx;
                         //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
@@ -760,7 +763,7 @@ namespace ME3Explorer.Dialogue_Editor
                     }
 
                     //center the root on its children
-                    float centerOffset = tree.OfType<SBox>().BoundingRect().Height / 2 - root.GlobalFullHeight / 2;
+                    float centerOffset = tree.OfType<DBox>().BoundingRect().Height / 2 - root.GlobalFullHeight / 2;
                     root.OffsetBy(0, centerOffset);
                     vars.OffsetBy(0, centerOffset);
                 }
@@ -940,11 +943,11 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void back_MouseUp(object sender, PInputEventArgs e)
         {
-            //var nodesToSelect = graphEditor.EndBoxSelection().OfType<SObj>();
-            //foreach (SObj sObj in nodesToSelect)
+            //var nodesToSelect = graphEditor.EndBoxSelection().OfType<DObj>();
+            //foreach (DObj DObj in nodesToSelect)
             //{
             //    panToSelection = false;
-            //    CurrentObjects_ListBox.SelectedItems.Add(sObj);
+            //    CurrentObjects_ListBox.SelectedItems.Add(DObj);
             //}
         }
 
@@ -986,7 +989,7 @@ namespace ME3Explorer.Dialogue_Editor
             SavedPositions = new List<SaveData>();
             for (int i = 0; i < CurrentObjects.Count; i++)
             {
-                SObj obj = CurrentObjects[i];
+                DObj obj = CurrentObjects[i];
                 if (obj.Pickable)
                 {
                     SavedPositions.Add(new SaveData
@@ -1012,11 +1015,11 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        public void OpenNodeContextMenu(SObj obj)
+        public void OpenNodeContextMenu(DObj obj)
         {
             if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
             {
-                if (obj is SBox sBox && (sBox.Varlinks.Any() || sBox.Outlinks.Any() || sBox.EventLinks.Any())
+                if (obj is DBox DBox && (DBox.Varlinks.Any() || DBox.Outlinks.Any() || DBox.EventLinks.Any())
                  && contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
                 {
                     bool hasLinks = false;
@@ -1024,19 +1027,19 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         outputLinksMenuItem.Visibility = Visibility.Collapsed;
                         outputLinksMenuItem.Items.Clear();
-                        for (int i = 0; i < sBox.Outlinks.Count; i++)
+                        for (int i = 0; i < DBox.Outlinks.Count; i++)
                         {
-                            for (int j = 0; j < sBox.Outlinks[i].Links.Count; j++)
+                            for (int j = 0; j < DBox.Outlinks[i].Links.Count; j++)
                             {
                                 outputLinksMenuItem.Visibility = Visibility.Visible;
                                 hasLinks = true;
                                 var temp = new MenuItem
                                 {
-                                    Header = $"Break link from {sBox.Outlinks[i].Desc} to {sBox.Outlinks[i].Links[j]}"
+                                    Header = $"Break link from {DBox.Outlinks[i].Desc} to {DBox.Outlinks[i].Links[j]}"
                                 };
                                 int linkConnection = i;
                                 int linkIndex = j;
-                                temp.Click += (o, args) => { sBox.RemoveOutlink(linkConnection, linkIndex); };
+                                temp.Click += (o, args) => { DBox.RemoveOutlink(linkConnection, linkIndex); };
                                 outputLinksMenuItem.Items.Add(temp);
                             }
                         }
@@ -1046,19 +1049,19 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         varLinksMenuItem.Visibility = Visibility.Collapsed;
                         varLinksMenuItem.Items.Clear();
-                        for (int i = 0; i < sBox.Varlinks.Count; i++)
+                        for (int i = 0; i < DBox.Varlinks.Count; i++)
                         {
-                            for (int j = 0; j < sBox.Varlinks[i].Links.Count; j++)
+                            for (int j = 0; j < DBox.Varlinks[i].Links.Count; j++)
                             {
                                 varLinksMenuItem.Visibility = Visibility.Visible;
                                 hasLinks = true;
                                 var temp = new MenuItem
                                 {
-                                    Header = $"Break link from {sBox.Varlinks[i].Desc} to {sBox.Varlinks[i].Links[j]}"
+                                    Header = $"Break link from {DBox.Varlinks[i].Desc} to {DBox.Varlinks[i].Links[j]}"
                                 };
                                 int linkConnection = i;
                                 int linkIndex = j;
-                                temp.Click += (o, args) => { sBox.RemoveVarlink(linkConnection, linkIndex); };
+                                temp.Click += (o, args) => { DBox.RemoveVarlink(linkConnection, linkIndex); };
                                 varLinksMenuItem.Items.Add(temp);
                             }
                         }
@@ -1067,21 +1070,21 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         eventLinksMenuItem.Visibility = Visibility.Collapsed;
                         eventLinksMenuItem.Items.Clear();
-                        for (int i = 0; i < sBox.EventLinks.Count; i++)
+                        for (int i = 0; i < DBox.EventLinks.Count; i++)
                         {
-                            for (int j = 0; j < sBox.EventLinks[i].Links.Count; j++)
+                            for (int j = 0; j < DBox.EventLinks[i].Links.Count; j++)
                             {
                                 eventLinksMenuItem.Visibility = Visibility.Visible;
                                 hasLinks = true;
                                 var temp = new MenuItem
                                 {
-                                    Header = $"Break link from {sBox.EventLinks[i].Desc} to {sBox.EventLinks[i].Links[j]}"
+                                    Header = $"Break link from {DBox.EventLinks[i].Desc} to {DBox.EventLinks[i].Links[j]}"
                                 };
                                 int linkConnection = i;
                                 int linkIndex = j;
                                 temp.Click += (o, args) =>
                                 {
-                                    sBox.RemoveEventlink(linkConnection, linkIndex);
+                                    DBox.RemoveEventlink(linkConnection, linkIndex);
                                 };
                                 eventLinksMenuItem.Items.Add(temp);
                             }
@@ -1179,10 +1182,10 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void RemoveFromDialogue_Click(object sender, RoutedEventArgs e)
         {
-            if (Conversations_ListBox.SelectedItem is SObj sObj)
+            if (Conversations_ListBox.SelectedItem is DObj DObj)
             {
                 //remove incoming connections
-                switch (sObj)
+                switch (DObj)
                 {
                     case SVar sVar:
                         foreach (VarEdge edge in sVar.connections)
@@ -1191,7 +1194,7 @@ namespace ME3Explorer.Dialogue_Editor
                         }
                         break;
                     case SAction sAction:
-                        foreach (SBox.InputLink inLink in sAction.InLinks)
+                        foreach (DBox.InputLink inLink in sAction.InLinks)
                         {
                             foreach (ActionEdge edge in inLink.Edges)
                             {
@@ -1199,8 +1202,8 @@ namespace ME3Explorer.Dialogue_Editor
                             }
                         }
                         break;
-                    case SEvent sEvent:
-                        foreach (EventEdge edge in sEvent.connections)
+                    case DStart DStart:
+                        foreach (EventEdge edge in DStart.connections)
                         {
                             edge.originator.RemoveEventlink(edge);
                         }
@@ -1208,11 +1211,11 @@ namespace ME3Explorer.Dialogue_Editor
                 }
 
                 //remove outgoing links
-                removeAllLinks(sObj.Export);
+                removeAllLinks(DObj.Export);
 
                 //remove from sequence
                 var seqObjs = SelectedSequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                var arrayObj = seqObjs?.FirstOrDefault(x => x.Value == sObj.UIndex);
+                var arrayObj = seqObjs?.FirstOrDefault(x => x.Value == DObj.UIndex);
                 if (arrayObj != null)
                 {
                     seqObjs.Remove(arrayObj);
@@ -1220,16 +1223,16 @@ namespace ME3Explorer.Dialogue_Editor
                 }
 
                 //set ParentSequence to null
-                var parentSeqProp = sObj.Export.GetProperty<ObjectProperty>("ParentSequence");
+                var parentSeqProp = DObj.Export.GetProperty<ObjectProperty>("ParentSequence");
                 parentSeqProp.Value = 0;
-                sObj.Export.WriteProperty(parentSeqProp);
+                DObj.Export.WriteProperty(parentSeqProp);
 
             }
         }
 
         protected void node_MouseDown(object sender, PInputEventArgs e)
         {
-            if (sender is SObj obj)
+            if (sender is DObj obj)
             {
                 obj.posAtDragStart = obj.GlobalFullBounds;
                 if (e.Button == System.Windows.Forms.MouseButtons.Right)
@@ -1266,7 +1269,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void node_Click(object sender, PInputEventArgs e)
         {
-            if (sender is SObj obj)
+            if (sender is DObj obj)
             {
                 if (e.Button != System.Windows.Forms.MouseButtons.Left && obj.GlobalFullBounds == obj.posAtDragStart)
                 {
@@ -1288,7 +1291,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void CloneObject_Clicked(object sender, RoutedEventArgs e)
         {
-            if (Conversations_ListBox.SelectedItem is SObj obj)
+            if (Conversations_ListBox.SelectedItem is DObj obj)
             {
                 cloneObject(obj.Export, SelectedSequence);
             }
@@ -1603,7 +1606,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void showOutputNumbers_Click(object sender, EventArgs e)
         {
-            SObj.OutputNumbers = ShowOutputNumbers_MenuItem.IsChecked;
+            DObj.OutputNumbers = ShowOutputNumbers_MenuItem.IsChecked;
             if (CurrentObjects.Any())
             {
                 RefreshView();
@@ -1619,7 +1622,7 @@ namespace ME3Explorer.Dialogue_Editor
                 return;
             }
 
-            if (Conversations_ListBox.SelectedItem is SObj obj)
+            if (Conversations_ListBox.SelectedItem is DObj obj)
             {
                 var p = new InterpEditor();
                 p.Show();

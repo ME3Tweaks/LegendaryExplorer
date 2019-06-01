@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Data;
 using System.Diagnostics;
 using System.Windows.Forms;
-using ME3Explorer.SequenceObjects;
+//using ME3Explorer.SequenceObjects;
 using SharpDX.Direct2D1.Effects;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
@@ -231,9 +231,9 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     var edgesToUpdate = new HashSet<SeqEdEdge>();
                     base.OnDrag(sender, e);
-                    if (e.PickedNode is SObj sObj)
+                    if (e.PickedNode is DObj DObj)
                     {
-                        foreach (SeqEdEdge edge in sObj.Edges)
+                        foreach (SeqEdEdge edge in DObj.Edges)
                         {
                             edgesToUpdate.Add(edge);
                         }
@@ -243,7 +243,7 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         foreach (PNode node in g.nodeLayer)
                         {
-                            if (node is SObj obj && obj.IsSelected && obj != e.PickedNode)
+                            if (node is DObj obj && obj.IsSelected && obj != e.PickedNode)
                             {
                                 SizeF s = e.GetDeltaRelativeTo(obj);
                                 s = obj.LocalToParent(s);
