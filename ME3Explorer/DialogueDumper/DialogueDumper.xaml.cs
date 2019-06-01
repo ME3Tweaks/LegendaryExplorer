@@ -78,7 +78,7 @@ namespace ME3Explorer.DialogueDumper
             dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3 package files", "*.pcc"));
 
 
-            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 CommonSaveFileDialog outputDlg = new CommonSaveFileDialog
                 {
@@ -88,7 +88,7 @@ namespace ME3Explorer.DialogueDumper
                 };
                 outputDlg.Filters.Add(new CommonFileDialogFilter("Excel Files", "*.xlsx"));
 
-                if (outputDlg.ShowDialog() == CommonFileDialogResult.Ok)
+                if (outputDlg.ShowDialog(this) == CommonFileDialogResult.Ok)
                 {
                     outputfile = outputDlg.FileName;
                     await dumpPackages(dlg.FileNames.ToList(), outputfile);
@@ -232,7 +232,7 @@ namespace ME3Explorer.DialogueDumper
             };
             m.Filters.Add(new CommonFileDialogFilter("Excel Files", "*.xlsx"));
 
-            if (m.ShowDialog() == CommonFileDialogResult.Ok)
+            if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 outputfile = m.FileName;
                 this.RestoreAndBringToFront();
@@ -252,7 +252,7 @@ namespace ME3Explorer.DialogueDumper
             };
             outputDlg.Filters.Add(new CommonFileDialogFilter("Excel Files", "*.xlsx"));
 
-            if (outputDlg.ShowDialog() == CommonFileDialogResult.Ok)
+            if (outputDlg.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 outputfile = outputDlg.FileName;
             }
