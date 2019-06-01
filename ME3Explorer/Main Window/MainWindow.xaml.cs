@@ -58,7 +58,8 @@ namespace ME3Explorer
 #if DEBUG
                 version += " DEBUG";
 #else
-                version += " RC4"; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
+                //Commented out as this is a stable build
+                //version += ""; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
 #endif
                 return version;
             }

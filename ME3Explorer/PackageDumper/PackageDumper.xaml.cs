@@ -72,7 +72,7 @@ namespace ME3Explorer.PackageDumper
             dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3 package files", "*.pcc"));
 
 
-            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 CommonOpenFileDialog outputDlg = new CommonOpenFileDialog
                 {
@@ -80,7 +80,7 @@ namespace ME3Explorer.PackageDumper
                     EnsurePathExists = true,
                     Title = "Select output folder"
                 };
-                if (outputDlg.ShowDialog() == CommonFileDialogResult.Ok)
+                if (outputDlg.ShowDialog(this) == CommonFileDialogResult.Ok)
                 {
                     string outputDir = outputDlg.FileName;
                     await dumpPackages(dlg.FileNames.ToList(), outputDlg.FileName);
@@ -218,7 +218,7 @@ namespace ME3Explorer.PackageDumper
                 EnsurePathExists = true,
                 Title = "Select output folder"
             };
-            if (m.ShowDialog() == CommonFileDialogResult.Ok)
+            if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 string outputDir = m.FileName;
                 dumpPackagesFromFolder(rootPath, outputDir);

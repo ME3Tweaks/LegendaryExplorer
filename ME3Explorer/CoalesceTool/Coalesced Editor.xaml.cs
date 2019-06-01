@@ -89,7 +89,7 @@ namespace MassEffect3.CoalesceTool
 				dlg.Filters.Add(new CommonFileDialogFilter("Binary Coalesced Files", "*.bin"));
 				dlg.Filters.Add(new CommonFileDialogFilter("XML Coalesced Files", "*.xml"));
 
-				if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+				if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
 				{
 					return;
 				}
@@ -147,7 +147,7 @@ namespace MassEffect3.CoalesceTool
 							IsFolderPicker = true
 						};
 
-						if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+						if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
 						{
 							return;
 						}
@@ -164,7 +164,7 @@ namespace MassEffect3.CoalesceTool
 						dlg.Filters.Add(new CommonFileDialogFilter("Binary Coalesced Files", "*.bin"));
 						dlg.Filters.Add(new CommonFileDialogFilter("XML Coalesced Files", "*.xml"));
 
-						if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+						if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
 						{
 							return;
 						}
