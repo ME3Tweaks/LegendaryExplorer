@@ -99,7 +99,7 @@ namespace ME3Explorer.Dialogue_Editor
             /// <param name="isMale">will pull female by default</param>
             public int ParseFaceFX(int speakerID, bool isMale = false)
             {
-                string ffxPropName = "m_aFemaleFaceSets";
+                string ffxPropName = "m_aFemaleFaceSets"; //ME2/M£3
                 if (isMale)
                 {
                     ffxPropName = "m_aMaleFaceSets";
@@ -115,10 +115,15 @@ namespace ME3Explorer.Dialogue_Editor
             /// <summary>
             /// Returns the Uindex of appropriate sequence
             /// </summary>
-            public int GetSequence()
+            public int ParseSequence()
             {
+                string propname = "MatineeSequence";
+                if (export.FileRef.Game == MEGame.ME1)
+                {
+                    propname = "m_pEvtSystemSeq";
+                }
 
-                var seq = export.GetProperty<ObjectProperty>("MatineeSequence");
+                var seq = export.GetProperty<ObjectProperty>(propname);
                 if (seq != null)
                 {
                     return seq.Value;
@@ -129,22 +134,42 @@ namespace ME3Explorer.Dialogue_Editor
             /// <summary>
             /// Returns the Uindex of WwiseBank
             /// </summary>
-            public int GetWwiseBank()
+            public int ParseWwiseBank()
             {
                 var Pcc = export.FileRef;
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game != MEGame.ME1)
                 {
                     var ffxo = ParseFaceFX(-1, true); //find owner animset
                     if (ffxo > 0)
                     {
-                        var wwevent = Pcc.getUExport(ffxo).GetProperty<ObjectProperty>("ReferencedSoundCues"); //pull a wwiseevent
-                        if (wwevent != null)
+                        var wwevents = Pcc.getUExport(ffxo).GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull a wwiseevent array
+                        if (wwevents != null)
                         {
-                            StructProperty r = Pcc.getUExport(wwevent.Value).GetProperty<StructProperty>("Relationships"); //lookup bank
-                            if(r != null)
+                            if (Pcc.Game == MEGame.ME3)
                             {
-                                var bank = r.GetProp<ObjectProperty>("Bank");
-                                return bank.Value;
+                                StructProperty r = Pcc.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
+                                if (r != null)
+                                {
+                                    var bank = r.GetProp<ObjectProperty>("Bank");
+                                    return bank.Value;
+                                }
+                            }
+                            else //Game is ME2.  Wwisebank ref in Binary.
+                            {
+                                var data = Pcc.getUExport(wwevents[0].Value).getBinaryData();
+                                int binarypos = 4;
+                                int count = BitConverter.ToInt32(data, binarypos);
+                                if (count > 0)
+                                {
+                                    binarypos += 4;
+                                    int bnkcount = BitConverter.ToInt32(data, binarypos);
+                                    if (bnkcount > 0)
+                                    {
+                                        binarypos += 4;
+                                        int bank = BitConverter.ToInt32(data, binarypos);
+                                        return bank;
+                                    }
+                                }
                             }
                         }
                     }
@@ -156,7 +181,7 @@ namespace ME3Explorer.Dialogue_Editor
             public List<int> GetStartingList()
             {
                 List<int> startList = new List<int>();
-                var prop = export.GetProperty<ArrayProperty<ObjectProperty>>("abc");
+                var prop = export.GetProperty<ArrayProperty<ObjectProperty>>("m_StartingList"); //ME1/ME2/ME3
                 if(prop != null)
                 {
                     foreach(var sl in prop)

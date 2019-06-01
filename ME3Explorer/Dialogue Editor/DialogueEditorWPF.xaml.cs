@@ -344,8 +344,8 @@ namespace ME3Explorer.Dialogue_Editor
                     spkr.FaceFX_Female = conv.ParseFaceFX(spkr.SpeakerID, false);
                 }
 
-                conv.Sequence = conv.GetSequence();
-                conv.WwiseBank = conv.GetWwiseBank();
+                conv.Sequence = conv.ParseSequence();
+                conv.WwiseBank = conv.ParseWwiseBank();
                 conv.bParsed = true;
             }
 
