@@ -695,30 +695,6 @@
     <Compile Include="Main Window\TaskPane.xaml.cs">
       <DependentUpon>TaskPane.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Texplorer\KFreonListErrorBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Texplorer\KFreonListErrorBox.Designer.cs">
-      <DependentUpon>KFreonListErrorBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Texplorer\KFreonSearchForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Texplorer\KFreonSearchForm.Designer.cs">
-      <DependentUpon>KFreonSearchForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Texplorer\Texplorer2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Texplorer\Texplorer2.Designer.cs">
-      <DependentUpon>Texplorer2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Texplorer\TexplorerFirstTimeSetup.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Texplorer\TexplorerFirstTimeSetup.Designer.cs">
-      <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
-    </Compile>
     <Compile Include="TlkEditor\TlkEditor.xaml.cs">
       <DependentUpon>TlkEditor.xaml</DependentUpon>
     </Compile>
@@ -740,12 +716,6 @@
     <Compile Include="Tools.cs" />
     <Compile Include="Main Window\ToolPanel.xaml.cs">
       <DependentUpon>ToolPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="TPFTools\KFreonTPFTools3.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TPFTools\KFreonTPFTools3.Designer.cs">
-      <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
     </Compile>
     <Compile Include="UnrealScriptControl\UnrealScriptWPF.xaml.cs">
       <DependentUpon>UnrealScriptWPF.xaml</DependentUpon>
@@ -896,10 +866,6 @@
     <Page Include="MetadataEditor\MetadataEditorWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Modmaker\CreateJobFromPCCDiff.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main Window\TaskPane.xaml">
       <SubType>Designer</SubType>
@@ -1134,15 +1100,6 @@
     <Compile Include="Meshplorer\UDKCopy.Designer.cs">
       <DependentUpon>UDKCopy.cs</DependentUpon>
     </Compile>
-    <Compile Include="Modmaker\CreateJobFromPCCDiff.xaml.cs">
-      <DependentUpon>CreateJobFromPCCDiff.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Modmaker\ModMaker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Modmaker\ModMaker.Designer.cs">
-      <DependentUpon>ModMaker.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlotVarDB\PlotVarDB.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1227,9 +1184,6 @@
     <EmbeddedResource Include="Meshplorer\UDKCopy.resx">
       <DependentUpon>UDKCopy.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Modmaker\ModMaker.resx">
-      <DependentUpon>ModMaker.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PlotVarDB\PlotVarDB.resx">
       <DependentUpon>PlotVarDB.cs</DependentUpon>
     </EmbeddedResource>
@@ -1255,18 +1209,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SubtitleScanner\SubtitleScanner.resx">
       <DependentUpon>SubtitleScanner.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Texplorer\KFreonListErrorBox.resx">
-      <DependentUpon>KFreonListErrorBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Texplorer\Texplorer2.resx">
-      <DependentUpon>Texplorer2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Texplorer\TexplorerFirstTimeSetup.resx">
-      <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TPFTools\KFreonTPFTools3.resx">
-      <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WwiseBankViewer\WwiseViewer.resx">
       <DependentUpon>WwiseViewer.cs</DependentUpon>
@@ -1311,10 +1253,6 @@
     <ProjectReference Include="..\Helpers\Helpers.csproj">
       <Project>{ccf590b8-e6bf-4d31-85bf-afea7d075edf}</Project>
       <Name>Helpers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
-      <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
-      <Name>KFreonLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\NAudio\NAudio.csproj">
       <Project>{da4f02e3-0b5e-42cd-b8d9-5583fa51d66e}</Project>
@@ -1496,7 +1434,6 @@ rmdir /s /q "$(ProjectDir)$(OutDir)zh-Hans"
 del /s "$(TargetDir)*.xml"
 
 move /y "$(ProjectDir)$(OutDir)CSharpImageLibrary.exe" "$(ProjectDir)$(OutDir)lib\"
-move /y "$(ProjectDir)$(OutDir)KFreonLib.dll.config" "$(ProjectDir)$(OutDir)lib\"
 del "$(ProjectDir)$(OutDir)HexConverter.exe.config"
 if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBuilder.cmd" "$(TargetDir)..\ReleaseBuilder.bat" /y)
 

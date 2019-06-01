@@ -68,19 +68,6 @@ namespace ME3Explorer
                 tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
                 description = "AutoTOC WPF is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
             });
-            set.Add(new Tool
-            {
-                name = "Mod Maker",
-                type = typeof(ModMaker),
-                icon = Application.Current.FindResource("iconModMaker") as ImageSource,
-                open = () =>
-                {
-                    (new ModMaker()).Show();
-                },
-                tags = new List<string> { "utility", ".mod", "mod", "mesh" },
-                subCategory = "Mod Packagers",
-                description = "MOD MAKER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nMod Maker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources."
-            });
 #if DEBUG
             set.Add(new Tool
             {
@@ -110,19 +97,6 @@ namespace ME3Explorer
                 description = "File Hex Analyzer is a package hex viewer that shows references in the package hex. It also works with non-package files, but won't show any references, obviously."
             });
 #endif
-            set.Add(new Tool
-            {
-                name = "TPF Tools",
-                type = typeof(KFreonTPFTools3),
-                icon = Application.Current.FindResource("iconTPFTools") as ImageSource,
-                open = () =>
-                {
-                    (new KFreonTPFTools3()).Show();
-                },
-                tags = new List<string> { "utility", "texture", "tpf", "dds", "bmp", "jpg", "png" },
-                subCategory = "Mod Packagers",
-                description = "TPF TOOLS IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nTPF Tools allows for permanent insertion of textures into game files. TPF tools can also be used by modders to package textures into TPFs for distribution.\n\nThis tool has been mostly superceded by Mass Effect Modder (MEM)."
-            });
             #endregion
 
             #region Utilities
@@ -587,20 +561,6 @@ namespace ME3Explorer
                 subCategory = "Scene Shop",
                 description = "Soundplorer WPF is a complete rewrite of the original  Soundplorer. Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
             });
-            set.Add(new Tool
-            {
-                name = "Texplorer",
-                type = typeof(Texplorer2),
-                icon = Application.Current.FindResource("iconTexplorer") as ImageSource,
-                open = () =>
-                {
-                    (new Texplorer2()).Show();
-                },
-                tags = new List<string> { "developer", "texture", "tfc", "scan", "tree" },
-                subCategory = "Meshes + Textures",
-                description = "TEXPLORER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nTexplorer is a texturing utility that allows users to browse and install textures for all 3 Mass Effect trilogy games. It has been superceded by Mass Effect Modder (MEM) in most regards."
-            });
-
             set.Add(new Tool
             {
                 name = "WwiseBank Editor",
