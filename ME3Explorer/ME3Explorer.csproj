@@ -1284,10 +1284,6 @@
     <Resource Include="Resources\resize_icon.ico" />
     <Resource Include="Resources\taskbar.ico" />
     <Resource Include="Resources\interpreter_icon_64x64.png" />
-    <Resource Include="Resources\info.ico" />
-    <Resource Include="Resources\help-browser.png" />
-    <Resource Include="Resources\folder.png" />
-    <Resource Include="Resources\document-save.png" />
     <Resource Include="Icons\udk_explorer_64x64.png" />
     <Resource Include="Icons\placeholder_64x64.png" />
     <Resource Include="Icons\modmaker_64x64.png" />
@@ -1365,7 +1361,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\excel.png" />
-    <None Include="Resources\excel.gif" />
     <Resource Include="Resources\error_x.png" />
     <Resource Include="Resources\coalesced_editor_newB.ico" />
     <Resource Include="Resources\me3tweaks_fork.png" />
