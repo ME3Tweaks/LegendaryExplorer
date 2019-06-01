@@ -3623,5 +3623,16 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             };
             worker.RunWorkerAsync();
         }
+
+        private void CoordinateEditor_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (Keyboard.PrimaryDevice.IsKeyDown(Key.Tab))
+            {
+                if (sender is TextBox tb)
+                {
+                    tb.SelectAll();
+                }
+            }
+        }
     }
 }
