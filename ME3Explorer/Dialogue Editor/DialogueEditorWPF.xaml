@@ -19,9 +19,9 @@
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
-            <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
+            <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds."  Tag="PackageEditor" Click="OpenIn_Clicked" />
             <MenuItem Header="Open in Interp Viewer" ToolTip="Open this export in Interp Viewer" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
-            <MenuItem Header="Open in Sequence Editor" ToolTip="Open this export in Sequence Editor" Click="OpenInSequenceEditor_Clicked" Name="SewEdMenuItem"/>
+            <MenuItem Header="Open in Sequence Editor" ToolTip="Open this export in Sequence Editor" Tag="SequenceEditor" Click="OpenIn_Clicked" Name="SewEdMenuItem"/>
             <Separator />
             <MenuItem Header="Clone Object" Click="CloneObject_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
@@ -50,6 +50,29 @@
                 <MenuItem Header="_Open" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
                 <MenuItem Header="_Save"  Command="{Binding SaveCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                 <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S" ToolTip="Save package file to another location" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <MenuItem Header="Open in...">
+                    <MenuItem Header="FaceFX Editor" Tag="FaceFXEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/facefxeditor_256x256.ico" Width="64"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Package Editor" Tag="PackageEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Soundplorer WPF" Tag="SoundplorerWPF" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/soundplorerwpf_256x256.ico" Width="64"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Sequence Editor" Tag="SequenceEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/sequenceeditor_256x256.ico" Width="64"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <Separator />
                 <Separator />
                 <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
             </MenuItem>
@@ -237,6 +260,12 @@
                             </Style.Triggers>
                         </Style>
                     </ListBox.ItemContainerStyle>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Open in Package Editor" Tag="PackageEditor" Click="OpenIn_Clicked"/>
+                            <MenuItem Header="Open in Sequence Editor" Click="OpenIn_Clicked"/>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
                 </ListBox>
                 <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"/>
                 <TabControl TabStripPlacement="Left"  Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}">

@@ -238,6 +238,11 @@ namespace ME3Explorer.Dialogue_Editor
             return Pcc != null;
         }
 
+        public bool HasActiveConv()
+        {
+            return ActiveConv != null && Pcc != null;
+        }
+
         public void LoadFile(string fileName)
         {
             try
@@ -273,7 +278,7 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 MessageBox.Show("Error:\n" + ex.Message);
                 Title = "Dialogue Editor WPF";
-                UnloadFile(); 
+                UnloadFile();
             }
         }
 
@@ -286,14 +291,14 @@ namespace ME3Explorer.Dialogue_Editor
             CurrentFile = null;
             UnLoadMEPackage();
         }
-    
+
 
         #endregion Startup/Exit
 
         #region Parsing
         private void LoadConversations()
         {
-            foreach(var exp in Pcc.Exports.Where(exp => exp.ClassName.Equals("BioConversation")))
+            foreach (var exp in Pcc.Exports.Where(exp => exp.ClassName.Equals("BioConversation")))
             {
                 Conversations.Add(new ConversationExtended(exp, exp.ObjectName, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>()));
             }
@@ -302,10 +307,10 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void FirstParse()
         {
-            if(ActiveConv != null)
+            if (ActiveConv != null)
             {
                 ActiveConv.ParseSpeakers();
-
+                GenerateSpeakerList();
 
                 ActiveConv.bFirstParsed = true;
             }
@@ -331,9 +336,9 @@ namespace ME3Explorer.Dialogue_Editor
         private void BackParse(object sender, DoWorkEventArgs e)
         {
             //Speakers do faceFXSets
-            foreach (var conv in Conversations.Where(conv => conv.bFirstParsed == false))
+            foreach (var conv in Conversations.Where(conv => conv.bParsed == false))
             {
-                foreach(var spkr in conv.Speakers)
+                foreach (var spkr in conv.Speakers)
                 {
                     spkr.FaceFX_Male = conv.ParseFaceFX(spkr.SpeakerID, true);
                     spkr.FaceFX_Female = conv.ParseFaceFX(spkr.SpeakerID, false);
@@ -349,10 +354,104 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void BackParser_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
+            //DEBUG 
+            BackParser.CancelAsync();
         }
 
+        private void ConversationList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Conversations_ListBox.SelectedIndex < 0)
+            {
+                ActiveConv = null;
+                ActiveSpeakerList.ClearEx();
+                Properties_InterpreterWPF.UnloadExport();
 
+            }
+            else
+            {
+                ActiveConv = Conversations[Conversations_ListBox.SelectedIndex];
+                Properties_InterpreterWPF.LoadExport(ActiveConv.export);
+                RefreshView();
+
+            }
+
+
+            //if (SelectedObjects.Any())
+            //{
+            //    if (panToSelection)
+            //    {
+            //        if (SelectedObjects.Count == 1)
+            //        {
+            //            graphEditor.Camera.AnimateViewToCenterBounds(SelectedObjects[0].GlobalFullBounds, false, 100);
+            //        }
+            //        else
+            //        {
+            //            RectangleF boundingBox = SelectedObjects.Select(obj => obj.GlobalFullBounds).BoundingRect();
+            //            graphEditor.Camera.AnimateViewToCenterBounds(boundingBox, true, 200);
+            //        }
+            //    }
+            //}
+
+            //panToSelection = true;
+            graphEditor.Refresh();
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            if (Pcc == null)
+            {
+                return; //nothing is loaded
+            }
+
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+                                                                            x.change != PackageChange.ImportAdd &&
+                                                                            x.change != PackageChange.Names);
+            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
+            if (ActiveConv != null && updatedExports.Contains(ActiveConv.export.Index))
+            {
+                //loaded convo is no longer a convo
+                if (ActiveConv.export.ClassName != "BioConversation")
+                {
+                    ActiveConv = null;
+                    Conversations_ListBox.SelectedIndex = -1;
+                    graphEditor.nodeLayer.RemoveAllChildren();
+                    graphEditor.edgeLayer.RemoveAllChildren();
+                    ActiveSpeakerList.ClearEx();
+                    Properties_InterpreterWPF.UnloadExport();
+                    LoadConversations();
+                }
+
+
+                RefreshView();
+
+                return;
+            }
+
+            //if (updatedExports.Intersect(CurrentObjects.Select(obj => obj.Index)).Any())
+            //{
+            //    RefreshView();
+            //}
+
+            foreach (var i in updatedExports)
+            {
+                //if (Pcc.getExport(i).IsSequence())
+                //{
+                //    LoadSequences();
+                //    break;
+                //}
+            }
+        }
+
+        private void GenerateSpeakerList()
+        {
+            ActiveSpeakerList.ClearEx();
+            ActiveSpeakerList.Add(new SpeakerExtended(-2, "player", ActiveConv.ParseFaceFX(-2, true), ActiveConv.ParseFaceFX(-2)));
+            ActiveSpeakerList.Add(new SpeakerExtended(-1, "owner", ActiveConv.ParseFaceFX(-1, true), ActiveConv.ParseFaceFX(-1)));
+            foreach (var spkr in ActiveConv.Speakers)
+            {
+                ActiveSpeakerList.Add(spkr);
+            }
+        }
 
         #endregion Parsing
 
@@ -383,7 +482,11 @@ namespace ME3Explorer.Dialogue_Editor
             StartPosEvents = 0;
             StartPosActions = 0;
             StartPosVars = 0;
-            GetObjects(SelectedSequence);
+            //GetObjects(SelectedSequence);
+            foreach(int list in ActiveConv.GetStartingList())
+            {
+                graphEditor.addNode(new PNode());
+            }
             Layout();
             foreach (SObj o in CurrentObjects)
             {
@@ -391,17 +494,17 @@ namespace ME3Explorer.Dialogue_Editor
                 o.Click += node_Click;
             }
 
-            if (SavedPositions.IsEmpty() && Pcc.Game != MEGame.ME1)
-            {
-                if (CurrentFile.Contains("_LOC_INT"))
-                {
-                    LoadDialogueObjects();
-                }
-                else
-                {
-                    AutoLayout();
-                }
-            }
+            //if (SavedPositions.IsEmpty() && Pcc.Game != MEGame.ME1)
+            //{
+            //    if (CurrentFile.Contains("_LOC_INT"))
+            //    {
+            //        LoadDialogueObjects();
+            //    }
+            //    else
+            //    {
+            //        AutoLayout();
+            //    }
+            //}
         }
 
 
@@ -670,8 +773,13 @@ namespace ME3Explorer.Dialogue_Editor
 
         public void RefreshView()
         {
-            saveView(false);
-            LoadSequence(SelectedSequence, false);
+            Properties_InterpreterWPF.LoadExport(ActiveConv.export);
+            GenerateSpeakerList();
+
+
+            GenerateGraph();
+            //saveView(false);
+            //LoadSequence(SelectedSequence, false);
         }
         #endregion UIGraph 
 
@@ -806,49 +914,6 @@ namespace ME3Explorer.Dialogue_Editor
         #endregion Recents
 
         #region UIHandling
-        private void ConversationList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if(Conversations_ListBox.SelectedIndex < 0)
-            {
-                ActiveConv = null;
-                ActiveSpeakerList.ClearEx();
-                Properties_InterpreterWPF.UnloadExport();
-
-            }
-            else
-            {
-                ActiveConv = Conversations[Conversations_ListBox.SelectedIndex];
-                Properties_InterpreterWPF.LoadExport(ActiveConv.export);
-
-                ActiveSpeakerList.ClearEx();
-                ActiveSpeakerList.Add(new SpeakerExtended(-2, "player", ActiveConv.ParseFaceFX(-2, true), ActiveConv.ParseFaceFX(-2)));
-                ActiveSpeakerList.Add(new SpeakerExtended(-1, "owner", ActiveConv.ParseFaceFX(-1, true), ActiveConv.ParseFaceFX(-1)));
-                foreach (var spkr in ActiveConv.Speakers)
-                {
-                    ActiveSpeakerList.Add(spkr);
-                }
-            }
-
-
-            //if (SelectedObjects.Any())
-            //{
-            //    if (panToSelection)
-            //    {
-            //        if (SelectedObjects.Count == 1)
-            //        {
-            //            graphEditor.Camera.AnimateViewToCenterBounds(SelectedObjects[0].GlobalFullBounds, false, 100);
-            //        }
-            //        else
-            //        {
-            //            RectangleF boundingBox = SelectedObjects.Select(obj => obj.GlobalFullBounds).BoundingRect();
-            //            graphEditor.Camera.AnimateViewToCenterBounds(boundingBox, true, 200);
-            //        }
-            //    }
-            //}
-
-            //panToSelection = true;
-            graphEditor.Refresh();
-        }
 
 
         private void backMouseDown_Handler(object sender, PInputEventArgs e)
@@ -907,50 +972,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
-        {
-            if (Pcc == null)
-            {
-                return; //nothing is loaded
-            }
 
-            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
-                                                                            x.change != PackageChange.ImportAdd &&
-                                                                            x.change != PackageChange.Names);
-            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (SelectedSequence != null && updatedExports.Contains(SelectedSequence.Index))
-            {
-                //loaded sequence is no longer a sequence
-                if (false)
-                {
-                    SelectedSequence = null;
-                    graphEditor.nodeLayer.RemoveAllChildren();
-                    graphEditor.edgeLayer.RemoveAllChildren();
-                    CurrentObjects.ClearEx();
-                    SequenceExports.ClearEx();
-                    SelectedObjects.ClearEx();
-                    Properties_InterpreterWPF.UnloadExport();
-                }
-
-                RefreshView();
-                LoadConversations();
-                return;
-            }
-
-            if (updatedExports.Intersect(CurrentObjects.Select(obj => obj.Index)).Any())
-            {
-                RefreshView();
-            }
-
-            foreach (var i in updatedExports)
-            {
-                //if (Pcc.getExport(i).IsSequence())
-                //{
-                //    LoadSequences();
-                //    break;
-                //}
-            }
-        }
 
         private readonly List<SaveData> extraSaveData = new List<SaveData>();
         private bool panToSelection = true;
@@ -1263,7 +1285,6 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
-
 
         private void CloneObject_Clicked(object sender, RoutedEventArgs e)
         {
@@ -1618,23 +1639,48 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
+        private void OpenIn_Clicked(object sender, RoutedEventArgs e)
         {
-            if (Conversations_ListBox.SelectedItem != null)
+            var myValue = (string)((MenuItem)sender).Tag;
+            switch (myValue)
             {
-                PackageEditorWPF p = new PackageEditorWPF();
-                p.Show();
-                p.LoadFile(ActiveConv.export.FileRef.FileName, ActiveConv.export.UIndex);
-            }
-        }
 
-        private void OpenInSequenceEditor_Clicked(object sender, RoutedEventArgs e)
-        {
-            if (Conversations_ListBox.SelectedItem != null)
-            {
-                SequenceEditorWPF p = new SequenceEditorWPF();
-                p.Show();
-                p.LoadFile(ActiveConv.export.FileRef.FileName);
+                case "FaceFXEditor":
+                    var facefxEditor = new FaceFX.FaceFXEditor();
+                    if(HasActiveConv())
+                    {
+                        facefxEditor.LoadFile(Pcc.FileName);
+                    }
+                    facefxEditor.Show();
+                    break;
+                case "PackageEditor":
+                    var packEditor = new PackageEditorWPF();
+                    packEditor.Show();
+                    if (HasActiveConv())
+                    { packEditor.LoadFile(Pcc.FileName, ActiveConv.export.UIndex); }
+                    else
+                    {
+                        packEditor.LoadFile(Pcc.FileName);
+                    }
+                    break;
+                case "SoundplorerWPF":
+                    var soundplorerWPF = new Soundplorer.SoundplorerWPF();
+                    soundplorerWPF.LoadFile(Pcc.FileName);
+                    soundplorerWPF.Show();
+                    break;
+                case "SequenceEditor":
+                    SequenceEditorWPF seqEditor = new SequenceEditorWPF();
+                    if (HasActiveConv())
+                    {
+                        seqEditor = new SequenceEditorWPF(Pcc.getExport(ActiveConv.Sequence));
+                    }
+                    else
+                    {
+                        seqEditor.LoadFile(Pcc.FileName);
+                    }
+                    seqEditor.Show();
+                    seqEditor.Activate();
+                    break;
             }
         }
 

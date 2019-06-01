@@ -132,25 +132,40 @@ namespace ME3Explorer.Dialogue_Editor
             public int GetWwiseBank()
             {
                 var Pcc = export.FileRef;
-                var ffxo = ParseFaceFX(-1, true); //find owner animset
-                if (ffxo > 0)
+                if (Pcc.Game == MEGame.ME3)
                 {
-                    var wwevent = Pcc.getUExport(ffxo).GetProperty<ObjectProperty>("ReferencedSoundCues"); //pull a wwiseevent
-                    if(wwevent != null)
+                    var ffxo = ParseFaceFX(-1, true); //find owner animset
+                    if (ffxo > 0)
                     {
-                        var bank = Pcc.getUExport(wwevent.Value).GetProperty<StructProperty<ObjectProperty>>("ReferencedSoundCues"); //lookup bank
+                        var wwevent = Pcc.getUExport(ffxo).GetProperty<ObjectProperty>("ReferencedSoundCues"); //pull a wwiseevent
+                        if (wwevent != null)
+                        {
+                            StructProperty r = Pcc.getUExport(wwevent.Value).GetProperty<StructProperty>("Relationships"); //lookup bank
+                            if(r != null)
+                            {
+                                var bank = r.GetProp<ObjectProperty>("Bank");
+                                return bank.Value;
+                            }
+                        }
                     }
-                }
-                
-
-
-                var seq = export.GetProperty<ObjectProperty>("MatineeSequence");
-                if (seq != null)
-                {
-                    return seq.Value;
                 }
 
                 return 0;
+            }
+
+            public List<int> GetStartingList()
+            {
+                List<int> startList = new List<int>();
+                var prop = export.GetProperty<ArrayProperty<ObjectProperty>>("abc");
+                if(prop != null)
+                {
+                    foreach(var sl in prop)
+                    {
+                        startList.Add(sl.Value);
+                    }
+                    
+                }
+                return startList;
             }
         }
 
