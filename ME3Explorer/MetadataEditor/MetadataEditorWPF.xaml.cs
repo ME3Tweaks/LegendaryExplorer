@@ -267,7 +267,6 @@ namespace ME3Explorer.MetadataEditor
                 else
                 {
                     InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
-                    Debug.WriteLine($"SelectedIndex: {InfoTab_Archetype_ComboBox.SelectedIndex}");
                 }
             }
             else if (entry is ImportEntry importEntry)

@@ -63,6 +63,8 @@ namespace ME3Explorer
             packageEditorTabPane.TabPages.Remove(scriptTab);
             packageEditorTabPane.TabPages.Remove(binaryEditorTab);
             packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
+
+            MessageBox.Show("Package Editor (Classic) has been deprecated and will be removed in the next release. It may contain bugs and broken features.\n\nConsider using Package Editor WPF instead.");
         }
 
         // Save the current scale value
