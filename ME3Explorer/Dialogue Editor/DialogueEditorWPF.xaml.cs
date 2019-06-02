@@ -125,7 +125,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private bool HasWwbank()
         {
-            return activeconvWwBank != null;
+            return ActiveConv.WwiseBank != 0;
         }
 
         private string _activeconvNspkrFFX;
@@ -137,7 +137,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private bool HasFFXNS()
         {
-            return activeconvNspkrFFX != null;
+            return ActiveConv.NonSpkrFFX != 0;
         }
 
         private static BackgroundWorker BackParser = new BackgroundWorker();
@@ -373,10 +373,15 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void UnloadFile()
         {
-            ActiveConv = null;
+
             RightBarColumn.Width = new GridLength(0);
+            ActiveConv = null;
+            Conversations.ClearEx();
             ActiveSpeakerList.ClearEx();
             Properties_InterpreterWPF.UnloadExport();
+            CurrentObjects.Clear();
+            graphEditor.nodeLayer.RemoveAllChildren();
+            graphEditor.edgeLayer.RemoveAllChildren();
             CurrentFile = null;
             UnLoadMEPackage();
             StatusText = "Select a package file to load";
@@ -786,28 +791,28 @@ namespace ME3Explorer.Dialogue_Editor
                 for (int i = 0; i < CurrentObjects.Count; i++)
                 {
                     DObj obj = CurrentObjects[i];
-                    SaveData savedInfo = new SaveData(-1);
-                    if (SavedPositions.Any())
-                    {
-                        if (RefOrRefChild)
-                            savedInfo = SavedPositions.FirstOrDefault(p => i == p.index);
-                        else
-                            savedInfo = SavedPositions.FirstOrDefault(p => obj.Index == p.index);
-                    }
+                    //SaveData savedInfo = new SaveData(-1);
+                    //if (SavedPositions.Any())
+                    //{
+                    //    if (RefOrRefChild)
+                    //        savedInfo = SavedPositions.FirstOrDefault(p => i == p.index);
+                    //    else
+                    //        savedInfo = SavedPositions.FirstOrDefault(p => obj.Index == p.index);
+                    //}
 
-                    bool hasSavedPosition =
-                        savedInfo.index == (RefOrRefChild ? i : obj.Index);
-                    if (hasSavedPosition)
-                    {
-                        obj.Layout(savedInfo.X, savedInfo.Y);
-                    }
-                    else if (Pcc.Game == MEGame.ME1)
-                    {
-                        obj.Layout();
-                    }
-                    else
-                    {
-                        switch (obj)
+                    //bool hasSavedPosition =
+                    //    savedInfo.index == (RefOrRefChild ? i : obj.Index);
+                    //if (hasSavedPosition)
+                    //{
+                    //    obj.Layout(savedInfo.X, savedInfo.Y);
+                    //}
+                    //else if (Pcc.Game == MEGame.ME1)
+                    //{
+                    //    obj.Layout();
+                    //}
+                    //else
+                    //{
+                    switch (obj)
                         {
                             case DStart _:
                                 obj.Layout(StartPoDStarts, 0);
@@ -817,12 +822,8 @@ namespace ME3Explorer.Dialogue_Editor
                                 obj.Layout(StartPosActions, 250);
                                 StartPosActions += obj.Width + 20;
                                 break;
-                            case SVar _:
-                                obj.Layout(StartPosVars, 500);
-                                StartPosVars += obj.Width + 20;
-                                break;
                         }
-                    }
+                    //    }
                 }
 
                 foreach (SeqEdEdge edge in graphEditor.edgeLayer)

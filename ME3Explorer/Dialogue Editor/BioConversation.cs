@@ -249,7 +249,7 @@ namespace ME3Explorer.Dialogue_Editor
             public List<int> GetStartingList()
             {
                 List<int> startList = new List<int>();
-                var prop = export.GetProperty<ArrayProperty<ObjectProperty>>("m_StartingList"); //ME1/ME2/ME3
+                var prop = export.GetProperty<ArrayProperty<IntProperty>>("m_StartingList"); //ME1/ME2/ME3
                 if (prop != null)
                 {
                     foreach (var sl in prop)
@@ -955,7 +955,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         protected float GetTitleBox(string s, float w)
         {
-            s = $"#{UIndex} : {s}";
+            //s = $"#{UIndex} : {s}";
             SText title = new SText(s, titleColor)
             {
                 TextAlignment = StringAlignment.Center,
@@ -1527,13 +1527,30 @@ namespace ME3Explorer.Dialogue_Editor
             : base(conv, ConvGraphEditor)
         {
             outlinePen = new Pen(EventColor);
-            string s = export.ObjectName;
+            string s = $"Start Node: {StartNbr}";
             float starty = 0;
             float w = 15;
             float midW = 0;
             varLinkBox = new PPath();
-           
+            GetTitleBox(s, 20);
             //GetOutputLinks();
+            OutputLink l = new OutputLink
+            {
+                Links = new List<int>(StartNbr),
+                InputIndices = new List<int>(),
+                Edges = new List<ActionEdge>(),
+                Desc =$"Out {StartNbr}"
+            };
+            l.node = CreateActionLinkBox();
+            l.node.Brush = outputBrush;
+            l.node.Pickable = false;
+            PPath dragger = CreateActionLinkBox();
+            dragger.Brush = mostlyTransparentBrush;
+            dragger.X = l.node.X;
+            dragger.Y = l.node.Y;
+            dragger.AddInputEventListener(outputDragHandler);
+            l.node.AddChild(dragger);
+            Outlinks.Add(l);
             outLinkBox = new PPath();
             //for (int i = 0; i < Outlinks.Count; i++)
             //{
