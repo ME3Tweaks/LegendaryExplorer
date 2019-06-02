@@ -60,6 +60,8 @@ namespace ME3Explorer.Dialogue_Editor
         public ObservableCollectionExtended<ConversationExtended> Conversations { get; } = new ObservableCollectionExtended<ConversationExtended>();
         public ObservableCollectionExtended<SpeakerExtended> ActiveSpeakerList { get; } = new ObservableCollectionExtended<SpeakerExtended>();
 
+        public SpeakerExtended ActiveSpeaker = new SpeakerExtended(0, null);
+
         public ConversationExtended ActiveConv = null;
 
         private static BackgroundWorker BackParser = new BackgroundWorker();
@@ -349,7 +351,7 @@ namespace ME3Explorer.Dialogue_Editor
                 conv.bParsed = true;
             }
 
-
+            
         }
 
         private void BackParser_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -445,8 +447,8 @@ namespace ME3Explorer.Dialogue_Editor
         private void GenerateSpeakerList()
         {
             ActiveSpeakerList.ClearEx();
-            ActiveSpeakerList.Add(new SpeakerExtended(-2, "player", ActiveConv.ParseFaceFX(-2, true), ActiveConv.ParseFaceFX(-2)));
-            ActiveSpeakerList.Add(new SpeakerExtended(-1, "owner", ActiveConv.ParseFaceFX(-1, true), ActiveConv.ParseFaceFX(-1)));
+            ActiveSpeakerList.Add(new SpeakerExtended(-2, "player", ActiveConv.ParseFaceFX(-2, true), ActiveConv.ParseFaceFX(-2), 125303, "Shepard"));
+            ActiveSpeakerList.Add(new SpeakerExtended(-1, "owner", ActiveConv.ParseFaceFX(-1, true), ActiveConv.ParseFaceFX(-1), 0, "No data"));
             foreach (var spkr in ActiveConv.Speakers)
             {
                 ActiveSpeakerList.Add(spkr);
@@ -454,6 +456,137 @@ namespace ME3Explorer.Dialogue_Editor
         }
 
         #endregion Parsing
+
+
+        #region Recents
+
+        private readonly List<Button> RecentButtons = new List<Button>();
+        public List<string> RFiles;
+        private readonly string RECENTFILES_FILE = "RECENTFILES";
+
+        private void LoadRecentList()
+        {
+            RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
+            Recents_MenuItem.IsEnabled = false;
+            RFiles = new List<string>();
+            RFiles.Clear();
+            string path = DialogueEditorDataFolder + RECENTFILES_FILE;
+            if (File.Exists(path))
+            {
+                string[] recents = File.ReadAllLines(path);
+                foreach (string recent in recents)
+                {
+                    if (File.Exists(recent))
+                    {
+                        AddRecent(recent, true);
+                    }
+                }
+            }
+
+            RefreshRecent(false);
+        }
+
+        private void SaveRecentList()
+        {
+            if (!Directory.Exists(DialogueEditorDataFolder))
+            {
+                Directory.CreateDirectory(DialogueEditorDataFolder);
+            }
+
+            string path = DialogueEditorDataFolder + RECENTFILES_FILE;
+            if (File.Exists(path))
+                File.Delete(path);
+            File.WriteAllLines(path, RFiles);
+        }
+
+        public void RefreshRecent(bool propogate, List<string> recents = null)
+        {
+            if (propogate && recents != null)
+            {
+                //we are posting an update to other instances of SeqEd
+                foreach (var window in Application.Current.Windows)
+                {
+                    if (window is DialogueEditorWPF wpf && this != wpf)
+                    {
+                        wpf.RefreshRecent(false, RFiles);
+                    }
+                }
+            }
+            else if (recents != null)
+            {
+                //we are receiving an update
+                RFiles = new List<string>(recents);
+            }
+
+            Recents_MenuItem.Items.Clear();
+            if (RFiles.Count <= 0)
+            {
+                Recents_MenuItem.IsEnabled = false;
+                return;
+            }
+
+            Recents_MenuItem.IsEnabled = true;
+
+            int i = 0;
+            foreach (string filepath in RFiles)
+            {
+                MenuItem fr = new MenuItem()
+                {
+                    Header = filepath.Replace("_", "__"),
+                    Tag = filepath
+                };
+                RecentButtons[i].Visibility = Visibility.Visible;
+                RecentButtons[i].Content = Path.GetFileName(filepath.Replace("_", "__"));
+                RecentButtons[i].Click -= RecentFile_click;
+                RecentButtons[i].Click += RecentFile_click;
+                RecentButtons[i].Tag = filepath;
+                RecentButtons[i].ToolTip = filepath;
+                fr.Click += RecentFile_click;
+                Recents_MenuItem.Items.Add(fr);
+                i++;
+            }
+
+            while (i < 10)
+            {
+                RecentButtons[i].Visibility = Visibility.Collapsed;
+                i++;
+            }
+        }
+
+        private void RecentFile_click(object sender, EventArgs e)
+        {
+            string s = ((FrameworkElement)sender).Tag.ToString();
+            if (File.Exists(s))
+            {
+                LoadFile(s);
+            }
+            else
+            {
+                MessageBox.Show("File does not exist: " + s);
+            }
+        }
+
+        public void AddRecent(string s, bool loadingList)
+        {
+            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            if (loadingList)
+            {
+                RFiles.Add(s); //in order
+            }
+            else
+            {
+                RFiles.Insert(0, s); //put at front
+            }
+
+            if (RFiles.Count > 10)
+            {
+                RFiles.RemoveRange(10, RFiles.Count - 10);
+            }
+
+            Recents_MenuItem.IsEnabled = true;
+        }
+
+        #endregion Recents
 
         #region UIGraph
 
@@ -486,9 +619,9 @@ namespace ME3Explorer.Dialogue_Editor
             //GetObjects(SelectedSequence);
             float x = 0;
             float y = 0;
-            foreach(int start in ActiveConv.GetStartingList())
+            foreach (int start in ActiveConv.GetStartingList())
             {
-                graphEditor.addNode(new DStart(start, ActiveConv, x, y, graphEditor));
+                CurrentObjects.Add(new DStart(start, ActiveConv, x, y, graphEditor));
                 y += 100;
             }
             Layout();
@@ -553,32 +686,32 @@ namespace ME3Explorer.Dialogue_Editor
 
         public bool LoadDialogueObjects()
         {
-            float StartPosDialog = 0;
-            try
-            {
-                foreach (DObj obj in CurrentObjects)
-                {
-                    if (obj.Export.ObjectName.StartsWith("BioSeqEvt_ConvNode"))
-                    {
-                        obj.SetOffset(StartPosDialog, 600); //Startconv event
-                        SAction interp = (SAction)CurrentObjects.First(o => o.UIndex == ((DStart)obj).Outlinks[0].Links[0]);
-                        interp.SetOffset(StartPosDialog + 150, 600); //Interp
-                        CurrentObjects.First(o => o.UIndex == interp.Varlinks[0].Links[0]).SetOffset(StartPosDialog + 165, 770); //Interpdata
-                        StartPosDialog += interp.Width + 200;
-                        CurrentObjects.First(o => o.UIndex == interp.Outlinks[0].Links[0]).SetOffset(StartPosDialog, 600); //Endconv node
-                        StartPosDialog += 270;
-                    }
-                }
+            //float StartPosDialog = 0;
+            //try
+            //{
+            //    foreach (DObj obj in CurrentObjects)
+            //    {
+            //        if (obj.Export.ObjectName.StartsWith("BioSeqEvt_ConvNode"))
+            //        {
+            //            obj.SetOffset(StartPosDialog, 600); //Startconv event
+            //            SAction interp = (SAction)CurrentObjects.First(o => o.UIndex == ((DStart)obj).Outlinks[0].Links[0]);
+            //            interp.SetOffset(StartPosDialog + 150, 600); //Interp
+            //            CurrentObjects.First(o => o.UIndex == interp.Varlinks[0].Links[0]).SetOffset(StartPosDialog + 165, 770); //Interpdata
+            //            StartPosDialog += interp.Width + 200;
+            //            CurrentObjects.First(o => o.UIndex == interp.Outlinks[0].Links[0]).SetOffset(StartPosDialog, 600); //Endconv node
+            //            StartPosDialog += 270;
+            //        }
+            //    }
 
-                foreach (SeqEdEdge edge in graphEditor.edgeLayer)
-                    ConvGraphEditor.UpdateEdge(edge);
-            }
-            catch (Exception)
-            {
-                foreach (SeqEdEdge edge in graphEditor.edgeLayer)
-                    ConvGraphEditor.UpdateEdge(edge);
-                return false;
-            }
+            //    foreach (SeqEdEdge edge in graphEditor.edgeLayer)
+            //        ConvGraphEditor.UpdateEdge(edge);
+            //}
+            //catch (Exception)
+            //{
+            //    foreach (SeqEdEdge edge in graphEditor.edgeLayer)
+            //        ConvGraphEditor.UpdateEdge(edge);
+            //    return false;
+            //}
 
             return true;
         }
@@ -789,137 +922,49 @@ namespace ME3Explorer.Dialogue_Editor
         }
         #endregion UIGraph 
 
-        #region Recents
 
-        private readonly List<Button> RecentButtons = new List<Button>();
-        public List<string> RFiles;
-        private readonly string RECENTFILES_FILE = "RECENTFILES";
-
-        private void LoadRecentList()
+        #region UIHandling-boxes
+        private void Speakers_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
-            Recents_MenuItem.IsEnabled = false;
-            RFiles = new List<string>();
-            RFiles.Clear();
-            string path = DialogueEditorDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
+            if (Speakers_ListBox.SelectedIndex >= 0)
             {
-                string[] recents = File.ReadAllLines(path);
-                foreach (string recent in recents)
-                {
-                    if (File.Exists(recent))
-                    {
-                        AddRecent(recent, true);
-                    }
-                }
-            }
+                int id = Speakers_ListBox.SelectedIndex - 2;
+                var newspeaker = ActiveSpeakerList.Where(spkr => spkr.SpeakerID == id).First();
 
-            RefreshRecent(false);
-        }
-
-        private void SaveRecentList()
-        {
-            if (!Directory.Exists(DialogueEditorDataFolder))
-            {
-                Directory.CreateDirectory(DialogueEditorDataFolder);
-            }
-
-            string path = DialogueEditorDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-                File.Delete(path);
-            File.WriteAllLines(path, RFiles);
-        }
-
-        public void RefreshRecent(bool propogate, List<string> recents = null)
-        {
-            if (propogate && recents != null)
-            {
-                //we are posting an update to other instances of SeqEd
-                foreach (var window in Application.Current.Windows)
-                {
-                    if (window is DialogueEditorWPF wpf && this != wpf)
-                    {
-                        wpf.RefreshRecent(false, RFiles);
-                    }
-                }
-            }
-            else if (recents != null)
-            {
-                //we are receiving an update
-                RFiles = new List<string>(recents);
-            }
-
-            Recents_MenuItem.Items.Clear();
-            if (RFiles.Count <= 0)
-            {
-                Recents_MenuItem.IsEnabled = false;
-                return;
-            }
-
-            Recents_MenuItem.IsEnabled = true;
-
-            int i = 0;
-            foreach (string filepath in RFiles)
-            {
-                MenuItem fr = new MenuItem()
-                {
-                    Header = filepath.Replace("_", "__"),
-                    Tag = filepath
-                };
-                RecentButtons[i].Visibility = Visibility.Visible;
-                RecentButtons[i].Content = Path.GetFileName(filepath.Replace("_", "__"));
-                RecentButtons[i].Click -= RecentFile_click;
-                RecentButtons[i].Click += RecentFile_click;
-                RecentButtons[i].Tag = filepath;
-                RecentButtons[i].ToolTip = filepath;
-                fr.Click += RecentFile_click;
-                Recents_MenuItem.Items.Add(fr);
-                i++;
-            }
-
-            while (i < 10)
-            {
-                RecentButtons[i].Visibility = Visibility.Collapsed;
-                i++;
-            }
-        }
-
-        private void RecentFile_click(object sender, EventArgs e)
-        {
-            string s = ((FrameworkElement)sender).Tag.ToString();
-            if (File.Exists(s))
-            {
-                LoadFile(s);
+                ActiveSpeaker.SpeakerID = newspeaker.SpeakerID;
+                ActiveSpeaker.SpeakerName = newspeaker.SpeakerName;
+                Speaker_Panel.IsEnabled = true;
+                //HIDE OTHER PANELS BY SWITCHING OFF SELECTION
             }
             else
             {
-                MessageBox.Show("File does not exist: " + s);
+                Speaker_Panel.IsEnabled = false;
+                ActiveSpeaker = new SpeakerExtended(-3, "null");
             }
         }
 
-        public void AddRecent(string s, bool loadingList)
+        private void NameIndex_TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            if (loadingList)
+            if(e.Key == Key.Enter)
             {
-                RFiles.Add(s); //in order
-            }
-            else
-            {
-                RFiles.Insert(0, s); //put at front
-            }
+               var dlg = MessageBox.Show("Do you want to change this actors name?","Confirm",MessageBoxButton.YesNo);
+                if (dlg == MessageBoxResult.No)
+                {
+                    return;
+                }
+                else
+                {
 
-            if (RFiles.Count > 10)
-            {
-                RFiles.RemoveRange(10, RFiles.Count - 10);
+                }
             }
-
-            Recents_MenuItem.IsEnabled = true;
         }
 
-        #endregion Recents
 
-        #region UIHandling
+        #endregion
+
+        #region UIHandling-graph
+
+
 
         private void backMouseDown_Handler(object sender, PInputEventArgs e)
         {
@@ -1616,6 +1661,40 @@ namespace ME3Explorer.Dialogue_Editor
 
         }
 
+
+#if DEBUG
+        public class DebugMouseListener : PBasicInputEventHandler, IDisposable
+        {
+            private DialogueEditorWPF dialogueEdWPF;
+
+            public DebugMouseListener(DialogueEditorWPF dialogueEdWPF)
+            {
+                this.dialogueEdWPF = dialogueEdWPF;
+            }
+
+            public void Dispose()
+            {
+                dialogueEdWPF = null;
+            }
+
+            public override void OnMouseMove(object sender, PInputEventArgs e)
+            {
+                PointF pos = e.Position;
+                int X = Convert.ToInt32(pos.X);
+                int Y = Convert.ToInt32(pos.Y);
+                dialogueEdWPF.StatusText = $"[{X},{Y}]";
+            }
+        }
+
+
+#endif
+
+        #endregion UIHandling-graph
+
+        #region UIHandling-events
+        #endregion UIHandling-events
+
+        #region UIHandling-menus
         private void OpenInInterpViewer_Clicked(object sender, RoutedEventArgs e)
         {
             if (Pcc.Game != MEGame.ME3)
@@ -1647,12 +1726,17 @@ namespace ME3Explorer.Dialogue_Editor
         private void OpenIn_Clicked(object sender, RoutedEventArgs e)
         {
             var myValue = (string)((MenuItem)sender).Tag;
+
             switch (myValue)
             {
 
                 case "FaceFXEditor":
                     var facefxEditor = new FaceFX.FaceFXEditor();
-                    if(HasActiveConv())
+                    if (HasActiveConv())
+                    {
+                        facefxEditor.LoadFile(Pcc.FileName); //WHEN FACEFX EDITOR HAS UPDATE TO LOAD TO POINT CHANGE HERE
+                    }
+                    else
                     {
                         facefxEditor.LoadFile(Pcc.FileName);
                     }
@@ -1691,7 +1775,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void LoadTLKManager()
         {
-            if(!Application.Current.Windows.OfType<TlkManagerNS.TLKManagerWPF>().Any())
+            if (!Application.Current.Windows.OfType<TlkManagerNS.TLKManagerWPF>().Any())
             {
                 TlkManagerNS.TLKManagerWPF m = new TlkManagerNS.TLKManagerWPF();
                 m.Show();
@@ -1701,33 +1785,8 @@ namespace ME3Explorer.Dialogue_Editor
                 Application.Current.Windows.OfType<TlkManagerNS.TLKManagerWPF>().First().Focus();
             }
         }
-#if DEBUG
-        public class DebugMouseListener : PBasicInputEventHandler, IDisposable
-        {
-            private DialogueEditorWPF dialogueEdWPF;
 
-            public DebugMouseListener(DialogueEditorWPF dialogueEdWPF)
-            {
-                this.dialogueEdWPF = dialogueEdWPF;
-            }
-
-            public void Dispose()
-            {
-                dialogueEdWPF = null;
-            }
-
-            public override void OnMouseMove(object sender, PInputEventArgs e)
-            {
-                PointF pos = e.Position;
-                int X = Convert.ToInt32(pos.X);
-                int Y = Convert.ToInt32(pos.Y);
-                dialogueEdWPF.StatusText = $"[{X},{Y}]";
-            }
-        }
-#endif
-
-#endregion UIHandling
-
+        #endregion
 
 
     }

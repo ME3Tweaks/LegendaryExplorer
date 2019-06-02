@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:unreal="clr-namespace:ME3Explorer.Unreal"
         xmlns:local="clr-namespace:ME3Explorer.Dialogue_Editor"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
@@ -117,21 +118,29 @@
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="0" Name="RightBarColumn" />
             </Grid.ColumnDefinitions>
+<!-- Right side panel - Nodes -->
             <DockPanel Name="RightSide_Dock" Grid.Column="2" Grid.RowSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
-                <Grid DockPanel.Dock="Top" >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="2*"/>
-                        <RowDefinition Height="5"/>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="5"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                </Grid>
-                <TextBlock>STRING</TextBlock>
-                <TextBlock>Speaker</TextBlock>
+                <StackPanel Name="Speaker_Panel" DockPanel.Dock="Top" IsEnabled="True" HorizontalAlignment="Stretch" Margin="3">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <TextBlock Name="Speaker_Header" Text="Speaker Details"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="14"/>
+                        <TextBlock Text="ID:"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="10"/>
+                        <TextBox Name="Speaker_ID" Text="{Binding Path=ActiveSpeaker.SpeakerID}"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="18" IsReadOnly="True" DataContext="{Binding ActiveSpeaker}"/>
+                    </StackPanel>
+
+                    <TextBlock Name="Speaker_NamePrefix" Text="Name:" HorizontalAlignment="Left" FontWeight="Bold" FontSize="10"  />
+                    <TextBox Name="Speaker_Name"  Text="{Binding Path=ActiveSpeaker.SpeakerName, Mode=TwoWay}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" DataContext="{Binding ActiveSpeaker}" HorizontalContentAlignment="Left" />
+                    <TextBlock Name="Speaker_TLK" Text="TLKString"  HorizontalAlignment="Left" ToolTip="Actor's named TLK string. Possibly."/>
+                    <TextBlock Text="Friendly Name" Name="Speaker_FriendlyName" HorizontalAlignment="Left" ToolTip="Actor's name. Possibly."/>
+                    <TextBlock Text="Male FaceFX Animation Set" Name="Speaker_FFXM" HorizontalAlignment="Left" ToolTip="Facial Animations for when the Player is Male"/>
+                    <TextBlock Text="Female FaceFX Animation Set" Name="Speaker_FFXF" HorizontalAlignment="Left" ToolTip="Facial Animations for when the Player is Female"/>
+                </StackPanel>
+                <StackPanel Name="Node_Panel" DockPanel.Dock="Top" IsEnabled="False">
+
+                </StackPanel>
+
             </DockPanel>
+            
+<!-- Speaker List -->
             <DockPanel LastChildFill="True" Grid.Row="2" Grid.Column="2" Grid.RowSpan="1" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                 <Grid DockPanel.Dock="Top" Height="30">
                     <Grid.ColumnDefinitions>
@@ -139,10 +148,10 @@
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Label Grid.Column="0" Background="GhostWhite">ID</Label>
-                    <Label Grid.Column="1" Background="GhostWhite">Speaker</Label>
+                    <Label Grid.Column="1" Background="GhostWhite">Speaker Tag</Label>
                 </Grid>
                 <ListBox Name="Speakers_ListBox" DockPanel.Dock="Bottom" ItemsSource="{Binding ActiveSpeakerList}" HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="Speakers_ListBox_SelectionChanged">
                     <ListBox.ItemTemplate >
                         <DataTemplate>
                             <Grid Margin="0,0,5,0" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" >
@@ -184,18 +193,20 @@
                 <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
                     <TextBlock Margin="5" Text="Welcome to Dialogue Editor WPF, the enhanced visual version of Dialogue Editor" FontWeight="Bold"/>
                     <TextBlock Margin="5">
-                            Dialogue Editor WPF is a bit different from the classic Dialogue Editor.
+                            Dialogue Editor WPF is the enhanced visual version of classic Dialogue Editor.
                                 <LineBreak/>
-                            The editor is visually based.... TBD
+                            The editor is visually based so you can see the dialogue tree and move/change connections
                                 <LineBreak/>
                                 <LineBreak/>
-                            This means:
+                            Instructions:
                                 <LineBreak/>
-                                -  Export references will be incremented by 1 from what you have seen in the old Sequence Editor
+                                -  Click on a conversation in the bottom left corner to bring it into focus.
                             <LineBreak/>
-                                -  Import references will remain the same
+                                -  Left Click on entries or replies nodes to see detailed settings.
                             <LineBreak/>
-                                -  0 indicates null, empty, or "Class", depending on the context
+                                -  Right Click to clone or add new nodes. Drag
+                             <LineBreak/>
+                                -  Drag and drop connections to see the path in the conversation.
                              <LineBreak/>
                     </TextBlock>
                 </StackPanel>

@@ -189,6 +189,38 @@ namespace ME3Explorer.Dialogue_Editor
                 return 0;
             }
 
+            public int ParseActorsNames(string tag)
+            {
+                var pcc = export.FileRef;
+                
+                if(pcc.Game == MEGame.ME1)
+                {
+                    var actors = pcc.Exports.Where(xp => xp.ClassName == "BioPawn");
+                    IExportEntry actor = actors.FirstOrDefault(a => a.GetProperty<NameProperty>("Tag").ToString() == tag);
+                    if (actor != null)
+                    {
+                        var behav = actor.GetProperty<ObjectProperty>("m_oBehaviour");
+                        if (behav != null)
+                        {
+                            var set = pcc.getUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
+                            if (set != null)
+                            {
+                                var strref = pcc.getUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
+                                if (strref != null)
+                                {
+                                    return strref.Value;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // ME2/ME3 need to load non-LOC file.  Or parse a JSON.
+
+                return 0;
+            }
+
+
             public List<int> GetStartingList()
             {
                 List<int> startList = new List<int>();
@@ -225,18 +257,23 @@ namespace ME3Explorer.Dialogue_Editor
             /// </summary>
             public int FaceFX_Female { get; set; }
 
+            public int StrRefID { get; set; }
+            public string FriendlyName { get; set; }
+
             public SpeakerExtended(int SpeakerID, string SpeakerName)
             {
                 this.SpeakerID = SpeakerID;
                 this.SpeakerName = SpeakerName;
             }
 
-            public SpeakerExtended(int SpeakerID, string SpeakerName, int FaceFX_Male, int FaceFX_Female)
+            public SpeakerExtended(int SpeakerID, string SpeakerName, int FaceFX_Male, int FaceFX_Female, int StrRefID, string FriendlyName)
             {
                 this.SpeakerID = SpeakerID;
                 this.SpeakerName = SpeakerName;
                 this.FaceFX_Male = FaceFX_Male;
                 this.FaceFX_Female = FaceFX_Female;
+                this.StrRefID = StrRefID;
+                this.FriendlyName = FriendlyName;
             }
         }
 
