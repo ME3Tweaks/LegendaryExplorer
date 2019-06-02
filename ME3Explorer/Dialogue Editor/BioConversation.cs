@@ -14,9 +14,9 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
-
 using System.Runtime.InteropServices;
 using ME1Explorer;
+using System.ComponentModel;
 
 namespace ME3Explorer.Dialogue_Editor
 {
@@ -50,6 +50,10 @@ namespace ME3Explorer.Dialogue_Editor
             /// Sequence Reference UIndex
             /// </summary>
             public int Sequence { get; set; }
+            /// <summary>
+            /// NonSpkrFaceFX Reference UIndex
+            /// </summary>
+            public int NonSpkrFFX { get; set; }
 
             public ConversationExtended(IExportEntry export, string ConvName, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList)
             {
@@ -60,7 +64,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.ReplyList = ReplyList;
             }
 
-            public ConversationExtended(IExportEntry export, string ConvName, bool bParsed, bool bFirstParsed, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, int WwiseBank, int Sequence)
+            public ConversationExtended(IExportEntry export, string ConvName, bool bParsed, bool bFirstParsed, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, int WwiseBank, int Sequence, int NonSpkrFFX)
             {
                 this.export = export;
                 this.ConvName = ConvName;
@@ -71,6 +75,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.ReplyList = ReplyList;
                 this.WwiseBank = WwiseBank;
                 this.Sequence = Sequence;
+                this.NonSpkrFFX = NonSpkrFFX;
             }
 
             public void ParseSpeakers()
@@ -143,6 +148,25 @@ namespace ME3Explorer.Dialogue_Editor
                 return 0;
             }
             /// <summary>
+            /// Returns the Uindex of FaceFX
+            /// </summary>
+            public int ParseNSFFX()
+            {
+                string propname = "m_pNonSpeakerFaceFXSet";
+                if (export.FileRef.Game == MEGame.ME1)
+                {
+                    propname = "m_pConvFaceFXSet";
+                }
+
+                var seq = export.GetProperty<ObjectProperty>(propname);
+                if (seq != null)
+                {
+                    return seq.Value;
+                }
+
+                return 0;
+            }
+            /// <summary>
             /// Returns the Uindex of WwiseBank
             /// </summary>
             public int ParseWwiseBank()
@@ -150,39 +174,42 @@ namespace ME3Explorer.Dialogue_Editor
                 var Pcc = export.FileRef;
                 if (Pcc.Game != MEGame.ME1)
                 {
-                    var ffxo = ParseFaceFX(-1, true); //find owner animset
-                    if (ffxo > 0)
+                    try
                     {
+                        var ffxo = ParseFaceFX(-1, true); //find owner animset
                         var wwevents = Pcc.getUExport(ffxo).GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull a wwiseevent array
-                        if (wwevents != null)
+                        if(wwevents == null)
                         {
-                            if (Pcc.Game == MEGame.ME3)
+                            ffxo = ParseFaceFX(-2, true); //find player as alternative
+                            wwevents = Pcc.getUExport(ffxo).GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+                        }
+                        if (Pcc.Game == MEGame.ME3)
+                        {
+                            StructProperty r = Pcc.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
+                            var bank = r.GetProp<ObjectProperty>("Bank");
+                            return bank.Value;
+                        }
+                        else //Game is ME2.  Wwisebank ref in Binary.
+                        {
+                            var data = Pcc.getUExport(wwevents[0].Value).getBinaryData();
+                            int binarypos = 4;
+                            int count = BitConverter.ToInt32(data, binarypos);
+                            if (count > 0)
                             {
-                                StructProperty r = Pcc.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
-                                if (r != null)
-                                {
-                                    var bank = r.GetProp<ObjectProperty>("Bank");
-                                    return bank.Value;
-                                }
-                            }
-                            else //Game is ME2.  Wwisebank ref in Binary.
-                            {
-                                var data = Pcc.getUExport(wwevents[0].Value).getBinaryData();
-                                int binarypos = 4;
-                                int count = BitConverter.ToInt32(data, binarypos);
-                                if (count > 0)
+                                binarypos += 4;
+                                int bnkcount = BitConverter.ToInt32(data, binarypos);
+                                if (bnkcount > 0)
                                 {
                                     binarypos += 4;
-                                    int bnkcount = BitConverter.ToInt32(data, binarypos);
-                                    if (bnkcount > 0)
-                                    {
-                                        binarypos += 4;
-                                        int bank = BitConverter.ToInt32(data, binarypos);
-                                        return bank;
-                                    }
+                                    int bank = BitConverter.ToInt32(data, binarypos);
+                                    return bank;
                                 }
                             }
                         }
+                    }
+                    catch
+                    {
+                        return 0;
                     }
                 }
 
@@ -192,26 +219,24 @@ namespace ME3Explorer.Dialogue_Editor
             public int ParseActorsNames(string tag)
             {
                 var pcc = export.FileRef;
-                
-                if(pcc.Game == MEGame.ME1)
+
+                if (pcc.Game == MEGame.ME1)
                 {
-                    var actors = pcc.Exports.Where(xp => xp.ClassName == "BioPawn");
-                    IExportEntry actor = actors.FirstOrDefault(a => a.GetProperty<NameProperty>("Tag").ToString() == tag);
-                    if (actor != null)
+                    try
                     {
-                        var behav = actor.GetProperty<ObjectProperty>("m_oBehaviour");
-                        if (behav != null)
+                        var actors = pcc.Exports.Where(xp => xp.ClassName == "BioPawn");
+                        IExportEntry actor = actors.FirstOrDefault(a => a.GetProperty<NameProperty>("Tag").ToString() == tag);
+                        var behav = actor.GetProperty<ObjectProperty>("m_oBehavior");
+                        var set = pcc.getUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
+                        var strrefprop = pcc.getUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
+                        if (strrefprop != null)
                         {
-                            var set = pcc.getUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
-                            if (set != null)
-                            {
-                                var strref = pcc.getUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
-                                if (strref != null)
-                                {
-                                    return strref.Value;
-                                }
-                            }
+                            return strrefprop.Value;
                         }
+                    }
+                    catch
+                    {
+                        return -2;
                     }
                 }
 
@@ -225,13 +250,13 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 List<int> startList = new List<int>();
                 var prop = export.GetProperty<ArrayProperty<ObjectProperty>>("m_StartingList"); //ME1/ME2/ME3
-                if(prop != null)
+                if (prop != null)
                 {
-                    foreach(var sl in prop)
+                    foreach (var sl in prop)
                     {
                         startList.Add(sl.Value);
                     }
-                    
+
                 }
                 return startList;
             }
@@ -241,8 +266,10 @@ namespace ME3Explorer.Dialogue_Editor
         #endregion Convo
 
 
-        public class SpeakerExtended : NotifyPropertyChangedBase
+
+        public class SpeakerExtended : INotifyPropertyChanged
         {
+
 
             public int SpeakerID { get; set; }
 
@@ -275,8 +302,13 @@ namespace ME3Explorer.Dialogue_Editor
                 this.StrRefID = StrRefID;
                 this.FriendlyName = FriendlyName;
             }
-        }
 
+            public event PropertyChangedEventHandler PropertyChanged;
+            protected void OnPropertyChanged(string name)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            }
+        }
 
         public class DialogueNodeExtended : NotifyPropertyChangedBase
         {
