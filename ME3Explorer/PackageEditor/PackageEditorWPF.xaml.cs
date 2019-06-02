@@ -392,8 +392,7 @@ namespace ME3Explorer
             p.loadInterpData(export.Index);
         }
 
-        private bool CanOpenInInterpViewer()
-            => TryGetSelectedExport(out IExportEntry export) && export.FileRef.Game == MEGame.ME3 && export.ClassName == "InterpData" && !export.ObjectName.Contains("Default__");
+        private bool CanOpenInInterpViewer() => TryGetSelectedExport(out IExportEntry export) && export.FileRef.Game == MEGame.ME3 && export.ClassName == "InterpData" && !export.IsDefaultObject;
 
         private void SetSelectedAsFilenamePackage()
         {

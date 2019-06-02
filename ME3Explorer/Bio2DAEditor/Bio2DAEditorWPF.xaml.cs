@@ -53,7 +53,7 @@ namespace ME3Explorer
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            return !exportEntry.ObjectName.Contains("Default__") && exportEntry.ObjectName != "Default2DA" && (exportEntry.ClassName == "Bio2DA" || exportEntry.ClassName == "Bio2DANumberedRows");
+            return !exportEntry.IsDefaultObject && exportEntry.ObjectName != "Default2DA" && (exportEntry.ClassName == "Bio2DA" || exportEntry.ClassName == "Bio2DANumberedRows");
         }
 
         public override void LoadExport(IExportEntry exportEntry)

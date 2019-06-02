@@ -7,6 +7,7 @@ using System.Linq;
 using Gibbed.IO;
 using ME3Explorer.Unreal;
 using UsefulThings.WPF;
+using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
@@ -23,7 +24,9 @@ namespace ME3Explorer.Packages
             OriginalDataSize = 0;
         }
 
-        public bool HasStack => ObjectFlags.HasFlag(UnrealFlags.EObjectFlags.HasStack);
+        public bool HasStack => ObjectFlags.HasFlag(EObjectFlags.HasStack);
+
+        public bool IsDefaultObject => ObjectFlags.HasFlag(EObjectFlags.ClassDefaultObject);
 
         /// <summary>
         /// NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
@@ -138,9 +141,9 @@ namespace ME3Explorer.Packages
             //}
         }
 
-        public UnrealFlags.EObjectFlags ObjectFlags
+        public EObjectFlags ObjectFlags
         {
-            get => (UnrealFlags.EObjectFlags)BitConverter.ToUInt64(Header, 24);
+            get => (EObjectFlags)BitConverter.ToUInt64(Header, 24);
             set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes((ulong)value), 0, Header, 24, sizeof(ulong));
@@ -428,7 +431,7 @@ namespace ME3Explorer.Packages
             MemoryStream stream = new MemoryStream(_data, false);
             stream.Seek(start, SeekOrigin.Current);
             IEntry parsingClass = this;
-            if (ObjectName.StartsWith("Default__"))
+            if (IsDefaultObject)
             {
                 parsingClass = FileRef.getEntry(idxClass); //class we are defaults of
             }
@@ -497,7 +500,7 @@ namespace ME3Explorer.Packages
                 return 30;
             }
 
-            //if (!ObjectName.StartsWith("Default__"))
+            //if (!IsDefaultObject)
             //{
             //    switch (ClassName)
             //    {

@@ -179,7 +179,7 @@ namespace ME3Explorer
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            return exportEntry.HasStack || (ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"));
+            return exportEntry.HasStack || (ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.IsDefaultObject);
         }
 
         public override void PopOut()
