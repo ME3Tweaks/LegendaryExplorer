@@ -113,11 +113,6 @@ namespace ME3Explorer.Packages
         {
             if (!packagesInTools.Contains(package))
             {
-                if (package.Game == MEGame.ME1)
-                {
-                    ME1Explorer.ME1TalkFiles.LoadLocalTlkData(package);
-                }
-
                 packagesInTools.Add(package);
                 package.noLongerOpenInTools += Package_noLongerOpenInTools;
             }
