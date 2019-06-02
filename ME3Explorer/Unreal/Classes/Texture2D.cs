@@ -11,7 +11,6 @@ using ME3Explorer.Packages;
 using Gibbed.IO;
 using AmaroK86.ImageFormat;
 using AmaroK86.MassEffect3.ZlibBlock;
-using KFreonLib.MEDirectories;
 using SharpDX;
 using SharpDX.Direct3D11;
 
@@ -203,11 +202,10 @@ namespace ME3Explorer.Unreal.Classes
             if (!arcname.EndsWith(".tfc"))
                 arcname += ".tfc";
 
-            List<string> sortedDLC = KFreonLib.Misc.Methods.GetInstalledDLC(ME3Directory.BIOGamePath + "DLC\\", true);
-            sortedDLC.Add(ME3Directory.BIOGamePath.TrimEnd('\\')); // include the basegame, but at the end of the list
+            var sortedDLC = ME3LoadedFiles.GetEnabledDLC().OrderBy(ME3LoadedFiles.GetMountPriority).Append(ME3Directory.BIOGamePath);
             foreach (string s in sortedDLC)
             {
-                foreach (string file in Directory.EnumerateFiles(s + "\\CookedPCConsole\\"))
+                foreach (string file in Directory.EnumerateFiles(Path.Combine(s, "CookedPCConsole")))
                 {
                     if (Path.GetFileName(file) == arcname)
                     {

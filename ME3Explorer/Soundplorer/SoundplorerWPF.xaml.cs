@@ -1,6 +1,6 @@
 ﻿using ByteSizeLib;
 using FontAwesome.WPF;
-using KFreonLib.Debugging;
+using ME3Explorer.Debugging;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;

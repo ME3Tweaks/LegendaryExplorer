@@ -26,21 +26,9 @@ namespace ME3Explorer
         public List<string> RowNames { get; set; }
         public List<string> ColumnNames { get; set; }
 
-        public int RowCount
-        {
-            get
-            {
-                return RowNames == null ? 0 : RowNames.Count;
-            }
-        }
+        public int RowCount => RowNames?.Count ?? 0;
 
-        public int ColumnCount
-        {
-            get
-            {
-                return ColumnNames == null ? 0 : ColumnNames.Count;
-            }
-        }
+        public int ColumnCount => ColumnNames?.Count ?? 0;
 
         IExportEntry export;
         public Bio2DA(IExportEntry export)
@@ -53,8 +41,7 @@ namespace ME3Explorer
             RowNames = new List<string>();
             if (export.ClassName == "Bio2DA")
             {
-                string rowLabelsVar = "m_sRowLabel";
-                var properties = export.GetProperties();
+                const string rowLabelsVar = "m_sRowLabel";
                 var props = export.GetProperty<ArrayProperty<NameProperty>>(rowLabelsVar);
                 if (props != null)
                 {
@@ -148,7 +135,7 @@ namespace ME3Explorer
                     byte dataType = data[curroffset];
                     int dataSize = dataType == (byte)Bio2DACell.Bio2DADataType.TYPE_NAME ? 8 : 4;
                     curroffset++;
-                    byte[] celldata = new byte[dataSize];
+                    var celldata = new byte[dataSize];
                     Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
                     Bio2DACell cell = new Bio2DACell(pcc, curroffset, dataType, celldata);
                     this[row, col] = cell;
@@ -361,7 +348,7 @@ namespace ME3Explorer
         public static Bio2DA ReadExcelTo2DA(IExportEntry export, string Filename)
         {
             var Workbook = new XLWorkbook(Filename);
-            IXLWorksheet iWorksheet = null;
+            IXLWorksheet iWorksheet;
             if ( Workbook.Worksheets.Count() > 1)
             {
                 try
@@ -452,11 +439,7 @@ namespace ME3Explorer
 
         public Bio2DACell this[int rowindex, int colindex]
         {
-            get
-            {
-                // get the item for that index.
-                return Cells[rowindex, colindex];
-            }
+            get => Cells[rowindex, colindex];
             set
             {
                 // set the item for this index. value will be of type Bio2DACell.

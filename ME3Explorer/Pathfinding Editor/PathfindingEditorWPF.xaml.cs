@@ -1,5 +1,4 @@
-﻿using KFreonLib.MEDirectories;
-using ME3Explorer.ActorNodes;
+﻿using ME3Explorer.ActorNodes;
 using ME3Explorer.Packages;
 using ME3Explorer.PathfindingNodes;
 using ME3Explorer.Sequence_Editor;

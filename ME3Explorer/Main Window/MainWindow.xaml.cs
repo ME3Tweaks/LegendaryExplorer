@@ -11,7 +11,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Threading.Tasks;
 using FontAwesome.WPF;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using Microsoft.Win32;
 using Newtonsoft.Json;

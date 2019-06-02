@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Pathfinding_Editor;
@@ -69,19 +68,6 @@ namespace ME3Explorer
                 tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
                 description = "AutoTOC WPF is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
             });
-            set.Add(new Tool
-            {
-                name = "Mod Maker",
-                type = typeof(ModMaker),
-                icon = Application.Current.FindResource("iconModMaker") as ImageSource,
-                open = () =>
-                {
-                    (new ModMaker()).Show();
-                },
-                tags = new List<string> { "utility", ".mod", "mod", "mesh" },
-                subCategory = "Mod Packagers",
-                description = "MOD MAKER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nMod Maker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources."
-            });
 #if DEBUG
             set.Add(new Tool
             {
@@ -111,19 +97,6 @@ namespace ME3Explorer
                 description = "File Hex Analyzer is a package hex viewer that shows references in the package hex. It also works with non-package files, but won't show any references, obviously."
             });
 #endif
-            set.Add(new Tool
-            {
-                name = "TPF Tools",
-                type = typeof(KFreonTPFTools3),
-                icon = Application.Current.FindResource("iconTPFTools") as ImageSource,
-                open = () =>
-                {
-                    (new KFreonTPFTools3()).Show();
-                },
-                tags = new List<string> { "utility", "texture", "tpf", "dds", "bmp", "jpg", "png" },
-                subCategory = "Mod Packagers",
-                description = "TPF TOOLS IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nTPF Tools allows for permanent insertion of textures into game files. TPF tools can also be used by modders to package textures into TPFs for distribution.\n\nThis tool has been mostly superceded by Mass Effect Modder (MEM)."
-            });
             #endregion
 
             #region Utilities
@@ -189,7 +162,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Hex Converter",
-                //type = typeof(HexConverter.Hexconverter),
+                type = typeof(HexConverter.MainWindow),
                 icon = Application.Current.FindResource("iconHexConverter") as ImageSource,
                 open = () =>
                 {
@@ -360,14 +333,6 @@ namespace ME3Explorer
             //});
             set.Add(new Tool
             {
-                name = "Binary Interpreter",
-                type = typeof(BinaryInterpreterHost),
-                icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
-                tags = new List<string>(),
-                subCategory = other,
-            });
-            set.Add(new Tool
-            {
                 name = "Conditionals Editor",
                 type = typeof(Conditionals),
                 icon = Application.Current.FindResource("iconConditionalsEditor") as ImageSource,
@@ -463,14 +428,6 @@ namespace ME3Explorer
                 subCategory = "Scene Shop",
                 description = "FaceFXAnimSetEditor is the original tool for manipulating FaceFXAnimsets. It will soon be completely replaced by the more complete FaceFX Editor.",
             });
-            set.Add(new Tool
-            {
-                name = "Interpreter",
-                type = typeof(InterpreterHost),
-                icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
-                tags = new List<string>(),
-                subCategory = other,
-            });
             //Benji's tool. Uncomment when we have more progress.
             /*set.Add(new Tool
             {
@@ -524,20 +481,6 @@ namespace ME3Explorer
                 tags = new List<string> { "developer", "dialogue", "subtitle", "text", "string", "localize", "language" },
                 subCategory = "Core",
                 description = "TLK Manager WPF manages loaded TLK files that are used to display string data in editor tools. You can also use it to extract and recompile TLK files."
-            });
-            set.Add(new Tool
-            {
-                name = "Package Editor (Old)",
-                type = typeof(PackageEditor),
-                icon = Application.Current.FindResource("iconPackageEditorClassic") as ImageSource,
-                open = () =>
-                {
-                    PackageEditor pck = new PackageEditor();
-                    pck.Show();
-                },
-                tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
-                subCategory = "Core",
-                description = "Package Editor Classic is a tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited.\n\nPackage Editor Classic has been deprecated and is scheduled for removal in the next release."
             });
             set.Add(new Tool
             {
@@ -620,20 +563,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Texplorer",
-                type = typeof(Texplorer2),
-                icon = Application.Current.FindResource("iconTexplorer") as ImageSource,
-                open = () =>
-                {
-                    (new Texplorer2()).Show();
-                },
-                tags = new List<string> { "developer", "texture", "tfc", "scan", "tree" },
-                subCategory = "Meshes + Textures",
-                description = "TEXPLORER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nTexplorer is a texturing utility that allows users to browse and install textures for all 3 Mass Effect trilogy games. It has been superceded by Mass Effect Modder (MEM) in most regards."
-            });
-
-            set.Add(new Tool
-            {
                 name = "WwiseBank Editor",
                 type = typeof(WwiseBankEditor.WwiseEditor),
                 icon = Application.Current.FindResource("iconWwiseBankEditor") as ImageSource,
@@ -644,23 +573,6 @@ namespace ME3Explorer
                 tags = new List<string> { "developer", "dialogue", "text", "line" },
                 subCategory = "Scene Shop",
                 description = "Wwisebank Editor edits ME3 Wwisebank objects, which contain data references to specific sets of Wwiseevents and Wwisestreams in the PCC. \n\nEditing “the bank” is often necessary when changing game music or when adding new dialogue.",
-            });
-            set.Add(new Tool
-            {
-                name = "UDK Explorer",
-                type = typeof(UDKExplorer.MainWindow),
-                icon = Application.Current.FindResource("iconUDKExplorer") as ImageSource,
-                open = () =>
-                {
-                    string loc = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                    if (File.Exists(loc + "\\UDKExplorer.exe"))
-                    {
-                        Process.Start(loc + "\\UDKExplorer.exe");
-                    }
-                },
-                tags = new List<string> { "developer" },
-                subCategory = other,
-                description = "Edits .udk and .upk files created by the UDK. This tool is deprecated and no longer supported."
             });
             #endregion
 

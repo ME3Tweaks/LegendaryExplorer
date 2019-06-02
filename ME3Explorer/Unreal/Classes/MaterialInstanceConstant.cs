@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using AmaroK86.ImageFormat;
 using System.Drawing;

@@ -7,6 +7,7 @@ using Gibbed.IO;
 using ME3Explorer.Unreal;
 using System.Windows;
 using System.Diagnostics;
+using StreamHelpers;
 
 namespace ME3Explorer.Packages
 {
@@ -184,7 +185,7 @@ namespace ME3Explorer.Packages
         }
 
         /// <summary>
-        ///     save PCC to same file by reconstruction if possible, append if not
+        ///     save PCC to same file by reconstruction
         /// </summary>
         public void save()
         {
@@ -192,26 +193,10 @@ namespace ME3Explorer.Packages
         }
 
         /// <summary>
-        ///     save PCC by reconstruction if possible, append if not
+        ///     save PCC by reconstruction
         /// </summary>
         /// <param name="path">full path + file name.</param>
         public void save(string path)
-        {
-            if (CanReconstruct)
-            {
-                saveByReconstructing(path);
-            }
-            else
-            {
-                appendSave(path);
-            }
-        }
-
-        /// <summary>
-        ///     save PCCObject to file by reconstruction from data
-        /// </summary>
-        /// <param name="path">full path + file name.</param>
-        public void saveByReconstructing(string path)
         {
             saveByReconstructing(path, false);
         }
@@ -260,10 +245,11 @@ namespace ME3Explorer.Packages
                 //export data
                 foreach (IExportEntry e in exports)
                 {
+                    UpdateOffsets(e, (int)m.Position);
+
                     e.DataOffset = (int)m.Position;
                     e.DataSize = e.Data.Length;
 
-                    UpdateOffsets(e);
 
                     m.WriteBytes(e.Data);
                     //update size and offset in already-written header
@@ -294,124 +280,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        /// <summary>
-        /// This method is an alternate way of saving PCCs
-        /// Instead of reconstructing the PCC from the data taken, it instead copies across the existing
-        /// data, appends the name list and import list, appends changed and new exports, and then appends the export list.
-        /// Changed exports with the same datasize or smaller are updaed in place.
-        /// </summary>
-        /// <param name="newFileName">The filename to write to</param>
-        private void appendSave(string newFileName)
-        {
-            IEnumerable<IExportEntry> replaceExports;
-            IEnumerable<IExportEntry> appendExports;
-
-            int max;
-            if (IsAppend)
-            {
-                replaceExports = exports.Where(export => export.DataChanged && export.DataOffset < NameOffset && export.DataSize <= export.OriginalDataSize);
-                appendExports = exports.Where(export => export.DataOffset > NameOffset || (export.DataChanged && export.DataSize > export.OriginalDataSize));
-                var exportsBeforeNameTable = exports.Where(exp => exp.DataOffset < NameOffset);
-                if (exportsBeforeNameTable.Any())
-                {
-                    max = exportsBeforeNameTable.Max(e => e.DataOffset);
-                }
-                else
-                {
-                    //doesn't seem to be actual append... seems to be some sort of bug with mem/me3explorer mixing, or maybe just me3exp, where sequence = 0 lenght
-                    max = exports.Max(maxExport => maxExport.DataOffset);
-                }
-            }
-            else
-            {
-                IEnumerable<IExportEntry> changedExports;
-                changedExports = exports.Where(export => export.DataChanged);
-                replaceExports = changedExports.Where(export => export.DataSize <= export.OriginalDataSize);
-                appendExports = changedExports.Except(replaceExports);
-                max = exports.Max(maxExport => maxExport.DataOffset);
-            }
-
-            IExportEntry lastExport = exports.Find(export => export.DataOffset == max);
-            int lastDataOffset = lastExport.DataOffset + lastExport.DataSize;
-
-            byte[] oldPCC = new byte[lastDataOffset];
-            if (IsCompressed)
-            {
-                //Aquadran: Code to decompress package on disk.
-                oldPCC = CompressionHelper.Decompress(FileName).Take(lastDataOffset).ToArray();
-                IsCompressed = false;
-            }
-            else
-            {
-                using (FileStream oldPccStream = new FileStream(this.FileName, FileMode.Open))
-                {
-                    //Read the original data up to the last export
-                    oldPccStream.Read(oldPCC, 0, lastDataOffset);
-                }
-            }
-            //Start writing the new file
-            using (FileStream newPCCStream = new FileStream(newFileName, FileMode.Create))
-            {
-                newPCCStream.Seek(0, SeekOrigin.Begin);
-                //Write the original file up til the last original export (note that this leaves in all the original exports)
-                newPCCStream.Write(oldPCC, 0, lastDataOffset);
-
-                //write the in-place export updates
-                foreach (IExportEntry export in replaceExports)
-                {
-                    newPCCStream.Seek(export.DataOffset, SeekOrigin.Begin);
-                    export.DataSize = export.Data.Length;
-                    newPCCStream.WriteBytes(export.Data);
-                }
-
-                newPCCStream.Seek(lastDataOffset, SeekOrigin.Begin);
-                //Set the new nameoffset and namecounts
-                NameOffset = (int)newPCCStream.Position;
-                NameCount = names.Count;
-                //Write out the namelist
-                foreach (string name in names)
-                {
-                    newPCCStream.WriteValueS32(-(name.Length + 1));
-                    newPCCStream.WriteString(name + "\0", (uint)(name.Length + 1) * 2, Encoding.Unicode);
-                }
-
-                //Write the import list
-                ImportOffset = (int)newPCCStream.Position;
-                ImportCount = imports.Count;
-                foreach (ImportEntry import in imports)
-                {
-                    newPCCStream.WriteBytes(import.Header);
-                }
-
-                //Append the new data
-                foreach (IExportEntry export in appendExports)
-                {
-                    export.DataOffset = (int)newPCCStream.Position;
-                    export.DataSize = export.Data.Length;
-                    UpdateOffsets(export);
-
-                    newPCCStream.WriteBytes(export.Data);
-                }
-
-                //Write the export list
-                ExportOffset = (int)newPCCStream.Position;
-                ExportCount = exports.Count;
-                foreach (ME3ExportEntry export in exports)
-                {
-                    newPCCStream.WriteBytes(export.Header);
-                }
-                Generations0ExportCount = ExportCount;
-                Generations0NameCount = NameCount;
-                IsAppend = true;
-
-                //write the updated header
-                newPCCStream.Seek(0, SeekOrigin.Begin);
-                newPCCStream.WriteBytes(header);
-            }
-            AfterSave();
-        }
-
-        private static void UpdateOffsets(IExportEntry export)
+        private static void UpdateOffsets(IExportEntry export, int newDataOffset)
         {
             if (export.ObjectName.StartsWith("Default__"))
             {
@@ -421,20 +290,20 @@ namespace ME3Explorer.Packages
             if ((export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null) || export.ClassName == "WwiseBank")
             {
                 byte[] binData = export.getBinaryData();
-                binData.OverwriteRange(12, BitConverter.GetBytes(export.DataOffset + export.propsEnd() + 16));
+                binData.OverwriteRange(12, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 16));
                 export.setBinaryData(binData);
             }
             //update offsets for pcc-stored movies in texturemovies
             if (export.ClassName == "TextureMovie" && export.GetProperty<NameProperty>("TextureFileCacheName") == null)
             {
                 byte[] binData = export.getBinaryData();
-                binData.OverwriteRange(12, BitConverter.GetBytes(export.DataOffset + export.propsEnd() + 16));
+                binData.OverwriteRange(12, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 16));
                 export.setBinaryData(binData);
             }
             //update offsets for pcc-stored mips in Textures
             else if (export.ClassName == "Texture2D" || export.ClassName == "LightMapTexture2D" || export.ClassName == "TextureFlipBook")
             {
-                int baseOffset = export.DataOffset + export.propsEnd();
+                int baseOffset = newDataOffset + export.propsEnd();
                 MemoryStream binData = new MemoryStream(export.getBinaryData());
                 for (int i = binData.ReadValueS32(); i > 0 && binData.Position < binData.Length; i--)
                 {
@@ -451,6 +320,56 @@ namespace ME3Explorer.Packages
                     }
                 }
                 export.setBinaryData(binData.ToArray());
+            }
+            else if (export.ClassName == "ShaderCache")
+            {
+                int oldDataOffset = export.DataOffset;
+
+                MemoryStream binData = new MemoryStream(export.Data);
+                binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
+
+                int nameList1Count = binData.ReadInt32();
+                binData.Seek(nameList1Count * 12, SeekOrigin.Current);
+
+                int namelist2Count = binData.ReadInt32();//namelist2
+                binData.Seek(namelist2Count * 12, SeekOrigin.Current);
+
+                int shaderCount = binData.ReadInt32();
+                for (int i = 0; i < shaderCount; i++)
+                {
+                    binData.Seek(24, SeekOrigin.Current);
+                    int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
+                    binData.Seek(-4, SeekOrigin.Current);
+                    binData.WriteInt32(nextShaderOffset + newDataOffset);
+                    binData.Seek(nextShaderOffset, SeekOrigin.Begin);
+                }
+
+                int vertexFactoryMapCount = binData.ReadInt32();
+                binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
+
+                int materialShaderMapCount = binData.ReadInt32();
+                for (int i = 0; i < materialShaderMapCount; i++)
+                {
+                    binData.Seek(16, SeekOrigin.Current);
+
+                    int switchParamCount = binData.ReadInt32();
+                    binData.Seek(switchParamCount * 32, SeekOrigin.Current);
+
+                    int componentMaskParamCount = binData.ReadInt32();
+                    binData.Seek(componentMaskParamCount * 44, SeekOrigin.Current);
+
+                    int normalParams = binData.ReadInt32();
+                    binData.Seek(normalParams * 29, SeekOrigin.Current);
+
+                    binData.Seek(8, SeekOrigin.Current);
+
+                    int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
+                    binData.Seek(-4, SeekOrigin.Current);
+                    binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
+                    binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
+                }
+
+                export.Data = binData.ToArray();
             }
         }
     }

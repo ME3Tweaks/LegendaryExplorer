@@ -17,50 +17,40 @@ namespace MassEffect3ModManagerCmdLine
 {
     public class TreeNode
     {
-        private readonly TreeNodeList _children = new TreeNodeList();
-        public Interpreter.NodeType Tag { get; set; }
+        public BinaryInterpreterWPF.NodeType Tag { get; set; }
         public string Text { get; set; }
         public string Name { get; set; }
 
         public TreeNode(string text)
         {
             Text = text;
-            _children.containingnode = this;
+            Children.containingnode = this;
         }
 
         public TreeNode()
         {
-            _children.containingnode = this;
+            Children.containingnode = this;
         }
 
-        public TreeNode this[int i]
-        {
-            get { return _children[i]; }
-        }
+        public TreeNode this[int i] => Children[i];
 
         public TreeNode Parent { get; set; }
 
-        public TreeNodeList Children
-        {
-            get { return _children; }
-        }
+        public TreeNodeList Children { get; } = new TreeNodeList();
 
-        public TreeNodeList Nodes
-        {
-            get { return _children; }
-        }
+        public TreeNodeList Nodes => Children;
 
         public TreeNode Add(string value)
         {
             var node = new TreeNode(value) { Parent = this };
-            _children.Add(node);
+            Children.Add(node);
             return node;
         }
 
         public TreeNode Add(TreeNode node)
         {
             node.Parent = this;
-            _children.Add(node);
+            Children.Add(node);
             return node;
         }
 
@@ -71,20 +61,14 @@ namespace MassEffect3ModManagerCmdLine
 
         public bool RemoveChild(TreeNode node)
         {
-            return _children.Remove(node);
+            return Children.Remove(node);
         }
 
-        public TreeNode LastNode
-        {
-            get
-            {
-                return _children.Last();
-            }
-        }
+        public TreeNode LastNode => Children.Last();
 
         public void Remove()
         {
-            Parent._children.Remove(this);
+            Parent.Children.Remove(this);
         }
 
         public void PrintPretty(string indent, StreamWriter str, bool last)
@@ -102,27 +86,26 @@ namespace MassEffect3ModManagerCmdLine
                 indent += "| ";
             }
             str.Write(Text);
-            if (Children.Count > 1000 && Tag == Interpreter.NodeType.ArrayProperty)
+            if (Children.Count > 1000 && Tag == BinaryInterpreterWPF.NodeType.ArrayProperty)
             {
-                str.Write(" > 1000, (" + Children.Count + ") suppressed.");
+                str.Write($" > 1000, ({Children.Count}) suppressed.");
                 return;
             }
 
-            if (Tag == Interpreter.NodeType.ArrayProperty && (Text.Contains("LookupTable") || Text.Contains("CompressedTrackOffsets")))
+            if (Tag == BinaryInterpreterWPF.NodeType.ArrayProperty && (Text.Contains("LookupTable") || Text.Contains("CompressedTrackOffsets")))
             {
                 str.Write(" - suppressed by data dumper.");
                 return;
             }
             for (int i = 0; i < Children.Count; i++)
             {
-                if (Children[i].Tag == Interpreter.NodeType.None)
+                if (Children[i].Tag == BinaryInterpreterWPF.NodeType.None)
                 {
                     continue;
                 }
                 str.Write("\n");
-                Children[i].PrintPretty(indent, str, i == Children.Count - 1 || (i == Children.Count - 2 && Children[Children.Count - 1].Tag == Interpreter.NodeType.None));
+                Children[i].PrintPretty(indent, str, i == Children.Count - 1 || (i == Children.Count - 2 && Children[Children.Count - 1].Tag == BinaryInterpreterWPF.NodeType.None));
             }
-            return;
         }
     }
 }

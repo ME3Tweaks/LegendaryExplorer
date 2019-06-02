@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
 using ME3Explorer.Packages;
 using ME2Explorer.Unreal;
@@ -979,11 +978,11 @@ namespace ME3Explorer.Unreal
             using (var fileStream = new FileStream(Path.Combine(App.ExecFolder, "ME3Classes.cs"), FileMode.Create))
             using (var writer = new CodeWriter(fileStream))
             {
-                writer.WriteLine("using Unreal.ME3Enums;");
-                writer.WriteLine("using Unreal.ME3Structs;");
+                writer.WriteLine("using ME3Explorer.Unreal.ME3Enums;");
+                writer.WriteLine("using ME3Explorer.Unreal.ME3Structs;");
                 writer.WriteLine("using NameReference = ME3Explorer.Unreal.NameReference;");
                 writer.WriteLine();
-                writer.WriteBlock("namespace Unreal.ME3Classes", () =>
+                writer.WriteBlock("namespace ME3Explorer.Unreal.ME3Classes", () =>
                 {
                     writer.WriteBlock("public class Level", () =>
                     {
@@ -1020,11 +1019,11 @@ namespace ME3Explorer.Unreal
             using (var fileStream = new FileStream(Path.Combine(App.ExecFolder, "ME3Structs.cs"), FileMode.Create))
             using (var writer = new CodeWriter(fileStream))
             {
-                writer.WriteLine("using Unreal.ME3Enums;");
-                writer.WriteLine("using Unreal.ME3Classes;");
+                writer.WriteLine("using ME3Explorer.Unreal.ME3Enums;");
+                writer.WriteLine("using ME3Explorer.Unreal.ME3Classes;");
                 writer.WriteLine("using NameReference = ME3Explorer.Unreal.NameReference;");
                 writer.WriteLine();
-                writer.WriteBlock("namespace Unreal.ME3Structs", () =>
+                writer.WriteBlock("namespace ME3Explorer.Unreal.ME3Structs", () =>
                 {
                     foreach ((string structName, ClassInfo info) in Structs)
                     {
@@ -1049,7 +1048,7 @@ namespace ME3Explorer.Unreal
             using (var fileStream = new FileStream(Path.Combine(App.ExecFolder, "ME3Enums.cs"), FileMode.Create))
             using (var writer = new CodeWriter(fileStream))
             {
-                writer.WriteBlock("namespace Unreal.ME3Enums", () =>
+                writer.WriteBlock("namespace ME3Explorer.Unreal.ME3Enums", () =>
                 {
                     foreach ((string enumName, List<NameReference> values) in Enums)
                     {

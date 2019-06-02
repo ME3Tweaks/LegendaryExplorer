@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
 
 namespace ME3Explorer

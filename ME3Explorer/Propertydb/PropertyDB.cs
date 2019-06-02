@@ -9,8 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-using KFreonLib.Debugging;
-using KFreonLib.MEDirectories;
+using ME3Explorer.Debugging;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer.Propertydb

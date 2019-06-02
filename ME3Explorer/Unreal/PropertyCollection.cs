@@ -11,7 +11,6 @@ using System.Collections.ObjectModel;
 using UsefulThings.WPF;
 using System.Collections;
 using System.Diagnostics;
-using KFreonLib.Debugging;
 using System.Collections.Concurrent;
 using System.Reflection;
 using PropertyInfo = ME3Explorer.Packages.PropertyInfo;
@@ -707,7 +706,7 @@ namespace ME3Explorer.Unreal
                                     currentInfo = ME3UnrealObjectInfo.generateClassInfo(parsingEntry as IExportEntry);
                                     break;
                             }
-                            currentInfo.baseClass = (parsingEntry as IExportEntry).ClassParent;
+                            currentInfo.baseClass = ((IExportEntry)parsingEntry).ClassParent;
                             propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo);
                         }
 

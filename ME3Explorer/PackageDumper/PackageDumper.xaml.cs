@@ -5,7 +5,6 @@
  */
 
 using Gammtek.Conduit.Extensions.IO;
-using KFreonLib.MEDirectories;
 using ME3Explorer;
 using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.Packages;

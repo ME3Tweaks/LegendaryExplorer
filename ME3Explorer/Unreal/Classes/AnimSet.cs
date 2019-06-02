@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
 using SharpDX;
-using KFreonLib.Debugging;
+using ME3Explorer.Debugging;
 
 namespace ME3Explorer.Unreal.Classes
 {

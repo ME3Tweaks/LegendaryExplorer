@@ -1,6 +1,5 @@
 ﻿using ByteSizeLib;
 using GongSolutions.Wpf.DragDrop;
-using KFreonLib.MEDirectories;
 using ME1Explorer.Unreal;
 using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.PackageEditorWPFControls;
@@ -1616,13 +1615,6 @@ namespace ME3Explorer
 
                 //This code can be removed when non-WPF package editor is removed.
                 var forms = System.Windows.Forms.Application.OpenForms;
-                foreach (System.Windows.Forms.Form form in forms)
-                {
-                    if (form is PackageEditor editor) //it will never be "this"
-                    {
-                        editor.RefreshRecent(false, RFiles);
-                    }
-                }
                 foreach (var form in Application.Current.Windows)
                 {
                     if (form is PackageEditorWPF wpf && this != wpf)
@@ -3843,21 +3835,136 @@ namespace ME3Explorer
             d.Show();
         }
 
-        private void ScanShaderCacheForOffsets_Click(object sender, RoutedEventArgs e)
+        private void ScanAllShaderCaches_Click(object sender, RoutedEventArgs e)
         {
-            IExportEntry shaderCache = Pcc.Exports.FirstOrDefault(x => x.ClassName == "ShaderCache");
-            if (shaderCache != null)
+            var filePaths = ME3LoadedFiles.GetEnabledDLC().SelectMany(dlcDir => Directory.EnumerateFiles(Path.Combine(dlcDir, "CookedPCConsole"), "*.pcc"));
+            var interestingExports = new List<string>();
+            foreach (string filePath in filePaths)
             {
-                byte[] data = shaderCache.Data;
-                int offsetStart = shaderCache.DataOffset;
-                int offsetEnd = shaderCache.DataOffset + shaderCache.DataSize - 4; // i don't think anything will reference before
+                ScanShaderCache(filePath);
+                //ScanMaterials(filePath);
+            }
 
-                for (int i = offsetStart; i < offsetEnd; i++)
+            var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
+            listDlg.Show();
+
+            void ScanMaterials(string filePath)
+            {
+                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
-                    int value = BitConverter.ToInt32(data, i - offsetStart);
-                    if (value >= offsetStart && value <= offsetEnd)
+                    var materials = pcc.Exports.Where(exp => exp.ClassName == "Material");
+
+                    foreach (IExportEntry material in materials)
                     {
-                        Debug.WriteLine($"Found embedded offset at 0x{(i - offsetStart):X8} pointing to 0x{value:X8}");
+                        try
+                        {
+                            MemoryStream binData = new MemoryStream(material.Data);
+                            binData.JumpTo(material.propsEnd());
+                            int compileErrrorsCount = binData.ReadInt32();
+                            for (int i = 0; i < compileErrrorsCount; i++)
+                            {
+                                int stringLen = binData.ReadInt32() * -2;
+                                binData.Skip(stringLen);
+                            }
+                            binData.Skip(28);
+                            int textureCount = binData.ReadInt32();
+                            binData.Skip(textureCount * 4);
+                            binData.Skip(20);
+                            int candidate1 = binData.ReadInt32();
+                            int candidate2 = binData.ReadInt32();
+                            if (candidate1 > 1)
+                            {
+                                interestingExports.Add($"{material.UIndex}: {filePath}");
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine(exception);
+                            interestingExports.Add($"{material.UIndex}: {filePath}\n{exception}");
+                        }
+                    }
+                }
+            }
+
+            void ScanShaderCache(string filePath)
+            {
+                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
+                {
+                    IExportEntry shaderCache = pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache");
+                    if (shaderCache == null) return;
+                    int oldDataOffset = shaderCache.DataOffset;
+
+                    try
+                    {
+                        MemoryStream binData = new MemoryStream(shaderCache.Data);
+                        binData.JumpTo(shaderCache.propsEnd() + 1);
+
+                        int nameList1Count = binData.ReadInt32();
+                        binData.Skip(nameList1Count * 12);
+
+                        int namelist2Count = binData.ReadInt32(); //namelist2
+                        binData.Skip(namelist2Count * 12);
+
+                        int shaderCount = binData.ReadInt32();
+                        for (int i = 0; i < shaderCount; i++)
+                        {
+                            binData.Skip(24);
+                            int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
+                            binData.Skip(14);
+                            if (binData.ReadInt32() != 1111577667) //CTAB
+                            {
+                                interestingExports.Add($"{binData.Position - 4}: {filePath}");
+                                return;
+                            }
+
+                            binData.JumpTo(nextShaderOffset);
+                        }
+
+                        int vertexFactoryMapCount = binData.ReadInt32();
+                        binData.Skip(vertexFactoryMapCount * 12);
+
+                        int materialShaderMapCount = binData.ReadInt32();
+                        for (int i = 0; i < materialShaderMapCount; i++)
+                        {
+                            binData.Skip(16);
+
+                            int switchParamCount = binData.ReadInt32();
+                            binData.Skip(switchParamCount * 32);
+
+                            int componentMaskParamCount = binData.ReadInt32();
+                            //if (componentMaskParamCount != 0)
+                            //{
+                            //    interestingExports.Add($"{i}: {filePath}");
+                            //    return;
+                            //}
+
+                            binData.Skip(componentMaskParamCount * 44);
+
+                            int normalParams = binData.ReadInt32();
+                            if (normalParams != 0)
+                            {
+                                interestingExports.Add($"{i}: {filePath}");
+                                return;
+                            }
+
+                            binData.Skip(normalParams * 29);
+
+                            int unrealVersion = binData.ReadInt32();
+                            int licenseeVersion = binData.ReadInt32();
+                            if (unrealVersion != 684 || licenseeVersion != 194)
+                            {
+                                interestingExports.Add($"{binData.Position - 8}: {filePath}");
+                                return;
+                            }
+
+                            int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
+                            binData.JumpTo(nextMaterialShaderMapOffset);
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception);
+                        interestingExports.Add($"{filePath}\n{exception}");
                     }
                 }
             }

@@ -616,6 +616,11 @@ namespace ME3Explorer
                 bytes -= read;
             }
         }
+
+        public static NameReference ReadNameReference(this Stream stream, IMEPackage pcc)
+        {
+            return new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
+        }
     }
 
     public static class ByteArrayExtensions
