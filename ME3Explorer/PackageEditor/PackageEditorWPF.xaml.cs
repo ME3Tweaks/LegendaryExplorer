@@ -3352,7 +3352,7 @@ namespace ME3Explorer
                 EnsurePathExists = true,
                 Title = "Select folder to generate GUID cache on"
             };
-            if (m.ShowDialog() == CommonFileDialogResult.Ok)
+            if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 string dir = m.FileName;
                 string[] files = Directory.GetFiles(dir, "*.pcc");

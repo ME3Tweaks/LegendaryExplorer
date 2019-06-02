@@ -66,7 +66,7 @@ namespace ME3Explorer.AutoTOC
                 Title = "Select DLC CookedPC folder to create Fileindex",
                 InitialDirectory = ME1Directory.DLCPath,
             };
-            if (outputDlg.ShowDialog() == CommonFileDialogResult.Ok)
+            if (outputDlg.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 //Validate
                 if (Path.GetFileName(outputDlg.FileName).Equals("CookedPC", StringComparison.InvariantCultureIgnoreCase))

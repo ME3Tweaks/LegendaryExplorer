@@ -198,7 +198,7 @@ namespace ME3Explorer.TlkManagerNS
                 Title = "Select TLK file to load",
             };
             m.Filters.Add(new CommonFileDialogFilter("Talk files", "*.tlk"));
-            if (m.ShowDialog() == CommonFileDialogResult.Ok)
+            if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 return m.FileName;
             }
@@ -235,7 +235,7 @@ namespace ME3Explorer.TlkManagerNS
                 Title = "Select UPK containing TLK",
             };
             m.Filters.Add(new CommonFileDialogFilter("Unreal Package File (ME1)", "*.upk;*.sfm")); //Maybe include SFM, though IDK if anyone would load an SFM. Maybe if they want to export ME1 TLKs for dialogue? Are the local ones even used?
-            if (m.ShowDialog() == CommonFileDialogResult.Ok)
+            if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 using (ME1Package upk = MEPackageHandler.OpenME1Package(m.FileName))
                 {
