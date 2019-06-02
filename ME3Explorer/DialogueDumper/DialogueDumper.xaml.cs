@@ -898,17 +898,58 @@ namespace ME3Explorer.DialogueDumper
 
                             if (dumper.bDebugOutput)
                             {
+                                string tag = null;
+                                int strref = -1;
                                 if(GameBeingDumped == MEGame.ME1 && className == "BioPawn")
                                 {
-
+                                    var tagprop = exp.GetProperty<NameProperty>("Tag");
+                                    tag = tagprop.ToString();
+                                    var behav = exp.GetProperty<ObjectProperty>("m_oBehavior");
+                                    var set = pcc.getUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
+                                    var strrefprop = pcc.getUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
+                                    if (strrefprop != null)
+                                    {
+                                        strref = strrefprop.Value;
+                                    }
                                 }
-                                else if(GameBeingDumped == MEGame.ME2 && (className == "BioPawn" || className == "TBD"))
+                                else if(GameBeingDumped == MEGame.ME2 && className == "BioPawn")
+                                {
+                                    var tagprop = exp.GetProperty<NameProperty>("Tag");
+                                    tag = tagprop.ToString();
+                                    var type = exp.GetProperty<ObjectProperty>("ActorType");
+                                    var strrefprop = pcc.getUExport(type.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
+                                    if (strrefprop != null)
+                                    {
+                                        strref = strrefprop.Value;
+                                    }
+                                }
+                                else if(className == "SFXStuntActor" || className == "SFXPointOfInterest")
                                 {
 
+                                    var tagprop = exp.GetProperty<NameProperty>("Tag");
+                                    tag = tagprop.Value;
+                                    var modules = exp.GetProperty<ArrayProperty<ObjectProperty>>("Modules").ToList();
+                                    var simplemod = modules.FirstOrDefault(m => exp.FileRef.getUExport(m.Value).ClassName == "SFXSimpleUseModule");
+                                    strref = exp.FileRef.getUExport(simplemod.Value).GetProperty<StringRefProperty>("m_srGameName").Value;
                                 }
-                                else if(GameBeingDumped == MEGame.ME3 && (className == "SFXStuntActor" || className == "SFXPointOfInterest"))
+                                else if (className.StartsWith("SFXPawn_"))
                                 {
+                                    try
+                                    {
+                                        var tagprop = exp.GetProperty<NameProperty>("Tag");
+                                        tag = tagprop.Value;
+                                        strref = exp.GetProperty<StringRefProperty>("PrettyName").Value;
+                                    }
+                                    catch
+                                    {
+                                        //ignore SFXPawns without prettyname don't add to Debug list
+                                    }
+                                }
 
+                                if (tag != null && strref >= 0)
+                                {
+                                    string actorname = GlobalFindStrRefbyID(strref, GameBeingDumped);
+                                    dumper._xlqueue.Add(new List<string> { "Tags", tag, strref.ToString(), actorname });
                                 }
                             }
                         }
