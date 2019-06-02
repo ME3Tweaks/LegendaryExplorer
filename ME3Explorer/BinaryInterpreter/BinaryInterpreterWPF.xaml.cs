@@ -6926,7 +6926,7 @@ namespace ME3Explorer
                 {
                     if (prop.Value > 0)
                     {
-                        smacitems.Add(CurrentLoadedExport.FileRef.getEntry(prop.Value) as IExportEntry);
+                        smacitems.Add(Pcc.getUExport(prop.Value));
                     }
                     else
                     {
@@ -6957,15 +6957,15 @@ namespace ME3Explorer
                     {
                         Tag = NodeType.Unknown
                     };
-                    IExportEntry assossiateddata = smacitems[smcaindex];
+                    IExportEntry associatedData = smacitems[smcaindex];
                     string staticmesh = "";
                     string objtext = "Null - unused data";
-                    if (assossiateddata != null)
+                    if (associatedData != null)
                     {
-                        objtext = $"[Export {assossiateddata.UIndex}] {assossiateddata.ObjectName}_{assossiateddata.indexValue}";
+                        objtext = $"[Export {associatedData.UIndex}] {associatedData.ObjectName}_{associatedData.indexValue}";
 
                         //find associated static mesh value for display.
-                        byte[] smc_data = assossiateddata.Data;
+                        byte[] smc_data = associatedData.Data;
                         int staticmeshstart = 0x4;
                         bool found = false;
                         while (staticmeshstart < smc_data.Length && smc_data.Length - 8 >= staticmeshstart)

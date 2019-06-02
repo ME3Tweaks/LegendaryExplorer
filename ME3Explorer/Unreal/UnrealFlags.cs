@@ -260,6 +260,10 @@ namespace ME3Explorer.Unreal
         [Flags]
         public enum EObjectFlags : ulong
         {
+            InSingularFunc = 0x0000000000000002, // In a singular function.
+            ClassDefaultObject = 0x0000000000000200, // this object is its class's default object
+            IsCrossLevelReferenced = 0x0000000000400000, // This object has been pointed to by a cross-level reference, and therefore requires additional cleanup upon deletion
+            ArchetypeObject = 0x0000000000000400, // this object is a template for another object - treat like a class default object
             Transactional = 0x0000000100000000,   // Object is transactional.
             Unreachable = 0x0000000200000000,	// Object is not reachable on the object graph.
             Public = 0x0000000400000000,	// Object is visible outside its package.
@@ -272,7 +276,6 @@ namespace ME3Explorer.Unreal
             NeedLoad = 0x0000020000000000,   // During load00000000, indicates object needs loading.
             HighlightedName = 0x0000040000000000,	// A hardcoded name which should be syntax-highlighted.
             EliminateObject = 0x0000040000000000,   // NULL out references to this during garbage collecion.
-            InSingularFunc = 0x0000080000000000,	// In a singular function.
             RemappedName = 0x0000080000000000,   // Name is remapped.
             Suppress = 0x0000100000000000,	//warning: Mirrored in UnName.h. Suppressed log name.
             StateChanged = 0x0000100000000000,   // Object did a state change.
@@ -311,7 +314,6 @@ namespace ME3Explorer.Unreal
     "NeedLoad , 0000020000000000,    During load00000000, indicates object needs loading.",
     "HighlightedName , 0000040000000000,	 A hardcoded name which should be syntax-highlighted.",
     "EliminateObject , 0000040000000000,    NULL out references to this during garbage collecion.",
-    "InSingularFunc , 0000080000000000,	 In a singular function.",
     "RemappedName , 0000080000000000,    Name is remapped.",
     "Suppress , 0000100000000000,	warning: Mirrored in UnName.h. Suppressed log name.",
     "StateChanged , 0000100000000000,    Object did a state change.",

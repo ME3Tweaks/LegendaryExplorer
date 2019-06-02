@@ -749,7 +749,7 @@ namespace UDKExplorer.UDK.Classes
                     pos = 0x04;
                 else
                     pos = 0x08;
-                if ((Owner.Exports[n].ObjectFlags & 0x02000000) != 0)
+                if (Owner.Exports[n].HasStack)
                     pos = 0x1A;
                 while (true)
                 {
@@ -785,9 +785,8 @@ namespace UDKExplorer.UDK.Classes
             foreach (string row in UnrealFlags.flagdesc)//0x02000000
             {
                 string[] t = row.Split(',');
-                long l = long.Parse(t[1].Trim(), System.Globalization.NumberStyles.HexNumber);
-                l = l >> 32;
-                if ((l & (long) Owner.Exports[n].ObjectFlags) != 0)
+                ulong l = ulong.Parse(t[1].Trim(), System.Globalization.NumberStyles.HexNumber);
+                if (((ulong)Owner.Exports[n].ObjectFlags & l) != 0 )
                     res.Nodes.Add(t[0].Trim());
             }
             return res;
@@ -805,7 +804,7 @@ namespace UDKExplorer.UDK.Classes
                     pos = 0x04;
                 else
                     pos = 0x08;
-                if ((Owner.Exports[n].ObjectFlags & 0x02000000) != 0)
+                if (Owner.Exports[n].HasStack)
                     pos = 0x1A;
                 while (true)
                 {

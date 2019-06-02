@@ -659,7 +659,7 @@ namespace ME3Explorer.Unreal.Classes
             Loaded = true;
             MyIndex = export.Index;
             Owner = export.FileRef;
-            Flags = (int)(export.ObjectFlags >> 32);
+            Flags = (int)((ulong)export.ObjectFlags >> 32);
             int start = GetPropertyEnd();
             byte[] data = export.Data;
             byte[] buff = new byte[data.Length - start];

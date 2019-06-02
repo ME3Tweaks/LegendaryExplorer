@@ -301,6 +301,11 @@ namespace ME3Explorer
         {
             return src.Where(obj => obj != null);
         }
+
+        public static string StringJoin<T>(this IEnumerable<T> values, string separator)
+        {
+            return string.Join(separator, values);
+        }
     }
 
     public static class DictionaryExtensions

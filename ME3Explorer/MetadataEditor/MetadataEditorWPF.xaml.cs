@@ -161,24 +161,12 @@ namespace ME3Explorer.MetadataEditor
 
                 LoadAllEntriesBindedItems(exportEntry);
 
-                InfoTab_Headersize_TextBox.Text = exportEntry.Header.Length + " bytes";
+                InfoTab_Headersize_TextBox.Text = $"{exportEntry.Header.Length} bytes";
                 InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(exportEntry.Header, HEADER_OFFSET_EXP_IDXOBJECTNAME + 4).ToString();
 
                 var flagsList = Enums.GetValues<EObjectFlags>().Distinct().ToList();
                 //Don't even get me started on how dumb it is that SelectedItems is read only...
-                string selectedFlags = "";
-                foreach (EObjectFlags flag in flagsList)
-                {
-                    bool selected = (exportEntry.ObjectFlags & (ulong)flag) != 0;
-                    if (selected)
-                    {
-                        if (selectedFlags != "")
-                        {
-                            selectedFlags += " ";
-                        }
-                        selectedFlags += flag;
-                    }
-                }
+                string selectedFlags = flagsList.Where(flag => exportEntry.ObjectFlags.HasFlag(flag)).StringJoin(" ");
 
                 InfoTab_Flags_ComboBox.ItemsSource = flagsList;
                 InfoTab_Flags_ComboBox.SelectedValue = selectedFlags;
@@ -571,12 +559,12 @@ namespace ME3Explorer.MetadataEditor
         {
             if (!loadingNewData)
             {
-                EPropertyFlags newFlags = 0U;
+                EObjectFlags newFlags = 0U;
                 foreach (var flag in InfoTab_Flags_ComboBox.Items)
                 {
-                    if (InfoTab_Flags_ComboBox.ItemContainerGenerator.ContainerFromItem(flag) is SelectorItem selectorItem && selectorItem.IsSelected != true)
+                    if (InfoTab_Flags_ComboBox.ItemContainerGenerator.ContainerFromItem(flag) is SelectorItem selectorItem && selectorItem.IsSelected == true)
                     {
-                        newFlags |= (EPropertyFlags)flag;
+                        newFlags |= (EObjectFlags)flag;
                     }
                 }
                 //Debug.WriteLine(newFlags);

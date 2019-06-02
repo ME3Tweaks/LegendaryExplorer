@@ -45,7 +45,7 @@ namespace ME3Explorer.Packages
         string ArchtypeName { get; }
         string ClassParent { get; }
         uint HeaderOffset { get; set; }
-        ulong ObjectFlags { get; set; }
+        UnrealFlags.EObjectFlags ObjectFlags { get; set; }
         int OriginalDataSize { get; }
         bool ReadsFromConfig { get; }
         bool HasStack { get; }

@@ -652,7 +652,7 @@ namespace ME3Explorer
                         Debugger.Break();
                     }
                     //Write trash GUID
-                    exp.ObjectFlags &= (ulong)~EObjectFlags.HasStack;
+                    exp.ObjectFlags &= ~EObjectFlags.HasStack;
                     Guid trashGuid = ToGuid("ME3ExpTrashPackage"); //DO NOT EDIT THIS!!
                     byte[] header = exp.GetHeader();
                     int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
@@ -671,7 +671,7 @@ namespace ME3Explorer
                         Debugger.Break();
                     }
                     exp.idxObjectName = Pcc.FindNameOrAdd("Trash");
-                    exp.ObjectFlags &= (ulong)~EObjectFlags.HasStack;
+                    exp.ObjectFlags &= ~EObjectFlags.HasStack;
 
                     byte[] header = exp.GetHeader();
                     int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
@@ -2470,7 +2470,7 @@ namespace ME3Explorer
             int end = props.endOffset;
 
             MemoryStream res = new MemoryStream();
-            if ((incomingExport.ObjectFlags & (ulong)EObjectFlags.HasStack) != 0)
+            if (incomingExport.HasStack)
             {
                 //ME1, ME2 stack
                 byte[] stackdummy = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
@@ -2609,7 +2609,7 @@ namespace ME3Explorer
             int start = ex.GetPropertyStart();
             int end = props.endOffset;
             MemoryStream res = new MemoryStream();
-            if ((ex.ObjectFlags & (ulong)EObjectFlags.HasStack) != 0)
+            if (ex.HasStack)
             {
                 //ME1, ME2 stack
                 byte[] stackdummy = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D

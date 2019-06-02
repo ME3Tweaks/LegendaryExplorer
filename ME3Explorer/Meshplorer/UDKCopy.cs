@@ -190,7 +190,7 @@ namespace ME3Explorer.Meshplorer
             // Fill out data in newMesh
             newMesh.MyIndex = SelectedObject;
             newMesh.Owner = pcc;
-            newMesh.Flags = (int)(pcc.Exports[SelectedObject].ObjectFlags >> 32); // Keep the flags from the overwritten mesh
+            newMesh.Flags = (int)((ulong)pcc.Exports[SelectedObject].ObjectFlags >> 32); // Keep the flags from the overwritten mesh
             
             // Bounding
             newMesh.Bounding = new SkeletalMesh.BoundingStruct(sourceMesh.Bounding);

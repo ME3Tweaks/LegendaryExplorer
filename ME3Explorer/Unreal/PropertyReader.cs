@@ -407,9 +407,9 @@ namespace ME3Explorer.Unreal
             return v;
         }
 
-        public static int detectStart(IMEPackage pcc, byte[] raw, ulong flags)
+        public static int detectStart(IMEPackage pcc, byte[] raw, UnrealFlags.EObjectFlags flags)
         {
-            if ((flags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+            if ((flags & UnrealFlags.EObjectFlags.HasStack) != 0)
             {
                 if (pcc.Game != MEGame.ME3)
                 {
