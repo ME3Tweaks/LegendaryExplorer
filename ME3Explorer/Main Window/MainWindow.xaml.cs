@@ -58,7 +58,7 @@ namespace ME3Explorer
                 version += " DEBUG";
 #else
                 //Commented out as this is a stable build
-                //version += ""; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
+                version += "NIGHTLY"; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
 #endif
                 return version;
             }
