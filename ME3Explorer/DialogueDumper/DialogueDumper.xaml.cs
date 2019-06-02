@@ -322,6 +322,11 @@ namespace ME3Explorer.DialogueDumper
 
             if(bDebugOutput) //DEBUG
             {
+                var xltags = workbook.Worksheets.Add("Tags");
+                xltags.Cell(1, 1).Value = "ActorTag";
+                xltags.Cell(1, 2).Value = "StrRef";
+                xltags.Cell(1, 3).Value = "FriendlyName";
+
                 var xldebug = workbook.Worksheets.Add("DEBUG");
                 xldebug.Cell(1, 1).Value = "Status";
                 xldebug.Cell(1, 2).Value = "File";
@@ -889,6 +894,22 @@ namespace ME3Explorer.DialogueDumper
                                 List<string> excelout = new List<string> { "ConvoOwners", convo, ownertag, fileName };
                                 dumper._xlqueue.Add(excelout);
 
+                            }
+
+                            if (dumper.bDebugOutput)
+                            {
+                                if(GameBeingDumped == MEGame.ME1 && className == "BioPawn")
+                                {
+
+                                }
+                                else if(GameBeingDumped == MEGame.ME2 && (className == "BioPawn" || className == "TBD"))
+                                {
+
+                                }
+                                else if(GameBeingDumped == MEGame.ME3 && (className == "SFXStuntActor" || className == "SFXPointOfInterest"))
+                                {
+
+                                }
                             }
                         }
                     }
