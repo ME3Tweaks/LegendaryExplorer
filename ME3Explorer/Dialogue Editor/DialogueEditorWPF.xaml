@@ -21,9 +21,9 @@
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
-            <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds."  Tag="PackageEditor" Click="OpenIn_MenuClicked" />
+            <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Command="{Binding OpenInCommand}" CommandParameter="PackageEditor" />
             <MenuItem Header="Open in Interp Viewer" ToolTip="Open this export in Interp Viewer" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
-            <MenuItem Header="Open in Sequence Editor" ToolTip="Open this export in Sequence Editor" Tag="SequenceEditor" Click="OpenIn_MenuClicked" Name="SewEdMenuItem"/>
+            <MenuItem Header="Open in Sequence Editor" ToolTip="Open this export in Sequence Editor" Tag="SequenceEditor" Command="{Binding OpenInCommand}" CommandParameter="SequenceEditor"/>
             <Separator />
             <MenuItem Header="Clone Object" Click="CloneObject_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
@@ -53,28 +53,27 @@
                 <MenuItem Header="_Save"  Command="{Binding SaveCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                 <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S" ToolTip="Save package file to another location" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                 <MenuItem Header="Open in...">
-                    <MenuItem Header="FaceFX Editor" Tag="FaceFXEditor" Click="OpenIn_MenuClicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <MenuItem Header="FaceFX Editor" Command="{Binding OpenInCommand}" CommandParameter="FaceFXEditor"  IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem.Icon>
                             <Image Source="/Resources/facefxeditor_256x256.ico" Width="64"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Package Editor" Tag="PackageEditor" Click="OpenIn_MenuClicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <MenuItem Header="Package Editor" Command="{Binding OpenInCommand}" CommandParameter="PackageEditor" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem.Icon>
                             <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Soundplorer WPF" Tag="SoundplorerWPF" Click="OpenIn_MenuClicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
-                        <MenuItem.Icon>
-                            <Image Source="/Resources/soundplorerwpf_256x256.ico" Width="64"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="Sequence Editor" Tag="SequenceEditor" Click="OpenIn_MenuClicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <MenuItem Header="Sequence Editor" Command="{Binding OpenInCommand}" CommandParameter="SequenceEditor" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem.Icon>
                             <Image Source="/Resources/sequenceeditor_256x256.ico" Width="64"/>
                         </MenuItem.Icon>
                     </MenuItem>
+                    <MenuItem Header="Soundplorer WPF" Command="{Binding OpenInCommand}" CommandParameter="SoundplorerWPF" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/soundplorerwpf_256x256.ico" Width="64"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
-                <Separator />
                 <Separator />
                 <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
             </MenuItem>
@@ -121,6 +120,7 @@
             </Grid.ColumnDefinitions>
 <!-- Right side panel - Convo/Speakers/Nodes -->
             <DockPanel Name="RightSide_Dock" Grid.Column="2" Grid.RowSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+           <!--Convo Panel-->
                 <StackPanel Name="Convo_Panel" DockPanel.Dock="Top" IsEnabled="True" HorizontalAlignment="Stretch" Margin="3" Visibility="Collapsed">
                     <TextBlock  Name="ConvoDet_Header" Text="Conversation Details"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Top"/>
                     <DockPanel HorizontalAlignment="Stretch">
@@ -131,21 +131,21 @@
                     <TextBlock Name="Convo_Name"  Text="{Binding Path=activeconvName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" TextWrapping="Wrap" TextAlignment="Left" />
                     <TextBlock Name="spacerA" Text="" HorizontalAlignment="Left" FontWeight="Bold" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
-                        <TextBlock Name="LevelHeader" Text="Persistant Level:"  HorizontalAlignment="Left"  DockPanel.Dock="Left"/>
+                        <TextBlock Name="LevelHeader" Text="Persistant Level:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" DockPanel.Dock="Left"/>
                         <Grid DockPanel.Dock="Right" MaxWidth="50">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="25"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="20" />
-                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="25" />
+                                <ColumnDefinition Width="25" />
                             </Grid.ColumnDefinitions>
-                            <Button Name="OpenLevelPackEd_Button" Grid.Column="0" Click="OpenIn_ButtonClick" Tag="PackEd_Lvl" Padding="3">
+                            <Button Name="OpenLevelPackEd_Button" Grid.Column="0" Command="{Binding OpenInCommand}" CommandParameter="PackEdLvl" Padding="3">
                                 <Button.Content>
                                     <fa:ImageAwesome Icon="Cube" Width="16" Height="16" Foreground="DarkRed"/>
                                 </Button.Content>
                             </Button>
-                            <Button Name="OpenLevelSeqEd_Button" Grid.Column="1"  Click="OpenIn_ButtonClick" Tag="SeqEd_Lvl" Padding="3">
+                            <Button Name="OpenLevelSeqEd_Button" Grid.Column="1" Command="{Binding OpenInCommand}" CommandParameter="SeqEdLvl" Padding="3">
                                 <Button.Content>
                                     <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkRed"/>
                                 </Button.Content>
@@ -153,33 +153,33 @@
                         </Grid>
                         <TextBlock Name="spacerA2" Text="" HorizontalAlignment="Left" FontWeight="Bold" FontSize="10"  />
                     </DockPanel>
-                    <TextBlock Name="Level_Textbox" Text="{Binding level}"  HorizontalAlignment="Left" ToolTip="File with the Persistant level that uses the conversation." FontSize="15"/>
+                    <TextBlock Name="Level_Textbox" Text="{Binding level}"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="File with the Persistant level that uses the conversation." FontSize="15"/>
                     <TextBlock Name="spacerB" Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Sequence:" Name="Data" HorizontalAlignment="Left" ToolTip="Sequence for this conversation." DockPanel.Dock="Left"/>
-                        <Button Name="OpenSeqEd_Button"  Click="OpenIn_ButtonClick" Tag="SeqEdNode" Padding="3" DockPanel.Dock="Right">
+                        <Button Name="OpenSeqEd_Button" Command="{Binding OpenInCommand}" CommandParameter="SeqEdNode" Padding="3" DockPanel.Dock="Right">
                                 <Button.Content>
                                 <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkRed"/>
                                 </Button.Content>
                             </Button>
                         <TextBlock Name="spacerB2" Text=""  FontSize="10"  />
                     </DockPanel>
-                    <TextBlock Name="Sequence" Text="{Binding Path=activeconvSequence}" HorizontalAlignment="Left" ToolTip="Main conversation sequence" FontSize="15"/>
+                    <TextBlock Name="Sequence" Text="{Binding Path=activeconvSequence}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15"/>
                     <TextBlock Name="spacerC" Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Wwisebank:"  HorizontalAlignment="Left" ToolTip="Main conversation Wwisebank" DockPanel.Dock="Left"/>
-                        <Button Name="OpenWWbnk_Button"  Click="OpenIn_ButtonClick" Tag="SoundplorerWPF" Padding="3" DockPanel.Dock="Right" IsEnabled="{Binding HasWwbank}">
+                        <Button Name="OpenWWbnk_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundplorerWPF">
                             <Button.Content>
                                 <fa:ImageAwesome Icon="FileAudioOutline" Width="16" Height="16" Foreground="DarkRed"/>
                             </Button.Content>
                         </Button>
                         <TextBlock Name="spacerC2" Text="" FontSize="10"/>
                     </DockPanel>
-                    <TextBlock Name="Wwisebank" Text="{Binding Path=activeconvWwBank}" HorizontalAlignment="Left" ToolTip="Main conversation audiobank" FontSize="15"/>
+                    <TextBlock Name="Wwisebank" Text="{Binding Path=activeconvWwBank}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation audiobank" FontSize="15"/>
                     <TextBlock Name="spacerD" Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Non-Speaker Face FX AnimSet:"  HorizontalAlignment="Left" ToolTip="Conversation animations for non-speakers" DockPanel.Dock="Left"/>
-                        <Button Name="OpenFFX_Button"  Click="OpenIn_ButtonClick" Tag="FaceFXEditor" Padding="3" DockPanel.Dock="Right" IsEnabled="{Binding HasFFXNS}">
+                        <Button Name="OpenFFX_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_FFXNS}" CommandParameter="FaceFXNS">
                             <Button.Content>
                                 <fa:ImageAwesome Icon="Language" Width="16" Height="16" Foreground="DarkRed"/>
                             </Button.Content>
@@ -188,6 +188,7 @@
                     </DockPanel>
                     <TextBlock Name="NSFFX" Text="{Binding Path=activeconvNspkrFFX}" HorizontalAlignment="Left" ToolTip="Conversation animations for non-speakers" FontSize="15"/>
                 </StackPanel>
+                <!--Speaker Panel-->
                 <StackPanel Name="Speaker_Panel" DockPanel.Dock="Top" IsEnabled="True" HorizontalAlignment="Stretch" Margin="3" Visibility="Collapsed">
                     <TextBlock Name="Speaker_Header" VerticalAlignment="Center" Text="Speaker Details"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left"/>
                     <DockPanel HorizontalAlignment="Stretch">
@@ -205,6 +206,7 @@
                     <TextBlock Text="Female FaceFX Animation Set" Name="Speaker_FFXF" HorizontalAlignment="Left" ToolTip="Facial Animations for when the Player is Female"/>
                     <TextBlock Name="spacerH" Text="" FontSize="10"  />
                 </StackPanel>
+                <!--Node Panel-->
                 <StackPanel Name="Node_Panel" DockPanel.Dock="Top" IsEnabled="False">
 
                 </StackPanel>
@@ -217,12 +219,24 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="31"></ColumnDefinition>
+                        <ColumnDefinition Width="31"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Label Grid.Column="0" Background="GhostWhite">ID</Label>
                     <Label Grid.Column="1" Background="GhostWhite">Speaker Tag</Label>
+                    <Button Name="SpkrUpButton" Command="{Binding SpeakerMoveUpCommand}" CommandParameter="Up" Padding="3" DockPanel.Dock="Right" IsEnabled="True" Grid.Column="2" Margin="2">
+                        <Button.Content>
+                            <fa:ImageAwesome Icon="ArrowCircleUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                        </Button.Content>
+                    </Button>
+                    <Button Name="SpkrDownButton" Command="{Binding SpeakerMoveDownCommand}" CommandParameter="Down" Padding="3" DockPanel.Dock="Right" IsEnabled="True" Grid.Column="3" Margin="2">
+                        <Button.Content>
+                            <fa:ImageAwesome Icon="ArrowCircleDown" Width="16" Height="16" Foreground="DarkBlue"/>
+                        </Button.Content>
+                    </Button>
                 </Grid>
                 <ListBox Name="Speakers_ListBox" DockPanel.Dock="Bottom" ItemsSource="{Binding ActiveSpeakerList}" HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="Speakers_ListBox_SelectionChanged" >
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="Speakers_ListBox_SelectionChanged">
                     <ListBox.ItemTemplate >
                         <DataTemplate>
                             <Grid Margin="0,0,5,0" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" >
@@ -230,9 +244,8 @@
                                     <ColumnDefinition Width="40" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding SpeakerID}" />
-                                <TextBlock Grid.Column="1" Text="{Binding SpeakerName}">
-                                </TextBlock>
+                                <TextBlock Grid.Column="0" Text="{Binding SpeakerID, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Grid.Column="1" Text="{Binding SpeakerName, UpdateSourceTrigger=PropertyChanged}"/>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -308,6 +321,7 @@
                     <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
                     <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
                 </Grid>
+<!-- Conversation Box-->
                 <ListBox Name="Conversations_ListBox" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Conversations}" SelectionChanged="ConversationList_SelectedItemChanged" MouseEnter="Convo_ListBox_MouseEnter" HorizontalContentAlignment="Stretch"
                              Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                     <ListBox.ItemTemplate>
@@ -327,8 +341,8 @@
                                     <ColumnDefinition Width="40" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding Path=export.UIndex}" />
-                                <TextBlock Grid.Column="1" Text="{Binding Path=export.ObjectName}">
+                                <TextBlock Grid.Column="0" Text="{Binding Path=exportUID}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Path=ConvName}">
                                 </TextBlock>
                             </Grid>
                         </DataTemplate>
@@ -340,12 +354,13 @@
                                     <Setter Property="TextElement.FontWeight" Value="Bold"/>
                                 </Trigger>
                             </Style.Triggers>
+
                         </Style>
                     </ListBox.ItemContainerStyle>
                     <ListBox.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Open in Package Editor" Tag="PackEdNode" Click="OpenIn_MenuClicked"/>
-                            <MenuItem Header="Open in Sequence Editor" Tag="SeqEdNode" Click="OpenIn_MenuClicked"/>
+                            <MenuItem Header="Open in Package Editor" Command="{Binding OpenInCommand}" CommandParameter="PackEdNode"/>
+                            <MenuItem Header="Open in Sequence Editor" Command="{Binding OpenInCommand}" CommandParameter="SeqEdNode"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>

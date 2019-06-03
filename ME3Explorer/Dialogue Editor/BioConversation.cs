@@ -7,9 +7,13 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
+using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.Classes;
+using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
+using static ME3Explorer.Dialogue_Editor.DialogueEditorWPF;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
@@ -32,10 +36,11 @@ namespace ME3Explorer.Dialogue_Editor
 
         public class ConversationExtended : NotifyPropertyChangedBase
         {
-            public IExportEntry export { get; set; }
+            public int exportUID { get; set; }
+
+            public PropertyCollection BioConvo { get; set; }
 
             public string ConvName { get; set; }
-
             public bool bParsed { get; set; }
             public bool bFirstParsed { get; set; }
 
@@ -55,19 +60,21 @@ namespace ME3Explorer.Dialogue_Editor
             /// </summary>
             public int NonSpkrFFX { get; set; }
 
-            public ConversationExtended(IExportEntry export, string ConvName, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList)
+            public ConversationExtended(int exportUID, string ConvName, PropertyCollection BioConvo, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList)
             {
-                this.export = export;
+                this.exportUID = exportUID;
                 this.ConvName = ConvName;
+                this.BioConvo = BioConvo;
                 this.Speakers = Speakers;
                 this.EntryList = EntryList;
                 this.ReplyList = ReplyList;
             }
 
-            public ConversationExtended(IExportEntry export, string ConvName, bool bParsed, bool bFirstParsed, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, int WwiseBank, int Sequence, int NonSpkrFFX)
+            public ConversationExtended(int exportUID, string ConvName, PropertyCollection BioConvo, bool bParsed, bool bFirstParsed, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, int WwiseBank, int Sequence, int NonSpkrFFX)
             {
-                this.export = export;
+                this.exportUID = exportUID;
                 this.ConvName = ConvName;
+                this.BioConvo = BioConvo;
                 this.bParsed = bParsed;
                 this.bFirstParsed = bFirstParsed;
                 this.Speakers = Speakers;
@@ -78,188 +85,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.NonSpkrFFX = NonSpkrFFX;
             }
 
-            public void ParseSpeakers()
-            {
-                this.Speakers = new ObservableCollectionExtended<SpeakerExtended>();
-                if (export.FileRef.Game != MEGame.ME3)
-                {
-                    var s_speakers = export.GetProperty<ArrayProperty<StructProperty>>("m_SpeakerList");
-                    if (s_speakers != null)
-                    {
-                        for (int id = 0; id < s_speakers.Count; id++)
-                        {
-                            var spkr = new SpeakerExtended(id, s_speakers[id].GetProp<NameProperty>("sSpeakerTag").ToString());
-                            Speakers.Add(spkr);
-                        }
-                    }
-                }
-                else
-                {
-                    var a_speakers = export.GetProperty<ArrayProperty<NameProperty>>("m_aSpeakerList");
-                    if (a_speakers != null)
-                    {
-                        int id = 0;
-                        foreach (NameProperty n in a_speakers)
-                        {
-                            var spkr = new SpeakerExtended(id, n.ToString());
-                            Speakers.Add(spkr);
-                            id++;
-                        }
-                    }
-                }
-            }
-            /// <summary>
-            /// Returns the Uindex of FaceFXAnimSet
-            /// </summary>
-            /// <param name="speakerID">SpeakerID -1 = Owner, -2 = Player</param>
-            /// <param name="isMale">will pull female by default</param>
-            public int ParseFaceFX(int speakerID, bool isMale = false)
-            {
-                string ffxPropName = "m_aFemaleFaceSets"; //ME2/M£3
-                if (isMale)
-                {
-                    ffxPropName = "m_aMaleFaceSets";
-                }
-                var ffxList = export.GetProperty<ArrayProperty<ObjectProperty>>(ffxPropName);
-                if (ffxList != null)
-                {
-                    return ffxList[speakerID + 2].Value;
-                }
-
-                return 0;
-            }
-            /// <summary>
-            /// Returns the Uindex of appropriate sequence
-            /// </summary>
-            public int ParseSequence()
-            {
-                string propname = "MatineeSequence";
-                if (export.FileRef.Game == MEGame.ME1)
-                {
-                    propname = "m_pEvtSystemSeq";
-                }
-
-                var seq = export.GetProperty<ObjectProperty>(propname);
-                if (seq != null)
-                {
-                    return seq.Value;
-                }
-
-                return 0;
-            }
-            /// <summary>
-            /// Returns the Uindex of FaceFX
-            /// </summary>
-            public int ParseNSFFX()
-            {
-                string propname = "m_pNonSpeakerFaceFXSet";
-                if (export.FileRef.Game == MEGame.ME1)
-                {
-                    propname = "m_pConvFaceFXSet";
-                }
-
-                var seq = export.GetProperty<ObjectProperty>(propname);
-                if (seq != null)
-                {
-                    return seq.Value;
-                }
-
-                return 0;
-            }
-            /// <summary>
-            /// Returns the Uindex of WwiseBank
-            /// </summary>
-            public int ParseWwiseBank()
-            {
-                var Pcc = export.FileRef;
-                if (Pcc.Game != MEGame.ME1)
-                {
-                    try
-                    {
-                        var ffxo = ParseFaceFX(-1, true); //find owner animset
-                        var wwevents = Pcc.getUExport(ffxo).GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull a wwiseevent array
-                        if(wwevents == null)
-                        {
-                            ffxo = ParseFaceFX(-2, true); //find player as alternative
-                            wwevents = Pcc.getUExport(ffxo).GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
-                        }
-                        if (Pcc.Game == MEGame.ME3)
-                        {
-                            StructProperty r = Pcc.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
-                            var bank = r.GetProp<ObjectProperty>("Bank");
-                            return bank.Value;
-                        }
-                        else //Game is ME2.  Wwisebank ref in Binary.
-                        {
-                            var data = Pcc.getUExport(wwevents[0].Value).getBinaryData();
-                            int binarypos = 4;
-                            int count = BitConverter.ToInt32(data, binarypos);
-                            if (count > 0)
-                            {
-                                binarypos += 4;
-                                int bnkcount = BitConverter.ToInt32(data, binarypos);
-                                if (bnkcount > 0)
-                                {
-                                    binarypos += 4;
-                                    int bank = BitConverter.ToInt32(data, binarypos);
-                                    return bank;
-                                }
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        return 0;
-                    }
-                }
-
-                return 0;
-            }
-
-            public int ParseActorsNames(string tag)
-            {
-                var pcc = export.FileRef;
-
-                if (pcc.Game == MEGame.ME1)
-                {
-                    try
-                    {
-                        var actors = pcc.Exports.Where(xp => xp.ClassName == "BioPawn");
-                        IExportEntry actor = actors.FirstOrDefault(a => a.GetProperty<NameProperty>("Tag").ToString() == tag);
-                        var behav = actor.GetProperty<ObjectProperty>("m_oBehavior");
-                        var set = pcc.getUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
-                        var strrefprop = pcc.getUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
-                        if (strrefprop != null)
-                        {
-                            return strrefprop.Value;
-                        }
-                    }
-                    catch
-                    {
-                        return -2;
-                    }
-                }
-
-                // ME2/ME3 need to load non-LOC file.  Or parse a JSON.
-
-                return 0;
-            }
-
-
-            public List<int> GetStartingList()
-            {
-                List<int> startList = new List<int>();
-                var prop = export.GetProperty<ArrayProperty<IntProperty>>("m_StartingList"); //ME1/ME2/ME3
-                if (prop != null)
-                {
-                    foreach (var sl in prop)
-                    {
-                        startList.Add(sl.Value);
-                    }
-
-                }
-                return startList;
-            }
+            
         }
 
 
@@ -312,8 +138,24 @@ namespace ME3Explorer.Dialogue_Editor
 
         public class DialogueNodeExtended : NotifyPropertyChangedBase
         {
-            public int EntryID { get; set; }
+            public StructProperty Node { get; set; }
+            public int SpeakerIndex { get; set; }
+            public int LineStrRef { get; set; }
+            public string Line { get; set; }
+            public int ListenerIndex { get; set; }
+            public bool bFireConditional { get; set; }
+            public int ConditionalOrBool { get; set; }
+            public int ConditionalParam { get; set; }
+            public int StateEvent { get; set; }
+            public int StateEventParam { get; set; }
+            public int ExportID { get; set; }
+            public int ScriptIndex { get; set; } //MAY NEED ADJUSTING ME1/2/3
 
+            public bool bAmbient { get; set; }
+            public bool bNonTextline { get; set; }
+            public bool bIgnoreBodyGestures { get; set; }
+            public bool bHideSubtitle { get; set; }
+            public enum GUIStyle { GUI_STYLE_NONE, GUI_STYLE_CHARM, GUI_STYLE_INTIMIDATE, GUI_STYLE_PLAYERALERT, GUI_STYLE_ILLEGAL }
             /// <summary>
             /// InterpData object reference UIndex
             /// </summary>
@@ -326,16 +168,55 @@ namespace ME3Explorer.Dialogue_Editor
             /// WwiseStream object reference Female UIndex
             /// </summary>
             public int WwiseStream_Female { get; set; }
+            /// <summary>
+            /// FaceFX reference Male TBD
+            /// </summary>
+            public string FaceFX_Male { get; set; }
+            /// <summary>
+            /// FaceFX reference female TBD
+            /// </summary>
+            public string FaceFX_Female { get; set; }
 
-            public DialogueNodeExtended(int EntryID, int Interpdata, int WwiseStream_Male, int WwiseStream_Female)
+            public DialogueNodeExtended(StructProperty Node, int SpeakerIndex, int LineStrRef, string Line)
             {
-                this.EntryID = EntryID;
+                this.Node = Node;
+                this.SpeakerIndex = SpeakerIndex;
+                this.LineStrRef = LineStrRef;
+                this.Line = Line;
+            }
+
+            public DialogueNodeExtended(StructProperty Node, int SpeakerIndex, int LineStrRef, string Line, int ListenerIndex, bool bFireConditional, int ConditionalOrBool, int ConditionalParam, int StateEvent, int StateEventParam,
+                int ExportID, int ScriptIndex, bool bAmbient, bool bNonTextline, bool bIgnoreBodyGestures, bool bHideSubtitle, int Interpdata, int WwiseStream_Male, int WwiseStream_Female, string FaceFX_Male, string FaceFX_Female)
+            {
+                this.Node = Node;
+                this.SpeakerIndex = SpeakerIndex;
+                this.LineStrRef = LineStrRef;
+                this.Line = Line;
+                this.ListenerIndex = ListenerIndex;
+                this.bFireConditional = bFireConditional;
+                this.ConditionalOrBool = ConditionalOrBool;
+                this.ConditionalParam = ConditionalParam;
+                this.StateEvent = StateEvent;
+                this.StateEventParam = StateEventParam;
+                this.ExportID = ExportID;
+                this.ScriptIndex = ScriptIndex;
+                this.bAmbient = bAmbient;
+                this.bNonTextline = bNonTextline;
+                this.bIgnoreBodyGestures = bIgnoreBodyGestures;
+                this.bHideSubtitle = bHideSubtitle;
                 this.Interpdata = Interpdata;
                 this.WwiseStream_Male = WwiseStream_Male;
                 this.WwiseStream_Female = WwiseStream_Female;
+                this.FaceFX_Male = FaceFX_Male;
+                this.FaceFX_Female = FaceFX_Female;
             }
 
         }
+
+        //public class EntryNode : DialogueNodeExtended
+        //{
+
+        //}
     }
 
     #region GraphObjects
@@ -397,10 +278,10 @@ namespace ME3Explorer.Dialogue_Editor
         protected Pen outlinePen;
         protected SText comment;
 
-        protected DObj(BioConversationExtended.ConversationExtended conv, ConvGraphEditor ConvGraphEditor)
+        protected DObj(IExportEntry convoexport, BioConversationExtended.ConversationExtended conv, ConvGraphEditor ConvGraphEditor)
         {
-            pcc = conv.export.FileRef;
-            export = conv.export;
+            pcc = convoexport.FileRef;
+            export = convoexport;
             g = ConvGraphEditor;
             comment = new SText(GetComment(), commentColor, false)
             {
@@ -493,8 +374,8 @@ namespace ME3Explorer.Dialogue_Editor
             set => val.Text = value;
         }
 
-        public SVar(BioConversationExtended.ConversationExtended conv, float x, float y, ConvGraphEditor ConvGraphEditor)
-            : base(conv, ConvGraphEditor)
+        public SVar(IExportEntry convoexport, BioConversationExtended.ConversationExtended conv, float x, float y, ConvGraphEditor ConvGraphEditor)
+            : base(convoexport, conv, ConvGraphEditor)
         {
             string s = export.ObjectName;
             s = s.Replace("BioSeqVar_", "");
@@ -749,8 +630,8 @@ namespace ME3Explorer.Dialogue_Editor
     {
         protected PPath shape;
         protected PPath titleBox;
-        public SFrame(BioConversationExtended.ConversationExtended conv, float x, float y, ConvGraphEditor ConvGraphEditor)
-            : base(conv, ConvGraphEditor)
+        public SFrame(IExportEntry convoexport, BioConversationExtended.ConversationExtended conv, float x, float y, ConvGraphEditor ConvGraphEditor)
+            : base(convoexport, conv, ConvGraphEditor)
         {
             string s = $"{export.ObjectName}_{export.indexValue}";
             float w = 0;
@@ -866,8 +747,8 @@ namespace ME3Explorer.Dialogue_Editor
         protected PPath CreateActionLinkBox() => PPath.CreateRectangle(0, -4, 10, 8);
         protected PPath CreateVarLinkBox() => PPath.CreateRectangle(-4, 0, 8, 10);
 
-        protected DBox(BioConversationExtended.ConversationExtended conv, ConvGraphEditor ConvGraphEditor)
-            : base(conv, ConvGraphEditor)
+        protected DBox(IExportEntry convoexport, BioConversationExtended.ConversationExtended conv, float x, float y, ConvGraphEditor ConvGraphEditor)
+            : base(convoexport, conv, ConvGraphEditor)
         {
             varDragHandler = new VarDragHandler(ConvGraphEditor, this);
             outputDragHandler = new OutputDragHandler(ConvGraphEditor, this);
@@ -1523,14 +1404,14 @@ namespace ME3Explorer.Dialogue_Editor
         public List<EventEdge> connections = new List<EventEdge>();
         public override IEnumerable<SeqEdEdge> Edges => connections.Union(base.Edges);
 
-        public DStart(int StartNbr, BioConversationExtended.ConversationExtended conv, float x, float y, ConvGraphEditor ConvGraphEditor)
-            : base(conv, ConvGraphEditor)
+        public DStart(int StartNbr, IExportEntry convoexport, BioConversationExtended.ConversationExtended conv, float x, float y, ConvGraphEditor ConvGraphEditor)
+            : base(convoexport, conv, x, y, ConvGraphEditor)
         {
             outlinePen = new Pen(EventColor);
             string s = $"Start Node: {StartNbr}";
             float starty = 0;
             float w = 15;
-            float midW = 0;
+            float midW = 50;
             varLinkBox = new PPath();
             GetTitleBox(s, 20);
             //GetOutputLinks();
@@ -1668,8 +1549,8 @@ namespace ME3Explorer.Dialogue_Editor
 
         protected InputDragHandler inputDragHandler = new InputDragHandler();
 
-        public SAction(BioConversationExtended.ConversationExtended conv, float x, float y, ConvGraphEditor ConvGraphEditor)
-            : base(conv, ConvGraphEditor)
+        public SAction(IExportEntry convoexport, BioConversationExtended.ConversationExtended conv, float x, float y, ConvGraphEditor ConvGraphEditor)
+            : base(convoexport, conv, x, y, ConvGraphEditor)
         {
             GetVarLinks();
             GetEventLinks();
