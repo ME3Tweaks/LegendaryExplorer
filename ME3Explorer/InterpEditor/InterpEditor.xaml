@@ -12,7 +12,8 @@
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
         mc:Ignorable="d"
-        Title="Interp Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
+        Title="Interp Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
@@ -61,7 +62,7 @@
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            
+            <local:Timeline x:Name="timelineControl" Grid.Row="0"/>
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Grid.Column="0"/>
             <Grid Column="0" Row="2">
                 <Grid.RowDefinitions>
@@ -118,7 +119,7 @@
                     <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
                     <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
                 </Grid>
-                <ListBox Name="InterpDataExports_ListBox" Grid.Column="2" Grid.RowSpan="3" ItemsSource="{Binding InterpDataExports}" SelectionChanged="InterpDataExportsList_SelectedItemChanged"
+                <ListBox Name="InterpDataExports_ListBox" Grid.Column="0" ItemsSource="{Binding InterpDataExports}" SelectedItem="{Binding SelectedInterpData}" SelectionChanged="InterpDataExportsList_SelectedItemChanged"
                          HorizontalContentAlignment="Stretch" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
@@ -126,7 +127,7 @@
                                 <Grid.Style>
                                     <Style TargetType="{x:Type Grid}">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=Export.EntryHasPendingChanges}" Value="true">
+                                            <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
                                                 <Setter Property="Background" Value="Yellow"/>
                                                 <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
                                             </DataTrigger>
@@ -137,12 +138,12 @@
                                     <ColumnDefinition Width="40" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Export.UIndex}" />
+                                <TextBlock Text="{Binding UIndex}" />
                                 <TextBlock Grid.Column="1">
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="{}{0}_{1}">
-                                            <Binding Path="Export.ObjectName" />
-                                            <Binding Path="Export.indexValue" />
+                                            <Binding Path="ObjectName" />
+                                            <Binding Path="indexValue" />
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>

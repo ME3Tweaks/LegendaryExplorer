@@ -8,7 +8,7 @@ using System.Windows.Controls.Primitives;
 
 namespace ME3Explorer.Matinee
 {
-    class Key : Thumb
+    public class Key : Thumb
     {
         public static readonly DependencyProperty TimeProperty = DependencyProperty.Register(
             nameof(Time), typeof(float), typeof(Key), new PropertyMetadata(default(float)));

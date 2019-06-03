@@ -194,7 +194,7 @@ namespace ME3Explorer.Matinee
             int i = 0;
             foreach (string filepath in RFiles)
             {
-                MenuItem fr = new MenuItem()
+                MenuItem fr = new MenuItem
                 {
                     Header = filepath.Replace("_", "__"),
                     Tag = filepath
@@ -229,7 +229,7 @@ namespace ME3Explorer.Matinee
             }
         }
 
-        public void AddRecent(string s, bool loadingList)
+        public void AddRecent(string s, bool loadingList = false)
         {
             RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
             if (loadingList)
@@ -245,18 +245,22 @@ namespace ME3Explorer.Matinee
                 RFiles.RemoveRange(10, RFiles.Count - 10);
             }
             Recents_MenuItem.IsEnabled = true;
+            SaveRecentList();
         }
 
         #endregion Recents
 
         private void LoadFile(string fileName)
         {
-            throw new NotImplementedException();
+            InterpDataExports.ClearEx();
+            LoadMEPackage(fileName);
+            AddRecent(fileName);
+            InterpDataExports.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "InterpData"));
         }
 
         private void LoadInterpData(IExportEntry value)
         {
-            throw new NotImplementedException();
+            timelineControl.InterpDataExport = value;
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
