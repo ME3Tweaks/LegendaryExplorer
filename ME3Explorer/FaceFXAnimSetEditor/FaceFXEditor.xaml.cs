@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using ME3Explorer.CurveEd;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -39,9 +40,20 @@ namespace ME3Explorer.FaceFX
         private Point dragStart;
         private bool dragEnabled;
 
+        private string FileQueuedForLoad;
+        private IExportEntry ExportQueuedForFocusing;
+        private int LineQueuedForFocusing;
+
         public FaceFXEditor()
         {
             InitializeComponent();
+        }
+
+        public FaceFXEditor(IExportEntry export, int line = -1) : this()
+        {
+            FileQueuedForLoad = export.FileRef.FileName;
+            ExportQueuedForFocusing = export;
+            LineQueuedForFocusing = line;
         }
 
         private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -122,11 +134,11 @@ namespace ME3Explorer.FaceFX
             {
                 case MEGame.ME1:
                     FaceFX = new ME1FaceFXAnimSet(Pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
-                    linesListBox.ItemsSource = (FaceFX.Data as ME3DataAnimSetStruct).Data;
+                    linesListBox.ItemsSource = FaceFX.Data.Data;
                     break;
                 case MEGame.ME2:
                     FaceFX = new ME2FaceFXAnimSet(Pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
-                    linesListBox.ItemsSource = (FaceFX.Data as ME2DataAnimSetStruct).Data;
+                    linesListBox.ItemsSource = ((ME2DataAnimSetStruct)FaceFX.Data).Data;
                     break;
                 case MEGame.ME3:
                     FaceFX = new ME3FaceFXAnimSet(Pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
@@ -740,6 +752,33 @@ namespace ME3Explorer.FaceFX
             }
             FaceFX.Save();
             updateAnimListBox();
+        }
+
+        private void WPFBase_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(FileQueuedForLoad))
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
+                {
+                    //Wait for all children to finish loading
+                    LoadFile(FileQueuedForLoad);
+                    FileQueuedForLoad = null;
+
+                    if (animSets.Contains(ExportQueuedForFocusing))
+                    {
+                        FaceFXAnimSetComboBox.SelectedItem = ExportQueuedForFocusing;
+                        loadFaceFXAnimset();
+                        if (LineQueuedForFocusing > 0 && LineQueuedForFocusing < linesListBox.Items.Count)
+                        {
+                            linesListBox.SelectedIndex = LineQueuedForFocusing;
+                        }
+                    }
+                    ExportQueuedForFocusing = null;
+                    LineQueuedForFocusing = -1;
+
+                    Activate();
+                }));
+            }
         }
     }
 }

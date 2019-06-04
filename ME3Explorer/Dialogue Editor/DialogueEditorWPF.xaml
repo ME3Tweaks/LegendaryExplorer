@@ -14,7 +14,8 @@
         mc:Ignorable="d"
         Loaded="DialogueEditorWPF_Loaded"
         Closing="DialogueEditorWPF_Closing"
-        Title="Dialogue Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
+        Title="Dialogue Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
@@ -125,10 +126,10 @@
                     <TextBlock  Name="ConvoDet_Header" Text="Conversation Details"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Top"/>
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Export:"  HorizontalAlignment="Stretch" TextAlignment="Right" FontWeight="Bold" FontSize="15" DockPanel.Dock="Left"/>
-                        <TextBlock Name="Convo_UID" Text="{Binding Path=activeconvUIndex, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="18" DockPanel.Dock="Right"/>
+                        <TextBlock Name="Convo_UID" Text="{Binding Path=ActiveconvUIndex, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="18" DockPanel.Dock="Right"/>
                     </DockPanel>
                     <TextBlock Name="Convo_NamePrefix" Text="Name:" HorizontalAlignment="Left" FontWeight="Bold" FontSize="10"  />
-                    <TextBlock Name="Convo_Name"  Text="{Binding Path=activeconvName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" TextWrapping="Wrap" TextAlignment="Left" />
+                    <TextBlock Name="Convo_Name"  Text="{Binding Path=ActiveconvName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" TextWrapping="Wrap" TextAlignment="Left" />
                     <TextBlock Name="spacerA" Text="" HorizontalAlignment="Left" FontWeight="Bold" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Name="LevelHeader" Text="Persistant Level:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" DockPanel.Dock="Left"/>
@@ -153,7 +154,7 @@
                         </Grid>
                         <TextBlock Name="spacerA2" Text="" HorizontalAlignment="Left" FontWeight="Bold" FontSize="10"  />
                     </DockPanel>
-                    <TextBlock Name="Level_Textbox" Text="{Binding level}"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="File with the Persistant level that uses the conversation." FontSize="15"/>
+                    <TextBlock Name="Level_Textbox" Text="{Binding Level}"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="File with the Persistant level that uses the conversation." FontSize="15"/>
                     <TextBlock Name="spacerB" Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Sequence:" Name="Data" HorizontalAlignment="Left" ToolTip="Sequence for this conversation." DockPanel.Dock="Left"/>
@@ -164,7 +165,7 @@
                             </Button>
                         <TextBlock Name="spacerB2" Text=""  FontSize="10"  />
                     </DockPanel>
-                    <TextBlock Name="Sequence" Text="{Binding Path=activeconvSequence}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15"/>
+                    <TextBlock Name="Sequence" Text="{Binding Path=ActiveconvSequence}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15"/>
                     <TextBlock Name="spacerC" Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Wwisebank:"  HorizontalAlignment="Left" ToolTip="Main conversation Wwisebank" DockPanel.Dock="Left"/>
@@ -175,7 +176,7 @@
                         </Button>
                         <TextBlock Name="spacerC2" Text="" FontSize="10"/>
                     </DockPanel>
-                    <TextBlock Name="Wwisebank" Text="{Binding Path=activeconvWwBank}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation audiobank" FontSize="15"/>
+                    <TextBlock Name="Wwisebank" Text="{Binding Path=ActiveconvWwBank}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation audiobank" FontSize="15"/>
                     <TextBlock Name="spacerD" Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Non-Speaker Face FX AnimSet:"  HorizontalAlignment="Left" ToolTip="Conversation animations for non-speakers" DockPanel.Dock="Left"/>
@@ -186,17 +187,17 @@
                         </Button>
                         <TextBlock Name="spacerD2" Text="" FontSize="10"/>
                     </DockPanel>
-                    <TextBlock Name="NSFFX" Text="{Binding Path=activeconvNspkrFFX}" HorizontalAlignment="Left" ToolTip="Conversation animations for non-speakers" FontSize="15"/>
+                    <TextBlock Name="NSFFX" Text="{Binding Path=ActiveconvNspkrFFX}" HorizontalAlignment="Left" ToolTip="Conversation animations for non-speakers" FontSize="15"/>
                 </StackPanel>
                 <!--Speaker Panel-->
                 <StackPanel Name="Speaker_Panel" DockPanel.Dock="Top" IsEnabled="True" HorizontalAlignment="Stretch" Margin="3" Visibility="Collapsed">
                     <TextBlock Name="Speaker_Header" VerticalAlignment="Center" Text="Speaker Details"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left"/>
                     <DockPanel HorizontalAlignment="Stretch">
-                        <TextBlock Name="Speaker_ID" Text="{Binding Path=speakerID, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="18" DockPanel.Dock="Right" Padding="5"/>
+                        <TextBlock Name="Speaker_ID" Text="{Binding Path=SpeakerID, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="18" DockPanel.Dock="Right" Padding="5"/>
                         <TextBlock Text="ID:" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" FontWeight="Bold" FontSize="15"/>
                     </DockPanel>
                     <TextBlock Name="Speaker_NamePrefix" Text="Name:" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15"  />
-                    <TextBox Name="Speaker_Name"  Text="{Binding Path=speakerName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0"/>
+                    <TextBox Name="Speaker_Name"  Text="{Binding Path=SpeakerName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0"/>
                     <TextBlock Name="spacerE" Text="" FontSize="10"  />
                     <TextBlock Name="Speaker_TLK" Text="TLKString:"  HorizontalAlignment="Left" ToolTip="Actor's named TLK string. Possibly."/>
                     <TextBlock Text="Friendly Name" Name="Speaker_FriendlyName" HorizontalAlignment="Left" ToolTip="Actor's name. Possibly."/>
