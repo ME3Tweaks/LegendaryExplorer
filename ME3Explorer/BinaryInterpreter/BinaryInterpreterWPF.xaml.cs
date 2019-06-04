@@ -174,6 +174,7 @@ namespace ME3Explorer
             "BioQuestMap",
             "BioStateEventMap",
             "BioOutcomeMap",
+            "FaceFXAnimSet",
             "BioConsequenceMap"
         };
 
@@ -444,6 +445,9 @@ namespace ME3Explorer
                         break;
                     case "BioConsequenceMap":
                         subNodes = StartBioStateEventMapScan(data, ref binarystart);
+                        break;
+                    case "FaceFXAnimSet":
+                        subNodes = StartFaceFXAnimSetScan(data, ref binarystart);
                         break;
                     default:
                         if (CurrentLoadedExport.HasStack)
@@ -2891,6 +2895,185 @@ namespace ME3Explorer
             return subnodes;
         }
 
+        private List<object> StartFaceFXAnimSetScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<object>();
+            try
+            {
+                var bin = new MemoryStream(CurrentLoadedExport.Data);
+                bin.JumpTo(binarystart);
+                bin.Skip(4);
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
+                if (Pcc.Game == MEGame.ME3)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
+                }
+
+                if (Pcc.Game == MEGame.ME2)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                }
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Licensee: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                if (Pcc.Game == MEGame.ME2)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                }
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Project: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
+                if (Pcc.Game == MEGame.ME2)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
+                }
+                else
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                }
+
+                if (Pcc.Game == MEGame.ME3)
+                {
+                    int hNodeCount = bin.ReadInt32();
+                    var hNodes = new List<object>();
+                    subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Nodes: {hNodeCount} items")
+                    {
+                        Items = hNodes
+                    });
+                    for (int i = 0; i < hNodeCount; i++)
+                    {
+                        var hNodeNodes = new List<object>();
+                        hNodes.Add(new BinInterpTreeItem(bin.Position, $"{i}")
+                        {
+                            Items = hNodeNodes
+                        });
+                        hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                        hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                        hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Name: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                        hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                    }
+                }
+
+                int nameCount = bin.ReadInt32();
+                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Names: {nameCount} items")
+                {
+                    Items = Enumerable.Range(0, nameCount).Select(i => (object)new BinInterpTreeItem(bin.Skip(Pcc.Game == MEGame.ME2 ? 4 : 0).Position, $"{bin.ReadStringASCII(bin.ReadInt32())}")).ToList()
+                });
+
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                if (Pcc.Game == MEGame.ME2)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                }
+
+                int lineCount = bin.ReadInt32();
+                var lines = new List<object>();
+
+                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"FaceFXLines: {lineCount} items")
+                {
+                    Items = lines
+                });
+                for (int i = 0; i < lineCount; i++)
+                {
+                    var nodes = new List<object>();
+                    lines.Add(new BinInterpTreeItem(bin.Position, $"{i}")
+                    {
+                        Items = nodes
+                    });
+                    if (Pcc.Game == MEGame.ME2)
+                    {
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                    }
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Name: {bin.ReadInt32()}") {Length = 4});
+                    if (Pcc.Game == MEGame.ME2)
+                    {
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    }
+                    int animationCount = bin.ReadInt32();
+                    var anims = new List<object>();
+                    nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Animations: {animationCount} items")
+                    {
+                        Items = anims
+                    });
+                    for (int j = 0; j < animationCount; j++)
+                    {
+                        var animNodes = new List<object>();
+                        anims.Add(new BinInterpTreeItem(bin.Position, $"{j}")
+                        {
+                            Items = animNodes
+                        });
+                        if (Pcc.Game == MEGame.ME2)
+                        {
+
+                            animNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") {Length = 4});
+                            animNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") {Length = 2});
+                        }
+                        animNodes.Add(new BinInterpTreeItem(bin.Position, $"Index: {bin.ReadInt32()}") {Length = 4});
+                        animNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") {Length = 4});
+                        if (Pcc.Game == MEGame.ME2)
+                        {
+                            animNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        }
+                    }
+
+                    if (animationCount > 0)
+                    {
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Points: {bin.ReadInt32()} items")
+                        {
+                            Items = Enumerable.Range(0, bin.Skip(-4).ReadInt32()).Select(j => (object) new BinInterpTreeItem(bin.Position, $"{j}")
+                            {
+                                Items = new List<object>
+                                {
+                                    new BinInterpTreeItem(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
+                                    new BinInterpTreeItem(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
+                                    new BinInterpTreeItem(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
+                                    new BinInterpTreeItem(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
+                                }
+                            }).ToList()
+                        });
+                        if (Pcc.Game == MEGame.ME2)
+                        {
+                            nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        }
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
+                        {
+                            Items = Enumerable.Range(0, bin.Skip(-4).ReadInt32()).Select(j => (object) new BinInterpTreeItem(bin.Position, $"{bin.ReadInt32()} keys")).ToList()
+                        });
+                    }
+                    else
+                    {
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    }
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Fade In Time: {bin.ReadFloat()}") {Length = 4});
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") {Length = 4});
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") {Length = 4});
+                    if (Pcc.Game == MEGame.ME2)
+                    {
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") {Length = 2});
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                    }
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Path: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                    if (Pcc.Game == MEGame.ME2)
+                    {
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                    }
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"ID: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"index: {bin.ReadInt32()}") {Length = 4});
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
+
         private List<object> StartSoundCueScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
@@ -3378,41 +3561,113 @@ namespace ME3Explorer
             }
             try
             {
-                int binarypos = binarystart;
-                int count = BitConverter.ToInt32(data, binarypos);
-                subnodes.Add(new BinInterpTreeItem { Header = $"0x{binarypos:X4} Count: {count.ToString()}", Name = "_" + binarypos });
-                binarypos += 4; //+ int
-                for (int i = 0; i < count; i++)
+                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 )
                 {
-                    string nodeText = $"0x{binarypos:X4} ";
-                    int val = BitConverter.ToInt32(data, binarypos);
-                    string name = val.ToString();
-                    if (val > 0 && val <= CurrentLoadedExport.FileRef.Exports.Count)
+                    int count = BitConverter.ToInt32(data, binarypos);
+                    subnodes.Add(new BinInterpTreeItem { Header = $"0x{binarypos:X4} Count: {count.ToString()}", Name = "_" + binarypos });
+                    binarypos += 4; //+ int
+                    for (int i = 0; i < count; i++)
                     {
-                        IExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
-                        nodeText += $"{i}: {name} {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
-                    }
-                    else if (val < 0 && val != int.MinValue && Math.Abs(val) <= CurrentLoadedExport.FileRef.Imports.Count)
-                    {
-                        int csImportVal = Math.Abs(val) - 1;
-                        ImportEntry imp = CurrentLoadedExport.FileRef.Imports[csImportVal];
-                        nodeText += $"{i}: {name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
-                    }
+                        string nodeText = $"0x{binarypos:X4} ";
+                        int val = BitConverter.ToInt32(data, binarypos);
+                        string name = val.ToString();
+                        if (val > 0 && val <= CurrentLoadedExport.FileRef.Exports.Count)
+                        {
+                            IExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
+                            nodeText += $"{i}: {name} {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
+                        }
+                        else if (val < 0 && val != int.MinValue && Math.Abs(val) <= CurrentLoadedExport.FileRef.Imports.Count)
+                        {
+                            int csImportVal = Math.Abs(val) - 1;
+                            ImportEntry imp = CurrentLoadedExport.FileRef.Imports[csImportVal];
+                            nodeText += $"{i}: {name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
+                        }
 
+                        subnodes.Add(new BinInterpTreeItem
+                        {
+                            Header = nodeText,
+                            Tag = NodeType.StructLeafObject,
+                            Name = "_" + binarypos
+                        });
+                        binarypos += 4;
+                        /*
+                        int objectindex = BitConverter.ToInt32(data, binarypos);
+                        IEntry obj = pcc.getEntry(objectindex);
+                        string nodeValue = obj.GetFullPath;
+                        node.Tag = nodeType.StructLeafObject;
+                        */
+                    }
+                }
+                if(CurrentLoadedExport.FileRef.Game == MEGame.ME2)
+                {
+                    var wwiseID = data.Skip(binarypos).Take(4).ToArray();
                     subnodes.Add(new BinInterpTreeItem
                     {
-                        Header = nodeText,
-                        Tag = NodeType.StructLeafObject,
+                        Header = $"0x{binarypos:X4} WwiseEventID: {wwiseID[0]:X2}{wwiseID[1]:X2}{wwiseID[2]:X2}{wwiseID[3]:X2}",
+                        Tag = NodeType.Unknown,
                         Name = "_" + binarypos
                     });
                     binarypos += 4;
-                    /*
-                    int objectindex = BitConverter.ToInt32(data, binarypos);
-                    IEntry obj = pcc.getEntry(objectindex);
-                    string nodeValue = obj.GetFullPath;
-                    node.Tag = nodeType.StructLeafObject;
-                    */
+
+                    int count = BitConverter.ToInt32(data, binarypos);
+                    var Streams = new BinInterpTreeItem
+                    {
+                        Header = $"0x{binarypos:X4} Link Count: {count}",
+                        Name = "_" + binarypos,
+                        Tag = NodeType.StructLeafInt
+                    };
+                    binarypos += 4;
+                    subnodes.Add(Streams);
+
+                    for (int s = 0; s < count; s++)
+                    {
+                        int bankcount = BitConverter.ToInt32(data, binarypos);
+                        subnodes.Add(new BinInterpTreeItem
+                        {
+                            Header = $"0x{binarypos:X4} BankCount: {bankcount}",
+                            Tag = NodeType.StructLeafInt,
+                            Name = "_" + binarypos
+                        });
+                        binarypos += 4;
+                        for (int b = 0; b < count; b++)
+                        {
+                            int bank = BitConverter.ToInt32(data, binarypos);
+                            subnodes.Add(new BinInterpTreeItem
+                            {
+                                Header = $"0x{binarypos:X4} WwiseBank: {bank} {CurrentLoadedExport.FileRef.GetEntryString(bank)}",
+                                Tag = NodeType.StructLeafObject,
+                                Name = "_" + binarypos
+                            });
+                            binarypos += 4;
+                        }
+
+                        int streamcount = BitConverter.ToInt32(data, binarypos);
+                        subnodes.Add(new BinInterpTreeItem
+                        {
+                            Header = $"0x{binarypos:X4} StreamCount: {streamcount}",
+                            Tag = NodeType.StructLeafInt,
+                            Name = "_" + binarypos
+                        });
+                        binarypos += 4;
+                        for (int w = 0; w < count; w++)
+                        {
+                            int wwstream = BitConverter.ToInt32(data, binarypos);
+                            subnodes.Add(new BinInterpTreeItem
+                            {
+                                Header = $"0x{binarypos:X4} WwiseStream: {wwstream} {CurrentLoadedExport.FileRef.GetEntryString(wwstream)}",
+                                Tag = NodeType.StructLeafObject,
+                                Name = "_" + binarypos
+                            });
+                            binarypos += 4;
+                        }
+                    }
                 }
+                else
+                {
+                    subnodes.Add("Only ME3 and ME2 are supported for this scan.");
+                    return subnodes;
+                }
+
             }
             catch (Exception ex)
             {

@@ -2,6 +2,7 @@
  * C# Stream Helpers
  *
  * Copyright (C) 2015-2018 Pawel Kolodziejski
+ * Copyright (C) 2019 ME3Explorer
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,7 +30,7 @@ namespace StreamHelpers
     {
         public static byte[] ReadToBuffer(this Stream stream, int count)
         {
-            byte[] buffer = new byte[count];
+            var buffer = new byte[count];
             if (stream.Read(buffer, 0, count) != count)
                 throw new Exception("Stream read error!");
             return buffer;
@@ -52,7 +53,7 @@ namespace StreamHelpers
 
         public static void WriteFromStream(this Stream stream, Stream inputStream, int count)
         {
-            byte[] buffer = new byte[0x10000];
+            var buffer = new byte[0x10000];
             do
             {
                 int readed = inputStream.Read(buffer, 0, Math.Min(buffer.Length, count));
@@ -95,7 +96,7 @@ namespace StreamHelpers
 
         public static string ReadStringUnicode(this Stream stream, int count)
         {
-            byte[] buffer = stream.ReadToBuffer(count);
+            var buffer = stream.ReadToBuffer(count);
             return Encoding.Unicode.GetString(buffer);
         }
 
@@ -126,7 +127,7 @@ namespace StreamHelpers
 
         public static ulong ReadUInt64(this Stream stream)
         {
-            byte[] buffer = new byte[sizeof(ulong)];
+            var buffer = new byte[sizeof(ulong)];
             if (stream.Read(buffer, 0, sizeof(ulong)) != sizeof(ulong))
                 throw new Exception();
             return BitConverter.ToUInt64(buffer, 0);
@@ -149,7 +150,7 @@ namespace StreamHelpers
 
         public static uint ReadUInt32(this Stream stream)
         {
-            byte[] buffer = new byte[sizeof(uint)];
+            var buffer = new byte[sizeof(uint)];
             if (stream.Read(buffer, 0, sizeof(uint)) != sizeof(uint))
                 throw new Exception();
             return BitConverter.ToUInt32(buffer, 0);
@@ -172,7 +173,7 @@ namespace StreamHelpers
 
         public static ushort ReadUInt16(this Stream stream)
         {
-            byte[] buffer = new byte[sizeof(ushort)];
+            var buffer = new byte[sizeof(ushort)];
             if (stream.Read(buffer, 0, sizeof(ushort)) != sizeof(ushort))
                 throw new Exception();
             return BitConverter.ToUInt16(buffer, 0);
@@ -191,6 +192,32 @@ namespace StreamHelpers
         public static void WriteInt16(this Stream stream, short data)
         {
             stream.Write(BitConverter.GetBytes(data), 0, sizeof(short));
+        }
+
+        public static float ReadFloat(this Stream stream)
+        {
+            var buffer = new byte[sizeof(float)];
+            if (stream.Read(buffer, 0, sizeof(float)) != sizeof(float))
+                throw new Exception();
+            return BitConverter.ToSingle(buffer, 0);
+        }
+
+        public static void WriteFloat(this Stream stream, float data)
+        {
+            stream.Write(BitConverter.GetBytes(data), 0, sizeof(float));
+        }
+
+        public static double ReadDouble(this Stream stream)
+        {
+            var buffer = new byte[sizeof(double)];
+            if (stream.Read(buffer, 0, sizeof(double)) != sizeof(double))
+                throw new Exception();
+            return BitConverter.ToDouble(buffer, 0);
+        }
+
+        public static void WriteDouble(this Stream stream, double data)
+        {
+            stream.Write(BitConverter.GetBytes(data), 0, sizeof(double));
         }
 
         public static void WriteZeros(this Stream stream, uint count)
@@ -214,54 +241,64 @@ namespace StreamHelpers
             stream.Seek(0, SeekOrigin.End);
         }
 
-        public static void JumpTo(this Stream stream, int offset)
+        public static Stream JumpTo(this Stream stream, int offset)
         {
             stream.Seek(offset, SeekOrigin.Begin);
+            return stream;
         }
 
-        public static void JumpTo(this Stream stream, uint offset)
+        public static Stream JumpTo(this Stream stream, uint offset)
         {
             stream.Seek(offset, SeekOrigin.Begin);
+            return stream;
         }
 
-        public static void JumpTo(this Stream stream, long offset)
+        public static Stream JumpTo(this Stream stream, long offset)
         {
             stream.Seek(offset, SeekOrigin.Begin);
+            return stream;
         }
 
-        public static void Skip(this Stream stream, int count)
+        public static Stream Skip(this Stream stream, int count)
         {
             stream.Seek(count, SeekOrigin.Current);
+            return stream;
         }
 
-        public static void Skip(this Stream stream, uint count)
+        public static Stream Skip(this Stream stream, uint count)
         {
             stream.Seek(count, SeekOrigin.Current);
+            return stream;
         }
 
-        public static void Skip(this Stream stream, long count)
+        public static Stream Skip(this Stream stream, long count)
         {
             stream.Seek(count, SeekOrigin.Current);
+            return stream;
         }
 
-        public static void SkipByte(this Stream stream)
+        public static Stream SkipByte(this Stream stream)
         {
             stream.Seek(1, SeekOrigin.Current);
+            return stream;
         }
 
-        public static void SkipInt16(this Stream stream)
+        public static Stream SkipInt16(this Stream stream)
         {
             stream.Seek(2, SeekOrigin.Current);
+            return stream;
         }
 
-        public static void SkipInt32(this Stream stream)
+        public static Stream SkipInt32(this Stream stream)
         {
             stream.Seek(4, SeekOrigin.Current);
+            return stream;
         }
 
-        public static void SkipInt64(this Stream stream)
+        public static Stream SkipInt64(this Stream stream)
         {
             stream.Seek(8, SeekOrigin.Current);
+            return stream;
         }
     }
 }
