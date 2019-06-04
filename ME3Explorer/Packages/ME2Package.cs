@@ -255,7 +255,7 @@ namespace ME3Explorer.Packages
 
         private static void UpdateOffsets(IExportEntry export, int newDataOffset)
         {
-            if (export.ObjectName.StartsWith("Default__"))
+            if (export.IsDefaultObject)
             {
                 return; //this is not actually instance of that class
             }

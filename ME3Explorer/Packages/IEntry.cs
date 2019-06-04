@@ -49,6 +49,7 @@ namespace ME3Explorer.Packages
         int OriginalDataSize { get; }
         bool ReadsFromConfig { get; }
         bool HasStack { get; }
+        bool IsDefaultObject { get; }
         int NetIndex { get; set; }
 
         IExportEntry Clone();
