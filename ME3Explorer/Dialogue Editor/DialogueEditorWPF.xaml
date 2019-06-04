@@ -189,15 +189,15 @@
                     </DockPanel>
                     <TextBlock Name="NSFFX" Text="{Binding Path=ActiveconvNspkrFFX}" HorizontalAlignment="Left" ToolTip="Conversation animations for non-speakers" FontSize="15"/>
                 </StackPanel>
-                <!--Speaker Panel-->
+           <!--Speaker Panel-->
                 <StackPanel Name="Speaker_Panel" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="3" Visibility="Hidden">
                     <TextBlock Text="Speaker Details"  HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left"/>
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Name="Speaker_ID" Text="{Binding Path=ActiveSpeaker.SpeakerID, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="18" DockPanel.Dock="Right" Padding="5"/>
                         <TextBlock Text="ID:" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" FontWeight="Bold" FontSize="15"/>
                     </DockPanel>
-                    <TextBlock Text="Name:" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15"  />
-                    <TextBox Name="TextBox_Speaker_Name"  Text="{Binding Path=ActiveSpeaker.SpeakerName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" KeyUp="EnterName_Speaker_KeyUp" GotKeyboardFocus="EnterName_Speaker_GotKeyboardFocus" LostKeyboardFocus="EnterName_Speaker_LostKeyboardFocus"/>
+                    <TextBlock Text="Actor's Tag:" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15"  />
+                    <TextBox Name="TextBox_Speaker_Name"  Text="{Binding Path=ActiveSpeaker.SpeakerName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" KeyUp="EnterName_Speaker_KeyUp" GotKeyboardFocus="EnterName_Speaker_GotKeyboardFocus" LostKeyboardFocus="EnterName_Speaker_LostKeyboardFocus" />
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel>
                         <TextBlock Text="TLKString:" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="Actor's named TLK string. Possibly." FontSize="15" />
@@ -244,7 +244,7 @@
                     </ComboBox>
                     <TextBlock Text="" FontSize="10"  />
                 </StackPanel>
-                <!--Node Panel-->
+           <!--Node Panel-->
                 <StackPanel Name="Node_Panel" DockPanel.Dock="Top" Visibility="Hidden">
 
                 </StackPanel>
@@ -298,8 +298,9 @@
                     </ListBox.ItemContainerStyle>
                     <ListBox.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Add New Speaker" Command="{Binding AddSpeakerCommand}" CommandParameter="Add"/>
-                            <MenuItem Header="Delete Speaker" Command="{Binding DeleteSpeakerCommand}" CommandParameter="Delete"/>
+                            <MenuItem Header="Add New Speaker" Command="{Binding AddSpeakerCommand}"/>
+                            <MenuItem Header="Delete Speaker" Command="{Binding DeleteSpeakerCommand}"/>
+                            <MenuItem Header="Rename" Command="{Binding ChangeNameCommand}" ToolTip="Rename the speaker's tag"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>

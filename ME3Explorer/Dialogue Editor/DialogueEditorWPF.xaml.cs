@@ -151,6 +151,7 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand SpeakerMoveDownCommand { get; set; }
         public ICommand AddSpeakerCommand { get; set; }
         public ICommand DeleteSpeakerCommand { get; set; }
+        public ICommand ChangeNameCommand { get; set; }
         private bool HasWwbank(object param)
         {
             return ActiveConv != null && ActiveConv.WwiseBank != 0;
@@ -172,7 +173,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private bool HasActiveSpkr()
         {
-            return ActiveSpeaker.SpeakerID >= 0;
+            return Speakers_ListBox.SelectedIndex >= 2;
         }
         #endregion Declarations
 
@@ -218,7 +219,9 @@ namespace ME3Explorer.Dialogue_Editor
             SpeakerMoveDownCommand = new RelayCommand(SpeakerMoveAction, SpkrCanMoveDown);
             AddSpeakerCommand = new GenericCommand(SpeakerAdd);
             DeleteSpeakerCommand = new GenericCommand(SpeakerDelete, HasActiveSpkr);
+            ChangeNameCommand = new GenericCommand(SpeakerGoToName, HasActiveSpkr);
         }
+
 
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
@@ -483,8 +486,8 @@ namespace ME3Explorer.Dialogue_Editor
         public void ParseSpeakers(ConversationExtended conv)
         {
             conv.Speakers = new ObservableCollectionExtended<SpeakerExtended>();
-            conv.Speakers.Add(new SpeakerExtended(-2, "player", GetFaceFX(conv, -2, true), GetFaceFX(conv, -2), 125303, "Shepard"));
-            conv.Speakers.Add(new SpeakerExtended(-1, "owner", GetFaceFX(conv, -1, true), GetFaceFX(conv, -1), 0, "No data"));
+            conv.Speakers.Add(new SpeakerExtended(-2, "player", null, null, 125303, "Shepard"));
+            conv.Speakers.Add(new SpeakerExtended(-1, "owner", null, null, 0, "No data"));
             if (CurrentConvoPackage.Game != MEGame.ME3)
             {
                 var s_speakers = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_SpeakerList");
@@ -578,9 +581,9 @@ namespace ME3Explorer.Dialogue_Editor
                 ffxPropName = "m_aMaleFaceSets";
             }
             var ffxList = conv.BioConvo.GetProp<ArrayProperty<ObjectProperty>>(ffxPropName);
-            if (ffxList != null)
+            if (ffxList != null && ffxList.Count > speakerID + 2)
             {
-                return Pcc.getEntry(ffxList[speakerID + 2].Value);
+                return Pcc.getEntry(ffxList[speakerID + 2].Value); 
             }
             else
             {
@@ -730,29 +733,11 @@ namespace ME3Explorer.Dialogue_Editor
         {
             try
             {
-                var exportUID = ActiveConv.exportUID;
-                var m_aSpeakerList = Pcc.getUExport(exportUID).GetProperty<ArrayProperty<NameProperty>>("m_aSpeakerList");
-                var m_SpeakerList = Pcc.getUExport(exportUID).GetProperty<ArrayProperty<StructProperty>>("m_SpeakerList");
-                var m_aMaleFaceSets = Pcc.getUExport(exportUID).GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleFaceSets");
-                var m_aFemaleFaceSets = Pcc.getUExport(exportUID).GetProperty<ArrayProperty<ObjectProperty>>("m_aFemaleFaceSets");
 
-
-                if (m_SpeakerList != null) //ME2 or ME1 unless oneliner.
-                {
-                    m_SpeakerList.Clear();
-                }
-                else if (m_aSpeakerList != null)
-                {
-                    m_aSpeakerList.Clear();
-                }
-                else if (m_aMaleFaceSets != null)
-                {
-                    m_aMaleFaceSets.Clear();
-                }
-                else if (m_aFemaleFaceSets != null)
-                {
-                    m_aFemaleFaceSets.Clear();
-                }
+                var m_aSpeakerList = new ArrayProperty<NameProperty>(ArrayType.Name, "m_aSpeakerList");
+                var m_SpeakerList = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_SpeakerList");
+                var m_aMaleFaceSets = new ArrayProperty<ObjectProperty>(ArrayType.Object, "m_aMaleFaceSets");
+                var m_aFemaleFaceSets = new ArrayProperty<ObjectProperty>(ArrayType.Object, "m_aFemaleFaceSets");
 
                 foreach (SpeakerExtended spkr in speakerCollection)
                 {
@@ -767,28 +752,41 @@ namespace ME3Explorer.Dialogue_Editor
                             var spkrProp = new PropertyCollection();
                             spkrProp.Add(new NameProperty("sSpeakerTag") { Value = spkr.SpeakerName });
                             spkrProp.Add(new NoneProperty());
-                            m_SpeakerList.Add(new StructProperty("BioDialogSpeaker", spkrProp, "sSpeakerTag"));
+                            m_SpeakerList.Add(new StructProperty("BioDialogSpeaker", spkrProp));
                         }
                     }
-                    if (Pcc.Game != MEGame.ME1)
+
+                    if (spkr.FaceFX_Male == null)
+                    {
+                        m_aMaleFaceSets.Add(new ObjectProperty(0));
+                    }
+                    else
                     {
                         m_aMaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Male, "m_aMaleFaceSets"));
+                    }
+                    if (spkr.FaceFX_Female == null)
+                    {
+                        m_aFemaleFaceSets.Add(new ObjectProperty(0));
+                    }
+                    else
+                    {
                         m_aFemaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Female, "m_aFemaleFaceSets"));
                     }
                 }
-                if (m_aSpeakerList != null)
+
+                if (m_aSpeakerList.Count > 0 && Pcc.Game == MEGame.ME3)
                 {
                     ActiveConv.BioConvo.AddOrReplaceProp(m_aSpeakerList);
                 }
-                else if(m_SpeakerList != null)
+                else if(m_SpeakerList.Count > 0)
                 {
                     ActiveConv.BioConvo.AddOrReplaceProp(m_SpeakerList);
                 }
-                else if (m_aMaleFaceSets != null)
+                if (m_aMaleFaceSets.Count > 0)
                 {
                     ActiveConv.BioConvo.AddOrReplaceProp(m_aMaleFaceSets);
                 }
-                else if (m_aFemaleFaceSets != null)
+                if (m_aFemaleFaceSets.Count > 0)
                 {
                     ActiveConv.BioConvo.AddOrReplaceProp(m_aFemaleFaceSets);
                 }
@@ -994,34 +992,18 @@ namespace ME3Explorer.Dialogue_Editor
         #region UIGraph
 
 
-
-        private void LoadSequence(IExportEntry seqExport, bool fromFile = true)
-        {
-
-        }
-
-        public void GetObjects(IExportEntry export)
-        {
-            CurrentObjects.ClearEx();
-            var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-            if (seqObjs != null)
-            {
-                CurrentObjects.AddRange(seqObjs.OrderBy(prop => prop.Value)
-                    .Select(prop => LoadObject(Pcc.getUExport(prop.Value))));
-            }
-        }
-
         public void GenerateGraph()
         {
-
+            CurrentObjects.ClearEx();
             graphEditor.nodeLayer.RemoveAllChildren();
             graphEditor.edgeLayer.RemoveAllChildren();
             StartPoDStarts = 0;
             StartPosActions = 0;
             StartPosVars = 0;
-            //GetObjects(SelectedSequence);
+
             float x = 0;
             float y = 0;
+
             foreach (int start in GetStartingList())
             {
                 CurrentObjects.Add(new DStart(start, CurrentLoadedExport, ActiveConv, x, y, graphEditor));
@@ -1085,7 +1067,7 @@ namespace ME3Explorer.Dialogue_Editor
             //return new SAction(export, x, y, graphEditor);4
             //}
             return null;  //DEBUG ONLY
-        }
+        } //DEBUG
 
         public bool LoadDialogueObjects()
         {
@@ -1117,7 +1099,7 @@ namespace ME3Explorer.Dialogue_Editor
             //}
 
             return true;
-        }
+        }   //DEBUG BIN
 
         public void Layout()
         {
@@ -1547,25 +1529,38 @@ namespace ME3Explorer.Dialogue_Editor
             ndlg.ShowDialog();
             if (ndlg.ResponseText == null || ndlg.ResponseText == "Actor_Tag")
                 return;
-
+            Pcc.FindNameOrAdd(ndlg.ResponseText);
             ActiveSpeakerList.Add(new SpeakerExtended(maxID + 1, ndlg.ResponseText, null, null, 0, "No Data"));
             SaveSpeakersToProperties(ActiveSpeakerList);
         }
-
         private void SpeakerDelete()
         {
-            if (ActiveSpeaker.SpeakerID < 0)
+            var deleteTarget = Speakers_ListBox.SelectedIndex;
+            if (deleteTarget < 2)
             {
                 MessageBox.Show("Owner and Player speakers cannot be deleted.", "Dialogue Editor");
                 return;
             }
 
+            string delName = ActiveSpeakerList[deleteTarget].SpeakerName;
 
+            var dlg = MessageBox.Show($"Are you sure you want to delete {delName}? ", "Warning: Speaker Deletion", MessageBoxButton.OKCancel);
+            
+            if(dlg == MessageBoxResult.Cancel)
+                return;
 
             MessageBox.Show("TODO: CHECK FOR ANY CONVERSATION NODES THAT HAVE THIS SPEAKER. AND BLOCK.", "Dialogue Editor");    //TODO: CHECK FOR ANY CONVERSATION NODES THAT HAVE THIS SPEAKER. AND BLOCK.
 
-
+            ActiveConv.Speakers.RemoveAt(deleteTarget);
+            ActiveSpeakerList.RemoveAt(deleteTarget);
+            SaveSpeakersToProperties(ActiveSpeakerList);
         }
+        private void SpeakerGoToName()
+        {
+            TextBox_Speaker_Name.Focus();
+            TextBox_Speaker_Name.CaretIndex = TextBox_Speaker_Name.Text.Length;
+        }
+
         #endregion
 
         #region UIHandling-graph
