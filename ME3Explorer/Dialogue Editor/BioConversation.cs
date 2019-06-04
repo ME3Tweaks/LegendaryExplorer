@@ -39,7 +39,7 @@ namespace ME3Explorer.Dialogue_Editor
             public int exportUID { get; set; }
 
             public PropertyCollection BioConvo { get; set; }
-
+            public IExportEntry Export { get; set; }
             public string ConvName { get; set; }
             public bool bParsed { get; set; }
             public bool bFirstParsed { get; set; }
@@ -60,21 +60,23 @@ namespace ME3Explorer.Dialogue_Editor
             /// </summary>
             public int NonSpkrFFX { get; set; }
 
-            public ConversationExtended(int exportUID, string ConvName, PropertyCollection BioConvo, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList)
+            public ConversationExtended(int exportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList)
             {
                 this.exportUID = exportUID;
                 this.ConvName = ConvName;
                 this.BioConvo = BioConvo;
+                this.Export = Export;
                 this.Speakers = Speakers;
                 this.EntryList = EntryList;
                 this.ReplyList = ReplyList;
             }
 
-            public ConversationExtended(int exportUID, string ConvName, PropertyCollection BioConvo, bool bParsed, bool bFirstParsed, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, int WwiseBank, int Sequence, int NonSpkrFFX)
+            public ConversationExtended(int exportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, bool bParsed, bool bFirstParsed, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, int WwiseBank, int Sequence, int NonSpkrFFX)
             {
                 this.exportUID = exportUID;
                 this.ConvName = ConvName;
                 this.BioConvo = BioConvo;
+                this.Export = Export;
                 this.bParsed = bParsed;
                 this.bFirstParsed = bFirstParsed;
                 this.Speakers = Speakers;
@@ -93,25 +95,28 @@ namespace ME3Explorer.Dialogue_Editor
 
 
 
-        public class SpeakerExtended : INotifyPropertyChanged
+        public class SpeakerExtended : NotifyPropertyChangedBase
         {
+            private int _speakerid;
+            public int SpeakerID { get => _speakerid; set => SetProperty(ref _speakerid, value); }
 
+            private string _speakername;
+            public string SpeakerName { get => _speakername; set => SetProperty(ref _speakername, value); }
 
-            public int SpeakerID { get; set; }
-
-            public string SpeakerName { get; set; }
-
+            private IEntry _facefx_male;
             /// <summary>
             /// Male UIndex object reference
             /// </summary>
-            public int FaceFX_Male { get; set; }
+            public IEntry FaceFX_Male { get => _facefx_male; set => SetProperty(ref _facefx_male, value); }
+            private IEntry _facefx_female;
             /// <summary>
             /// Female UIndex object reference
             /// </summary>
-            public int FaceFX_Female { get; set; }
-
-            public int StrRefID { get; set; }
-            public string FriendlyName { get; set; }
+            public IEntry FaceFX_Female { get => _facefx_female; set => SetProperty(ref _facefx_female, value); }
+            private int _strrefid;
+            public int StrRefID { get => _strrefid; set => SetProperty(ref _strrefid, value); }
+            private string _friendlyname;
+            public string FriendlyName { get => _friendlyname; set => SetProperty(ref _friendlyname, value); }
 
             public SpeakerExtended(int SpeakerID, string SpeakerName)
             {
@@ -119,7 +124,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.SpeakerName = SpeakerName;
             }
 
-            public SpeakerExtended(int SpeakerID, string SpeakerName, int FaceFX_Male, int FaceFX_Female, int StrRefID, string FriendlyName)
+            public SpeakerExtended(int SpeakerID, string SpeakerName, IEntry FaceFX_Male, IEntry FaceFX_Female, int StrRefID, string FriendlyName)
             {
                 this.SpeakerID = SpeakerID;
                 this.SpeakerName = SpeakerName;
@@ -129,11 +134,11 @@ namespace ME3Explorer.Dialogue_Editor
                 this.FriendlyName = FriendlyName;
             }
 
-            public event PropertyChangedEventHandler PropertyChanged;
-            protected void OnPropertyChanged(string name)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            }
+            //public event PropertyChangedEventHandler Speaker_PropertyChanged;
+            //protected void Speaker_OnPropertyChanged(string name)
+            //{
+            //    Speaker_PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            //}
         }
 
         public class DialogueNodeExtended : NotifyPropertyChangedBase

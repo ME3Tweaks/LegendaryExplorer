@@ -130,7 +130,7 @@
                     </DockPanel>
                     <TextBlock Name="Convo_NamePrefix" Text="Name:" HorizontalAlignment="Left" FontWeight="Bold" FontSize="10"  />
                     <TextBlock Name="Convo_Name"  Text="{Binding Path=ActiveconvName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" TextWrapping="Wrap" TextAlignment="Left" />
-                    <TextBlock Name="spacerA" Text="" HorizontalAlignment="Left" FontWeight="Bold" FontSize="10"  />
+                    <TextBlock Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Name="LevelHeader" Text="Persistant Level:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" DockPanel.Dock="Left"/>
                         <Grid DockPanel.Dock="Right" MaxWidth="50">
@@ -141,74 +141,111 @@
                                 <ColumnDefinition Width="25" />
                                 <ColumnDefinition Width="25" />
                             </Grid.ColumnDefinitions>
-                            <Button Name="OpenLevelPackEd_Button" Grid.Column="0" Command="{Binding OpenInCommand}" CommandParameter="PackEdLvl" Padding="3">
+                            <Button Name="OpenLevelPackEd_Button" Grid.Column="0" Command="{Binding OpenInCommand}" CommandParameter="PackEdLvl" Padding="3" ToolTip="Open the Actor's persistant level in Package Editor">
                                 <Button.Content>
-                                    <fa:ImageAwesome Icon="Cube" Width="16" Height="16" Foreground="DarkRed"/>
+                                    <fa:ImageAwesome Icon="Cube" Width="16" Height="16" Foreground="DarkBlue"/>
                                 </Button.Content>
                             </Button>
-                            <Button Name="OpenLevelSeqEd_Button" Grid.Column="1" Command="{Binding OpenInCommand}" CommandParameter="SeqEdLvl" Padding="3">
+                            <Button Name="OpenLevelSeqEd_Button" Grid.Column="1" Command="{Binding OpenInCommand}" CommandParameter="SeqEdLvl" Padding="3" ToolTip="Open the Actor's persistant level in Sequence Editor">
                                 <Button.Content>
-                                    <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkRed"/>
+                                    <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkBlue"/>
                                 </Button.Content>
                             </Button>
                         </Grid>
-                        <TextBlock Name="spacerA2" Text="" HorizontalAlignment="Left" FontWeight="Bold" FontSize="10"  />
+                        <TextBlock Text=""/>
                     </DockPanel>
-                    <TextBlock Name="Level_Textbox" Text="{Binding Level}"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="File with the Persistant level that uses the conversation." FontSize="15"/>
-                    <TextBlock Name="spacerB" Text="" FontSize="10"  />
+                    <TextBlock Name="Level_Textbox" Text="{Binding Level}"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="File with the Persistant level that uses the conversation" FontSize="15"/>
+                    <TextBlock Text="" />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Sequence:" Name="Data" HorizontalAlignment="Left" ToolTip="Sequence for this conversation." DockPanel.Dock="Left"/>
-                        <Button Name="OpenSeqEd_Button" Command="{Binding OpenInCommand}" CommandParameter="SeqEdNode" Padding="3" DockPanel.Dock="Right">
+                        <Button Name="OpenSeqEd_Button" Command="{Binding OpenInCommand}" CommandParameter="SeqEdNode" Padding="3" DockPanel.Dock="Right" ToolTip="Open this dialogue's sequence" >
                                 <Button.Content>
-                                <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkRed"/>
+                                <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkBlue"/>
                                 </Button.Content>
                             </Button>
-                        <TextBlock Name="spacerB2" Text=""  FontSize="10"  />
+                        <TextBlock Text="" FontSize="10" />
                     </DockPanel>
-                    <TextBlock Name="Sequence" Text="{Binding Path=ActiveconvSequence}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15"/>
-                    <TextBlock Name="spacerC" Text="" FontSize="10"  />
+                    <TextBlock Name="Sequence_TextBox" Text="{Binding Path=ActiveconvSequence}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15"/>
+                    <TextBlock Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Wwisebank:"  HorizontalAlignment="Left" ToolTip="Main conversation Wwisebank" DockPanel.Dock="Left"/>
-                        <Button Name="OpenWWbnk_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundplorerWPF">
+                        <Button Name="OpenWWbnk_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundplorerWPF" ToolTip="Open in Soundplorer">
                             <Button.Content>
-                                <fa:ImageAwesome Icon="FileAudioOutline" Width="16" Height="16" Foreground="DarkRed"/>
+                                <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
                             </Button.Content>
                         </Button>
                         <TextBlock Name="spacerC2" Text="" FontSize="10"/>
                     </DockPanel>
                     <TextBlock Name="Wwisebank" Text="{Binding Path=ActiveconvWwBank}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation audiobank" FontSize="15"/>
-                    <TextBlock Name="spacerD" Text="" FontSize="10"  />
+                    <TextBlock Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Non-Speaker Face FX AnimSet:"  HorizontalAlignment="Left" ToolTip="Conversation animations for non-speakers" DockPanel.Dock="Left"/>
-                        <Button Name="OpenFFX_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_FFXNS}" CommandParameter="FaceFXNS">
+                        <Button Name="OpenFFX_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_FFXNS}" CommandParameter="FaceFXNS" ToolTip="Open Non-speaker's AnimSet in FaceFX Editor">
                             <Button.Content>
-                                <fa:ImageAwesome Icon="Language" Width="16" Height="16" Foreground="DarkRed"/>
+                                <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
                             </Button.Content>
                         </Button>
-                        <TextBlock Name="spacerD2" Text="" FontSize="10"/>
+                        <TextBlock Text=""/>
                     </DockPanel>
                     <TextBlock Name="NSFFX" Text="{Binding Path=ActiveconvNspkrFFX}" HorizontalAlignment="Left" ToolTip="Conversation animations for non-speakers" FontSize="15"/>
                 </StackPanel>
                 <!--Speaker Panel-->
-                <StackPanel Name="Speaker_Panel" DockPanel.Dock="Top" IsEnabled="True" HorizontalAlignment="Stretch" Margin="3" Visibility="Collapsed">
-                    <TextBlock Name="Speaker_Header" VerticalAlignment="Center" Text="Speaker Details"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left"/>
+                <StackPanel Name="Speaker_Panel" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="3" Visibility="Hidden">
+                    <TextBlock Text="Speaker Details"  HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left"/>
                     <DockPanel HorizontalAlignment="Stretch">
-                        <TextBlock Name="Speaker_ID" Text="{Binding Path=SpeakerID, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="18" DockPanel.Dock="Right" Padding="5"/>
+                        <TextBlock Name="Speaker_ID" Text="{Binding Path=ActiveSpeaker.SpeakerID, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="18" DockPanel.Dock="Right" Padding="5"/>
                         <TextBlock Text="ID:" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" FontWeight="Bold" FontSize="15"/>
                     </DockPanel>
-                    <TextBlock Name="Speaker_NamePrefix" Text="Name:" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15"  />
-                    <TextBox Name="Speaker_Name"  Text="{Binding Path=SpeakerName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0"/>
-                    <TextBlock Name="spacerE" Text="" FontSize="10"  />
-                    <TextBlock Name="Speaker_TLK" Text="TLKString:"  HorizontalAlignment="Left" ToolTip="Actor's named TLK string. Possibly."/>
-                    <TextBlock Text="Friendly Name" Name="Speaker_FriendlyName" HorizontalAlignment="Left" ToolTip="Actor's name. Possibly."/>
-                    <TextBlock Name="spacerF" Text="" FontSize="10"  />
-                    <TextBlock Text="Male FaceFX Animation Set" Name="Speaker_FFXM" HorizontalAlignment="Left" ToolTip="Facial Animations for when the Player is Male"/>
-                    <TextBlock Name="spacerG" Text="" FontSize="10"  />
-                    <TextBlock Text="Female FaceFX Animation Set" Name="Speaker_FFXF" HorizontalAlignment="Left" ToolTip="Facial Animations for when the Player is Female"/>
-                    <TextBlock Name="spacerH" Text="" FontSize="10"  />
+                    <TextBlock Text="Name:" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15"  />
+                    <TextBox Name="TextBox_Speaker_Name"  Text="{Binding Path=ActiveSpeaker.SpeakerName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" KeyUp="EnterName_Speaker_KeyUp" GotKeyboardFocus="EnterName_Speaker_GotKeyboardFocus" LostKeyboardFocus="EnterName_Speaker_LostKeyboardFocus"/>
+                    <TextBlock Text="" FontSize="10"  />
+                    <DockPanel>
+                        <TextBlock Text="TLKString:" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="Actor's named TLK string. Possibly." FontSize="15" />
+                        <TextBlock Name="TextBox_Speaker_TLK" Text="{Binding Path=ActiveSpeaker.StrRefID, UpdateSourceTrigger=PropertyChanged}" FontSize="15" DockPanel.Dock="Right" HorizontalAlignment="Right" ToolTip="Actor's named TLK string. Possibly."/>
+                    </DockPanel>
+                    <TextBlock Name="TextBox_Speaker_FriendlyName" Text="{Binding Path=ActiveSpeaker.FriendlyName, UpdateSourceTrigger=PropertyChanged}" FontSize="20" HorizontalAlignment="Left" ToolTip="Actor's name. Possibly." />
+                    <TextBlock Text="" FontSize="10"  />
+                    <DockPanel HorizontalAlignment="Stretch">
+                        <TextBlock Text="Male FaceFX Animation Set:" VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Facial Animations for when the Player is Male" DockPanel.Dock="Left"/>
+                        <Button Name="Button_Spkr_OpenFFXM" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXSpkrM" ToolTip="Open this Speaker's Male AnimSet in FaceFX Editor.">
+                            <Button.Content>
+                                <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Text="" FontSize="10"/>
+                    </DockPanel>
+                    <ComboBox Name="ComboBox_Speaker_FFXM" ItemsSource="{Binding Path=FFXAnimsets}" SelectedItem="{Binding Path=ActiveSpeaker.FaceFX_Male}" HorizontalAlignment="Stretch" ToolTip="Facial Animations for when the Player is Male" Margin="3" DropDownClosed="ComboBox_Speaker_FFXM_DropDownClosed" >
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Path=ObjectName}" FontStretch="Condensed"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Text="" FontSize="10"  />
+                    <DockPanel HorizontalAlignment="Stretch">
+                        <TextBlock Text="Female FaceFX Animation Set:" VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Facial Animations for when the Player is Female" DockPanel.Dock="Left"/>
+                        <Button Name="Button_Spkr_OpenFFXF" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXSpkrF" ToolTip="Open this Speaker's Female AnimSet in FaceFX Editor.">
+                            <Button.Content>
+                                <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Text=""/>
+                    </DockPanel>
+                    <ComboBox Name="ComboBox_Speaker_FFXF" ItemsSource="{Binding Path=FFXAnimsets}" SelectedItem="{Binding Path=ActiveSpeaker.FaceFX_Female}" HorizontalAlignment="Stretch" ToolTip="Facial Animations for when the Player is Female" Margin="3" DropDownClosed="ComboBox_Speaker_FFXM_DropDownClosed" >
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Path=ObjectName}" FontStretch="Condensed"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Text="" FontSize="10"  />
                 </StackPanel>
                 <!--Node Panel-->
-                <StackPanel Name="Node_Panel" DockPanel.Dock="Top" IsEnabled="False">
+                <StackPanel Name="Node_Panel" DockPanel.Dock="Top" Visibility="Hidden">
 
                 </StackPanel>
 
@@ -259,12 +296,19 @@
                             </Style.Triggers>
                         </Style>
                     </ListBox.ItemContainerStyle>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Add New Speaker" Command="{Binding AddSpeakerCommand}" CommandParameter="Add"/>
+                            <MenuItem Header="Delete Speaker" Command="{Binding DeleteSpeakerCommand}" CommandParameter="Delete"/>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
                 </ListBox>
             </DockPanel>
             
 
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Grid.Column="0"/>
             <GridSplitter Grid.Row="0" Grid.RowSpan="3" Width="5" HorizontalAlignment="Stretch" Grid.Column="1"/>
+<!-- Startup Recents Box -->
             <Grid Column="0" Row="2">
                 <Grid.RowDefinitions>
                     <RowDefinition MinHeight="100"/>
@@ -295,7 +339,6 @@
                              <LineBreak/>
                     </TextBlock>
                 </StackPanel>
-
                 <Grid HorizontalAlignment="Center" Margin="20,0,20,15" Grid.Column="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -331,7 +374,7 @@
                                 <Grid.Style>
                                     <Style TargetType="{x:Type Grid}">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=export.EntryHasPendingChanges}" Value="true">
+                                            <DataTrigger Binding="{Binding Path=Export.EntryHasPendingChanges}" Value="true">
                                                 <Setter Property="Background" Value="Yellow"/>
                                                 <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
                                             </DataTrigger>
@@ -366,6 +409,7 @@
                     </ListBox.ContextMenu>
                 </ListBox>
                 <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"/>
+<!--Tab Control -->
                 <TabControl TabStripPlacement="Left"  Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}">
                     <TabControl.Resources>
                         <Style TargetType="{x:Type TabItem}">

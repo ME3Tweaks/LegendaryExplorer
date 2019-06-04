@@ -64,34 +64,9 @@ namespace ME3Explorer.Dialogue_Editor
         public IExportEntry CurrentLoadedExport;
         public IMEPackage CurrentConvoPackage;
         public ObservableCollectionExtended<SpeakerExtended> ActiveSpeakerList { get; } = new ObservableCollectionExtended<SpeakerExtended>();
-
+        public ObservableCollectionExtended<IEntry> FFXAnimsets { get; } = new ObservableCollectionExtended<IEntry>();
         //SPEAKERS
-        public int ActiveSpeaker = -1; //Link to speakers box
-        private string _speakerName;
-        public string SpeakerName
-        {
-            get => _speakerName;
-            set => SetProperty(ref _speakerName, value);
-        }
-
-        private int _speakerID;
-        public int SpeakerID
-        {
-            get => _speakerID;
-            set => SetProperty(ref _speakerID, value);
-        }
-        private int _speakerFFXM;
-        public int SpeakerFFXM
-        {
-            get => _speakerFFXM;
-            set => SetProperty(ref _speakerFFXM, value);
-        }
-        private int _speakerFFXF;
-        public int SpeakerFFXF
-        {
-            get => _speakerFFXF;
-            set => SetProperty(ref _speakerFFXF, value);
-        }
+        public SpeakerExtended ActiveSpeaker { get; } = new SpeakerExtended(-3, "None", null, null, 0, "Not found"); //Link to speakers box
 
         #region ConvoBox //Conversation Box Links
         public ConversationExtended ActiveConv = null;
@@ -174,7 +149,8 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand OpenInCommand_FFXNS { get; set; }
         public ICommand SpeakerMoveUpCommand { get; set; }
         public ICommand SpeakerMoveDownCommand { get; set; }
-
+        public ICommand AddSpeakerCommand { get; set; }
+        public ICommand DeleteSpeakerCommand { get; set; }
         private bool HasWwbank(object param)
         {
             return ActiveConv != null && ActiveConv.WwiseBank != 0;
@@ -187,14 +163,17 @@ namespace ME3Explorer.Dialogue_Editor
 
         private bool SpkrCanMoveUp(object param)
         {
-            return ActiveSpeakerList != null && ActiveSpeaker > 0;
+            return ActiveSpeakerList != null && ActiveSpeaker.SpeakerID > 0;
         }
 
         private bool SpkrCanMoveDown(object param)
         {
-            return ActiveSpeakerList != null && ActiveSpeaker >= 0;
+            return ActiveSpeakerList != null && ActiveSpeaker.SpeakerID >= 0;
         }
-
+        private bool HasActiveSpkr()
+        {
+            return ActiveSpeaker.SpeakerID >= 0;
+        }
         #endregion Declarations
 
         #region Startup/Exit
@@ -224,7 +203,6 @@ namespace ME3Explorer.Dialogue_Editor
             ExportQueuedForFocusing = export;
         }
 
-
         private void LoadCommands()
         {
             OpenCommand = new GenericCommand(OpenPackage);
@@ -237,9 +215,10 @@ namespace ME3Explorer.Dialogue_Editor
             OpenInCommand_FFXNS = new RelayCommand(OpenInAction, HasFFXNS);
             OpenInCommand_Wwbank = new RelayCommand(OpenInAction, HasWwbank);
             SpeakerMoveUpCommand = new RelayCommand(SpeakerMoveAction, SpkrCanMoveUp);
-            SpeakerMoveDownCommand = new RelayCommand(SpeakerMoveAction, SpkrCanMoveDown); ;
+            SpeakerMoveDownCommand = new RelayCommand(SpeakerMoveAction, SpkrCanMoveDown);
+            AddSpeakerCommand = new GenericCommand(SpeakerAdd);
+            DeleteSpeakerCommand = new GenericCommand(SpeakerDelete, HasActiveSpkr);
         }
-
 
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
@@ -340,11 +319,6 @@ namespace ME3Explorer.Dialogue_Editor
             return Pcc != null;
         }
 
-        public bool HasActiveConv()
-        {
-            return ActiveConv != null && Pcc != null;
-        }
-
         public void LoadFile(string fileName)
         {
             try
@@ -374,7 +348,7 @@ namespace ME3Explorer.Dialogue_Editor
                 RefreshRecent(true, RFiles);
 
                 Title = $"Dialogue Editor WPF - {fileName}";
-                StatusText = null; //no status
+                StatusText = null; 
 
                 Level = Path.GetFileName(Pcc.FileName);
                 if (Pcc.Game != MEGame.ME1)
@@ -384,6 +358,14 @@ namespace ME3Explorer.Dialogue_Editor
                 else
                 {
                     Level = $"{Level.Remove(Level.Length - 4)}_LOC_INT{Path.GetExtension(Pcc.FileName)}";
+                }
+
+                //Build Animset list //DEBUG 
+                //Must be done on this thread not on Background worker....
+                FFXAnimsets.ClearEx();
+                foreach (var exp in Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAnimSet"))
+                {
+                    FFXAnimsets.Add(exp);
                 }
 
             }
@@ -415,10 +397,8 @@ namespace ME3Explorer.Dialogue_Editor
 
         public static void PushConvoToFile(ConversationExtended convo)
         {
-            //var Pcc = convo.export.FileRef;
-            //var newprops = convo.export.GetProperties();
-            //Pcc.getUExport(convo.export.UIndex).WriteProperties(newprops);
-            
+            convo.Export.WriteProperties(convo.BioConvo);
+
         }
         #endregion Startup/Exit
 
@@ -428,9 +408,8 @@ namespace ME3Explorer.Dialogue_Editor
             Conversations.ClearEx();
             foreach (var exp in Pcc.Exports.Where(exp => exp.ClassName.Equals("BioConversation")))
             {
-                Conversations.Add(new ConversationExtended(exp.UIndex, exp.ObjectName, exp.GetProperties(), new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>()));
+                Conversations.Add(new ConversationExtended(exp.UIndex, exp.ObjectName, exp.GetProperties(), exp, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>()));
             }
-
         }
 
         private void FirstParse()
@@ -446,6 +425,9 @@ namespace ME3Explorer.Dialogue_Editor
                 ParseWwiseBank(ActiveConv);
                 ActiveConv.bFirstParsed = true;
             }
+
+
+
 
             BackParser = new BackgroundWorker()
             {
@@ -487,12 +469,15 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
             
+            
+
         }
 
         private void BackParser_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            //DEBUG 
             BackParser.CancelAsync();
+
+
         }
 
         public void ParseSpeakers(ConversationExtended conv)
@@ -581,11 +566,11 @@ namespace ME3Explorer.Dialogue_Editor
         }
 
         /// <summary>
-        /// Returns the Uindex of FaceFXAnimSet
+        /// Returns the IEntry of FaceFXAnimSet
         /// </summary>
         /// <param name="speakerID">SpeakerID -1 = Owner, -2 = Player</param>
         /// <param name="isMale">will pull female by default</param>
-        public int GetFaceFX(ConversationExtended conv, int speakerID, bool isMale = false)
+        public IEntry GetFaceFX(ConversationExtended conv, int speakerID, bool isMale = false)
         {
             string ffxPropName = "m_aFemaleFaceSets"; //ME2/M£3
             if (isMale)
@@ -595,11 +580,11 @@ namespace ME3Explorer.Dialogue_Editor
             var ffxList = conv.BioConvo.GetProp<ArrayProperty<ObjectProperty>>(ffxPropName);
             if (ffxList != null)
             {
-                return ffxList[speakerID + 2].Value;
+                return Pcc.getEntry(ffxList[speakerID + 2].Value);
             }
             else
             {
-                return 0;
+                return null;
             }
         }
 
@@ -650,49 +635,51 @@ namespace ME3Explorer.Dialogue_Editor
         /// </summary>
         public void ParseWwiseBank(ConversationExtended conv)
         {
-            if (CurrentConvoPackage.Game != MEGame.ME1)
+            conv.WwiseBank = 0;
+            try
             {
-                try
+                IEntry ffxo = GetFaceFX(conv, -1, true); //find owner animset
+                if (!Pcc.isUExport(ffxo.UIndex))
+                    return;
+                IExportEntry ffxoExport = ffxo as IExportEntry;
+
+                var wwevents = ffxoExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull a wwiseevent array
+                if (wwevents == null)
                 {
-                    var ffxo = GetFaceFX(conv, -1, true); //find owner animset
-                    var wwevents = CurrentConvoPackage.getUExport(ffxo).GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull a wwiseevent array
-                    if (wwevents == null)
+                    IEntry ffxp = GetFaceFX(conv, -2, true); //find player as alternative
+                    if (!Pcc.isUExport(ffxo.UIndex))
+                        return;
+                    IExportEntry ffxpExport = ffxp as IExportEntry;
+                    wwevents = ffxpExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+                }
+
+                if (Pcc.Game == MEGame.ME3)
+                {
+                    StructProperty r = CurrentConvoPackage.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
+                    var bank = r.GetProp<ObjectProperty>("Bank");
+                    conv.WwiseBank = bank.Value;
+                }
+                else if(Pcc.Game == MEGame.ME2) //Game is ME2.  Wwisebank ref in Binary.
+                {
+                    var data = Pcc.getUExport(wwevents[0].Value).getBinaryData();
+                    int binarypos = 4;
+                    int count = BitConverter.ToInt32(data, binarypos);
+                    if (count > 0)
                     {
-                        ffxo = GetFaceFX(conv, -2, true); //find player as alternative
-                        wwevents = Pcc.getUExport(ffxo).GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
-                    }
-                    if (Pcc.Game == MEGame.ME3)
-                    {
-                        StructProperty r = CurrentConvoPackage.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
-                        var bank = r.GetProp<ObjectProperty>("Bank");
-                        conv.WwiseBank = bank.Value;
-                    }
-                    else //Game is ME2.  Wwisebank ref in Binary.
-                    {
-                        var data = Pcc.getUExport(wwevents[0].Value).getBinaryData();
-                        int binarypos = 4;
-                        int count = BitConverter.ToInt32(data, binarypos);
-                        if (count > 0)
+                        binarypos += 4;
+                        int bnkcount = BitConverter.ToInt32(data, binarypos);
+                        if (bnkcount > 0)
                         {
                             binarypos += 4;
-                            int bnkcount = BitConverter.ToInt32(data, binarypos);
-                            if (bnkcount > 0)
-                            {
-                                binarypos += 4;
-                                int bank = BitConverter.ToInt32(data, binarypos);
-                                conv.WwiseBank = bank;
-                            }
+                            int bank = BitConverter.ToInt32(data, binarypos);
+                            conv.WwiseBank = bank;
                         }
                     }
                 }
-                catch
-                {
-                    conv.WwiseBank = 0;
-                }
             }
-            else
+            catch
             {
-                conv.WwiseBank = 0;
+                //ignore
             }
         }
 
@@ -723,7 +710,6 @@ namespace ME3Explorer.Dialogue_Editor
             return 0;
         }
 
-
         public List<int> GetStartingList()
         {
             List<int> startList = new List<int>();
@@ -744,36 +730,69 @@ namespace ME3Explorer.Dialogue_Editor
         {
             try
             {
-                if (Pcc.Game != MEGame.ME3)
-                {
+                var exportUID = ActiveConv.exportUID;
+                var m_aSpeakerList = Pcc.getUExport(exportUID).GetProperty<ArrayProperty<NameProperty>>("m_aSpeakerList");
+                var m_SpeakerList = Pcc.getUExport(exportUID).GetProperty<ArrayProperty<StructProperty>>("m_SpeakerList");
+                var m_aMaleFaceSets = Pcc.getUExport(exportUID).GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleFaceSets");
+                var m_aFemaleFaceSets = Pcc.getUExport(exportUID).GetProperty<ArrayProperty<ObjectProperty>>("m_aFemaleFaceSets");
 
+
+                if (m_SpeakerList != null) //ME2 or ME1 unless oneliner.
+                {
+                    m_SpeakerList.Clear();
                 }
-                else
+                else if (m_aSpeakerList != null)
                 {
-                    var exportUID = ActiveConv.exportUID;
-                    var m_aSpeakerList = Pcc.getUExport(exportUID).GetProperty<ArrayProperty<NameProperty>>("m_aSpeakerList");
-                    var m_aMaleFaceSets = Pcc.getUExport(exportUID).GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleFaceSets");
-                    var m_aFemaleFaceSets = Pcc.getUExport(exportUID).GetProperty<ArrayProperty<ObjectProperty>>("m_aFemaleFaceSets");
-
                     m_aSpeakerList.Clear();
+                }
+                else if (m_aMaleFaceSets != null)
+                {
                     m_aMaleFaceSets.Clear();
+                }
+                else if (m_aFemaleFaceSets != null)
+                {
                     m_aFemaleFaceSets.Clear();
-                    foreach (SpeakerExtended spkr in speakerCollection)
+                }
+
+                foreach (SpeakerExtended spkr in speakerCollection)
+                {
+                    if (spkr.SpeakerID >= 0)
                     {
-                        if (spkr.SpeakerID >= 0)
+                        if(Pcc.Game == MEGame.ME3)
                         {
                             m_aSpeakerList.Add(new NameProperty("m_aSpeakerList") { Value = spkr.SpeakerName });
                         }
-
+                        else
+                        {
+                            var spkrProp = new PropertyCollection();
+                            spkrProp.Add(new NameProperty("sSpeakerTag") { Value = spkr.SpeakerName });
+                            spkrProp.Add(new NoneProperty());
+                            m_SpeakerList.Add(new StructProperty("BioDialogSpeaker", spkrProp, "sSpeakerTag"));
+                        }
+                    }
+                    if (Pcc.Game != MEGame.ME1)
+                    {
                         m_aMaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Male, "m_aMaleFaceSets"));
                         m_aFemaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Female, "m_aFemaleFaceSets"));
                     }
-
-                    ActiveConv.BioConvo.AddOrReplaceProp(m_aSpeakerList);
-                    ActiveConv.BioConvo.AddOrReplaceProp(m_aMaleFaceSets);
-                    ActiveConv.BioConvo.AddOrReplaceProp(m_aFemaleFaceSets);
-                    CurrentLoadedExport.WriteProperties(ActiveConv.BioConvo);
                 }
+                if (m_aSpeakerList != null)
+                {
+                    ActiveConv.BioConvo.AddOrReplaceProp(m_aSpeakerList);
+                }
+                else if(m_SpeakerList != null)
+                {
+                    ActiveConv.BioConvo.AddOrReplaceProp(m_SpeakerList);
+                }
+                else if (m_aMaleFaceSets != null)
+                {
+                    ActiveConv.BioConvo.AddOrReplaceProp(m_aMaleFaceSets);
+                }
+                else if (m_aFemaleFaceSets != null)
+                {
+                    ActiveConv.BioConvo.AddOrReplaceProp(m_aFemaleFaceSets);
+                }
+                PushConvoToFile(ActiveConv);
             }
             catch (Exception e)
             {
@@ -795,40 +814,50 @@ namespace ME3Explorer.Dialogue_Editor
             IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
                                                                             x.change != PackageChange.ImportAdd &&
                                                                             x.change != PackageChange.Names);
-            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (ActiveConv != null && updatedExports.Contains(CurrentLoadedExport.Index))
+
+            if (ActiveConv != null && CurrentLoadedExport.ClassName != "BioConversation")
             {
                 //loaded convo is no longer a convo
-                if (CurrentLoadedExport.ClassName != "BioConversation")
-                {
-                    ActiveConv = null;
-                    ActiveSpeakerList.ClearEx();
-                    Conversations_ListBox.SelectedIndex = -1;
-                    graphEditor.nodeLayer.RemoveAllChildren();
-                    graphEditor.edgeLayer.RemoveAllChildren();
-                    Properties_InterpreterWPF.UnloadExport();
-                    LoadConversations();
-                }
-
-                FirstParse();
-                RefreshView();
-
+                ActiveConv = null;
+                ActiveSpeakerList.ClearEx();
+                Conversations_ListBox.SelectedIndex = -1;
+                graphEditor.nodeLayer.RemoveAllChildren();
+                graphEditor.edgeLayer.RemoveAllChildren();
+                Properties_InterpreterWPF.UnloadExport();
+                LoadConversations();
                 return;
             }
 
-            //if (updatedExports.Intersect(CurrentObjects.Select(obj => obj.Index)).Any())
-            //{
-            //    RefreshView();
-            //}
-
-            foreach (var i in updatedExports)
+            if(relevantUpdates.Select(x => x.index).Where(update => Pcc.getExport(update).ClassName == "FaceFXAnimSet").Any())
             {
-                //if (Pcc.getExport(i).IsSequence())
-                //{
-                //    LoadSequences();
-                //    break;
-                //}
+                FFXAnimsets.ClearEx();
+                foreach (var exp in Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAnimSet"))
+                {
+                    FFXAnimsets.Add(exp);
+                }
             }
+
+            List<int> updatedConvos = relevantUpdates.Select(x => x.index).Where(update => Pcc.getExport(update).ClassName == "BioConversation").ToList();
+            if (updatedConvos.IsEmpty())
+                return;
+
+            int cSelectedIdx = Conversations_ListBox.SelectedIndex;
+            int sSelectedIdx = Speakers_ListBox.SelectedIndex;
+            foreach (var uxp in updatedConvos)
+            {
+                var exp = Pcc.getExport(uxp);
+                int index = Conversations.FindIndex(i => i.exportUID == exp.UIndex);  //Can remove this nested loop?  How?
+                Conversations.RemoveAt(index);
+                Conversations.Insert(index, new ConversationExtended(exp.UIndex, exp.ObjectName, exp.GetProperties(), exp, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>()));
+            }
+
+            FirstParse();
+            RefreshView();
+            Conversations_ListBox.SelectedIndex = cSelectedIdx;
+            Speakers_ListBox.SelectedIndex = sSelectedIdx;
+
+            return;
+
         }
         #endregion Handling-events
 
@@ -1291,7 +1320,6 @@ namespace ME3Explorer.Dialogue_Editor
         }
         #endregion UIGraph 
 
-
         #region UIHandling-boxes
         private void ConversationList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -1382,7 +1410,6 @@ namespace ME3Explorer.Dialogue_Editor
             //panToSelection = true;
             graphEditor.Refresh();
         }
-
         private void Convo_ListBox_MouseEnter(object sender, MouseEventArgs e)
         {
             Speaker_Panel.Visibility = Visibility.Collapsed;
@@ -1396,10 +1423,23 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 if (Speakers_ListBox.SelectedIndex >= 0)
                 {
-                    ActiveSpeaker = Speakers_ListBox.SelectedIndex - 2;
-                    var newspeaker = ActiveSpeakerList.First(spkr => spkr.SpeakerID == ActiveSpeaker);
-                    SpeakerID = newspeaker.SpeakerID;
-                    SpeakerName = newspeaker.SpeakerName;
+                    var newspeaker = ActiveSpeakerList.First(spkr => spkr.SpeakerID == Speakers_ListBox.SelectedIndex - 2);
+
+                    ActiveSpeaker.SpeakerID = newspeaker.SpeakerID;
+                    ActiveSpeaker.SpeakerName = newspeaker.SpeakerName;
+                    ActiveSpeaker.FaceFX_Male = newspeaker.FaceFX_Male;
+                    ActiveSpeaker.FaceFX_Female = newspeaker.FaceFX_Female;
+                    ActiveSpeaker.StrRefID = newspeaker.StrRefID;
+                    ActiveSpeaker.FriendlyName = newspeaker.FriendlyName;
+
+                    if(ActiveSpeaker.SpeakerID < 0)
+                    {
+                        TextBox_Speaker_Name.IsEnabled = false;
+                    }
+                    else
+                    {
+                        TextBox_Speaker_Name.IsEnabled = true;
+                    }
                     Speaker_Panel.Visibility = Visibility.Visible;
                     Convo_Panel.Visibility = Visibility.Collapsed;
                     Node_Panel.Visibility = Visibility.Collapsed;
@@ -1407,12 +1447,12 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 else
                 {
-                    Speaker_Panel.IsEnabled = false;
-                    ActiveSpeaker = -1;
+                   
+                    ActiveSpeaker.SpeakerID = -3;
+                    ActiveSpeaker.SpeakerName = "None";
                 }
             }
         }
-
         private void SpeakerMoveAction(object obj)
         {
             SpkrUpButton.IsEnabled = false;
@@ -1429,7 +1469,7 @@ namespace ME3Explorer.Dialogue_Editor
             Speakers_ListBox.SelectedIndex = -1;
 
             var OldSpkrList = new ObservableCollectionExtended<SpeakerExtended>(ActiveSpeakerList);
-            ActiveSpeakerList.Clear();
+            ActiveSpeakerList.ClearEx();
 
             var itemToMove = OldSpkrList[selectedIndex];
             itemToMove.SpeakerID = selectedIndex + n - 2;
@@ -1447,9 +1487,33 @@ namespace ME3Explorer.Dialogue_Editor
             SpkrDownButton.IsEnabled = true;
             SaveSpeakersToProperties(ActiveSpeakerList);
         }
+        private void ComboBox_Speaker_FFXM_DropDownClosed(object sender, EventArgs e)
+        {
+            var ffxMaleNew = ActiveSpeaker.FaceFX_Male;
+            var ffxMaleOld = ActiveSpeakerList[ActiveSpeaker.SpeakerID + 2].FaceFX_Male;
+            var ffxFemaleNew = ActiveSpeaker.FaceFX_Female;
+            var ffxFemaleOld = ActiveSpeakerList[ActiveSpeaker.SpeakerID + 2].FaceFX_Female;
+            if (ffxMaleNew == ffxMaleOld && ffxFemaleNew == ffxFemaleOld)
+                return;
 
+            System.Media.SystemSounds.Question.Play();
+            var dlg = MessageBox.Show("Are you sure you want to change this speaker's facial animation set? (Not recommended)", "WARNING", MessageBoxButton.OKCancel);
+            if (dlg == MessageBoxResult.Cancel)
+            {
+                ActiveSpeaker.FaceFX_Male = ffxMaleOld;
+                ActiveSpeaker.FaceFX_Female = ffxFemaleOld;
+                return;
+            }
 
-        private void NameIndex_TextBox_KeyDown(object sender, KeyEventArgs e)
+                
+
+            ActiveSpeakerList[ActiveSpeaker.SpeakerID + 2].FaceFX_Male = ffxMaleNew;
+            ActiveSpeakerList[ActiveSpeaker.SpeakerID + 2].FaceFX_Female = ffxFemaleNew;
+
+            SaveSpeakersToProperties(ActiveSpeakerList);
+
+        }
+        private void EnterName_Speaker_KeyUp(object sender, KeyEventArgs e)
         {
             if(e.Key == Key.Enter)
             {
@@ -1460,12 +1524,48 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 else
                 {
-
+                    Keyboard.ClearFocus();
+                    ActiveSpeakerList[Speakers_ListBox.SelectedIndex].SpeakerName = ActiveSpeaker.SpeakerName;
+                    SaveSpeakersToProperties(ActiveSpeakerList);
                 }
             }
         }
+        private void EnterName_Speaker_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            TextBox_Speaker_Name.BorderThickness = new Thickness(2, 2, 2, 2);
+            TextBox_Speaker_Name.Background = System.Windows.Media.Brushes.GhostWhite;
+        }
+        private void EnterName_Speaker_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            TextBox_Speaker_Name.BorderThickness = new Thickness(0, 0, 0, 0);
+            TextBox_Speaker_Name.Background = System.Windows.Media.Brushes.White;
+        }
+        private void SpeakerAdd()
+        {
+            int maxID = ActiveSpeakerList.Max(x => x.SpeakerID);
+            var ndlg = new PromptDialog("Enter the new actors tag", "Add a speaker", "Actor_Tag");
+            ndlg.ShowDialog();
+            if (ndlg.ResponseText == null || ndlg.ResponseText == "Actor_Tag")
+                return;
+
+            ActiveSpeakerList.Add(new SpeakerExtended(maxID + 1, ndlg.ResponseText, null, null, 0, "No Data"));
+            SaveSpeakersToProperties(ActiveSpeakerList);
+        }
+
+        private void SpeakerDelete()
+        {
+            if (ActiveSpeaker.SpeakerID < 0)
+            {
+                MessageBox.Show("Owner and Player speakers cannot be deleted.", "Dialogue Editor");
+                return;
+            }
 
 
+
+            MessageBox.Show("TODO: CHECK FOR ANY CONVERSATION NODES THAT HAVE THIS SPEAKER. AND BLOCK.", "Dialogue Editor");    //TODO: CHECK FOR ANY CONVERSATION NODES THAT HAVE THIS SPEAKER. AND BLOCK.
+
+
+        }
         #endregion
 
         #region UIHandling-graph
@@ -2255,6 +2355,26 @@ namespace ME3Explorer.Dialogue_Editor
                 case "FaceFXNS":
                     OpenInToolkit("FaceFXEditor", ActiveConv.NonSpkrFFX);
                     break;
+                case "FaceFXSpkrM":
+                    if(Pcc.isUImport(ActiveSpeaker.FaceFX_Male.UIndex))
+                    {
+                        OpenInToolkit("FaceFXEditor", 0, Level); //CAN SEND TO THE CORRECT EXPORT IN THE NEW FILE LOAD?
+                    }
+                    else
+                    {
+                        OpenInToolkit("FaceFXEditor", ActiveSpeaker.FaceFX_Male.UIndex);
+                    }
+                    break;
+                case "FaceFXSpkrF":
+                    if (Pcc.isUImport(ActiveSpeaker.FaceFX_Female.UIndex))
+                    {
+                        OpenInToolkit("FaceFXEditor", 0, Level);
+                    }
+                    else
+                    {
+                        OpenInToolkit("FaceFXEditor", ActiveSpeaker.FaceFX_Female.UIndex);
+                    }
+                    break;
                 default:
                     OpenInToolkit(tool);
                     break;
@@ -2361,6 +2481,11 @@ namespace ME3Explorer.Dialogue_Editor
                 Application.Current.Windows.OfType<TlkManagerNS.TLKManagerWPF>().First().Focus();
             }
         }
+
+
+
+
+
 
 
 
