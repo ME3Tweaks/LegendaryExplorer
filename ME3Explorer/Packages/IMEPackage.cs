@@ -8,7 +8,8 @@ namespace ME3Explorer.Packages
 {
     public enum MEGame
     {
-        ME1 = 1,
+        Unknown = 0,
+        ME1,
         ME2,
         ME3,
         UDK

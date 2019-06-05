@@ -240,6 +240,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Dialogue Dumper",
+                type = typeof(DialogueDumper.DialogueDumper),
+                icon = Application.Current.FindResource("iconDialogueDumper") as ImageSource,
+                open = () =>
+                {
+                    (new DialogueDumper.DialogueDumper()).Show();
+                },
+                tags = new List<string> { "utility", "convo", "dialogue", "text", "dump" },
+                subCategory = "Utilities",
+                description = "Dialogue Dumper is a utility for dumping conversation strings from games into an excel file. It shows the actor that spoke the line and which file the line is taken from. It also produces a table of who owns which conversation, for those that the owner is anonymous."
+            });
+            set.Add(new Tool
+            {
                 name = "Plot Database",
                 type = typeof(PlotVarDB.PlotVarDB),
                 icon = Application.Current.FindResource("iconPlotDatabase") as ImageSource,
