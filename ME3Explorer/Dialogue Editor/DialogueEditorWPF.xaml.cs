@@ -126,15 +126,15 @@ namespace ME3Explorer.Dialogue_Editor
 
         public static readonly string DialogueEditorDataFolder = Path.Combine(App.AppDataFolder, @"DialogueEditor\");
 
-        private string _statusText;
-        public string StatusText
+        private string _statuDText;
+        public string StatuDText
         {
-            get => _statusText;
-            set => SetProperty(ref _statusText, $"{CurrentFile} {value}");
+            get => _statuDText;
+            set => SetProperty(ref _statuDText, $"{CurrentFile} {value}");
         }
 
         public float StartPoDStarts;
-        public float StartPosActions;
+        public float StartPoDiagNodes;
         public float StartPosVars;
 
         public ICommand OpenCommand { get; set; }
@@ -182,7 +182,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Dialogue Editor WPF", new WeakReference(this));
             LoadCommands();
-            StatusText = "Select package file to load";
+            StatuDText = "Select package file to load";
             InitializeComponent();
 
             LoadRecentList();
@@ -351,7 +351,7 @@ namespace ME3Explorer.Dialogue_Editor
                 RefreshRecent(true, RFiles);
 
                 Title = $"Dialogue Editor WPF - {fileName}";
-                StatusText = null; 
+                StatuDText = null; 
 
                 Level = Path.GetFileName(Pcc.FileName);
                 if (Pcc.Game != MEGame.ME1)
@@ -395,7 +395,7 @@ namespace ME3Explorer.Dialogue_Editor
             graphEditor.edgeLayer.RemoveAllChildren();
             CurrentFile = null;
             UnLoadMEPackage();
-            StatusText = "Select a package file to load";
+            StatuDText = "Select a package file to load";
         }
 
         public static void PushConvoToFile(ConversationExtended convo)
@@ -524,16 +524,18 @@ namespace ME3Explorer.Dialogue_Editor
                 var entryprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
                 foreach (StructProperty Node in entryprop)
                 {
-                    int SpeakerIndex = Node.GetProp<IntProperty>("nSpeakerIndex");
-                    int LineStrRef = Node.GetProp<StringRefProperty>("srText").Value;
-                    string Line = GlobalFindStrRefbyID(LineStrRef, CurrentConvoPackage.Game);
-
-                    conv.EntryList.Add(new DialogueNodeExtended(Node, SpeakerIndex, LineStrRef, Line));
+                    int speakerindex = Node.GetProp<IntProperty>("nSpeakerIndex");
+                    int linestrref = Node.GetProp<StringRefProperty>("srText").Value;
+                    string line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage.Game);
+                    int cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
+                    int stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
+                    bool bcond = Node.GetProp<BoolProperty>("bFireConditional");
+                    conv.EntryList.Add(new DialogueNodeExtended(Node, false, speakerindex, linestrref, line, bcond, cond, stevent));
                 }
             }
-            catch
+            catch (Exception e)
             {
-
+                throw new Exception("Entry List Parse failed", e);
             }
         }
 
@@ -545,16 +547,18 @@ namespace ME3Explorer.Dialogue_Editor
                 var replyprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");
                 foreach (StructProperty Node in replyprop)
                 {
-                    int SpeakerIndex = Node.GetProp<IntProperty>("nSpeakerIndex");
-                    int LineStrRef = Node.GetProp<StringRefProperty>("srText").Value;
-                    string Line = GlobalFindStrRefbyID(LineStrRef, CurrentConvoPackage.Game);
-
-                    conv.ReplyList.Add(new DialogueNodeExtended(Node, SpeakerIndex, LineStrRef, Line));
+                    int speakerindex = -2;
+                    int linestrref = Node.GetProp<StringRefProperty>("srText").Value;
+                    string line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage.Game);
+                    int cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
+                    int stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
+                    bool bcond = Node.GetProp<BoolProperty>("bFireConditional");
+                    conv.ReplyList.Add(new DialogueNodeExtended(Node, true, speakerindex, linestrref, line, bcond, cond, stevent));
                 }
             }
-            catch
+            catch(Exception e)
             {
-
+                throw new Exception("Reply List Parse failed", e);
             }
         }
 
@@ -613,7 +617,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
         /// <summary>
-        /// Returns the Uindex of NonSpeaker FaceFX
+        /// Sets the Uindex of NonSpeaker FaceFX
         /// </summary>
         public void ParseNSFFX(ConversationExtended conv)
         {
@@ -991,24 +995,19 @@ namespace ME3Explorer.Dialogue_Editor
 
         #region UIGraph
 
-
         public void GenerateGraph()
         {
             CurrentObjects.ClearEx();
             graphEditor.nodeLayer.RemoveAllChildren();
             graphEditor.edgeLayer.RemoveAllChildren();
             StartPoDStarts = 0;
-            StartPosActions = 0;
+            StartPoDiagNodes = 0;
             StartPosVars = 0;
+            if (ActiveConv == null)
+                return;
 
-            float x = 0;
-            float y = 0;
 
-            foreach (int start in GetStartingList())
-            {
-                CurrentObjects.Add(new DStart(start, CurrentLoadedExport, ActiveConv, x, y, graphEditor));
-                x += 100;
-            }
+            LoadDialogueObjects();
             Layout();
             foreach (DObj o in CurrentObjects)
             {
@@ -1030,7 +1029,6 @@ namespace ME3Explorer.Dialogue_Editor
             //    }
             //}
         }
-
 
 
         public DObj LoadObject(IExportEntry export)
@@ -1064,42 +1062,42 @@ namespace ME3Explorer.Dialogue_Editor
             //}
             //else //if (s.StartsWith("BioSeqAct_") || s.StartsWith("SeqAct_") || s.StartsWith("SFXSeqAct_") || s.StartsWith("SeqCond_") || pcc.getExport(index).ClassName == "Sequence" || pcc.getExport(index).ClassName == "SequenceReference")
             //{
-            //return new SAction(export, x, y, graphEditor);4
+            //return new DiagNode(export, x, y, graphEditor);4
             //}
             return null;  //DEBUG ONLY
         } //DEBUG
 
         public bool LoadDialogueObjects()
         {
-            //float StartPosDialog = 0;
-            //try
-            //{
-            //    foreach (DObj obj in CurrentObjects)
-            //    {
-            //        if (obj.Export.ObjectName.StartsWith("BioSeqEvt_ConvNode"))
-            //        {
-            //            obj.SetOffset(StartPosDialog, 600); //Startconv event
-            //            SAction interp = (SAction)CurrentObjects.First(o => o.UIndex == ((DStart)obj).Outlinks[0].Links[0]);
-            //            interp.SetOffset(StartPosDialog + 150, 600); //Interp
-            //            CurrentObjects.First(o => o.UIndex == interp.Varlinks[0].Links[0]).SetOffset(StartPosDialog + 165, 770); //Interpdata
-            //            StartPosDialog += interp.Width + 200;
-            //            CurrentObjects.First(o => o.UIndex == interp.Outlinks[0].Links[0]).SetOffset(StartPosDialog, 600); //Endconv node
-            //            StartPosDialog += 270;
-            //        }
-            //    }
 
-            //    foreach (SeqEdEdge edge in graphEditor.edgeLayer)
-            //        ConvGraphEditor.UpdateEdge(edge);
-            //}
-            //catch (Exception)
-            //{
-            //    foreach (SeqEdEdge edge in graphEditor.edgeLayer)
-            //        ConvGraphEditor.UpdateEdge(edge);
-            //    return false;
-            //}
+            float x = 0;
+            float y = 0;
+            float xn = 100; //Amount vertical nodes increment by.
+            foreach (int start in GetStartingList())
+            {
+                x = start.ToSingle() * 100;
+                CurrentObjects.Add(new DStart(start, CurrentLoadedExport, ActiveConv, x, y, graphEditor));
+                
+            }
+
+            x = 0;
+            y = 200;
+            foreach(var entry in ActiveConv.EntryList)
+            {
+                CurrentObjects.Add(new DiagNode(CurrentLoadedExport, ActiveConv, entry, x, y, graphEditor));
+                x += xn;
+            }
+
+            x = 0;
+            y = 500;
+            foreach (var reply in ActiveConv.ReplyList)
+            {
+                CurrentObjects.Add(new DiagNode(CurrentLoadedExport, ActiveConv, reply, x, y, graphEditor));
+                x += xn;
+            }
 
             return true;
-        }   //DEBUG BIN
+        }  
 
         public void Layout()
         {
@@ -1145,9 +1143,9 @@ namespace ME3Explorer.Dialogue_Editor
                                 obj.Layout(0, StartPoDStarts);
                                 StartPoDStarts += obj.Height + 20;
                                 break;
-                            case SAction _:
-                                obj.Layout(250, StartPosActions);
-                                StartPosActions += obj.Height + 20;
+                            case DiagNode _:
+                                obj.Layout(250, StartPoDiagNodes);
+                                StartPoDiagNodes += obj.Height + 20;
                                 break;
                         }
                     //    }
@@ -1169,7 +1167,6 @@ namespace ME3Explorer.Dialogue_Editor
 
             const float HORIZONTAL_SPACING = 40;
             const float VERTICAL_SPACING = 20;
-            const float VAR_SPACING = 10;
             var visitedNodes = new HashSet<int>();
             var eventNodes = CurrentObjects.OfType<DStart>().ToList();
             DObj firstNode = eventNodes.FirstOrDefault();
@@ -1182,17 +1179,17 @@ namespace ME3Explorer.Dialogue_Editor
                 LayoutTree(eventNode, 5 * VERTICAL_SPACING);
             }
 
-            //Find SActions with no inputs. These will not have been reached from an DStart
-            var orphanRoots = CurrentObjects.OfType<SAction>().Where(node => node.InputEdges.IsEmpty());
-            foreach (SAction orphan in orphanRoots)
+            //Find DiagNodes with no inputs. These will not have been reached from an DStart
+            var orphanRoots = CurrentObjects.OfType<DiagNode>().Where(node => node.InputEdges.IsEmpty());
+            foreach (DiagNode orphan in orphanRoots)
             {
                 LayoutTree(orphan, VERTICAL_SPACING);
             }
 
-            //It's possible that there are groups of otherwise unconnected SActions that form cycles.
+            //It's possible that there are groups of otherwise unconnected DiagNodes that form cycles.
             //Might be possible to make a better heuristic for choosing a root than sequence order, but this situation is so rare it's not worth the effort
-            var cycleNodes = CurrentObjects.OfType<SAction>().Where(node => !visitedNodes.Contains(node.UIndex));
-            foreach (SAction cycleNode in cycleNodes)
+            var cycleNodes = CurrentObjects.OfType<DiagNode>().Where(node => !visitedNodes.Contains(node.UIndex));
+            foreach (DiagNode cycleNode in cycleNodes)
             {
                 LayoutTree(cycleNode, VERTICAL_SPACING);
             }
@@ -1213,11 +1210,11 @@ namespace ME3Explorer.Dialogue_Editor
                 ConvGraphEditor.UpdateEdge(edge);
 
 
-            void LayoutTree(DBox sAction, float verticalSpacing)
+            void LayoutTree(DBox DiagNode, float verticalSpacing)
             {
-                if (firstNode == null) firstNode = sAction;
-                visitedNodes.Add(sAction.UIndex);
-                var subTree = LayoutSubTree(sAction);
+                if (firstNode == null) firstNode = DiagNode;
+                visitedNodes.Add(DiagNode.UIndex);
+                var subTree = LayoutSubTree(DiagNode);
                 float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING;
                 //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
                 float dy = rootTree.Where(node => node.GlobalFullBounds.Left < width).BoundingRect().Bottom;
@@ -1230,23 +1227,6 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 //Task.WaitAll(Task.Delay(1500));
                 var tree = new List<DObj>();
-                var vars = new List<SVar>();
-                foreach (var varLink in root.Varlinks)
-                {
-                    float dx = varLink.node.GlobalFullBounds.X - SVar.RADIUS;
-                    float dy = root.GlobalFullHeight + VAR_SPACING;
-                    foreach (int uIndex in varLink.Links.Where(uIndex => !visitedNodes.Contains(uIndex)))
-                    {
-                        visitedNodes.Add(uIndex);
-                        if (varNodeLookup.TryGetValue(uIndex, out SVar sVar))
-                        {
-                            sVar.OffsetBy(dx, dy);
-                            dy += sVar.GlobalFullHeight + VAR_SPACING;
-                            vars.Add(sVar);
-                        }
-                    }
-                }
-
                 var childTrees = new List<List<DObj>>();
                 var children = root.Outlinks.SelectMany(link => link.Links).Where(uIndex => !visitedNodes.Contains(uIndex));
                 foreach (int uIndex in children)
@@ -1282,10 +1262,9 @@ namespace ME3Explorer.Dialogue_Editor
                     //center the root on its children
                     float centerOffset = tree.OfType<DBox>().BoundingRect().Height / 2 - root.GlobalFullHeight / 2;
                     root.OffsetBy(0, centerOffset);
-                    vars.OffsetBy(0, centerOffset);
                 }
 
-                tree.AddRange(vars);
+
                 tree.Add(root);
                 return tree;
             }
@@ -1314,7 +1293,8 @@ namespace ME3Explorer.Dialogue_Editor
             }
             else
             {
-                ActiveConv = Conversations[Conversations_ListBox.SelectedIndex];
+                var nconv = Conversations[Conversations_ListBox.SelectedIndex];
+                ActiveConv = new ConversationExtended(nconv.exportUID, nconv.ConvName, nconv.BioConvo, nconv.Export, nconv.bParsed, nconv.bFirstParsed, nconv.Speakers, nconv.EntryList, nconv.ReplyList, nconv.WwiseBank, nconv.Sequence, nconv.NonSpkrFFX);
                 CurrentLoadedExport = CurrentConvoPackage.getUExport(ActiveConv.exportUID);
                 ActiveconvName = ActiveConv.ConvName;
                 ActiveconvUIndex = ActiveConv.exportUID;
@@ -1667,7 +1647,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
             {
-                if (obj is DBox DBox && (DBox.Varlinks.Any() || DBox.Outlinks.Any() || DBox.EventLinks.Any())
+                if (obj is DBox DBox && (DBox.Outlinks.Any())
                  && contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
                 {
                     bool hasLinks = false;
@@ -1693,51 +1673,6 @@ namespace ME3Explorer.Dialogue_Editor
                         }
                     }
 
-                    if (breakLinksMenuItem.GetChild("varLinksMenuItem") is MenuItem varLinksMenuItem)
-                    {
-                        varLinksMenuItem.Visibility = Visibility.Collapsed;
-                        varLinksMenuItem.Items.Clear();
-                        for (int i = 0; i < DBox.Varlinks.Count; i++)
-                        {
-                            for (int j = 0; j < DBox.Varlinks[i].Links.Count; j++)
-                            {
-                                varLinksMenuItem.Visibility = Visibility.Visible;
-                                hasLinks = true;
-                                var temp = new MenuItem
-                                {
-                                    Header = $"Break link from {DBox.Varlinks[i].Desc} to {DBox.Varlinks[i].Links[j]}"
-                                };
-                                int linkConnection = i;
-                                int linkIndex = j;
-                                temp.Click += (o, args) => { DBox.RemoveVarlink(linkConnection, linkIndex); };
-                                varLinksMenuItem.Items.Add(temp);
-                            }
-                        }
-                    }
-                    if (breakLinksMenuItem.GetChild("eventLinksMenuItem") is MenuItem eventLinksMenuItem)
-                    {
-                        eventLinksMenuItem.Visibility = Visibility.Collapsed;
-                        eventLinksMenuItem.Items.Clear();
-                        for (int i = 0; i < DBox.EventLinks.Count; i++)
-                        {
-                            for (int j = 0; j < DBox.EventLinks[i].Links.Count; j++)
-                            {
-                                eventLinksMenuItem.Visibility = Visibility.Visible;
-                                hasLinks = true;
-                                var temp = new MenuItem
-                                {
-                                    Header = $"Break link from {DBox.EventLinks[i].Desc} to {DBox.EventLinks[i].Links[j]}"
-                                };
-                                int linkConnection = i;
-                                int linkIndex = j;
-                                temp.Click += (o, args) =>
-                                {
-                                    DBox.RemoveEventlink(linkConnection, linkIndex);
-                                };
-                                eventLinksMenuItem.Items.Add(temp);
-                            }
-                        }
-                    }
                     if (breakLinksMenuItem.GetChild("breakAllLinksMenuItem") is MenuItem breakAllLinksMenuItem)
                     {
                         if (hasLinks)
@@ -1757,24 +1692,14 @@ namespace ME3Explorer.Dialogue_Editor
                 if (contextMenu.GetChild("interpViewerMenuItem") is MenuItem interpViewerMenuItem)
                 {
                     string className = obj.Export.ClassName;
-                    if (className == "InterpData"
-                        || (className == "SeqAct_Interp" && obj is SAction action && action.Varlinks.Any() && action.Varlinks[0].Links.Any()
-                            && Pcc.isUExport(action.Varlinks[0].Links[0]) && Pcc.getUExport(action.Varlinks[0].Links[0]).ClassName == "InterpData"))
-                    {
-                        interpViewerMenuItem.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        interpViewerMenuItem.Visibility = Visibility.Collapsed;
-                    }
                 }
 
                 if (contextMenu.GetChild("plotEditorMenuItem") is MenuItem plotEditorMenuItem)
                 {
 
-                    if (Pcc.Game == MEGame.ME3 && obj is SAction sAction &&
-                        sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
-                        sAction.Export.GetProperty<IntProperty>("m_nIndex") != null)
+                    if (Pcc.Game == MEGame.ME3 && obj is DiagNode DiagNode &&
+                        DiagNode.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
+                        DiagNode.Export.GetProperty<IntProperty>("m_nIndex") != null)
                     {
                         plotEditorMenuItem.Visibility = Visibility.Visible;
                     }
@@ -1835,25 +1760,13 @@ namespace ME3Explorer.Dialogue_Editor
                 //remove incoming connections
                 switch (DObj)
                 {
-                    case SVar sVar:
-                        foreach (VarEdge edge in sVar.connections)
-                        {
-                            edge.originator.RemoveVarlink(edge);
-                        }
-                        break;
-                    case SAction sAction:
-                        foreach (DBox.InputLink inLink in sAction.InLinks)
+                    case DiagNode DiagNode:
+                        foreach (DBox.InputLink inLink in DiagNode.InLinks)
                         {
                             foreach (ActionEdge edge in inLink.Edges)
                             {
                                 edge.originator.RemoveOutlink(edge);
                             }
-                        }
-                        break;
-                    case DStart DStart:
-                        foreach (EventEdge edge in DStart.connections)
-                        {
-                            edge.originator.RemoveEventlink(edge);
                         }
                         break;
                 }
@@ -2283,7 +2196,7 @@ namespace ME3Explorer.Dialogue_Editor
                 PointF pos = e.Position;
                 int X = Convert.ToInt32(pos.X);
                 int Y = Convert.ToInt32(pos.Y);
-                dialogueEdWPF.StatusText = $"[{X},{Y}]";
+                dialogueEdWPF.StatuDText = $"[{X},{Y}]";
             }
         }
 
@@ -2314,9 +2227,9 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 else
                 {
-                    int i = ((SAction)obj).Varlinks[0].Links[0] - 1; //0-based index because Interp Viewer is old
-                    p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(i);
-                    p.loadInterpData(i);
+                    ////int i = ((DiagNode)obj).Varlinks[0].Links[0] - 1; //0-based index because Interp Viewer is old
+                    //p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(i);
+                    //p.loadInterpData(i);
                 }
             }
         }
