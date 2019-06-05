@@ -52,7 +52,10 @@ namespace ME3Explorer.Pathfinding_Editor
             "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan","SFXNav_InteractionCannibal", "PlayerStart",
             "SFXNav_InteractionCenturion","SFXNav_InteractionGuardPose", "SFXNav_InteractionHusk","SFXNav_InteractionInspectOmniTool",
             "SFXNav_InteractionListening","SFXNav_InteractionListening2", "SFXNav_InteractionRavager","SFXNav_InteractionTalking",
-            "SFXNav_InteractionTalking2","SFXNav_InteractionTalking3", "SFXNav_KaiLengShield"
+            "SFXNav_InteractionTalking2","SFXNav_InteractionTalking3", "SFXNav_KaiLengShield",
+
+            //ME1
+            "BioWp_DefensePoint", "BioWp_AssaultPoint", "BioWp_ActionStation"
         };
 
         public static string[] actorNodeClasses =
