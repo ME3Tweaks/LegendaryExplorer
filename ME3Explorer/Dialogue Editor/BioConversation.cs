@@ -141,39 +141,60 @@ namespace ME3Explorer.Dialogue_Editor
 
         public class DialogueNodeExtended : NotifyPropertyChangedBase
         {
-            public StructProperty Node { get; set; }
-            public int SpeakerIndex { get; set; }
-            public int LineStrRef { get; set; }
-            public string Line { get; set; }
-            public bool IsReply { get; set; }
-            public bool bFireConditional { get; set; }
-            public int ConditionalOrBool { get; set; }
-            public int StateEvent { get; set; }
+            private bool _IsReply;
+            public bool IsReply { get => _IsReply; set => SetProperty(ref _IsReply, value); }
+            private int _NodeCount;
+            public int NodeCount { get => _NodeCount; set => SetProperty(ref _NodeCount, value); }//This is the count for reply and node.
+            private StructProperty _Node;
+            public StructProperty Node { get => _Node; set => SetProperty(ref _Node, value); }
+            private int _SpeakerIndex;
+            public int SpeakerIndex { get => _SpeakerIndex; set => SetProperty(ref _SpeakerIndex, value); }
+            private int _LineStrRef;
+            public int LineStrRef { get => _LineStrRef; set => SetProperty(ref _LineStrRef, value); }
+            public string _Line;
+            public string Line { get => _Line; set => SetProperty(ref _Line, value); }
+            public bool _bFireConditional;
+            public bool bFireConditional { get => _bFireConditional; set => SetProperty(ref _bFireConditional, value); }
+            public int _ConditionalOrBool;
+            public int ConditionalOrBool { get => _ConditionalOrBool; set => SetProperty(ref _ConditionalOrBool, value); }
+            public int _StateEvent;
+            public int StateEvent { get => _StateEvent; set => SetProperty(ref _StateEvent, value); }
+            public string _SpeakerTag;
+            /// <summary>
+            /// Tag of speaker - generated.
+            /// </summary>
+            public string SpeakerTag { get => _SpeakerTag; set => SetProperty(ref _SpeakerTag, value); }
+            public int _Interpdata;
             /// <summary>
             /// InterpData object reference UIndex
             /// </summary>
-            public int Interpdata { get; set; }
+            public int Interpdata { get => _Interpdata; set => SetProperty(ref _Interpdata, value); }
+            public int _WwiseStream_Male;
             /// <summary>
             /// WwiseStream object reference Male UIndex
             /// </summary>
-            public int WwiseStream_Male { get; set; }
+            public int WwiseStream_Male { get => _WwiseStream_Male; set => SetProperty(ref _WwiseStream_Male, value); }
+            public int _WwiseStream_Female;
             /// <summary>
             /// WwiseStream object reference Female UIndex
             /// </summary>
-            public int WwiseStream_Female { get; set; }
+            public int WwiseStream_Female { get => _WwiseStream_Female; set => SetProperty(ref _WwiseStream_Female, value); }
+            public string _FaceFX_Male;
             /// <summary>
             /// FaceFX reference Male TBD
             /// </summary>
-            public string FaceFX_Male { get; set; }
+            public string FaceFX_Male { get => _FaceFX_Male; set => SetProperty(ref _FaceFX_Male, value); }
+            public string _FaceFX_Female;
             /// <summary>
             /// FaceFX reference female TBD
             /// </summary>
-            public string FaceFX_Female { get; set; }
+            public string FaceFX_Female { get => _FaceFX_Female; set => SetProperty(ref _FaceFX_Female, value); }
 
-            public DialogueNodeExtended(StructProperty Node, bool IsReply, int SpeakerIndex, int LineStrRef, string Line, bool bFireConditional, int ConditionalOrBool, int StateEvent)
+            public DialogueNodeExtended(StructProperty Node, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool bFireConditional, int ConditionalOrBool, int StateEvent)
             {
                 this.Node = Node;
                 this.IsReply = IsReply;
+                this.NodeCount = NodeCount;
                 this.SpeakerIndex = SpeakerIndex;
                 this.LineStrRef = LineStrRef;
                 this.Line = Line;
@@ -182,16 +203,18 @@ namespace ME3Explorer.Dialogue_Editor
                 this.StateEvent = StateEvent;
             }
 
-            public DialogueNodeExtended(StructProperty Node, bool IsReply, int SpeakerIndex, int LineStrRef, string Line, bool bFireConditional, int ConditionalOrBool, int StateEvent, int Interpdata, int WwiseStream_Male, int WwiseStream_Female, string FaceFX_Male, string FaceFX_Female)
+            public DialogueNodeExtended(StructProperty Node, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool bFireConditional, int ConditionalOrBool, int StateEvent, string SpeakerTag, int Interpdata, int WwiseStream_Male, int WwiseStream_Female, string FaceFX_Male, string FaceFX_Female)
             {
                 this.Node = Node;
                 this.IsReply = IsReply;
+                this.NodeCount = NodeCount;
                 this.SpeakerIndex = SpeakerIndex;
                 this.LineStrRef = LineStrRef;
                 this.Line = Line;
                 this.bFireConditional = bFireConditional;
                 this.ConditionalOrBool = ConditionalOrBool;
                 this.StateEvent = StateEvent;
+                this.SpeakerTag = SpeakerTag;
                 this.Interpdata = Interpdata;
                 this.WwiseStream_Male = WwiseStream_Male;
                 this.WwiseStream_Female = WwiseStream_Female;
@@ -260,39 +283,18 @@ namespace ME3Explorer.Dialogue_Editor
         protected Pen outlinePen;
         protected DText comment;
 
-        protected DObj(IExportEntry convoexport, BioConversationExtended.ConversationExtended conv, ConvGraphEditor ConvGraphEditor)
+        protected DObj(ConvGraphEditor ConvGraphEditor)
         {
-            pcc = convoexport.FileRef;
-            export = convoexport;
+            //pcc = convoexport.FileRef;
+            //export = convoexport;
             g = ConvGraphEditor;
-            comment = new DText(GetComment(), commentColor, false)
-            {
-                Pickable = false,
-                X = 0
-            };
-            comment.Y = 0 - comment.Height;
-            AddChild(comment);
-            Pickable = true;
+ 
         }
 
         public virtual void CreateConnections(IList<DObj> objects) { }
         public virtual void Layout() { }
         public virtual void Layout(float x, float y) => SetOffset(x, y);
-
         public virtual IEnumerable<SeqEdEdge> Edges => Enumerable.Empty<SeqEdEdge>();
-        protected string GetComment()
-        {
-            string res = "";
-            var comments = export.GetProperty<ArrayProperty<StrProperty>>("m_aObjComment");
-            if (comments != null)
-            {
-                foreach (var s in comments)
-                {
-                    res += s + "\n";
-                }
-            }
-            return res;
-        }
 
         public virtual void Dispose()
         {
@@ -307,8 +309,8 @@ namespace ME3Explorer.Dialogue_Editor
     {
         protected PPath shape;
         protected PPath titleBox;
-        public SFrame(IExportEntry convoexport, BioConversationExtended.ConversationExtended conv, float x, float y, ConvGraphEditor ConvGraphEditor)
-            : base(convoexport, conv, ConvGraphEditor)
+        public SFrame(float x, float y, ConvGraphEditor ConvGraphEditor)
+            : base(ConvGraphEditor)
         {
             string s = $"{export.ObjectName}_{export.indexValue}";
             float w = 0;
@@ -401,8 +403,8 @@ namespace ME3Explorer.Dialogue_Editor
         protected PPath CreateActionLinkBox() => PPath.CreateRectangle(0, -4, 10, 8);
         protected PPath CreateVarLinkBox() => PPath.CreateRectangle(-4, 0, 8, 10);
 
-        protected DBox(IExportEntry convoexport, BioConversationExtended.ConversationExtended conv, float x, float y, ConvGraphEditor ConvGraphEditor)
-            : base(convoexport, conv, ConvGraphEditor)
+        protected DBox(float x, float y, ConvGraphEditor ConvGraphEditor)
+            : base(ConvGraphEditor)
         {
             outputDragHandler = new OutputDragHandler(ConvGraphEditor, this);
         }
@@ -459,7 +461,7 @@ namespace ME3Explorer.Dialogue_Editor
             return w;
         }
 
-        protected float GetTitlePlusLineBox(string s, string l, float w)
+        protected float GetTitlePlusLineBox(string s, string l, string n, float w)
         {
             //s = $"#{UIndex} : {s}";
             DText title = new DText(s, titleColor)
@@ -481,14 +483,24 @@ namespace ME3Explorer.Dialogue_Editor
                 TextAlignment = StringAlignment.Near,
                 ConstrainWidthToTextWidth = false,
                 ConstrainHeightToTextHeight = false,
-                X = (w + 5) ,
+                X = w + 5,
                 Y = 3,
                 Pickable = false
             };
-            
+
+            DText nodeID = new DText(n, titleColor) //Add node count to left side
+            {
+                TextAlignment = StringAlignment.Near,
+                ConstrainWidthToTextWidth = false,
+                X = 0,
+                Y = 3,
+                Pickable = false
+            };
+
             titleBox = PPath.CreateRectangle(0, 0, w, title.Height + 5);
             titleBox.Pen = outlinePen;
             titleBox.Brush = titleBoxBrush;
+            titleBox.AddChild(nodeID);
             titleBox.AddChild(title);
             titleBox.AddChild(line);
             titleBox.Pickable = false;
@@ -497,43 +509,43 @@ namespace ME3Explorer.Dialogue_Editor
 
         protected void GetOutputLinks()
         {
-            var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outLinksProp != null)
-            {
-                foreach (var prop in outLinksProp)
-                {
-                    PropertyCollection props = prop.Properties;
-                    var linksProp = props.GetProp<ArrayProperty<StructProperty>>("Links");
-                    if (linksProp != null)
-                    {
-                        OutputLink l = new OutputLink
-                        {
-                            Links = new List<int>(),
-                            InputIndices = new List<int>(),
-                            Edges = new List<ActionEdge>(),
-                            Desc = props.GetProp<StrProperty>("LinkDesc")
-                        };
-                        for (int i = 0; i < linksProp.Count; i++)
-                        {
-                            int linkedOp = linksProp[i].GetProp<ObjectProperty>("LinkedOp").Value;
-                            l.Links.Add(linkedOp);
-                            l.InputIndices.Add(linksProp[i].GetProp<IntProperty>("InputLinkIdx"));
-                            if (OutputNumbers)
-                                l.Desc = l.Desc + (i > 0 ? "," : ": ") + "#" + linkedOp;
-                        }
-                        l.node = CreateActionLinkBox();
-                        l.node.Brush = outputBrush;
-                        l.node.Pickable = false;
-                        PPath dragger = CreateActionLinkBox();
-                        dragger.Brush = mostlyTransparentBrush;
-                        dragger.X = l.node.X;
-                        dragger.Y = l.node.Y;
-                        dragger.AddInputEventListener(outputDragHandler);
-                        l.node.AddChild(dragger);
-                        Outlinks.Add(l);
-                    }
-                }
-            }
+            //var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            //if (outLinksProp != null)
+            //{
+            //    foreach (var prop in outLinksProp)
+            //    {
+            //        PropertyCollection props = prop.Properties;
+            //        var linksProp = props.GetProp<ArrayProperty<StructProperty>>("Links");
+            //        if (linksProp != null)
+            //        {
+            //            OutputLink l = new OutputLink
+            //            {
+            //                Links = new List<int>(),
+            //                InputIndices = new List<int>(),
+            //                Edges = new List<ActionEdge>(),
+            //                Desc = props.GetProp<StrProperty>("LinkDesc")
+            //            };
+            //            for (int i = 0; i < linksProp.Count; i++)
+            //            {
+            //                int linkedOp = linksProp[i].GetProp<ObjectProperty>("LinkedOp").Value;
+            //                l.Links.Add(linkedOp);
+            //                l.InputIndices.Add(linksProp[i].GetProp<IntProperty>("InputLinkIdx"));
+            //                if (OutputNumbers)
+            //                    l.Desc = l.Desc + (i > 0 ? "," : ": ") + "#" + linkedOp;
+            //            }
+            //            l.node = CreateActionLinkBox();
+            //            l.node.Brush = outputBrush;
+            //            l.node.Pickable = false;
+            //            PPath dragger = CreateActionLinkBox();
+            //            dragger.Brush = mostlyTransparentBrush;
+            //            dragger.X = l.node.X;
+            //            dragger.Y = l.node.Y;
+            //            dragger.AddInputEventListener(outputDragHandler);
+            //            l.node.AddChild(dragger);
+            //            Outlinks.Add(l);
+            //        }
+            //    }
+            //}
         }
 
         protected class OutputDragHandler : PDragEventHandler
@@ -691,12 +703,14 @@ namespace ME3Explorer.Dialogue_Editor
     [DebuggerDisplay("DStart | #{UIndex}: {export.ObjectName}")]
     public class DStart : DBox
     {
+        public int StartNumber;
         public List<EventEdge> connections = new List<EventEdge>();
         public override IEnumerable<SeqEdEdge> Edges => connections.Union(base.Edges);
 
-        public DStart(int StartNbr, IExportEntry convoexport, BioConversationExtended.ConversationExtended conv, float x, float y, ConvGraphEditor ConvGraphEditor)
-            : base(convoexport, conv, x, y, ConvGraphEditor)
+        public DStart(int StartNbr, float x, float y, ConvGraphEditor ConvGraphEditor)
+            : base(x, y, ConvGraphEditor)
         {
+            StartNumber = StartNbr;
             outlinePen = new Pen(EventColor);
             string s = $"Start Node: {StartNbr}";
             float starty = 0;
@@ -786,14 +800,12 @@ namespace ME3Explorer.Dialogue_Editor
                 if (value)
                 {
                     titleBox.Pen = selectedPen;
-                    varLinkBox.Pen = selectedPen;
                     outLinkBox.Pen = selectedPen;
                     MoveToFront();
                 }
                 else
                 {
                     titleBox.Pen = outlinePen;
-                    varLinkBox.Pen = outlinePen;
                     outLinkBox.Pen = outlinePen;
                 }
             }
@@ -830,14 +842,14 @@ namespace ME3Explorer.Dialogue_Editor
         protected float originalY;
         public StructProperty NodeProp;
         public BioConversationExtended.DialogueNodeExtended Node;
-        public BioConversationExtended.ConversationExtended Conv;
-        static readonly Color insideTextColor = Color.FromArgb(23, 23, 213);//blue
+        //public BioConversationExtended.ConversationExtended Conv;
+        static readonly Color insideTextColor = Color.FromArgb(213, 213, 213);//white
         protected InputDragHandler inputDragHandler = new InputDragHandler();
 
-        public DiagNode(IExportEntry convoexport, BioConversationExtended.ConversationExtended conv, BioConversationExtended.DialogueNodeExtended node, float x, float y, ConvGraphEditor ConvGraphEditor)
-            : base(convoexport, conv, x, y, ConvGraphEditor)
+        public DiagNode(BioConversationExtended.DialogueNodeExtended node, float x, float y, ConvGraphEditor ConvGraphEditor)
+            : base(x, y, ConvGraphEditor)
         {
-            Conv = conv;
+            //Conv = conv;
             Node = node;
             NodeProp = node.Node;
 
@@ -856,12 +868,14 @@ namespace ME3Explorer.Dialogue_Editor
                 if (value)
                 {
                     titleBox.Pen = selectedPen;
+                    box.Pen = selectedPen;
                     ((PPath)this[1]).Pen = selectedPen;
                     MoveToFront();
                 }
                 else
                 {
                     titleBox.Pen = outlinePen;
+                    box.Pen = outlinePen;
                     ((PPath)this[1]).Pen = outlinePen;
                 }
             }
@@ -875,10 +889,6 @@ namespace ME3Explorer.Dialogue_Editor
         public override void Layout(float x, float y)
         {
             outlinePen = new Pen(Color.Black);
-            int speakerID = Node.SpeakerIndex;
-            string speakertag = Conv.Speakers.FirstOrDefault(p => p.SpeakerID == speakerID).SpeakerName;
-            string s = $"{speakerID}:{speakertag}";
-            string l = $"{Node.Line}";
             float starty = 8;
             float w = 20;
 
@@ -922,7 +932,10 @@ namespace ME3Explorer.Dialogue_Editor
             if (inW + outW + 10 > w) w = inW + outW + 10;
 
             //TitleBox
-            float tW = GetTitlePlusLineBox(s, l, w);
+            string s = $"{Node.SpeakerTag}";
+            string l = $"{Node.Line}";
+            string n = $"{Node.NodeCount}";
+            float tW = GetTitlePlusLineBox(s, l, n, w);
             if (tW > w)
             {
                 w = tW;
@@ -939,7 +952,7 @@ namespace ME3Explorer.Dialogue_Editor
             string cnd = "Cnd:";
             if (Node.bFireConditional == false)
                 cnd = "Bool:";
-            string d = $"{Node.LineStrRef}\r\n{cnd} {Node.ConditionalOrBool}\r\n Evt:{Node.StateEvent}";
+            string d = $"{Node.LineStrRef}\r\n{cnd} {Node.ConditionalOrBool}\r\nEvt:{Node.StateEvent}";
 
             DText insidetext = new DText(d, insideTextColor, false)
             {
@@ -967,82 +980,82 @@ namespace ME3Explorer.Dialogue_Editor
         private void GetInputLinks()
         {
             InLinks = new List<InputLink>();
-            var inputLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
-            if (export.ClassName == "SequenceReference")
-            {
-                var oSequenceReference = export.GetProperty<ObjectProperty>("oSequenceReference");
-                if (oSequenceReference != null)
-                {
-                    inputLinksProp = pcc.getExport(oSequenceReference.Value - 1).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
-                }
-            }
+            //var inputLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+            //if (export.ClassName == "SequenceReference")
+            //{
+            //    var oSequenceReference = export.GetProperty<ObjectProperty>("oSequenceReference");
+            //    if (oSequenceReference != null)
+            //    {
+            //        inputLinksProp = pcc.getExport(oSequenceReference.Value - 1).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+            //    }
+            //}
 
-            void CreateInputLink(string desc, int idx, bool hasName = true)
-            {
-                InputLink l = new InputLink
-                {
-                    Desc = desc,
-                    hasName = hasName,
-                    index = idx,
-                    node = CreateActionLinkBox(),
-                    Edges = new List<ActionEdge>()
-                };
-                l.node.Brush = outputBrush;
-                l.node.MouseEnter += OnMouseEnter;
-                l.node.MouseLeave += OnMouseLeave;
-                l.node.AddInputEventListener(inputDragHandler);
-                InLinks.Add(l);
-            }
+            //void CreateInputLink(string desc, int idx, bool hasName = true)
+            //{
+            //    InputLink l = new InputLink
+            //    {
+            //        Desc = desc,
+            //        hasName = hasName,
+            //        index = idx,
+            //        node = CreateActionLinkBox(),
+            //        Edges = new List<ActionEdge>()
+            //    };
+            //    l.node.Brush = outputBrush;
+            //    l.node.MouseEnter += OnMouseEnter;
+            //    l.node.MouseLeave += OnMouseLeave;
+            //    l.node.AddInputEventListener(inputDragHandler);
+            //    InLinks.Add(l);
+            //}
 
-            if (inputLinksProp != null)
-            {
-                for (int i = 0; i < inputLinksProp.Count; i++)
-                {
-                    CreateInputLink(inputLinksProp[i].GetProp<StrProperty>("LinkDesc"), i);
-                }
-            }
-            else if (pcc.Game == MEGame.ME3)
-            {
-                try
-                {
-                    if (ME3UnrealObjectInfo.getSequenceObjectInfo(export.ClassName)?.inputLinks is List<string> inputLinks)
-                    {
-                        for (int i = 0; i < inputLinks.Count; i++)
-                        {
-                            CreateInputLink(inputLinks[i], i);
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                    InLinks.Clear();
-                }
-            }
-            if (InputEdges.Any())
-            {
-                int numInputs = InLinks.Count;
-                foreach (ActionEdge edge in InputEdges)
-                {
-                    int inputNum = edge.inputIndex;
-                    //if there are inputs with an index greater than is accounted for by
-                    //the current number of inputs, create enough inputs to fill up to that index
-                    //With current toolset advances this is unlikely to occur, but no harm in leaving it in
-                    if (inputNum + 1 > numInputs)
-                    {
-                        for (int i = numInputs; i <= inputNum; i++)
-                        {
-                            CreateInputLink($":{i}", i, false);
-                        }
-                        numInputs = inputNum + 1;
-                    }
-                    //change the end of the edge to the input box, not the DiagNode
-                    if (inputNum >= 0)
-                    {
-                        edge.end = InLinks[inputNum].node;
-                        InLinks[inputNum].Edges.Add(edge);
-                    }
-                }
-            }
+            //if (inputLinksProp != null)
+            //{
+            //    for (int i = 0; i < inputLinksProp.Count; i++)
+            //    {
+            //        CreateInputLink(inputLinksProp[i].GetProp<StrProperty>("LinkDesc"), i);
+            //    }
+            //}
+            //else if (pcc.Game == MEGame.ME3)
+            //{
+            //    try
+            //    {
+            //        if (ME3UnrealObjectInfo.getSequenceObjectInfo(export.ClassName)?.inputLinks is List<string> inputLinks)
+            //        {
+            //            for (int i = 0; i < inputLinks.Count; i++)
+            //            {
+            //                CreateInputLink(inputLinks[i], i);
+            //            }
+            //        }
+            //    }
+            //    catch (Exception)
+            //    {
+            //        InLinks.Clear();
+            //    }
+            //}
+            //if (InputEdges.Any())
+            //{
+            //    int numInputs = InLinks.Count;
+            //    foreach (ActionEdge edge in InputEdges)
+            //    {
+            //        int inputNum = edge.inputIndex;
+            //        //if there are inputs with an index greater than is accounted for by
+            //        //the current number of inputs, create enough inputs to fill up to that index
+            //        //With current toolset advances this is unlikely to occur, but no harm in leaving it in
+            //        if (inputNum + 1 > numInputs)
+            //        {
+            //            for (int i = numInputs; i <= inputNum; i++)
+            //            {
+            //                CreateInputLink($":{i}", i, false);
+            //            }
+            //            numInputs = inputNum + 1;
+            //        }
+            //        //change the end of the edge to the input box, not the DiagNode
+            //        if (inputNum >= 0)
+            //        {
+            //            edge.end = InLinks[inputNum].node;
+            //            InLinks[inputNum].Edges.Add(edge);
+            //        }
+            //    }
+            //}
         }
 
         public class InputDragHandler : PDragEventHandler
@@ -1093,6 +1106,20 @@ namespace ME3Explorer.Dialogue_Editor
         }
     }
 
+    public class DiagNodeReply : DiagNode
+    {
+        public DiagNodeReply(BioConversationExtended.DialogueNodeExtended node, float x, float y, ConvGraphEditor ConvGraphEditor)
+            : base(node, x, y, ConvGraphEditor)
+        {
+            //Conv = conv;
+            Node = node;
+            NodeProp = node.Node;
+
+            GetOutputLinks();
+            originalX = x;
+            originalY = y;
+        }
+    }
     public class DText : PText
     {
         [DllImport("gdi32.dll")]

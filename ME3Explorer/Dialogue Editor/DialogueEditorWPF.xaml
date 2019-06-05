@@ -132,7 +132,7 @@
                     <TextBlock Name="Convo_Name"  Text="{Binding Path=ActiveconvName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" TextWrapping="Wrap" TextAlignment="Left" />
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
-                        <TextBlock Name="LevelHeader" Text="Persistant Level:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" DockPanel.Dock="Left"/>
+                        <TextBlock Name="LevelHeader" Text="Level:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="File with the Persistant level that uses the conversation" DockPanel.Dock="Left" FontWeight="Bold" FontSize="15"/>
                         <Grid DockPanel.Dock="Right" MaxWidth="50">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="25"/>
@@ -141,12 +141,12 @@
                                 <ColumnDefinition Width="25" />
                                 <ColumnDefinition Width="25" />
                             </Grid.ColumnDefinitions>
-                            <Button Name="OpenLevelPackEd_Button" Grid.Column="0" Command="{Binding OpenInCommand}" CommandParameter="PackEdLvl" Padding="3" ToolTip="Open the Actor's persistant level in Package Editor">
+                            <Button Name="OpenLevelPackEd_Button" Grid.Column="0" Command="{Binding OpenInCommand}" CommandParameter="PackEdLvl" Padding="3" ToolTip="Open the Actor's level in Package Editor">
                                 <Button.Content>
                                     <fa:ImageAwesome Icon="Cube" Width="16" Height="16" Foreground="DarkBlue"/>
                                 </Button.Content>
                             </Button>
-                            <Button Name="OpenLevelSeqEd_Button" Grid.Column="1" Command="{Binding OpenInCommand}" CommandParameter="SeqEdLvl" Padding="3" ToolTip="Open the Actor's persistant level in Sequence Editor">
+                            <Button Name="OpenLevelSeqEd_Button" Grid.Column="1" Command="{Binding OpenInCommand}" CommandParameter="SeqEdLvl" Padding="3" ToolTip="Open the Actor's level in Sequence Editor">
                                 <Button.Content>
                                     <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkBlue"/>
                                 </Button.Content>
@@ -157,7 +157,7 @@
                     <TextBlock Name="Level_Textbox" Text="{Binding Level}"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="File with the Persistant level that uses the conversation" FontSize="15"/>
                     <TextBlock Text="" />
                     <DockPanel HorizontalAlignment="Stretch">
-                        <TextBlock Text="Sequence:" Name="Data" HorizontalAlignment="Left" ToolTip="Sequence for this conversation." DockPanel.Dock="Left"/>
+                        <TextBlock Text="Dialogue Sequence:" Name="Data" VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Sequence for this conversation." DockPanel.Dock="Left" FontWeight="Bold" FontSize="15"/>
                         <Button Name="OpenSeqEd_Button" Command="{Binding OpenInCommand}" CommandParameter="SeqEdNode" Padding="3" DockPanel.Dock="Right" ToolTip="Open this dialogue's sequence" >
                                 <Button.Content>
                                 <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkBlue"/>
@@ -168,7 +168,7 @@
                     <TextBlock Name="Sequence_TextBox" Text="{Binding Path=ActiveconvSequence}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15"/>
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
-                        <TextBlock Text="Wwisebank:"  HorizontalAlignment="Left" ToolTip="Main conversation Wwisebank" DockPanel.Dock="Left"/>
+                        <TextBlock Text="Wwisebank:"  HorizontalAlignment="Left" VerticalAlignment="Bottom"  ToolTip="Main conversation Wwisebank" DockPanel.Dock="Left" FontWeight="Bold" FontSize="15"/>
                         <Button Name="OpenWWbnk_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundplorerWPF" ToolTip="Open in Soundplorer">
                             <Button.Content>
                                 <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
@@ -179,7 +179,7 @@
                     <TextBlock Name="Wwisebank" Text="{Binding Path=ActiveconvWwBank}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation audiobank" FontSize="15"/>
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
-                        <TextBlock Text="Non-Speaker Face FX AnimSet:"  HorizontalAlignment="Left" ToolTip="Conversation animations for non-speakers" DockPanel.Dock="Left"/>
+                        <TextBlock Text="Non-Speaker FaceFX:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Conversation animations for non-speakers" DockPanel.Dock="Left" FontWeight="Bold" FontSize="15"/>
                         <Button Name="OpenFFX_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_FFXNS}" CommandParameter="FaceFXNS" ToolTip="Open Non-speaker's AnimSet in FaceFX Editor">
                             <Button.Content>
                                 <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
@@ -245,8 +245,11 @@
                     <TextBlock Text="" FontSize="10"  />
                 </StackPanel>
            <!--Node Panel-->
-                <StackPanel Name="Node_Panel" DockPanel.Dock="Top" Visibility="Hidden">
-
+                <StackPanel Name="Node_Panel" DockPanel.Dock="Top" Visibility="Visible">
+                    <DockPanel HorizontalAlignment="Stretch">
+                        <TextBlock Name="Node_Text_Type" Text="{Binding Path=ActiveDialogueNode.Line, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left" Padding="5"/>
+                        <TextBlock Text="{Binding Path=ActiveDialogueNode.NodeCount, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" DockPanel.Dock="Right" FontWeight="Bold" FontSize="15"/>
+                    </DockPanel>
                 </StackPanel>
 
             </DockPanel>
