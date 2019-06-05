@@ -126,10 +126,10 @@
                     <TextBlock  Name="ConvoDet_Header" Text="Conversation Details"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Top"/>
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Export:"  HorizontalAlignment="Stretch" TextAlignment="Right" FontWeight="Bold" FontSize="15" DockPanel.Dock="Left"/>
-                        <TextBlock Name="Convo_UID" Text="{Binding Path=ActiveconvUIndex, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="18" DockPanel.Dock="Right"/>
+                        <TextBlock Name="Convo_UID" Text="{Binding Path=SelectedConv.ExportUID}"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="18" DockPanel.Dock="Right"/>
                     </DockPanel>
                     <TextBlock Name="Convo_NamePrefix" Text="Name:" HorizontalAlignment="Left" FontWeight="Bold" FontSize="10"  />
-                    <TextBlock Name="Convo_Name"  Text="{Binding Path=ActiveconvName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" TextWrapping="Wrap" TextAlignment="Left" />
+                    <TextBlock Name="Convo_Name"  Text="{Binding Path=SelectedConv.ConvName}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" TextWrapping="Wrap" TextAlignment="Left" />
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Name="LevelHeader" Text="Level:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="File with the Persistant level that uses the conversation" DockPanel.Dock="Left" FontWeight="Bold" FontSize="15"/>
@@ -165,7 +165,7 @@
                             </Button>
                         <TextBlock Text="" FontSize="10" />
                     </DockPanel>
-                    <TextBlock Name="Sequence_TextBox" Text="{Binding Path=ActiveconvSequence}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15"/>
+                    <TextBlock Name="Sequence_TextBox" Text="{Binding Path=SelectedConv.Sequence.ObjectName}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15"/>
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Wwisebank:"  HorizontalAlignment="Left" VerticalAlignment="Bottom"  ToolTip="Main conversation Wwisebank" DockPanel.Dock="Left" FontWeight="Bold" FontSize="15"/>
@@ -174,9 +174,11 @@
                                 <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
                             </Button.Content>
                         </Button>
-                        <TextBlock Name="spacerC2" Text="" FontSize="10"/>
+                        <TextBlock Text="" FontSize="10"/>
                     </DockPanel>
-                    <TextBlock Name="Wwisebank" Text="{Binding Path=ActiveconvWwBank}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation audiobank" FontSize="15"/>
+                    <StackPanel Name="Wwisebank_Stack" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation audiobank">
+                        <TextBlock Text="{Binding Path=SelectedConv.WwiseBank.ObjectName}" HorizontalAlignment="Left" ToolTip="Main conversation audiobank" FontSize="15"/>
+                    </StackPanel>
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Non-Speaker FaceFX:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Conversation animations for non-speakers" DockPanel.Dock="Left" FontWeight="Bold" FontSize="15"/>
@@ -187,23 +189,31 @@
                         </Button>
                         <TextBlock Text=""/>
                     </DockPanel>
-                    <TextBlock Name="NSFFX" Text="{Binding Path=ActiveconvNspkrFFX}" HorizontalAlignment="Left" ToolTip="Conversation animations for non-speakers" FontSize="15"/>
+                    <ComboBox Name="ComboBox_Conv_NSFFX" ItemsSource="{Binding Path=FFXAnimsets}" SelectedItem="{Binding Path=SelectedConv.NonSpkrFFX}" HorizontalAlignment="Stretch" ToolTip="Conversation animations for non-speakers" Margin="3" DropDownClosed="Convo_NSFFX_DropDownClosed">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Path=ObjectName}" FontStretch="Condensed"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </StackPanel>
            <!--Speaker Panel-->
                 <StackPanel Name="Speaker_Panel" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="3" Visibility="Hidden">
                     <TextBlock Text="Speaker Details"  HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left"/>
                     <DockPanel HorizontalAlignment="Stretch">
-                        <TextBlock Name="Speaker_ID" Text="{Binding Path=ActiveSpeaker.SpeakerID, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="18" DockPanel.Dock="Right" Padding="5"/>
+                        <TextBlock Name="Speaker_ID" Text="{Binding Path=SelectedSpeaker.SpeakerID, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="18" DockPanel.Dock="Right" Padding="5"/>
                         <TextBlock Text="ID:" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" FontWeight="Bold" FontSize="15"/>
                     </DockPanel>
                     <TextBlock Text="Actor's Tag:" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15"  />
-                    <TextBox Name="TextBox_Speaker_Name"  Text="{Binding Path=ActiveSpeaker.SpeakerName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" KeyUp="EnterName_Speaker_KeyUp" GotKeyboardFocus="EnterName_Speaker_GotKeyboardFocus" LostKeyboardFocus="EnterName_Speaker_LostKeyboardFocus" />
+                    <TextBox Name="TextBox_Speaker_Name"  Text="{Binding Path=SelectedSpeaker.SpeakerName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" KeyUp="EnterName_Speaker_KeyUp" GotKeyboardFocus="EnterName_Speaker_GotKeyboardFocus" LostKeyboardFocus="EnterName_Speaker_LostKeyboardFocus" />
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel>
                         <TextBlock Text="TLKString:" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="Actor's named TLK string. Possibly." FontSize="15" />
-                        <TextBlock Name="TextBox_Speaker_TLK" Text="{Binding Path=ActiveSpeaker.StrRefID, UpdateSourceTrigger=PropertyChanged}" FontSize="15" DockPanel.Dock="Right" HorizontalAlignment="Right" ToolTip="Actor's named TLK string. Possibly."/>
+                        <TextBlock Name="TextBox_Speaker_TLK" Text="{Binding Path=SelectedSpeaker.StrRefID, UpdateSourceTrigger=PropertyChanged}" FontSize="15" DockPanel.Dock="Right" HorizontalAlignment="Right" ToolTip="Actor's named TLK string. Possibly."/>
                     </DockPanel>
-                    <TextBlock Name="TextBox_Speaker_FriendlyName" Text="{Binding Path=ActiveSpeaker.FriendlyName, UpdateSourceTrigger=PropertyChanged}" FontSize="20" HorizontalAlignment="Left" ToolTip="Actor's name. Possibly." />
+                    <TextBlock Name="TextBox_Speaker_FriendlyName" Text="{Binding Path=SelectedSpeaker.FriendlyName, UpdateSourceTrigger=PropertyChanged}" FontSize="20" HorizontalAlignment="Left" ToolTip="Actor's name. Possibly." />
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Male FaceFX Animation Set:" VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Facial Animations for when the Player is Male" DockPanel.Dock="Left"/>
@@ -214,7 +224,7 @@
                         </Button>
                         <TextBlock Text="" FontSize="10"/>
                     </DockPanel>
-                    <ComboBox Name="ComboBox_Speaker_FFXM" ItemsSource="{Binding Path=FFXAnimsets}" SelectedItem="{Binding Path=ActiveSpeaker.FaceFX_Male}" HorizontalAlignment="Stretch" ToolTip="Facial Animations for when the Player is Male" Margin="3" DropDownClosed="ComboBox_Speaker_FFXM_DropDownClosed" >
+                    <ComboBox Name="ComboBox_Speaker_FFXM" ItemsSource="{Binding Path=FFXAnimsets}" SelectedItem="{Binding Path=SelectedSpeaker.FaceFX_Male}" HorizontalAlignment="Stretch" ToolTip="Facial Animations for when the Player is Male" Margin="3" DropDownClosed="ComboBox_Speaker_FFX_DropDownClosed" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -233,7 +243,7 @@
                         </Button>
                         <TextBlock Text=""/>
                     </DockPanel>
-                    <ComboBox Name="ComboBox_Speaker_FFXF" ItemsSource="{Binding Path=FFXAnimsets}" SelectedItem="{Binding Path=ActiveSpeaker.FaceFX_Female}" HorizontalAlignment="Stretch" ToolTip="Facial Animations for when the Player is Female" Margin="3" DropDownClosed="ComboBox_Speaker_FFXM_DropDownClosed" >
+                    <ComboBox Name="ComboBox_Speaker_FFXF" ItemsSource="{Binding Path=FFXAnimsets}" SelectedItem="{Binding Path=SelectedSpeaker.FaceFX_Female}" HorizontalAlignment="Stretch" ToolTip="Facial Animations for when the Player is Female" Margin="3" DropDownClosed="ComboBox_Speaker_FFX_DropDownClosed" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -247,9 +257,9 @@
            <!--Node Panel-->
                 <StackPanel Name="Node_Panel" DockPanel.Dock="Top" Visibility="Visible">
                     <DockPanel HorizontalAlignment="Stretch">
-                        <TextBlock Name="Node_Text_Type" Text="{Binding Path=ActiveDialogueNode.Line, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left" Padding="5"/>
-                        <TextBlock Text="{Binding Path=ActiveDialogueNode.NodeCount, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" DockPanel.Dock="Right" FontWeight="Bold" FontSize="15"/>
-                    </DockPanel>
+                        <TextBlock Name="Node_Text_Type" Text="{Binding Path=SelectedDialogueNode.Line, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left" Padding="5"/>
+                        <TextBlock Text="{Binding Path=SelectedDialogueNode.NodeCount, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" DockPanel.Dock="Right" FontWeight="Bold" FontSize="15"/>
+                    </DockPanel>  
                 </StackPanel>
 
             </DockPanel>
@@ -276,7 +286,7 @@
                         </Button.Content>
                     </Button>
                 </Grid>
-                <ListBox Name="Speakers_ListBox" DockPanel.Dock="Bottom" ItemsSource="{Binding ActiveSpeakerList}" HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                <ListBox Name="Speakers_ListBox" DockPanel.Dock="Bottom" ItemsSource="{Binding SelectedSpeakerList}" HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="Speakers_ListBox_SelectionChanged">
                     <ListBox.ItemTemplate >
                         <DataTemplate>
@@ -389,7 +399,7 @@
                                     <ColumnDefinition Width="40" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding Path=exportUID}"/>
+                                <TextBlock Grid.Column="0" Text="{Binding Path=ExportUID}"/>
                                 <TextBlock Grid.Column="1" Text="{Binding Path=ConvName}">
                                 </TextBlock>
                             </Grid>

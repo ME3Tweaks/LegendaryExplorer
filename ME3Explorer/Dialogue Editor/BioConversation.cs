@@ -21,48 +21,76 @@ using UMD.HCIL.Piccolo.Util;
 using System.Runtime.InteropServices;
 using ME1Explorer;
 using System.ComponentModel;
+using ME3Explorer.SharedUI.Interfaces;
 
 namespace ME3Explorer.Dialogue_Editor
 {
     public partial class BioConversationExtended : NotifyPropertyChangedWindowBase
     {
+        //public event PropertyChangedEventHandler PropertyChanged;
+        //protected virtual void OnPropertyChanged(string propertyName)
+        //{
+        //    PropertyChangedEventHandler handler = PropertyChanged;
+        //    if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        //}
+        //protected bool SetField<T>(ref T field, T value, string propertyName)
+        //{
+        //    if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        //    field = value;
+        //    OnPropertyChanged(propertyName);
+        //    return true;
+        //}
+
+        //// props
+        //private string _filename;
+        //public string FileName
+        //{
+        //    get { return _filename; }
+        //    set { SetField(ref _filename, value, "Name"); }
+        //}
+
         #region Convo
-        //Contains nested conversation structure.
-        // - IntepData
-        //Extended Nested Collections:
-        // - Speakers have FaceFX Objects
-        // - DialogueNodeExtended has InterpData, WwiseStream_M, Wwisestream_F, FaceFX_ID_M, FaceFX_ID_F.
+            //Contains nested conversation structure.
+            // - IntepData
+            //Extended Nested Collections:
+            // - Speakers have FaceFX Objects
+            // - DialogueNodeExtended has InterpData, WwiseStream_M, Wwisestream_F, FaceFX_ID_M, FaceFX_ID_F.
 
 
-        public class ConversationExtended : NotifyPropertyChangedBase
+        public class ConversationExtended : BioConversationExtended
         {
-            public int exportUID { get; set; }
-
+            private int _ExportUID;
+            public int ExportUID { get => _ExportUID; set => SetProperty(ref _ExportUID, value); }
             public PropertyCollection BioConvo { get; set; }
             public IExportEntry Export { get; set; }
-            public string ConvName { get; set; }
-            public bool bParsed { get; set; }
-            public bool bFirstParsed { get; set; }
+            private string _ConvName;
+            public string ConvName { get => _ConvName; set => SetProperty(ref _ConvName, value); }
+            public bool IsParsed { get; set; }
+            public bool IsFirstParsed { get; set; }
 
             public ObservableCollectionExtended<SpeakerExtended> Speakers { get; set; }
             public ObservableCollectionExtended<DialogueNodeExtended> EntryList { get; set; }
             public ObservableCollectionExtended<DialogueNodeExtended> ReplyList { get; set; }
+            private IExportEntry _WwiseBank;
             /// <summary>
-            /// WwiseBank Reference UIndex
+            /// WwiseBank Reference Export
             /// </summary>
-            public int WwiseBank { get; set; }
+            public IExportEntry WwiseBank { get => _WwiseBank; set => SetProperty(ref _WwiseBank, value); }
+            private IEntry _Sequence;
             /// <summary>
             /// Sequence Reference UIndex
             /// </summary>
-            public int Sequence { get; set; }
+            public IEntry Sequence { get => _Sequence; set => SetProperty(ref _Sequence, value); }
+            private IEntry _NonSpkrFFX;
             /// <summary>
-            /// NonSpkrFaceFX Reference UIndex
+            /// NonSpkrFaceFX IEntry
             /// </summary>
-            public int NonSpkrFFX { get; set; }
+            public IEntry NonSpkrFFX { get => _NonSpkrFFX; set => SetProperty(ref _NonSpkrFFX, value); }
+            public DialogueNodeExtended ActiveDialogueNode { get; set; } = new DialogueNodeExtended(new StructProperty("BioDialogNode", false), false, 0, -1, 123456, "No data", false, -1, -1);
 
-            public ConversationExtended(int exportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList)
+            public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList)
             {
-                this.exportUID = exportUID;
+                this.ExportUID = ExportUID;
                 this.ConvName = ConvName;
                 this.BioConvo = BioConvo;
                 this.Export = Export;
@@ -71,14 +99,14 @@ namespace ME3Explorer.Dialogue_Editor
                 this.ReplyList = ReplyList;
             }
 
-            public ConversationExtended(int exportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, bool bParsed, bool bFirstParsed, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, int WwiseBank, int Sequence, int NonSpkrFFX)
+            public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, bool IsParsed, bool IsFirstParsed, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, IExportEntry WwiseBank, IEntry Sequence, IEntry NonSpkrFFX)
             {
-                this.exportUID = exportUID;
+                this.ExportUID = ExportUID;
                 this.ConvName = ConvName;
                 this.BioConvo = BioConvo;
                 this.Export = Export;
-                this.bParsed = bParsed;
-                this.bFirstParsed = bFirstParsed;
+                this.IsParsed = IsParsed;
+                this.IsFirstParsed = IsFirstParsed;
                 this.Speakers = Speakers;
                 this.EntryList = EntryList;
                 this.ReplyList = ReplyList;
@@ -93,7 +121,7 @@ namespace ME3Explorer.Dialogue_Editor
 
 
 
-        public class SpeakerExtended : NotifyPropertyChangedBase
+        public class SpeakerExtended : BioConversationExtended
         {
             private int _speakerid;
             public int SpeakerID { get => _speakerid; set => SetProperty(ref _speakerid, value); }
@@ -139,7 +167,7 @@ namespace ME3Explorer.Dialogue_Editor
             //}
         }
 
-        public class DialogueNodeExtended : NotifyPropertyChangedBase
+        public class DialogueNodeExtended : BioConversationExtended
         {
             private bool _IsReply;
             public bool IsReply { get => _IsReply; set => SetProperty(ref _IsReply, value); }
@@ -151,40 +179,40 @@ namespace ME3Explorer.Dialogue_Editor
             public int SpeakerIndex { get => _SpeakerIndex; set => SetProperty(ref _SpeakerIndex, value); }
             private int _LineStrRef;
             public int LineStrRef { get => _LineStrRef; set => SetProperty(ref _LineStrRef, value); }
-            public string _Line;
+            private string _Line;
             public string Line { get => _Line; set => SetProperty(ref _Line, value); }
-            public bool _bFireConditional;
+            private bool _bFireConditional;
             public bool bFireConditional { get => _bFireConditional; set => SetProperty(ref _bFireConditional, value); }
-            public int _ConditionalOrBool;
+            private int _ConditionalOrBool;
             public int ConditionalOrBool { get => _ConditionalOrBool; set => SetProperty(ref _ConditionalOrBool, value); }
-            public int _StateEvent;
+            private int _StateEvent;
             public int StateEvent { get => _StateEvent; set => SetProperty(ref _StateEvent, value); }
-            public string _SpeakerTag;
+            private string _SpeakerTag;
             /// <summary>
             /// Tag of speaker - generated.
             /// </summary>
             public string SpeakerTag { get => _SpeakerTag; set => SetProperty(ref _SpeakerTag, value); }
-            public int _Interpdata;
+            private int _Interpdata;
             /// <summary>
             /// InterpData object reference UIndex
             /// </summary>
             public int Interpdata { get => _Interpdata; set => SetProperty(ref _Interpdata, value); }
-            public int _WwiseStream_Male;
+            private int _WwiseStream_Male;
             /// <summary>
             /// WwiseStream object reference Male UIndex
             /// </summary>
             public int WwiseStream_Male { get => _WwiseStream_Male; set => SetProperty(ref _WwiseStream_Male, value); }
-            public int _WwiseStream_Female;
+            private int _WwiseStream_Female;
             /// <summary>
             /// WwiseStream object reference Female UIndex
             /// </summary>
             public int WwiseStream_Female { get => _WwiseStream_Female; set => SetProperty(ref _WwiseStream_Female, value); }
-            public string _FaceFX_Male;
+            private string _FaceFX_Male;
             /// <summary>
             /// FaceFX reference Male TBD
             /// </summary>
             public string FaceFX_Male { get => _FaceFX_Male; set => SetProperty(ref _FaceFX_Male, value); }
-            public string _FaceFX_Female;
+            private string _FaceFX_Female;
             /// <summary>
             /// FaceFX reference female TBD
             /// </summary>
