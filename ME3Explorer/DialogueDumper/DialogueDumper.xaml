@@ -15,7 +15,8 @@
         DragDrop.Drop="DialogueDumper_FilesDropped"
         WindowStartupLocation="CenterOwner"
         Closing="DialogueDumper_Closing"
-        Title="Dialogue Dumper" Height="340" Width="500">
+        Title="Dialogue Dumper" Height="340" Width="500"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <StackPanel >
         <TextBlock Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Dialogue dumps extract all the spoken lines from game conversations into a large spreadsheet. It will only scan lines where it can find a reference in TLKs."/>
         <Grid Margin="12">

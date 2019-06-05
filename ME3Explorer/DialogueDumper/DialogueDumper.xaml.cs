@@ -5,7 +5,6 @@
  */
 
 using ClosedXML.Excel;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -83,7 +82,7 @@ namespace ME3Explorer.DialogueDumper
                 CommonSaveFileDialog outputDlg = new CommonSaveFileDialog
                 {
                     Title = "Select excel output",
-                    DefaultFileName = $"DialogueDump.xlsx",
+                    DefaultFileName = "DialogueDump.xlsx",
                     DefaultExtension = "xlsx",
                 };
                 outputDlg.Filters.Add(new CommonFileDialogFilter("Excel Files", "*.xlsx"));
@@ -105,12 +104,12 @@ namespace ME3Explorer.DialogueDumper
         /// <summary>
         /// used to monitor process
         /// </summary>
-        private bool bProcessing;
+        private bool isProcessing;
 
         /// <summary>
         /// output debug info to excel
         /// </summary>
-        public bool bDebugOutput;
+        public bool shouldDoDebugOutput;
 
         #region commands
         public ICommand DumpME1Command { get; set; }
@@ -143,36 +142,33 @@ namespace ME3Explorer.DialogueDumper
 
         private bool CanDumpSpecificFiles(object obj)
         {
-            return (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !bProcessing;
+            return (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !isProcessing;
         }
 
         private bool CanDumpGameME1(object obj)
         {
-            return ME1Directory.gamePath != null && Directory.Exists(ME1Directory.gamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !bProcessing;
+            return ME1Directory.gamePath != null && Directory.Exists(ME1Directory.gamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !isProcessing;
         }
 
         private bool CanDumpGameME2(object obj)
         {
-            return ME2Directory.gamePath != null && Directory.Exists(ME2Directory.gamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !bProcessing; ;
+            return ME2Directory.gamePath != null && Directory.Exists(ME2Directory.gamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !isProcessing;
         }
 
         private bool CanDumpGameME3(object obj)
         {
-            return ME3Directory.gamePath != null && Directory.Exists(ME3Directory.gamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !bProcessing; ;
+            return ME3Directory.gamePath != null && Directory.Exists(ME3Directory.gamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !isProcessing;
         }
 
         private bool CanCancelDump(object obj)
         {
-            return ((ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation) || bProcessing) && !DumpCanceled;
+            return ((ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation) || isProcessing) && !DumpCanceled;
         }
 
         private void CancelDump(object obj)
         {
             DumpCanceled = true;
-            if (AllDumpingItems != null)
-            {
-                AllDumpingItems.ForEach(x => x.DumpCanceled = true);
-            }
+            AllDumpingItems?.ForEach(x => x.DumpCanceled = true);
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
 
@@ -191,7 +187,7 @@ namespace ME3Explorer.DialogueDumper
             DumpGame(MEGame.ME3);
         }
 
-        private void ManageTLKs(object obj)
+        private static void ManageTLKs(object obj)
         {
            var tlkmgr = new TlkManagerNS.TLKManagerWPF();
            tlkmgr.Show();
@@ -203,7 +199,6 @@ namespace ME3Explorer.DialogueDumper
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Dialogue Dumper", new WeakReference(this));
             Owner = owner;
-            DataContext = this;
             LoadCommands();
             ListViewHeight = 25 * App.CoreCount;
             InitializeComponent();
@@ -247,7 +242,7 @@ namespace ME3Explorer.DialogueDumper
             CommonSaveFileDialog outputDlg = new CommonSaveFileDialog
             {
                 Title = "Select excel output",
-                DefaultFileName = $"DialogueDump.xlsx",
+                DefaultFileName = "DialogueDump.xlsx",
                 DefaultExtension = "xlsx",
             };
             outputDlg.Filters.Add(new CommonFileDialogFilter("Excel Files", "*.xlsx"));
@@ -262,7 +257,7 @@ namespace ME3Explorer.DialogueDumper
             OverallProgressMaximum = 100;
             CurrentOverallOperationText = "Scanning...";
 
-            string[] filenames = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var filenames = (string[])e.Data.GetData(DataFormats.FileDrop);
             if (filenames.Length == 1 && Directory.Exists(filenames[0]))
             {
                 //Directory - can drop
@@ -280,7 +275,7 @@ namespace ME3Explorer.DialogueDumper
         /// <param name="path">Base path to start dumping functions from. Will search all subdirectories for package files.</param>
         /// <param name="game">MEGame game determines.  If default then Unknown, which means done as single file (always fully parsed). </param>
         /// <param name="outputfile">Output Excel document.</param>
-        public async void dumpPackagesFromFolder(string path, string outputfile, MEGame game = MEGame.Unknown)
+        public async void dumpPackagesFromFolder(string path, string outFile, MEGame game = MEGame.Unknown)
         {
             OverallProgressValue = 0;
             OverallProgressMaximum = 100;
@@ -290,18 +285,18 @@ namespace ME3Explorer.DialogueDumper
             path = Path.GetFullPath(path);
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
             List<string> files = Directory.GetFiles(path, "Bio*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
-            await dumpPackages(files, outputfile, game);
+            await dumpPackages(files, outFile, game);
         }
 
-        private async Task dumpPackages(List<string> files, string outputfile, MEGame game = MEGame.Unknown)
+        private async Task dumpPackages(List<string> files, string outFile, MEGame game = MEGame.Unknown)
         {
             CurrentOverallOperationText = "Dumping packages...";
             OverallProgressMaximum = files.Count;
             OverallProgressValue = 0;
-            bProcessing = true;
+            isProcessing = true;
             workbook = new XLWorkbook();
 #if DEBUG
-            bDebugOutput = true;  //Output for toolset devs
+            shouldDoDebugOutput = true;  //Output for toolset devs
 #endif
 
             var xlstrings = workbook.Worksheets.Add("TLKStrings");
@@ -320,7 +315,7 @@ namespace ME3Explorer.DialogueDumper
             xlowners.Cell(1, 2).Value = "Owner";
             xlowners.Cell(1, 3).Value = "File";
 
-            if(bDebugOutput) //DEBUG
+            if(shouldDoDebugOutput) //DEBUG
             {
                 var xltags = workbook.Worksheets.Add("Tags");
                 xltags.Cell(1, 1).Value = "ActorTag";
@@ -346,16 +341,19 @@ namespace ME3Explorer.DialogueDumper
 
             ProcessingQueue = new ActionBlock<DialogueDumperSingleFileTask>(x =>
             {
-                if (x.DumpCanceled) { OverallProgressValue++; return; }
-                Application.Current.Dispatcher.Invoke(new Action(() => CurrentDumpingItems.Add(x)));
+                if (x.DumpCanceled)
+                {
+                    OverallProgressValue++;
+                    return;
+                }
+                Application.Current.Dispatcher.Invoke(() => CurrentDumpingItems.Add(x));
                 x.dumpPackageFile(game, this); // What to do on each item
-                Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     OverallProgressValue++; //Concurrency 
                     CurrentDumpingItems.Remove(x);
-                }));
-            },
-            new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount }); // How many items at the same time 
+                });
+            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount }); // How many items at the same time 
 
             AllDumpingItems = new List<DialogueDumperSingleFileTask>();
             CurrentDumpingItems.ClearEx();
@@ -371,36 +369,27 @@ namespace ME3Explorer.DialogueDumper
             CommandManager.InvalidateRequerySuggested();
             await ProcessingQueue.Completion;
 
-            if(!bDebugOutput)
+            if(!shouldDoDebugOutput)
             {
-                if (DumpCanceled)
-                {
-                    CurrentOverallOperationText = "Dump canceled - saving excel";
-                }
-                else
-                {
-                    CurrentOverallOperationText = "Dump completed - saving excel";
-                }
+                CurrentOverallOperationText = $"Dump {(DumpCanceled ? "canceled" : "completed")} - saving excel";
             }
 
-            while (bProcessing)
+            while (isProcessing)
             {
-                bProcessing = await CheckProcess();
+                isProcessing = await CheckProcess();
             }
         }
 
         public async Task<bool> CheckProcess()
         {
             if ( _xlqueue.IsEmpty() && ((OverallProgressValue >= OverallProgressMaximum) || DumpCanceled))
-           {
+            {
                 _xlqueue.CompleteAdding();
                 return false;
-           }
-           else
-           {
-                await Task.Delay(1000);
-                return true;
-           }
+            }
+
+            await Task.Delay(1000);
+            return true;
         }
 
         private void Xlworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -414,14 +403,14 @@ namespace ME3Explorer.DialogueDumper
                 {
                     DumpCanceled = false;
                     OverallProgressMaximum = 100;
-                    MessageBox.Show($"Dialogue Dump was cancelled. Work in progress was saved.", "Cancelled", MessageBoxButton.OK);
+                    MessageBox.Show("Dialogue Dump was cancelled. Work in progress was saved.", "Cancelled", MessageBoxButton.OK);
                     CurrentOverallOperationText = "Dump canceled";
                 }
                 else
                 {
                     OverallProgressValue = 100;
                     OverallProgressMaximum = 100;
-                    MessageBox.Show($"Dialogue Dump was completed.", "Success", MessageBoxButton.OK);
+                    MessageBox.Show("Dialogue Dump was completed.", "Success", MessageBoxButton.OK);
                     CurrentOverallOperationText = "Dump completed";
                 }
                 
@@ -458,10 +447,7 @@ namespace ME3Explorer.DialogueDumper
         private void DialogueDumper_Closing(object sender, CancelEventArgs e)
         {
             DumpCanceled = true;
-            if (AllDumpingItems != null)
-            {
-                AllDumpingItems.ForEach(x => x.DumpCanceled = true);
-            }
+            AllDumpingItems?.ForEach(x => x.DumpCanceled = true);
         }
 
         private void DialogueDumper_Loaded(object sender, RoutedEventArgs e)
@@ -499,8 +485,7 @@ namespace ME3Explorer.DialogueDumper
             bool dropEnabled = true;
             if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
             {
-                string[] filenames =
-                                 e.Data.GetData(DataFormats.FileDrop, true) as string[];
+                var filenames = (string[])e.Data.GetData(DataFormats.FileDrop, true);
                 if (filenames.Length == 1 && Directory.Exists(filenames[0]))
                 {
                     //Directory - can drop
@@ -508,10 +493,10 @@ namespace ME3Explorer.DialogueDumper
                 else
                 {
 
-                    string[] acceptedExtensions = new string[] { ".pcc", ".u", ".upk", ".sfm" };
+                    string[] acceptedExtensions = { ".pcc", ".u", ".upk", ".sfm" };
                     foreach (string filename in filenames)
                     {
-                        string extension = System.IO.Path.GetExtension(filename).ToLower();
+                        string extension = Path.GetExtension(filename).ToLower();
                         if (!acceptedExtensions.Contains(extension))
                         {
                             dropEnabled = false;
@@ -565,14 +550,14 @@ namespace ME3Explorer.DialogueDumper
 
         public DialogueDumperSingleFileTask(string file)
         {
-            this.File = file;
-            this.ShortFileName = Path.GetFileNameWithoutExtension(file);
-            CurrentOverallOperationText = "Dumping " + ShortFileName;
+            File = file;
+            ShortFileName = Path.GetFileNameWithoutExtension(file);
+            CurrentOverallOperationText = $"Dumping {ShortFileName}";
         }
 
         public bool DumpCanceled;
         
-        private string File;
+        private readonly string File;
 
         /// <summary>
         /// Dumps Conversation strings to xl worksheet
@@ -581,16 +566,16 @@ namespace ME3Explorer.DialogueDumper
         public void dumpPackageFile(MEGame GameBeingDumped, DialogueDumper dumper)
         {
             string fileName = ShortFileName.ToUpper();
-            if (dumper.bDebugOutput)
+            if (dumper.shouldDoDebugOutput)
             {
                 dumper.CurrentOverallOperationText = $"Dumping Packages.... {dumper.OverallProgressValue}/{dumper.OverallProgressMaximum} { dumper._xlqueue.Count.ToString() }";
-                List<string> excelout = new List<string> { "DEBUG", "IN PROCESS", fileName };
+                var excelout = new List<string> { "DEBUG", "IN PROCESS", fileName };
                 dumper._xlqueue.Add(excelout);
             } 
 
             //SETUP FILE FILTERS
-            bool CheckConv = false;
-            bool CheckActor = false;
+            bool CheckConv;
+            bool CheckActor;
 
             if (GameBeingDumped == MEGame.Unknown) //Unknown = Single files or folders that always fully parse
             {
@@ -615,9 +600,9 @@ namespace ME3Explorer.DialogueDumper
             else //Otherwise skip file
             {
                 CurrentFileProgressValue = CurrentFileProgressMaximum;
-                if (dumper.bDebugOutput == true)
+                if (dumper.shouldDoDebugOutput)
                 {
-                    List<string> excelout = new List<string> { "DEBUG", "SKIPPED", fileName };
+                    var excelout = new List<string> { "DEBUG", "SKIPPED", fileName };
                     dumper._xlqueue.Add(excelout);
                 }
                 return;
@@ -688,7 +673,7 @@ namespace ME3Explorer.DialogueDumper
                                     ME1Explorer.Unreal.Classes.TalkFile locTlk = null;
                                     if (GameBeingDumped == MEGame.ME1)
                                     {
-                                        var lnkTLKbinary = pcc.getUExport(exp.GetProperty<ObjectProperty>("m_oTlkFileSet").Value).getBinaryData();
+                                        byte[] lnkTLKbinary = pcc.getUExport(exp.GetProperty<ObjectProperty>("m_oTlkFileSet").Value).getBinaryData();
                                         int offset = 0;
                                         int tlkcount = BitConverter.ToInt32(lnkTLKbinary, offset);
                                         for (int t = 0; t < tlkcount; t++)
@@ -716,10 +701,10 @@ namespace ME3Explorer.DialogueDumper
                                     {
                                         //Get and set speaker name
                                         var speakeridx = entry.GetProp<IntProperty>("nSpeakerIndex");
-                                        string lineSpeaker = null;
+                                        string lineSpeaker;
                                         if (speakeridx >= 0)
                                         {
-                                            lineSpeaker = speakers[speakeridx].ToString();
+                                            lineSpeaker = speakers[speakeridx];
                                         }
                                         else if (speakeridx == -2)
                                         {
@@ -735,7 +720,7 @@ namespace ME3Explorer.DialogueDumper
                                         if (lineStrRef > 0)
                                         {
                                             //Get StringRef Text
-                                            string lineTLKstring = "No Data";
+                                            string lineTLKstring;
                                             if (GameBeingDumped == MEGame.ME1)
                                             {
                                                 lineTLKstring = locTlk.findDataById(lineStrRef);
@@ -753,7 +738,7 @@ namespace ME3Explorer.DialogueDumper
                                             if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" && lineTLKstring != "\" \"")
                                             {
                                                 //Write to Background thread
-                                                List<string> excelout = new List<string> { "TLKStrings", lineSpeaker, lineStrRef.ToString(), lineTLKstring, convName, GameBeingDumped.ToString(), fileName, convIdx.ToString() };
+                                                var excelout = new List<string> { "TLKStrings", lineSpeaker, lineStrRef.ToString(), lineTLKstring, convName, GameBeingDumped.ToString(), fileName, convIdx.ToString() };
                                                 dumper._xlqueue.Add(excelout);
                                             }
                                         }
@@ -767,7 +752,7 @@ namespace ME3Explorer.DialogueDumper
                                         foreach (StructProperty reply in replyList)
                                         {
                                             //Get and set speaker name
-                                            string lineSpeaker = "Shepard";
+                                            const string lineSpeaker = "Shepard";
 
                                             //Get StringRef
                                             var lineStrRef = reply.GetProp<StringRefProperty>("srText").Value;
@@ -775,7 +760,7 @@ namespace ME3Explorer.DialogueDumper
                                             {
 
                                                 //Get StringRef Text
-                                                string lineTLKstring = "No Data";
+                                                string lineTLKstring;
                                                 if (GameBeingDumped == MEGame.ME1)
                                                 {
                                                     lineTLKstring = locTlk.findDataById(lineStrRef);
@@ -793,7 +778,7 @@ namespace ME3Explorer.DialogueDumper
                                                 if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" && lineTLKstring != "\" \"")
                                                 {
                                                     //Write to Background thread (must be 8 strings)
-                                                    List<string> excelout = new List<string> { "TLKStrings", lineSpeaker, lineStrRef.ToString(), lineTLKstring, convName, GameBeingDumped.ToString(), fileName, convIdx.ToString() };
+                                                    var excelout = new List<string> { "TLKStrings", lineSpeaker, lineStrRef.ToString(), lineTLKstring, convName, GameBeingDumped.ToString(), fileName, convIdx.ToString() };
                                                     dumper._xlqueue.Add(excelout);
                                                 }
                                             }
@@ -845,7 +830,7 @@ namespace ME3Explorer.DialogueDumper
                                         if (l.GetProp<StrProperty>("LinkDesc") == "Owner")
                                         {
                                             var ownerLink = l.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
-                                            if (ownerLink.Count() > 0)
+                                            if (ownerLink.Any())
                                             {
                                                 iownerObj = ownerLink[0].Value;
                                                 break;
@@ -856,47 +841,46 @@ namespace ME3Explorer.DialogueDumper
                                 if (iownerObj > 0)
                                 {
                                     var svlink = pcc.getUExport(iownerObj);
-                                    if (svlink.ClassName == "SeqVar_Object")
+                                    switch (svlink.ClassName)
                                     {
-                                        ObjectProperty oactorlink = svlink.GetProperty<ObjectProperty>("ObjValue");
-                                        if (oactorlink != null)
+                                        case "SeqVar_Object":
                                         {
-                                            var actor = pcc.getUExport(oactorlink.Value);
-                                            var actortag = actor.GetProperty<NameProperty>("Tag");
-                                            if (actortag != null)
+                                            ObjectProperty oactorlink = svlink.GetProperty<ObjectProperty>("ObjValue");
+                                            if (oactorlink != null)
                                             {
-                                                ownertag = actortag.ToString();
-                                            }
-                                            else if (actor.idxArchtype != 0)
-                                            {
-                                                var archtag = pcc.getUExport(actor.idxArchtype).GetProperty<NameProperty>("Tag");
-                                                if (archtag != null)
+                                                var actor = pcc.getUExport(oactorlink.Value);
+                                                var actortag = actor.GetProperty<NameProperty>("Tag");
+                                                if (actortag != null)
                                                 {
-                                                    ownertag = archtag.ToString();
+                                                    ownertag = actortag.ToString();
+                                                }
+                                                else if (actor.idxArchtype != 0)
+                                                {
+                                                    var archtag = pcc.getUExport(actor.idxArchtype).GetProperty<NameProperty>("Tag");
+                                                    if (archtag != null)
+                                                    {
+                                                        ownertag = archtag.ToString();
+                                                    }
                                                 }
                                             }
+                                            break;
                                         }
-                                    }
-                                    else if (svlink.ClassName == "BioSeqVar_ObjectFindByTag")
-                                    {
-                                        if (GameBeingDumped == MEGame.ME3)
-                                        {
+                                        case "BioSeqVar_ObjectFindByTag" when GameBeingDumped == MEGame.ME3:
                                             ownertag = svlink.GetProperty<NameProperty>("m_sObjectTagToFind").ToString();
-                                        }
-                                        else
-                                        {
+                                            break;
+                                        case "BioSeqVar_ObjectFindByTag":
                                             ownertag = svlink.GetProperty<StrProperty>("m_sObjectTagToFind").ToString();
-                                        }
+                                            break;
                                     }
                                 }
 
                                 //Write to Background thread 
-                                List<string> excelout = new List<string> { "ConvoOwners", convo, ownertag, fileName };
+                                var excelout = new List<string> { "ConvoOwners", convo, ownertag, fileName };
                                 dumper._xlqueue.Add(excelout);
 
                             }
 
-                            if (dumper.bDebugOutput)
+                            if (dumper.shouldDoDebugOutput)
                             {
                                 string tag = null;
                                 int strref = -1;
@@ -958,16 +942,16 @@ namespace ME3Explorer.DialogueDumper
             }
             catch (Exception e)
             {
-                if (dumper.bDebugOutput == true)
+                if (dumper.shouldDoDebugOutput)
                 {
-                    List<string> excelout = new List<string> { "DEBUG", "FAILURE", fileName, className, CurrentFileProgressValue.ToString(), e.ToString() };
+                    var excelout = new List<string> { "DEBUG", "FAILURE", fileName, className, CurrentFileProgressValue.ToString(), e.ToString() };
                     dumper._xlqueue.Add(excelout);
                 }
             }
             
-            if (dumper.bDebugOutput == true)
+            if (dumper.shouldDoDebugOutput)
             {
-                List<string> excelout = new List<string> { "DEBUG", "SUCCESS", fileName};
+                var excelout = new List<string> { "DEBUG", "SUCCESS", fileName};
                 dumper._xlqueue.Add(excelout);
             }
         }
