@@ -120,7 +120,7 @@ namespace ME3Explorer
                             }
                             else
                             {
-                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = ME1Explorer.ME1TalkFiles.findDataById(item.GetIntValue());
+                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = ME1Explorer.ME1TalkFiles.findDataById(item.GetIntValue(), null);
                             }
                         }
                     }
@@ -184,7 +184,7 @@ namespace ME3Explorer
 
         private void ImportToExcel_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Excel sheet must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers. \r\nIf using a multisheet excel file, the sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:" );
+            MessageBox.Show("Excel sheet must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers. \r\nIf using a multisheet excel file, the sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:");
             OpenFileDialog oDlg = new OpenFileDialog
             {
                 Filter = "Excel Files (*.xlsx)|*.xlsx"

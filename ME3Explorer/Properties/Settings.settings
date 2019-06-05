@@ -107,5 +107,11 @@
     <Setting Name="PropertyDBPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="TLKGender_IsMale" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="TLKLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">INT</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

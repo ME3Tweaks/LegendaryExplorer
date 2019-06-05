@@ -442,5 +442,29 @@ namespace ME3Explorer.Properties {
                 this["PropertyDBPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TLKGender_IsMale {
+            get {
+                return ((bool)(this["TLKGender_IsMale"]));
+            }
+            set {
+                this["TLKGender_IsMale"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("INT")]
+        public string TLKLanguage {
+            get {
+                return ((string)(this["TLKLanguage"]));
+            }
+            set {
+                this["TLKLanguage"] = value;
+            }
+        }
     }
 }

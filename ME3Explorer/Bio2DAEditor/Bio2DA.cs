@@ -221,7 +221,8 @@ namespace ME3Explorer
                         if (cell.Type == Bio2DACell.Bio2DADataType.TYPE_INT && cell.GetIntValue() > 0)
                         {
                             int stringId = cell.GetIntValue();
-                            string tlkLookup = ME1Explorer.ME1TalkFiles.findDataById(stringId);
+                            //Unsure if we will have reference to filerefs here depending on which constructor was used. Hopefully we will.
+                            string tlkLookup = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(stringId, export.FileRef.Game, export.FileRef as ME1Package);
                             if (tlkLookup != "No Data" && tlkLookup != "")
                             {
                                 worksheet.Cell(rowindex + 2, colindex + 2).Comment.AddText(tlkLookup);

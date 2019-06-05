@@ -698,18 +698,7 @@ namespace ME3Explorer
                     break;
                 case StringRefProperty strrefp:
                     editableValue = strrefp.Value.ToString();
-                    switch (parsingExport.FileRef.Game)
-                    {
-                        case MEGame.ME3:
-                            parsedValue = ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(strrefp.Value);
-                            break;
-                        case MEGame.ME2:
-                            parsedValue = ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.ME2TalkFiles.findDataById(strrefp.Value);
-                            break;
-                        case MEGame.ME1:
-                            parsedValue = ME1Explorer.ME1TalkFiles.tlkList.Count == 0 ? "(no TLK loaded)" : ME1Explorer.ME1TalkFiles.findDataById(strrefp.Value);
-                            break;
-                    }
+                    parsedValue =  TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strrefp.Value, parsingExport.FileRef.Game, parsingExport.FileRef as ME1Package);
                     break;
                 case StrProperty strp:
                     editableValue = strp.Value;
@@ -849,18 +838,7 @@ namespace ME3Explorer
 
             if (name == "m_nStrRefID")
             {
-                switch (export.FileRef.Game)
-                {
-                    case MEGame.ME3:
-                        return ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(value);
-                    case MEGame.ME2:
-                        return ME2Explorer.ME2TalkFiles.tlkList.Count == 0
-                            ? "(.tlk not loaded)"
-                            : ME2Explorer.ME2TalkFiles.findDataById(value);
-                    case MEGame.ME1:
-                        //Todo: Support local TLKs in this file.
-                        return ME1Explorer.ME1TalkFiles.findDataById(value);
-                }
+                return TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef as ME1Package);
             }
             return "";
         }
@@ -1130,37 +1108,14 @@ namespace ME3Explorer
                         {
                             if (int.TryParse(Value_TextBox.Text, out int index))
                             {
-                                string str;
-                                switch (Pcc.Game)
+
+                                string str = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(index, CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef as ME1Package);
+                                str = str.Replace("\n", "[\\n]");
+                                if (str.Length > 82)
                                 {
-                                    case MEGame.ME3:
-                                        str = ME3TalkFiles.findDataById(index);
-                                        str = str.Replace("\n", "[\\n]");
-                                        if (str.Length > 82)
-                                        {
-                                            str = str.Substring(0, 80) + "...";
-                                        }
-                                        ParsedValue_TextBlock.Text = ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : str.Replace(Environment.NewLine, "[\\n]");
-                                        break;
-                                    case MEGame.ME2:
-                                        str = ME2Explorer.ME2TalkFiles.findDataById(index);
-                                        str = str.Replace("\n", "[\\n]");
-                                        if (str.Length > 82)
-                                        {
-                                            str = str.Substring(0, 80) + "...";
-                                        }
-                                        ParsedValue_TextBlock.Text = ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : str.Replace(Environment.NewLine, "[\\n]");
-                                        break;
-                                    case MEGame.ME1:
-                                        str = ME1Explorer.ME1TalkFiles.findDataById(index);
-                                        str = str.Replace("\n", "[\\n]");
-                                        if (str.Length > 82)
-                                        {
-                                            str = str.Substring(0, 80) + "...";
-                                        }
-                                        ParsedValue_TextBlock.Text = str.Replace(Environment.NewLine, "[\\n]");
-                                        break;
+                                    str = str.Substring(0, 80) + "...";
                                 }
+                                ParsedValue_TextBlock.Text = str.Replace(Environment.NewLine, "[\\n]");
                             }
                             else
                             {

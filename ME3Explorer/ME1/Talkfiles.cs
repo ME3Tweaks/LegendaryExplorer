@@ -57,9 +57,24 @@ namespace ME1Explorer
             }
         }
 
-        public static string findDataById(int strRefID, bool withFileName = false)
+        public static string findDataById(int strRefID, ME1Package package, bool withFileName = false)
         {
             string s = "No Data";
+
+            //Look in package local first
+            if (package != null)
+            {
+                foreach (TalkFile tlk in package.LocalTalkFiles)
+                {
+                    s = tlk.findDataById(strRefID, withFileName);
+                    if (s != "No Data")
+                    {
+                        return s;
+                    }
+                }
+            }
+
+            //Look in loaded list
             foreach (TalkFile tlk in tlkList)
             {
                 s = tlk.findDataById(strRefID, withFileName);
