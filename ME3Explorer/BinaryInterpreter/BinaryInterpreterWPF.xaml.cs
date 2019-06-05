@@ -3563,13 +3563,13 @@ namespace ME3Explorer
             {
                 if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 )
                 {
-                    int count = BitConverter.ToInt32(data, binarypos);
-                    subnodes.Add(new BinInterpTreeItem { Header = $"0x{binarypos:X4} Count: {count.ToString()}", Name = "_" + binarypos });
-                    binarypos += 4; //+ int
+                    int count = BitConverter.ToInt32(data, binarystart);
+                    subnodes.Add(new BinInterpTreeItem { Header = $"0x{binarystart:X4} Count: {count.ToString()}", Name = "_" + binarystart });
+                    binarystart += 4; //+ int
                     for (int i = 0; i < count; i++)
                     {
-                        string nodeText = $"0x{binarypos:X4} ";
-                        int val = BitConverter.ToInt32(data, binarypos);
+                        string nodeText = $"0x{binarystart:X4} ";
+                        int val = BitConverter.ToInt32(data, binarystart);
                         string name = val.ToString();
                         if (val > 0 && val <= CurrentLoadedExport.FileRef.Exports.Count)
                         {
@@ -3587,9 +3587,9 @@ namespace ME3Explorer
                         {
                             Header = nodeText,
                             Tag = NodeType.StructLeafObject,
-                            Name = "_" + binarypos
+                            Name = "_" + binarystart
                         });
-                        binarypos += 4;
+                        binarystart += 4;
                         /*
                         int objectindex = BitConverter.ToInt32(data, binarypos);
                         IEntry obj = pcc.getEntry(objectindex);
@@ -3600,65 +3600,65 @@ namespace ME3Explorer
                 }
                 if(CurrentLoadedExport.FileRef.Game == MEGame.ME2)
                 {
-                    var wwiseID = data.Skip(binarypos).Take(4).ToArray();
+                    var wwiseID = data.Skip(binarystart).Take(4).ToArray();
                     subnodes.Add(new BinInterpTreeItem
                     {
-                        Header = $"0x{binarypos:X4} WwiseEventID: {wwiseID[0]:X2}{wwiseID[1]:X2}{wwiseID[2]:X2}{wwiseID[3]:X2}",
+                        Header = $"0x{binarystart:X4} WwiseEventID: {wwiseID[0]:X2}{wwiseID[1]:X2}{wwiseID[2]:X2}{wwiseID[3]:X2}",
                         Tag = NodeType.Unknown,
-                        Name = "_" + binarypos
+                        Name = "_" + binarystart
                     });
-                    binarypos += 4;
+                    binarystart += 4;
 
-                    int count = BitConverter.ToInt32(data, binarypos);
+                    int count = BitConverter.ToInt32(data, binarystart);
                     var Streams = new BinInterpTreeItem
                     {
-                        Header = $"0x{binarypos:X4} Link Count: {count}",
-                        Name = "_" + binarypos,
+                        Header = $"0x{binarystart:X4} Link Count: {count}",
+                        Name = "_" + binarystart,
                         Tag = NodeType.StructLeafInt
                     };
-                    binarypos += 4;
+                    binarystart += 4;
                     subnodes.Add(Streams);
 
                     for (int s = 0; s < count; s++)
                     {
-                        int bankcount = BitConverter.ToInt32(data, binarypos);
+                        int bankcount = BitConverter.ToInt32(data, binarystart);
                         subnodes.Add(new BinInterpTreeItem
                         {
-                            Header = $"0x{binarypos:X4} BankCount: {bankcount}",
+                            Header = $"0x{binarystart:X4} BankCount: {bankcount}",
                             Tag = NodeType.StructLeafInt,
-                            Name = "_" + binarypos
+                            Name = "_" + binarystart
                         });
-                        binarypos += 4;
+                        binarystart += 4;
                         for (int b = 0; b < count; b++)
                         {
-                            int bank = BitConverter.ToInt32(data, binarypos);
+                            int bank = BitConverter.ToInt32(data, binarystart);
                             subnodes.Add(new BinInterpTreeItem
                             {
-                                Header = $"0x{binarypos:X4} WwiseBank: {bank} {CurrentLoadedExport.FileRef.GetEntryString(bank)}",
+                                Header = $"0x{binarystart:X4} WwiseBank: {bank} {CurrentLoadedExport.FileRef.GetEntryString(bank)}",
                                 Tag = NodeType.StructLeafObject,
-                                Name = "_" + binarypos
+                                Name = "_" + binarystart
                             });
-                            binarypos += 4;
+                            binarystart += 4;
                         }
 
-                        int streamcount = BitConverter.ToInt32(data, binarypos);
+                        int streamcount = BitConverter.ToInt32(data, binarystart);
                         subnodes.Add(new BinInterpTreeItem
                         {
-                            Header = $"0x{binarypos:X4} StreamCount: {streamcount}",
+                            Header = $"0x{binarystart:X4} StreamCount: {streamcount}",
                             Tag = NodeType.StructLeafInt,
-                            Name = "_" + binarypos
+                            Name = "_" + binarystart
                         });
-                        binarypos += 4;
+                        binarystart += 4;
                         for (int w = 0; w < count; w++)
                         {
-                            int wwstream = BitConverter.ToInt32(data, binarypos);
+                            int wwstream = BitConverter.ToInt32(data, binarystart);
                             subnodes.Add(new BinInterpTreeItem
                             {
-                                Header = $"0x{binarypos:X4} WwiseStream: {wwstream} {CurrentLoadedExport.FileRef.GetEntryString(wwstream)}",
+                                Header = $"0x{binarystart:X4} WwiseStream: {wwstream} {CurrentLoadedExport.FileRef.GetEntryString(wwstream)}",
                                 Tag = NodeType.StructLeafObject,
-                                Name = "_" + binarypos
+                                Name = "_" + binarystart
                             });
-                            binarypos += 4;
+                            binarystart += 4;
                         }
                     }
                 }
