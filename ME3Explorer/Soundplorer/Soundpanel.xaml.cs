@@ -25,7 +25,6 @@ using System.Xml;
 using System.Xml.Linq;
 using Be.Windows.Forms;
 using FontAwesome.WPF;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
@@ -391,7 +390,7 @@ namespace ME3Explorer
         public override bool CanParse(IExportEntry exportEntry)
         {
             //            return (/*(exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "SoundNodeWave") || */(exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
-            return !exportEntry.ObjectName.StartsWith("Default__") && (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream");
+            return !exportEntry.IsDefaultObject && (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream");
         }
 
         /// <summary>

@@ -296,43 +296,26 @@
     <Compile Include="AutoTOC\AutoTOCWPF.xaml.cs">
       <DependentUpon>AutoTOCWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.Designer.cs">
-      <DependentUpon>BinaryAddPropertyDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="BinaryInterpreter\BinaryClasses\IUDKImportable.cs" />
     <Compile Include="BinaryInterpreter\BinaryClasses\UDKStaticMesh.cs" />
-    <Compile Include="BinaryInterpreter\BinaryInterpreter.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="BinaryInterpreter\BinaryInterpreter.Designer.cs">
-      <DependentUpon>BinaryInterpreter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BinaryInterpreter\BinaryInterpreterHost.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BinaryInterpreter\BinaryInterpreterHost.Designer.cs">
-      <DependentUpon>BinaryInterpreterHost.cs</DependentUpon>
-    </Compile>
     <Compile Include="BinaryInterpreter\BinaryInterpreterWPF.xaml.cs">
       <DependentUpon>BinaryInterpreterWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="Bio2DAEditor\Bio2DA.cs" />
     <Compile Include="Bio2DAEditor\Bio2DACell.cs" />
-    <Compile Include="Bio2DAEditor\Bio2DAEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Bio2DAEditor\Bio2DAEditor.Designer.cs">
-      <DependentUpon>Bio2DAEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="CodeWriter.cs" />
     <Compile Include="DialogueDumper\DialogueDumper.xaml.cs">
       <DependentUpon>DialogueDumper.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Debugging\DebugOutput.cs" />
+    <Compile Include="Debugging\DebugWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Debugging\DebugWindow.Designer.cs">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="DLCUnpacker\DLCUnpacker.xaml.cs">
       <DependentUpon>DLCUnpacker.xaml</DependentUpon>
@@ -427,6 +410,10 @@
       <DependentUpon>MemoryAnalyzer.xaml</DependentUpon>
     </Compile>
     <Compile Include="ME3LoadedFiles.cs" />
+    <Compile Include="MEDirectories\ME1Directory.cs" />
+    <Compile Include="MEDirectories\ME2Directory.cs" />
+    <Compile Include="MEDirectories\ME3Directory.cs" />
+    <Compile Include="MEDirectories\MEDirectories.cs" />
     <Compile Include="MetadataEditor\MetadataEditorWPF.xaml.cs">
       <DependentUpon>MetadataEditorWPF.xaml</DependentUpon>
     </Compile>
@@ -516,13 +503,7 @@
     <Compile Include="PackageEditor\EmbeddedTextureViewer.xaml.cs">
       <DependentUpon>EmbeddedTextureViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PackageEditor\PackageEditorDebugFunctions.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="PackageEditor\PackageEditorWPFRelinker.cs" />
-    <Compile Include="PackageEditor\PackageEditorRelinker.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="PackageEditor\PackageEditorWPF.xaml.cs">
       <DependentUpon>PackageEditorWPF.xaml</DependentUpon>
     </Compile>
@@ -693,12 +674,6 @@
     <Compile Include="Soundplorer\KoopsAudioDecoder.cs" />
     <Compile Include="Soundplorer\SoundplorerWPFCommands.cs" />
     <Compile Include="Soundplorer\SoundpanelAudioPlayer.cs" />
-    <Compile Include="Soundplorer\DirectReplace.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Soundplorer\DirectReplace.Designer.cs">
-      <DependentUpon>DirectReplace.cs</DependentUpon>
-    </Compile>
     <Compile Include="SharedUI\ExportLoaderControl.cs" />
     <Compile Include="SharedUI\IExportLoader.cs" />
     <Compile Include="Soundplorer\Soundpanel.xaml.cs">
@@ -727,30 +702,6 @@
     <Compile Include="Main Window\TaskPane.xaml.cs">
       <DependentUpon>TaskPane.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Texplorer\KFreonListErrorBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Texplorer\KFreonListErrorBox.Designer.cs">
-      <DependentUpon>KFreonListErrorBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Texplorer\KFreonSearchForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Texplorer\KFreonSearchForm.Designer.cs">
-      <DependentUpon>KFreonSearchForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Texplorer\Texplorer2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Texplorer\Texplorer2.Designer.cs">
-      <DependentUpon>Texplorer2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Texplorer\TexplorerFirstTimeSetup.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Texplorer\TexplorerFirstTimeSetup.Designer.cs">
-      <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
-    </Compile>
     <Compile Include="TlkEditor\TlkEditor.xaml.cs">
       <DependentUpon>TlkEditor.xaml</DependentUpon>
     </Compile>
@@ -773,12 +724,6 @@
     <Compile Include="Main Window\ToolPanel.xaml.cs">
       <DependentUpon>ToolPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TPFTools\KFreonTPFTools3.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TPFTools\KFreonTPFTools3.Designer.cs">
-      <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
-    </Compile>
     <Compile Include="UnrealScriptControl\UnrealScriptWPF.xaml.cs">
       <DependentUpon>UnrealScriptWPF.xaml</DependentUpon>
     </Compile>
@@ -790,37 +735,13 @@
     <Compile Include="Unreal\Classes\AnimTree.cs" />
     <Compile Include="Unreal\Classes\BioAnimSetData.cs" />
     <Compile Include="DialogEditor\ME3BioConversation.cs" />
-    <Compile Include="Unreal\Classes\BioPathPoint.cs" />
-    <Compile Include="Unreal\Classes\BioPlaypenVolumeAdditive.cs" />
-    <Compile Include="Unreal\Classes\BioTriggerVolume.cs" />
-    <Compile Include="Unreal\Classes\BlockingVolume.cs" />
-    <Compile Include="Unreal\Classes\BrushComponent.cs" />
-    <Compile Include="Unreal\Classes\CoverLink.cs" />
-    <Compile Include="Unreal\Classes\CoverSlotMarker.cs" />
-    <Compile Include="Unreal\Classes\DecalActor.cs" />
-    <Compile Include="Unreal\Classes\DecalComponent.cs" />
-    <Compile Include="Unreal\Classes\Emitter.cs" />
     <Compile Include="FaceFXAnimSetEditor\ME3FaceFXAnimSet.cs" />
     <Compile Include="Unreal\Classes\Function.cs" />
-    <Compile Include="Unreal\Classes\InterpActor.cs" />
-    <Compile Include="Unreal\Classes\Level.cs" />
-    <Compile Include="Unreal\Classes\LightVolume.cs" />
-    <Compile Include="Unreal\Classes\MantleMarker.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
-    <Compile Include="Unreal\Classes\PathNode.cs" />
     <Compile Include="Unreal\Classes\SkeletalMesh.cs" />
-    <Compile Include="Unreal\Classes\SplineActor.cs" />
     <Compile Include="Unreal\Classes\StaticMesh.cs" />
-    <Compile Include="Unreal\Classes\StaticMeshActor.cs" />
-    <Compile Include="Unreal\Classes\StaticMeshCollectionActor.cs" />
-    <Compile Include="Unreal\Classes\StaticMeshComponent.cs" />
-    <Compile Include="Unreal\Classes\TargetPoint.cs" />
     <Compile Include="Unreal\Classes\Texture2D.cs" />
-    <Compile Include="Unreal\Classes\TextureGroup.cs" />
-    <Compile Include="Unreal\Classes\WwiseAmbientSound.cs" />
-    <Compile Include="Unreal\Classes\WwiseAudioVolume.cs" />
     <Compile Include="Unreal\Classes\WwiseBank.cs" />
-    <Compile Include="Unreal\Classes\WwiseEnvironmentVolume.cs" />
     <Compile Include="Unreal\Classes\WwiseStream.cs" />
     <Compile Include="Unreal\DLCPackage.cs" />
     <Compile Include="Unreal\DLCUnpacker.cs" />
@@ -833,13 +754,13 @@
     <Compile Include="Unreal\ME3Structs.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropertyCollection.cs" />
-    <Compile Include="Unreal\PropGrid.cs" />
     <Compile Include="Unreal\PSAFile.cs" />
     <Compile Include="Unreal\PSKFile.cs" />
     <Compile Include="Unreal\SerializingContainer.cs" />
     <Compile Include="Unreal\TalkFile.cs" />
     <Compile Include="Unreal\TextureCompression.cs" />
     <Compile Include="Unreal\TOCBinFile.cs" />
+    <Compile Include="Unreal\UDKExplorer\SkeletalMesh.cs" />
     <Compile Include="Unreal\UDKUnrealObjectInfo.cs" />
     <Compile Include="Unreal\UnrealFlags.cs" />
     <Compile Include="Unreal\ME3UnrealObjectInfo.cs" />
@@ -933,24 +854,6 @@
     <Compile Include="InterpEditor\Timeline.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Interpreter\AddPropertyDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Interpreter\AddPropertyDialog.Designer.cs">
-      <DependentUpon>AddPropertyDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Interpreter\Interpreter.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Interpreter\Interpreter.Designer.cs">
-      <DependentUpon>Interpreter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Interpreter\InterpreterHost.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Interpreter\InterpreterHost.Designer.cs">
-      <DependentUpon>InterpreterHost.cs</DependentUpon>
-    </Compile>
     <Compile Include="Main Window\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -970,10 +873,6 @@
     <Page Include="MetadataEditor\MetadataEditorWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Modmaker\CreateJobFromPCCDiff.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main Window\TaskPane.xaml">
       <SubType>Designer</SubType>
@@ -1208,21 +1107,6 @@
     <Compile Include="Meshplorer\UDKCopy.Designer.cs">
       <DependentUpon>UDKCopy.cs</DependentUpon>
     </Compile>
-    <Compile Include="Modmaker\CreateJobFromPCCDiff.xaml.cs">
-      <DependentUpon>CreateJobFromPCCDiff.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Modmaker\ModMaker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Modmaker\ModMaker.Designer.cs">
-      <DependentUpon>ModMaker.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PackageEditor\PackageEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PackageEditor\PackageEditor.Designer.cs">
-      <DependentUpon>PackageEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlotVarDB\PlotVarDB.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1243,15 +1127,15 @@
     <EmbeddedResource Include="BIKExtract\BIKExtract.resx">
       <DependentUpon>BIKExtract.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Bio2DAEditor\Bio2DAEditor.resx">
-      <DependentUpon>Bio2DAEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Conditionals\CondEditor.resx">
       <DependentUpon>CondEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Conditionals\Conditionals.resx">
       <DependentUpon>Conditionals.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Debugging\DebugWindow.resx">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DialogEditor\AddReply.resx">
       <DependentUpon>AddReply.cs</DependentUpon>
@@ -1270,24 +1154,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InterpEditor\Timeline.resx">
       <DependentUpon>Timeline.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BinaryInterpreter\BinaryAddPropertyDialog.resx">
-      <DependentUpon>BinaryAddPropertyDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BinaryInterpreter\BinaryInterpreter.resx">
-      <DependentUpon>BinaryInterpreter.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BinaryInterpreter\BinaryInterpreterHost.resx">
-      <DependentUpon>BinaryInterpreterHost.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Interpreter\AddPropertyDialog.resx">
-      <DependentUpon>AddPropertyDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Interpreter\Interpreter.resx">
-      <DependentUpon>Interpreter.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Interpreter\InterpreterHost.resx">
-      <DependentUpon>InterpreterHost.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\LevelExplorer.resx">
       <DependentUpon>LevelExplorer.cs</DependentUpon>
@@ -1325,13 +1191,6 @@
     <EmbeddedResource Include="Meshplorer\UDKCopy.resx">
       <DependentUpon>UDKCopy.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Modmaker\ModMaker.resx">
-      <DependentUpon>ModMaker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PackageEditor\PackageEditor.resx">
-      <DependentUpon>PackageEditor.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="PlotVarDB\PlotVarDB.resx">
       <DependentUpon>PlotVarDB.cs</DependentUpon>
     </EmbeddedResource>
@@ -1355,23 +1214,8 @@
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Soundplorer\DirectReplace.resx">
-      <DependentUpon>DirectReplace.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="SubtitleScanner\SubtitleScanner.resx">
       <DependentUpon>SubtitleScanner.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Texplorer\KFreonListErrorBox.resx">
-      <DependentUpon>KFreonListErrorBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Texplorer\Texplorer2.resx">
-      <DependentUpon>Texplorer2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Texplorer\TexplorerFirstTimeSetup.resx">
-      <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TPFTools\KFreonTPFTools3.resx">
-      <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WwiseBankViewer\WwiseViewer.resx">
       <DependentUpon>WwiseViewer.cs</DependentUpon>
@@ -1417,13 +1261,9 @@
       <Project>{ccf590b8-e6bf-4d31-85bf-afea7d075edf}</Project>
       <Name>Helpers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
-      <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
-      <Name>KFreonLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ME3LibWV\ME3LibWV.csproj">
-      <Project>{a8e1981a-0a8c-4c7a-9175-b5f0c085f639}</Project>
-      <Name>ME3LibWV</Name>
+    <ProjectReference Include="..\HexConverterWPF\HexConverterWPF.csproj">
+      <Project>{947a6918-ad71-4f61-bc63-8da7997e10e6}</Project>
+      <Name>HexConverterWPF</Name>
     </ProjectReference>
     <ProjectReference Include="..\NAudio\NAudio.csproj">
       <Project>{da4f02e3-0b5e-42cd-b8d9-5583fa51d66e}</Project>
@@ -1433,25 +1273,9 @@
       <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>
       <Name>Piccolo</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SaltTPF\SaltTPF.csproj">
-      <Project>{8637a2aa-e1fb-4ec9-88a5-688d7d1f7921}</Project>
-      <Name>SaltTPF</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Tools\Gibbed.IO\Gibbed.IO.csproj">
       <Project>{047857ba-daa3-4ca7-afb8-a1b082b28c6a}</Project>
       <Name>Gibbed.IO</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tools\Gibbed.MassEffect3.FileFormats\Gibbed.MassEffect3.FileFormats.csproj">
-      <Project>{681db2ce-e3eb-4110-ac50-f53eaca66e99}</Project>
-      <Name>Gibbed.MassEffect3.FileFormats</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UDKExplorer\UDKExplorer.csproj">
-      <Project>{f660e850-da7a-41a6-ae77-4ab4f21d8f33}</Project>
-      <Name>UDKExplorer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UDKLibWV\UDKLibWV.csproj">
-      <Project>{40fb6624-5444-43dc-8b73-863a3d91e1f3}</Project>
-      <Name>UDKLibWV</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -1467,10 +1291,6 @@
     <Resource Include="Resources\resize_icon.ico" />
     <Resource Include="Resources\taskbar.ico" />
     <Resource Include="Resources\interpreter_icon_64x64.png" />
-    <Resource Include="Resources\info.ico" />
-    <Resource Include="Resources\help-browser.png" />
-    <Resource Include="Resources\folder.png" />
-    <Resource Include="Resources\document-save.png" />
     <Resource Include="Icons\udk_explorer_64x64.png" />
     <Resource Include="Icons\placeholder_64x64.png" />
     <Resource Include="Icons\modmaker_64x64.png" />
@@ -1548,7 +1368,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\excel.png" />
-    <None Include="Resources\excel.gif" />
     <Resource Include="Resources\error_x.png" />
     <Resource Include="Resources\coalesced_editor_newB.ico" />
     <Resource Include="Resources\me3tweaks_fork.png" />
@@ -1618,11 +1437,7 @@ rmdir /s /q "$(ProjectDir)$(OutDir)zh-Hans"
 del /s "$(TargetDir)*.xml"
 
 move /y "$(ProjectDir)$(OutDir)CSharpImageLibrary.exe" "$(ProjectDir)$(OutDir)lib\"
-move /y "$(ProjectDir)$(OutDir)KFreonLib.dll.config" "$(ProjectDir)$(OutDir)lib\"
-move /y "$(ProjectDir)$(OutDir)ME3LibWV.dll.config" "$(ProjectDir)$(OutDir)lib\"
 del "$(ProjectDir)$(OutDir)HexConverter.exe.config"
-del "$(ProjectDir)$(OutDir)UDKExplorer.exe.config"
-REM del "$(ProjectDir)$(OutDir)ME3Creator.exe.config"
 if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBuilder.cmd" "$(TargetDir)..\ReleaseBuilder.bat" /y)
 
 if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBuilder.ps1" "$(TargetDir)..\ReleaseBuilder.ps1" /y)

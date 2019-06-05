@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:ME3Explorer.DLCUnpacker"
         xmlns:global="clr-namespace:ME3Explorer"
         WindowStartupLocation="CenterScreen"
-        xmlns:KFreonLib="clr-namespace:KFreonLib.MEDirectories;assembly=KFreonLib"
         mc:Ignorable="d"
         Title="DLC Unpacker" Height="300" Width="489"
         Closing="DLCUnpacker_Closing"
@@ -26,7 +25,7 @@
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.ColumnSpan="4" Text="{Binding Path=(KFreonLib:ME3Directory.DLCPath),StringFormat='DLC path: {0}',Mode=OneWay}" />
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="4" Text="{Binding Path=(global:ME3Directory.DLCPath),StringFormat='DLC path: {0}',Mode=OneWay}" />
             <TextBlock Grid.Row="1" Text="Required space:"/>
             <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding RequiredSpaceText}"/>
             <TextBlock Grid.Row="2" Text="Available space:"/>

@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 
 namespace ME3Explorer.DialogEditor

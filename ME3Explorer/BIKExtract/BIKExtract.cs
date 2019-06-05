@@ -1,13 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Application = System.Windows.Forms.Application;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ME3Explorer
 {
@@ -123,8 +120,8 @@ namespace ME3Explorer
                         fileStream.WriteByte(memory[t.off + j]);
                     fileStream.Close();
                 }
+                MessageBox.Show("Done.");
             }
-            MessageBox.Show("Done.");
         }
     }
 }

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
 using ME3Explorer.Packages;
 using ME2Explorer.Unreal;
@@ -486,98 +485,6 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static byte[] getDefaultClassValue(ME3Package pcc, string className, bool fullProps = false)
-        {
-            if (Structs.ContainsKey(className))
-            {
-                bool immutable = UnrealObjectInfo.isImmutable(className, MEGame.ME3);
-                ClassInfo info = Structs[className];
-                try
-                {
-                    string filepath = (Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
-                    if (File.Exists(info.pccPath))
-                    {
-                        filepath = info.pccPath; //Used for dynamic lookup
-                    }
-                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(filepath))
-                    {
-                        byte[] buff;
-                        //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
-                        //thus, I have hardcoded what those default values should be 
-                        if (className == "Plane")
-                        {
-                            buff = PlaneDefault;
-                        }
-                        else if (className == "CoverReference")
-                        {
-                            buff = CoverReferenceDefault;
-                        }
-                        else
-                        {
-                            buff = importPCC.Exports[info.exportIndex].Data.Skip(0x24).ToArray();
-                        }
-                        List<PropertyReader.Property> Props = PropertyReader.ReadProp(importPCC, buff, 0);
-                        MemoryStream m = new MemoryStream();
-                        foreach (PropertyReader.Property p in Props)
-                        {
-                            string propName = importPCC.getNameEntry(p.Name);
-                            //check if property is transient, if so, skip (neither of the structs that inherit have transient props)
-                            if (info.properties.ContainsKey(propName) || propName == "None" || info.baseClass != "Class")
-                            {
-                                if (immutable && !fullProps)
-                                {
-                                    PropertyReader.ImportImmutableProperty(pcc, importPCC, p, className, m, true);
-                                }
-                                else
-                                {
-                                    PropertyReader.ImportProperty(pcc, importPCC, p, className, m, true);
-                                }
-                            }
-                        }
-                        return m.ToArray();
-                    }
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            }
-            else if (Classes.ContainsKey(className))
-            {
-                ClassInfo info = Structs[className];
-                try
-                {
-                    string filepath = (Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
-                    if (File.Exists(info.pccPath))
-                    {
-                        filepath = info.pccPath; //Used for dynamic lookup
-                    }
-                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(filepath))
-                    {
-                        IExportEntry entry = pcc.Exports[info.exportIndex + 1];
-                        List<PropertyReader.Property> Props = PropertyReader.getPropList(entry);
-                        MemoryStream m = new MemoryStream(entry.DataSize - 4);
-                        foreach (PropertyReader.Property p in Props)
-                        {
-                            if (!info.properties.ContainsKey(importPCC.getNameEntry(p.Name)))
-                            {
-                                //property is transient
-                                continue;
-                            }
-                            PropertyReader.ImportProperty(pcc, importPCC, p, className, m);
-                        }
-                        return m.ToArray();
-                    }
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-
-            }
-            return null;
-        }
-
         public static PropertyCollection getDefaultStructValue(string className, bool stripTransients)
         {
             if (Structs.ContainsKey(className))
@@ -979,11 +886,11 @@ namespace ME3Explorer.Unreal
             using (var fileStream = new FileStream(Path.Combine(App.ExecFolder, "ME3Classes.cs"), FileMode.Create))
             using (var writer = new CodeWriter(fileStream))
             {
-                writer.WriteLine("using Unreal.ME3Enums;");
-                writer.WriteLine("using Unreal.ME3Structs;");
+                writer.WriteLine("using ME3Explorer.Unreal.ME3Enums;");
+                writer.WriteLine("using ME3Explorer.Unreal.ME3Structs;");
                 writer.WriteLine("using NameReference = ME3Explorer.Unreal.NameReference;");
                 writer.WriteLine();
-                writer.WriteBlock("namespace Unreal.ME3Classes", () =>
+                writer.WriteBlock("namespace ME3Explorer.Unreal.ME3Classes", () =>
                 {
                     writer.WriteBlock("public class Level", () =>
                     {
@@ -1020,11 +927,11 @@ namespace ME3Explorer.Unreal
             using (var fileStream = new FileStream(Path.Combine(App.ExecFolder, "ME3Structs.cs"), FileMode.Create))
             using (var writer = new CodeWriter(fileStream))
             {
-                writer.WriteLine("using Unreal.ME3Enums;");
-                writer.WriteLine("using Unreal.ME3Classes;");
+                writer.WriteLine("using ME3Explorer.Unreal.ME3Enums;");
+                writer.WriteLine("using ME3Explorer.Unreal.ME3Classes;");
                 writer.WriteLine("using NameReference = ME3Explorer.Unreal.NameReference;");
                 writer.WriteLine();
-                writer.WriteBlock("namespace Unreal.ME3Structs", () =>
+                writer.WriteBlock("namespace ME3Explorer.Unreal.ME3Structs", () =>
                 {
                     foreach ((string structName, ClassInfo info) in Structs)
                     {
@@ -1049,7 +956,7 @@ namespace ME3Explorer.Unreal
             using (var fileStream = new FileStream(Path.Combine(App.ExecFolder, "ME3Enums.cs"), FileMode.Create))
             using (var writer = new CodeWriter(fileStream))
             {
-                writer.WriteBlock("namespace Unreal.ME3Enums", () =>
+                writer.WriteBlock("namespace ME3Explorer.Unreal.ME3Enums", () =>
                 {
                     foreach ((string enumName, List<NameReference> values) in Enums)
                     {

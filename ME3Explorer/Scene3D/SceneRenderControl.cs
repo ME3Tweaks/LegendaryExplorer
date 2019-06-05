@@ -131,18 +131,6 @@ namespace ME3Explorer.Scene3D
             // Load the default position-texture shader
             DefaultEffect = new Effect<WorldConstants, WorldVertex>(Device, Properties.Resources.StandardShader);
 
-            List<string> pccfiles = new List<string>();
-            if (KFreonLib.MEDirectories.ME3Directory.Files != null)
-            {
-                pccfiles.AddRange(KFreonLib.MEDirectories.ME3Directory.Files);
-            }
-            for (int i = pccfiles.Count - 1; i >= 0; i--)
-            {
-                if (!pccfiles[i].EndsWith(".pcc"))
-                {
-                    pccfiles.RemoveAt(i);
-                }
-            }
             TextureCache = new PreviewTextureCache(Device);
         }
 

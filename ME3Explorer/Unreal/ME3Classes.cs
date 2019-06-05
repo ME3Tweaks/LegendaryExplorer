@@ -1,8 +1,8 @@
-using Unreal.ME3Enums;
-using Unreal.ME3Structs;
+using ME3Explorer.Unreal.ME3Enums;
+using ME3Explorer.Unreal.ME3Structs;
 using NameReference = ME3Explorer.Unreal.NameReference;
 
-namespace Unreal.ME3Classes
+namespace ME3Explorer.Unreal.ME3Classes
 {
     public class Level
     {

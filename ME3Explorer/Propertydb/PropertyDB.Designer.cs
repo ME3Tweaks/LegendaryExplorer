@@ -1,4 +1,7 @@
-﻿namespace ME3Explorer.Propertydb
+﻿using System;
+using System.Windows.Forms;
+
+namespace ME3Explorer.Propertydb
 {
     partial class PropertyDB
     {
@@ -52,6 +55,9 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
+
+            this.FormClosing += Form1_FormClosed;
+
             // 
             // menuStrip1
             // 
@@ -217,6 +223,8 @@
             this.PerformLayout();
 
         }
+
+
 
         #endregion
 

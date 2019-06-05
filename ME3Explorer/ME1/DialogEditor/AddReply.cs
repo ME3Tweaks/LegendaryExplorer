@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ME1Explorer.Unreal;
 using ME1Explorer.Unreal.Classes;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 
 namespace ME1Explorer

@@ -1,8 +1,8 @@
-using Unreal.ME3Enums;
-using Unreal.ME3Classes;
+using ME3Explorer.Unreal.ME3Enums;
+using ME3Explorer.Unreal.ME3Classes;
 using NameReference = ME3Explorer.Unreal.NameReference;
 
-namespace Unreal.ME3Structs
+namespace ME3Explorer.Unreal.ME3Structs
 {
     public class ReplicatedPickupObject
     {

@@ -38,7 +38,6 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.InterpTrackScan = new System.Windows.Forms.ToolStripButton();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openInPackageEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -112,8 +111,7 @@
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripComboBox1,
-            this.toolStripButton1,
-            this.InterpTrackScan});
+            this.toolStripButton1});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(812, 25);
@@ -134,17 +132,6 @@
             this.toolStripButton1.Size = new System.Drawing.Size(37, 22);
             this.toolStripButton1.Text = "Load";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
-            // 
-            // InterpTrackScan
-            // 
-            this.InterpTrackScan.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.InterpTrackScan.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.InterpTrackScan.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.InterpTrackScan.Name = "InterpTrackScan";
-            this.InterpTrackScan.Size = new System.Drawing.Size(119, 22);
-            this.InterpTrackScan.Text = "Scan for interptracks";
-            this.InterpTrackScan.Visible = false;
-            this.InterpTrackScan.Click += new System.EventHandler(this.InterpTrackScan_Click);
             // 
             // vScrollBar1
             // 
@@ -325,7 +312,6 @@
         private System.Windows.Forms.TreeView treeView2;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
-        private System.Windows.Forms.ToolStripButton InterpTrackScan;
         private System.Windows.Forms.ToolStripMenuItem loadAlternateTlkToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
     }

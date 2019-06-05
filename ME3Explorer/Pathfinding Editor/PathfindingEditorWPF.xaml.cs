@@ -1,5 +1,4 @@
-﻿using KFreonLib.MEDirectories;
-using ME3Explorer.ActorNodes;
+﻿using ME3Explorer.ActorNodes;
 using ME3Explorer.Packages;
 using ME3Explorer.PathfindingNodes;
 using ME3Explorer.Sequence_Editor;
@@ -53,7 +52,10 @@ namespace ME3Explorer.Pathfinding_Editor
             "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan","SFXNav_InteractionCannibal", "PlayerStart",
             "SFXNav_InteractionCenturion","SFXNav_InteractionGuardPose", "SFXNav_InteractionHusk","SFXNav_InteractionInspectOmniTool",
             "SFXNav_InteractionListening","SFXNav_InteractionListening2", "SFXNav_InteractionRavager","SFXNav_InteractionTalking",
-            "SFXNav_InteractionTalking2","SFXNav_InteractionTalking3", "SFXNav_KaiLengShield"
+            "SFXNav_InteractionTalking2","SFXNav_InteractionTalking3", "SFXNav_KaiLengShield",
+
+            //ME1
+            "BioWp_DefensePoint", "BioWp_AssaultPoint", "BioWp_ActionStation"
         };
 
         public static string[] actorNodeClasses =
@@ -3622,6 +3624,17 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                 StatusText = "Scanning completed";
             };
             worker.RunWorkerAsync();
+        }
+
+        private void CoordinateEditor_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (Keyboard.PrimaryDevice.IsKeyDown(Key.Tab))
+            {
+                if (sender is TextBox tb)
+                {
+                    tb.SelectAll();
+                }
+            }
         }
     }
 }

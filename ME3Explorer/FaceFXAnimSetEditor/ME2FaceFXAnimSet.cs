@@ -16,22 +16,10 @@ namespace ME3Explorer.FaceFX
         IMEPackage pcc;
         public IExportEntry Export { get; }
         public ME2HeaderStruct header;
-        public HeaderStruct Header
-        {
-            get
-            {
-                return header;
-            }
-        }
+        public HeaderStruct Header => header;
 
         public ME2DataAnimSetStruct data;
-        public ME3DataAnimSetStruct Data
-        {
-            get
-            {
-                return data;
-            }
-        }
+        public ME3DataAnimSetStruct Data => data;
 
         public ME2FaceFXAnimSet()
         {
@@ -120,13 +108,13 @@ namespace ME3Explorer.FaceFX
                     d.NameAsString = header.Names[d.Name];
                 }
                 d.unk6 = Container + d.unk6;
-                int count2 = 0;
+                int animationCount = 0;
                 if (!Container.isLoading)
-                    count2 = d.animations.Length;
-                count2 = Container + count2;
+                    animationCount = d.animations.Length;
+                animationCount = Container + animationCount;
                 if (Container.isLoading)
-                    d.animations = new ME2NameRef[count2];
-                for (int j = 0; j < count2; j++)
+                    d.animations = new ME2NameRef[animationCount];
+                for (int j = 0; j < animationCount; j++)
                 {
                     if (Container.isLoading)
                         d.animations[j] = new ME2NameRef();
@@ -138,13 +126,13 @@ namespace ME3Explorer.FaceFX
                     u.unk3 = Container + u.unk3;
                     d.animations[j] = u;
                 }
-                count2 = 0;
+                int pointCount = 0;
                 if (!Container.isLoading)
-                    count2 = d.points.Length;
-                count2 = Container + count2;
+                    pointCount = d.points.Length;
+                pointCount = Container + pointCount;
                 if (Container.isLoading)
-                    d.points = new ControlPoint[count2];
-                for (int j = 0; j < count2; j++)
+                    d.points = new ControlPoint[pointCount];
+                for (int j = 0; j < pointCount; j++)
                 {
                     if (Container.isLoading)
                         d.points[j] = new ControlPoint();
@@ -155,15 +143,23 @@ namespace ME3Explorer.FaceFX
                     u.leaveTangent = Container + u.leaveTangent;
                     d.points[j] = u;
                 }
-                d.unk4 = Container + d.unk4;
-                count2 = 0;
-                if (!Container.isLoading)
-                    count2 = d.numKeys.Length;
-                count2 = Container + count2;
-                if (Container.isLoading)
-                    d.numKeys = new int[count2];
-                for (int j = 0; j < count2; j++)
-                    d.numKeys[j] = Container + d.numKeys[j];
+
+                if (pointCount > 0)
+                {
+                    d.unk4 = Container + d.unk4;
+                    int numKeysCount = 0;
+                    if (!Container.isLoading)
+                        numKeysCount = d.numKeys.Length;
+                    numKeysCount = Container + numKeysCount;
+                    if (Container.isLoading)
+                        d.numKeys = new int[numKeysCount];
+                    for (int j = 0; j < numKeysCount; j++)
+                        d.numKeys[j] = Container + d.numKeys[j];
+                }
+                else if (Container.isLoading)
+                {
+                    d.numKeys = new int[0];
+                }
                 d.FadeInTime = Container + d.FadeInTime;
                 d.FadeOutTime = Container + d.FadeOutTime;
                 d.unk2 = Container + d.unk2;
@@ -263,13 +259,13 @@ namespace ME3Explorer.FaceFX
         public TreeNode[] DataToTree2(ME3FaceFXLine d)
         {
             TreeNode[] nodes = new TreeNode[7];
-            nodes[0] = new TreeNode("Name : 0x" + d.Name.ToString("X8") + " \"" + header.Names[d.Name].Trim() + "\"");
-            nodes[1] = new TreeNode("FadeInTime : " + d.FadeInTime);
-            nodes[2] = new TreeNode("FadeOutTime : " + d.FadeOutTime);
-            nodes[3] = new TreeNode("Unk2 : 0x" + d.unk2.ToString("X8"));
-            nodes[4] = new TreeNode("Path : " + d.path);
-            nodes[5] = new TreeNode("ID : " + d.ID);
-            nodes[6] = new TreeNode("Index : 0x" + d.index.ToString("X8"));
+            nodes[0] = new TreeNode($"Name : 0x{d.Name:X8} \"{header.Names[d.Name].Trim()}\"");
+            nodes[1] = new TreeNode($"FadeInTime : {d.FadeInTime}");
+            nodes[2] = new TreeNode($"FadeOutTime : {d.FadeOutTime}");
+            nodes[3] = new TreeNode($"Unk2 : 0x{d.unk2:X8}");
+            nodes[4] = new TreeNode($"Path : {d.path}");
+            nodes[5] = new TreeNode($"ID : {d.ID}");
+            nodes[6] = new TreeNode($"Index : 0x{d.index:X8}");
             return nodes;
         }
 

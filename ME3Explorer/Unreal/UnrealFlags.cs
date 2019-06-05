@@ -7,16 +7,6 @@ namespace ME3Explorer.Unreal
 {
     public static class UnrealFlags
     {
-        public static IEnumerable<T> MaskToList<T>(Enum mask)
-        {
-            if (typeof(T).IsSubclassOf(typeof(Enum)) == false)
-                throw new ArgumentException();
-
-            return Enum.GetValues(typeof(T))
-                                 .Cast<Enum>()
-                                 .Where(m => mask.HasFlag(m))
-                                 .Cast<T>();
-        }
 
         /// <summary>
         /// Flags describing an class instance. This code is from UEExplorer.
@@ -88,17 +78,9 @@ namespace ME3Explorer.Unreal
             /// </summary>
             Cooked = 0x00000008U,      // @Redefined
 
-            /// <summary>
-            /// ???
-            /// <= UT
-            /// </summary>
             Unsecure = 0x00000010U,
 
-            /// <summary>
-            /// The package is encrypted.
-            /// <= UT
-            /// </summary>
-            Encrypted = 0x00000020U,
+            SavedWithNewerVersion = 0x00000020U,
 
             /// <summary>
             /// Clients must download the package.
@@ -106,12 +88,8 @@ namespace ME3Explorer.Unreal
             Need = 0x00008000U,
 
             /// <summary>
-            /// Unknown flags
-            /// -   0x20000000  -- Probably means the package contains Content(Meshes, Textures)
-            /// </summary>
-            ///
-
             /// Package holds map data.
+            /// </summary>
             Map = 0x00020000U,
 
             /// <summary>
@@ -131,8 +109,13 @@ namespace ME3Explorer.Unreal
             Debug = 0x00400000U,
             Imports = 0x00800000U,
 
+            SelfContainedLighting = 0x01000000U,
             Compressed = 0x02000000U,
             FullyCompressed = 0x04000000U,
+
+            ContainsInlinedShaders = 0x08000000U,
+
+            ContainsFaceFXData = 0x10000000U,
 
             /// <summary>
             /// Whether package has metadata exported(anything related to the editor).
@@ -277,6 +260,10 @@ namespace ME3Explorer.Unreal
         [Flags]
         public enum EObjectFlags : ulong
         {
+            InSingularFunc = 0x0000000000000002, // In a singular function.
+            ClassDefaultObject = 0x0000000000000200, // this object is its class's default object
+            IsCrossLevelReferenced = 0x0000000000400000, // This object has been pointed to by a cross-level reference, and therefore requires additional cleanup upon deletion
+            ArchetypeObject = 0x0000000000000400, // this object is a template for another object - treat like a class default object
             Transactional = 0x0000000100000000,   // Object is transactional.
             Unreachable = 0x0000000200000000,	// Object is not reachable on the object graph.
             Public = 0x0000000400000000,	// Object is visible outside its package.
@@ -289,7 +276,6 @@ namespace ME3Explorer.Unreal
             NeedLoad = 0x0000020000000000,   // During load00000000, indicates object needs loading.
             HighlightedName = 0x0000040000000000,	// A hardcoded name which should be syntax-highlighted.
             EliminateObject = 0x0000040000000000,   // NULL out references to this during garbage collecion.
-            InSingularFunc = 0x0000080000000000,	// In a singular function.
             RemappedName = 0x0000080000000000,   // Name is remapped.
             Suppress = 0x0000100000000000,	//warning: Mirrored in UnName.h. Suppressed log name.
             StateChanged = 0x0000100000000000,   // Object did a state change.
@@ -328,7 +314,6 @@ namespace ME3Explorer.Unreal
     "NeedLoad , 0000020000000000,    During load00000000, indicates object needs loading.",
     "HighlightedName , 0000040000000000,	 A hardcoded name which should be syntax-highlighted.",
     "EliminateObject , 0000040000000000,    NULL out references to this during garbage collecion.",
-    "InSingularFunc , 0000080000000000,	 In a singular function.",
     "RemappedName , 0000080000000000,    Name is remapped.",
     "Suppress , 0000100000000000,	warning: Mirrored in UnName.h. Suppressed log name.",
     "StateChanged , 0000100000000000,    Object did a state change.",

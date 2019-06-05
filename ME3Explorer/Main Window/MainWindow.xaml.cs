@@ -11,7 +11,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Threading.Tasks;
 using FontAwesome.WPF;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -54,13 +53,12 @@ namespace ME3Explorer
                 {
                     version += "." + assemblyVersion.Build;
                 }
-                if (assemblyVersion.Revision != 0)
-                {
-                    version += "." + assemblyVersion.Revision;
-                }
 
 #if DEBUG
                 version += " DEBUG";
+#else
+                //Commented out as this is a stable build
+                version += "NIGHTLY"; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
 #endif
                 return version;
             }

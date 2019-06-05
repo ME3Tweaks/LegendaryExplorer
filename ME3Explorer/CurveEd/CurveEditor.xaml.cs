@@ -200,8 +200,6 @@ namespace ME3Explorer.CurveEd
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            if (exportEntry.FileRef.Game == MEGame.ME3)
-            {
                 var props = exportEntry.GetProperties();
                 foreach (var prop in props)
                 {
@@ -211,7 +209,6 @@ namespace ME3Explorer.CurveEd
                         return true;
                     }
                 }
-            }
             return false;
         }
 

@@ -10,8 +10,7 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
-using KFreonLib.MEDirectories;
-using KFreonLib.Debugging;
+using ME3Explorer.Debugging;
 
 namespace ME3Explorer.ScriptDB
 {

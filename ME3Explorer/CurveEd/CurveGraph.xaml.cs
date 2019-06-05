@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -485,9 +486,9 @@ namespace ME3Explorer.CurveEd
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextBox b = sender as TextBox;
+            TextBox b = (TextBox)sender;
             //SirCxyrtyx: doing a stack trace to resolve a circular calling situation is horrible, I know. I'm so sorry about this.
-            if (double.TryParse(b.Text, out var d) && b.IsFocused && b.IsKeyboardFocused && !KFreonLib.Misc.Methods.FindInStack(nameof(Anchor)))
+            if (double.TryParse(b.Text, out var d) && b.IsFocused && b.IsKeyboardFocused && !FindInStack(nameof(Anchor)))
             {
                 Anchor a = graph.Children.OfType<Anchor>().FirstOrDefault(x => x.IsSelected);
                 if (a != null && b.Name == nameof(xTextBox))
@@ -506,6 +507,22 @@ namespace ME3Explorer.CurveEd
                     Paint(true);
                 }
             }
+        }
+        /// <summary>
+        /// Find a string in the stackframes.
+        /// </summary>
+        /// <param name="FrameName">FrameName to find.</param>
+        /// <returns>True if FrameName is found in stack.</returns>
+        private static bool FindInStack(string FrameName)
+        {
+            StackTrace st = new StackTrace();
+            for (int i = 0; i < st.FrameCount; i++)
+            {
+                string name = st.GetFrame(i).GetMethod().ReflectedType.FullName;
+                if (name.Contains(FrameName))
+                    return true;
+            }
+            return false;
         }
 
         public void DeleteSelectedKey()

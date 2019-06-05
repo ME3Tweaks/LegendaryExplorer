@@ -98,7 +98,7 @@ namespace ME3Explorer
             EditorSetElements.Add(ParsedValue_TextBlock);
             EditorSetElements.Add(EditorSet_ArraySetSeparator);
             Set_Button.Visibility = Visibility.Collapsed;
-            EditorSet_Separator.Visibility = Visibility.Collapsed;
+            //EditorSet_Separator.Visibility = Visibility.Collapsed;
         }
 
         public UPropertyTreeViewEntry SelectedItem { get; set; }
@@ -120,6 +120,7 @@ namespace ME3Explorer
         public ICommand ToggleHexBoxWidthCommand { get; set; }
         public ICommand AddArrayElementCommand { get; set; }
         public ICommand RemoveArrayElementCommand { get; set; }
+        public ICommand ClearArrayCommand { get; set; }
         private void LoadCommands()
         {
             RemovePropertyCommand = new GenericCommand(RemoveProperty, CanRemoveProperty);
@@ -132,6 +133,7 @@ namespace ME3Explorer
             SortParsedArrayDescendingCommand = new GenericCommand(SortParsedArrayDescending, CanSortArrayPropByParsedValue);
             SortValueArrayAscendingCommand = new GenericCommand(SortValueArrayAscending, CanSortArrayPropByValue);
             SortValueArrayDescendingCommand = new GenericCommand(SortValueArrayDescending, CanSortArrayPropByValue);
+            ClearArrayCommand = new GenericCommand(ClearArray, ArrayIsSelected);
             PopoutInterpreterForObjectValueCommand = new GenericCommand(PopoutInterpreterForObj, ObjectPropertyExportIsSelected);
 
             SaveHexChangesCommand = new GenericCommand(Interpreter_SaveHexChanges, IsExportLoaded);
@@ -141,6 +143,18 @@ namespace ME3Explorer
             MoveArrayElementUpCommand = new GenericCommand(MoveArrayElementUp, CanMoveArrayElementUp);
             MoveArrayElementDownCommand = new GenericCommand(MoveArrayElementDown, CanMoveArrayElementDown);
         }
+
+        private void ClearArray()
+        {
+            if (SelectedItem != null && SelectedItem.Property != null)
+            {
+                var araryProperty = (ArrayPropertyBase)SelectedItem.Property;
+                araryProperty.Clear();
+                CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
+            }
+        }
+
+        private bool ArrayIsSelected() => SelectedItem != null && SelectedItem.Property != null && SelectedItem.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>));
 
         private bool ArrayPropertyIsSelected() => SelectedItem?.Property is ArrayPropertyBase;
 
@@ -311,8 +325,8 @@ namespace ME3Explorer
             if (CurrentLoadedExport.ClassName == "Class")
             {
                 return false; //you can't add properties to class objects.
-                //we might want to see if the export has a NoneProperty - if it doesn't, adding properties won't work either.
-                //TODO
+                              //we might want to see if the export has a NoneProperty - if it doesn't, adding properties won't work either.
+                              //TODO
             }
 
             return true;
@@ -399,10 +413,9 @@ namespace ME3Explorer
         {
             if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null)
             {
-                UProperty tag = tvi.Property;
-                CurrentLoadedProperties.Remove(tag);
+                CurrentLoadedProperties.Remove(tvi.Property);
                 CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
-                StartScan();
+                //StartScan();
             }
         }
 
@@ -425,7 +438,7 @@ namespace ME3Explorer
             CurrentLoadedExport = null;
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
             Set_Button.Visibility = Visibility.Collapsed;
-            EditorSet_Separator.Visibility = Visibility.Collapsed;
+            //EditorSet_Separator.Visibility = Visibility.Collapsed;
             (Interpreter_Hexbox?.ByteProvider as DynamicByteProvider)?.Bytes.Clear();
             Interpreter_Hexbox?.Refresh();
             HasUnsavedChanges = false;
@@ -440,7 +453,7 @@ namespace ME3Explorer
         {
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
             Set_Button.Visibility = Visibility.Collapsed;
-            EditorSet_Separator.Visibility = Visibility.Collapsed;
+            //EditorSet_Separator.Visibility = Visibility.Collapsed;
             HasUnsavedChanges = false;
             Interpreter_Hexbox.UnhighlightAll();
             //set rescan offset
@@ -650,6 +663,11 @@ namespace ME3Explorer
                         {
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
+                        if (ip.Name == "m_nStrRefID")
+                        {
+                            parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
+                        }
+
                         if (parent.Property is StructProperty property && property.StructType == "Rotator")
                         {
                             parsedValue = $"({ip.Value.ToDegrees():0.0######} degrees)";
@@ -657,14 +675,13 @@ namespace ME3Explorer
                     }
                     break;
                 case FloatProperty fp:
-                    editableValue = $"{fp.Value:F7}";
+                    editableValue = fp.Value.ToString("0.########");
                     break;
                 case BoolProperty bp:
                     editableValue = bp.Value.ToString(); //combobox
                     break;
                 case ArrayPropertyBase ap:
                     {
-                        //todo - assign bottom text to show array type.
                         ArrayType at = UnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name.Name, parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, parsingExport);
                         editableValue = $"{at.ToString()} array";
                     }
@@ -828,7 +845,22 @@ namespace ME3Explorer
                             return $" (0x{value:X8})";
                     }
                     break;
+            }
 
+            if (name == "m_nStrRefID")
+            {
+                switch (export.FileRef.Game)
+                {
+                    case MEGame.ME3:
+                        return ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(value);
+                    case MEGame.ME2:
+                        return ME2Explorer.ME2TalkFiles.tlkList.Count == 0
+                            ? "(.tlk not loaded)"
+                            : ME2Explorer.ME2TalkFiles.findDataById(value);
+                    case MEGame.ME1:
+                        //Todo: Support local TLKs in this file.
+                        return ME1Explorer.ME1TalkFiles.findDataById(value);
+                }
             }
             return "";
         }
@@ -1042,7 +1074,7 @@ namespace ME3Explorer
                 {
                     fe.Visibility = SupportedEditorSetElements.Contains(fe) ? Visibility.Visible : Visibility.Collapsed;
                 }
-                EditorSet_Separator.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+                //EditorSet_Separator.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             }
         }
@@ -1287,6 +1319,9 @@ namespace ME3Explorer
                                 Interpreter_Hexbox.Highlight(np.StartOffset, np.ValueOffset + 8 - np.StartOffset);
                                 break;
                             }
+                        case StringRefProperty srefp:
+                            Interpreter_Hexbox.Highlight(srefp.StartOffset, srefp.GetLength(Pcc));
+                            break;
                         case NoneProperty nonep:
                             Interpreter_Hexbox.Highlight(nonep.StartOffset, 8);
                             break;

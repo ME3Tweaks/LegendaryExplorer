@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using KFreonLib.MEDirectories;
+using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Properties;
 using ME3Explorer.Unreal;

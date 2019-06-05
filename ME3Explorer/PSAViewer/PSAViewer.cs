@@ -19,6 +19,7 @@ namespace ME3Explorer
 
         public PSAViewer()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("PSA Viewer", new WeakReference(this));
             InitializeComponent();
         }
 

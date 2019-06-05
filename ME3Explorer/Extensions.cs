@@ -301,6 +301,11 @@ namespace ME3Explorer
         {
             return src.Where(obj => obj != null);
         }
+
+        public static string StringJoin<T>(this IEnumerable<T> values, string separator)
+        {
+            return string.Join(separator, values);
+        }
     }
 
     public static class DictionaryExtensions
@@ -615,6 +620,11 @@ namespace ME3Explorer
                 output.Write(buffer, 0, read);
                 bytes -= read;
             }
+        }
+
+        public static NameReference ReadNameReference(this Stream stream, IMEPackage pcc)
+        {
+            return new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
         }
     }
 
