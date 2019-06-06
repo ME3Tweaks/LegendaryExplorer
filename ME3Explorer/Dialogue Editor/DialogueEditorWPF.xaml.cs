@@ -70,7 +70,12 @@ namespace ME3Explorer.Dialogue_Editor
         public DialogueNodeExtended SelectedDialogueNode
         {
             get => _SelectedDialogueNode;
-            set => SetProperty(ref _SelectedDialogueNode, value);
+            set
+            {
+                if (value != _SelectedDialogueNode)
+                    SetProperty(ref _SelectedDialogueNode, value);
+            } 
+
         }
 
         //SPEAKERS
@@ -135,6 +140,7 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand OpenInCommand { get; set; }
         public ICommand OpenInCommand_Wwbank { get; set; }
         public ICommand OpenInCommand_FFXNS { get; set; }
+        public ICommand OpenInCommand_Line { get; set; }
         public ICommand SpeakerMoveUpCommand { get; set; }
         public ICommand SpeakerMoveDownCommand { get; set; }
         public ICommand AddSpeakerCommand { get; set; }
@@ -161,6 +167,10 @@ namespace ME3Explorer.Dialogue_Editor
         {
             return Speakers_ListBox.SelectedIndex >= 2;
         }
+        private bool LineHasInterpdata(object param)
+        {
+            return SelectedDialogueNode != null && SelectedDialogueNode.Interpdata != null;
+        }
         #endregion Declarations
 
         #region Startup/Exit
@@ -170,6 +180,7 @@ namespace ME3Explorer.Dialogue_Editor
             LoadCommands();
             StatusText = "Select package file to load";
             SelectedSpeaker = new SpeakerExtended(-3, "None");
+
 
             InitializeComponent();
 
@@ -203,6 +214,7 @@ namespace ME3Explorer.Dialogue_Editor
             OpenInCommand = new RelayCommand(OpenInAction);
             OpenInCommand_FFXNS = new RelayCommand(OpenInAction, HasFFXNS);
             OpenInCommand_Wwbank = new RelayCommand(OpenInAction, HasWwbank);
+            OpenInCommand_Line = new RelayCommand(OpenInAction, LineHasInterpdata);
             SpeakerMoveUpCommand = new RelayCommand(SpeakerMoveAction, SpkrCanMoveUp);
             SpeakerMoveDownCommand = new RelayCommand(SpeakerMoveAction, SpkrCanMoveDown);
             AddSpeakerCommand = new GenericCommand(SpeakerAdd);
@@ -629,16 +641,29 @@ namespace ME3Explorer.Dialogue_Editor
                                 {
                                     var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
                                     var interpseqact = Pcc.getUExport(link);
-                                    if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. "BioSeqAct_SetFaceFX"
+                                    if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
                                     {
-                                        var outLinksProp2 = convstart.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                                        var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
                                         if (outLinksProp2 != null)
                                         {
-                                            var linksProp2 = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                            var linksProp2 = outLinksProp2[0].GetProp<ArrayProperty<StructProperty>>("Links");
                                             if (linksProp2 != null)
                                             {
                                                 var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                                interpseqact = Pcc.getUExport(link);
+                                                interpseqact = Pcc.getUExport(link2);
+                                                if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
+                                                {
+                                                    var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                                                    if (outLinksProp3 != null)
+                                                    {
+                                                        var linksProp3 = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                                        if (linksProp3 != null)
+                                                        {
+                                                            var link3= linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                                            interpseqact = Pcc.getUExport(link3);
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -654,11 +679,11 @@ namespace ME3Explorer.Dialogue_Editor
                                                 var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
                                                 if (linkedVars != null)
                                                 {
-                                                    var datalink = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                                    var datalink = linkedVars[0].Value;
                                                     entry.Interpdata = Pcc.getUExport(datalink);
                                                 }
+                                                break;
                                             }
-                                            break;
                                         }
                                     }
                                 }
@@ -690,16 +715,29 @@ namespace ME3Explorer.Dialogue_Editor
                                 {
                                     var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
                                     var interpseqact = Pcc.getUExport(link);
-                                    if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. "eg BioSeqAct_SetFaceFX"
+                                    if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
                                     {
-                                        var outLinksProp2 = convstart.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                                        var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
                                         if (outLinksProp2 != null)
                                         {
-                                            var linksProp2 = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                            var linksProp2 = outLinksProp2[0].GetProp<ArrayProperty<StructProperty>>("Links");
                                             if (linksProp2 != null)
                                             {
                                                 var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                                interpseqact = Pcc.getUExport(link);
+                                                interpseqact = Pcc.getUExport(link2);
+                                                if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
+                                                {
+                                                    var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                                                    if (outLinksProp3 != null)
+                                                    {
+                                                        var linksProp3 = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                                        if (linksProp3 != null)
+                                                        {
+                                                            var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                                            interpseqact = Pcc.getUExport(link3);
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -715,11 +753,11 @@ namespace ME3Explorer.Dialogue_Editor
                                                 var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
                                                 if (linkedVars != null)
                                                 {
-                                                    var datalink = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                                    var datalink = linkedVars[0].Value;
                                                     reply.Interpdata = Pcc.getUExport(datalink);
                                                 }
+                                                break;
                                             }
-                                            break;
                                         }
                                     }
                                 }
@@ -745,15 +783,17 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 var nodeprop = node.NodeProp;
                 node.Listener = nodeprop.GetProp<IntProperty>("nListenerIndex");  //ME3//ME2//ME1
-                if(node.IsReply)
+                node.IsDefaultAction = false;
+                node.IsMajorDecision = false;
+                if (node.IsReply)
                 {
-                    node.IsUnskippable = nodeprop.GetProp<BoolProperty>("bUnskippable");
-                    node.IsSkippable = nodeprop.GetProp<BoolProperty>("bSkippable");
-                    node.IsSkippable = nodeprop.GetProp<BoolProperty>("bSkippable");
+                    node.IsSkippable = false; //ME3/
+                    node.IsUnskippable = nodeprop.GetProp<BoolProperty>("bUnskippable"); 
                 }
                 else
                 {
-                    node.IsSkippable = nodeprop.GetProp<BoolProperty>("bSkippable");
+                    node.IsSkippable = nodeprop.GetProp<BoolProperty>("bSkippable"); //ME3/
+                    node.IsUnskippable = false; 
                 }
                 node.ConditionalParam = nodeprop.GetProp<IntProperty>("nConditionalParam");
                 node.TransitionParam = nodeprop.GetProp<IntProperty>("nStateTransitionParam");
@@ -765,6 +805,9 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     case MEGame.ME3:
                         node.HideSubtitle = nodeprop.GetProp<BoolProperty>("bAlwaysHideSubtitle");
+                        if(node.IsReply)
+                            node.IsDefaultAction = nodeprop.GetProp<BoolProperty>("bIsDefaultAction");
+                            node.IsMajorDecision = nodeprop.GetProp<BoolProperty>("bIsMajorDecision");
                         break;
                     default:
                         break;
@@ -1078,6 +1121,15 @@ namespace ME3Explorer.Dialogue_Editor
             RefreshView();
             Conversations_ListBox.SelectedIndex = cSelectedIdx;
             Speakers_ListBox.SelectedIndex = sSelectedIdx;
+        }
+
+        //Need update handler for selecteddiagnode.
+        public void PropertyChanged(object sender, PropertyChangingEventArgs e)
+        {
+            if(e.PropertyName != "SelectedDialogueNode")
+            {
+                MessageBox.Show("Something came through");
+            }
         }
         #endregion Handling-updates
 
@@ -1733,14 +1785,42 @@ namespace ME3Explorer.Dialogue_Editor
                     SelectedDialogueNode = obj.Node; 
                     ParseNodeData(SelectedDialogueNode);
 
+                    Node_TB_ESkippable.IsEnabled = false;
+                    Node_CB_ESkippable.IsEnabled = false;
+                    Node_CB_RMajor.IsEnabled = false;
+                    Node_CB_RDefault.IsEnabled = false;
+                    Node_TB_RUnskippable.IsEnabled = false;
+                    Node_TB_RMajor.IsEnabled = false;
+                    Node_TB_RDefault.IsEnabled = false;
+                    Node_CB_RUnskippable.IsEnabled = false;
+
                     if (SelectedDialogueNode.IsReply)
+                    {
                         Node_Text_Type.Text = "Reply Node";
+
+                        Node_TB_RUnskippable.IsEnabled = true;
+                        Node_TB_RMajor.IsEnabled = true;
+                        Node_TB_RDefault.IsEnabled = true;
+                        Node_CB_RUnskippable.IsEnabled = true;
+                        if(Pcc.Game == MEGame.ME3)
+                        {
+                            Node_CB_RMajor.IsEnabled = true;
+                            Node_CB_RDefault.IsEnabled = true;
+                        }
+                    }
                     else
+                    {
                         Node_Text_Type.Text = "Entry Node";
+                        Node_TB_ESkippable.IsEnabled = true;
+                        Node_CB_ESkippable.IsEnabled = true;
+                    }
+
+
                     if (SelectedDialogueNode.FiresConditional)
                         Node_Text_Cnd.Text = "Conditional: ";
                     else
                         Node_Text_Cnd.Text = "Bool: ";
+
 
                     SelectedSpeaker = SelectedSpeakerList[SelectedDialogueNode.SpeakerIndex + 2];
                     Speaker_Panel.Visibility = Visibility.Collapsed;
@@ -2392,6 +2472,9 @@ namespace ME3Explorer.Dialogue_Editor
                 case "PackEdNode":
                     OpenInToolkit("PackageEditor", SelectedConv.ExportUID);
                     break;
+                case "PackEdLine":
+                    OpenInToolkit("PackageEditor", SelectedDialogueNode.Interpdata.UIndex);
+                    break;
                 case "SeqEdLvl":
                     OpenInToolkit("SequenceEditor", 0, Level);
                     break;
@@ -2404,6 +2487,9 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         OpenInToolkit("SequenceEditor", SelectedConv.Sequence.UIndex);
                     }
+                    break;
+                case "SeqEdLine":
+                    OpenInToolkit("SequenceEditor", SelectedDialogueNode.Interpdata.UIndex);
                     break;
                 case "FaceFXNS":
                     OpenInToolkit("FaceFXEditor", SelectedConv.NonSpkrFFX.UIndex);
@@ -2428,6 +2514,8 @@ namespace ME3Explorer.Dialogue_Editor
                         OpenInToolkit("FaceFXEditor", SelectedSpeaker.FaceFX_Female.UIndex);
                     }
                     break;
+
+                    
                 default:
                     OpenInToolkit(tool);
                     break;

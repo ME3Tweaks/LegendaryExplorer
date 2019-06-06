@@ -289,7 +289,6 @@
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
                         </DockPanel>
-                        <!--<ComboBox Name="Node_Combo_Spkr2" ItemsSource="{Binding SelectedSpeakerList}" SelectedItem="{Binding SelectedSpeaker}" DisplayMemberPath="SpeakerID" HorizontalAlignment="Stretch" ToolTip="Line speaker" Margin="3" DockPanel.Dock="Right" />-->
                         <DockPanel>
                             <TextBlock Text="Listener: " FontSize="15" DockPanel.Dock="Left" VerticalAlignment="Center"/>
                             <ComboBox Name="Node_Combo_Lstnr" ItemsSource="{Binding ListenersList}" SelectedValue="{Binding Path=SelectedDialogueNode.Listener}" SelectedValuePath="SpeakerID" IsSynchronizedWithCurrentItem="True" HorizontalAlignment="Stretch" ToolTip="Line speaker" Margin="3" DockPanel.Dock="Right" >
@@ -304,18 +303,19 @@
                             </ComboBox>
                         </DockPanel>
                     </StackPanel>
-                    <TabControl Name="Node_Tab_Detail" Grid.Row="1">
-                        <TabItem Header="Plot">
+                    <TabControl Name="Node_Tab_Detail" Grid.Row="1" >
+                        <TabItem Header="Plot Control">
                             <StackPanel Margin="4">
+                                <TextBlock Text="Plot checks" />
                                 <DockPanel HorizontalAlignment="Stretch">
-                                    <TextBlock Text="Check Conditional/Bool: " DockPanel.Dock="Left" FontSize="15"/>
+                                    <TextBlock Text="Conditional/Bool: " DockPanel.Dock="Left" FontSize="15"/>
                                     <ComboBox HorizontalAlignment="Stretch"  SelectedIndex="{Binding Path=SelectedDialogueNode.FiresConditional, Converter={StaticResource BoolToIndexConverter}}">
                                         <ComboBoxItem Content="Bool" IsSelected="False" />
                                         <ComboBoxItem Content="Conditional" IsSelected="True" />
                                     </ComboBox>
                                 </DockPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Name="Node_Text_Cnd" Text="{Binding Path=SelectedDialogueNode.FiresConditional, Converter={StaticResource BoolToIndexConverter}}" FontSize="15"></TextBlock>
+                                    <TextBlock Name="Node_Text_Cnd" Text="Conditional :" FontSize="15"></TextBlock>
                                     <TextBox Text="{Binding Path=SelectedDialogueNode.ConditionalOrBool}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
@@ -323,6 +323,7 @@
                                     <TextBox Name="Node_Text_CndParam" Text="{Binding Path=SelectedDialogueNode.ConditionalParam}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" />
                                 </StackPanel>
                                 <Separator/>
+                                <TextBlock Text="Plot transitions" />
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Transition:  " FontSize="15"/>
                                     <TextBox Name="Node_Text_Trans" Text="{Binding Path=SelectedDialogueNode.ConditionalOrBool}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" />
@@ -335,51 +336,73 @@
                         </TabItem>
                         
                         <TabItem Header="Matinee">
-                            <StackPanel>
+                            <StackPanel ScrollViewer.VerticalScrollBarVisibility="Auto">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Name="Node_Text_Export" Text="ExportID:  " FontSize="15"/>
                                     <TextBox Text="{Binding Path=SelectedDialogueNode.ExportID}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" />
                                 </StackPanel>
                                 <DockPanel HorizontalAlignment="Stretch">
-                                    <TextBlock Text="Line Interpdata:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Sequence for this line." DockPanel.Dock="Left" FontSize="15"/>
-                                    <Button Name="OpenLinePE_Button" Command="{Binding OpenInCommand}" CommandParameter="PackEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's interpdata in Package editor" >
+                                    <TextBlock Text="Line Interpdata:  "  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee for this line." DockPanel.Dock="Left" FontSize="15"/>
+                                    <Button Name="OpenLinePE_Button" Command="{Binding OpenInCommand_Line}" CommandParameter="PackEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's interpdata in Package editor" >
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="Cube" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
                                     </Button>
-                                    <Button Name="OpenLineSE_Button" Command="{Binding OpenInCommand}" CommandParameter="SeqEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's sequence" >
+                                    <Button Name="OpenLineSE_Button" Command="{Binding OpenInCommand}" CommandParameter="SeqEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's sequence" IsEnabled="False" >
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
                                     </Button>
-                                    <Button Name="OpenLineIE_Button" Command="{Binding OpenInCommand}" CommandParameter="InterpEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line in interpeditor" >
+                                    <Button Name="OpenLineIE_Button"  CommandParameter="InterpEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line in interpeditor" IsEnabled="False"  >
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="AreaChart" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
                                     </Button>
-                                    <TextBlock Text="" FontSize="10" />
+                                    <TextBlock Text="{Binding Path=SelectedDialogueNode.Interpdata.UIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Matinee for this line." FontSize="15"/>
                                 </DockPanel>
-                                <TextBlock Text="{Binding Path=SelectedDialogNode.Interpdata.UIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="This lines matinee data" FontSize="15"/>
                                 <StackPanel Orientation="Horizontal" ToolTip="Non-textline where only Matinee plays no vocals.">
                                     <TextBlock Text="Non vocal line:  " FontSize="15"/>
-                                    <CheckBox Name ="Node_CB_NonTextline" IsChecked="{Binding Path=SelectedDialogNode.Interpdata.NonTextLine}"/>
+                                    <CheckBox Name ="Node_CB_NonTextline" IsChecked="{Binding Path=SelectedDialogNode.NonTextLine}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" ToolTip="Ambient line. Camera remains under player control.">
                                     <TextBlock Text="Ambient line:  " FontSize="15"/>
-                                    <CheckBox Name="Node_CB_bAmbient" IsChecked="{Binding Path=SelectedDialogNode.Interpdata.IsAmbient}"/>
+                                    <CheckBox Name="Node_CB_bAmbient" IsChecked="{Binding Path=SelectedDialogNode.IsAmbient}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" ToolTip="Ignore non-facial matinee gestures.">
                                     <TextBlock Text="Ignore Body Gestures:  " FontSize="15"/>
-                                    <CheckBox Name="Node_CB_BdyGesture" IsChecked="{Binding Path=SelectedDialogNode.Interpdata.IgnoreBodyGesture}"/>
+                                    <CheckBox Name="Node_CB_BdyGesture" IsChecked="{Binding Path=SelectedDialogNode.IgnoreBodyGesture}"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" ToolTip="1-5. Controls how far the camera is away from the speakers face during autoconversations.">
                                     <TextBlock  Text="Camera Intimacy:  " FontSize="15"/>
-                                    <xctk:IntegerUpDown Name="Node_Text_CamInt" Value="{Binding Path=SelectedDialogueNode.CameraIntimacy}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" />
+                                    <xctk:IntegerUpDown Name="Node_Text_CamInt" Value="{Binding Path=SelectedDialogueNode.CameraIntimacy}" HorizontalAlignment="Stretch" FontSize="12" />
                                 </StackPanel>
                             </StackPanel>
                         </TabItem>
-                        <TabItem Header="GUI">
-                            
+                        <TabItem Header="GUI Control">
+                            <StackPanel ScrollViewer.VerticalScrollBarVisibility="Visible">
+                                <StackPanel Orientation="Horizontal" ToolTip="Always hide the subtitles.">
+                                    <TextBlock Text="Hide Subtitle:  " FontSize="15"/>
+                                    <CheckBox Name ="Node_CB_HideSubs" IsChecked="{Binding Path=SelectedDialogNode.HideSubtitle}"/>
+                                </StackPanel>
+                                <Separator/>
+                                <TextBlock Text="Entry:" FontSize="12"/>
+                                <StackPanel Orientation="Horizontal" ToolTip="Player can skip this entry.">
+                                    <TextBlock Name ="Node_TB_ESkippable"  Text="Skippable:  " FontSize="15"/>
+                                    <CheckBox Name ="Node_CB_ESkippable" IsChecked="{Binding Path=SelectedDialogNode.Skippable}"/>
+                                </StackPanel>
+                                <Separator/>
+                                <TextBlock Text="Reply:" FontSize="12"/>
+                                <StackPanel Orientation="Horizontal" >
+                                    <TextBlock Name ="Node_TB_RUnskippable" Text="Unskippable:  " FontSize="15" ToolTip="Player can never skip this reply."/>
+                                    <CheckBox Name ="Node_CB_RUnskippable" IsChecked="{Binding Path=SelectedDialogNode.IsUnskippable}" ToolTip="Player can never skip this reply."/>
+                                    <TextBlock Name ="Node_TB_RMajor" Text="  Major Decision:" FontSize="15" ToolTip="ME3: decision forced on player in all story modes."/>
+                                    <CheckBox Name ="Node_CB_RMajor" IsChecked="{Binding Path=SelectedDialogNode.IsMajorDecision}" ToolTip="ME3: decision forced on player in all story modes."/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" ToolTip="ME3: On action mode this reply is always selected.">
+                                    <TextBlock Name ="Node_TB_RDefault" Text="Default Reply:  " FontSize="15"/>
+                                    <CheckBox Name ="Node_CB_RDefault" IsChecked="{Binding Path=SelectedDialogNode.IsDefaultAction}"/>
+                                </StackPanel>
+                            </StackPanel>
                         </TabItem>
                     </TabControl>
                     <TabControl Grid.Row="2">

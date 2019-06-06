@@ -205,6 +205,12 @@ namespace ME3Explorer.Dialogue_Editor
             public int ExportID { get => _ExportID; set => SetProperty(ref _ExportID, value); }
             private bool _IsSkippable;
             public bool IsSkippable { get => _IsSkippable; set => SetProperty(ref _IsSkippable, value); }
+            private bool _IsUnskippable;
+            public bool IsUnskippable { get => _IsUnskippable; set => SetProperty(ref _IsUnskippable, value); }
+            private bool _IsDefaultAction;
+            public bool IsDefaultAction { get => _IsDefaultAction; set => SetProperty(ref _IsDefaultAction, value); }
+            private bool _IsMajorDecision;
+            public bool IsMajorDecision { get => _IsMajorDecision; set => SetProperty(ref _IsMajorDecision, value); }
             private bool _IsNonTextLine;
             public bool IsNonTextLine { get => _IsNonTextLine; set => SetProperty(ref _IsNonTextLine, value); }
             private bool _IgnoreBodyGesture;
@@ -217,9 +223,10 @@ namespace ME3Explorer.Dialogue_Editor
             public bool HideSubtitle { get => _HideSubtitle; set => SetProperty(ref _HideSubtitle, value); }
             private int _GUIStyle;
             public int GUIStyle { get => _GUIStyle; set => SetProperty(ref _GUIStyle, value);
-        }
 
-        public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int StateEvent)
+            }
+
+            public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int StateEvent)
             {
                 this.NodeProp = NodeProp;
                 this.IsReply = IsReply;
@@ -234,7 +241,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int StateEvent, string SpeakerTag, 
                 IExportEntry Interpdata, IExportEntry WwiseStream_Male, IExportEntry WwiseStream_Female, string FaceFX_Male, string FaceFX_Female, int Listener, int ConditionalParam, int TransitionParam, int ExportID,
-                bool IsSkippable, bool IsNonTextLine, bool IgnoreBodyGesture, bool IsAmbient, int CameraIntimacy, bool HideSubtitle, int GUIStyle)
+                bool IsSkippable, bool IsUnskippable, bool IsDefaultAction, bool IsMajorDecision, bool IsNonTextLine, bool IgnoreBodyGesture, bool IsAmbient, int CameraIntimacy, bool HideSubtitle, int GUIStyle)
             {
                 this.NodeProp = NodeProp;
                 this.IsReply = IsReply;
@@ -256,6 +263,9 @@ namespace ME3Explorer.Dialogue_Editor
                 this.TransitionParam = TransitionParam;
                 this.ExportID = ExportID;
                 this.IsSkippable = IsSkippable;
+                this.IsUnskippable = IsUnskippable;
+                this.IsDefaultAction = IsDefaultAction;
+                this.IsMajorDecision = IsMajorDecision;
                 this.IsNonTextLine = IsNonTextLine;
                 this.IgnoreBodyGesture = IgnoreBodyGesture;
                 this.IsAmbient = IsAmbient;
@@ -263,9 +273,16 @@ namespace ME3Explorer.Dialogue_Editor
                 this.HideSubtitle = HideSubtitle;
                 this.GUIStyle = GUIStyle;
             }
+            public event PropertyChangedEventHandler NodePropertyChanged;
+            protected override void OnPropertyChanged(string PropertyName)
+            {
 
+                if (NodePropertyChanged != null)
+
+                    NodePropertyChanged(this, new PropertyChangedEventArgs(PropertyName));
+
+            }
         }
-
     }
 
     #region GraphObjects
