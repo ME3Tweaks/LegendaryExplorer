@@ -21,6 +21,7 @@
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
+        <Converters:BoolToIndexConverter x:Key="BoolToIndexConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
             <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Command="{Binding OpenInCommand}" CommandParameter="PackageEditor" />
             <MenuItem Header="Open in Interp Viewer" ToolTip="Open this export in Interp Viewer" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
@@ -120,7 +121,7 @@
                 <ColumnDefinition Width="0" Name="RightBarColumn" />
             </Grid.ColumnDefinitions>
 <!-- Right side panel - Convo/Speakers/Nodes -->
-            <DockPanel Name="RightSide_Dock" Grid.Column="2" Grid.RowSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+            <DockPanel Name="RightSide_Dock" Grid.Column="2" Grid.RowSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
            <!--Convo Panel-->
                 <StackPanel Name="Convo_Panel" DockPanel.Dock="Top" IsEnabled="True" HorizontalAlignment="Stretch" Margin="3" Visibility="Collapsed">
                     <TextBlock  Name="ConvoDet_Header" Text="Conversation Details"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Top"/>
@@ -207,7 +208,7 @@
                         <TextBlock Text="ID:" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" FontWeight="Bold" FontSize="15"/>
                     </DockPanel>
                     <TextBlock Text="Actor's Tag:" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15"  />
-                    <TextBox Name="TextBox_Speaker_Name"  Text="{Binding Path=SelectedSpeaker.SpeakerName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" KeyUp="EnterName_Speaker_KeyUp" GotKeyboardFocus="EnterName_Speaker_GotKeyboardFocus" LostKeyboardFocus="EnterName_Speaker_LostKeyboardFocus" />
+                    <TextBox Name="TextBox_Speaker_Name"  Text="{Binding Path=SelectedSpeaker.SpeakerName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" KeyUp="EnterName_Speaker_KeyUp" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" />
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel>
                         <TextBlock Text="TLKString:" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="Actor's named TLK string. Possibly." FontSize="15" />
@@ -255,14 +256,145 @@
                     <TextBlock Text="" FontSize="10"  />
                 </StackPanel>
            <!--Node Panel-->
-                <StackPanel Name="Node_Panel" DockPanel.Dock="Top" Visibility="Visible">
-                    <DockPanel HorizontalAlignment="Stretch">
-                        <TextBlock Name="Node_Text_Type" Text="{Binding Path=SelectedDialogueNode.Line, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left" Padding="5"/>
-                        <TextBlock Text="{Binding Path=SelectedDialogueNode.NodeCount, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" DockPanel.Dock="Right" FontWeight="Bold" FontSize="15"/>
-                    </DockPanel>  
-                </StackPanel>
+                <Grid Name="Node_Panel" DockPanel.Dock="Top" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <DockPanel HorizontalAlignment="Stretch">
+                            <TextBlock Name="Node_Text_Type" Text="Dialogue Node"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left" Padding="5"/>
+                            <TextBlock Text="{Binding Path=SelectedDialogueNode.NodeCount, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Left" DockPanel.Dock="Right" FontWeight="Bold" FontSize="18"/>
+                        </DockPanel>
+                        <TextBlock Name="Node_Text_LineString" Text="{Binding Path=SelectedDialogueNode.Line}" TextWrapping="Wrap" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15" DockPanel.Dock="Left" Padding="5"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Line String Ref:  " FontSize="15"/>
+                            <TextBox Name="Node_Text_StrRef" Text="{Binding Path=SelectedDialogueNode.LineStrRef}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" />
+                        </StackPanel>
+                        <DockPanel>
+                            <TextBlock Text="Speaker: " FontSize="15" DockPanel.Dock="Left" VerticalAlignment="Center"/>
 
+                            <ComboBox Name="Node_Combo_Spkr" ItemsSource="{Binding SelectedSpeakerList}" SelectedValue="{Binding Path=SelectedDialogueNode.SpeakerIndex}" SelectedValuePath="SpeakerID" IsSynchronizedWithCurrentItem="True" HorizontalAlignment="Stretch" ToolTip="Line speaker" Margin="3" DockPanel.Dock="Right" >
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Path=SpeakerID}" Width="30"/>
+                                            <TextBlock Text="{Binding Path=SpeakerName}" FontWeight="Black"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </DockPanel>
+                        <!--<ComboBox Name="Node_Combo_Spkr2" ItemsSource="{Binding SelectedSpeakerList}" SelectedItem="{Binding SelectedSpeaker}" DisplayMemberPath="SpeakerID" HorizontalAlignment="Stretch" ToolTip="Line speaker" Margin="3" DockPanel.Dock="Right" />-->
+                        <DockPanel>
+                            <TextBlock Text="Listener: " FontSize="15" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <ComboBox Name="Node_Combo_Lstnr" ItemsSource="{Binding ListenersList}" SelectedValue="{Binding Path=SelectedDialogueNode.Listener}" SelectedValuePath="SpeakerID" IsSynchronizedWithCurrentItem="True" HorizontalAlignment="Stretch" ToolTip="Line speaker" Margin="3" DockPanel.Dock="Right" >
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Path=SpeakerID}" Width="30"/>
+                                            <TextBlock Text="{Binding Path=SpeakerName}" FontWeight="Black"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </DockPanel>
+                    </StackPanel>
+                    <TabControl Name="Node_Tab_Detail" Grid.Row="1">
+                        <TabItem Header="Plot">
+                            <StackPanel Margin="4">
+                                <DockPanel HorizontalAlignment="Stretch">
+                                    <TextBlock Text="Check Conditional/Bool: " DockPanel.Dock="Left" FontSize="15"/>
+                                    <ComboBox HorizontalAlignment="Stretch"  SelectedIndex="{Binding Path=SelectedDialogueNode.FiresConditional, Converter={StaticResource BoolToIndexConverter}}">
+                                        <ComboBoxItem Content="Bool" IsSelected="False" />
+                                        <ComboBoxItem Content="Conditional" IsSelected="True" />
+                                    </ComboBox>
+                                </DockPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Name="Node_Text_Cnd" Text="{Binding Path=SelectedDialogueNode.FiresConditional, Converter={StaticResource BoolToIndexConverter}}" FontSize="15"></TextBlock>
+                                    <TextBox Text="{Binding Path=SelectedDialogueNode.ConditionalOrBool}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Conditional Parameter:  " FontSize="15"/>
+                                    <TextBox Name="Node_Text_CndParam" Text="{Binding Path=SelectedDialogueNode.ConditionalParam}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" />
+                                </StackPanel>
+                                <Separator/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Transition:  " FontSize="15"/>
+                                    <TextBox Name="Node_Text_Trans" Text="{Binding Path=SelectedDialogueNode.ConditionalOrBool}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Transition Parameter:  " FontSize="15"/>
+                                    <TextBox Name="Node_Text_TransParam" Text="{Binding Path=SelectedDialogueNode.ConditionalParam}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" />
+                                </StackPanel>
+                            </StackPanel>
+                        </TabItem>
+                        
+                        <TabItem Header="Matinee">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Name="Node_Text_Export" Text="ExportID:  " FontSize="15"/>
+                                    <TextBox Text="{Binding Path=SelectedDialogueNode.ExportID}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" />
+                                </StackPanel>
+                                <DockPanel HorizontalAlignment="Stretch">
+                                    <TextBlock Text="Line Interpdata:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Sequence for this line." DockPanel.Dock="Left" FontSize="15"/>
+                                    <Button Name="OpenLinePE_Button" Command="{Binding OpenInCommand}" CommandParameter="PackEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's interpdata in Package editor" >
+                                        <Button.Content>
+                                            <fa:ImageAwesome Icon="Cube" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <Button Name="OpenLineSE_Button" Command="{Binding OpenInCommand}" CommandParameter="SeqEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's sequence" >
+                                        <Button.Content>
+                                            <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <Button Name="OpenLineIE_Button" Command="{Binding OpenInCommand}" CommandParameter="InterpEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line in interpeditor" >
+                                        <Button.Content>
+                                            <fa:ImageAwesome Icon="AreaChart" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <TextBlock Text="" FontSize="10" />
+                                </DockPanel>
+                                <TextBlock Text="{Binding Path=SelectedDialogNode.Interpdata.UIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="This lines matinee data" FontSize="15"/>
+                                <StackPanel Orientation="Horizontal" ToolTip="Non-textline where only Matinee plays no vocals.">
+                                    <TextBlock Text="Non vocal line:  " FontSize="15"/>
+                                    <CheckBox Name ="Node_CB_NonTextline" IsChecked="{Binding Path=SelectedDialogNode.Interpdata.NonTextLine}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" ToolTip="Ambient line. Camera remains under player control.">
+                                    <TextBlock Text="Ambient line:  " FontSize="15"/>
+                                    <CheckBox Name="Node_CB_bAmbient" IsChecked="{Binding Path=SelectedDialogNode.Interpdata.IsAmbient}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" ToolTip="Ignore non-facial matinee gestures.">
+                                    <TextBlock Text="Ignore Body Gestures:  " FontSize="15"/>
+                                    <CheckBox Name="Node_CB_BdyGesture" IsChecked="{Binding Path=SelectedDialogNode.Interpdata.IgnoreBodyGesture}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock  Text="Camera Intimacy:  " FontSize="15"/>
+                                    <xctk:IntegerUpDown Name="Node_Text_CamInt" Value="{Binding Path=SelectedDialogueNode.CameraIntimacy}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" />
+                                </StackPanel>
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="GUI">
+                            
+                        </TabItem>
+                    </TabControl>
+                    <TabControl Grid.Row="2">
+                        <TabItem Header="Male">
+                            
+                        </TabItem>
+                        <TabItem Header="Female">
+
+                        </TabItem>
+
+                    </TabControl>
+
+                </Grid>
             </DockPanel>
+ 
             
 <!-- Speaker List -->
             <DockPanel LastChildFill="True" Grid.Row="2" Grid.Column="2" Grid.RowSpan="1" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
@@ -286,8 +418,8 @@
                         </Button.Content>
                     </Button>
                 </Grid>
-                <ListBox Name="Speakers_ListBox" DockPanel.Dock="Bottom" ItemsSource="{Binding SelectedSpeakerList}" HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="Speakers_ListBox_SelectionChanged">
+                <ListBox Name="Speakers_ListBox" DockPanel.Dock="Bottom" ItemsSource="{Binding SelectedSpeakerList}" SelectedItem="{Binding SelectedSpeaker, Mode=TwoWay}" HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="Speakers_ListBox_SelectionChanged" >
                     <ListBox.ItemTemplate >
                         <DataTemplate>
                             <Grid Margin="0,0,5,0" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" >

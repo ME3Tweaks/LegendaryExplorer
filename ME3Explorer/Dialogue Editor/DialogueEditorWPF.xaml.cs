@@ -65,16 +65,21 @@ namespace ME3Explorer.Dialogue_Editor
         public IExportEntry CurrentLoadedExport;
         public IMEPackage CurrentConvoPackage;
         public ObservableCollectionExtended<SpeakerExtended> SelectedSpeakerList { get; } = new ObservableCollectionExtended<SpeakerExtended>();
+        public ObservableCollectionExtended<SpeakerExtended> ListenersList { get; } = new ObservableCollectionExtended<SpeakerExtended>();
         private DialogueNodeExtended _SelectedDialogueNode;
         public DialogueNodeExtended SelectedDialogueNode
         {
             get => _SelectedDialogueNode;
             set => SetProperty(ref _SelectedDialogueNode, value);
         }
-       
-        //SPEAKERS
-        public SpeakerExtended SelectedSpeaker { get; } = new SpeakerExtended(-3, "None", null, null, 0, "Not found"); //Link to speakers box
 
+        //SPEAKERS
+        private SpeakerExtended _SelectedSpeaker;
+        public SpeakerExtended SelectedSpeaker
+        {
+            get => _SelectedSpeaker;
+            set => SetProperty(ref _SelectedSpeaker, value);
+        }
         #region ConvoBox //Conversation Box Links
         private ConversationExtended _SelectedConv;
         public ConversationExtended SelectedConv
@@ -96,7 +101,12 @@ namespace ME3Explorer.Dialogue_Editor
         // FOR GRAPHING
         public ObservableCollectionExtended<DObj> CurrentObjects { get; } = new ObservableCollectionExtended<DObj>();
         public ObservableCollectionExtended<DObj> SelectedObjects { get; } = new ObservableCollectionExtended<DObj>();
-  
+
+        //DEBUG THIS NEEDED?
+        private readonly List<SaveData> extraSaveData = new List<SaveData>();
+        private bool panToSelection = true;
+        private string FileQueuedForLoad;
+        private IExportEntry ExportQueuedForFocusing;
         public string CurrentFile;
         public string JSONpath;
         private List<SaveData> SavedPositions;
@@ -141,11 +151,11 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private bool SpkrCanMoveUp(object param)
         {
-            return SelectedSpeakerList != null && SelectedSpeaker.SpeakerID > 0;
+            return SelectedSpeaker != null && SelectedSpeaker.SpeakerID > 0;
         }
         private bool SpkrCanMoveDown(object param)
         {
-            return SelectedSpeakerList != null && SelectedSpeaker.SpeakerID >= 0;
+            return SelectedSpeaker != null && SelectedSpeaker.SpeakerID >= 0;
         }
         private bool HasActiveSpkr()
         {
@@ -159,6 +169,8 @@ namespace ME3Explorer.Dialogue_Editor
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Dialogue Editor WPF", new WeakReference(this));
             LoadCommands();
             StatusText = "Select package file to load";
+            SelectedSpeaker = new SpeakerExtended(-3, "None");
+
             InitializeComponent();
 
             LoadRecentList();
@@ -453,7 +465,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
 
             //TOO MANY PROBLEMS ON BACK THREAD. OPTIMISE LATER.
-
+                                
         }
 
         private void BackParser_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -574,9 +586,152 @@ namespace ME3Explorer.Dialogue_Editor
                     r.SpeakerTag = spkrtag.SpeakerName;
             }
         }
+        /// <summary>
+        /// Gets the interpdata for each node in conversation
+        /// </summary>
+        /// <param name="conv"></param>
         private void ParseLinesInterpData(ConversationExtended conv)
         {
-            //TO DO
+            if (conv.Sequence == null || conv.Sequence.UIndex < 1)
+                return;
+            //Get sequence from convo
+            //Get list of BioConvoStarts
+            //Match to export id => SeqAct_Interp => Interpdata
+            var sequence = conv.Sequence as IExportEntry;
+            var seqobjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+
+            var convStarts = new Dictionary<int, IExportEntry>();
+            foreach (var prop in seqobjs)
+            {
+                var seqobj = Pcc.getUExport(prop.Value);
+                if (seqobj.ClassName == "BioSeqEvt_ConvNode")
+                {
+                    int key = seqobj.GetProperty<IntProperty>("m_nNodeID"); //ME3
+                    convStarts.Add(key, seqobj);
+                }
+            }
+
+            foreach (var entry in conv.EntryList)
+            {
+                try
+                {
+                    entry.ExportID = entry.NodeProp.GetProp<IntProperty>("nExportID");
+                    if (entry.ExportID != 0)
+                    {
+                        var convstart = convStarts.Where(s => s.Key == entry.ExportID).FirstOrDefault().Value;
+                        if (convstart != null)
+                        {
+                            var outLinksProp = convstart.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                            if (outLinksProp != null)
+                            {
+                                var linksProp = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                if (linksProp != null)
+                                {
+                                    var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                    var interpseqact = Pcc.getUExport(link);
+                                    if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. "BioSeqAct_SetFaceFX"
+                                    {
+                                        var outLinksProp2 = convstart.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                                        if (outLinksProp2 != null)
+                                        {
+                                            var linksProp2 = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                            if (linksProp2 != null)
+                                            {
+                                                var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                                interpseqact = Pcc.getUExport(link);
+                                            }
+                                        }
+                                    }
+
+                                    var varLinksProp = interpseqact.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+                                    if (varLinksProp != null)
+                                    {
+                                        foreach (var prop in varLinksProp)
+                                        {
+                                            var desc = prop.GetProp<StrProperty>("LinkDesc").Value; //ME3/ME2/ME1
+                                            if (desc == "Data") //ME3/ME1
+                                            {
+                                                var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                                                if (linkedVars != null)
+                                                {
+                                                    var datalink = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                                    entry.Interpdata = Pcc.getUExport(datalink);
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"EntryList parse interpdata failed: {entry.NodeCount}", e);
+                }
+            }
+
+            foreach (var reply in conv.ReplyList)
+            {
+                try
+                {
+                    reply.ExportID = reply.NodeProp.GetProp<IntProperty>("nExportID");
+                    if (reply.ExportID != 0)
+                    {
+                        var convstart = convStarts.Where(s => s.Key == reply.ExportID).FirstOrDefault().Value;
+                        if (convstart != null)
+                        {
+                            var outLinksProp = convstart.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                            if (outLinksProp != null)
+                            {
+                                var linksProp = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                if (linksProp != null)
+                                {
+                                    var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                    var interpseqact = Pcc.getUExport(link);
+                                    if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. "eg BioSeqAct_SetFaceFX"
+                                    {
+                                        var outLinksProp2 = convstart.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                                        if (outLinksProp2 != null)
+                                        {
+                                            var linksProp2 = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                            if (linksProp2 != null)
+                                            {
+                                                var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                                interpseqact = Pcc.getUExport(link);
+                                            }
+                                        }
+                                    }
+
+                                    var varLinksProp = interpseqact.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+                                    if (varLinksProp != null)
+                                    {
+                                        foreach (var prop in varLinksProp)
+                                        {
+                                            var desc = prop.GetProp<StrProperty>("LinkDesc").Value; //ME3/ME2/ME1
+                                            if (desc == "Data") //ME3/ME1
+                                            {
+                                                var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                                                if (linkedVars != null)
+                                                {
+                                                    var datalink = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                                    reply.Interpdata = Pcc.getUExport(datalink);
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"ReplyList parse interpdata failed: {reply.NodeCount}", e);
+                }
+            }
         }
 
         private void ParseLinesAudioStreams(ConversationExtended conv)
@@ -584,9 +739,59 @@ namespace ME3Explorer.Dialogue_Editor
             //TO DO
         }
 
+        private void ParseNodeData(DialogueNodeExtended node)
+        {
+            try
+            {
+                var nodeprop = node.NodeProp;
+                node.Listener = nodeprop.GetProp<IntProperty>("nListenerIndex");  //ME3//ME2//ME1
+                if(node.IsReply)
+                {
+                    node.IsUnskippable = nodeprop.GetProp<BoolProperty>("bUnskippable");
+                    node.IsSkippable = nodeprop.GetProp<BoolProperty>("bSkippable");
+                    node.IsSkippable = nodeprop.GetProp<BoolProperty>("bSkippable");
+                }
+                else
+                {
+                    node.IsSkippable = nodeprop.GetProp<BoolProperty>("bSkippable");
+                }
+                node.ConditionalParam = nodeprop.GetProp<IntProperty>("nConditionalParam");
+                node.TransitionParam = nodeprop.GetProp<IntProperty>("nStateTransitionParam");
+                node.CameraIntimacy = nodeprop.GetProp<IntProperty>("nCameraIntimacy");
+                node.IsAmbient = nodeprop.GetProp<BoolProperty>("bAmbient");
+                node.IsNonTextLine = nodeprop.GetProp<BoolProperty>("bNonTextLine");
+                node.IgnoreBodyGesture = nodeprop.GetProp<BoolProperty>("bIgnoreBodyGestures");
+                switch(Pcc.Game)
+                {
+                    case MEGame.ME3:
+                        node.HideSubtitle = nodeprop.GetProp<BoolProperty>("bAlwaysHideSubtitle");
+                        break;
+                    default:
+                        break;
+                }
+
+                //node.GUIStyle = nodeprop.GetProp<ByteProperty>("eGUIStyle");
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show($"DiagNodeParse Failed. {e}");
+            }
+        }
+
         private void ParseLinesFaceFX(ConversationExtended conv)
         {
-            //TO DO
+            foreach(var entry in conv.EntryList)
+            {
+                if (entry.Line != "No data" || entry.Line != " " || entry.Line != "" || entry.Line != "  ")
+                {
+                    entry.FaceFX_Female = $"FXA_{entry.LineStrRef}_F";
+                    entry.FaceFX_Male = $"FXA_{entry.LineStrRef}_M";
+                }
+                else
+                {
+                    entry.FaceFX_Female = "None";
+                }
+            }
         }
 
         /// <summary>
@@ -613,7 +818,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
 
         /// <summary>
-        /// Sets the Uindex of appropriate sequence
+        /// Sets the IEntry of appropriate sequence
         /// </summary>
         public void ParseSequence(ConversationExtended conv)
         {
@@ -626,7 +831,7 @@ namespace ME3Explorer.Dialogue_Editor
             var seq = conv.BioConvo.GetProp<ObjectProperty>(propname);
             if (seq != null)
             {
-                conv.Sequence = Pcc.getUExport(seq.Value);
+                conv.Sequence = Pcc.getEntry(seq.Value);
             }
             else
             {
@@ -634,7 +839,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
         /// <summary>
-        /// Sets the Uindex of NonSpeaker FaceFX
+        /// Sets the IEntry of NonSpeaker FaceFX
         /// </summary>
         public void ParseNSFFX(ConversationExtended conv)
         {
@@ -1289,6 +1494,12 @@ namespace ME3Explorer.Dialogue_Editor
                 Speaker_Panel.Visibility = Visibility.Collapsed;
                 Convo_Panel.Visibility = Visibility.Visible;
                 Node_Panel.Visibility = Visibility.Collapsed;
+                ListenersList.ClearEx();
+                ListenersList.Add(new SpeakerExtended(-3, "none"));
+                foreach(var spkr in SelectedSpeakerList)
+                {
+                    ListenersList.Add(spkr);
+                }
             }
 
             SelectedObjects.ClearEx();
@@ -1321,10 +1532,8 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void Convo_NSFFX_DropDownClosed(object sender, EventArgs e)
         {
-            
-            if(SelectedConv.NonSpkrFFX != FFXAnimsets[ComboBox_Conv_NSFFX.SelectedIndex]);
+            if(Conversations[Conversations_ListBox.SelectedIndex].NonSpkrFFX.UIndex != FFXAnimsets[ComboBox_Conv_NSFFX.SelectedIndex].UIndex)
             {
-                SelectedConv.NonSpkrFFX = FFXAnimsets[ComboBox_Conv_NSFFX.SelectedIndex];
                 SelectedConv.BioConvo.AddOrReplaceProp(new ObjectProperty(SelectedConv.NonSpkrFFX, new NameReference("m_pNonSpeakerFaceFXSet")));
                 PushConvoToFile(SelectedConv);
             }
@@ -1336,15 +1545,6 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 if (Speakers_ListBox.SelectedIndex >= 0)
                 {
-                    var newspeaker = SelectedSpeakerList.First(spkr => spkr.SpeakerID == Speakers_ListBox.SelectedIndex - 2);
-
-                    SelectedSpeaker.SpeakerID = newspeaker.SpeakerID;
-                    SelectedSpeaker.SpeakerName = newspeaker.SpeakerName;
-                    SelectedSpeaker.FaceFX_Male = newspeaker.FaceFX_Male;
-                    SelectedSpeaker.FaceFX_Female = newspeaker.FaceFX_Female;
-                    SelectedSpeaker.StrRefID = newspeaker.StrRefID;
-                    SelectedSpeaker.FriendlyName = newspeaker.FriendlyName;
-
                     if(SelectedSpeaker.SpeakerID < 0)
                     {
                         TextBox_Speaker_Name.IsEnabled = false;
@@ -1360,9 +1560,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 else
                 {
-                   
-                    SelectedSpeaker.SpeakerID = -3;
-                    SelectedSpeaker.SpeakerName = "None";
+                    SelectedSpeaker = SelectedSpeakerList[0];
                 }
             }
         }
@@ -1430,7 +1628,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if(e.Key == Key.Enter)
             {
-               var dlg = MessageBox.Show("Do you want to change this actors name?","Confirm",MessageBoxButton.YesNo);
+               var dlg = MessageBox.Show("Do you want to change this actor's tag?","Confirm",MessageBoxButton.YesNo);
                 if (dlg == MessageBoxResult.No)
                 {
                     return;
@@ -1442,16 +1640,6 @@ namespace ME3Explorer.Dialogue_Editor
                     SaveSpeakersToProperties(SelectedSpeakerList);
                 }
             }
-        }
-        private void EnterName_Speaker_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            TextBox_Speaker_Name.BorderThickness = new Thickness(2, 2, 2, 2);
-            TextBox_Speaker_Name.Background = System.Windows.Media.Brushes.GhostWhite;
-        }
-        private void EnterName_Speaker_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            TextBox_Speaker_Name.BorderThickness = new Thickness(0, 0, 0, 0);
-            TextBox_Speaker_Name.Background = System.Windows.Media.Brushes.White;
         }
         private void SpeakerAdd()
         {
@@ -1474,13 +1662,21 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
             string delName = SelectedSpeakerList[deleteTarget].SpeakerName;
-
-            var dlg = MessageBox.Show($"Are you sure you want to delete {delName}? ", "Warning: Speaker Deletion", MessageBoxButton.OKCancel);
+            int delID = SelectedSpeakerList[deleteTarget].SpeakerID;
+            var dlg = MessageBox.Show($"Are you sure you want to delete {delID} : {delName}? ", "Warning: Speaker Deletion", MessageBoxButton.OKCancel);
             
             if(dlg == MessageBoxResult.Cancel)
                 return;
 
-            MessageBox.Show("TODO: CHECK FOR ANY CONVERSATION NODES THAT HAVE THIS SPEAKER. AND BLOCK.", "Dialogue Editor");    //TODO: CHECK FOR ANY CONVERSATION NODES THAT HAVE THIS SPEAKER. AND BLOCK.
+            foreach(var node in SelectedConv.EntryList)
+            {
+                if (node.SpeakerIndex == delID)
+                {
+                    MessageBox.Show("Deletion Aborted.\r\nSpeakers with active dialogue nodes cannot be deleted.", "Dialogue Editor", MessageBoxButton.OK);
+                    return;
+                }
+            }
+
 
             SelectedConv.Speakers.RemoveAt(deleteTarget);
             SelectedSpeakerList.RemoveAt(deleteTarget);
@@ -1492,9 +1688,67 @@ namespace ME3Explorer.Dialogue_Editor
             TextBox_Speaker_Name.CaretIndex = TextBox_Speaker_Name.Text.Length;
         }
 
+        private void EditBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            var editbox = sender as TextBox;
+            editbox.BorderThickness = new Thickness(2, 2, 2, 2);
+            editbox.Background = System.Windows.Media.Brushes.GhostWhite;
+        }
+        private void EditBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            var editbox = sender as TextBox;
+            editbox.BorderThickness = new Thickness(0, 0, 0, 0);
+            editbox.Background = System.Windows.Media.Brushes.White;
+        }
+
+
         #endregion
 
         #region UIHandling-graph
+
+        private void node_Click(object sender, PInputEventArgs e)
+        {
+            if (sender is DiagNode obj)
+            {
+                if (e.Button != System.Windows.Forms.MouseButtons.Left && obj.GlobalFullBounds == obj.posAtDragStart)
+                {
+                    if (!e.Shift && !e.Control)
+                    {
+                        if (SelectedObjects.Count == 1 && obj.IsSelected) return;
+                        panToSelection = false;
+                        if (SelectedObjects.Count > 1)
+                        {
+                            panToSelection = false;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var oldselection in SelectedObjects)
+                    {
+                        oldselection.IsSelected = false;
+                    }
+                    obj.IsSelected = true;
+                    SelectedObjects.Add(obj);
+                    SelectedDialogueNode = obj.Node; 
+                    ParseNodeData(SelectedDialogueNode);
+
+                    if (SelectedDialogueNode.IsReply)
+                        Node_Text_Type.Text = "Reply Node";
+                    else
+                        Node_Text_Type.Text = "Entry Node";
+                    if (SelectedDialogueNode.FiresConditional)
+                        Node_Text_Cnd.Text = "Conditional: ";
+                    else
+                        Node_Text_Cnd.Text = "Bool: ";
+
+                    SelectedSpeaker = SelectedSpeakerList[SelectedDialogueNode.SpeakerIndex + 2];
+                    Speaker_Panel.Visibility = Visibility.Collapsed;
+                    Convo_Panel.Visibility = Visibility.Collapsed;
+                    Node_Panel.Visibility = Visibility.Visible;
+                }
+            }
+        }
 
         private void backMouseDown_Handler(object sender, PInputEventArgs e)
         {
@@ -1553,11 +1807,6 @@ namespace ME3Explorer.Dialogue_Editor
         }
 
 
-
-        private readonly List<SaveData> extraSaveData = new List<SaveData>();
-        private bool panToSelection = true;
-        private string FileQueuedForLoad;
-        private IExportEntry ExportQueuedForFocusing;
 
         private void saveView(bool toFile = true)
         {
@@ -1772,49 +2021,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        private void node_Click(object sender, PInputEventArgs e)
-        {
-            if (sender is DiagNode obj)
-            {
-                if (e.Button != System.Windows.Forms.MouseButtons.Left && obj.GlobalFullBounds == obj.posAtDragStart)
-                {
-                    if (!e.Shift && !e.Control)
-                    {
-                        if (SelectedObjects.Count == 1 && obj.IsSelected) return;
-                        panToSelection = false;
-                        if (SelectedObjects.Count > 1)
-                        {
-                            panToSelection = false;
-                        }
-                    }
-                }
-                else
-                {
-                    foreach(var oldselection in SelectedObjects)
-                    {
-                        oldselection.IsSelected = false;
-                    }
-                    obj.IsSelected = true;
-                    SelectedObjects.Add(obj);
-                    var newnode = obj.Node;
-                    SelectedDialogueNode = newnode;
-                    if (newnode.IsReply == true)
-                    {
-                        //SelectedDialogueNode.IsReply = true;
-                         //this doesn't work
-                        //ActiveDialogueNode = new DialogueNodeExtended(newnode.Node, newnode.IsReply, newnode.NodeCount, newnode.SpeakerIndex, newnode.LineStrRef, newnode.Line, newnode.bFireConditional, newnode.ConditionalOrBool,
-                        //    newnode.StateEvent, newnode.SpeakerTag, newnode.Interpdata, newnode.WwiseStream_Male, newnode.WwiseStream_Female, newnode.FaceFX_Male, newnode.FaceFX_Female); //doesn't work
-                        //ActiveDialogueNode.Line = newnode.Line; //works
-
-                    }
-
-
-                    Speaker_Panel.Visibility = Visibility.Collapsed;
-                    Convo_Panel.Visibility = Visibility.Collapsed;
-                    Node_Panel.Visibility = Visibility.Visible;
-                }
-            }
-        }
+        
 
         private void CloneObject_Clicked(object sender, RoutedEventArgs e)
         {

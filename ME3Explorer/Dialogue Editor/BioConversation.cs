@@ -27,27 +27,6 @@ namespace ME3Explorer.Dialogue_Editor
 {
     public partial class BioConversationExtended : NotifyPropertyChangedWindowBase
     {
-        //public event PropertyChangedEventHandler PropertyChanged;
-        //protected virtual void OnPropertyChanged(string propertyName)
-        //{
-        //    PropertyChangedEventHandler handler = PropertyChanged;
-        //    if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        //}
-        //protected bool SetField<T>(ref T field, T value, string propertyName)
-        //{
-        //    if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        //    field = value;
-        //    OnPropertyChanged(propertyName);
-        //    return true;
-        //}
-
-        //// props
-        //private string _filename;
-        //public string FileName
-        //{
-        //    get { return _filename; }
-        //    set { SetField(ref _filename, value, "Name"); }
-        //}
 
         #region Convo
             //Contains nested conversation structure.
@@ -86,7 +65,6 @@ namespace ME3Explorer.Dialogue_Editor
             /// NonSpkrFaceFX IEntry
             /// </summary>
             public IEntry NonSpkrFFX { get => _NonSpkrFFX; set => SetProperty(ref _NonSpkrFFX, value); }
-            public DialogueNodeExtended ActiveDialogueNode { get; set; } = new DialogueNodeExtended(new StructProperty("BioDialogNode", false), false, 0, -1, 123456, "No data", false, -1, -1);
 
             public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList)
             {
@@ -173,16 +151,16 @@ namespace ME3Explorer.Dialogue_Editor
             public bool IsReply { get => _IsReply; set => SetProperty(ref _IsReply, value); }
             private int _NodeCount;
             public int NodeCount { get => _NodeCount; set => SetProperty(ref _NodeCount, value); }//This is the count for reply and node.
-            private StructProperty _Node;
-            public StructProperty Node { get => _Node; set => SetProperty(ref _Node, value); }
+            private StructProperty _NodeProp;
+            public StructProperty NodeProp { get => _NodeProp; set => SetProperty(ref _NodeProp, value); }
             private int _SpeakerIndex;
             public int SpeakerIndex { get => _SpeakerIndex; set => SetProperty(ref _SpeakerIndex, value); }
             private int _LineStrRef;
             public int LineStrRef { get => _LineStrRef; set => SetProperty(ref _LineStrRef, value); }
             private string _Line;
             public string Line { get => _Line; set => SetProperty(ref _Line, value); }
-            private bool _bFireConditional;
-            public bool bFireConditional { get => _bFireConditional; set => SetProperty(ref _bFireConditional, value); }
+            private bool _FiresConditional;
+            public bool FiresConditional { get => _FiresConditional; set => SetProperty(ref _FiresConditional, value); }
             private int _ConditionalOrBool;
             public int ConditionalOrBool { get => _ConditionalOrBool; set => SetProperty(ref _ConditionalOrBool, value); }
             private int _StateEvent;
@@ -192,21 +170,21 @@ namespace ME3Explorer.Dialogue_Editor
             /// Tag of speaker - generated.
             /// </summary>
             public string SpeakerTag { get => _SpeakerTag; set => SetProperty(ref _SpeakerTag, value); }
-            private int _Interpdata;
+            private IExportEntry _Interpdata;
             /// <summary>
             /// InterpData object reference UIndex
             /// </summary>
-            public int Interpdata { get => _Interpdata; set => SetProperty(ref _Interpdata, value); }
-            private int _WwiseStream_Male;
+            public IExportEntry Interpdata { get => _Interpdata; set => SetProperty(ref _Interpdata, value); }
+            private IExportEntry _WwiseStream_Male;
             /// <summary>
             /// WwiseStream object reference Male UIndex
             /// </summary>
-            public int WwiseStream_Male { get => _WwiseStream_Male; set => SetProperty(ref _WwiseStream_Male, value); }
-            private int _WwiseStream_Female;
+            public IExportEntry WwiseStream_Male { get => _WwiseStream_Male; set => SetProperty(ref _WwiseStream_Male, value); }
+            private IExportEntry _WwiseStream_Female;
             /// <summary>
             /// WwiseStream object reference Female UIndex
             /// </summary>
-            public int WwiseStream_Female { get => _WwiseStream_Female; set => SetProperty(ref _WwiseStream_Female, value); }
+            public IExportEntry WwiseStream_Female { get => _WwiseStream_Female; set => SetProperty(ref _WwiseStream_Female, value); }
             private string _FaceFX_Male;
             /// <summary>
             /// FaceFX reference Male TBD
@@ -217,29 +195,54 @@ namespace ME3Explorer.Dialogue_Editor
             /// FaceFX reference female TBD
             /// </summary>
             public string FaceFX_Female { get => _FaceFX_Female; set => SetProperty(ref _FaceFX_Female, value); }
+            private int _Listener;
+            public int Listener { get => _Listener; set => SetProperty(ref _Listener, value); }
+            private int _ConditionalParam;
+            public int ConditionalParam { get => _ConditionalParam; set => SetProperty(ref _ConditionalParam, value); }
+            private int _TransitionParam;
+            public int TransitionParam { get => _TransitionParam; set => SetProperty(ref _TransitionParam, value); }
+            private int _ExportID;
+            public int ExportID { get => _ExportID; set => SetProperty(ref _ExportID, value); }
+            private bool _IsSkippable;
+            public bool IsSkippable { get => _IsSkippable; set => SetProperty(ref _IsSkippable, value); }
+            private bool _IsNonTextLine;
+            public bool IsNonTextLine { get => _IsNonTextLine; set => SetProperty(ref _IsNonTextLine, value); }
+            private bool _IgnoreBodyGesture;
+            public bool IgnoreBodyGesture { get => _IgnoreBodyGesture; set => SetProperty(ref _IgnoreBodyGesture, value); }
+            private bool _IsAmbient;
+            public bool IsAmbient { get => _IsAmbient; set => SetProperty(ref _IsAmbient, value); }
+            private int _CameraIntimacy;
+            public int CameraIntimacy { get => _CameraIntimacy; set => SetProperty(ref _CameraIntimacy, value); }
+            private bool _HideSubtitle;
+            public bool HideSubtitle { get => _HideSubtitle; set => SetProperty(ref _HideSubtitle, value); }
+            private int _GUIStyle;
+            public int GUIStyle { get => _GUIStyle; set => SetProperty(ref _GUIStyle, value);
+        }
 
-            public DialogueNodeExtended(StructProperty Node, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool bFireConditional, int ConditionalOrBool, int StateEvent)
+        public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int StateEvent)
             {
-                this.Node = Node;
+                this.NodeProp = NodeProp;
                 this.IsReply = IsReply;
                 this.NodeCount = NodeCount;
                 this.SpeakerIndex = SpeakerIndex;
                 this.LineStrRef = LineStrRef;
                 this.Line = Line;
-                this.bFireConditional = bFireConditional;
+                this.FiresConditional = FiresConditional;
                 this.ConditionalOrBool = ConditionalOrBool;
                 this.StateEvent = StateEvent;
             }
 
-            public DialogueNodeExtended(StructProperty Node, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool bFireConditional, int ConditionalOrBool, int StateEvent, string SpeakerTag, int Interpdata, int WwiseStream_Male, int WwiseStream_Female, string FaceFX_Male, string FaceFX_Female)
+            public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int StateEvent, string SpeakerTag, 
+                IExportEntry Interpdata, IExportEntry WwiseStream_Male, IExportEntry WwiseStream_Female, string FaceFX_Male, string FaceFX_Female, int Listener, int ConditionalParam, int TransitionParam, int ExportID,
+                bool IsSkippable, bool IsNonTextLine, bool IgnoreBodyGesture, bool IsAmbient, int CameraIntimacy, bool HideSubtitle, int GUIStyle)
             {
-                this.Node = Node;
+                this.NodeProp = NodeProp;
                 this.IsReply = IsReply;
                 this.NodeCount = NodeCount;
                 this.SpeakerIndex = SpeakerIndex;
                 this.LineStrRef = LineStrRef;
                 this.Line = Line;
-                this.bFireConditional = bFireConditional;
+                this.FiresConditional = FiresConditional;
                 this.ConditionalOrBool = ConditionalOrBool;
                 this.StateEvent = StateEvent;
                 this.SpeakerTag = SpeakerTag;
@@ -248,6 +251,17 @@ namespace ME3Explorer.Dialogue_Editor
                 this.WwiseStream_Female = WwiseStream_Female;
                 this.FaceFX_Male = FaceFX_Male;
                 this.FaceFX_Female = FaceFX_Female;
+                this.Listener = Listener;
+                this.ConditionalParam = ConditionalParam;
+                this.TransitionParam = TransitionParam;
+                this.ExportID = ExportID;
+                this.IsSkippable = IsSkippable;
+                this.IsNonTextLine = IsNonTextLine;
+                this.IgnoreBodyGesture = IgnoreBodyGesture;
+                this.IsAmbient = IsAmbient;
+                this.CameraIntimacy = CameraIntimacy;
+                this.HideSubtitle = HideSubtitle;
+                this.GUIStyle = GUIStyle;
             }
 
         }
@@ -879,7 +893,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             //Conv = conv;
             Node = node;
-            NodeProp = node.Node;
+            NodeProp = node.NodeProp;
 
             GetOutputLinks();
             originalX = x;
@@ -978,7 +992,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             //Inside Text +  Box
             string cnd = "Cnd:";
-            if (Node.bFireConditional == false)
+            if (Node.FiresConditional == false)
                 cnd = "Bool:";
             string d = $"{Node.LineStrRef}\r\n{cnd} {Node.ConditionalOrBool}\r\nEvt:{Node.StateEvent}";
 
@@ -1141,7 +1155,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             //Conv = conv;
             Node = node;
-            NodeProp = node.Node;
+            NodeProp = node.NodeProp;
 
             GetOutputLinks();
             originalX = x;

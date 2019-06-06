@@ -536,6 +536,7 @@
       <DependentUpon>KismetLogParser.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\AttachedProperties.cs" />
+    <Compile Include="SharedUI\Converters\BoolToIndexConverter.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeBooleanConverter.cs" />
     <Compile Include="SharedUI\PeregrineTreeView\NodeTreeSelectionBehavior.cs" />
     <Compile Include="SharedUI\ListBoxTask.cs" />
