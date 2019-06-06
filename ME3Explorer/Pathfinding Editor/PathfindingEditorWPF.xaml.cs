@@ -305,41 +305,41 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void CalculateInterpStartEndTargetpoint()
         {
-if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && targetpointAnchorEnd.ClassName == "TargetPoint")
-{
-    var movingObject = EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports, "Select a level object that will be moved along the curve. This will be the starting point.");
-    if (movingObject == null) return;
+            if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && targetpointAnchorEnd.ClassName == "TargetPoint")
+            {
+                var movingObject = EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports, "Select a level object that will be moved along the curve. This will be the starting point.");
+                if (movingObject == null) return;
 
-    ActiveNodes_ListBox.SelectedItem = movingObject as IExportEntry;
+                ActiveNodes_ListBox.SelectedItem = movingObject as IExportEntry;
 
-    var interpTrack = (IExportEntry) EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports, "Select the interptrackmove data that we will modify for these points.");
-    if (interpTrack == null) return;
+                var interpTrack = (IExportEntry)EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports, "Select the interptrackmove data that we will modify for these points.");
+                if (interpTrack == null) return;
 
-    var locationTarget = SharedPathfinding.GetLocation(targetpointAnchorEnd);
-    var locationStart = SharedPathfinding.GetLocation(movingObject as IExportEntry);
+                var locationTarget = SharedPathfinding.GetLocation(targetpointAnchorEnd);
+                var locationStart = SharedPathfinding.GetLocation(movingObject as IExportEntry);
 
-    if (locationStart == null)
-    {
-        MessageBox.Show("Start point doesn't have a location property. Ensure you picked the correct export.");
-        return;
-    }
+                if (locationStart == null)
+                {
+                    MessageBox.Show("Start point doesn't have a location property. Ensure you picked the correct export.");
+                    return;
+                }
 
-    double deltaX = locationTarget.X - locationStart.X;
-    double deltaY = locationTarget.Y - locationStart.Y;
-    double deltaZ = locationTarget.Z - locationStart.Z;
+                double deltaX = locationTarget.X - locationStart.X;
+                double deltaY = locationTarget.Y - locationStart.Y;
+                double deltaZ = locationTarget.Z - locationStart.Z;
 
-    var posTrack = interpTrack.GetProperty<StructProperty>("PosTrack");
-    if (posTrack == null)
-    {
-        MessageBox.Show("Selected interpdata doesn't have a postrack.");
-        return;
-    }
+                var posTrack = interpTrack.GetProperty<StructProperty>("PosTrack");
+                if (posTrack == null)
+                {
+                    MessageBox.Show("Selected interpdata doesn't have a postrack.");
+                    return;
+                }
 
-    var posTrackPoints = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
-    SharedPathfinding.SetLocation(posTrackPoints[0].GetProp<StructProperty>("OutVal"), (float)deltaX, (float)deltaY, (float)deltaZ);
-    SharedPathfinding.SetLocation(posTrackPoints[posTrackPoints.Count - 1].GetProp<StructProperty>("OutVal"), 0,0,0);
+                var posTrackPoints = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+                SharedPathfinding.SetLocation(posTrackPoints[0].GetProp<StructProperty>("OutVal"), (float)deltaX, (float)deltaY, (float)deltaZ);
+                SharedPathfinding.SetLocation(posTrackPoints[posTrackPoints.Count - 1].GetProp<StructProperty>("OutVal"), 0, 0, 0);
 
-    interpTrack.WriteProperty(posTrack);
+                interpTrack.WriteProperty(posTrack);
             }
         }
 
@@ -403,10 +403,11 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             }
         }
 
-        private static void OpenRefInSequenceEditor(object obj)
+        private void OpenRefInSequenceEditor(object obj)
         {
             if (obj is IExportEntry exp)
             {
+                AllowWindowRefocus = false;
                 SequenceEditorWPF seqed = new SequenceEditorWPF(exp);
                 seqed.Show();
                 seqed.Activate();
@@ -2622,8 +2623,15 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)
         {
             graphEditor.AllowDragging();
-            Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
+            if (AllowWindowRefocus)
+            {
+                Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
+            }
+
+            AllowWindowRefocus = true;
         }
+
+        public bool AllowWindowRefocus = true;
 
         private void FindByTag_Click(object sender, RoutedEventArgs e) => FindByTag();
 
@@ -2803,10 +2811,11 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         {
             if (ActiveNodes_ListBox.SelectedItem is IExportEntry export)
             {
+                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
-                p.LoadFile(export.FileRef.FileName);
-                p.GoToNumber(export.UIndex);
+                p.LoadFile(export.FileRef.FileName, export.UIndex);
+                p.Activate(); //bring to front
             }
         }
 
