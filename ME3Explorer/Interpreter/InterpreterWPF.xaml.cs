@@ -35,6 +35,27 @@ namespace ME3Explorer
         public static readonly string[] IntToStringConverters = { "WwiseEvent" };
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
+        public bool HideHexBox
+        {
+            get => (bool)GetValue(HideHexBoxProperty);
+            set => SetValue(HideHexBoxProperty, value);
+        }
+        public static readonly DependencyProperty HideHexBoxProperty = DependencyProperty.Register(
+            "HideHexBox", typeof(bool), typeof(InterpreterWPF), new PropertyMetadata(false, HideHexBoxChangedCallback));
+
+        public bool ForceSimpleMode
+        {
+            get => (bool)GetValue(ForceSimpleModeProperty);
+            set => SetValue(ForceSimpleModeProperty, value);
+        }
+        public static readonly DependencyProperty ForceSimpleModeProperty = DependencyProperty.Register(
+            "ForceSimpleMode", typeof(bool), typeof(InterpreterWPF), new PropertyMetadata(false, ForceSimpleModeChangedCallback));
+
+        public bool AdvancedView
+        {
+            get => !ForceSimpleMode && Properties.Settings.Default.InterpreterWPF_AdvancedDisplay;
+        }
+
         private bool _hasUnsavedChanges;
         public bool HasUnsavedChanges
         {
@@ -91,6 +112,7 @@ namespace ME3Explorer
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Interpreter WPF Export Loader", new WeakReference(this));
             LoadCommands();
             InitializeComponent();
+            Properties.Settings.Default.PropertyChanged += SettingChanged;
             EditorSetElements.Add(Value_TextBox); //str, strref, int, float, obj
             EditorSetElements.Add(Value_ComboBox); //bool, name
             EditorSetElements.Add(NameIndexPrefix_TextBlock); //nameindex
@@ -98,7 +120,43 @@ namespace ME3Explorer
             EditorSetElements.Add(ParsedValue_TextBlock);
             EditorSetElements.Add(EditorSet_ArraySetSeparator);
             Set_Button.Visibility = Visibility.Collapsed;
+
             //EditorSet_Separator.Visibility = Visibility.Collapsed;
+        }
+
+        void SettingChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Properties.Settings.Default.InterpreterWPF_AdvancedDisplay))
+            {
+                OnPropertyChanged(nameof(AdvancedView));
+            }
+        }
+
+        private static void ForceSimpleModeChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            InterpreterWPF i = (InterpreterWPF)obj;
+            i.OnPropertyChanged(nameof(AdvancedView));
+        }
+
+        private static void HideHexBoxChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            InterpreterWPF i = (InterpreterWPF)obj;
+            if ((bool)e.NewValue)
+            {
+                i.Interpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Collapsed;
+                i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(0);
+                i.HexboxColumnDefinition.MinWidth = 0;
+                i.HexboxColumnDefinition.MaxWidth = 0;
+                i.HexboxColumnDefinition.Width = new GridLength(0);
+            }
+            else
+            {
+                i.Interpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Visible;
+                i.HexboxColumnDefinition.Width = new GridLength(285);
+                i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
+                i.HexboxColumnDefinition.MinWidth = 220;
+                i.HexboxColumnDefinition.MaxWidth = 718;
+            }
         }
 
         public UPropertyTreeViewEntry SelectedItem { get; set; }
@@ -181,7 +239,7 @@ namespace ME3Explorer
                 IExportEntry export = Pcc.getUExport(op.Value);
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export)
                 {
-                    Title = $"Interpreter - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {Pcc.FileName}"
+                    Title = $"Interpreter - {export.UIndex} {export.GetInstancedFullPath} - {Pcc.FileName}"
                 };
                 elhw.Show();
             }
@@ -245,7 +303,7 @@ namespace ME3Explorer
                 case ArrayProperty<ObjectProperty> aop:
 
                     int IndexKeySelector(ObjectProperty x) => Pcc.getEntry(x.Value)?.indexValue ?? 0;
-                    string FullPathKeySelector(ObjectProperty x) => Pcc.getEntry(x.Value)?.GetFullPath ?? "";
+                    string FullPathKeySelector(ObjectProperty x) => Pcc.getEntry(x.Value)?.GetInstancedFullPath ?? "";
 
                     aop.Values = ascending
                         ? aop.OrderBy(FullPathKeySelector).ThenBy(IndexKeySelector).ToList()
@@ -514,7 +572,7 @@ namespace ME3Explorer
 
                 UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry
                 {
-                    DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.ObjectName}_{CurrentLoadedExport.indexValue} ({CurrentLoadedExport.ClassName})",
+                    DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.GetInstancedFullPath} ({CurrentLoadedExport.ClassName})",
                     IsExpanded = true
                 };
 
@@ -633,11 +691,7 @@ namespace ME3Explorer
                         if (entry != null)
                         {
                             editableValue = index.ToString();
-                            parsedValue = entry.GetFullPath;
-                            if (entry is IExportEntry exp)
-                            {
-                                parsedValue += $"_{exp.indexValue}";
-                            }
+                            parsedValue = entry.GetInstancedFullPath;
                             if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
                             {
                                 editableValue += $" {ExportToString(parsingExport.FileRef.Exports[index - 1])}";
@@ -698,27 +752,27 @@ namespace ME3Explorer
                     break;
                 case StringRefProperty strrefp:
                     editableValue = strrefp.Value.ToString();
-                    parsedValue =  TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strrefp.Value, parsingExport.FileRef.Game, parsingExport.FileRef as ME1Package);
+                    parsedValue = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strrefp.Value, parsingExport.FileRef.Game, parsingExport.FileRef as ME1Package);
                     break;
                 case StrProperty strp:
                     editableValue = strp.Value;
                     break;
                 case StructProperty sp:
 
-                    if (sp.StructType == "Vector" || sp.StructType == "Rotator")
+                    if (sp.StructType == "Vector" || sp.StructType == "Rotator" || sp.StructType == "Cylinder")
                     {
-                        string loc = string.Join(", ", sp.Properties.Select(p =>
-                        {
-                            switch (p)
-                            {
-                                case FloatProperty fp:
-                                    return $"{p.Name}={fp.Value}";
-                                case IntProperty ip:
-                                    return $"{p.Name}={ip.Value}";
-                                default:
-                                    return "";
-                            }
-                        }));
+                        string loc = string.Join(", ", sp.Properties.Where(x => !(x is NoneProperty)).Select(p =>
+                         {
+                             switch (p)
+                             {
+                                 case FloatProperty fp:
+                                     return $"{p.Name}={fp.Value}";
+                                 case IntProperty ip:
+                                     return $"{p.Name}={ip.Value}";
+                                 default:
+                                     return "";
+                             }
+                         }));
                         parsedValue = $"({loc})";
                     }
                     else if (sp.StructType == "Guid")
@@ -754,7 +808,6 @@ namespace ME3Explorer
                         {
                             editableValue += $" InChunkName: {inChunkName.Value.Name}";
                         }
-
                     }
                     else
                     {
@@ -1090,7 +1143,7 @@ namespace ME3Explorer
                                     var entry = Pcc.getEntry(index);
                                     if (entry != null)
                                     {
-                                        ParsedValue_TextBlock.Text = entry.GetFullPath;
+                                        ParsedValue_TextBlock.Text = entry.GetInstancedFullPath;
                                     }
                                     else
                                     {
@@ -1666,6 +1719,7 @@ namespace ME3Explorer
 
         public override void Dispose()
         {
+            Properties.Settings.Default.PropertyChanged -= SettingChanged;
             Interpreter_Hexbox = null;
             Interpreter_Hexbox_Host.Child.Dispose();
             Interpreter_Hexbox_Host.Dispose();
@@ -1677,7 +1731,7 @@ namespace ME3Explorer
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), CurrentLoadedExport)
                 {
-                    Title = $"Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {Pcc.FileName}"
+                    Title = $"Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetInstancedFullPath} - {Pcc.FileName}"
                 };
                 elhw.Show();
             }
