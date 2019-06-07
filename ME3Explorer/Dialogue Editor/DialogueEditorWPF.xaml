@@ -264,7 +264,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="3*"/>
                         <RowDefinition Height="3*"/>
-                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0">
                         <DockPanel HorizontalAlignment="Stretch">
@@ -274,17 +274,17 @@
                         <TextBlock Name="Node_Text_LineString" Text="{Binding Path=SelectedDialogueNode.Line}" TextWrapping="Wrap" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15" DockPanel.Dock="Left" Padding="5"/>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Line String Ref:  " FontSize="15"/>
-                            <TextBox Name="Node_Text_StrRef" Text="{Binding Path=SelectedDialogueNode.LineStrRef, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" />
+                            <TextBox Name="Node_Text_StrRef" Text="{Binding Path=SelectedDialogueNode.LineStrRef, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
                         </StackPanel>
                         <DockPanel ToolTip="The speaker of the line.  Replies are always player">
                             <TextBlock Text="Speaker: " FontSize="15" DockPanel.Dock="Left" VerticalAlignment="Center"/>
-
-                            <ComboBox Name="Node_Combo_Spkr" ItemsSource="{Binding SelectedSpeakerList}" SelectedValue="{Binding Path=SelectedDialogueNode.SpeakerIndex}" SelectedValuePath="SpeakerID" IsSynchronizedWithCurrentItem="True" HorizontalAlignment="Stretch" ToolTip="Line speaker" Margin="3" DockPanel.Dock="Right" >
+                            <ComboBox Name="Node_Combo_Spkr" ItemsSource="{Binding SelectedSpeakerList, Mode=OneWay}" SelectedValue="{Binding Path=SelectedDialogueNode.SpeakerIndex}" SelectedValuePath="SpeakerID" IsSynchronizedWithCurrentItem="True"
+                                      TextSearch.TextPath="SpeakerName" IsEditable="True" HorizontalAlignment="Stretch" ToolTip="Line speaker" Margin="3" DockPanel.Dock="Right" >
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="{Binding Path=SpeakerID}" Width="30"/>
-                                            <TextBlock Text="{Binding Path=SpeakerName}" FontWeight="Black"/>
+                                            <TextBlock Text="{Binding Path=SpeakerName}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
@@ -292,12 +292,13 @@
                         </DockPanel>
                         <DockPanel ToolTip="To whom the speaker is addressing. The speaker will look at the listener.">
                             <TextBlock Text="Listener: " FontSize="15" DockPanel.Dock="Left" VerticalAlignment="Center"/>
-                            <ComboBox Name="Node_Combo_Lstnr" ItemsSource="{Binding ListenersList}" SelectedValue="{Binding Path=SelectedDialogueNode.Listener}" SelectedValuePath="SpeakerID" IsSynchronizedWithCurrentItem="True" HorizontalAlignment="Stretch" ToolTip="Line speaker" Margin="3" DockPanel.Dock="Right" >
+                            <ComboBox Name="Node_Combo_Lstnr" ItemsSource="{Binding ListenersList, Mode=OneWay}" SelectedValue="{Binding Path=SelectedDialogueNode.Listener}" SelectedValuePath="SpeakerID" IsSynchronizedWithCurrentItem="True" 
+                                      IsEditable="True" HorizontalAlignment="Stretch" ToolTip="Line speaker" Margin="3" DockPanel.Dock="Right" TextSearch.TextPath="SpeakerName">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="{Binding Path=SpeakerID}" Width="30"/>
-                                            <TextBlock Text="{Binding Path=SpeakerName}" FontWeight="Black"/>
+                                            <TextBlock Text="{Binding Path=SpeakerName}" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
@@ -317,30 +318,28 @@
                                 </DockPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Name="Node_Text_Cnd" Text="Conditional :" FontSize="15"></TextBlock>
-                                    <TextBox Text="{Binding Path=SelectedDialogueNode.ConditionalOrBool}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" />
+                                    <TextBox Text="{Binding Path=SelectedDialogueNode.ConditionalOrBool}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Conditional Parameter:  " FontSize="15"/>
-                                    <TextBox Name="Node_Text_CndParam" Text="{Binding Path=SelectedDialogueNode.ConditionalParam}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp"/>
+                                    <TextBox Name="Node_Text_CndParam" Text="{Binding Path=SelectedDialogueNode.ConditionalParam}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
                                 </StackPanel>
                                 <Separator/>
                                 <TextBlock Text="Plot transitions" />
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Transition:  " FontSize="15"/>
-                                    <TextBox Name="Node_Text_Trans" Text="{Binding Path=SelectedDialogueNode.Transition}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" />
+                                    <TextBox Name="Node_Text_Trans" Text="{Binding Path=SelectedDialogueNode.Transition}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Transition Parameter:  " FontSize="15"/>
-                                    <TextBox Name="Node_Text_TransParam" Text="{Binding Path=SelectedDialogueNode.TransitionParam}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" />
+                                    <TextBox Name="Node_Text_TransParam" Text="{Binding Path=SelectedDialogueNode.TransitionParam}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
                                 </StackPanel>
                             </StackPanel>
                         </TabItem>
-                        
-                        <TabItem Header="Matinee" ToolTip="Line settings for cutscene, animation and camera control.">
-                            <StackPanel ScrollViewer.VerticalScrollBarVisibility="Auto">
-
+                        <TabItem Header="Matinee" ToolTip="Line settings for cutscene, animation and camera control." FocusManager.FocusedElement="{Binding}">
+                            <StackPanel>
                                 <DockPanel HorizontalAlignment="Stretch">
-                                    <TextBlock Text="Line Interpdata:  "  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee for this line." DockPanel.Dock="Left" FontSize="15"/>
+                                    <TextBlock Text="Line Interpdata: "  HorizontalAlignment="Left" VerticalAlignment="Center" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="2"/>
                                     <Button Name="OpenLinePE_Button" Command="{Binding OpenInCommand_Line}" CommandParameter="PackEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's interpdata in Package editor" >
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="Cube" Width="16" Height="16" Foreground="DarkBlue"/>
@@ -357,16 +356,15 @@
                                         </Button.Content>
                                     </Button>
                                     <TextBlock Text="{Binding Path=SelectedDialogueNode.Interpdata.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Matinee for this line." FontSize="15" Margin="2"/>
-
-
                                 </DockPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Name="Node_Text_Export" Text="ExportID:  " FontSize="15"/>
-                                    <TextBox Text="{Binding Path=SelectedDialogueNode.ExportID}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" />
+                                    <TextBlock Name="Node_Text_Export" Text="ExportID:  " VerticalAlignment="Center" FontSize="15" Margin="2"/>
+                                    <TextBox Text="{Binding Path=SelectedDialogueNode.ExportID}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" VerticalAlignment="Bottom" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
                                 </StackPanel>
-                                <CheckBox Name ="Node_CB_NonTextline" Content="Non vocal line" IsChecked="{Binding Path=SelectedDialogNode.IsNonTextLine, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Source=SelectedDialogNode}" FontSize="15" VerticalAlignment="Center" ToolTip="Non-textline where only Matinee plays no vocals."/>
-                                <CheckBox Name="Node_CB_bAmbient" Content="Ambient line" IsChecked="{Binding Path=IsAmbient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Source=SelectedDialogNode}" VerticalAlignment="Center" ToolTip="Ambient line. Camera remains under player control."  FontSize="15"/>
-                                <CheckBox Name="Node_CB_BdyGesture" Content="Ignore Body Gestures" IsChecked="{Binding Path=SelectedDialogNode.IgnoreBodyGesture, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, IsAsync=True}" ToolTip="Ignore non-facial matinee gestures." FontSize="15" VerticalAlignment="Center"/>
+                                <Separator/>
+                                <CheckBox Name ="Node_CB_NonTextline" Content="Non vocal line" IsChecked="{Binding Path=SelectedDialogueNode.IsNonTextLine, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="15" VerticalAlignment="Center" ToolTip="Non-textline where only Matinee plays no vocals."/>
+                                <CheckBox Name="Node_CB_bAmbient" Content="Ambient line" IsChecked="{Binding Path=SelectedDialogueNode.IsAmbient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" ToolTip="Ambient line. Camera remains under player control."  FontSize="15"/>
+                                <CheckBox Name="Node_CB_BdyGesture" Content="Ignore Body Gestures" IsChecked="{Binding Path=SelectedDialogueNode.IgnoreBodyGesture}" ToolTip="Ignore non-facial matinee gestures." FontSize="15" VerticalAlignment="Center"/>
                                 <StackPanel Orientation="Horizontal" ToolTip="1-5. Controls how far the camera is away from the speakers face during autoconversations.">
                                     <TextBlock  Text="Camera Intimacy:  " FontSize="15"/>
                                     <xctk:IntegerUpDown Name="Node_Text_CamInt" Value="{Binding Path=SelectedDialogueNode.CameraIntimacy}" HorizontalAlignment="Stretch" FontSize="12" Margin="2"/>
@@ -386,28 +384,65 @@
                                     <CheckBox Name ="Node_CB_RDefault" Content="Default Reply" VerticalAlignment="Center" FontSize="15" ToolTip="ME3: On action mode this reply is always selected." Margin="2" DockPanel.Dock="Left"/>
                                     <CheckBox Name ="Node_CB_RMajor" Content="Major Decision"  HorizontalAlignment="Center" ToolTip="ME3: decision forced on player in all story modes." FontSize="15" VerticalAlignment="Center" Margin="2" DockPanel.Dock="Right"/>
                                 </DockPanel>-->
-                                <CheckBox Name ="Node_CB_HideSubs" Content="Hide Subtitle" IsChecked="{Binding Path=SelectedDialogNode.HideSubtitle, Converter={StaticResource BoolToIndexConverter}}" FontSize="15" VerticalAlignment="Center" ToolTip="Always hide the subtitles." Margin="2"/>
+                                <CheckBox Name ="Node_CB_HideSubs" Content="Hide Subtitle" IsChecked="{Binding Path=SelectedDialogueNode.HideSubtitle}" FontSize="15" VerticalAlignment="Center" ToolTip="Always hide the subtitles." Margin="2"/>
                                 <Separator/>
                                 <TextBlock Text="Entry:" FontSize="12"/>
-                                <CheckBox Name ="Node_CB_ESkippable" Content="Skippable" IsChecked="{Binding Path=SelectedDialogNode.Skippable, Converter={StaticResource BoolToIndexConverter}}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can skip this entry." Margin="2"/>
+                                <CheckBox Name ="Node_CB_ESkippable" Content="Skippable" IsChecked="{Binding Path=SelectedDialogueNode.IsSkippable, Converter={StaticResource BoolToIndexConverter}}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can skip this entry." Margin="2"/>
                                 <Separator/>
                                 <TextBlock Text="Reply:" FontSize="12"/>
-                                <CheckBox Name ="Node_CB_RUnskippable" Content="Unskippable" IsChecked="{Binding Path=SelectedDialogNode.IsUnskippable, Converter={StaticResource BoolToIndexConverter}}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can never skip this reply." Margin="2"/>
+                                <CheckBox Name ="Node_CB_RUnskippable" Content="Unskippable" IsChecked="{Binding Path=SelectedDialogueNode.IsUnskippable, Converter={StaticResource BoolToIndexConverter}}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can never skip this reply." Margin="2"/>
                                 <DockPanel >
-                                    <CheckBox Name ="Node_CB_RDefault" Content="Default Reply" IsChecked="{Binding Path=SelectedDialogNode.IsDefaultAction, Converter={StaticResource BoolToIndexConverter}}" VerticalAlignment="Center" FontSize="15" ToolTip="ME3: On action mode this reply is always selected." Margin="2" DockPanel.Dock="Left"/>
-                                    <CheckBox Name ="Node_CB_RMajor" Content="Major Decision" IsChecked="{Binding Path=SelectedDialogNode.IsMajorDecision, BindsDirectlyToSource=True}" HorizontalAlignment="Center" ToolTip="ME3: decision forced on player in all story modes." FontSize="15" VerticalAlignment="Center" Margin="2" DockPanel.Dock="Right"/>
+                                    <CheckBox Name ="Node_CB_RDefault" Content="Default Reply" IsChecked="{Binding Path=SelectedDialogueNode.IsDefaultAction, Converter={StaticResource BoolToIndexConverter}}" VerticalAlignment="Center" FontSize="15" ToolTip="ME3: On action mode this reply is always selected." Margin="2" DockPanel.Dock="Left"/>
+                                    <CheckBox Name ="Node_CB_RMajor" Content="Major Decision" IsChecked="{Binding Path=SelectedDialogueNode.IsMajorDecision, BindsDirectlyToSource=True}" HorizontalAlignment="Center" ToolTip="ME3: decision forced on player in all story modes." FontSize="15" VerticalAlignment="Center" Margin="2" DockPanel.Dock="Right"/>
                                 </DockPanel>
                             </StackPanel>
                         </TabItem>
                     </TabControl>
                     <TabControl Grid.Row="2">
                         <TabItem Header="Male">
-                            
+                            <StackPanel>
+                                <DockPanel HorizontalAlignment="Stretch">
+                                    <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15"/>
+                                    <Button Name="Open_WwStreamM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundplorerWPF" ToolTip="Open in Soundplorer">
+                                        <Button.Content>
+                                            <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <TextBlock Text="{Binding Path=SelectedDialogueNode.WwiseStream_Male, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
+                                </DockPanel>
+                                <DockPanel HorizontalAlignment="Stretch">
+                                    <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15"/>
+                                    <Button Name="Open_ffxM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXNS" ToolTip="Open this line in FaceFX Editor">
+                                        <Button.Content>
+                                            <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Male, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
+                                </DockPanel>
+                            </StackPanel>
                         </TabItem>
                         <TabItem Header="Female">
-
+                            <StackPanel>
+                                <DockPanel HorizontalAlignment="Stretch">
+                                    <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15"/>
+                                    <Button Name="Open_WwStreamF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundplorerWPF" ToolTip="Open in Soundplorer">
+                                        <Button.Content>
+                                            <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <TextBlock Text="{Binding Path=SelectedDialogueNode.WwiseStream_Female, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
+                                </DockPanel>
+                                <DockPanel HorizontalAlignment="Stretch">
+                                    <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15"/>
+                                    <Button Name="Open_ffxF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXNS" ToolTip="Open this line in FaceFX Editor">
+                                        <Button.Content>
+                                            <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Female, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
+                                </DockPanel>
+                            </StackPanel>
                         </TabItem>
-
                     </TabControl>
 
                 </Grid>

@@ -165,11 +165,11 @@ namespace ME3Explorer.Dialogue_Editor
             public int ConditionalOrBool { get => _ConditionalOrBool; set => SetProperty(ref _ConditionalOrBool, value); }
             private int _Transition;
             public int Transition { get => _Transition; set => SetProperty(ref _Transition, value); }
-            private string _SpeakerTag;
+            private SpeakerExtended _SpeakerTag;
             /// <summary>
             /// Tag of speaker - generated.
             /// </summary>
-            public string SpeakerTag { get => _SpeakerTag; set => SetProperty(ref _SpeakerTag, value); }
+            public SpeakerExtended SpeakerTag { get => _SpeakerTag; set => SetProperty(ref _SpeakerTag, value); }
             private IExportEntry _Interpdata;
             /// <summary>
             /// InterpData object reference UIndex
@@ -239,7 +239,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.Transition = Transition;
             }
 
-            public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int Transition, string SpeakerTag, 
+            public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int Transition, SpeakerExtended SpeakerTag, 
                 IExportEntry Interpdata, IExportEntry WwiseStream_Male, IExportEntry WwiseStream_Female, string FaceFX_Male, string FaceFX_Female, int Listener, int ConditionalParam, int TransitionParam, int ExportID,
                 bool IsSkippable, bool IsUnskippable, bool IsDefaultAction, bool IsMajorDecision, bool IsNonTextLine, bool IgnoreBodyGesture, bool IsAmbient, int CameraIntimacy, bool HideSubtitle, int GUIStyle)
             {
@@ -1025,7 +1025,7 @@ namespace ME3Explorer.Dialogue_Editor
             if (inW + outW + 10 > w) w = inW + outW + 10;
 
             //TitleBox
-            string s = $"{Node.SpeakerTag}";
+            string s = $"{Node.SpeakerTag.SpeakerName}";
             string l = $"{Node.Line}";
             string n = $"{Node.NodeCount}";
             float tW = GetTitlePlusLineBox(s, l, n, w);

@@ -32,6 +32,7 @@ using ME3Explorer.Sequence_Editor;
 using static ME3Explorer.Dialogue_Editor.BioConversationExtended;
 using System.Windows.Data;
 using System.Windows.Controls.Primitives;
+using System.Text.RegularExpressions;
 
 namespace ME3Explorer.Dialogue_Editor
 {
@@ -577,7 +578,7 @@ namespace ME3Explorer.Dialogue_Editor
                 int spkridx = e.SpeakerIndex;
                 var spkrtag = conv.Speakers.Where(s => s.SpeakerID == spkridx).FirstOrDefault();
                 if (spkrtag != null)
-                    e.SpeakerTag = spkrtag.SpeakerName;
+                    e.SpeakerTag = spkrtag;
             }
 
             foreach (var r in conv.ReplyList)
@@ -585,7 +586,7 @@ namespace ME3Explorer.Dialogue_Editor
                 int spkridx = r.SpeakerIndex;
                 var spkrtag = conv.Speakers.Where(s => s.SpeakerID == spkridx).FirstOrDefault();
                 if (spkrtag != null)
-                    r.SpeakerTag = spkrtag.SpeakerName;
+                    r.SpeakerTag = spkrtag;
             }
         }
         /// <summary>
@@ -761,9 +762,67 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
-        private void ParseLinesAudioStreams(ConversationExtended conv)
+        /// <summary>
+        /// Parses for male and female wwisestream IEntry for the line.
+        /// </summary>
+        /// <param name="diag"></param>
+        private void ParseLinesAudioStreams(DialogueNodeExtended diag)
         {
             //TO DO
+            
+            try
+            {
+                //Pull Male/Female animsets from Speaker
+                //Get reference line how??
+                //
+                //
+                //Pull up WwiseEvent. 
+                //Look in that binary for stream.
+
+
+                //IEntry ffxo = GetFaceFX(conv, -1, true); //find speaker animset
+                //if (!Pcc.isUExport(ffxo.UIndex))
+                //    return;
+                //IExportEntry ffxoExport = ffxo as IExportEntry;
+
+                //var wwevents = ffxoExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull a wwiseevent array
+                //if (wwevents == null)
+                //{
+                //    IEntry ffxp = GetFaceFX(conv, -2, true); //find player as alternative
+                //    if (!Pcc.isUExport(ffxo.UIndex))
+                //        return;
+                //    IExportEntry ffxpExport = ffxp as IExportEntry;
+                //    wwevents = ffxpExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+                //}
+
+                //if (Pcc.Game == MEGame.ME3)
+                //{
+                //    StructProperty r = CurrentConvoPackage.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
+                //    var bank = r.GetProp<ObjectProperty>("Bank");
+                //    conv.WwiseBank = Pcc.getUExport(bank.Value);
+                //}
+                //else if (Pcc.Game == MEGame.ME2) //Game is ME2.  Wwisebank ref in Binary.
+                //{
+                //    var data = Pcc.getUExport(wwevents[0].Value).getBinaryData();
+                //    int binarypos = 4;
+                //    int count = BitConverter.ToInt32(data, binarypos);
+                //    if (count > 0)
+                //    {
+                //        binarypos += 4;
+                //        int bnkcount = BitConverter.ToInt32(data, binarypos);
+                //        if (bnkcount > 0)
+                //        {
+                //            binarypos += 4;
+                //            int bank = BitConverter.ToInt32(data, binarypos);
+                //            conv.WwiseBank = Pcc.getUExport(bank);
+                //        }
+                //    }
+                //}
+            }
+            catch
+            {
+                //ignore
+            }
         }
 
         private void ParseNodeData(DialogueNodeExtended node)
@@ -1925,12 +1984,20 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if (e.Key == Key.Enter)
             {
+                var tbox = sender as TextBox;
                 Keyboard.ClearFocus();
-                var tb = sender as TextBox;
-                var be = tb.GetBindingExpression(TextBox.TextProperty);
+                
+                var be = tbox.GetBindingExpression(TextBox.TextProperty);
                 be.UpdateSource();
             }
         }
+
+        private void NumberValidationEditBox(object sender, TextCompositionEventArgs e)
+        {
+            var regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
         private void DialogueNode_Selected(DiagNode obj)
         {
             foreach (var oldselection in SelectedObjects)
@@ -1944,8 +2011,15 @@ namespace ME3Explorer.Dialogue_Editor
             ParseNodeData(obj.Node);
             SelectedDialogueNode = obj.Node;
             SelectedDialogueNode.PropertyChanged += NodePropertyChanged;
-            MirrorDialogueNode = new DialogueNodeExtended(SelectedDialogueNode);
-            Node_Combo_Spkr.IsEnabled = true;
+            MirrorDialogueNode = new DialogueNodeExtended(SelectedDialogueNode);  //Setup gate
+
+
+
+            Node_Combo_Spkr.SelectedIndex = SelectedDialogueNode.SpeakerIndex + 2;
+            Node_Combo_Lstnr.SelectedIndex = SelectedDialogueNode.Listener + 3;
+
+            Node_Combo_Spkr.IsEnabled = true; //Enable/disable boxes
+            
             Node_CB_ESkippable.IsEnabled = false;
             Node_CB_RMajor.IsEnabled = false;
             Node_CB_RDefault.IsEnabled = false;
