@@ -30,6 +30,8 @@ using System.Windows.Threading;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Sequence_Editor;
 using static ME3Explorer.Dialogue_Editor.BioConversationExtended;
+using System.Windows.Data;
+using System.Windows.Controls.Primitives;
 
 namespace ME3Explorer.Dialogue_Editor
 {
@@ -788,16 +790,14 @@ namespace ME3Explorer.Dialogue_Editor
                 node.IsAmbient = nodeprop.GetProp<BoolProperty>("bAmbient");
                 node.IsNonTextLine = nodeprop.GetProp<BoolProperty>("bNonTextLine");
                 node.IgnoreBodyGesture = nodeprop.GetProp<BoolProperty>("bIgnoreBodyGestures");
-                switch(Pcc.Game)
+                if(Pcc.Game == MEGame.ME3)
                 {
-                    case MEGame.ME3:
-                        node.HideSubtitle = nodeprop.GetProp<BoolProperty>("bAlwaysHideSubtitle");
-                        if(node.IsReply)
-                            node.IsDefaultAction = nodeprop.GetProp<BoolProperty>("bIsDefaultAction");
-                            node.IsMajorDecision = nodeprop.GetProp<BoolProperty>("bIsMajorDecision");
-                        break;
-                    default:
-                        break;
+                    node.HideSubtitle = nodeprop.GetProp<BoolProperty>("bAlwaysHideSubtitle");
+                    if (node.IsReply)
+                    {
+                        node.IsDefaultAction = nodeprop.GetProp<BoolProperty>("bIsDefaultAction");
+                        node.IsMajorDecision = nodeprop.GetProp<BoolProperty>("bIsMajorDecision");
+                    }
                 }
 
                 //node.GUIStyle = nodeprop.GetProp<ByteProperty>("eGUIStyle");
@@ -1968,6 +1968,57 @@ namespace ME3Explorer.Dialogue_Editor
                 Node_CB_ESkippable.IsEnabled = true;
             }
 
+            //DEBUG FIX set Binding on checkboxes dynamically seems like the only way
+            //Node_CB_NonTextline.SetBinding(CheckBox.IsCheckedProperty, "SelectedDialogNode.IsNonTextLine");
+            //Node_CB_bAmbient.SetBinding(CheckBox.IsCheckedProperty, "SelectedDialogNode.IsAmbient");
+            //Binding bindTextline = new Binding();
+            //bindTextline.Source = SelectedDialogueNode;
+            //bindTextline.Mode = BindingMode.TwoWay;
+            //bindTextline.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            //bindTextline.Path = new PropertyPath("IsNonTextLine");
+            //BindingOperations.SetBinding(Node_CB_NonTextline, CheckBox.IsCheckedProperty, bindTextline);
+            //Binding bindAmbient = new Binding();
+            //bindAmbient.Source = SelectedDialogueNode;
+            //bindAmbient.Mode = BindingMode.TwoWay;
+            //bindAmbient.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            //bindAmbient.Path = new PropertyPath("IsAmbient");
+            //BindingOperations.SetBinding(Node_CB_bAmbient, CheckBox.IsCheckedProperty, bindAmbient);
+            //Binding bindBody = new Binding();
+            //bindBody.Source = SelectedDialogueNode;
+            //bindBody.Mode = BindingMode.TwoWay;
+            //bindBody.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            //bindBody.Path = new PropertyPath("IgnoreBodyGesture");
+            //BindingOperations.SetBinding(Node_CB_BdyGesture, CheckBox.IsCheckedProperty, bindBody);
+            //Binding bindSubs = new Binding();
+            //bindSubs.Source = SelectedDialogueNode;
+            //bindSubs.Mode = BindingMode.TwoWay;
+            //bindSubs.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            //bindSubs.Path = new PropertyPath("HideSubtitle");
+            //BindingOperations.SetBinding(Node_CB_HideSubs, CheckBox.IsCheckedProperty, bindSubs);
+            //Binding bindSkip = new Binding();
+            //bindSkip.Source = SelectedDialogueNode;
+            //bindSkip.Mode = BindingMode.TwoWay;
+            //bindSkip.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            //bindSkip.Path = new PropertyPath("Skippable");
+            //BindingOperations.SetBinding(Node_CB_ESkippable, CheckBox.IsCheckedProperty, bindSkip);
+            //Binding bindUnskp = new Binding();
+            //bindUnskp.Source = SelectedDialogueNode;
+            //bindUnskp.Mode = BindingMode.TwoWay;
+            //bindUnskp.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            //bindUnskp.Path = new PropertyPath("IsUnskippable");
+            //BindingOperations.SetBinding(Node_CB_RUnskippable, CheckBox.IsCheckedProperty, bindUnskp);
+            //Binding bindDef = new Binding();
+            //bindDef.Source = SelectedDialogueNode;
+            //bindDef.Mode = BindingMode.TwoWay;
+            //bindDef.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            //bindDef.Path = new PropertyPath("IsDefaultAction");
+            //BindingOperations.SetBinding(Node_CB_RDefault, CheckBox.IsCheckedProperty, bindDef);
+            //Binding bindMaj = new Binding();
+            //bindMaj.Source = SelectedDialogueNode;
+            //bindMaj.Mode = BindingMode.TwoWay;
+            //bindMaj.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            //bindMaj.Path = new PropertyPath("IsMajorDecision");
+            //BindingOperations.SetBinding(Node_CB_RMajor, CheckBox.IsCheckedProperty, bindMaj);
 
             if (SelectedDialogueNode.FiresConditional)
                 Node_Text_Cnd.Text = "Conditional: ";

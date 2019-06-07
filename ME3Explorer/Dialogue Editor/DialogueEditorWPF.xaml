@@ -22,6 +22,7 @@
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <Converters:BoolToIndexConverter x:Key="BoolToIndexConverter"/>
+        <Converters:BoolToIndexConverter x:Key="BoolCheckBoxConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
             <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Command="{Binding OpenInCommand}" CommandParameter="PackageEditor" />
             <MenuItem Header="Open in Interp Viewer" ToolTip="Open this export in Interp Viewer" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
@@ -337,10 +338,7 @@
                         
                         <TabItem Header="Matinee" ToolTip="Line settings for cutscene, animation and camera control.">
                             <StackPanel ScrollViewer.VerticalScrollBarVisibility="Auto">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Name="Node_Text_Export" Text="ExportID:  " FontSize="15"/>
-                                    <TextBox Text="{Binding Path=SelectedDialogueNode.ExportID}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" />
-                                </StackPanel>
+
                                 <DockPanel HorizontalAlignment="Stretch">
                                     <TextBlock Text="Line Interpdata:  "  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee for this line." DockPanel.Dock="Left" FontSize="15"/>
                                     <Button Name="OpenLinePE_Button" Command="{Binding OpenInCommand_Line}" CommandParameter="PackEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's interpdata in Package editor" >
@@ -358,10 +356,16 @@
                                             <fa:ImageAwesome Icon="AreaChart" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
                                     </Button>
-                                    <TextBlock Text="{Binding Path=SelectedDialogueNode.Interpdata.UIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Matinee for this line." FontSize="15" Margin="2"/>
+                                    <TextBlock Text="{Binding Path=SelectedDialogueNode.Interpdata.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Matinee for this line." FontSize="15" Margin="2"/>
+
+
                                 </DockPanel>
-                                    <CheckBox Name ="Node_CB_NonTextline" Content="Non vocal line" IsChecked="{Binding Path=SelectedDialogNode.NonTextLine, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="15" VerticalAlignment="Center" ToolTip="Non-textline where only Matinee plays no vocals."/>
-                                <CheckBox Name="Node_CB_bAmbient" Content="Ambient line" IsChecked="{Binding Path=SelectedDialogNode.IsAmbient}" VerticalAlignment="Center" ToolTip="Ambient line. Camera remains under player control."  FontSize="15"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Name="Node_Text_Export" Text="ExportID:  " FontSize="15"/>
+                                    <TextBox Text="{Binding Path=SelectedDialogueNode.ExportID}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" />
+                                </StackPanel>
+                                <CheckBox Name ="Node_CB_NonTextline" Content="Non vocal line" IsChecked="{Binding Path=SelectedDialogNode.IsNonTextLine, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Source=SelectedDialogNode}" FontSize="15" VerticalAlignment="Center" ToolTip="Non-textline where only Matinee plays no vocals."/>
+                                <CheckBox Name="Node_CB_bAmbient" Content="Ambient line" IsChecked="{Binding Path=IsAmbient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Source=SelectedDialogNode}" VerticalAlignment="Center" ToolTip="Ambient line. Camera remains under player control."  FontSize="15"/>
                                 <CheckBox Name="Node_CB_BdyGesture" Content="Ignore Body Gestures" IsChecked="{Binding Path=SelectedDialogNode.IgnoreBodyGesture, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, IsAsync=True}" ToolTip="Ignore non-facial matinee gestures." FontSize="15" VerticalAlignment="Center"/>
                                 <StackPanel Orientation="Horizontal" ToolTip="1-5. Controls how far the camera is away from the speakers face during autoconversations.">
                                     <TextBlock  Text="Camera Intimacy:  " FontSize="15"/>
@@ -371,16 +375,27 @@
                         </TabItem>
                         <TabItem Header="GUI Control" ToolTip="Settings for the line's user interaction.">
                             <StackPanel ScrollViewer.VerticalScrollBarVisibility="Visible">
-                                <CheckBox Name ="Node_CB_HideSubs" Content="Hide Subtitle" IsChecked="{Binding Path=SelectedDialogNode.HideSubtitle}" FontSize="15" VerticalAlignment="Center" ToolTip="Always hide the subtitles." Margin="2"/>
+                                <!--<CheckBox Name ="Node_CB_HideSubs" Content="Hide Subtitle" FontSize="15" VerticalAlignment="Center" ToolTip="Always hide the subtitles." Margin="2"/>
                                 <Separator/>
                                 <TextBlock Text="Entry:" FontSize="12"/>
-                                <CheckBox Name ="Node_CB_ESkippable" Content="Skippable" IsChecked="{Binding Path=SelectedDialogNode.Skippable}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can skip this entry." Margin="2"/>
+                                <CheckBox Name ="Node_CB_ESkippable" Content="Skippable" FontSize="15" VerticalAlignment="Center" ToolTip="Player can skip this entry." Margin="2"/>
                                 <Separator/>
                                 <TextBlock Text="Reply:" FontSize="12"/>
-                                <CheckBox Name ="Node_CB_RUnskippable" Content="Unskippable" IsChecked="{Binding Path=SelectedDialogNode.IsUnskippable}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can never skip this reply." Margin="2"/>
+                                <CheckBox Name ="Node_CB_RUnskippable" Content="Unskippable" FontSize="15" VerticalAlignment="Center" ToolTip="Player can never skip this reply." Margin="2"/>
                                 <DockPanel >
-                                    <CheckBox Name ="Node_CB_RDefault" Content="Default Reply" IsChecked="{Binding Path=SelectedDialogNode.IsDefaultAction}" VerticalAlignment="Center" FontSize="15" ToolTip="ME3: On action mode this reply is always selected." Margin="2" DockPanel.Dock="Left"/>
-                                    <CheckBox Name ="Node_CB_RMajor" Content="Major Decision" IsChecked="{Binding Path=SelectedDialogNode.IsMajorDecision}" HorizontalAlignment="Center" ToolTip="ME3: decision forced on player in all story modes." FontSize="15" VerticalAlignment="Center" Margin="2" DockPanel.Dock="Right"/>
+                                    <CheckBox Name ="Node_CB_RDefault" Content="Default Reply" VerticalAlignment="Center" FontSize="15" ToolTip="ME3: On action mode this reply is always selected." Margin="2" DockPanel.Dock="Left"/>
+                                    <CheckBox Name ="Node_CB_RMajor" Content="Major Decision"  HorizontalAlignment="Center" ToolTip="ME3: decision forced on player in all story modes." FontSize="15" VerticalAlignment="Center" Margin="2" DockPanel.Dock="Right"/>
+                                </DockPanel>-->
+                                <CheckBox Name ="Node_CB_HideSubs" Content="Hide Subtitle" IsChecked="{Binding Path=SelectedDialogNode.HideSubtitle, Converter={StaticResource BoolToIndexConverter}}" FontSize="15" VerticalAlignment="Center" ToolTip="Always hide the subtitles." Margin="2"/>
+                                <Separator/>
+                                <TextBlock Text="Entry:" FontSize="12"/>
+                                <CheckBox Name ="Node_CB_ESkippable" Content="Skippable" IsChecked="{Binding Path=SelectedDialogNode.Skippable, Converter={StaticResource BoolToIndexConverter}}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can skip this entry." Margin="2"/>
+                                <Separator/>
+                                <TextBlock Text="Reply:" FontSize="12"/>
+                                <CheckBox Name ="Node_CB_RUnskippable" Content="Unskippable" IsChecked="{Binding Path=SelectedDialogNode.IsUnskippable, Converter={StaticResource BoolToIndexConverter}}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can never skip this reply." Margin="2"/>
+                                <DockPanel >
+                                    <CheckBox Name ="Node_CB_RDefault" Content="Default Reply" IsChecked="{Binding Path=SelectedDialogNode.IsDefaultAction, Converter={StaticResource BoolToIndexConverter}}" VerticalAlignment="Center" FontSize="15" ToolTip="ME3: On action mode this reply is always selected." Margin="2" DockPanel.Dock="Left"/>
+                                    <CheckBox Name ="Node_CB_RMajor" Content="Major Decision" IsChecked="{Binding Path=SelectedDialogNode.IsMajorDecision, BindsDirectlyToSource=True}" HorizontalAlignment="Center" ToolTip="ME3: decision forced on player in all story modes." FontSize="15" VerticalAlignment="Center" Margin="2" DockPanel.Dock="Right"/>
                                 </DockPanel>
                             </StackPanel>
                         </TabItem>
