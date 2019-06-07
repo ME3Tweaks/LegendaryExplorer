@@ -12,7 +12,7 @@
     Loaded="MetadataEditor_Loaded"   
     xmlns:Packages="clr-namespace:ME3Explorer.Packages"
     xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-    d:DesignHeight="630" d:DesignWidth="800">
+    d:DesignHeight="730" d:DesignWidth="800">
     <global:ExportLoaderControl.Resources>
         <System:Int32 x:Key="InfoTab_TopMargins">24</System:Int32>
         <System:Int32 x:Key="InfoTab_MaxWidth">700</System:Int32>
@@ -71,7 +71,8 @@
             <RowDefinition Height="150"/>
             <RowDefinition Height="55"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="130"/>
@@ -191,5 +192,6 @@
             </hb1:HexBox>
         </WindowsFormsHost>
         <TextBlock Name="Header_Hexbox_SelectedBytesLabel" Grid.Row="20" Grid.ColumnSpan="2" Text="Selected item: " TextWrapping="Wrap"/>
+        <TextBlock Name="Header_Hexbox_ComponentsLabel" Grid.Row="21" Grid.ColumnSpan="2" TextWrapping="Wrap"/>
     </Grid>
 </global:ExportLoaderControl>

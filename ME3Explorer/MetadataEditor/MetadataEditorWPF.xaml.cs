@@ -177,10 +177,32 @@ namespace ME3Explorer.MetadataEditor
 
                 //not parsed by package handling, must do it manually here
                 byte[] header = exportEntry.Header;
+                int offset = 0x2C;
 
-                InfoTab_ExportUnknown1_TextBox.Text = BitConverter.ToInt32(header, 0x28).ToString();
+                if (exportEntry.FileRef.Game != MEGame.ME3)
+                {
+                    int componentsCount = BitConverter.ToInt32(header, 0x28);
+                    InfoTab_ExportUnknown1_TextBox.Text = componentsCount.ToString();
 
-                int preguidcountoffset = exportEntry.FileRef.Game == MEGame.ME3 ? 0x2C : 0x30;
+                    string components = "";
+                    for (int i = 0; i < componentsCount; i++)
+                    {
+                        int startoffset = offset;
+                        int nameTableIndex = BitConverter.ToInt32(header, offset);
+                        offset += 4;
+                        int nameRefValue = BitConverter.ToInt32(header, offset);
+                        offset += 4;
+                        int exportRef = BitConverter.ToInt32(header, offset);
+                        offset += 4;
+                        string component =
+                            $"0x{startoffset:X2} {exportEntry.FileRef.getNameEntry(nameTableIndex)}_{nameRefValue} {exportEntry.FileRef.GetEntryString(exportRef)}";
+                        components += $"{component}\n";
+                    }
+
+                    Header_Hexbox_ComponentsLabel.Text = components;
+                }
+
+                int preguidcountoffset = exportEntry.FileRef.Game == MEGame.ME3 ? 0x2C : offset;
                 InfoTab_PreGUID_TextBlock.Text = $"0x{preguidcountoffset:X2} Pre GUID count:";
                 int preguidcount = BitConverter.ToInt32(header, preguidcountoffset);
                 InfoTab_ExportPreGuidCount_TextBox.Text = preguidcount.ToString();
