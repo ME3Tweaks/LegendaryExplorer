@@ -763,10 +763,10 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
         /// <summary>
-        /// Parses for male and female wwisestream IEntry for the line.
+        /// Parses for male and female wwisestream IEntry for every line in the conversation.
         /// </summary>
         /// <param name="diag"></param>
-        private void ParseLinesAudioStreams(DialogueNodeExtended diag)
+        private void ParseLinesAudioStreams(ConversationExtended conv)
         {
             //TO DO
             
