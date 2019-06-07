@@ -257,14 +257,13 @@
                     <TextBlock Text="" FontSize="10"  />
                 </StackPanel>
            <!--Node Panel-->
-                <Grid Name="Node_Panel" DockPanel.Dock="Top" Visibility="Hidden" >
+                <Grid Name="Node_Panel" DockPanel.Dock="Top" Visibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="3*"/>
-                        <RowDefinition Height="3*"/>
-                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="3*" MinHeight="190"/>
+                        <RowDefinition Height="3*" MinHeight="150"/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0">
                         <DockPanel HorizontalAlignment="Stretch">
@@ -311,7 +310,7 @@
                                 <TextBlock Text="Plot checks" />
                                 <DockPanel HorizontalAlignment="Stretch">
                                     <TextBlock Text="Conditional/Bool: " DockPanel.Dock="Left" FontSize="15"/>
-                                    <ComboBox HorizontalAlignment="Stretch"  SelectedIndex="{Binding Path=SelectedDialogueNode.FiresConditional, Converter={StaticResource BoolToIndexConverter}}">
+                                    <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectedIndex="{Binding Path=SelectedDialogueNode.FiresConditional, Converter={StaticResource BoolToIndexConverter}}">
                                         <ComboBoxItem Content="Bool" IsSelected="False" />
                                         <ComboBoxItem Content="Conditional" IsSelected="True" />
                                     </ComboBox>
@@ -359,7 +358,7 @@
                                 </DockPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Name="Node_Text_Export" Text="ExportID:  " VerticalAlignment="Center" FontSize="15" Margin="2"/>
-                                    <TextBox Text="{Binding Path=SelectedDialogueNode.ExportID}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" VerticalAlignment="Bottom" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
+                                    <TextBox Text="{Binding Path=SelectedDialogueNode.ExportID}" HorizontalAlignment="Stretch" FontSize="15" VerticalAlignment="Center" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
                                 </StackPanel>
                                 <Separator/>
                                 <CheckBox Name ="Node_CB_NonTextline" Content="Non vocal line" IsChecked="{Binding Path=SelectedDialogueNode.IsNonTextLine, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="15" VerticalAlignment="Center" ToolTip="Non-textline where only Matinee plays no vocals."/>
@@ -373,17 +372,6 @@
                         </TabItem>
                         <TabItem Header="GUI Control" ToolTip="Settings for the line's user interaction.">
                             <StackPanel ScrollViewer.VerticalScrollBarVisibility="Visible">
-                                <!--<CheckBox Name ="Node_CB_HideSubs" Content="Hide Subtitle" FontSize="15" VerticalAlignment="Center" ToolTip="Always hide the subtitles." Margin="2"/>
-                                <Separator/>
-                                <TextBlock Text="Entry:" FontSize="12"/>
-                                <CheckBox Name ="Node_CB_ESkippable" Content="Skippable" FontSize="15" VerticalAlignment="Center" ToolTip="Player can skip this entry." Margin="2"/>
-                                <Separator/>
-                                <TextBlock Text="Reply:" FontSize="12"/>
-                                <CheckBox Name ="Node_CB_RUnskippable" Content="Unskippable" FontSize="15" VerticalAlignment="Center" ToolTip="Player can never skip this reply." Margin="2"/>
-                                <DockPanel >
-                                    <CheckBox Name ="Node_CB_RDefault" Content="Default Reply" VerticalAlignment="Center" FontSize="15" ToolTip="ME3: On action mode this reply is always selected." Margin="2" DockPanel.Dock="Left"/>
-                                    <CheckBox Name ="Node_CB_RMajor" Content="Major Decision"  HorizontalAlignment="Center" ToolTip="ME3: decision forced on player in all story modes." FontSize="15" VerticalAlignment="Center" Margin="2" DockPanel.Dock="Right"/>
-                                </DockPanel>-->
                                 <CheckBox Name ="Node_CB_HideSubs" Content="Hide Subtitle" IsChecked="{Binding Path=SelectedDialogueNode.HideSubtitle}" FontSize="15" VerticalAlignment="Center" ToolTip="Always hide the subtitles." Margin="2"/>
                                 <Separator/>
                                 <TextBlock Text="Entry:" FontSize="12"/>
@@ -397,54 +385,54 @@
                                 </DockPanel>
                             </StackPanel>
                         </TabItem>
-                    </TabControl>
-                    <TabControl Grid.Row="2">
-                        <TabItem Header="Male">
+                        <TabItem Header="Assets" ToolTip="Audio and animation assets used by this line">
                             <StackPanel>
-                                <DockPanel HorizontalAlignment="Stretch">
-                                    <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15"/>
-                                    <Button Name="Open_WwStreamM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundplorerWPF" ToolTip="Open in Soundplorer">
-                                        <Button.Content>
-                                            <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
-                                        </Button.Content>
-                                    </Button>
-                                    <TextBlock Text="{Binding Path=SelectedDialogueNode.WwiseStream_Male, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
-                                </DockPanel>
-                                <DockPanel HorizontalAlignment="Stretch">
-                                    <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15"/>
-                                    <Button Name="Open_ffxM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXNS" ToolTip="Open this line in FaceFX Editor">
-                                        <Button.Content>
-                                            <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
-                                        </Button.Content>
-                                    </Button>
-                                    <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Male, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
-                                </DockPanel>
+                                <StackPanel>
+                                    <TextBlock Text="Male:" FontSize="12"/>
+                                    <DockPanel HorizontalAlignment="Stretch">
+                                        <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
+                                        <Button Name="Open_WwStreamM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundplorerWPF" ToolTip="Open in Soundplorer">
+                                            <Button.Content>
+                                                <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                                            </Button.Content>
+                                        </Button>
+                                        <TextBlock Text="{Binding Path=SelectedDialogueNode.WwiseStream_Male.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
+                                    </DockPanel>
+                                    <DockPanel HorizontalAlignment="Stretch">
+                                        <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
+                                        <Button Name="Open_ffxM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXNS" ToolTip="Open this line in FaceFX Editor">
+                                            <Button.Content>
+                                                <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
+                                            </Button.Content>
+                                        </Button>
+                                        <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Male, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
+                                    </DockPanel>
+                                </StackPanel>
+                                <Separator/>
+                                <StackPanel>
+                                    <TextBlock Text="Female:" FontSize="12"/>
+                                    <DockPanel HorizontalAlignment="Stretch">
+                                        <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
+                                        <Button Name="Open_WwStreamF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundplorerWPF" ToolTip="Open in Soundplorer">
+                                            <Button.Content>
+                                                <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                                            </Button.Content>
+                                        </Button>
+                                        <TextBlock Text="{Binding Path=SelectedDialogueNode.WwiseStream_Female.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
+                                    </DockPanel>
+                                    <DockPanel HorizontalAlignment="Stretch">
+                                        <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
+                                        <Button Name="Open_ffxF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXNS" ToolTip="Open this line in FaceFX Editor">
+                                            <Button.Content>
+                                                <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
+                                            </Button.Content>
+                                        </Button>
+                                        <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Female, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
+                                    </DockPanel>
+                                </StackPanel>
                             </StackPanel>
                         </TabItem>
-                        <TabItem Header="Female">
-                            <StackPanel>
-                                <DockPanel HorizontalAlignment="Stretch">
-                                    <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15"/>
-                                    <Button Name="Open_WwStreamF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundplorerWPF" ToolTip="Open in Soundplorer">
-                                        <Button.Content>
-                                            <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
-                                        </Button.Content>
-                                    </Button>
-                                    <TextBlock Text="{Binding Path=SelectedDialogueNode.WwiseStream_Female, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
-                                </DockPanel>
-                                <DockPanel HorizontalAlignment="Stretch">
-                                    <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15"/>
-                                    <Button Name="Open_ffxF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXNS" ToolTip="Open this line in FaceFX Editor">
-                                        <Button.Content>
-                                            <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
-                                        </Button.Content>
-                                    </Button>
-                                    <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Female, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
-                                </DockPanel>
-                            </StackPanel>
-                        </TabItem>
                     </TabControl>
-
                 </Grid>
             </DockPanel>
  

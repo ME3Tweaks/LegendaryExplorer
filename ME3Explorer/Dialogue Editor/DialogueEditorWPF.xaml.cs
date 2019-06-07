@@ -438,7 +438,22 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
 
+            BackParser = new BackgroundWorker()
+            {
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
+            };
+            BackParser.DoWork += BackParse;
+            BackParser.RunWorkerCompleted += BackParser_RunWorkerCompleted;
+            BackParser.RunWorkerAsync();
 
+            Conversations_ListBox.IsEnabled = true;
+        }
+
+        private void BackParse(object sender, DoWorkEventArgs e)
+        {
+
+            //TOO MANY PROBLEMS ON BACK THREAD. OPTIMISE LATER.
             //Do minor stuff
             foreach (var conv in Conversations.Where(conv => conv.IsParsed == false))
             {
@@ -457,27 +472,12 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
 
-            BackParser = new BackgroundWorker()
-            {
-                WorkerReportsProgress = true,
-                WorkerSupportsCancellation = true
-            };
-            BackParser.DoWork += BackParse;
-            BackParser.RunWorkerCompleted += BackParser_RunWorkerCompleted;
-            BackParser.RunWorkerAsync();
-        }
-
-        private void BackParse(object sender, DoWorkEventArgs e)
-        {
-
-            //TOO MANY PROBLEMS ON BACK THREAD. OPTIMISE LATER.
-                                
         }
 
         private void BackParser_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             BackParser.CancelAsync();
-            Conversations_ListBox.IsEnabled = true;
+
 
         }
 
@@ -778,46 +778,29 @@ namespace ME3Explorer.Dialogue_Editor
                 //
                 //Pull up WwiseEvent. 
                 //Look in that binary for stream.
+                //Dirty version
+                //Pull all wwisestreams with Name in them plus gender
+                //ME3/ME2 123456_F
+                if(Pcc.Game != MEGame.ME1)
+                {
+                    Dictionary<string, IExportEntry> streams = Pcc.Exports.Where(x => x.ClassName == "WwiseStream").ToDictionary(x => x.ObjectName.ToLower(), x => x);
 
+                    foreach (var node in conv.EntryList)
+                    {
+                        string srchFem = $"{node.LineStrRef}_f";
+                        string srchM = $"{node.LineStrRef}_m";
+                        node.WwiseStream_Female = streams.FirstOrDefault(s => s.Key.Contains(srchFem)).Value;
+                        node.WwiseStream_Male = streams.FirstOrDefault(s => s.Key.Contains(srchM)).Value;
+                    }
 
-                //IEntry ffxo = GetFaceFX(conv, -1, true); //find speaker animset
-                //if (!Pcc.isUExport(ffxo.UIndex))
-                //    return;
-                //IExportEntry ffxoExport = ffxo as IExportEntry;
-
-                //var wwevents = ffxoExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull a wwiseevent array
-                //if (wwevents == null)
-                //{
-                //    IEntry ffxp = GetFaceFX(conv, -2, true); //find player as alternative
-                //    if (!Pcc.isUExport(ffxo.UIndex))
-                //        return;
-                //    IExportEntry ffxpExport = ffxp as IExportEntry;
-                //    wwevents = ffxpExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
-                //}
-
-                //if (Pcc.Game == MEGame.ME3)
-                //{
-                //    StructProperty r = CurrentConvoPackage.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
-                //    var bank = r.GetProp<ObjectProperty>("Bank");
-                //    conv.WwiseBank = Pcc.getUExport(bank.Value);
-                //}
-                //else if (Pcc.Game == MEGame.ME2) //Game is ME2.  Wwisebank ref in Binary.
-                //{
-                //    var data = Pcc.getUExport(wwevents[0].Value).getBinaryData();
-                //    int binarypos = 4;
-                //    int count = BitConverter.ToInt32(data, binarypos);
-                //    if (count > 0)
-                //    {
-                //        binarypos += 4;
-                //        int bnkcount = BitConverter.ToInt32(data, binarypos);
-                //        if (bnkcount > 0)
-                //        {
-                //            binarypos += 4;
-                //            int bank = BitConverter.ToInt32(data, binarypos);
-                //            conv.WwiseBank = Pcc.getUExport(bank);
-                //        }
-                //    }
-                //}
+                    foreach (var node in conv.ReplyList)
+                    {
+                        string srchFem = $"{node.LineStrRef}_f";
+                        string srchM = $"{node.LineStrRef}_m";
+                        node.WwiseStream_Female = streams.FirstOrDefault(s => s.Key.Contains(srchFem)).Value;
+                        node.WwiseStream_Male = streams.FirstOrDefault(s => s.Key.Contains(srchM)).Value;
+                    }
+                }
             }
             catch
             {
@@ -870,7 +853,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             foreach(var entry in conv.EntryList)
             {
-                if (entry.Line != "No data" || entry.Line != " " || entry.Line != "" || entry.Line != "  ")
+                if (entry.Line != "No data" && entry.Line != " " && entry.Line != "" && entry.Line != "  ")
                 {
                     entry.FaceFX_Female = $"FXA_{entry.LineStrRef}_F";
                     entry.FaceFX_Male = $"FXA_{entry.LineStrRef}_M";
@@ -878,6 +861,21 @@ namespace ME3Explorer.Dialogue_Editor
                 else
                 {
                     entry.FaceFX_Female = "None";
+                    entry.FaceFX_Male = "None";
+                }
+            }
+
+            foreach (var reply in conv.ReplyList)
+            {
+                if (reply.Line != "No data" && reply.Line != " " && reply.Line != "" && reply.Line != "  ")
+                {
+                    reply.FaceFX_Female = $"FXA_{reply.LineStrRef}_F";
+                    reply.FaceFX_Male = $"FXA_{reply.LineStrRef}_M";
+                }
+                else
+                {
+                    reply.FaceFX_Female = "None";
+                    reply.FaceFX_Male = "None";
                 }
             }
         }
@@ -1982,13 +1980,20 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void EditBox_Node_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (e.Key == Key.Enter || e.Key == Key.Escape)
             {
                 var tbox = sender as TextBox;
                 Keyboard.ClearFocus();
-                
                 var be = tbox.GetBindingExpression(TextBox.TextProperty);
-                be.UpdateSource();
+                switch (e.Key)
+                {
+                    case Key.Enter:
+                        if (be != null) be.UpdateSource();
+                        break;
+                    case Key.Escape:
+                        if (be != null) be.UpdateTarget();
+                        break;
+                }
             }
         }
 
