@@ -159,12 +159,12 @@ namespace ME3Explorer.Dialogue_Editor
             public int LineStrRef { get => _LineStrRef; set => SetProperty(ref _LineStrRef, value); }
             private string _Line;
             public string Line { get => _Line; set => SetProperty(ref _Line, value); }
-            private bool _FiresConditional;
+            private bool _FiresConditional = false;
             public bool FiresConditional { get => _FiresConditional; set => SetProperty(ref _FiresConditional, value); }
             private int _ConditionalOrBool;
             public int ConditionalOrBool { get => _ConditionalOrBool; set => SetProperty(ref _ConditionalOrBool, value); }
-            private int _StateEvent;
-            public int StateEvent { get => _StateEvent; set => SetProperty(ref _StateEvent, value); }
+            private int _Transition;
+            public int Transition { get => _Transition; set => SetProperty(ref _Transition, value); }
             private string _SpeakerTag;
             /// <summary>
             /// Tag of speaker - generated.
@@ -203,30 +203,30 @@ namespace ME3Explorer.Dialogue_Editor
             public int TransitionParam { get => _TransitionParam; set => SetProperty(ref _TransitionParam, value); }
             private int _ExportID;
             public int ExportID { get => _ExportID; set => SetProperty(ref _ExportID, value); }
-            private bool _IsSkippable;
+            private bool _IsSkippable = false;
             public bool IsSkippable { get => _IsSkippable; set => SetProperty(ref _IsSkippable, value); }
-            private bool _IsUnskippable;
+            private bool _IsUnskippable = false;
             public bool IsUnskippable { get => _IsUnskippable; set => SetProperty(ref _IsUnskippable, value); }
             private bool _IsDefaultAction;
             public bool IsDefaultAction { get => _IsDefaultAction; set => SetProperty(ref _IsDefaultAction, value); }
-            private bool _IsMajorDecision;
+            private bool _IsMajorDecision = false;
             public bool IsMajorDecision { get => _IsMajorDecision; set => SetProperty(ref _IsMajorDecision, value); }
-            private bool _IsNonTextLine;
-            public bool IsNonTextLine { get => _IsNonTextLine; set => SetProperty(ref _IsNonTextLine, value); }
-            private bool _IgnoreBodyGesture;
+            private bool _IsNonTextLine = false;
+            public bool IsNonTextLine { get => _IsNonTextLine; set { SetProperty(ref _IsNonTextLine, value); OnPropertyChanged("IsNonTextLine"); } }
+            private bool _IgnoreBodyGesture = false;
             public bool IgnoreBodyGesture { get => _IgnoreBodyGesture; set => SetProperty(ref _IgnoreBodyGesture, value); }
-            private bool _IsAmbient;
+            private bool _IsAmbient = false;
             public bool IsAmbient { get => _IsAmbient; set => SetProperty(ref _IsAmbient, value); }
             private int _CameraIntimacy;
-            public int CameraIntimacy { get => _CameraIntimacy; set => SetProperty(ref _CameraIntimacy, value); }
-            private bool _HideSubtitle;
+            public int CameraIntimacy { get => _CameraIntimacy; set { SetProperty(ref _CameraIntimacy, value); OnPropertyChanged("CameraIntimacy"); } }
+            private bool _HideSubtitle = false;
             public bool HideSubtitle { get => _HideSubtitle; set => SetProperty(ref _HideSubtitle, value); }
             private int _GUIStyle;
             public int GUIStyle { get => _GUIStyle; set => SetProperty(ref _GUIStyle, value);
 
             }
 
-            public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int StateEvent)
+            public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int Transition)
             {
                 this.NodeProp = NodeProp;
                 this.IsReply = IsReply;
@@ -236,10 +236,10 @@ namespace ME3Explorer.Dialogue_Editor
                 this.Line = Line;
                 this.FiresConditional = FiresConditional;
                 this.ConditionalOrBool = ConditionalOrBool;
-                this.StateEvent = StateEvent;
+                this.Transition = Transition;
             }
 
-            public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int StateEvent, string SpeakerTag, 
+            public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int Transition, string SpeakerTag, 
                 IExportEntry Interpdata, IExportEntry WwiseStream_Male, IExportEntry WwiseStream_Female, string FaceFX_Male, string FaceFX_Female, int Listener, int ConditionalParam, int TransitionParam, int ExportID,
                 bool IsSkippable, bool IsUnskippable, bool IsDefaultAction, bool IsMajorDecision, bool IsNonTextLine, bool IgnoreBodyGesture, bool IsAmbient, int CameraIntimacy, bool HideSubtitle, int GUIStyle)
             {
@@ -251,7 +251,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.Line = Line;
                 this.FiresConditional = FiresConditional;
                 this.ConditionalOrBool = ConditionalOrBool;
-                this.StateEvent = StateEvent;
+                this.Transition = Transition;
                 this.SpeakerTag = SpeakerTag;
                 this.Interpdata = Interpdata;
                 this.WwiseStream_Male = WwiseStream_Male;
@@ -273,13 +273,47 @@ namespace ME3Explorer.Dialogue_Editor
                 this.HideSubtitle = HideSubtitle;
                 this.GUIStyle = GUIStyle;
             }
-            public event PropertyChangedEventHandler NodePropertyChanged;
+
+            public DialogueNodeExtended(DialogueNodeExtended nodeExtended)
+            {
+                this.NodeProp = nodeExtended.NodeProp;
+                this.IsReply = nodeExtended.IsReply;
+                this.NodeCount = nodeExtended.NodeCount;
+                this.SpeakerIndex = nodeExtended.SpeakerIndex;
+                this.LineStrRef = nodeExtended.LineStrRef;
+                this.Line = nodeExtended.Line;
+                this.FiresConditional = nodeExtended.FiresConditional;
+                this.ConditionalOrBool = nodeExtended.ConditionalOrBool;
+                this.Transition = nodeExtended.Transition;
+                this.SpeakerTag = nodeExtended.SpeakerTag;
+                this.Interpdata = nodeExtended.Interpdata;
+                this.WwiseStream_Male = nodeExtended.WwiseStream_Male;
+                this.WwiseStream_Female = nodeExtended.WwiseStream_Female;
+                this.FaceFX_Male = nodeExtended.FaceFX_Male;
+                this.FaceFX_Female = nodeExtended.FaceFX_Female;
+                this.Listener = nodeExtended.Listener;
+                this.ConditionalParam = nodeExtended.ConditionalParam;
+                this.TransitionParam = nodeExtended.TransitionParam;
+                this.ExportID = nodeExtended.ExportID;
+                this.IsSkippable = nodeExtended.IsSkippable;
+                this.IsUnskippable = nodeExtended.IsUnskippable;
+                this.IsDefaultAction = nodeExtended.IsDefaultAction;
+                this.IsMajorDecision = nodeExtended.IsMajorDecision;
+                this.IsNonTextLine = nodeExtended.IsNonTextLine;
+                this.IgnoreBodyGesture = nodeExtended.IgnoreBodyGesture;
+                this.IsAmbient = nodeExtended.IsAmbient;
+                this.CameraIntimacy = nodeExtended.CameraIntimacy;
+                this.HideSubtitle = nodeExtended.HideSubtitle;
+                this.GUIStyle = nodeExtended.GUIStyle;
+            }
+
+            public new event PropertyChangedEventHandler PropertyChanged;
             protected override void OnPropertyChanged(string PropertyName)
             {
 
-                if (NodePropertyChanged != null)
+                if (PropertyChanged != null)
 
-                    NodePropertyChanged(this, new PropertyChangedEventArgs(PropertyName));
+                    PropertyChanged(this, new PropertyChangedEventArgs(PropertyName));
 
             }
         }
@@ -1011,7 +1045,7 @@ namespace ME3Explorer.Dialogue_Editor
             string cnd = "Cnd:";
             if (Node.FiresConditional == false)
                 cnd = "Bool:";
-            string d = $"{Node.LineStrRef}\r\n{cnd} {Node.ConditionalOrBool}\r\nEvt:{Node.StateEvent}";
+            string d = $"{Node.LineStrRef}\r\n{cnd} {Node.ConditionalOrBool}\r\nEvt:{Node.Transition}";
 
             DText insidetext = new DText(d, insideTextColor, false)
             {

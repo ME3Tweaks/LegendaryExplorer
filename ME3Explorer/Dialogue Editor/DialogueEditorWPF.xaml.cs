@@ -19,19 +19,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Gammtek.Conduit.Extensions;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
-using Color = System.Drawing.Color;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using InterpEditor = ME3Explorer.Matinee.InterpEditor;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 using System.Windows.Threading;
-using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using KFreonLib.MEDirectories;
-using MassEffect.NativesEditor.Views;
 using ME3Explorer.Sequence_Editor;
 using static ME3Explorer.Dialogue_Editor.BioConversationExtended;
 
@@ -75,8 +71,8 @@ namespace ME3Explorer.Dialogue_Editor
                 if (value != _SelectedDialogueNode)
                     SetProperty(ref _SelectedDialogueNode, value);
             } 
-
         }
+        private DialogueNodeExtended MirrorDialogueNode;
 
         //SPEAKERS
         private SpeakerExtended _SelectedSpeaker;
@@ -99,7 +95,7 @@ namespace ME3Explorer.Dialogue_Editor
             get => _level;
             set => SetProperty(ref _level, value);
         }
-
+        private int CurrentUIMode = 0; //Sets which panel is up.
         #endregion ConvoBox//Conversation Box Links
         private static BackgroundWorker BackParser = new BackgroundWorker();
 
@@ -398,12 +394,7 @@ namespace ME3Explorer.Dialogue_Editor
             StatusText = "Select a package file to load";
         }
 
-        public static void PushConvoToFile(ConversationExtended convo)
-        {
-            
-            convo.Export.WriteProperties(convo.BioConvo);
 
-        }
         #endregion Startup/Exit
 
         #region Parsing
@@ -519,7 +510,6 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
-
         public void ParseEntryList(ConversationExtended conv)
         {
             conv.EntryList = new ObservableCollectionExtended<DialogueNodeExtended>();
@@ -544,7 +534,6 @@ namespace ME3Explorer.Dialogue_Editor
                 //throw new Exception("Entry List Parse failed", e);
             }
         }
-
         public void ParseReplyList(ConversationExtended conv)
         {
             conv.ReplyList = new ObservableCollectionExtended<DialogueNodeExtended>();
@@ -569,7 +558,6 @@ namespace ME3Explorer.Dialogue_Editor
                 //throw new Exception("Reply List Parse failed", e);  //Note some convos don't have replies.
             }
         }
-
         private void GenerateSpeakerList()
         {
             SelectedSpeakerList.ClearEx();
@@ -771,7 +759,6 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
-
         private void ParseLinesAudioStreams(ConversationExtended conv)
         {
             //TO DO
@@ -820,7 +807,6 @@ namespace ME3Explorer.Dialogue_Editor
                 MessageBox.Show($"DiagNodeParse Failed. {e}");
             }
         }
-
         private void ParseLinesFaceFX(ConversationExtended conv)
         {
             foreach(var entry in conv.EntryList)
@@ -836,7 +822,6 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
-
         /// <summary>
         /// Returns the IEntry of FaceFXAnimSet
         /// </summary>
@@ -859,7 +844,6 @@ namespace ME3Explorer.Dialogue_Editor
                 return null;
             }
         }
-
         /// <summary>
         /// Sets the IEntry of appropriate sequence
         /// </summary>
@@ -954,7 +938,6 @@ namespace ME3Explorer.Dialogue_Editor
                 //ignore
             }
         }
-
         public int ParseActorsNames(ConversationExtended conv, string tag)
         {
             if (CurrentConvoPackage.Game == MEGame.ME1)
@@ -995,6 +978,15 @@ namespace ME3Explorer.Dialogue_Editor
 
             }
             return startList;
+        }
+        #endregion Parsing
+
+        #region RecreateToFile
+        public static void PushConvoToFile(ConversationExtended convo)
+        {
+
+            convo.Export.WriteProperties(convo.BioConvo);
+
         }
 
         public void SaveSpeakersToProperties(ObservableCollectionExtended<SpeakerExtended> speakerCollection)
@@ -1067,7 +1059,35 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        #endregion Parsing
+        public void RecreateNodesToProperties(ConversationExtended conv)
+        {
+
+            var newentryList = new ArrayProperty<StructProperty>(ArrayType.Struct, new NameReference("m_EntryList"));
+            foreach (var entry in conv.EntryList.OrderBy(entry => entry.NodeCount))
+            {
+                newentryList.Add(entry.NodeProp);
+            }
+            var newreplyList = new ArrayProperty<StructProperty>(ArrayType.Struct, new NameReference("m_ReplyList"));
+            foreach (var reply in conv.ReplyList.OrderBy(reply => reply.NodeCount))
+            {
+                newreplyList.Add(reply.NodeProp);
+            }
+
+            if(newentryList.Count > 0)
+            {
+                conv.BioConvo.AddOrReplaceProp(newentryList);
+            }
+
+            if (newreplyList.Count > 0)
+            {
+                conv.BioConvo.AddOrReplaceProp(newreplyList);
+            }
+
+
+            PushConvoToFile(conv);
+        }
+
+        #endregion RecreateToFile
 
         #region Handling-updates
         public override void handleUpdate(List<PackageUpdate> updates)
@@ -1121,15 +1141,109 @@ namespace ME3Explorer.Dialogue_Editor
             RefreshView();
             Conversations_ListBox.SelectedIndex = cSelectedIdx;
             Speakers_ListBox.SelectedIndex = sSelectedIdx;
-        }
 
-        //Need update handler for selecteddiagnode.
-        public void PropertyChanged(object sender, PropertyChangingEventArgs e)
-        {
-            if(e.PropertyName != "SelectedDialogueNode")
+
+            if(SelectedObjects.Count > 0)
             {
-                MessageBox.Show("Something came through");
+                if (SelectedObjects[0] is DiagNode d)
+                {
+                    //Get redrawn node to keep in focus
+                    var dnode = CurrentObjects.OfType<DiagNode>().FirstOrDefault(o => o.Node.NodeCount == d.Node.NodeCount && o.Node.IsReply == d.Node.IsReply);
+
+                    if(dnode != null)
+                    {
+                        DialogueNode_Selected(dnode);
+                    }
+                }
             }
+        }
+        
+        //Need update handler for selecteddiagnode.
+        public void NodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (sender == null || SelectedConv == null || SelectedDialogueNode == null)
+                return;
+        
+            var diagnode = sender as DialogueNodeExtended;  //THIS IS A GATE TO CHECK IF VALUES HAVE CHANGED
+            var newvalue = diagnode.GetType().GetProperty(e.PropertyName).GetValue(diagnode, null);
+            var oldvalue = MirrorDialogueNode.GetType().GetProperty(e.PropertyName).GetValue(MirrorDialogueNode, null);
+            if (newvalue.ToString() == oldvalue.ToString())
+            {
+                return;
+            }
+            var s = newvalue.GetType().ToString();
+            //MessageBox.Show($"TEST valuetype: {s}\r\n{e.PropertyName}\r\nsender: {newvalue}\r\nMirror: {oldvalue}");
+            MirrorDialogueNode.GetType().GetProperty(e.PropertyName).SetValue(MirrorDialogueNode, newvalue);
+            //IF PASS THEN RECREATE NODE
+            var node = SelectedDialogueNode;
+            var prop = node.NodeProp;
+
+            // Props in both replies and emtries. All Games.
+
+            var nListenerIndex = new IntProperty(node.Listener, new NameReference("nListenerIndex"));
+            prop.Properties.AddOrReplaceProp(nListenerIndex);
+            //Skip SText
+            var srText = new StringRefProperty(node.LineStrRef, new NameReference("srText"));
+            prop.Properties.AddOrReplaceProp(srText);
+            var nConditionalFunc = new IntProperty(node.ConditionalOrBool, new NameReference("nConditionalFunc"));
+            prop.Properties.AddOrReplaceProp(nConditionalFunc);
+            var nConditionalParam = new IntProperty(node.ConditionalParam, new NameReference("nConditionalParam"));
+            prop.Properties.AddOrReplaceProp(nConditionalParam);
+            var nStateTransition = new IntProperty(node.Transition, new NameReference("nStateTransition"));
+            prop.Properties.AddOrReplaceProp(nStateTransition);
+            var nStateTransitionParam = new IntProperty(node.ConditionalParam, new NameReference("nStateTransitionParam"));
+            prop.Properties.AddOrReplaceProp(nStateTransitionParam);
+            var nExportID = new IntProperty(node.ExportID, new NameReference("nExportID"));
+            prop.Properties.AddOrReplaceProp(nExportID);
+            //nScriptIndex ignore
+            var CameraIntimacy = new IntProperty(node.CameraIntimacy, new NameReference("nCameraIntimacy"));
+            prop.Properties.AddOrReplaceProp(CameraIntimacy);
+            var bFireConditional = new BoolProperty(node.FiresConditional, new NameReference("bFireConditional"));
+            prop.Properties.AddOrReplaceProp(bFireConditional);
+            var bAmbient = new BoolProperty(node.IsAmbient, new NameReference("bAmbient"));
+            prop.Properties.AddOrReplaceProp(bAmbient);
+            var bNonTextLine = new BoolProperty(node.IsAmbient, new NameReference("bNonTextLine"));
+            prop.Properties.AddOrReplaceProp(bNonTextLine);
+            var bIgnoreBodyGestures = new BoolProperty(node.IsAmbient, new NameReference("bIgnoreBodyGestures"));
+            prop.Properties.AddOrReplaceProp(bIgnoreBodyGestures);
+            //GUIStyle Ignore for now
+            if (Pcc.Game == MEGame.ME3)
+            {
+                var bAlwaysHideSubtitle = new BoolProperty(node.IsAmbient, new NameReference("bAlwaysHideSubtitle"));
+                prop.Properties.AddOrReplaceProp(bAlwaysHideSubtitle);
+            }
+
+
+            if (!SelectedDialogueNode.IsReply)
+            {
+                //Ignore replylist for now //ME3
+                //Ignore aSpeakerList for now <-- autorecreate
+                var nSpeakerIndex = new IntProperty(node.SpeakerIndex, new NameReference("nSpeakerIndex"));
+                prop.Properties.AddOrReplaceProp(nSpeakerIndex);
+                var bSkippable = new BoolProperty(node.IsSkippable, new NameReference("bSkippable"));
+                prop.Properties.AddOrReplaceProp(bSkippable);
+
+            }
+            else
+            {
+                //Ignore Entry List
+                var bUnskippable = new BoolProperty(node.IsSkippable, new NameReference("bUnskippable"));
+                prop.Properties.AddOrReplaceProp(bUnskippable);
+                //Ignore ReplyType for now
+
+                if (Pcc.Game == MEGame.ME3)
+                {
+                    var bIsDefaultAction = new BoolProperty(node.IsSkippable, new NameReference("bIsDefaultAction"));
+                    prop.Properties.AddOrReplaceProp(bIsDefaultAction);
+                    var bIsMajorDecision = new BoolProperty(node.IsSkippable, new NameReference("bIsMajorDecision"));
+                    prop.Properties.AddOrReplaceProp(bIsMajorDecision);
+                }
+            }
+
+            RecreateNodesToProperties(SelectedConv);
+
+ 
+            
         }
         #endregion Handling-updates
 
@@ -1510,6 +1624,62 @@ namespace ME3Explorer.Dialogue_Editor
         #endregion CreateGraph 
 
         #region UIHandling-boxes
+        /// <summary>
+        /// Sets UI to 0 = Convo (default), 1=Speakers, 2=Node.
+        /// </summary>
+        private int SetUIMode(int mode)
+        {
+            if (mode == CurrentUIMode)
+            {
+                return CurrentUIMode;
+            }
+            if(mode < CurrentUIMode)
+            {
+                switch(mode)
+                {
+                    case 0:
+                        if (Conversations_ListBox.IsMouseCaptureWithin)
+                            CurrentUIMode = 0;
+                        else
+                            return CurrentUIMode;
+                        break;
+                    case 1:
+                        if (Speakers_ListBox.IsMouseCaptureWithin)
+                            CurrentUIMode = 1;
+                        else
+                            return CurrentUIMode;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                CurrentUIMode = mode;
+            }
+
+            Speaker_Panel.Visibility = Visibility.Collapsed;
+            Convo_Panel.Visibility = Visibility.Collapsed;
+            Node_Panel.Visibility = Visibility.Collapsed;
+            switch (CurrentUIMode)
+            {
+                case 0:
+                    Convo_Panel.Visibility = Visibility.Visible;
+                    break;
+                case 1:
+                    Speaker_Panel.Visibility = Visibility.Visible;
+                    break;
+                case 2:
+                    SelectedSpeaker = SelectedSpeakerList[SelectedDialogueNode.SpeakerIndex + 2];
+                    if(SelectedObjects.Count > 0)
+                    {
+                        SelectedObjects[0].IsSelected = true;
+                    }
+                    Node_Panel.Visibility = Visibility.Visible;
+                    break;
+            }
+            return CurrentUIMode;
+        }
         private void ConversationList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
             if (Conversations_ListBox.SelectedIndex < 0)
@@ -1526,11 +1696,11 @@ namespace ME3Explorer.Dialogue_Editor
                 CurrentLoadedExport = CurrentConvoPackage.getUExport(SelectedConv.ExportUID);
                 if(Pcc.Game == MEGame.ME1)
                 {
-                    LevelHeader.Text = "Audio/Interpdata File:";
+                    LevelHeader.Text = "Audio/Matinee File:";
                     LevelHeader.ToolTip = "File that contains the audio and cutscene data for the conversation";
                     Level_Textbox.ToolTip = "File that contains the audio and cutscene data for the conversation";
-                    OpenLevelPackEd_Button.ToolTip = "Open Audio/Interpdata File in Package Editor";
-                    OpenLevelSeqEd_Button.ToolTip = "Open Audio/Interpdata File in Sequence Editor";
+                    OpenLevelPackEd_Button.ToolTip = "Open Audio/Matinee File in Package Editor";
+                    OpenLevelSeqEd_Button.ToolTip = "Open Audio/Matinee File in Sequence Editor";
                 }
                 else
                 {
@@ -1543,9 +1713,9 @@ namespace ME3Explorer.Dialogue_Editor
 
                 GenerateSpeakerList();
                 RefreshView();
-                Speaker_Panel.Visibility = Visibility.Collapsed;
-                Convo_Panel.Visibility = Visibility.Visible;
-                Node_Panel.Visibility = Visibility.Collapsed;
+                SetUIMode(0);
+               
+
                 ListenersList.ClearEx();
                 ListenersList.Add(new SpeakerExtended(-3, "none"));
                 foreach(var spkr in SelectedSpeakerList)
@@ -1553,21 +1723,20 @@ namespace ME3Explorer.Dialogue_Editor
                     ListenersList.Add(spkr);
                 }
             }
-
-            SelectedObjects.ClearEx();
-            SelectedObjects.AddRange(CurrentObjects.Take(5));
+            var PanObjects = new ObservableCollectionExtended<DObj>();
+            PanObjects.AddRange(CurrentObjects.Take(5));
             
-            if (SelectedObjects.Any())
+            if (PanObjects.Any())
             {
                 if (panToSelection)
                 {
-                    if (SelectedObjects.Count == 1)
+                    if (PanObjects.Count == 1)
                     {
-                        graphEditor.Camera.AnimateViewToCenterBounds(SelectedObjects[0].GlobalFullBounds, false, 100);
+                        graphEditor.Camera.AnimateViewToCenterBounds(PanObjects[0].GlobalFullBounds, false, 100);
                     }
                     else
                     {
-                        RectangleF boundingBox = SelectedObjects.Select(obj => obj.GlobalFullBounds).BoundingRect();
+                        RectangleF boundingBox = PanObjects.Select(obj => obj.GlobalFullBounds).BoundingRect();
                         graphEditor.Camera.AnimateViewToCenterBounds(boundingBox, true, 200);
                     }
                 }
@@ -1584,6 +1753,9 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void Convo_NSFFX_DropDownClosed(object sender, EventArgs e)
         {
+            if (FFXAnimsets.Count < 1 || Conversations[Conversations_ListBox.SelectedIndex].NonSpkrFFX == null)
+                return;
+
             if(Conversations[Conversations_ListBox.SelectedIndex].NonSpkrFFX.UIndex != FFXAnimsets[ComboBox_Conv_NSFFX.SelectedIndex].UIndex)
             {
                 SelectedConv.BioConvo.AddOrReplaceProp(new ObjectProperty(SelectedConv.NonSpkrFFX, new NameReference("m_pNonSpeakerFaceFXSet")));
@@ -1605,10 +1777,7 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         TextBox_Speaker_Name.IsEnabled = true;
                     }
-                    Speaker_Panel.Visibility = Visibility.Visible;
-                    Convo_Panel.Visibility = Visibility.Collapsed;
-                    Node_Panel.Visibility = Visibility.Collapsed;
-                    //HIDE OTHER PANELS BY SWITCHING OFF SELECTION
+                    SetUIMode(1);
                 }
                 else
                 {
@@ -1752,8 +1921,61 @@ namespace ME3Explorer.Dialogue_Editor
             editbox.BorderThickness = new Thickness(0, 0, 0, 0);
             editbox.Background = System.Windows.Media.Brushes.White;
         }
+        private void EditBox_Node_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Keyboard.ClearFocus();
+                var tb = sender as TextBox;
+                var be = tb.GetBindingExpression(TextBox.TextProperty);
+                be.UpdateSource();
+            }
+        }
+        private void DialogueNode_Selected(DiagNode obj)
+        {
+            foreach (var oldselection in SelectedObjects)
+            {
+                oldselection.IsSelected = false;
+            }
+            SelectedObjects.ClearEx();
+            obj.IsSelected = true;
+            SelectedObjects.Add(obj);
+
+            ParseNodeData(obj.Node);
+            SelectedDialogueNode = obj.Node;
+            SelectedDialogueNode.PropertyChanged += NodePropertyChanged;
+            MirrorDialogueNode = new DialogueNodeExtended(SelectedDialogueNode);
+            Node_Combo_Spkr.IsEnabled = true;
+            Node_CB_ESkippable.IsEnabled = false;
+            Node_CB_RMajor.IsEnabled = false;
+            Node_CB_RDefault.IsEnabled = false;
+            Node_CB_RUnskippable.IsEnabled = false;
+
+            if (SelectedDialogueNode.IsReply)
+            {
+                Node_Text_Type.Text = "Reply Node";
+                Node_Combo_Spkr.IsEnabled = false;
+                Node_CB_RUnskippable.IsEnabled = true;
+                if (Pcc.Game == MEGame.ME3)
+                {
+                    Node_CB_RMajor.IsEnabled = true;
+                    Node_CB_RDefault.IsEnabled = true;
+                }
+            }
+            else
+            {
+                Node_Text_Type.Text = "Entry Node";
+                Node_CB_ESkippable.IsEnabled = true;
+            }
 
 
+            if (SelectedDialogueNode.FiresConditional)
+                Node_Text_Cnd.Text = "Conditional: ";
+            else
+                Node_Text_Cnd.Text = "Bool: ";
+
+            SetUIMode(2);
+        }
         #endregion
 
         #region UIHandling-graph
@@ -1776,56 +1998,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 else
                 {
-                    foreach (var oldselection in SelectedObjects)
-                    {
-                        oldselection.IsSelected = false;
-                    }
-                    obj.IsSelected = true;
-                    SelectedObjects.Add(obj);
-                    SelectedDialogueNode = obj.Node; 
-                    ParseNodeData(SelectedDialogueNode);
-
-                    Node_TB_ESkippable.IsEnabled = false;
-                    Node_CB_ESkippable.IsEnabled = false;
-                    Node_CB_RMajor.IsEnabled = false;
-                    Node_CB_RDefault.IsEnabled = false;
-                    Node_TB_RUnskippable.IsEnabled = false;
-                    Node_TB_RMajor.IsEnabled = false;
-                    Node_TB_RDefault.IsEnabled = false;
-                    Node_CB_RUnskippable.IsEnabled = false;
-
-                    if (SelectedDialogueNode.IsReply)
-                    {
-                        Node_Text_Type.Text = "Reply Node";
-
-                        Node_TB_RUnskippable.IsEnabled = true;
-                        Node_TB_RMajor.IsEnabled = true;
-                        Node_TB_RDefault.IsEnabled = true;
-                        Node_CB_RUnskippable.IsEnabled = true;
-                        if(Pcc.Game == MEGame.ME3)
-                        {
-                            Node_CB_RMajor.IsEnabled = true;
-                            Node_CB_RDefault.IsEnabled = true;
-                        }
-                    }
-                    else
-                    {
-                        Node_Text_Type.Text = "Entry Node";
-                        Node_TB_ESkippable.IsEnabled = true;
-                        Node_CB_ESkippable.IsEnabled = true;
-                    }
-
-
-                    if (SelectedDialogueNode.FiresConditional)
-                        Node_Text_Cnd.Text = "Conditional: ";
-                    else
-                        Node_Text_Cnd.Text = "Bool: ";
-
-
-                    SelectedSpeaker = SelectedSpeakerList[SelectedDialogueNode.SpeakerIndex + 2];
-                    Speaker_Panel.Visibility = Visibility.Collapsed;
-                    Convo_Panel.Visibility = Visibility.Collapsed;
-                    Node_Panel.Visibility = Visibility.Visible;
+                    DialogueNode_Selected(obj);
                 }
             }
         }
