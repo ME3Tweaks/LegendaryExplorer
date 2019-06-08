@@ -383,7 +383,7 @@
                                 <CheckBox Name ="Node_CB_ESkippable" Content="Skippable" IsChecked="{Binding Path=SelectedDialogueNode.IsSkippable}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can skip this entry." Margin="2"/>
                                 <Separator/>
                                 <TextBlock Text="Reply:" FontSize="12"/>
-                                <ComboBox Name="Node_Combo_ReplyType" MinWidth="80" SelectedItem="{Binding Path=SelectedDialogueNode.ReplyType}" VerticalAlignment="Center" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True" ToolTip="Autocontinue, the reply moves straight to the reply list.&#x0a;Standard. Dialogue is played as normal.&#x0a;DialogEnd. The conversation is ended."/>
+                                <ComboBox Name="Node_Combo_ReplyType" MinWidth="80" SelectedItem="{Binding Path=SelectedDialogueNode.ReplyType}" VerticalAlignment="Center" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True" ToolTip="Autocontinue, the reply moves straight to the reply list.&#x0a;Standard. Dialogue is played as normal.&#x0a;DialogEnd. The conversation is ended." Margin="2"/>
                                 <CheckBox Name ="Node_CB_RUnskippable" Content="Unskippable" IsChecked="{Binding Path=SelectedDialogueNode.IsUnskippable}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can never skip this reply." Margin="2"/>
                                 <DockPanel >
                                     <CheckBox Name ="Node_CB_RDefault" Content="Default Reply" IsChecked="{Binding Path=SelectedDialogueNode.IsDefaultAction}" VerticalAlignment="Center" FontSize="15" ToolTip="ME3: On action mode this reply is always selected." Margin="2" DockPanel.Dock="Left"/>
@@ -419,21 +419,21 @@
                                     <TextBlock Text="Female:" FontSize="12"/>
                                     <DockPanel HorizontalAlignment="Stretch">
                                         <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
-                                        <Button Name="Open_WwStreamF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_StreamF" ToolTip="Open in Soundplorer">
+                                        <Button Name="Open_WwStreamF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_StreamF" ToolTip="Open this stream in Soundplorer">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
                                             </Button.Content>
                                         </Button>
-                                        <TextBlock Text="{Binding Path=SelectedDialogueNode.WwiseStream_Female.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
+                                        <TextBlock Text="{Binding Path=SelectedDialogueNode.WwiseStream_Female.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Female audio for this line." FontSize="15" Margin="2"/>
                                     </DockPanel>
                                     <DockPanel HorizontalAlignment="Stretch">
                                         <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
-                                        <Button Name="Open_ffxF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXNS" ToolTip="Open this line in FaceFX Editor">
+                                        <Button Name="Open_ffxF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXNS" ToolTip="Open this stream line in FaceFX Editor">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
                                             </Button.Content>
                                         </Button>
-                                        <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Female, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
+                                        <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Female, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Female audio for this line." FontSize="15" Margin="2"/>
                                     </DockPanel>
                                 </StackPanel>
                             </StackPanel>

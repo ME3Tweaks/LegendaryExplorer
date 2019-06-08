@@ -73,7 +73,7 @@ namespace ME3Explorer.Dialogue_Editor
             backLayer.AddChild(p);
         }
 
-        public void addEdge(SeqEdEdge p)
+        public void addEdge(DiagEdEdge p)
         {
             edgeLayer.AddChild(p);
             UpdateEdge(p);
@@ -84,7 +84,7 @@ namespace ME3Explorer.Dialogue_Editor
             nodeLayer.AddChild(p);
         }
 
-        public static void UpdateEdge(SeqEdEdge edge)
+        public static void UpdateEdge(DiagEdEdge edge)
         {
             // Note that the node's "FullBounds" must be used (instead of just the "Bound") 
             // because the nodes have non-identity transforms which must be included when
@@ -229,11 +229,11 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 if (!e.Handled)
                 {
-                    var edgesToUpdate = new HashSet<SeqEdEdge>();
+                    var edgesToUpdate = new HashSet<DiagEdEdge>();
                     base.OnDrag(sender, e);
                     if (e.PickedNode is DObj DObj)
                     {
-                        foreach (SeqEdEdge edge in DObj.Edges)
+                        foreach (DiagEdEdge edge in DObj.Edges)
                         {
                             edgesToUpdate.Add(edge);
                         }
@@ -248,7 +248,7 @@ namespace ME3Explorer.Dialogue_Editor
                                 SizeF s = e.GetDeltaRelativeTo(obj);
                                 s = obj.LocalToParent(s);
                                 obj.OffsetBy(s.Width, s.Height);
-                                foreach (SeqEdEdge edge in obj.Edges)
+                                foreach (DiagEdEdge edge in obj.Edges)
                                 {
                                     edgesToUpdate.Add(edge);
                                 }
@@ -256,7 +256,7 @@ namespace ME3Explorer.Dialogue_Editor
                         }
                     }
 
-                    foreach (SeqEdEdge edge in edgesToUpdate)
+                    foreach (DiagEdEdge edge in edgesToUpdate)
                     {
                         UpdateEdge(edge);
                     }

@@ -401,7 +401,6 @@ namespace ME3Explorer.Dialogue_Editor
             StatusText = "Select a package file to load";
         }
 
-
         #endregion Startup/Exit
 
         #region Parsing
@@ -413,7 +412,6 @@ namespace ME3Explorer.Dialogue_Editor
                 Conversations.Add(new ConversationExtended(exp.UIndex, exp.ObjectName, exp.GetProperties(), exp, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>()));
             }
         }
-
         private void FirstParse()
         {
             Conversations_ListBox.IsEnabled = false;
@@ -441,7 +439,6 @@ namespace ME3Explorer.Dialogue_Editor
                 conv.IsFirstParsed = true;
             }
 
-
             BackParser = new BackgroundWorker()
             {
                 WorkerReportsProgress = true,
@@ -453,11 +450,25 @@ namespace ME3Explorer.Dialogue_Editor
 
             Conversations_ListBox.IsEnabled = true;
         }
-
         private void BackParse(object sender, DoWorkEventArgs e)
         {
 
             //TOO MANY PROBLEMS ON BACK THREAD. OPTIMISE LATER.
+            if (SelectedConv != null && SelectedConv.IsParsed == false) //Get Active setup pronto.
+            {
+                foreach (var spkr in SelectedConv.Speakers)
+                {
+                    spkr.FaceFX_Male = GetFaceFX(SelectedConv, spkr.SpeakerID, true);
+                    spkr.FaceFX_Female = GetFaceFX(SelectedConv, spkr.SpeakerID, false);
+                }
+                GenerateSpeakerTags(SelectedConv);
+                ParseLinesInterpData(SelectedConv);
+                ParseLinesFaceFX(SelectedConv);
+                ParseLinesAudioStreams(SelectedConv);
+
+                SelectedConv.IsParsed = true;
+            }
+
             //Do minor stuff
             foreach (var conv in Conversations.Where(conv => conv.IsParsed == false))
             {
@@ -475,12 +486,9 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
         }
-
         private void BackParser_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             BackParser.CancelAsync();
-
-
         }
 
         public void ParseSpeakers(ConversationExtended conv)
@@ -1240,8 +1248,6 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 return;
             }
-            //var s = newvalue.GetType().ToString();
-            //MessageBox.Show($"TEST valuetype: {s}\r\n{e.PropertyName}\r\nsender: {newvalue}\r\nMirror: {oldvalue}");
             MirrorDialogueNode.GetType().GetProperty(e.PropertyName).SetValue(MirrorDialogueNode, newvalue);
             //IF PASS THEN RECREATE NODE
             var node = SelectedDialogueNode;
@@ -1254,6 +1260,9 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 IsLocalUpdate = false;  //StrRef/Speaker change requires full reparse due to FaceFX/Rechart.
             }
+
+            var needsRefresh = false; //Controls if refresh chart (auto happens on full parse)
+          
 
             switch(e.PropertyName)         // Props in both replies and entries. All Games.
             {
@@ -1268,6 +1277,7 @@ namespace ME3Explorer.Dialogue_Editor
                 case "ConditionalOrBool":
                     var nConditionalFunc = new IntProperty(node.ConditionalOrBool, new NameReference("nConditionalFunc"));
                     prop.Properties.AddOrReplaceProp(nConditionalFunc);
+                    needsRefresh = true;
                     break;
                 case "ConditionalParam":
                     var nConditionalParam = new IntProperty(node.ConditionalParam, new NameReference("nConditionalParam"));
@@ -1276,6 +1286,7 @@ namespace ME3Explorer.Dialogue_Editor
                 case "Transition":
                     var nStateTransition = new IntProperty(node.Transition, new NameReference("nStateTransition"));
                     prop.Properties.AddOrReplaceProp(nStateTransition);
+                    needsRefresh = true;
                     break;
                 case "TransitionParam":
                     var nStateTransitionParam = new IntProperty(node.TransitionParam, new NameReference("nStateTransitionParam"));
@@ -1292,6 +1303,7 @@ namespace ME3Explorer.Dialogue_Editor
                 case "FiresConditional":
                     var bFireConditional = new BoolProperty(node.FiresConditional, new NameReference("bFireConditional"));
                     prop.Properties.AddOrReplaceProp(bFireConditional);
+                    needsRefresh = true;
                     break;
                 case "IsAmbient":
                     var bAmbient = new BoolProperty(node.IsAmbient, new NameReference("bAmbient"));
@@ -1314,7 +1326,6 @@ namespace ME3Explorer.Dialogue_Editor
             }
             //Skip SText
             //nScriptIndex ignore
-            //GUIStyle Ignore for now
             if (Pcc.Game == MEGame.ME3 && e.PropertyName == "HideSubtitle")
             {
                 var bAlwaysHideSubtitle = new BoolProperty(node.HideSubtitle, new NameReference("bAlwaysHideSubtitle"));
@@ -1351,7 +1362,8 @@ namespace ME3Explorer.Dialogue_Editor
 
             RecreateNodesToProperties(SelectedConv);
 
-
+            if (needsRefresh)
+                RefreshView();
             
         }
         #endregion Handling-updates
@@ -1567,6 +1579,8 @@ namespace ME3Explorer.Dialogue_Editor
                     obj.CreateConnections(CurrentObjects);
                 }
 
+                Boolean lastwasreply = true;
+                float f = 3;
                 for (int i = 0; i < CurrentObjects.Count; i++)
                 {
                     DObj obj = CurrentObjects[i];
@@ -1598,26 +1612,26 @@ namespace ME3Explorer.Dialogue_Editor
                     //{
 
                     //SIMPLE LAYOUT THIS ONLY WORKS WHEN THERE ARE ENTRY NODES AND REPLY NODES MATCHED.
+
                     switch (obj)
                     {
                         case DStart _:
                             DStart dstart = obj as DStart;
                             obj.Layout(0, StartPoDiagNodes);
-                            //StartPoDStarts += obj.Height + 20;
                             break;
                         case DiagNodeEntry _:
                             obj.Layout(250, StartPoDiagNodes);
-                            StartPoDiagNodes += obj.Height / 3 + 25;
+                            if(lastwasreply) { f = 3; }
+                            StartPoDiagNodes += obj.Height / f + 25;
+                            f = 1;
+                            lastwasreply = false;
                             break;
                         case DiagNodeReply _:
-                            obj.Layout(500, StartPoDiagNodes);
+                            obj.Layout(700, StartPoDiagNodes);
                             StartPoDiagNodes += obj.Height + 25;
+                            lastwasreply = true;
                             break;
- 
-
                     }
-
-
 
 
                     //SIMPLE LAYOUT
@@ -1642,7 +1656,7 @@ namespace ME3Explorer.Dialogue_Editor
                     //    }
                 }
 
-                foreach (SeqEdEdge edge in graphEditor.edgeLayer)
+                foreach (DiagEdEdge edge in graphEditor.edgeLayer)
                 {
                     ConvGraphEditor.UpdateEdge(edge);
                 }
@@ -1697,7 +1711,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             if (firstNode != null) CurrentObjects.OffsetBy(0, -firstNode.OffsetY);
 
-            foreach (SeqEdEdge edge in graphEditor.edgeLayer)
+            foreach (DiagEdEdge edge in graphEditor.edgeLayer)
                 ConvGraphEditor.UpdateEdge(edge);
 
 
@@ -2231,8 +2245,6 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-
-
         private void saveView(bool toFile = true)
         {
             if (CurrentObjects.Count == 0)
@@ -2246,7 +2258,7 @@ namespace ME3Explorer.Dialogue_Editor
                     SavedPositions.Add(new SaveData
                     {
                         absoluteIndex = RefOrRefChild,
-                        index = RefOrRefChild ? i : obj.Index,
+                        index = RefOrRefChild ? i : obj.UIndex,
                         X = obj.X + obj.Offset.X,
                         Y = obj.Y + obj.Offset.Y
                     });

@@ -363,13 +363,13 @@ namespace ME3Explorer.Dialogue_Editor
     }
 
     #region GraphObjects
-    public abstract class SeqEdEdge : PPath
+    public abstract class DiagEdEdge : PPath
     {
         public PNode start;
         public PNode end;
         public DBox originator;
     }
-    public class VarEdge : SeqEdEdge
+    public class VarEdge : DiagEdEdge
     {
     }
 
@@ -378,7 +378,7 @@ namespace ME3Explorer.Dialogue_Editor
     }
 
     [DebuggerDisplay("ActionEdge | {originator} to {inputIndex}")]
-    public class ActionEdge : SeqEdEdge
+    public class ActionEdge : DiagEdEdge
     {
         public int inputIndex;
     }
@@ -406,9 +406,8 @@ namespace ME3Explorer.Dialogue_Editor
 
         public RectangleF posAtDragStart;
 
-        public int Index => export.Index;
 
-        public int UIndex => export.UIndex;
+        public int UIndex = 0;
         //public float Width { get { return shape.Width; } }
         //public float Height { get { return shape.Height; } }
         public IExportEntry Export => export;
@@ -420,6 +419,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         protected DObj(ConvGraphEditor ConvGraphEditor)
         {
+            
             //pcc = convoexport.FileRef;
             //export = convoexport;
             g = ConvGraphEditor;
@@ -429,7 +429,7 @@ namespace ME3Explorer.Dialogue_Editor
         public virtual void CreateConnections(IList<DObj> objects) { }
         public virtual void Layout() { }
         public virtual void Layout(float x, float y) => SetOffset(x, y);
-        public virtual IEnumerable<SeqEdEdge> Edges => Enumerable.Empty<SeqEdEdge>();
+        public virtual IEnumerable<DiagEdEdge> Edges => Enumerable.Empty<DiagEdEdge>();
 
         public virtual void Dispose()
         {
@@ -439,74 +439,10 @@ namespace ME3Explorer.Dialogue_Editor
         }
     }
 
-    [DebuggerDisplay("SFrame | #{UIndex}: {export.ObjectName}")]
-    public class SFrame : DObj
-    {
-        protected PPath shape;
-        protected PPath titleBox;
-        public SFrame(float x, float y, ConvGraphEditor ConvGraphEditor)
-            : base(ConvGraphEditor)
-        {
-            string s = $"{export.ObjectName}_{export.indexValue}";
-            float w = 0;
-            float h = 0;
-            var props = export.GetProperties();
-            foreach (var prop in props)
-            {
-                if (prop.Name == "SizeX")
-                {
-                    w = (prop as IntProperty);
-                }
-                if (prop.Name == "SizeY")
-                {
-                    h = (prop as IntProperty);
-                }
-            }
-            MakeTitleBox(s);
-            shape = PPath.CreateRectangle(0, -titleBox.Height, w, h + titleBox.Height);
-            outlinePen = new Pen(Color.Black);
-            shape.Pen = outlinePen;
-            shape.Brush = new SolidBrush(Color.Transparent);
-            shape.Pickable = false;
-            this.AddChild(shape);
-            titleBox.TranslateBy(0, -titleBox.Height);
-            this.AddChild(titleBox);
-            comment.Y -= titleBox.Height;
-            this.Bounds = new RectangleF(0, -titleBox.Height, titleBox.Width, titleBox.Height);
-            SetOffset(x, y);
-        }
-
-        public override void Dispose()
-        {
-            g = null;
-            pcc = null;
-            export = null;
-        }
-
-        protected void MakeTitleBox(string s)
-        {
-            s = $"#{UIndex} : {s}";
-            DText title = new DText(s, titleColor)
-            {
-                TextAlignment = StringAlignment.Center,
-                ConstrainWidthToTextWidth = false,
-                X = 0,
-                Y = 3,
-                Pickable = false
-            };
-            title.Width += 20;
-            titleBox = PPath.CreateRectangle(0, 0, title.Width, title.Height + 5);
-            titleBox.Pen = outlinePen;
-            titleBox.Brush = titleBoxBrush;
-            titleBox.AddChild(title);
-            titleBox.Pickable = false;
-        }
-    }
-
     [DebuggerDisplay("DBox | #{UIndex}: {export.ObjectName}")]
     public abstract class DBox : DObj
     {
-        public override IEnumerable<SeqEdEdge> Edges => Outlinks.SelectMany(l => l.Edges).Cast<SeqEdEdge>();
+        public override IEnumerable<DiagEdEdge> Edges => Outlinks.SelectMany(l => l.Edges).Cast<DiagEdEdge>();
         static readonly Color lineColor = Color.FromArgb(74, 63, 190);
         protected static Brush outputBrush = new SolidBrush(Color.Black);
 
@@ -536,7 +472,6 @@ namespace ME3Explorer.Dialogue_Editor
 
         private static readonly PointF[] downwardTrianglePoly = { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) };
         protected PPath CreateActionLinkBox() => PPath.CreateRectangle(0, -4, 10, 8);
-        protected PPath CreateVarLinkBox() => PPath.CreateRectangle(-4, 0, 8, 10);
 
         protected DBox(float x, float y, ConvGraphEditor ConvGraphEditor)
             : base(ConvGraphEditor)
@@ -552,7 +487,7 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     foreach (DiagNode destAction in objects.OfType<DiagNode>())
                     {
-                        if (destAction.UIndex == outLink.Links[j])
+                        if (destAction.NodeID == outLink.Links[j])
                         {
                             PPath p1 = outLink.node;
                             var edge = new ActionEdge();
@@ -642,45 +577,45 @@ namespace ME3Explorer.Dialogue_Editor
             return w;
         }
 
-        protected void GetOutputLinks()
+        protected void GetOutputLinks(BioConversationExtended.DialogueNodeExtended node)
         {
-            //var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-            //if (outLinksProp != null)
-            //{
-            //    foreach (var prop in outLinksProp)
-            //    {
-            //        PropertyCollection props = prop.Properties;
-            //        var linksProp = props.GetProp<ArrayProperty<StructProperty>>("Links");
-            //        if (linksProp != null)
-            //        {
-            //            OutputLink l = new OutputLink
-            //            {
-            //                Links = new List<int>(),
-            //                InputIndices = new List<int>(),
-            //                Edges = new List<ActionEdge>(),
-            //                Desc = props.GetProp<StrProperty>("LinkDesc")
-            //            };
-            //            for (int i = 0; i < linksProp.Count; i++)
-            //            {
-            //                int linkedOp = linksProp[i].GetProp<ObjectProperty>("LinkedOp").Value;
-            //                l.Links.Add(linkedOp);
-            //                l.InputIndices.Add(linksProp[i].GetProp<IntProperty>("InputLinkIdx"));
-            //                if (OutputNumbers)
-            //                    l.Desc = l.Desc + (i > 0 ? "," : ": ") + "#" + linkedOp;
-            //            }
-            //            l.node = CreateActionLinkBox();
-            //            l.node.Brush = outputBrush;
-            //            l.node.Pickable = false;
-            //            PPath dragger = CreateActionLinkBox();
-            //            dragger.Brush = mostlyTransparentBrush;
-            //            dragger.X = l.node.X;
-            //            dragger.Y = l.node.Y;
-            //            dragger.AddInputEventListener(outputDragHandler);
-            //            l.node.AddChild(dragger);
-            //            Outlinks.Add(l);
-            //        }
-            //    }
-            //}
+            if(node != null && node.IsReply)
+            {
+                var replytoEntryList = node.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
+                if (replytoEntryList != null)
+                {
+                    int n = 0;
+                    foreach (var prop in replytoEntryList)
+                    {
+                        OutputLink l = new OutputLink
+                        {
+                            Links = new List<int>(),
+                            InputIndices = new List<int>(),
+                            Edges = new List<ActionEdge>(),
+                            Desc = n.ToString()
+                        };
+
+                        int linkedOp = prop.Value;
+                        l.Links.Add(linkedOp);
+                        l.InputIndices.Add(1);
+                        //if (OutputNumbers)
+                        l.Desc = l.Desc + (linkedOp >= 0 ? "," : ": ") + "# E" + linkedOp;
+
+                        l.node = CreateActionLinkBox();
+                        l.node.Brush = outputBrush;
+                        l.node.Pickable = false;
+                        PPath dragger = CreateActionLinkBox();
+                        dragger.Brush = mostlyTransparentBrush;
+                        dragger.X = l.node.X;
+                        dragger.Y = l.node.Y;
+                        dragger.AddInputEventListener(outputDragHandler);
+                        l.node.AddChild(dragger);
+                        Outlinks.Add(l);
+                        n++;
+                    }
+                }
+            }
+            
         }
 
         protected class OutputDragHandler : PDragEventHandler
@@ -840,7 +775,7 @@ namespace ME3Explorer.Dialogue_Editor
     {
         public int StartNumber;
         public List<EventEdge> connections = new List<EventEdge>();
-        public override IEnumerable<SeqEdEdge> Edges => connections.Union(base.Edges);
+        public override IEnumerable<DiagEdEdge> Edges => connections.Union(base.Edges);
 
         public DStart(int StartNbr, float x, float y, ConvGraphEditor ConvGraphEditor)
             : base(x, y, ConvGraphEditor)
@@ -851,8 +786,9 @@ namespace ME3Explorer.Dialogue_Editor
             float starty = 0;
             float w = 15;
             float midW = 50;
-            varLinkBox = new PPath();
             GetTitleBox(s, 20);
+
+
             OutputLink l = new OutputLink
             {
                 Links = new List<int>(StartNbr),
@@ -860,6 +796,9 @@ namespace ME3Explorer.Dialogue_Editor
                 Edges = new List<ActionEdge>(),
                 Desc =$"Out {StartNbr}"
             };
+            int linkedOp = StartNbr;
+            l.Links.Add(linkedOp);
+            l.InputIndices.Add(0);
             l.node = CreateActionLinkBox();
             l.node.Brush = outputBrush;
             l.node.Pickable = false;
@@ -929,7 +868,7 @@ namespace ME3Explorer.Dialogue_Editor
     [DebuggerDisplay("DiagNode | #{UIndex}: {export.ObjectName}")]
     public class DiagNode : DBox
     {
-        public override IEnumerable<SeqEdEdge> Edges => InLinks.SelectMany(l => l.Edges).Union(base.Edges);
+        public override IEnumerable<DiagEdEdge> Edges => InLinks.SelectMany(l => l.Edges).Union(base.Edges);
         public List<ActionEdge> InputEdges = new List<ActionEdge>();
         public List<InputLink> InLinks;
         protected PNode inputLinkBox;
@@ -938,6 +877,7 @@ namespace ME3Explorer.Dialogue_Editor
         protected float originalY;
         public StructProperty NodeProp;
         public BioConversationExtended.DialogueNodeExtended Node;
+        public int NodeID;
         static readonly Color insideTextColor = Color.FromArgb(213, 213, 213);//white
         protected InputDragHandler inputDragHandler = new InputDragHandler();
 
@@ -946,8 +886,9 @@ namespace ME3Explorer.Dialogue_Editor
         {
             Node = node;
             NodeProp = node.NodeProp;
+            
 
-            GetOutputLinks();
+            GetOutputLinks(node);
             originalX = x;
             originalY = y;
         }
@@ -984,7 +925,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             outlinePen = new Pen(Color.Black);
             float starty = 8;
-            float w = 20;
+            float w = 160;
 
             //OutputLinks
             outLinkBox = new PPath();
@@ -1002,11 +943,11 @@ namespace ME3Explorer.Dialogue_Editor
                 outLinkBox.AddChild(t2);
             }
             outLinkBox.Pickable = false;
-
+            float outY = starty;
 
             //InputLinks
             inputLinkBox = new PNode();
-            GetInputLinks();
+            GetInputLinks(Node);
             float inW = 0;
             float inY = 8;
             for (int i = 0; i < InLinks.Count; i++)
@@ -1023,7 +964,7 @@ namespace ME3Explorer.Dialogue_Editor
                 inputLinkBox.AddChild(t2);
             }
             inputLinkBox.Pickable = false;
-            if (inY > starty) starty = inY;
+            if (inY > outY) starty = inY;
             if (inW + outW + 10 > w) w = inW + outW + 10;
 
             //TitleBox
@@ -1046,6 +987,7 @@ namespace ME3Explorer.Dialogue_Editor
             //Inside Text +  Box
             string plotCnd = "";
             string trans = "";
+            string type = "";
             if(Node.ConditionalOrBool >= 0)
             {
                 string cnd = "Cnd:";
@@ -1055,9 +997,14 @@ namespace ME3Explorer.Dialogue_Editor
             }
             if (Node.Transition >= 0)
             {
-                trans = $"Trans:{Node.Transition}";
+                trans = $"Trans:{Node.Transition}\r\n";
             }
-            string d = $"{Node.LineStrRef}\r\n{plotCnd}{trans}";
+            if (Node.IsReply)
+            {
+                string t = Node.ReplyType.ToString().Substring(6);
+                type = $"{t}";
+            }
+            string d = $"{Node.LineStrRef}\r\n{plotCnd}{trans}{type}";
 
             DText insidetext = new DText(d, insideTextColor, true)
             {
@@ -1065,7 +1012,7 @@ namespace ME3Explorer.Dialogue_Editor
                 ConstrainWidthToTextWidth = false,
                 ConstrainHeightToTextHeight = true,
                 X = w / 4,
-                Y = titleBox.Height + inY + 5,
+                Y = titleBox.Height + starty + 5,
                 Pickable = false
             };
             h += insidetext.Height;
@@ -1082,7 +1029,7 @@ namespace ME3Explorer.Dialogue_Editor
             SetOffset(x, y);
         }
 
-        private void GetInputLinks()
+        private void GetInputLinks(BioConversationExtended.DialogueNodeExtended node = null)
         {
             InLinks = new List<InputLink>();
 
@@ -1103,7 +1050,11 @@ namespace ME3Explorer.Dialogue_Editor
                 InLinks.Add(l);
             }
 
-            CreateInputLink("Start", 0, true);
+            if(node != null && !node.IsReply)
+            {
+                CreateInputLink("Start", 0, true);
+            }
+            CreateInputLink("In", 1, true);
 
             //if (inputLinksProp != null)
             //{
@@ -1188,7 +1139,6 @@ namespace ME3Explorer.Dialogue_Editor
         }
     }
 
-
     public class DiagNodeEntry : DiagNode
     {
         public DiagNodeEntry(BioConversationExtended.DialogueNodeExtended node, float x, float y, ConvGraphEditor ConvGraphEditor)
@@ -1196,8 +1146,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             Node = node;
             NodeProp = node.NodeProp;
-
-            GetOutputLinks();
+            NodeID = node.NodeCount;
             originalX = x;
             originalY = y;
         }
@@ -1210,8 +1159,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             Node = node;
             NodeProp = node.NodeProp;
-
-            GetOutputLinks();
+            NodeID = Node.NodeCount + 1000;
             originalX = x;
             originalY = y;
         }
