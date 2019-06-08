@@ -42,18 +42,18 @@ namespace ME3Explorer.FaceFX
 
         private string FileQueuedForLoad;
         private IExportEntry ExportQueuedForFocusing;
-        private int LineQueuedForFocusing;
+        private string LineQueuedForFocusing;
 
         public FaceFXEditor()
         {
             InitializeComponent();
         }
 
-        public FaceFXEditor(IExportEntry export, int line = -1) : this()
+        public FaceFXEditor(IExportEntry export, string lineName = null) : this()
         {
             FileQueuedForLoad = export.FileRef.FileName;
             ExportQueuedForFocusing = export;
-            LineQueuedForFocusing = line;
+            LineQueuedForFocusing = lineName;
         }
 
         private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -768,13 +768,20 @@ namespace ME3Explorer.FaceFX
                     {
                         FaceFXAnimSetComboBox.SelectedItem = ExportQueuedForFocusing;
                         loadFaceFXAnimset();
-                        if (LineQueuedForFocusing > 0 && LineQueuedForFocusing < linesListBox.Items.Count)
+                        if (LineQueuedForFocusing != null)
                         {
-                            linesListBox.SelectedIndex = LineQueuedForFocusing;
+                            for (int i = 0; i < FaceFX.Data.Data.Length; i++)
+                            {
+                                if (FaceFX.Data.Data[i].NameAsString == LineQueuedForFocusing)
+                                {
+                                    linesListBox.SelectedIndex = i;
+                                    break;
+                                }
+                            }
                         }
                     }
                     ExportQueuedForFocusing = null;
-                    LineQueuedForFocusing = -1;
+                    LineQueuedForFocusing = null;
 
                     Activate();
                 }));
