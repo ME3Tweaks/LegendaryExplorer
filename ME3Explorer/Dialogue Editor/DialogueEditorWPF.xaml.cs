@@ -538,7 +538,7 @@ namespace ME3Explorer.Dialogue_Editor
                     int cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
                     int stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
                     bool bcond = Node.GetProp<BoolProperty>("bFireConditional");
-                    conv.EntryList.Add(new DialogueNodeExtended(Node, false, cnt, speakerindex, linestrref, line, bcond, cond, stevent));
+                    conv.EntryList.Add(new DialogueNodeExtended(Node, false, cnt, speakerindex, linestrref, line, bcond, cond, stevent, EReplyTypes.REPLY_STANDARD));
                     cnt++;
                 }
             }
@@ -562,7 +562,8 @@ namespace ME3Explorer.Dialogue_Editor
                     int cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
                     int stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
                     bool bcond = Node.GetProp<BoolProperty>("bFireConditional");
-                    conv.ReplyList.Add(new DialogueNodeExtended(Node, true, cnt, speakerindex, linestrref, line, bcond, cond, stevent));
+                    Enum.TryParse(Node.GetProp<EnumProperty>("ReplyType").Value.Name, out EReplyTypes eReply);
+                    conv.ReplyList.Add(new DialogueNodeExtended(Node, true, cnt, speakerindex, linestrref, line, bcond, cond, stevent, eReply));
                     cnt++;
                 }
             }
@@ -817,7 +818,6 @@ namespace ME3Explorer.Dialogue_Editor
                 //ignore
             }
         }
-
         private void ParseNodeData(DialogueNodeExtended node)
         {
             try
@@ -830,14 +830,13 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     node.IsSkippable = false; //ME3/
                     node.IsUnskippable = nodeprop.GetProp<BoolProperty>("bUnskippable");
-                    Enum.TryParse(nodeprop.GetProp<EnumProperty>("ReplyType").Value.Name, out EReplyTypes eReply);
-                    node.ReplyType = eReply;
+
                 }
                 else
                 {
                     node.IsSkippable = nodeprop.GetProp<BoolProperty>("bSkippable"); //ME3/
                     node.IsUnskippable = false;
-                    node.ReplyType = EReplyTypes.REPLY_STANDARD;
+
                 }
                 node.ConditionalParam = nodeprop.GetProp<IntProperty>("nConditionalParam");
                 node.TransitionParam = nodeprop.GetProp<IntProperty>("nStateTransitionParam");
@@ -1348,10 +1347,15 @@ namespace ME3Explorer.Dialogue_Editor
                 //Ignore Entry List
                 var bUnskippable = new BoolProperty(node.IsUnskippable, new NameReference("bUnskippable"));
                 prop.Properties.AddOrReplaceProp(bUnskippable);
-                var ReplyType = new EnumProperty(node.ReplyType.ToString(), new NameReference("EReplyTypes"), Pcc, new NameReference("ReplyType"));
-                prop.Properties.AddOrReplaceProp(ReplyType);
+                if(e.PropertyName == "ReplyType")
+                {
+                    var ReplyType = new EnumProperty(node.ReplyType.ToString(), new NameReference("EReplyTypes"), Pcc, new NameReference("ReplyType"));
+                    prop.Properties.AddOrReplaceProp(ReplyType);
+                    needsRefresh = true;
+                }
 
-                if (Pcc.Game == MEGame.ME3)
+
+                if (Pcc.Game == MEGame.ME3 && (e.PropertyName == "bIsDefaultAction" || e.PropertyName == "bIsMajorDecision"))
                 {
                     var bIsDefaultAction = new BoolProperty(node.IsDefaultAction, new NameReference("bIsDefaultAction"));
                     prop.Properties.AddOrReplaceProp(bIsDefaultAction);
@@ -1553,7 +1557,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 if (n < ecnt)
                 {
-                    CurrentObjects.Add(new DiagNodeEntry(SelectedConv.EntryList[n], x, y, graphEditor));
+                    CurrentObjects.Add(new DiagNodeEntry(SelectedConv.EntryList[n], Pcc.Game, x, y, graphEditor));
                 }
 
                 if (n < rcnt)
