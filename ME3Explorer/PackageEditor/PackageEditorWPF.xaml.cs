@@ -15,6 +15,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using StreamHelpers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -31,8 +32,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using ME3Explorer.CurveEd;
+using ME3Explorer.Unreal.ME3Structs;
 using static ME3Explorer.Packages.MEPackage;
 using static ME3Explorer.Unreal.UnrealFlags;
+using Guid = System.Guid;
 
 namespace ME3Explorer
 {
@@ -3836,136 +3839,95 @@ namespace ME3Explorer
 
         private void ScanAllShaderCaches_Click(object sender, RoutedEventArgs e)
         {
-            var filePaths = ME3LoadedFiles.GetEnabledDLC().SelectMany(dlcDir => Directory.EnumerateFiles(Path.Combine(dlcDir, "CookedPCConsole"), "*.pcc"));
-            var interestingExports = new List<string>();
-            foreach (string filePath in filePaths)
+            var scanner = new ExportScanner(exp => exp.ClassName == "InterpTrackMove", track =>
             {
-                ScanShaderCache(filePath);
-                //ScanMaterials(filePath);
-            }
-
-            var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
-            listDlg.Show();
-
-            void ScanMaterials(string filePath)
-            {
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
+                try
                 {
-                    var materials = pcc.Exports.Where(exp => exp.ClassName == "Material");
-
-                    foreach (IExportEntry material in materials)
+                    if(track.GetProperty<StructProperty>("LookupTrack")?.GetProp<ArrayProperty<StructProperty>>("Points") is ArrayProperty<StructProperty> points)
                     {
-                        try
+                        foreach (StructProperty interpLookupPoint in points)
                         {
-                            MemoryStream binData = new MemoryStream(material.Data);
-                            binData.JumpTo(material.propsEnd());
-                            int compileErrrorsCount = binData.ReadInt32();
-                            for (int i = 0; i < compileErrrorsCount; i++)
+                            if (interpLookupPoint.GetProp<NameProperty>("GroupName")?.Value is NameReference groupName && groupName.Name != "None")
                             {
-                                int stringLen = binData.ReadInt32() * -2;
-                                binData.Skip(stringLen);
+                                return "Named lookup!";
                             }
-                            binData.Skip(28);
-                            int textureCount = binData.ReadInt32();
-                            binData.Skip(textureCount * 4);
-                            binData.Skip(20);
-                            int candidate1 = binData.ReadInt32();
-                            int candidate2 = binData.ReadInt32();
-                            if (candidate1 > 1)
-                            {
-                                interestingExports.Add($"{material.UIndex}: {filePath}");
-                            }
-                        }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception);
-                            interestingExports.Add($"{material.UIndex}: {filePath}\n{exception}");
                         }
                     }
                 }
-            }
-
-            void ScanShaderCache(string filePath)
-            {
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
+                catch (Exception exception)
                 {
-                    IExportEntry shaderCache = pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache");
-                    if (shaderCache == null) return;
-                    int oldDataOffset = shaderCache.DataOffset;
+                    return exception.Message;
+                }
+                return null;
+            });
+            scanner.Show();
 
-                    try
+            return;
+
+            string ScanInterpTrackMoves(IExportEntry track)
+            {
+                try
+                {
+                    var moveTrack = track.GetProperty<StructProperty>("PosTrack");
+                    var rotTrack = track.GetProperty<StructProperty>("EulerTrack");
+                    var lookupTrack = track.GetProperty<StructProperty>("LookupTrack");
+                    if (moveTrack is null && rotTrack is null && lookupTrack is null)
                     {
-                        MemoryStream binData = new MemoryStream(shaderCache.Data);
-                        binData.JumpTo(shaderCache.propsEnd() + 1);
+                        return null;
+                    }
 
-                        int nameList1Count = binData.ReadInt32();
-                        binData.Skip(nameList1Count * 12);
+                    if (moveTrack != null && rotTrack != null && lookupTrack != null)
+                    {
+                        var movePoints = moveTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+                        var rotPoints = rotTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+                        var lookupPoints = lookupTrack.GetProp<ArrayProperty<StructProperty>>("Points");
 
-                        int namelist2Count = binData.ReadInt32(); //namelist2
-                        binData.Skip(namelist2Count * 12);
-
-                        int shaderCount = binData.ReadInt32();
-                        for (int i = 0; i < shaderCount; i++)
+                        if (movePoints.Count != rotPoints.Count || movePoints.Count != lookupPoints.Count || rotPoints.Count != lookupPoints.Count)
                         {
-                            binData.Skip(24);
-                            int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
-                            binData.Skip(14);
-                            if (binData.ReadInt32() != 1111577667) //CTAB
-                            {
-                                interestingExports.Add($"{binData.Position - 4}: {filePath}");
-                                return;
-                            }
-
-                            binData.JumpTo(nextShaderOffset);
-                        }
-
-                        int vertexFactoryMapCount = binData.ReadInt32();
-                        binData.Skip(vertexFactoryMapCount * 12);
-
-                        int materialShaderMapCount = binData.ReadInt32();
-                        for (int i = 0; i < materialShaderMapCount; i++)
-                        {
-                            binData.Skip(16);
-
-                            int switchParamCount = binData.ReadInt32();
-                            binData.Skip(switchParamCount * 32);
-
-                            int componentMaskParamCount = binData.ReadInt32();
-                            //if (componentMaskParamCount != 0)
-                            //{
-                            //    interestingExports.Add($"{i}: {filePath}");
-                            //    return;
-                            //}
-
-                            binData.Skip(componentMaskParamCount * 44);
-
-                            int normalParams = binData.ReadInt32();
-                            if (normalParams != 0)
-                            {
-                                interestingExports.Add($"{i}: {filePath}");
-                                return;
-                            }
-
-                            binData.Skip(normalParams * 29);
-
-                            int unrealVersion = binData.ReadInt32();
-                            int licenseeVersion = binData.ReadInt32();
-                            if (unrealVersion != 684 || licenseeVersion != 194)
-                            {
-                                interestingExports.Add($"{binData.Position - 8}: {filePath}");
-                                return;
-                            }
-
-                            int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
-                            binData.JumpTo(nextMaterialShaderMapOffset);
+                            return "different numbers of points";
                         }
                     }
-                    catch (Exception exception)
+                    else
                     {
-                        Console.WriteLine(exception);
-                        interestingExports.Add($"{filePath}\n{exception}");
+                        return "Doesn't have all";
                     }
                 }
+                catch (Exception exception)
+                {
+                    return exception.Message;
+                }
+                return null;
+            }
+
+            string ScanMaterials(IExportEntry material)
+            {
+                try
+                {
+                    MemoryStream binData = new MemoryStream(material.Data);
+                    binData.JumpTo(material.propsEnd());
+                    int compileErrrorsCount = binData.ReadInt32();
+                    for (int i = 0; i < compileErrrorsCount; i++)
+                    {
+                        int stringLen = binData.ReadInt32() * -2;
+                        binData.Skip(stringLen);
+                    }
+                    binData.Skip(28);
+                    int textureCount = binData.ReadInt32();
+                    binData.Skip(textureCount * 4);
+                    binData.Skip(20);
+                    int candidate1 = binData.ReadInt32();
+                    int candidate2 = binData.ReadInt32();
+                    if (candidate1 > 1)
+                    {
+                        return "";
+                    }
+                }
+                catch (Exception exception)
+                {
+                    return exception.Message;
+                }
+
+                return null;
             }
         }
 

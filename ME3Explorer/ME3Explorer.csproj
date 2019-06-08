@@ -281,10 +281,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Interpreter\AltPropertyEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="CoalesceTool\Coalesced Editor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -343,9 +339,6 @@
     <Compile Include="InterpEditor\Key.cs" />
     <Compile Include="InterpEditor\Timeline.xaml.cs">
       <DependentUpon>Timeline.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
-      <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="CoalesceTool\CoalesceAsset.cs" />
     <Compile Include="CoalesceTool\CoalesceAssetType.cs" />
@@ -541,6 +534,9 @@
     </Compile>
     <Compile Include="SharedUI\AttachedProperties.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeBooleanConverter.cs" />
+    <Compile Include="SharedUI\ExportScanner.xaml.cs">
+      <DependentUpon>ExportScanner.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\PeregrineTreeView\NodeTreeSelectionBehavior.cs" />
     <Compile Include="SharedUI\ListBoxTask.cs" />
     <Compile Include="SharedUI\TouchComfySettings.cs" />
@@ -996,6 +992,10 @@
     <Page Include="SharedUI\ExceptionHandlerDialogWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\ExportScanner.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SharedUI\ListDialog.xaml">
       <SubType>Designer</SubType>

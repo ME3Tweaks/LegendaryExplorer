@@ -31,11 +31,16 @@
                     <Border BorderBrush="Black" BorderThickness="0 1 0 0" HorizontalAlignment="Stretch">
                         <Grid HorizontalAlignment="Stretch" Height="24" Background="#FF818181">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="196"/>
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
                             <Canvas Grid.Column="0">
                                 <TextBlock Text="{Binding GroupName}" Canvas.Left="25" Canvas.Top="3"/>
+                                <Rectangle Width="10" Height="24" Canvas.Right="0">
+                                    <Rectangle.Fill>
+                                        <SolidColorBrush Color="{Binding GroupColor}" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
                             </Canvas>
                         </Grid>
                     </Border>
@@ -49,6 +54,9 @@
                             </Grid.ColumnDefinitions>
                             <Canvas Grid.Column="0" Background="DarkGray">
                                 <TextBlock Text="{Binding TrackTitle}" Canvas.Left="30" Canvas.Top="3"/>
+                            </Canvas>
+                            <Canvas Grid.Column="1">
+
                             </Canvas>
                         </Grid>
                     </Border>

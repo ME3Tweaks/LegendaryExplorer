@@ -261,6 +261,7 @@ namespace ME3Explorer.Matinee
         private void LoadInterpData(IExportEntry value)
         {
             timelineControl.InterpDataExport = value;
+            Properties_InterpreterWPF.LoadExport(value);
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)

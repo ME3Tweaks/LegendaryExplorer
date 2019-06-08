@@ -205,8 +205,7 @@
                     <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
                     <MenuItem Header="List NetIndexes" Click="ListNetIndexes_Click"/>
                     <MenuItem Header="List Linker Indexes" Click="ListLinkerValues_Click"/>
-                    <!--<MenuItem Header="Scan All ShaderCaches" Click="ScanAllShaderCaches_Click"/>-->
-
+                    <MenuItem Header="Scan game for something" Click="ScanAllShaderCaches_Click"/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
