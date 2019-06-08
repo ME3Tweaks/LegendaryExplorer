@@ -167,7 +167,10 @@
                             </Button>
                         <TextBlock Text="" FontSize="10" />
                     </DockPanel>
-                    <TextBlock Name="Sequence_TextBox" Text="{Binding Path=SelectedConv.Sequence.ObjectName}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15"/>
+                    <DockPanel>
+                        <TextBlock Name="SequenceUID_TextBox" Text="{Binding Path=SelectedConv.Sequence.UIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15" DockPanel.Dock="Left" Margin="3"/>
+                        <TextBlock Name="Sequence_TextBox" Text="{Binding Path=SelectedConv.Sequence.ObjectName}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15" Margin="3"/>
+                    </DockPanel>
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Wwisebank:"  HorizontalAlignment="Left" VerticalAlignment="Bottom"  ToolTip="Main conversation Wwisebank" DockPanel.Dock="Left" FontWeight="Bold" FontSize="15"/>
@@ -179,7 +182,8 @@
                         <TextBlock Text="" FontSize="10"/>
                     </DockPanel>
                     <StackPanel Name="Wwisebank_Stack" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation audiobank">
-                        <TextBlock Text="{Binding Path=SelectedConv.WwiseBank.ObjectName}" HorizontalAlignment="Left" ToolTip="Main conversation audiobank" FontSize="15"/>
+                        <TextBlock Text="{Binding Path=SelectedConv.WwiseBank.UIndex}" HorizontalAlignment="Left" ToolTip="Main conversation audiobank" FontSize="15" Margin="3"/>
+                        <TextBlock Text="{Binding Path=SelectedConv.WwiseBank.ObjectName, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Left" ToolTip="Main conversation audiobank" FontSize="15" Margin="3"/>
                     </StackPanel>
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
@@ -270,7 +274,7 @@
                             <TextBlock Name="Node_Text_Type" Text="Dialogue Node"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left" Padding="5"/>
                             <TextBlock Text="{Binding Path=SelectedDialogueNode.NodeCount, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Left" DockPanel.Dock="Right" FontWeight="Bold" FontSize="18"/>
                         </DockPanel>
-                        <TextBlock Name="Node_Text_LineString" Text="{Binding Path=SelectedDialogueNode.Line}" TextWrapping="Wrap" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15" DockPanel.Dock="Left" Padding="5"/>
+                        <TextBlock Name="Node_Text_LineString" Text="{Binding Path=SelectedDialogueNode.Line, Mode=OneWay}" TextWrapping="Wrap" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15" DockPanel.Dock="Left" Padding="5"/>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Line String Ref:  " FontSize="15"/>
                             <TextBox Name="Node_Text_StrRef" Text="{Binding Path=SelectedDialogueNode.LineStrRef, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
@@ -361,9 +365,9 @@
                                     <TextBox Text="{Binding Path=SelectedDialogueNode.ExportID}" HorizontalAlignment="Stretch" FontSize="15" VerticalAlignment="Center" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
                                 </StackPanel>
                                 <Separator/>
-                                <CheckBox Name ="Node_CB_NonTextline" Content="Non vocal line" IsChecked="{Binding Path=SelectedDialogueNode.IsNonTextLine, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="15" VerticalAlignment="Center" ToolTip="Non-textline where only Matinee plays no vocals."/>
+                                <CheckBox Name="Node_CB_NonTextline" Content="Non vocal line" IsChecked="{Binding Path=SelectedDialogueNode.IsNonTextLine, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="15" VerticalAlignment="Center" ToolTip="Non-textline where only Matinee plays no vocals."/>
                                 <CheckBox Name="Node_CB_bAmbient" Content="Ambient line" IsChecked="{Binding Path=SelectedDialogueNode.IsAmbient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" ToolTip="Ambient line. Camera remains under player control."  FontSize="15"/>
-                                <CheckBox Name="Node_CB_BdyGesture" Content="Ignore Body Gestures" IsChecked="{Binding Path=SelectedDialogueNode.IgnoreBodyGesture}" ToolTip="Ignore non-facial matinee gestures." FontSize="15" VerticalAlignment="Center"/>
+                                <CheckBox Name="Node_CB_BdyGesture" Content="Ignore Body Gestures" IsChecked="{Binding Path=SelectedDialogueNode.IgnoreBodyGesture, Mode=TwoWay}" ToolTip="Ignore non-facial matinee gestures." FontSize="15" VerticalAlignment="Center"/>
                                 <StackPanel Orientation="Horizontal" ToolTip="1-5. Controls how far the camera is away from the speakers face during autoconversations.">
                                     <TextBlock  Text="Camera Intimacy:  " FontSize="15"/>
                                     <xctk:IntegerUpDown Name="Node_Text_CamInt" Value="{Binding Path=SelectedDialogueNode.CameraIntimacy}" HorizontalAlignment="Stretch" FontSize="12" Margin="2"/>
@@ -619,7 +623,32 @@
                     </TabItem>
                     <TabItem Header="InterpData"></TabItem>
                     <TabItem Header="FaceFX"></TabItem>
-                    <TabItem Header="Audio"></TabItem>
+                    <TabItem Header="Audio">
+                        <TabControl>
+                            <TabControl.Resources>
+                                <Style TargetType="{x:Type TabItem}">
+                                    <Setter Property="HeaderTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <ContentPresenter Content="{TemplateBinding Content}">
+                                                    <ContentPresenter.LayoutTransform>
+                                                        <RotateTransform Angle="0" />
+                                                    </ContentPresenter.LayoutTransform>
+                                                </ContentPresenter>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Padding" Value="3" />
+                                </Style>
+                            </TabControl.Resources>
+                            <TabItem Header="Male">
+                                <global:Soundpanel x:Name="SoundpanelWPF_M" />
+                            </TabItem>
+                            <TabItem Header="Female">
+                                <global:Soundpanel x:Name="SoundpanelWPF_F" />
+                            </TabItem>
+                        </TabControl>
+                    </TabItem>
                 </TabControl>
             </Grid>
             <WindowsFormsHost Grid.Column="0" Grid.Row="0" Name="GraphHost" VerticalAlignment="Stretch">

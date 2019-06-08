@@ -212,13 +212,13 @@ namespace ME3Explorer.Dialogue_Editor
             private bool _IsMajorDecision = false;
             public bool IsMajorDecision { get => _IsMajorDecision; set => SetProperty(ref _IsMajorDecision, value); }
             private bool _IsNonTextLine = false;
-            public bool IsNonTextLine { get => _IsNonTextLine; set { SetProperty(ref _IsNonTextLine, value); OnPropertyChanged("IsNonTextLine"); } }
+            public bool IsNonTextLine { get => _IsNonTextLine; set => SetProperty(ref _IsNonTextLine, value); }
             private bool _IgnoreBodyGesture = false;
             public bool IgnoreBodyGesture { get => _IgnoreBodyGesture; set => SetProperty(ref _IgnoreBodyGesture, value); }
             private bool _IsAmbient = false;
             public bool IsAmbient { get => _IsAmbient; set => SetProperty(ref _IsAmbient, value); }
             private int _CameraIntimacy;
-            public int CameraIntimacy { get => _CameraIntimacy; set { SetProperty(ref _CameraIntimacy, value); OnPropertyChanged("CameraIntimacy"); } }
+            public int CameraIntimacy { get => _CameraIntimacy; set => SetProperty(ref _CameraIntimacy, value); }
             private bool _HideSubtitle = false;
             public bool HideSubtitle { get => _HideSubtitle; set => SetProperty(ref _HideSubtitle, value); }
             private int _GUIStyle;

@@ -76,7 +76,7 @@ namespace ME3Explorer.Dialogue_Editor
             } 
         }
         private DialogueNodeExtended MirrorDialogueNode;
-
+        private Boolean IsLocalUpdate = false; //Used to prevent uneccessary UI updates.
         //SPEAKERS
         private SpeakerExtended _SelectedSpeaker;
         public SpeakerExtended SelectedSpeaker
@@ -160,7 +160,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private bool SpkrCanMoveDown(object param)
         {
-            return SelectedSpeaker != null && SelectedSpeaker.SpeakerID >= 0;
+            return SelectedSpeaker != null && SelectedSpeaker.SpeakerID >= 0 && (SelectedSpeaker.SpeakerID + 3) < SelectedSpeakerList.Count;
         }
         private bool HasActiveSpkr()
         {
@@ -389,6 +389,8 @@ namespace ME3Explorer.Dialogue_Editor
             Conversations.ClearEx();
             SelectedSpeakerList.ClearEx();
             Properties_InterpreterWPF.UnloadExport();
+            SoundpanelWPF_F.UnloadExport();
+            SoundpanelWPF_M.UnloadExport();
             CurrentObjects.Clear();
             graphEditor.nodeLayer.RemoveAllChildren();
             graphEditor.edgeLayer.RemoveAllChildren();
@@ -466,11 +468,9 @@ namespace ME3Explorer.Dialogue_Editor
                 ParseLinesInterpData(conv);
                 ParseLinesFaceFX(conv);
                 ParseLinesAudioStreams(conv);
-                //TO DO:
-                //PARSE NODE INTERPDATA, FACEFX, AUDIO WWISESTREAM.
+
                 conv.IsParsed = true;
             }
-
 
         }
 
@@ -1149,8 +1149,9 @@ namespace ME3Explorer.Dialogue_Editor
         #region Handling-updates
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            if (Pcc == null)
+            if (Pcc == null || IsLocalUpdate)
             {
+                IsLocalUpdate = false;
                 return; //nothing is loaded
             }
 
@@ -1167,6 +1168,8 @@ namespace ME3Explorer.Dialogue_Editor
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
                 Properties_InterpreterWPF.UnloadExport();
+                SoundpanelWPF_F.UnloadExport();
+                SoundpanelWPF_M.UnloadExport();
                 LoadConversations();
                 return;
             }
@@ -1228,12 +1231,20 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 return;
             }
-            var s = newvalue.GetType().ToString();
+            //var s = newvalue.GetType().ToString();
             //MessageBox.Show($"TEST valuetype: {s}\r\n{e.PropertyName}\r\nsender: {newvalue}\r\nMirror: {oldvalue}");
             MirrorDialogueNode.GetType().GetProperty(e.PropertyName).SetValue(MirrorDialogueNode, newvalue);
             //IF PASS THEN RECREATE NODE
             var node = SelectedDialogueNode;
             var prop = node.NodeProp;
+            IsLocalUpdate = true;
+
+
+
+            if (e.PropertyName == "LineStrRef")
+            {
+                IsLocalUpdate = false;  //StrRef change requires reparse.
+            }
 
             // Props in both replies and emtries. All Games.
 
@@ -1248,7 +1259,7 @@ namespace ME3Explorer.Dialogue_Editor
             prop.Properties.AddOrReplaceProp(nConditionalParam);
             var nStateTransition = new IntProperty(node.Transition, new NameReference("nStateTransition"));
             prop.Properties.AddOrReplaceProp(nStateTransition);
-            var nStateTransitionParam = new IntProperty(node.ConditionalParam, new NameReference("nStateTransitionParam"));
+            var nStateTransitionParam = new IntProperty(node.TransitionParam, new NameReference("nStateTransitionParam"));
             prop.Properties.AddOrReplaceProp(nStateTransitionParam);
             var nExportID = new IntProperty(node.ExportID, new NameReference("nExportID"));
             prop.Properties.AddOrReplaceProp(nExportID);
@@ -1259,14 +1270,14 @@ namespace ME3Explorer.Dialogue_Editor
             prop.Properties.AddOrReplaceProp(bFireConditional);
             var bAmbient = new BoolProperty(node.IsAmbient, new NameReference("bAmbient"));
             prop.Properties.AddOrReplaceProp(bAmbient);
-            var bNonTextLine = new BoolProperty(node.IsAmbient, new NameReference("bNonTextLine"));
+            var bNonTextLine = new BoolProperty(node.IsNonTextLine, new NameReference("bNonTextLine"));
             prop.Properties.AddOrReplaceProp(bNonTextLine);
-            var bIgnoreBodyGestures = new BoolProperty(node.IsAmbient, new NameReference("bIgnoreBodyGestures"));
+            var bIgnoreBodyGestures = new BoolProperty(node.IgnoreBodyGesture, new NameReference("bIgnoreBodyGestures"));
             prop.Properties.AddOrReplaceProp(bIgnoreBodyGestures);
             //GUIStyle Ignore for now
             if (Pcc.Game == MEGame.ME3)
             {
-                var bAlwaysHideSubtitle = new BoolProperty(node.IsAmbient, new NameReference("bAlwaysHideSubtitle"));
+                var bAlwaysHideSubtitle = new BoolProperty(node.HideSubtitle, new NameReference("bAlwaysHideSubtitle"));
                 prop.Properties.AddOrReplaceProp(bAlwaysHideSubtitle);
             }
 
@@ -1284,22 +1295,20 @@ namespace ME3Explorer.Dialogue_Editor
             else
             {
                 //Ignore Entry List
-                var bUnskippable = new BoolProperty(node.IsSkippable, new NameReference("bUnskippable"));
+                var bUnskippable = new BoolProperty(node.IsUnskippable, new NameReference("bUnskippable"));
                 prop.Properties.AddOrReplaceProp(bUnskippable);
                 //Ignore ReplyType for now
 
                 if (Pcc.Game == MEGame.ME3)
                 {
-                    var bIsDefaultAction = new BoolProperty(node.IsSkippable, new NameReference("bIsDefaultAction"));
+                    var bIsDefaultAction = new BoolProperty(node.IsDefaultAction, new NameReference("bIsDefaultAction"));
                     prop.Properties.AddOrReplaceProp(bIsDefaultAction);
-                    var bIsMajorDecision = new BoolProperty(node.IsSkippable, new NameReference("bIsMajorDecision"));
+                    var bIsMajorDecision = new BoolProperty(node.IsMajorDecision, new NameReference("bIsMajorDecision"));
                     prop.Properties.AddOrReplaceProp(bIsMajorDecision);
                 }
             }
 
             RecreateNodesToProperties(SelectedConv);
-
- 
             
         }
         #endregion Handling-updates
@@ -1672,13 +1681,18 @@ namespace ME3Explorer.Dialogue_Editor
         public void RefreshView()
         {
             Properties_InterpreterWPF.LoadExport(CurrentLoadedExport);
-            
+            if(SelectedDialogueNode != null)
+            {
+                SoundpanelWPF_F.LoadExport(SelectedDialogueNode.WwiseStream_Female);
+                SoundpanelWPF_M.LoadExport(SelectedDialogueNode.WwiseStream_Male);
+            }
+
 
             GenerateGraph();
             //saveView(false);
             //LoadSequence(SelectedSequence, false);
         }
-        #endregion CreateGraph 
+        #endregion CreateGraph  
 
         #region UIHandling-boxes
         /// <summary>
@@ -1744,6 +1758,8 @@ namespace ME3Explorer.Dialogue_Editor
                 SelectedConv = null;
                 SelectedSpeakerList.ClearEx();
                 Properties_InterpreterWPF.UnloadExport();
+                SoundpanelWPF_F.UnloadExport();
+                SoundpanelWPF_M.UnloadExport();
                 Convo_Panel.Visibility = Visibility.Collapsed;
             }
             else
@@ -1804,9 +1820,9 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void Convo_ListBox_MouseEnter(object sender, MouseEventArgs e)
         {
-            Speaker_Panel.Visibility = Visibility.Collapsed;
-            Convo_Panel.Visibility = Visibility.Visible;
-            Node_Panel.Visibility = Visibility.Collapsed;
+            //Speaker_Panel.Visibility = Visibility.Collapsed;
+            //Convo_Panel.Visibility = Visibility.Visible;
+            //Node_Panel.Visibility = Visibility.Collapsed;
         }
         private void Convo_NSFFX_DropDownClosed(object sender, EventArgs e)
         {
@@ -1996,7 +2012,6 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
-
         private void NumberValidationEditBox(object sender, TextCompositionEventArgs e)
         {
             var regex = new Regex("[^0-9]+");
@@ -2047,57 +2062,8 @@ namespace ME3Explorer.Dialogue_Editor
                 Node_CB_ESkippable.IsEnabled = true;
             }
 
-            //DEBUG FIX set Binding on checkboxes dynamically seems like the only way
-            //Node_CB_NonTextline.SetBinding(CheckBox.IsCheckedProperty, "SelectedDialogNode.IsNonTextLine");
-            //Node_CB_bAmbient.SetBinding(CheckBox.IsCheckedProperty, "SelectedDialogNode.IsAmbient");
-            //Binding bindTextline = new Binding();
-            //bindTextline.Source = SelectedDialogueNode;
-            //bindTextline.Mode = BindingMode.TwoWay;
-            //bindTextline.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            //bindTextline.Path = new PropertyPath("IsNonTextLine");
-            //BindingOperations.SetBinding(Node_CB_NonTextline, CheckBox.IsCheckedProperty, bindTextline);
-            //Binding bindAmbient = new Binding();
-            //bindAmbient.Source = SelectedDialogueNode;
-            //bindAmbient.Mode = BindingMode.TwoWay;
-            //bindAmbient.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            //bindAmbient.Path = new PropertyPath("IsAmbient");
-            //BindingOperations.SetBinding(Node_CB_bAmbient, CheckBox.IsCheckedProperty, bindAmbient);
-            //Binding bindBody = new Binding();
-            //bindBody.Source = SelectedDialogueNode;
-            //bindBody.Mode = BindingMode.TwoWay;
-            //bindBody.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            //bindBody.Path = new PropertyPath("IgnoreBodyGesture");
-            //BindingOperations.SetBinding(Node_CB_BdyGesture, CheckBox.IsCheckedProperty, bindBody);
-            //Binding bindSubs = new Binding();
-            //bindSubs.Source = SelectedDialogueNode;
-            //bindSubs.Mode = BindingMode.TwoWay;
-            //bindSubs.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            //bindSubs.Path = new PropertyPath("HideSubtitle");
-            //BindingOperations.SetBinding(Node_CB_HideSubs, CheckBox.IsCheckedProperty, bindSubs);
-            //Binding bindSkip = new Binding();
-            //bindSkip.Source = SelectedDialogueNode;
-            //bindSkip.Mode = BindingMode.TwoWay;
-            //bindSkip.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            //bindSkip.Path = new PropertyPath("Skippable");
-            //BindingOperations.SetBinding(Node_CB_ESkippable, CheckBox.IsCheckedProperty, bindSkip);
-            //Binding bindUnskp = new Binding();
-            //bindUnskp.Source = SelectedDialogueNode;
-            //bindUnskp.Mode = BindingMode.TwoWay;
-            //bindUnskp.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            //bindUnskp.Path = new PropertyPath("IsUnskippable");
-            //BindingOperations.SetBinding(Node_CB_RUnskippable, CheckBox.IsCheckedProperty, bindUnskp);
-            //Binding bindDef = new Binding();
-            //bindDef.Source = SelectedDialogueNode;
-            //bindDef.Mode = BindingMode.TwoWay;
-            //bindDef.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            //bindDef.Path = new PropertyPath("IsDefaultAction");
-            //BindingOperations.SetBinding(Node_CB_RDefault, CheckBox.IsCheckedProperty, bindDef);
-            //Binding bindMaj = new Binding();
-            //bindMaj.Source = SelectedDialogueNode;
-            //bindMaj.Mode = BindingMode.TwoWay;
-            //bindMaj.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            //bindMaj.Path = new PropertyPath("IsMajorDecision");
-            //BindingOperations.SetBinding(Node_CB_RMajor, CheckBox.IsCheckedProperty, bindMaj);
+            SoundpanelWPF_F.LoadExport(SelectedDialogueNode.WwiseStream_Female);
+            SoundpanelWPF_M.LoadExport(SelectedDialogueNode.WwiseStream_Male);
 
             if (SelectedDialogueNode.FiresConditional)
                 Node_Text_Cnd.Text = "Conditional: ";
