@@ -174,7 +174,7 @@
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Wwisebank:"  HorizontalAlignment="Left" VerticalAlignment="Bottom"  ToolTip="Main conversation Wwisebank" DockPanel.Dock="Left" FontWeight="Bold" FontSize="15"/>
-                        <Button Name="OpenWWbnk_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundplorerWPF" ToolTip="Open in Soundplorer">
+                        <Button Name="OpenWWbnk_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_Bank" ToolTip="Open in Soundplorer">
                             <Button.Content>
                                 <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
                             </Button.Content>
@@ -342,7 +342,7 @@
                         <TabItem Header="Matinee" ToolTip="Line settings for cutscene, animation and camera control." FocusManager.FocusedElement="{Binding}">
                             <StackPanel>
                                 <DockPanel HorizontalAlignment="Stretch">
-                                    <TextBlock Text="Line Interpdata: "  HorizontalAlignment="Left" VerticalAlignment="Center" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="2"/>
+                                    <TextBlock Text="Line InterpData: "  HorizontalAlignment="Left" VerticalAlignment="Center" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="2"/>
                                     <Button Name="OpenLinePE_Button" Command="{Binding OpenInCommand_Line}" CommandParameter="PackEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's interpdata in Package editor" >
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="Cube" Width="16" Height="16" Foreground="DarkBlue"/>
@@ -358,7 +358,7 @@
                                             <fa:ImageAwesome Icon="AreaChart" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
                                     </Button>
-                                    <TextBlock Text="{Binding Path=SelectedDialogueNode.Interpdata.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Matinee for this line." FontSize="15" Margin="2"/>
+                                    <TextBlock Text="{Binding Path=SelectedDialogueNode.Interpdata.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Matinee interpdata for this line." FontSize="15" Margin="2"/>
                                 </DockPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Name="Node_Text_Export" Text="ExportID:  " VerticalAlignment="Center" FontSize="15" Margin="2"/>
@@ -377,15 +377,17 @@
                         <TabItem Header="GUI Control" ToolTip="Settings for the line's user interaction.">
                             <StackPanel ScrollViewer.VerticalScrollBarVisibility="Visible">
                                 <CheckBox Name ="Node_CB_HideSubs" Content="Hide Subtitle" IsChecked="{Binding Path=SelectedDialogueNode.HideSubtitle}" FontSize="15" VerticalAlignment="Center" ToolTip="Always hide the subtitles." Margin="2"/>
+                                <ComboBox Name="Node_Combo_GUIStyle" MinWidth="80" SelectedItem="{Binding Path=SelectedDialogueNode.GUIStyle}" VerticalAlignment="Center" ToolTip="Determines how the GUI looks. Primarily used in ME1." Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True"/>
                                 <Separator/>
                                 <TextBlock Text="Entry:" FontSize="12"/>
-                                <CheckBox Name ="Node_CB_ESkippable" Content="Skippable" IsChecked="{Binding Path=SelectedDialogueNode.IsSkippable, Converter={StaticResource BoolToIndexConverter}}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can skip this entry." Margin="2"/>
+                                <CheckBox Name ="Node_CB_ESkippable" Content="Skippable" IsChecked="{Binding Path=SelectedDialogueNode.IsSkippable}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can skip this entry." Margin="2"/>
                                 <Separator/>
                                 <TextBlock Text="Reply:" FontSize="12"/>
-                                <CheckBox Name ="Node_CB_RUnskippable" Content="Unskippable" IsChecked="{Binding Path=SelectedDialogueNode.IsUnskippable, Converter={StaticResource BoolToIndexConverter}}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can never skip this reply." Margin="2"/>
+                                <ComboBox Name="Node_Combo_ReplyType" MinWidth="80" SelectedItem="{Binding Path=SelectedDialogueNode.ReplyType}" VerticalAlignment="Center" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True" ToolTip="Autocontinue, the reply moves straight to the reply list.&#x0a;Standard. Dialogue is played as normal.&#x0a;DialogEnd. The conversation is ended."/>
+                                <CheckBox Name ="Node_CB_RUnskippable" Content="Unskippable" IsChecked="{Binding Path=SelectedDialogueNode.IsUnskippable}" FontSize="15" VerticalAlignment="Center" ToolTip="Player can never skip this reply." Margin="2"/>
                                 <DockPanel >
-                                    <CheckBox Name ="Node_CB_RDefault" Content="Default Reply" IsChecked="{Binding Path=SelectedDialogueNode.IsDefaultAction, Converter={StaticResource BoolToIndexConverter}}" VerticalAlignment="Center" FontSize="15" ToolTip="ME3: On action mode this reply is always selected." Margin="2" DockPanel.Dock="Left"/>
-                                    <CheckBox Name ="Node_CB_RMajor" Content="Major Decision" IsChecked="{Binding Path=SelectedDialogueNode.IsMajorDecision, BindsDirectlyToSource=True}" HorizontalAlignment="Center" ToolTip="ME3: decision forced on player in all story modes." FontSize="15" VerticalAlignment="Center" Margin="2" DockPanel.Dock="Right"/>
+                                    <CheckBox Name ="Node_CB_RDefault" Content="Default Reply" IsChecked="{Binding Path=SelectedDialogueNode.IsDefaultAction}" VerticalAlignment="Center" FontSize="15" ToolTip="ME3: On action mode this reply is always selected." Margin="2" DockPanel.Dock="Left"/>
+                                    <CheckBox Name ="Node_CB_RMajor" Content="Major Decision" IsChecked="{Binding Path=SelectedDialogueNode.IsMajorDecision}" HorizontalAlignment="Center" ToolTip="ME3: decision forced on player in all story modes." FontSize="15" VerticalAlignment="Center" Margin="2" DockPanel.Dock="Right"/>
                                 </DockPanel>
                             </StackPanel>
                         </TabItem>
@@ -395,7 +397,7 @@
                                     <TextBlock Text="Male:" FontSize="12"/>
                                     <DockPanel HorizontalAlignment="Stretch">
                                         <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
-                                        <Button Name="Open_WwStreamM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundplorerWPF" ToolTip="Open in Soundplorer">
+                                        <Button Name="Open_WwStreamM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_StreamM" ToolTip="Open in Soundplorer">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
                                             </Button.Content>
@@ -417,7 +419,7 @@
                                     <TextBlock Text="Female:" FontSize="12"/>
                                     <DockPanel HorizontalAlignment="Stretch">
                                         <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
-                                        <Button Name="Open_WwStreamF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundplorerWPF" ToolTip="Open in Soundplorer">
+                                        <Button Name="Open_WwStreamF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_StreamF" ToolTip="Open in Soundplorer">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
                                             </Button.Content>
@@ -464,7 +466,7 @@
                     </Button>
                 </Grid>
                 <ListBox Name="Speakers_ListBox" DockPanel.Dock="Bottom" ItemsSource="{Binding SelectedSpeakerList}" SelectedItem="{Binding SelectedSpeaker, Mode=TwoWay}" HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="Speakers_ListBox_SelectionChanged" >
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="Speakers_ListBox_SelectionChanged" MouseLeftButtonUp="ListBox_MouseLeftButtonUp" >
                     <ListBox.ItemTemplate >
                         <DataTemplate>
                             <Grid Margin="0,0,5,0" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" >
@@ -557,7 +559,7 @@
                     <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
                 </Grid>
 <!-- Conversation Box-->
-                <ListBox Name="Conversations_ListBox" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Conversations}" SelectionChanged="ConversationList_SelectedItemChanged" MouseEnter="Convo_ListBox_MouseEnter" HorizontalContentAlignment="Stretch"
+                <ListBox Name="Conversations_ListBox" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Conversations}" SelectionChanged="ConversationList_SelectedItemChanged" MouseLeftButtonUp="ListBox_MouseLeftButtonUp" HorizontalContentAlignment="Stretch"
                              Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

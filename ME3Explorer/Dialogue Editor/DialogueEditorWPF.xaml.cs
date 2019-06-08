@@ -194,6 +194,8 @@ namespace ME3Explorer.Dialogue_Editor
             this.graphEditor.DragDrop += SequenceEditor_DragDrop;
             this.graphEditor.DragEnter += SequenceEditor_DragEnter;
 
+            Node_Combo_GUIStyle.ItemsSource = Enum.GetValues(typeof(EConvGUIStyles)).Cast<EConvGUIStyles>();
+            Node_Combo_ReplyType.ItemsSource = Enum.GetValues(typeof(EReplyTypes)).Cast<EReplyTypes>();
         }
 
         public DialogueEditorWPF(IExportEntry export) : this()
@@ -819,12 +821,15 @@ namespace ME3Explorer.Dialogue_Editor
                 if (node.IsReply)
                 {
                     node.IsSkippable = false; //ME3/
-                    node.IsUnskippable = nodeprop.GetProp<BoolProperty>("bUnskippable"); 
+                    node.IsUnskippable = nodeprop.GetProp<BoolProperty>("bUnskippable");
+                    Enum.TryParse(nodeprop.GetProp<EnumProperty>("ReplyType").Value.Name, out EReplyTypes eReply);
+                    node.ReplyType = eReply;
                 }
                 else
                 {
                     node.IsSkippable = nodeprop.GetProp<BoolProperty>("bSkippable"); //ME3/
-                    node.IsUnskippable = false; 
+                    node.IsUnskippable = false;
+                    node.ReplyType = EReplyTypes.REPLY_STANDARD;
                 }
                 node.ConditionalParam = nodeprop.GetProp<IntProperty>("nConditionalParam");
                 node.TransitionParam = nodeprop.GetProp<IntProperty>("nStateTransitionParam");
@@ -832,6 +837,8 @@ namespace ME3Explorer.Dialogue_Editor
                 node.IsAmbient = nodeprop.GetProp<BoolProperty>("bAmbient");
                 node.IsNonTextLine = nodeprop.GetProp<BoolProperty>("bNonTextLine");
                 node.IgnoreBodyGesture = nodeprop.GetProp<BoolProperty>("bIgnoreBodyGestures");
+                Enum.TryParse(nodeprop.GetProp<EnumProperty>("eGUIStyle").Value.Name, out EConvGUIStyles gstyle);
+                node.GUIStyle = gstyle;
                 if(Pcc.Game == MEGame.ME3)
                 {
                     node.HideSubtitle = nodeprop.GetProp<BoolProperty>("bAlwaysHideSubtitle");
@@ -841,8 +848,6 @@ namespace ME3Explorer.Dialogue_Editor
                         node.IsMajorDecision = nodeprop.GetProp<BoolProperty>("bIsMajorDecision");
                     }
                 }
-
-                //node.GUIStyle = nodeprop.GetProp<ByteProperty>("eGUIStyle");
             }
             catch(Exception e)
             {
@@ -1151,7 +1156,11 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if (Pcc == null || IsLocalUpdate)
             {
-                IsLocalUpdate = false;
+                if (IsLocalUpdate) //If local load just refresh interpreter
+                {
+                    Properties_InterpreterWPF.LoadExport(SelectedConv.Export);
+                    IsLocalUpdate = false;
+                }
                 return; //nothing is loaded
             }
 
@@ -1237,45 +1246,76 @@ namespace ME3Explorer.Dialogue_Editor
             //IF PASS THEN RECREATE NODE
             var node = SelectedDialogueNode;
             var prop = node.NodeProp;
-            IsLocalUpdate = true;
+            IsLocalUpdate = true;  //Full reparse of changed convo not needed.
 
 
 
-            if (e.PropertyName == "LineStrRef")
+            if (e.PropertyName == "LineStrRef" || e.PropertyName == "SpeakerIndex")
             {
-                IsLocalUpdate = false;  //StrRef change requires reparse.
+                IsLocalUpdate = false;  //StrRef/Speaker change requires full reparse due to FaceFX/Rechart.
             }
 
-            // Props in both replies and emtries. All Games.
-
-            var nListenerIndex = new IntProperty(node.Listener, new NameReference("nListenerIndex"));
-            prop.Properties.AddOrReplaceProp(nListenerIndex);
+            switch(e.PropertyName)         // Props in both replies and entries. All Games.
+            {
+                case "Listener":
+                    var nListenerIndex = new IntProperty(node.Listener, new NameReference("nListenerIndex"));
+                    prop.Properties.AddOrReplaceProp(nListenerIndex);
+                    break;
+                case "LineStrRef":
+                    var srText = new StringRefProperty(node.LineStrRef, new NameReference("srText"));
+                    prop.Properties.AddOrReplaceProp(srText);
+                    break;
+                case "ConditionalOrBool":
+                    var nConditionalFunc = new IntProperty(node.ConditionalOrBool, new NameReference("nConditionalFunc"));
+                    prop.Properties.AddOrReplaceProp(nConditionalFunc);
+                    break;
+                case "ConditionalParam":
+                    var nConditionalParam = new IntProperty(node.ConditionalParam, new NameReference("nConditionalParam"));
+                    prop.Properties.AddOrReplaceProp(nConditionalParam);
+                    break;
+                case "Transition":
+                    var nStateTransition = new IntProperty(node.Transition, new NameReference("nStateTransition"));
+                    prop.Properties.AddOrReplaceProp(nStateTransition);
+                    break;
+                case "TransitionParam":
+                    var nStateTransitionParam = new IntProperty(node.TransitionParam, new NameReference("nStateTransitionParam"));
+                    prop.Properties.AddOrReplaceProp(nStateTransitionParam);
+                    break;
+                case "ExportID":
+                    var nExportID = new IntProperty(node.ExportID, new NameReference("nExportID"));
+                    prop.Properties.AddOrReplaceProp(nExportID);
+                    break;
+                case "CameraIntimacy":
+                    var CameraIntimacy = new IntProperty(node.CameraIntimacy, new NameReference("nCameraIntimacy"));
+                    prop.Properties.AddOrReplaceProp(CameraIntimacy);
+                    break;
+                case "FiresConditional":
+                    var bFireConditional = new BoolProperty(node.FiresConditional, new NameReference("bFireConditional"));
+                    prop.Properties.AddOrReplaceProp(bFireConditional);
+                    break;
+                case "IsAmbient":
+                    var bAmbient = new BoolProperty(node.IsAmbient, new NameReference("bAmbient"));
+                    prop.Properties.AddOrReplaceProp(bAmbient);
+                    break;
+                case "IsNonTextLine":
+                    var bNonTextLine = new BoolProperty(node.IsNonTextLine, new NameReference("bNonTextLine"));
+                    prop.Properties.AddOrReplaceProp(bNonTextLine);
+                    break;
+                case "IgnoreBodyGesture":
+                    var bIgnoreBodyGestures = new BoolProperty(node.IgnoreBodyGesture, new NameReference("bIgnoreBodyGestures"));
+                    prop.Properties.AddOrReplaceProp(bIgnoreBodyGestures);
+                    break;
+                case "GUIStyle":
+                    var EConvGUIStyles = new EnumProperty(node.GUIStyle.ToString(), new NameReference("EConvGUIStyles"), Pcc, new NameReference("eGUIStyle"));
+                    prop.Properties.AddOrReplaceProp(EConvGUIStyles);
+                    break;
+                default:
+                    break;
+            }
             //Skip SText
-            var srText = new StringRefProperty(node.LineStrRef, new NameReference("srText"));
-            prop.Properties.AddOrReplaceProp(srText);
-            var nConditionalFunc = new IntProperty(node.ConditionalOrBool, new NameReference("nConditionalFunc"));
-            prop.Properties.AddOrReplaceProp(nConditionalFunc);
-            var nConditionalParam = new IntProperty(node.ConditionalParam, new NameReference("nConditionalParam"));
-            prop.Properties.AddOrReplaceProp(nConditionalParam);
-            var nStateTransition = new IntProperty(node.Transition, new NameReference("nStateTransition"));
-            prop.Properties.AddOrReplaceProp(nStateTransition);
-            var nStateTransitionParam = new IntProperty(node.TransitionParam, new NameReference("nStateTransitionParam"));
-            prop.Properties.AddOrReplaceProp(nStateTransitionParam);
-            var nExportID = new IntProperty(node.ExportID, new NameReference("nExportID"));
-            prop.Properties.AddOrReplaceProp(nExportID);
             //nScriptIndex ignore
-            var CameraIntimacy = new IntProperty(node.CameraIntimacy, new NameReference("nCameraIntimacy"));
-            prop.Properties.AddOrReplaceProp(CameraIntimacy);
-            var bFireConditional = new BoolProperty(node.FiresConditional, new NameReference("bFireConditional"));
-            prop.Properties.AddOrReplaceProp(bFireConditional);
-            var bAmbient = new BoolProperty(node.IsAmbient, new NameReference("bAmbient"));
-            prop.Properties.AddOrReplaceProp(bAmbient);
-            var bNonTextLine = new BoolProperty(node.IsNonTextLine, new NameReference("bNonTextLine"));
-            prop.Properties.AddOrReplaceProp(bNonTextLine);
-            var bIgnoreBodyGestures = new BoolProperty(node.IgnoreBodyGesture, new NameReference("bIgnoreBodyGestures"));
-            prop.Properties.AddOrReplaceProp(bIgnoreBodyGestures);
             //GUIStyle Ignore for now
-            if (Pcc.Game == MEGame.ME3)
+            if (Pcc.Game == MEGame.ME3 && e.PropertyName == "HideSubtitle")
             {
                 var bAlwaysHideSubtitle = new BoolProperty(node.HideSubtitle, new NameReference("bAlwaysHideSubtitle"));
                 prop.Properties.AddOrReplaceProp(bAlwaysHideSubtitle);
@@ -1297,7 +1337,8 @@ namespace ME3Explorer.Dialogue_Editor
                 //Ignore Entry List
                 var bUnskippable = new BoolProperty(node.IsUnskippable, new NameReference("bUnskippable"));
                 prop.Properties.AddOrReplaceProp(bUnskippable);
-                //Ignore ReplyType for now
+                var ReplyType = new EnumProperty(node.ReplyType.ToString(), new NameReference("EReplyTypes"), Pcc, new NameReference("ReplyType"));
+                prop.Properties.AddOrReplaceProp(ReplyType);
 
                 if (Pcc.Game == MEGame.ME3)
                 {
@@ -1309,6 +1350,8 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
             RecreateNodesToProperties(SelectedConv);
+
+
             
         }
         #endregion Handling-updates
@@ -1483,20 +1526,30 @@ namespace ME3Explorer.Dialogue_Editor
         {
             float x = 0;
             float y = 0;
-            foreach(var entry in SelectedConv.EntryList)
+            int ecnt = SelectedConv.EntryList.Count;
+            int rcnt = SelectedConv.ReplyList.Count;
+            int[] m = { ecnt, rcnt };
+            int max = m.Max();
+            var startlist = GetStartingList();
+            for(int n = 0; n < max; n++)
             {
-                CurrentObjects.Add(new DiagNode(entry, x, y, graphEditor));
+                bool isInList = startlist.IndexOf(n) != -1;
+                if(isInList)
+                {
+                    CurrentObjects.Add(new DStart(n, x, y, graphEditor));
+                    startlist.Remove(n);
+                }
+                if (n < ecnt)
+                {
+                    CurrentObjects.Add(new DiagNodeEntry(SelectedConv.EntryList[n], x, y, graphEditor));
+                }
+
+                if (n < rcnt)
+                {
+                    CurrentObjects.Add(new DiagNodeReply(SelectedConv.ReplyList[n], x, y, graphEditor));
+                }
             }
 
-            foreach (var reply in SelectedConv.ReplyList)
-            {
-                CurrentObjects.Add(new DiagNodeReply(reply, x, y, graphEditor));
-            }
-
-            foreach (int start in GetStartingList())
-            {
-                CurrentObjects.Add(new DStart(start, x, y, graphEditor));
-            }
             return true;
         }  
 
@@ -1517,6 +1570,11 @@ namespace ME3Explorer.Dialogue_Editor
                 for (int i = 0; i < CurrentObjects.Count; i++)
                 {
                     DObj obj = CurrentObjects[i];
+
+
+
+
+                    //SAVED DATA
                     //SaveData savedInfo = new SaveData(-1);
                     //if (SavedPositions.Any())
                     //{
@@ -1538,24 +1596,49 @@ namespace ME3Explorer.Dialogue_Editor
                     //}
                     //else
                     //{
+
+                    //SIMPLE LAYOUT THIS ONLY WORKS WHEN THERE ARE ENTRY NODES AND REPLY NODES MATCHED.
                     switch (obj)
                     {
                         case DStart _:
                             DStart dstart = obj as DStart;
-                            float ystart = (dstart.StartNumber * 127);
-                            obj.Layout(0, ystart);
+                            obj.Layout(0, StartPoDiagNodes);
                             //StartPoDStarts += obj.Height + 20;
                             break;
-                        case DiagNodeReply _:
-                            obj.Layout(500, StartPoDReplyNodes);
-                            StartPoDReplyNodes += obj.Height + 25;
-                            break;
-                        case DiagNode _:
+                        case DiagNodeEntry _:
                             obj.Layout(250, StartPoDiagNodes);
+                            StartPoDiagNodes += obj.Height / 3 + 25;
+                            break;
+                        case DiagNodeReply _:
+                            obj.Layout(500, StartPoDiagNodes);
                             StartPoDiagNodes += obj.Height + 25;
                             break;
+ 
 
                     }
+
+
+
+
+                    //SIMPLE LAYOUT
+                    //switch (obj)
+                    //{
+                    //    case DStart _:
+                    //        DStart dstart = obj as DStart;
+                    //        float ystart = (dstart.StartNumber * 127);
+                    //        obj.Layout(0, ystart);
+                    //        //StartPoDStarts += obj.Height + 20;
+                    //        break;
+                    //    case DiagNodeReply _:
+                    //        obj.Layout(500, StartPoDReplyNodes);
+                    //        StartPoDReplyNodes += obj.Height + 25;
+                    //        break;
+                    //    case DiagNode _:
+                    //        obj.Layout(250, StartPoDiagNodes);
+                    //        StartPoDiagNodes += obj.Height + 25;
+                    //        break;
+
+                    //}
                     //    }
                 }
 
@@ -1698,59 +1781,57 @@ namespace ME3Explorer.Dialogue_Editor
         /// <summary>
         /// Sets UI to 0 = Convo (default), 1=Speakers, 2=Node.
         /// </summary>
-        private int SetUIMode(int mode)
+        private int SetUIMode(int mode, Boolean force)
         {
             if (mode == CurrentUIMode)
             {
                 return CurrentUIMode;
             }
-            if(mode < CurrentUIMode)
+            if(force)
             {
-                switch(mode)
-                {
-                    case 0:
-                        if (Conversations_ListBox.IsMouseCaptureWithin)
-                            CurrentUIMode = 0;
-                        else
-                            return CurrentUIMode;
-                        break;
-                    case 1:
-                        if (Speakers_ListBox.IsMouseCaptureWithin)
-                            CurrentUIMode = 1;
-                        else
-                            return CurrentUIMode;
-                        break;
-                    default:
-                        break;
-                }
+                CurrentUIMode = mode;
             }
             else
             {
                 CurrentUIMode = mode;
             }
 
+
             Speaker_Panel.Visibility = Visibility.Collapsed;
             Convo_Panel.Visibility = Visibility.Collapsed;
             Node_Panel.Visibility = Visibility.Collapsed;
             switch (CurrentUIMode)
             {
-                case 0:
-                    Convo_Panel.Visibility = Visibility.Visible;
-                    break;
                 case 1:
                     Speaker_Panel.Visibility = Visibility.Visible;
                     break;
                 case 2:
-                    SelectedSpeaker = SelectedSpeakerList[SelectedDialogueNode.SpeakerIndex + 2];
-                    if(SelectedObjects.Count > 0)
-                    {
-                        SelectedObjects[0].IsSelected = true;
-                    }
                     Node_Panel.Visibility = Visibility.Visible;
                     break;
+                default:
+                    Convo_Panel.Visibility = Visibility.Visible;
+                    break;
+
             }
             return CurrentUIMode;
         }
+        private void ListBox_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if(sender is ListBox box)
+            {
+                switch(box.Name)
+                {
+                    case "Speakers_ListBox":
+                        SetUIMode(1, true);
+                        break;
+                    default:
+                        SetUIMode(0, true);
+                        break;
+                }
+            }
+
+        }
+
         private void ConversationList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
             if (Conversations_ListBox.SelectedIndex < 0)
@@ -1786,7 +1867,6 @@ namespace ME3Explorer.Dialogue_Editor
 
                 GenerateSpeakerList();
                 RefreshView();
-                SetUIMode(0);
                
 
                 ListenersList.ClearEx();
@@ -1818,12 +1898,6 @@ namespace ME3Explorer.Dialogue_Editor
             panToSelection = true;
             graphEditor.Refresh();
         }
-        private void Convo_ListBox_MouseEnter(object sender, MouseEventArgs e)
-        {
-            //Speaker_Panel.Visibility = Visibility.Collapsed;
-            //Convo_Panel.Visibility = Visibility.Visible;
-            //Node_Panel.Visibility = Visibility.Collapsed;
-        }
         private void Convo_NSFFX_DropDownClosed(object sender, EventArgs e)
         {
             if (FFXAnimsets.Count < 1 || Conversations[Conversations_ListBox.SelectedIndex].NonSpkrFFX == null)
@@ -1850,7 +1924,7 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         TextBox_Speaker_Name.IsEnabled = true;
                     }
-                    SetUIMode(1);
+                    
                 }
                 else
                 {
@@ -2044,12 +2118,13 @@ namespace ME3Explorer.Dialogue_Editor
             Node_CB_RMajor.IsEnabled = false;
             Node_CB_RDefault.IsEnabled = false;
             Node_CB_RUnskippable.IsEnabled = false;
-
+            Node_Combo_ReplyType.IsEnabled = false;
             if (SelectedDialogueNode.IsReply)
             {
                 Node_Text_Type.Text = "Reply Node";
                 Node_Combo_Spkr.IsEnabled = false;
                 Node_CB_RUnskippable.IsEnabled = true;
+                Node_Combo_ReplyType.IsEnabled = true;
                 if (Pcc.Game == MEGame.ME3)
                 {
                     Node_CB_RMajor.IsEnabled = true;
@@ -2070,7 +2145,7 @@ namespace ME3Explorer.Dialogue_Editor
             else
                 Node_Text_Cnd.Text = "Bool: ";
 
-            SetUIMode(2);
+
         }
         #endregion
 
@@ -2078,6 +2153,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void node_Click(object sender, PInputEventArgs e)
         {
+            SetUIMode(2, false);
             if (sender is DiagNode obj)
             {
                 if (e.Button != System.Windows.Forms.MouseButtons.Left && obj.GlobalFullBounds == obj.posAtDragStart)
@@ -2733,7 +2809,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             
             string tool = obj as string;
-            switch(tool)
+            switch (tool)
             {
                 case "PackEdLvl":
                     OpenInToolkit("PackageEditor", 0, Level);
@@ -2764,7 +2840,7 @@ namespace ME3Explorer.Dialogue_Editor
                     OpenInToolkit("FaceFXEditor", SelectedConv.NonSpkrFFX.UIndex);
                     break;
                 case "FaceFXSpkrM":
-                    if(Pcc.isUImport(SelectedSpeaker.FaceFX_Male.UIndex))
+                    if (Pcc.isUImport(SelectedSpeaker.FaceFX_Male.UIndex))
                     {
                         OpenInToolkit("FaceFXEditor", 0, Level); //CAN SEND TO THE CORRECT EXPORT IN THE NEW FILE LOAD?
                     }
@@ -2783,8 +2859,24 @@ namespace ME3Explorer.Dialogue_Editor
                         OpenInToolkit("FaceFXEditor", SelectedSpeaker.FaceFX_Female.UIndex);
                     }
                     break;
-
-                    
+                case "SoundP_Bank":
+                    if (SelectedConv.WwiseBank != null)
+                    {
+                        OpenInToolkit("SoundplorerWPF", SelectedConv.WwiseBank.UIndex);
+                    }
+                    break;
+                case "SoundP_StreamM":
+                    if (SelectedDialogueNode.WwiseStream_Male != null)
+                    {
+                        OpenInToolkit("SoundplorerWPF", SelectedDialogueNode.WwiseStream_Male.UIndex);
+                    }
+                    break;
+                case "SoundP_StreamF":
+                    if (SelectedDialogueNode.WwiseStream_Female != null)
+                    {
+                        OpenInToolkit("SoundplorerWPF", SelectedDialogueNode.WwiseStream_Female.UIndex);
+                    }
+                    break;
                 default:
                     OpenInToolkit(tool);
                     break;
@@ -2863,6 +2955,10 @@ namespace ME3Explorer.Dialogue_Editor
                     var soundplorerWPF = new Soundplorer.SoundplorerWPF();
                     soundplorerWPF.LoadFile(Pcc.FileName);
                     soundplorerWPF.Show();
+                    if (Pcc.isUExport(export))
+                    {
+                        soundplorerWPF.soundPanel.LoadExport(Pcc.getUExport(export));
+                    }
                     break;
                 case "SequenceEditor":
                     if (Pcc.isUExport(export))
@@ -2901,6 +2997,7 @@ namespace ME3Explorer.Dialogue_Editor
 
 
         #endregion
+
 
     }
 }
