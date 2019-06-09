@@ -428,11 +428,12 @@ namespace ME3Explorer.Dialogue_Editor
         public IMEPackage pcc;
         public ConvGraphEditor g;
         static readonly Color commentColor = Color.FromArgb(74, 63, 190);
-        static readonly Color intColor = Color.FromArgb(34, 218, 218);//cyan
-        static readonly Color floatColor = Color.FromArgb(23, 23, 213);//blue
-        static readonly Color boolColor = Color.FromArgb(215, 37, 33); //red
-        static readonly Color objectColor = Color.FromArgb(219, 39, 217);//purple
-        static readonly Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
+        static readonly Color paraintColor = Color.FromArgb(0, 0, 255);//Strong Blue
+        static readonly Color renintColor = Color.FromArgb(255, 0, 0);//Strong Red
+        static readonly Color agreeColor = Color.FromArgb(69, 69, 252); //light blue
+        static readonly Color disagreeColor = Color.FromArgb(252, 69, 69);//light red
+        static readonly Color friendlyColor = Color.FromArgb(3, 3, 116);//dark blue
+        static readonly Color hostileColor = Color.FromArgb(116, 3, 3);//dark red
         protected static readonly Color EventColor = Color.FromArgb(214, 30, 28);
         protected static readonly Color titleColor = Color.FromArgb(255, 255, 128);
         protected static readonly Brush titleBoxBrush = new SolidBrush(Color.FromArgb(112, 112, 112));
@@ -470,6 +471,26 @@ namespace ME3Explorer.Dialogue_Editor
         public virtual void Layout(float x, float y) => SetOffset(x, y);
         public virtual IEnumerable<DiagEdEdge> Edges => Enumerable.Empty<DiagEdEdge>();
 
+        protected Color getColor(BioConversationExtended.EReplyCategory t)
+        {
+            switch (t)
+            {
+                case BioConversationExtended.EReplyCategory.REPLY_CATEGORY_PARAGON_INTERRUPT:
+                    return paraintColor;
+                case BioConversationExtended.EReplyCategory.REPLY_CATEGORY_RENEGADE_INTERRUPT:
+                    return renintColor;
+                case BioConversationExtended.EReplyCategory.REPLY_CATEGORY_AGREE:
+                    return agreeColor;
+                case BioConversationExtended.EReplyCategory.REPLY_CATEGORY_DISAGREE:
+                    return disagreeColor;
+                case BioConversationExtended.EReplyCategory.REPLY_CATEGORY_FRIENDLY:
+                    return friendlyColor;
+                case BioConversationExtended.EReplyCategory.REPLY_CATEGORY_HOSTILE:
+                    return hostileColor;
+                default:
+                    return Color.Black;
+            }
+        }
         public virtual void Dispose()
         {
             g = null;
@@ -482,16 +503,17 @@ namespace ME3Explorer.Dialogue_Editor
     public abstract class DBox : DObj
     {
         public override IEnumerable<DiagEdEdge> Edges => Outlinks.SelectMany(l => l.Edges).Cast<DiagEdEdge>();
-        static readonly Color lineColor = Color.FromArgb(74, 63, 190);
         protected static Brush outputBrush = new SolidBrush(Color.Black);
-
+        public static float LineScaleOption = 1.0f;
+        public static Color lineColor = Color.FromArgb(74, 63, 190);
         public struct OutputLink
         {
             public PPath node;
             public List<int> Links;
-            public List<int> InputIndices;
+            public int InputIndices;
             public string Desc;
             public List<ActionEdge> Edges;
+            public BioConversationExtended.EReplyCategory RCat;
         }
 
         public struct InputLink
@@ -504,7 +526,6 @@ namespace ME3Explorer.Dialogue_Editor
         }
 
         protected PPath titleBox;
-        protected PPath varLinkBox;
         protected PPath outLinkBox;
         public readonly List<OutputLink> Outlinks = new List<OutputLink>();
         protected readonly OutputDragHandler outputDragHandler;
@@ -534,10 +555,11 @@ namespace ME3Explorer.Dialogue_Editor
                                 p1.Tag = new List<ActionEdge>();
                             ((List<ActionEdge>)p1.Tag).Add(edge);
                             destAction.InputEdges.Add(edge);
+                            edge.Pen = new Pen(getColor(outLink.RCat));
                             edge.start = p1;
                             edge.end = destAction;
                             edge.originator = this;
-                            edge.inputIndex = outLink.InputIndices[j];
+                            edge.inputIndex = outLink.InputIndices;
                             g.addEdge(edge);
                             outLink.Edges.Add(edge);
                         }
@@ -587,15 +609,20 @@ namespace ME3Explorer.Dialogue_Editor
             }
             title.Width = w;
 
-            DText line = new DText(l, lineColor, false) //Add line string to right side
+            DText line = null;
+            if(LineScaleOption > 0)
             {
-                TextAlignment = StringAlignment.Near,
-                ConstrainWidthToTextWidth = false,
-                ConstrainHeightToTextHeight = false,
-                X = w + 5,
-                Y = 3,
-                Pickable = false
-            };
+                line = new DText(l, lineColor, false, LineScaleOption) //Add line string to right side
+                {
+                    TextAlignment = StringAlignment.Near,
+                    ConstrainWidthToTextWidth = false,
+                    ConstrainHeightToTextHeight = false,
+                    X = w / LineScaleOption + 5,
+                    Y = 3,
+                    Pickable = false
+                };
+            }
+
 
             DText nodeID = new DText(n, titleColor) //Add node count to left side
             {
@@ -611,49 +638,12 @@ namespace ME3Explorer.Dialogue_Editor
             titleBox.Brush = titleBoxBrush;
             titleBox.AddChild(nodeID);
             titleBox.AddChild(title);
-            titleBox.AddChild(line);
+            if (LineScaleOption > 0)
+            {
+                titleBox.AddChild(line);
+            }
             titleBox.Pickable = false;
             return w;
-        }
-
-        protected void GetOutputLinks(BioConversationExtended.DialogueNodeExtended node)
-        {
-            if(node != null && node.IsReply)
-            {
-                var replytoEntryList = node.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
-                if (replytoEntryList != null)
-                {
-                    int n = 0;
-                    foreach (var prop in replytoEntryList)
-                    {
-                        OutputLink l = new OutputLink
-                        {
-                            Links = new List<int>(),
-                            InputIndices = new List<int>(),
-                            Edges = new List<ActionEdge>(),
-                            Desc = n.ToString()
-                        };
-
-                        int linkedOp = prop.Value;
-                        l.Links.Add(linkedOp);
-                        l.InputIndices.Add(1);
-                        //if (OutputNumbers)
-                        l.Desc = l.Desc + (linkedOp >= 0 ? "," : ": ") + "# E" + linkedOp;
-
-                        l.node = CreateActionLinkBox();
-                        l.node.Brush = outputBrush;
-                        l.node.Pickable = false;
-                        PPath dragger = CreateActionLinkBox();
-                        dragger.Brush = mostlyTransparentBrush;
-                        dragger.X = l.node.X;
-                        dragger.Y = l.node.Y;
-                        dragger.AddInputEventListener(outputDragHandler);
-                        l.node.AddChild(dragger);
-                        Outlinks.Add(l);
-                        n++;
-                    }
-                }
-            }
         }
 
         protected class OutputDragHandler : PDragEventHandler
@@ -830,16 +820,18 @@ namespace ME3Explorer.Dialogue_Editor
             OutputLink l = new OutputLink
             {
                 Links = new List<int>(StartNbr),
-                InputIndices = new List<int>(),
+                InputIndices = new int(),
                 Edges = new List<ActionEdge>(),
-                Desc =$"Out {StartNbr}"
+                Desc =$"Out {StartNbr}",
+                RCat = BioConversationExtended.EReplyCategory.REPLY_CATEGORY_DEFAULT
             };
             int linkedOp = StartNbr;
             l.Links.Add(linkedOp);
-            l.InputIndices.Add(0);
+            l.InputIndices = 0;
             l.node = CreateActionLinkBox();
             l.node.Brush = outputBrush;
             l.node.Pickable = false;
+
             PPath dragger = CreateActionLinkBox();
             dragger.Brush = mostlyTransparentBrush;
             dragger.X = l.node.X;
@@ -865,6 +857,7 @@ namespace ME3Explorer.Dialogue_Editor
             bounds = new RectangleF(0, 0, w, h);
             AddChild(titleBox);
             AddChild(outLinkBox);
+            
             SetOffset(x, y);
             MouseEnter += OnMouseEnter;
             MouseLeave += OnMouseLeave;
@@ -1047,15 +1040,18 @@ namespace ME3Explorer.Dialogue_Editor
                 TextAlignment = StringAlignment.Center,
                 ConstrainWidthToTextWidth = false,
                 ConstrainHeightToTextHeight = true,
-                X = w / 4,
+                X = 0,
                 Y = titleBox.Height + starty + 5,
                 Pickable = false
             };
             h += insidetext.Height;
+            float iw = insidetext.Width;
+            if(iw > w) { w = iw; }
             box = PPath.CreateRectangle(0, titleBox.Height + 2, w, h - (titleBox.Height + 2));
             box.Brush = nodeBrush;
             box.Pen = outlinePen;
             box.Pickable = false;
+            insidetext.TranslateBy((w - iw)/2, 0);
             box.AddChild(insidetext);
             this.Bounds = new RectangleF(0, 0, w, h);
             this.AddChild(box);
@@ -1232,30 +1228,34 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if (node != null)
             {
-                if (ReplyChoiceList != null)
+                if (ReplyChoiceList.Count > 0)
                 {
                     int n = 0;
                     foreach (var reply in ReplyChoiceList)
                     {
+
                         OutputLink l = new OutputLink
                         {
                             Links = new List<int>(),
-                            InputIndices = new List<int>(),
+                            InputIndices = new int(),
                             Edges = new List<ActionEdge>(),
-                            Desc = n.ToString()
+                            Desc = n.ToString(),
+                            RCat = reply.RCategory
                         };
 
                         int linkedOp = reply.Index + 1000;
                         l.Links.Add(linkedOp);
-                        l.InputIndices.Add(0);
+                        l.InputIndices = 0;
                         //if (OutputNumbers)
                         l.Desc = l.Desc + (linkedOp >= 0 ? "," : ": ") + "# R" + reply.Index;
 
                         l.node = CreateActionLinkBox();
-                        l.node.Brush = outputBrush;
+                        l.node.Brush = new SolidBrush(getColor(reply.RCategory));
+                        l.node.Pen = new Pen(getColor(reply.RCategory));
                         l.node.Pickable = false;
                         PPath dragger = CreateActionLinkBox();
                         dragger.Brush = mostlyTransparentBrush;
+                        dragger.Pen = new Pen(getColor(reply.RCategory));
                         dragger.X = l.node.X;
                         dragger.Y = l.node.Y;
                         dragger.AddInputEventListener(outputDragHandler);
@@ -1264,8 +1264,32 @@ namespace ME3Explorer.Dialogue_Editor
                         n++;
                     }
                 }
+                else //Create default node.
+                {
+                    OutputLink l = new OutputLink
+                    {
+                        Links = new List<int>(),
+                        InputIndices = new int(),
+                        Edges = new List<ActionEdge>(),
+                        Desc = "Out:",
+                        RCat = BioConversationExtended.EReplyCategory.REPLY_CATEGORY_DEFAULT
+                    };
+
+                    l.node = CreateActionLinkBox();
+                    l.node.Brush = outputBrush;
+                    l.node.Pickable = false;
+                    PPath dragger = CreateActionLinkBox();
+                    dragger.Brush = mostlyTransparentBrush;
+                    dragger.X = l.node.X;
+                    dragger.Y = l.node.Y;
+                    dragger.AddInputEventListener(outputDragHandler);
+                    l.node.AddChild(dragger);
+                    Outlinks.Add(l);
+                }
             }
         }
+
+
     }
 
     public class DiagNodeReply : DiagNode
@@ -1280,31 +1304,98 @@ namespace ME3Explorer.Dialogue_Editor
             originalX = x;
             originalY = y;
         }
+
+        protected void GetOutputLinks(BioConversationExtended.DialogueNodeExtended node)
+        {
+            if (node != null)
+            {
+                var replytoEntryList = node.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
+                if (replytoEntryList != null)
+                {
+                    if(replytoEntryList.Count >0)
+                    {
+                        int n = 0;
+                        foreach (var prop in replytoEntryList)
+                        {
+                            OutputLink l = new OutputLink
+                            {
+                                Links = new List<int>(),
+                                InputIndices = new int(),
+                                Edges = new List<ActionEdge>(),
+                                Desc = n.ToString(),
+                                RCat = BioConversationExtended.EReplyCategory.REPLY_CATEGORY_DEFAULT
+                            };
+
+                            int linkedOp = prop.Value;
+                            l.Links.Add(linkedOp);
+                            l.InputIndices = 0;
+                            //if (OutputNumbers)
+                            l.Desc = l.Desc + (linkedOp >= 0 ? "," : ": ") + "# E" + linkedOp;
+
+                            l.node = CreateActionLinkBox();
+                            l.node.Brush = outputBrush;
+                            l.node.Pickable = false;
+                            PPath dragger = CreateActionLinkBox();
+                            dragger.Brush = mostlyTransparentBrush;
+                            dragger.X = l.node.X;
+                            dragger.Y = l.node.Y;
+                            dragger.AddInputEventListener(outputDragHandler);
+                            l.node.AddChild(dragger);
+                            Outlinks.Add(l);
+                            n++;
+                        }
+                    }
+                    else //Create default node.
+                    {
+                        OutputLink l = new OutputLink
+                        {
+                            Links = new List<int>(),
+                            InputIndices = new int(),
+                            Edges = new List<ActionEdge>(),
+                            Desc ="Out:",
+                            RCat = BioConversationExtended.EReplyCategory.REPLY_CATEGORY_DEFAULT
+                        };
+
+                        l.node = CreateActionLinkBox();
+                        l.node.Brush = outputBrush;
+                        l.node.Pickable = false;
+                        PPath dragger = CreateActionLinkBox();
+                        dragger.Brush = mostlyTransparentBrush;
+                        dragger.X = l.node.X;
+                        dragger.Y = l.node.Y;
+                        dragger.AddInputEventListener(outputDragHandler);
+                        l.node.AddChild(dragger);
+                        Outlinks.Add(l);
+                    }
+                }
+            }
+        }
     }
     public class DText : PText
     {
         [DllImport("gdi32.dll")]
         private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, [In] ref uint pcFonts);
-
+        
         private readonly Brush black = new SolidBrush(Color.Black);
         public bool shadowRendering { get; set; }
         private static PrivateFontCollection fontcollection;
         private static Font kismetFont;
 
-        public DText(string s, bool shadows = true)
+        public DText(string s, bool shadows = true, float scale = 1)
             : base(s)
         {
             base.TextBrush = new SolidBrush(Color.FromArgb(255, 255, 255));
             base.Font = kismetFont;
-
+            base.GlobalScale = scale;
             shadowRendering = shadows;
         }
 
-        public DText(string s, Color c, bool shadows = true)
+        public DText(string s, Color c, bool shadows = true, float scale = 1)
             : base(s)
         {
             base.TextBrush = new SolidBrush(c);
             base.Font = kismetFont;
+            base.GlobalScale = scale;
             shadowRendering = shadows;
         }
 

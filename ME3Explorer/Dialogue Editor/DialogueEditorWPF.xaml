@@ -24,15 +24,10 @@
         <Converters:BoolToIndexConverter x:Key="BoolToIndexConverter"/>
         <Converters:BoolToIndexConverter x:Key="BoolCheckBoxConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
-            <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Command="{Binding OpenInCommand}" CommandParameter="PackageEditor" />
-            <MenuItem Header="Open in Interp Viewer" ToolTip="Open this export in Interp Viewer" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
-            <MenuItem Header="Open in Sequence Editor" ToolTip="Open this export in Sequence Editor" Tag="SequenceEditor" Command="{Binding OpenInCommand}" CommandParameter="SequenceEditor"/>
-            <Separator />
+           <Separator />
             <MenuItem Header="Clone Object" Click="CloneObject_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
                 <MenuItem Header="Output Links" Name="outputLinksMenuItem"></MenuItem>
-                <MenuItem Header="Var Links" Name="varLinksMenuItem"></MenuItem>
-                <MenuItem Header="Event Links" Name="eventLinksMenuItem"></MenuItem>
                 <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Click="removeAllLinks"/>
             </MenuItem>
             <MenuItem Header="Remove from Dialogue" Name="removeFromDialogueMenuItem" Click="RemoveFromDialogue_Click"/>
@@ -88,13 +83,23 @@
             </MenuItem>
 
             <MenuItem Header="View Options" Padding="4">
-                <MenuItem Name="ShowOutputNumbers_MenuItem" Header="Show Output Numbers" IsCheckable="True" Click="showOutputNumbers_Click"/>
-                <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save View" IsCheckable="True"/>
-            </MenuItem>
+                <MenuItem Header="Adjust line text size" ToolTip="Adjust the size of the spoken line text beside the title box.">
+                    <MenuItem Name="Menu_LineSize_00" Header="Turned off" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="00"/>
 
-            <MenuItem Header="Layout" Padding="4">
-                <MenuItem Header="Re-Run Auto Layout" Command="{Binding AutoLayoutCommand}" InputGestureText="Ctrl+L" ToolTip="Attempt to layout sequence objects in a comprehensible fashion"/>
+
+                    <MenuItem Name="Menu_LineSize_10" Header="1.0 (default)" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="10"/>
+                    <MenuItem Name="Menu_LineSize_15" Header="1.5" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="15"/>
+                    <MenuItem Name="Menu_LineSize_20" Header="2.0" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="20"/>
+                </MenuItem>
+                <MenuItem Header="Adjust line text color" ToolTip="Adjust the color of the spoken line text beside the title box.">
+                    <xctk:ColorPicker Name="ClrPcker_Line" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                </MenuItem>
+                <MenuItem Name="ShowOutputNumbers_MenuItem" Header="NOT YET: Show Output Numbers" IsCheckable="True" Click="showOutputNumbers_Click"/>
+                <MenuItem Name="AutoSaveView_MenuItem" Header="NOT YET: Auto-Save View" IsCheckable="True"/>
             </MenuItem>
+                <MenuItem Header="Layout" Padding="4">
+                <MenuItem Header="Re-Run Auto Layout" Command="{Binding AutoLayoutCommand}" InputGestureText="Ctrl+L" ToolTip="Attempt to layout sequence objects in a comprehensible fashion"/>
+                </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
             <SharedUI:StatusBarGameIDIndicator Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
