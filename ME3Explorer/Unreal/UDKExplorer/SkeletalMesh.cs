@@ -608,15 +608,16 @@ namespace UDKExplorer.UDK.Classes
         public int MyIndex;
         //private int ReadEnd;
 
-        public SkeletalMesh(UDKPackage udk, int Index)
+        public SkeletalMesh(UDKPackage udk, int Index) //NOT UINDEX
         {
             MyIndex = Index;
             Owner = udk;
             int start = GetPropertyEnd(Index);
-            byte[] buff = new byte[udk.Exports[Index].Data.Length - start];
-            for (int i = 0; i < udk.Exports[Index].Data.Length - start; i++)
-                buff[i] = udk.Exports[Index].Data[i + start];
-            MemoryStream m = new MemoryStream(buff);
+            //byte[] buff = new byte[udk.Exports[Index].Data.Length - start];
+            //Buffer.BlockCopy(udk.Exports[Index].Data,start,);
+            //for (int i = 0; i < udk.Exports[Index].Data.Length - start; i++)
+            //    buff[i] = udk.Exports[Index].Data[i + start];
+            MemoryStream m = new MemoryStream(udk.Exports[Index].getBinaryData());
             SerializingContainer Container = new SerializingContainer(m);
             Container.isLoading = true;
             Serialize(Container);
