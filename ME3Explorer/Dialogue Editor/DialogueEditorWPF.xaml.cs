@@ -98,7 +98,7 @@ namespace ME3Explorer.Dialogue_Editor
             get => _level;
             set => SetProperty(ref _level, value);
         }
-        private int CurrentUIMode = 0; //Sets which panel is up.
+        private int CurrentUIMode = -1; //Sets which panel is up.
         #endregion ConvoBox//Conversation Box Links
         private static BackgroundWorker BackParser = new BackgroundWorker();
 
@@ -683,6 +683,11 @@ namespace ME3Explorer.Dialogue_Editor
                                                 {
                                                     var datalink = linkedVars[0].Value;
                                                     entry.Interpdata = Pcc.getUExport(datalink);
+                                                    var lengthprop = entry.Interpdata.GetProperty<FloatProperty>("InterpLength");
+                                                    if(lengthprop != null)
+                                                    {
+                                                        entry.InterpLength = lengthprop.Value;
+                                                    }
                                                 }
                                                 break;
                                             }
@@ -757,6 +762,11 @@ namespace ME3Explorer.Dialogue_Editor
                                                 {
                                                     var datalink = linkedVars[0].Value;
                                                     reply.Interpdata = Pcc.getUExport(datalink);
+                                                    var lengthprop = reply.Interpdata.GetProperty<FloatProperty>("InterpLength");
+                                                    if (lengthprop != null)
+                                                    {
+                                                        reply.InterpLength = lengthprop.Value;
+                                                    }
                                                 }
                                                 break;
                                             }
@@ -1234,7 +1244,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
         
-        //Need update handler for selecteddiagnode.
+        //update handler for selecteddiagnode.
         public void NodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (sender == null || SelectedConv == null || SelectedDialogueNode == null)
@@ -2875,6 +2885,12 @@ namespace ME3Explorer.Dialogue_Editor
                         OpenInToolkit("FaceFXEditor", SelectedSpeaker.FaceFX_Female.UIndex);
                     }
                     break;
+                case "FaceFXLineM":
+                    OpenInToolkit("FaceFXEditor", SelectedDialogueNode.SpeakerTag.FaceFX_Male.UIndex, null, SelectedDialogueNode.FaceFX_Male);
+                    break;
+                case "FaceFXLineF":
+                    OpenInToolkit("FaceFXEditor", SelectedDialogueNode.SpeakerTag.FaceFX_Female.UIndex, null, SelectedDialogueNode.FaceFX_Female);
+                    break;
                 case "SoundP_Bank":
                     if (SelectedConv.WwiseBank != null)
                     {
@@ -2899,7 +2915,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        private void OpenInToolkit(string tool, int export = 0, string filename  = null)
+        private void OpenInToolkit(string tool, int export = 0, string filename  = null, string param = null)
         {
             string filePath = null;
             if(filename != null)  //If file is a new loaded file need to find path.
@@ -2944,7 +2960,11 @@ namespace ME3Explorer.Dialogue_Editor
             {
 
                 case "FaceFXEditor":
-                    if (Pcc.isUExport(export))
+                    if (Pcc.isUExport(export) && param != null)
+                    {
+                        new FaceFX.FaceFXEditor(Pcc.getUExport(export), param).Show();
+                    }
+                    else if (Pcc.isUExport(export))
                     {
                         new FaceFX.FaceFXEditor(Pcc.getUExport(export)).Show();
                     }

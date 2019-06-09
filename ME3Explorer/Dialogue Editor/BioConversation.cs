@@ -175,6 +175,11 @@ namespace ME3Explorer.Dialogue_Editor
             /// InterpData object reference UIndex
             /// </summary>
             public IExportEntry Interpdata { get => _Interpdata; set => SetProperty(ref _Interpdata, value); }
+            private float _InterpLength = -1;
+            /// <summary>
+            /// Length of interpdata
+            /// </summary>
+            public float InterpLength { get => _InterpLength; set => SetProperty(ref _InterpLength, value); }
             private IExportEntry _WwiseStream_Male;
             /// <summary>
             /// WwiseStream object reference Male UIndex
@@ -250,7 +255,8 @@ namespace ME3Explorer.Dialogue_Editor
 
             public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int Transition, SpeakerExtended SpeakerTag,
                 IExportEntry Interpdata, IExportEntry WwiseStream_Male, IExportEntry WwiseStream_Female, string FaceFX_Male, string FaceFX_Female, int Listener, int ConditionalParam, int TransitionParam, int ExportID,
-                bool IsSkippable, bool IsUnskippable, bool IsDefaultAction, bool IsMajorDecision, bool IsNonTextLine, bool IgnoreBodyGesture, bool IsAmbient, int CameraIntimacy, bool HideSubtitle, EConvGUIStyles GUIStyle, EReplyTypes ReplyType)
+                bool IsSkippable, bool IsUnskippable, bool IsDefaultAction, bool IsMajorDecision, bool IsNonTextLine, bool IgnoreBodyGesture, bool IsAmbient, int CameraIntimacy, bool HideSubtitle, EConvGUIStyles GUIStyle, 
+                EReplyTypes ReplyType, float InterpLength)
             {
                 this.NodeProp = NodeProp;
                 this.IsReply = IsReply;
@@ -282,6 +288,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.HideSubtitle = HideSubtitle;
                 this.GUIStyle = GUIStyle;
                 this.ReplyType = ReplyType;
+                this.InterpLength = InterpLength;
             }
 
             public DialogueNodeExtended(DialogueNodeExtended nodeExtended)

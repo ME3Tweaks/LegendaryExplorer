@@ -360,6 +360,11 @@
                                     </Button>
                                     <TextBlock Text="{Binding Path=SelectedDialogueNode.Interpdata.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Matinee interpdata for this line." FontSize="15" Margin="2"/>
                                 </DockPanel>
+                                <StackPanel Orientation="Horizontal" ToolTip="Length in secs of matinee interpdata.">
+                                    <TextBlock Text="InterpLength: " VerticalAlignment="Center" FontSize="15" Margin="2"/>
+                                    <TextBox Text="{Binding Path=SelectedDialogueNode.InterpLength}" HorizontalAlignment="Stretch" FontSize="15" VerticalAlignment="Center" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" IsReadOnly="True"/>
+                                    <TextBlock Text="seconds" VerticalAlignment="Center" FontSize="15" Margin="2"/>
+                                </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Name="Node_Text_Export" Text="ExportID:  " VerticalAlignment="Center" FontSize="15" Margin="2"/>
                                     <TextBox Text="{Binding Path=SelectedDialogueNode.ExportID}" HorizontalAlignment="Stretch" FontSize="15" VerticalAlignment="Center" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
@@ -406,7 +411,7 @@
                                     </DockPanel>
                                     <DockPanel HorizontalAlignment="Stretch">
                                         <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
-                                        <Button Name="Open_ffxM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXNS" ToolTip="Open this line in FaceFX Editor">
+                                        <Button Name="Open_ffxM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXLineM" ToolTip="Open this line in FaceFX Editor">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
                                             </Button.Content>
@@ -428,7 +433,7 @@
                                     </DockPanel>
                                     <DockPanel HorizontalAlignment="Stretch">
                                         <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
-                                        <Button Name="Open_ffxF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXNS" ToolTip="Open this stream line in FaceFX Editor">
+                                        <Button Name="Open_ffxF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXLineF" ToolTip="Open this line in FaceFX Editor">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
                                             </Button.Content>
