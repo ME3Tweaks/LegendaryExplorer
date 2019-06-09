@@ -212,10 +212,53 @@ namespace ME3Explorer.Dialogue_Editor
                     DBox.lineColor = c;
                     ClrPcker_Line.SelectedColor = System.Windows.Media.Color.FromArgb(c.A,c.R,c.G,c.B);
                 }
+                if (options.ContainsKey("ParaIntRColor"))
+                {
+                    var c = ColorTranslator.FromHtml((string)options["ParaIntRColor"]);
+                    DObj.paraintColor = c;
+                    ClrPcker_ParaInt.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                }
+                if (options.ContainsKey("RenIntRColor"))
+                {
+                    var c = ColorTranslator.FromHtml((string)options["RenIntRColor"]);
+                    DObj.renintColor = c;
+                    ClrPcker_RenInt.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                }
+                if (options.ContainsKey("AgreeRColor"))
+                {
+                    var c = ColorTranslator.FromHtml((string)options["AgreeRColor"]);
+                    DObj.agreeColor = c;
+                    ClrPcker_Agree.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                }
+                if (options.ContainsKey("DisagreeRColor"))
+                {
+                    var c = ColorTranslator.FromHtml((string)options["DisagreeRColor"]);
+                    DObj.disagreeColor = c;
+                    ClrPcker_Disagree.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                }
+                if (options.ContainsKey("FriendlyRColor"))
+                {
+                    var c = ColorTranslator.FromHtml((string)options["FriendlyRColor"]);
+                    DObj.friendlyColor = c;
+                    ClrPcker_Friendly.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                }
+                if (options.ContainsKey("HostileRColor"))
+                {
+                    var c = ColorTranslator.FromHtml((string)options["HostileRColor"]);
+                    DObj.hostileColor = c;
+                    ClrPcker_Hostile.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                }
             }
             else
             {
                 Menu_LineSize_10.IsChecked = true;
+                ClrPcker_Line.SelectedColor = System.Windows.Media.Color.FromArgb(DBox.lineColor.A, DBox.lineColor.R, DBox.lineColor.G, DBox.lineColor.B);
+                ClrPcker_ParaInt.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.paraintColor.A, DObj.paraintColor.R, DObj.paraintColor.G, DObj.paraintColor.B);
+                ClrPcker_RenInt.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.renintColor.A, DObj.renintColor.R, DObj.renintColor.G, DObj.renintColor.B);
+                ClrPcker_Agree.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.agreeColor.A, DObj.agreeColor.R, DObj.agreeColor.G, DObj.agreeColor.B);
+                ClrPcker_Disagree.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.disagreeColor.A, DObj.disagreeColor.R, DObj.disagreeColor.G, DObj.disagreeColor.B);
+                ClrPcker_Friendly.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.friendlyColor.A, DObj.friendlyColor.R, DObj.friendlyColor.G, DObj.friendlyColor.B);
+                ClrPcker_Hostile.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.hostileColor.A, DObj.hostileColor.R, DObj.hostileColor.G, DObj.hostileColor.B);
             }
         }
 
@@ -294,7 +337,12 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 {"LineTextSize", DBox.LineScaleOption},
                 {"LineTextColor", ColorTranslator.ToHtml(DBox.lineColor)},
-
+                {"ParaIntRColor", ColorTranslator.ToHtml(DBox.paraintColor)},
+                {"RenIntRColor", ColorTranslator.ToHtml(DBox.renintColor)},
+                {"AgreeRColor", ColorTranslator.ToHtml(DBox.agreeColor)},
+                {"DisagreeRColor", ColorTranslator.ToHtml(DBox.disagreeColor)},
+                {"FriendlyRColor", ColorTranslator.ToHtml(DBox.friendlyColor)},
+                {"HostileRColor", ColorTranslator.ToHtml(DBox.hostileColor)},
                 //{"OutputNumbers", DObj.OutputNumbers},
                 //{"AutoSave", AutoSaveView_MenuItem.IsChecked},
 
@@ -1608,12 +1656,12 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 if (n < ecnt)
                 {
-                    CurrentObjects.Add(new DiagNodeEntry(SelectedConv.EntryList[n], Pcc.Game, x, y, graphEditor));
+                    CurrentObjects.Add(new DiagNodeEntry(this, SelectedConv.EntryList[n], Pcc.Game, x, y, graphEditor));
                 }
 
                 if (n < rcnt)
                 {
-                    CurrentObjects.Add(new DiagNodeReply(SelectedConv.ReplyList[n], x, y, graphEditor));
+                    CurrentObjects.Add(new DiagNodeReply(this, SelectedConv.ReplyList[n], x, y, graphEditor));
                 }
             }
 
@@ -3090,8 +3138,33 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void ChangeLineColor(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
         {
+            var source = sender as Xceed.Wpf.Toolkit.ColorPicker;
             var newcolor = e.NewValue.Value;
-            DBox.lineColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+            switch(source.Name)
+            {
+                case "ClrPcker_Line":
+                    DBox.lineColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    break;
+                case "ClrPcker_ParaInt":
+                    DObj.paraintColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    break;
+                case "ClrPcker_RenInt":
+                    DObj.renintColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    break;
+                case "ClrPcker_Agree":
+                    DObj.agreeColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    break;
+                case "ClrPcker_Disagree":
+                    DObj.disagreeColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    break;
+                case "ClrPcker_Friendly":
+                    DObj.friendlyColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    break;
+                case "ClrPcker_Hostile":
+                    DObj.hostileColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    break;
+            }
+
             RefreshView();
         }
 

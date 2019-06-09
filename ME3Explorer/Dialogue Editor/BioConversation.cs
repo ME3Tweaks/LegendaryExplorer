@@ -427,13 +427,12 @@ namespace ME3Explorer.Dialogue_Editor
     {
         public IMEPackage pcc;
         public ConvGraphEditor g;
-        static readonly Color commentColor = Color.FromArgb(74, 63, 190);
-        static readonly Color paraintColor = Color.FromArgb(0, 0, 255);//Strong Blue
-        static readonly Color renintColor = Color.FromArgb(255, 0, 0);//Strong Red
-        static readonly Color agreeColor = Color.FromArgb(69, 69, 252); //light blue
-        static readonly Color disagreeColor = Color.FromArgb(252, 69, 69);//light red
-        static readonly Color friendlyColor = Color.FromArgb(3, 3, 116);//dark blue
-        static readonly Color hostileColor = Color.FromArgb(116, 3, 3);//dark red
+        public static Color paraintColor = Color.FromArgb(0, 0, 255);//Strong Blue
+        public static Color renintColor = Color.FromArgb(255, 0, 0);//Strong Red
+        public static Color agreeColor = Color.FromArgb(69, 69, 252); //light blue
+        public static Color disagreeColor = Color.FromArgb(252, 69, 69);//light red
+        public static Color friendlyColor = Color.FromArgb(3, 3, 116);//dark blue
+        public static Color hostileColor = Color.FromArgb(116, 3, 3);//dark red
         protected static readonly Color EventColor = Color.FromArgb(214, 30, 28);
         protected static readonly Color titleColor = Color.FromArgb(255, 255, 128);
         protected static readonly Brush titleBoxBrush = new SolidBrush(Color.FromArgb(112, 112, 112));
@@ -705,52 +704,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        public void CreateOutlink(PNode n1, PNode n2)
-        {
-            DBox start = (DBox)n1.Parent.Parent.Parent;
-            DiagNode end = (DiagNode)n2.Parent.Parent.Parent;
-            IExportEntry startExport = start.export;
-            string linkDesc = null;
-            foreach (OutputLink l in start.Outlinks)
-            {
-                if (l.node == n1)
-                {
-                    if (l.Links.Contains(end.UIndex))
-                        return;
-                    linkDesc = l.Desc;
-                    break;
-                }
-            }
-            if (linkDesc == null)
-                return;
-            linkDesc = OutputNumbers ? linkDesc.Substring(0, linkDesc.LastIndexOf(":")) : linkDesc;
-            int inputIndex = -1;
-            foreach (InputLink l in end.InLinks)
-            {
-                if (l.node == n2)
-                {
-                    inputIndex = l.index;
-                }
-            }
-            if (inputIndex == -1)
-                return;
-            var outLinksProp = startExport.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outLinksProp != null)
-            {
-                foreach (var prop in outLinksProp)
-                {
-                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
-                    {
-                        var linksProp = prop.GetProp<ArrayProperty<StructProperty>>("Links");
-                        linksProp.Add(new StructProperty("SeqOpOutputInputLink", false,
-                            new ObjectProperty(end.export, "LinkedOp"),
-                            new IntProperty(inputIndex, "InputLinkIdx")));
-                        startExport.WriteProperty(outLinksProp);
-                        return;
-                    }
-                }
-            }
-        }
+        public virtual void CreateOutlink(PNode n1, PNode n2) { }
 
         public void RemoveOutlink(ActionEdge edge)
         {
@@ -911,10 +865,11 @@ namespace ME3Explorer.Dialogue_Editor
         public int NodeID;
         static readonly Color insideTextColor = Color.FromArgb(213, 213, 213);//white
         protected InputDragHandler inputDragHandler = new InputDragHandler();
-
-        public DiagNode(BioConversationExtended.DialogueNodeExtended node, float x, float y, ConvGraphEditor ConvGraphEditor)
+        protected DialogueEditorWPF Editor;
+        public DiagNode(DialogueEditorWPF editor, BioConversationExtended.DialogueNodeExtended node, float x, float y, ConvGraphEditor ConvGraphEditor)
             : base(x, y, ConvGraphEditor)
         {
+            Editor = editor;
             Node = node;
             NodeProp = node.NodeProp;
             NodeID = Node.NodeCount;
@@ -1123,6 +1078,11 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
+        public override void CreateOutlink(PNode n1, PNode n2)
+        {
+
+        }
+
         public class InputDragHandler : PDragEventHandler
         {
             public override bool DoesAcceptEvent(PInputEventArgs e)
@@ -1174,15 +1134,14 @@ namespace ME3Explorer.Dialogue_Editor
     public class DiagNodeEntry : DiagNode
     {
         private ObservableCollectionExtended<BioConversationExtended.ReplyChoiceNode> ReplyChoiceList = new ObservableCollectionExtended<BioConversationExtended.ReplyChoiceNode>();
-        public DiagNodeEntry(BioConversationExtended.DialogueNodeExtended node, MEGame game, float x, float y, ConvGraphEditor ConvGraphEditor)
-            : base(node, x, y, ConvGraphEditor)
+        public DiagNodeEntry(DialogueEditorWPF editor, BioConversationExtended.DialogueNodeExtended node, MEGame game, float x, float y, ConvGraphEditor ConvGraphEditor)
+            : base(editor, node, x, y, ConvGraphEditor)
         {
             Node = node;
             NodeProp = node.NodeProp;
             NodeID = node.NodeCount;
             originalX = x;
             originalY = y;
-
 
             var rcarray = NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
             if (rcarray != null)
@@ -1289,14 +1248,50 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
+        public override void CreateOutlink(PNode n1, PNode n2)
+        {
+            DiagNode start = (DiagNode)n1.Parent.Parent.Parent;
+            DiagNode end = (DiagNode)n2.Parent.Parent.Parent;
+            var startNode = start.NodeID;
+            var endNode = end.NodeID;
 
+            var newReplyListProp = new ArrayProperty<StructProperty>(ArrayType.Struct, new NameReference("ReplyListNew"));
+            var oldReplyListProp = start.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
+
+
+            if(oldReplyListProp != null && oldReplyListProp.Count > 0)
+            {
+                foreach(var rprop in oldReplyListProp)
+                {
+                    newReplyListProp.Add(rprop);
+                }
+            }
+
+            var newProps = new PropertyCollection();
+            newProps.Add(new IntProperty(endNode - 1000, new NameReference("nIndex")));
+            newProps.Add(new StringRefProperty(123456, new NameReference("srParaphrase")));
+            newProps.Add(new StrProperty("", new NameReference("sParaphrase")));
+            newProps.Add(new EnumProperty(new NameReference("REPLY_CATEGORY_DEFAULT"), new NameReference("EReplyCategory"), Editor.Pcc, new NameReference("Category")));
+            newProps.Add(new NoneProperty());
+
+            var newstruct = new StructProperty("BioDialogReplyListDetails", newProps);
+            newReplyListProp.Add(newstruct);
+
+            Node.NodeProp.Properties.AddOrReplaceProp(newReplyListProp);
+            Editor.RecreateNodesToProperties(Editor.SelectedConv);
+
+            //Add new entry2ReplyNode
+            //Reload
+        }
     }
 
     public class DiagNodeReply : DiagNode
     {
-        public DiagNodeReply(BioConversationExtended.DialogueNodeExtended node, float x, float y, ConvGraphEditor ConvGraphEditor)
-            : base(node, x, y, ConvGraphEditor)
+
+        public DiagNodeReply(DialogueEditorWPF editor, BioConversationExtended.DialogueNodeExtended node, float x, float y, ConvGraphEditor ConvGraphEditor)
+            : base(editor, node, x, y, ConvGraphEditor)
         {
+            Editor = editor;
             Node = node;
             NodeProp = node.NodeProp;
             NodeID = Node.NodeCount + 1000;
@@ -1328,7 +1323,7 @@ namespace ME3Explorer.Dialogue_Editor
 
                             int linkedOp = prop.Value;
                             l.Links.Add(linkedOp);
-                            l.InputIndices = 0;
+                            l.InputIndices = 1;
                             //if (OutputNumbers)
                             l.Desc = l.Desc + (linkedOp >= 0 ? "," : ": ") + "# E" + linkedOp;
 
@@ -1369,6 +1364,34 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                 }
             }
+        }
+        public override void CreateOutlink(PNode n1, PNode n2)
+        {
+
+            /// NEED TO ADD CHECK TO STOP ATTACH TO SAME TYPE.
+            DiagNode start = (DiagNode)n1.Parent.Parent.Parent;
+            DiagNodeEntry end = (DiagNodeEntry)n2.Parent.Parent.Parent;
+            var startNode = start.NodeID;
+            var endNode = end.NodeID;
+
+            var newEntriesProp = new ArrayProperty<IntProperty>(ArrayType.Int, "EntryList");
+            var oldEntriesProp = start.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
+            if(oldEntriesProp != null)
+            {
+                foreach (var i in oldEntriesProp)
+                {
+                    newEntriesProp.Add(i);
+                }
+            }
+
+            newEntriesProp.Add(new IntProperty(endNode));
+
+            start.NodeProp.Properties.AddOrReplaceProp(newEntriesProp);
+
+            Editor.RecreateNodesToProperties(Editor.SelectedConv);
+
+            //Add new Item to list.
+            //Reload.
         }
     }
     public class DText : PText

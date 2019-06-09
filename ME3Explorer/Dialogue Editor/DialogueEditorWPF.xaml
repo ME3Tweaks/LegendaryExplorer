@@ -22,7 +22,6 @@
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <Converters:BoolToIndexConverter x:Key="BoolToIndexConverter"/>
-        <Converters:BoolToIndexConverter x:Key="BoolCheckBoxConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
            <Separator />
             <MenuItem Header="Clone Object" Click="CloneObject_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
@@ -85,14 +84,40 @@
             <MenuItem Header="View Options" Padding="4">
                 <MenuItem Header="Adjust line text size" ToolTip="Adjust the size of the spoken line text beside the title box.">
                     <MenuItem Name="Menu_LineSize_00" Header="Turned off" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="00"/>
-
-
                     <MenuItem Name="Menu_LineSize_10" Header="1.0 (default)" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="10"/>
                     <MenuItem Name="Menu_LineSize_15" Header="1.5" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="15"/>
                     <MenuItem Name="Menu_LineSize_20" Header="2.0" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="20"/>
                 </MenuItem>
-                <MenuItem Header="Adjust line text color" ToolTip="Adjust the color of the spoken line text beside the title box.">
-                    <xctk:ColorPicker Name="ClrPcker_Line" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                <MenuItem Header="Adjust graph color settings" >
+                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of the spoken line text beside the title box.">
+                        <TextBlock Text="Spoken Lines: " />
+                        <xctk:ColorPicker Name="ClrPcker_Line" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                    </StackPanel>
+                    <Separator/>
+                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of Paragon Interrupt.">
+                        <TextBlock Text="Paragon Interrupt: " />
+                        <xctk:ColorPicker Name="ClrPcker_ParaInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of Paragon Interrupt.">
+                        <TextBlock Text="Renegade Interrupt: " />
+                        <xctk:ColorPicker Name="ClrPcker_RenInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of Paragon Interrupt.">
+                        <TextBlock Text="Agree: " />
+                        <xctk:ColorPicker Name="ClrPcker_Agree" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of Paragon Interrupt.">
+                        <TextBlock Text="Disagree: " />
+                        <xctk:ColorPicker Name="ClrPcker_Disagree" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of Paragon Interrupt.">
+                        <TextBlock Text="Friendly response: " />
+                        <xctk:ColorPicker Name="ClrPcker_Friendly" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of Paragon Interrupt.">
+                        <TextBlock Text="Hostile response: " />
+                        <xctk:ColorPicker Name="ClrPcker_Hostile" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                    </StackPanel>
                 </MenuItem>
                 <MenuItem Name="ShowOutputNumbers_MenuItem" Header="NOT YET: Show Output Numbers" IsCheckable="True" Click="showOutputNumbers_Click"/>
                 <MenuItem Name="AutoSaveView_MenuItem" Header="NOT YET: Auto-Save View" IsCheckable="True"/>
