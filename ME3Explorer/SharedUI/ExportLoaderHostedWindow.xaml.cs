@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using ME3Explorer.CurveEd;
 using ME3Explorer.Packages;
 using Microsoft.Win32;
 using static ME3Explorer.PackageEditorWPF;
@@ -75,6 +76,11 @@ namespace ME3Explorer.SharedUI
                 if ((update.change == PackageChange.ExportAdd || update.change == PackageChange.ExportData)
                     && update.index == LoadedExport.Index)
                 {
+                    if (hostedControl is CurveEditor)
+                    {
+                        //CurveEditor handles its own refresh
+                        continue;
+                    }
                     hostedControl.LoadExport(LoadedExport); //reload export
                     return;
                 }
