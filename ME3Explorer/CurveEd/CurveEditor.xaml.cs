@@ -200,7 +200,7 @@ namespace ME3Explorer.CurveEd
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            if (exportEntry.FileRef.Game == MEGame.ME3)
+            if (exportEntry.FileRef.Game != MEGame.UDK)
             {
                 var props = exportEntry.GetProperties();
                 foreach (var prop in props)
