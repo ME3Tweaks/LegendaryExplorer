@@ -82,17 +82,18 @@
             </MenuItem>
 
             <MenuItem Header="View Options" Padding="4">
-                <MenuItem Header="Adjust line text size" ToolTip="Adjust the size of the spoken line text beside the title box.">
+                <MenuItem Header="Adjust spoken line text size" ToolTip="Adjust the size of the spoken line text beside the title box.">
                     <MenuItem Name="Menu_LineSize_00" Header="Turned off" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="00"/>
                     <MenuItem Name="Menu_LineSize_10" Header="1.0 (default)" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="10"/>
                     <MenuItem Name="Menu_LineSize_15" Header="1.5" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="15"/>
                     <MenuItem Name="Menu_LineSize_20" Header="2.0" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="20"/>
                 </MenuItem>
                 <MenuItem Header="Adjust graph color settings" >
-                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of the spoken line text beside the title box.">
-                        <TextBlock Text="Spoken Lines: " />
-                        <xctk:ColorPicker Name="ClrPcker_Line" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
-                    </StackPanel>
+                    <DockPanel ToolTip="Adjust the color of the spoken line text beside the title box.">
+                        <TextBlock Text="Spoken Text: " DockPanel.Dock="Left"/>
+                        <xctk:ColorPicker Name="ClrPcker_Line" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" DockPanel.Dock="Right" ></xctk:ColorPicker>
+                        <TextBlock Text=""/>
+                    </DockPanel>
                     <Separator/>
                     <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of Paragon Interrupt.">
                         <TextBlock Text="Paragon Interrupt: " />
@@ -246,7 +247,7 @@
                     <TextBox Name="TextBox_Speaker_Name"  Text="{Binding Path=SelectedSpeaker.SpeakerName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" KeyUp="EnterName_Speaker_KeyUp" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" />
                     <TextBlock Text="" FontSize="10"  />
                     <DockPanel>
-                        <TextBlock Text="TLKString:" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="Actor's named TLK string. Possibly." FontSize="15" />
+                        <TextBlock Text="TLKString:" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="Actor's named TLK string." FontSize="15" />
                         <TextBlock Name="TextBox_Speaker_TLK" Text="{Binding Path=SelectedSpeaker.StrRefID, UpdateSourceTrigger=PropertyChanged}" FontSize="15" DockPanel.Dock="Right" HorizontalAlignment="Right" ToolTip="Actor's named TLK string. Possibly."/>
                     </DockPanel>
                     <TextBlock Name="TextBox_Speaker_FriendlyName" Text="{Binding Path=SelectedSpeaker.FriendlyName, UpdateSourceTrigger=PropertyChanged}" FontSize="20" HorizontalAlignment="Left" ToolTip="Actor's name. Possibly." />
@@ -395,7 +396,7 @@
                                     <TextBox Text="{Binding Path=SelectedDialogueNode.InterpLength}" HorizontalAlignment="Stretch" FontSize="15" VerticalAlignment="Center" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" IsReadOnly="True"/>
                                     <TextBlock Text="seconds" VerticalAlignment="Center" FontSize="15" Margin="2"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" ToolTip="Link to Matinee via BioSeqEvent_Conv">
                                     <TextBlock Name="Node_Text_Export" Text="ExportID:  " VerticalAlignment="Center" FontSize="15" Margin="2"/>
                                     <TextBox Text="{Binding Path=SelectedDialogueNode.ExportID}" HorizontalAlignment="Stretch" FontSize="15" VerticalAlignment="Center" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
                                 </StackPanel>
@@ -475,6 +476,75 @@
                         </TabItem>
                     </TabControl>
                 </Grid>
+           <!-- Start List -->
+                <StackPanel Name="Start_Panel" DockPanel.Dock="Top"  Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                    <TextBlock Text="Starting Nodes"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Top" Padding="5"/>
+                    <DockPanel LastChildFill="False">
+                        <Grid Height="30" DockPanel.Dock="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="31"></ColumnDefinition>
+                                <ColumnDefinition Width="31"></ColumnDefinition>
+                                <ColumnDefinition Width="31"></ColumnDefinition>
+                                <ColumnDefinition Width="31"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Background="GhostWhite">Order</Label>
+                            <Label Grid.Column="1" Background="GhostWhite">Entry Link</Label>
+                            <Button Name="StartAddButton" Command="{Binding StartAddCommand}" CommandParameter="Add" Padding="3" DockPanel.Dock="Right" IsEnabled="True" Grid.Column="2" Margin="2" ToolTip="Add a new start">
+                                <Button.Content>
+                                    <fa:ImageAwesome Icon="PlusCircle" Width="16" Height="16" Foreground="DarkBlue"/>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="StartDeleteButton" Command="{Binding StartDeleteCommand}" Padding="3" DockPanel.Dock="Right" IsEnabled="True" Grid.Column="3" Margin="2" ToolTip="Delete selected start">
+                                <Button.Content>
+                                    <fa:ImageAwesome Icon="MinusCircle" Width="16" Height="16" Foreground="DarkBlue"/>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="StartUpButton" Command="{Binding StartUpCommand}" CommandParameter="Up" Padding="3" DockPanel.Dock="Right" IsEnabled="True" Grid.Column="4" Margin="2" ToolTip="Move selected start up">
+                                <Button.Content>
+                                    <fa:ImageAwesome Icon="ArrowCircleUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="StartDownButton" Command="{Binding StartDownCommand}" CommandParameter="Down" Padding="3" DockPanel.Dock="Right" IsEnabled="True" Grid.Column="5" Margin="2" ToolTip="Move selected start down">
+                                <Button.Content>
+                                    <fa:ImageAwesome Icon="ArrowCircleDown" Width="16" Height="16" Foreground="DarkBlue"/>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+                        <ListBox Name="Start_ListBox" DockPanel.Dock="Bottom" ItemsSource="{Binding SelectedStarts, Mode=TwoWay}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="Start_ListBox_SelectionChanged" MinHeight="250">
+                            <ListBox.ItemTemplate >
+                                <DataTemplate>
+                                    <Grid Margin="0,0,5,0" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Selector.IsSelected" Value="True">
+                                            <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Add New Start" Command="{Binding StartAddCommand}" CommandParameter="Add"/>
+                                    <MenuItem Header="Delete Start" Command="{Binding StartDeleteCommand}"/>
+                                    <MenuItem Header="Edit Link" Command="{Binding StartEditCommand}" CommandParameter="Edit"/>
+                                </ContextMenu>
+                            </ListBox.ContextMenu>
+                        </ListBox>
+                    </DockPanel>
+                </StackPanel>
             </DockPanel>
  
             

@@ -33,6 +33,7 @@ using static ME3Explorer.Dialogue_Editor.BioConversationExtended;
 using System.Windows.Data;
 using System.Windows.Controls.Primitives;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace ME3Explorer.Dialogue_Editor
 {
@@ -84,6 +85,17 @@ namespace ME3Explorer.Dialogue_Editor
             get => _SelectedSpeaker;
             set => SetProperty(ref _SelectedSpeaker, value);
         }
+        private Dictionary<string, int> _SelectedStarts = new Dictionary<string, int>();
+        public Dictionary<string, int> SelectedStarts
+        {
+            get => _SelectedStarts;
+            set
+            {
+                if (value != _SelectedStarts)
+                    SetProperty(ref _SelectedStarts, value);
+            }
+        }
+        private int forcedSelectStart = -1;
         #region ConvoBox //Conversation Box Links
         private ConversationExtended _SelectedConv;
         public ConversationExtended SelectedConv
@@ -105,7 +117,6 @@ namespace ME3Explorer.Dialogue_Editor
         // FOR GRAPHING
         public ObservableCollectionExtended<DObj> CurrentObjects { get; } = new ObservableCollectionExtended<DObj>();
         public ObservableCollectionExtended<DObj> SelectedObjects { get; } = new ObservableCollectionExtended<DObj>();
-
         //DEBUG THIS NEEDED?
         private readonly List<SaveData> extraSaveData = new List<SaveData>();
         private bool panToSelection = true;
@@ -118,6 +129,9 @@ namespace ME3Explorer.Dialogue_Editor
 
         public static readonly string DialogueEditorDataFolder = Path.Combine(App.AppDataFolder, @"DialogueEditor\");
         public static readonly string OptionsPath = Path.Combine(DialogueEditorDataFolder, "DialogueEditorOptions.JSON");
+        internal static string ActorDatabasePath = Path.Combine(App.ExecFolder, "ActorTagdb.json");
+        private static bool TagDBLoaded;
+        private static Dictionary<string, int> ActorStrRefs;
 
         private string _statusText;
         public string StatusText
@@ -147,6 +161,11 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand DeleteSpeakerCommand { get; set; }
         public ICommand ChangeNameCommand { get; set; }
         public ICommand ChangeLineSizeCommand { get; set; }
+        public ICommand StartUpCommand { get; set; }
+        public ICommand StartDownCommand { get; set; }
+        public ICommand StartAddCommand { get; set; }
+        public ICommand StartDeleteCommand { get; set; }
+        public ICommand StartEditCommand { get; set; }
         private bool HasWwbank(object param)
         {
             return SelectedConv != null && SelectedConv.WwiseBank != null;
@@ -172,6 +191,18 @@ namespace ME3Explorer.Dialogue_Editor
         {
             return SelectedDialogueNode != null && SelectedDialogueNode.Interpdata != null;
         }
+        private bool StartCanMoveUp(object param)
+        {
+            return SelectedConv != null && Start_ListBox.SelectedIndex > 0;
+        }
+        private bool StartCanMoveDown(object param)
+        {
+            return SelectedConv != null && Start_ListBox.SelectedIndex >= 0 && Start_ListBox.SelectedIndex < Start_ListBox.Items.Count - 1;
+        }
+        private bool StartCanDelete()
+        {
+            return SelectedConv != null && Start_ListBox.SelectedIndex >= 0 && Start_ListBox.Items.Count > 0;
+        }
         #endregion Declarations
 
         #region Startup/Exit
@@ -193,8 +224,8 @@ namespace ME3Explorer.Dialogue_Editor
             graphEditor.Camera.MouseUp += back_MouseUp;
 
             this.graphEditor.Click += graphEditor_Click;
-            this.graphEditor.DragDrop += SequenceEditor_DragDrop;
-            this.graphEditor.DragEnter += SequenceEditor_DragEnter;
+            this.graphEditor.DragDrop += DialogueEditor_DragDrop;
+            this.graphEditor.DragEnter += DialogueEditor_DragEnter;
 
             Node_Combo_GUIStyle.ItemsSource = Enum.GetValues(typeof(EConvGUIStyles)).Cast<EConvGUIStyles>();
             Node_Combo_ReplyType.ItemsSource = Enum.GetValues(typeof(EReplyTypes)).Cast<EReplyTypes>();
@@ -286,7 +317,14 @@ namespace ME3Explorer.Dialogue_Editor
             DeleteSpeakerCommand = new GenericCommand(SpeakerDelete, HasActiveSpkr);
             ChangeNameCommand = new GenericCommand(SpeakerGoToName, HasActiveSpkr);
             ChangeLineSizeCommand = new RelayCommand(ChangeLineSize);
+            StartUpCommand = new RelayCommand(StartMoveAction, StartCanMoveUp);
+            StartDownCommand = new RelayCommand(StartMoveAction, StartCanMoveDown);
+            StartAddCommand = new RelayCommand(StartAddEdit);
+            StartDeleteCommand = new GenericCommand(StartDelete, StartCanDelete);
+            StartEditCommand = new RelayCommand(StartAddEdit);
         }
+
+
 
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
@@ -356,8 +394,8 @@ namespace ME3Explorer.Dialogue_Editor
             graphEditor.Camera.MouseDown -= backMouseDown_Handler;
             graphEditor.Camera.MouseUp -= back_MouseUp;
             graphEditor.Click -= graphEditor_Click;
-            graphEditor.DragDrop -= SequenceEditor_DragDrop;
-            graphEditor.DragEnter -= SequenceEditor_DragEnter;
+            graphEditor.DragDrop -= DialogueEditor_DragDrop;
+            graphEditor.DragEnter -= DialogueEditor_DragEnter;
             CurrentObjects.ForEach(x =>
             {
                 x.MouseDown -= node_MouseDown;
@@ -473,6 +511,25 @@ namespace ME3Explorer.Dialogue_Editor
             StatusText = "Select a package file to load";
         }
 
+        private int LookupTagRef(string actortag)
+        {
+            if (!TagDBLoaded)
+            {
+                if (File.Exists(ActorDatabasePath))
+                {
+                    ActorStrRefs = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(ActorDatabasePath));
+                    TagDBLoaded = true;
+                }
+            }
+            var strref = ActorStrRefs.FirstOrDefault(a => a.Key.ToLower() == actortag.ToLower());
+            if(strref.Key != null)
+            {
+                return strref.Value;
+            }
+            
+            return 0;
+        }
+
         #endregion Startup/Exit
 
         #region Parsing
@@ -489,6 +546,7 @@ namespace ME3Explorer.Dialogue_Editor
             Conversations_ListBox.IsEnabled = false;
             if (SelectedConv != null && SelectedConv.IsFirstParsed == false) //Get Active setup pronto.
             {
+                ParseStartingList(SelectedConv);
                 ParseSpeakers(SelectedConv);
                 GenerateSpeakerList();
                 ParseEntryList(SelectedConv);
@@ -501,6 +559,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             foreach (var conv in Conversations.Where(conv => conv.IsFirstParsed == false)) //Get Speakers entry and replies plus convo data first
             {
+                ParseStartingList(conv);
                 ParseSpeakers(conv);
                 ParseEntryList(conv);
                 ParseReplyList(conv);
@@ -566,7 +625,7 @@ namespace ME3Explorer.Dialogue_Editor
         public void ParseSpeakers(ConversationExtended conv)
         {
             conv.Speakers = new ObservableCollectionExtended<SpeakerExtended>();
-            conv.Speakers.Add(new SpeakerExtended(-2, "player", null, null, 125303, "Shepard"));
+            conv.Speakers.Add(new SpeakerExtended(-2, "player", null, null, 125303, "\"Shepard\""));
             conv.Speakers.Add(new SpeakerExtended(-1, "owner", null, null, 0, "No data"));
             if (CurrentConvoPackage.Game != MEGame.ME3)
             {
@@ -1115,20 +1174,23 @@ namespace ME3Explorer.Dialogue_Editor
 
             return 0;
         }
-
-        public List<int> GetStartingList()
+        /// <summary>
+        /// Gets dictionary of starting list and position
+        /// </summary>
+        /// <returns>Key = position on list, Value = Outlink</returns>
+        public void ParseStartingList(ConversationExtended conv)
         {
-            List<int> startList = new List<int>();
-            var prop = CurrentLoadedExport.GetProperty<ArrayProperty<IntProperty>>("m_StartingList"); //ME1/ME2/ME3
+            conv.StartingList = new SortedDictionary<int, int>();
+            var prop = conv.Export.GetProperty<ArrayProperty<IntProperty>>("m_StartingList"); //ME1/ME2/ME3
             if (prop != null)
             {
+                int pos = 0;
                 foreach (var sl in prop)
                 {
-                    startList.Add(sl.Value);
+                    conv.StartingList.Add(pos, sl.Value);
+                    pos++;
                 }
-
             }
-            return startList;
         }
         #endregion Parsing
 
@@ -1212,6 +1274,11 @@ namespace ME3Explorer.Dialogue_Editor
 
         public void RecreateNodesToProperties(ConversationExtended conv)
         {
+            var newstartlist = new ArrayProperty<IntProperty>(ArrayType.Int, new NameReference("m_StartingList"));
+            foreach (var start in conv.StartingList)
+            {
+                newstartlist.Add(start.Value);
+            }
 
             var newentryList = new ArrayProperty<StructProperty>(ArrayType.Struct, new NameReference("m_EntryList"));
             foreach (var entry in conv.EntryList.OrderBy(entry => entry.NodeCount))
@@ -1222,6 +1289,11 @@ namespace ME3Explorer.Dialogue_Editor
             foreach (var reply in conv.ReplyList.OrderBy(reply => reply.NodeCount))
             {
                 newreplyList.Add(reply.NodeProp);
+            }
+
+            if (newstartlist.Count > 0)
+            {
+                conv.BioConvo.AddOrReplaceProp(newstartlist);
             }
 
             if (newentryList.Count > 0)
@@ -1314,9 +1386,9 @@ namespace ME3Explorer.Dialogue_Editor
 
             FirstParse();
             RefreshView();
+
             Conversations_ListBox.SelectedIndex = cSelectedIdx;
             Speakers_ListBox.SelectedIndex = sSelectedIdx;
-
 
             if (SelectedObjects.Count > 0)
             {
@@ -1645,14 +1717,15 @@ namespace ME3Explorer.Dialogue_Editor
             int rcnt = SelectedConv.ReplyList.Count;
             int[] m = { ecnt, rcnt };
             int max = m.Max();
-            var startlist = GetStartingList();
+            var startlist = new Dictionary<int, int>(SelectedConv.StartingList); //Dictionary (Key = position on list, value = outlink)
             for (int n = 0; n < max; n++)
             {
-                bool isInList = startlist.IndexOf(n) != -1;
+                bool isInList = startlist.Values.IndexOf(n) != -1;
                 if (isInList)
                 {
-                    CurrentObjects.Add(new DStart(n, x, y, graphEditor));
-                    startlist.Remove(n);
+                    var startOrder = startlist.FirstOrDefault(k => k.Value == n).Key;
+                    var newstart = new DStart(this, startOrder, n, x, y, graphEditor);
+                    CurrentObjects.Add(newstart);
                 }
                 if (n < ecnt)
                 {
@@ -1767,114 +1840,113 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void AutoLayout()
         {
-            foreach (DObj obj in CurrentObjects)
-            {
-                obj.SetOffset(0, 0); //remove existing positioning
-            }
+            //foreach (DObj obj in CurrentObjects)
+            //{
+            //    obj.SetOffset(0, 0); //remove existing positioning
+            //}
 
-            const float HORIZONTAL_SPACING = 40;
-            const float VERTICAL_SPACING = 20;
-            var visitedNodes = new HashSet<int>();
-            var eventNodes = CurrentObjects.OfType<DStart>().ToList();
-            DObj firstNode = eventNodes.FirstOrDefault();
-            var varNodeLookup = CurrentObjects.OfType<SVar>().ToDictionary(obj => obj.UIndex);
-            var opNodeLookup = CurrentObjects.OfType<DBox>().ToDictionary(obj => obj.UIndex);
-            var rootTree = new List<DObj>();
-            //DStarts are natural root nodes. ALmost everything will proceed from one of these
-            foreach (DStart eventNode in eventNodes)
-            {
-                LayoutTree(eventNode, 5 * VERTICAL_SPACING);
-            }
+            //const float HORIZONTAL_SPACING = 40;
+            //const float VERTICAL_SPACING = 20;
+            //var visitedNodes = new HashSet<int>();
+            //var eventNodes = CurrentObjects.OfType<DStart>().ToList();
+            //DObj firstNode = eventNodes.FirstOrDefault();
 
-            //Find DiagNodes with no inputs. These will not have been reached from an DStart
-            var orphanRoots = CurrentObjects.OfType<DiagNode>().Where(node => node.InputEdges.IsEmpty());
-            foreach (DiagNode orphan in orphanRoots)
-            {
-                LayoutTree(orphan, VERTICAL_SPACING);
-            }
+            //var rootTree = new List<DObj>();
+            ////DStarts are natural root nodes. ALmost everything will proceed from one of these
+            //foreach (DStart eventNode in eventNodes)
+            //{
+            //    LayoutTree(eventNode, 5 * VERTICAL_SPACING);
+            //}
 
-            //It's possible that there are groups of otherwise unconnected DiagNodes that form cycles.
-            //Might be possible to make a better heuristic for choosing a root than sequence order, but this situation is so rare it's not worth the effort
-            var cycleNodes = CurrentObjects.OfType<DiagNode>().Where(node => !visitedNodes.Contains(node.UIndex));
-            foreach (DiagNode cycleNode in cycleNodes)
-            {
-                LayoutTree(cycleNode, VERTICAL_SPACING);
-            }
+            ////Find DiagNodes with no inputs. These will not have been reached from an DStart
+            //var orphanRoots = CurrentObjects.OfType<DiagNode>().Where(node => node.InputEdges.IsEmpty());
+            //foreach (DiagNode orphan in orphanRoots)
+            //{
+            //    LayoutTree(orphan, VERTICAL_SPACING);
+            //}
 
-            //Lonely unconnected variables. Put them in a row below everything else
-            var unusedVars = CurrentObjects.OfType<SVar>().Where(obj => !visitedNodes.Contains(obj.UIndex));
-            float varOffset = 0;
-            float vertOffset = rootTree.BoundingRect().Bottom + VERTICAL_SPACING;
-            foreach (SVar unusedVar in unusedVars)
-            {
-                unusedVar.OffsetBy(varOffset, vertOffset);
-                varOffset += unusedVar.GlobalFullWidth + HORIZONTAL_SPACING;
-            }
+            ////It's possible that there are groups of otherwise unconnected DiagNodes that form cycles.
+            ////Might be possible to make a better heuristic for choosing a root than sequence order, but this situation is so rare it's not worth the effort
+            //var cycleNodes = CurrentObjects.OfType<DiagNode>().Where(node => !visitedNodes.Contains(node.UIndex));
+            //foreach (DiagNode cycleNode in cycleNodes)
+            //{
+            //    LayoutTree(cycleNode, VERTICAL_SPACING);
+            //}
 
-            if (firstNode != null) CurrentObjects.OffsetBy(0, -firstNode.OffsetY);
+            ////Lonely unconnected variables. Put them in a row below everything else
+            //var unusedVars = CurrentObjects.OfType<SVar>().Where(obj => !visitedNodes.Contains(obj.UIndex));
+            //float varOffset = 0;
+            //float vertOffset = rootTree.BoundingRect().Bottom + VERTICAL_SPACING;
+            //foreach (SVar unusedVar in unusedVars)
+            //{
+            //    unusedVar.OffsetBy(varOffset, vertOffset);
+            //    varOffset += unusedVar.GlobalFullWidth + HORIZONTAL_SPACING;
+            //}
 
-            foreach (DiagEdEdge edge in graphEditor.edgeLayer)
-                ConvGraphEditor.UpdateEdge(edge);
+            //if (firstNode != null) CurrentObjects.OffsetBy(0, -firstNode.OffsetY);
 
-
-            void LayoutTree(DBox DiagNode, float verticalSpacing)
-            {
-                if (firstNode == null) firstNode = DiagNode;
-                visitedNodes.Add(DiagNode.UIndex);
-                var subTree = LayoutSubTree(DiagNode);
-                float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING;
-                //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
-                float dy = rootTree.Where(node => node.GlobalFullBounds.Left < width).BoundingRect().Bottom;
-                if (dy > 0) dy += verticalSpacing;
-                subTree.OffsetBy(0, dy);
-                rootTree.AddRange(subTree);
-            }
-
-            List<DObj> LayoutSubTree(DBox root)
-            {
-                //Task.WaitAll(Task.Delay(1500));
-                var tree = new List<DObj>();
-                var childTrees = new List<List<DObj>>();
-                var children = root.Outlinks.SelectMany(link => link.Links).Where(uIndex => !visitedNodes.Contains(uIndex));
-                foreach (int uIndex in children)
-                {
-                    visitedNodes.Add(uIndex);
-                    if (opNodeLookup.TryGetValue(uIndex, out DBox node))
-                    {
-                        List<DObj> subTree = LayoutSubTree(node);
-                        childTrees.Add(subTree);
-                    }
-                }
-
-                if (childTrees.Any())
-                {
-                    float dx = root.GlobalFullWidth + (HORIZONTAL_SPACING * (1 + childTrees.Count * 0.4f));
-                    foreach (List<DObj> subTree in childTrees)
-                    {
-                        float subTreeWidth = subTree.BoundingRect().Width + HORIZONTAL_SPACING + dx;
-                        //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
-                        float dy = tree.Where(node => node.GlobalFullBounds.Left < subTreeWidth).BoundingRect().Bottom;
-                        if (dy > 0) dy += VERTICAL_SPACING;
-                        subTree.OffsetBy(dx, dy);
-                        //TODO: fix this so it doesn't screw up some sequences. eg: BioD_ProEar_310BigFall.pcc
-                        /*float treeWidth = tree.BoundingRect().Width + HORIZONTAL_SPACING;
-                        //tighten spacing when this subtree is wider than existing tree. 
-                        dy -= subTree.Where(node => node.GlobalFullBounds.Left < treeWidth).BoundingRect().Top;
-                        if (dy < 0) dy += VERTICAL_SPACING;
-                        subTree.OffsetBy(0, dy);*/
-
-                        tree.AddRange(subTree);
-                    }
-
-                    //center the root on its children
-                    float centerOffset = tree.OfType<DBox>().BoundingRect().Height / 2 - root.GlobalFullHeight / 2;
-                    root.OffsetBy(0, centerOffset);
-                }
+            //foreach (DiagEdEdge edge in graphEditor.edgeLayer)
+            //    ConvGraphEditor.UpdateEdge(edge);
 
 
-                tree.Add(root);
-                return tree;
-            }
+            //void LayoutTree(DBox DiagNode, float verticalSpacing)
+            //{
+            //    if (firstNode == null) firstNode = DiagNode;
+            //    visitedNodes.Add(DiagNode.UIndex);
+            //    var subTree = LayoutSubTree(DiagNode);
+            //    float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING;
+            //    //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
+            //    float dy = rootTree.Where(node => node.GlobalFullBounds.Left < width).BoundingRect().Bottom;
+            //    if (dy > 0) dy += verticalSpacing;
+            //    subTree.OffsetBy(0, dy);
+            //    rootTree.AddRange(subTree);
+            //}
+
+            //List<DObj> LayoutSubTree(DBox root)
+            //{
+            //    //Task.WaitAll(Task.Delay(1500));
+            //    var tree = new List<DObj>();
+            //    var childTrees = new List<List<DObj>>();
+            //    var children = root.Outlinks.SelectMany(link => link.Links).Where(uIndex => !visitedNodes.Contains(uIndex));
+            //    foreach (int uIndex in children)
+            //    {
+            //        visitedNodes.Add(uIndex);
+            //        if (opNodeLookup.TryGetValue(uIndex, out DBox node))
+            //        {
+            //            List<DObj> subTree = LayoutSubTree(node);
+            //            childTrees.Add(subTree);
+            //        }
+            //    }
+
+            //    if (childTrees.Any())
+            //    {
+            //        float dx = root.GlobalFullWidth + (HORIZONTAL_SPACING * (1 + childTrees.Count * 0.4f));
+            //        foreach (List<DObj> subTree in childTrees)
+            //        {
+            //            float subTreeWidth = subTree.BoundingRect().Width + HORIZONTAL_SPACING + dx;
+            //            //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
+            //            float dy = tree.Where(node => node.GlobalFullBounds.Left < subTreeWidth).BoundingRect().Bottom;
+            //            if (dy > 0) dy += VERTICAL_SPACING;
+            //            subTree.OffsetBy(dx, dy);
+            //            //TODO: fix this so it doesn't screw up some sequences. eg: BioD_ProEar_310BigFall.pcc
+            //            /*float treeWidth = tree.BoundingRect().Width + HORIZONTAL_SPACING;
+            //            //tighten spacing when this subtree is wider than existing tree. 
+            //            dy -= subTree.Where(node => node.GlobalFullBounds.Left < treeWidth).BoundingRect().Top;
+            //            if (dy < 0) dy += VERTICAL_SPACING;
+            //            subTree.OffsetBy(0, dy);*/
+
+            //            tree.AddRange(subTree);
+            //        }
+
+            //        //center the root on its children
+            //        float centerOffset = tree.OfType<DBox>().BoundingRect().Height / 2 - root.GlobalFullHeight / 2;
+            //        root.OffsetBy(0, centerOffset);
+            //    }
+
+
+            //    tree.Add(root);
+            //    return tree;
+            //}
         }
 
         public void RefreshView()
@@ -1899,25 +1971,18 @@ namespace ME3Explorer.Dialogue_Editor
         /// <summary>
         /// Sets UI to 0 = Convo (default), 1=Speakers, 2=Node.
         /// </summary>
-        private int SetUIMode(int mode, Boolean force)
+        private int SetUIMode(int mode, Boolean force = false)
         {
-            if (mode == CurrentUIMode)
+            if (mode == CurrentUIMode && !force)
             {
                 return CurrentUIMode;
             }
-            if (force)
-            {
-                CurrentUIMode = mode;
-            }
-            else
-            {
-                CurrentUIMode = mode;
-            }
-
+            CurrentUIMode = mode;
 
             Speaker_Panel.Visibility = Visibility.Collapsed;
             Convo_Panel.Visibility = Visibility.Collapsed;
             Node_Panel.Visibility = Visibility.Collapsed;
+            Start_Panel.Visibility = Visibility.Collapsed;
             switch (CurrentUIMode)
             {
                 case 1:
@@ -1925,6 +1990,9 @@ namespace ME3Explorer.Dialogue_Editor
                     break;
                 case 2:
                     Node_Panel.Visibility = Visibility.Visible;
+                    break;
+                case 3:
+                    Start_Panel.Visibility = Visibility.Visible;
                     break;
                 default:
                     Convo_Panel.Visibility = Visibility.Visible;
@@ -1964,7 +2032,7 @@ namespace ME3Explorer.Dialogue_Editor
             else
             {
                 var nconv = Conversations[Conversations_ListBox.SelectedIndex];
-                SelectedConv = new ConversationExtended(nconv.ExportUID, nconv.ConvName, nconv.BioConvo, nconv.Export, nconv.IsParsed, nconv.IsFirstParsed, nconv.Speakers, nconv.EntryList, nconv.ReplyList, nconv.WwiseBank, nconv.Sequence, nconv.NonSpkrFFX);
+                SelectedConv = new ConversationExtended(nconv.ExportUID, nconv.ConvName, nconv.BioConvo, nconv.Export, nconv.IsParsed, nconv.IsFirstParsed, nconv.StartingList, nconv.Speakers, nconv.EntryList, nconv.ReplyList, nconv.WwiseBank, nconv.Sequence, nconv.NonSpkrFFX); ;
                 CurrentLoadedExport = CurrentConvoPackage.getUExport(SelectedConv.ExportUID);
                 if (Pcc.Game == MEGame.ME1)
                 {
@@ -1985,7 +2053,7 @@ namespace ME3Explorer.Dialogue_Editor
 
                 GenerateSpeakerList();
                 RefreshView();
-
+                Start_ListBoxUpdate();
 
                 ListenersList.ClearEx();
                 ListenersList.Add(new SpeakerExtended(-3, "none"));
@@ -1993,6 +2061,7 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     ListenersList.Add(spkr);
                 }
+
             }
             var PanObjects = new ObservableCollectionExtended<DObj>();
             PanObjects.AddRange(CurrentObjects.Take(5));
@@ -2034,6 +2103,12 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 if (Speakers_ListBox.SelectedIndex >= 0)
                 {
+                    if(SelectedSpeaker.StrRefID <= 0)
+                    {
+                        SelectedSpeaker.StrRefID = LookupTagRef(SelectedSpeaker.SpeakerName);
+                        SelectedSpeaker.FriendlyName = GlobalFindStrRefbyID(SelectedSpeaker.StrRefID, Pcc.Game);
+                    }
+
                     if (SelectedSpeaker.SpeakerID < 0)
                     {
                         TextBox_Speaker_Name.IsEnabled = false;
@@ -2060,7 +2135,6 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 n = -1;
             }
-
 
             int selectedIndex = Speakers_ListBox.SelectedIndex;
             Speakers_ListBox.SelectedIndex = -1;
@@ -2123,6 +2197,9 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     Keyboard.ClearFocus();
                     SelectedSpeakerList[Speakers_ListBox.SelectedIndex].SpeakerName = SelectedSpeaker.SpeakerName;
+                    SelectedSpeaker.StrRefID = LookupTagRef(SelectedSpeaker.SpeakerName);
+                    SelectedSpeaker.FriendlyName = GlobalFindStrRefbyID(SelectedSpeakerList[Speakers_ListBox.SelectedIndex].StrRefID, Pcc.Game);
+
                     SaveSpeakersToProperties(SelectedSpeakerList);
                 }
             }
@@ -2232,11 +2309,18 @@ namespace ME3Explorer.Dialogue_Editor
 
             Node_Combo_Spkr.IsEnabled = true; //Enable/disable boxes
 
+            Node_CB_HideSubs.IsEnabled = false;
             Node_CB_ESkippable.IsEnabled = false;
             Node_CB_RMajor.IsEnabled = false;
             Node_CB_RDefault.IsEnabled = false;
             Node_CB_RUnskippable.IsEnabled = false;
             Node_Combo_ReplyType.IsEnabled = false;
+
+            if (Pcc.Game == MEGame.ME3)
+            {
+                Node_CB_HideSubs.IsEnabled = true;
+            }
+
             if (SelectedDialogueNode.IsReply)
             {
                 Node_Text_Type.Text = "Reply Node";
@@ -2265,15 +2349,121 @@ namespace ME3Explorer.Dialogue_Editor
 
 
         }
+        private void Start_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var startNodes = CurrentObjects.OfType<DStart>().ToList();
+            var start = startNodes.FirstOrDefault(s => s.Order == Start_ListBox.SelectedIndex );
+            if (start == null)
+                return;
+
+            foreach (var oldselection in SelectedObjects)
+            {
+                oldselection.IsSelected = false;
+            }
+            SelectedObjects.ClearEx();
+            start.IsSelected = true;
+            SelectedObjects.Add(start);
+            panToSelection = false;
+        }
+        private void StartAddEdit(object param)
+        {
+            var p = param as string;
+            int newKey = SelectedConv.StartingList.Count;
+            int f = 0;
+            if (p == "Edit")
+            {
+                newKey = Start_ListBox.SelectedIndex;
+                f = SelectedConv.StartingList[newKey];
+            }
+            
+            var links = new List<string>();
+            foreach(var entry in SelectedConv.EntryList)
+            {
+                links.Add($"{entry.NodeCount}: {entry.LineStrRef} {entry.Line}");
+            }
+            var sdlg = InputComboBox.GetValue("Pick an entry node to link to", links, links[f], false);
+            
+            if (sdlg == null)
+                return;
+
+            var newVal = links.FindIndex(sdlg.Equals);
+
+            if(p == "Edit")
+            {
+                SelectedConv.StartingList[newKey] = newVal;
+            }
+            else
+            {
+                SelectedConv.StartingList.Add(newKey, newVal);
+            }
+            
+            RecreateNodesToProperties(SelectedConv);
+            forcedSelectStart = newKey;
+        }
+        private void StartDelete()
+        {
+            SelectedConv.StartingList.Remove(Start_ListBox.SelectedIndex);
+            RecreateNodesToProperties(SelectedConv);
+        }
+        private void StartMoveAction(object obj)
+        {
+            StartUpButton.IsEnabled = false;
+            StartDownButton.IsEnabled = false;
+            string direction = obj as string;
+            int n = 1; //Movement default is down the list (higher n)
+            if (direction == "Up")
+            {
+                n = -1;
+            }
+
+            int selectedIndex = Start_ListBox.SelectedIndex;
+            Start_ListBox.SelectedIndex = -1;
+
+            var selectedval = SelectedConv.StartingList[selectedIndex];
+            var shiftval = SelectedConv.StartingList[selectedIndex + n];
+
+            SelectedConv.StartingList.Remove(selectedIndex);
+            SelectedConv.StartingList.Remove(selectedIndex + n);
+            SelectedConv.StartingList.Add(selectedIndex + n, selectedval);
+            SelectedConv.StartingList.Add(selectedIndex, shiftval);
+
+            RecreateNodesToProperties(SelectedConv);
+            forcedSelectStart = selectedIndex + n;
+            StartUpButton.IsEnabled = true;
+            StartDownButton.IsEnabled = true;
+        }
+        private void Start_ListBoxUpdate()
+        {
+            var i = Start_ListBox.SelectedIndex;
+            Start_ListBox.SelectedIndex = -1;
+            Start_ListBox.ItemsSource = null;
+            SelectedStarts.Clear();
+            foreach (var s in SelectedConv.StartingList)
+            {
+                SelectedStarts.Add(AddOrdinal(s.Key + 1), s.Value);
+            }
+            Start_ListBox.ItemsSource = SelectedStarts;
+            if(forcedSelectStart > -1)
+            {
+                Start_ListBox.SelectedIndex = forcedSelectStart;
+                forcedSelectStart = -1;
+                Start_ListBox.Focus();
+            }
+            else
+            {
+                Start_ListBox.SelectedIndex = i;
+            }
+            panToSelection = false;
+        }
         #endregion
 
         #region UIHandling-graph
 
         private void node_Click(object sender, PInputEventArgs e)
         {
-            SetUIMode(2, false);
             if (sender is DiagNode obj)
             {
+                SetUIMode(2, false);
                 if (e.Button != System.Windows.Forms.MouseButtons.Left && obj.GlobalFullBounds == obj.posAtDragStart)
                 {
                     if (!e.Shift && !e.Control)
@@ -2291,6 +2481,20 @@ namespace ME3Explorer.Dialogue_Editor
                     DialogueNode_Selected(obj);
                 }
             }
+            else if(sender is DStart start)
+            {
+                foreach (var oldselection in SelectedObjects)
+                {
+                    oldselection.IsSelected = false;
+                }
+                SelectedObjects.ClearEx();
+                start.IsSelected = true;
+                SelectedObjects.Add(start);
+
+                Start_ListBox.SelectedIndex = start.Order;
+                SetUIMode(3, false);
+            }
+
         }
 
         private void backMouseDown_Handler(object sender, PInputEventArgs e)
@@ -2330,7 +2534,7 @@ namespace ME3Explorer.Dialogue_Editor
             graphEditor.Focus();
         }
 
-        private void SequenceEditor_DragEnter(object sender, System.Windows.Forms.DragEventArgs e)
+        private void DialogueEditor_DragEnter(object sender, System.Windows.Forms.DragEventArgs e)
         {
             if (e.Data.GetDataPresent(System.Windows.Forms.DataFormats.FileDrop))
                 e.Effect = System.Windows.Forms.DragDropEffects.All;
@@ -2338,7 +2542,7 @@ namespace ME3Explorer.Dialogue_Editor
                 e.Effect = System.Windows.Forms.DragDropEffects.None;
         }
 
-        private void SequenceEditor_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
+        private void DialogueEditor_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
         {
             if (e.Data.GetData(System.Windows.Forms.DataFormats.FileDrop) is string[] DroppedFiles)
             {
@@ -2547,6 +2751,11 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 else if (!obj.IsSelected)
                 {
+                    foreach (var oldselection in SelectedObjects)
+                    {
+                        oldselection.IsSelected = false;
+                    }
+                    SelectedObjects.ClearEx();
                     panToSelection = false;
                 }
             }
@@ -2816,7 +3025,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if (CurrentObjects.Count == 0)
                 return;
-            string objectName = System.Text.RegularExpressions.Regex.Replace(CurrentLoadedExport.ObjectName, @"[<>:""/\\|?*]", "");
+            string objectName = Regex.Replace(CurrentLoadedExport.ObjectName, @"[<>:""/\\|?*]", "");
             SaveFileDialog d = new SaveFileDialog
             {
                 Filter = "PNG Files (*.png)|*.png",
@@ -3170,6 +3379,32 @@ namespace ME3Explorer.Dialogue_Editor
 
 
         #endregion
+
+        #region Helpers
+        public static string AddOrdinal(int num)
+        {
+            if (num <= 0) return num.ToString();
+            switch (num % 100)
+            {
+                case 11:
+                case 12:
+                case 13:
+                    return num + "th";
+            }
+            switch (num % 10)
+            {
+                case 1:
+                    return num + "st";
+                case 2:
+                    return num + "nd";
+                case 3:
+                    return num + "rd";
+                default:
+                    return num + "th";
+            }
+        }
+
+        #endregion Helpers
 
 
     }

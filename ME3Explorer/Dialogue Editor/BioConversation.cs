@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using ME3Explorer;
 using ME3Explorer.Packages;
@@ -13,15 +14,12 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
-using static ME3Explorer.Dialogue_Editor.DialogueEditorWPF;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using System.Runtime.InteropServices;
-using ME1Explorer;
 using System.ComponentModel;
-using ME3Explorer.SharedUI.Interfaces;
 
 namespace ME3Explorer.Dialogue_Editor
 {
@@ -46,7 +44,8 @@ namespace ME3Explorer.Dialogue_Editor
             public string ConvName { get => _ConvName; set => SetProperty(ref _ConvName, value); }
             public bool IsParsed { get; set; }
             public bool IsFirstParsed { get; set; }
-
+            private SortedDictionary<int, int> _StartingList = new SortedDictionary<int, int>();
+            public SortedDictionary<int, int> StartingList { get => _StartingList; set => SetProperty(ref _StartingList, value); }
             public ObservableCollectionExtended<SpeakerExtended> Speakers { get; set; }
             public ObservableCollectionExtended<DialogueNodeExtended> EntryList { get; set; }
             public ObservableCollectionExtended<DialogueNodeExtended> ReplyList { get; set; }
@@ -77,7 +76,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.ReplyList = ReplyList;
             }
 
-            public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, bool IsParsed, bool IsFirstParsed, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, IExportEntry WwiseBank, IEntry Sequence, IEntry NonSpkrFFX)
+            public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, bool IsParsed, bool IsFirstParsed, SortedDictionary<int, int> StartingList, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, IExportEntry WwiseBank, IEntry Sequence, IEntry NonSpkrFFX)
             {
                 this.ExportUID = ExportUID;
                 this.ConvName = ConvName;
@@ -85,6 +84,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.Export = Export;
                 this.IsParsed = IsParsed;
                 this.IsFirstParsed = IsFirstParsed;
+                this.StartingList = StartingList;
                 this.Speakers = Speakers;
                 this.EntryList = EntryList;
                 this.ReplyList = ReplyList;
@@ -93,11 +93,6 @@ namespace ME3Explorer.Dialogue_Editor
                 this.NonSpkrFFX = NonSpkrFFX;
             }
         }
-
-
-        #endregion Convo
-
-
 
         public class SpeakerExtended : BioConversationExtended
         {
@@ -377,8 +372,6 @@ namespace ME3Explorer.Dialogue_Editor
             GUI_STYLE_ILLEGAL,
             //GUI_STYLE_MAX,
         }
-
-
         public enum EReplyTypes
         {
             REPLY_STANDARD = 0,
@@ -386,7 +379,6 @@ namespace ME3Explorer.Dialogue_Editor
             REPLY_DIALOGEND,
             //REPLY_MAX
         }
-
         public enum EReplyCategory
         {
             REPLY_CATEGORY_DEFAULT = 0,
@@ -400,7 +392,7 @@ namespace ME3Explorer.Dialogue_Editor
             //REPLY_CATEGORY_MAX,
         }
     }
-
+    #endregion Convo
     #region GraphObjects
     public abstract class DiagEdEdge : PPath
     {
@@ -447,8 +439,6 @@ namespace ME3Explorer.Dialogue_Editor
 
 
         public int UIndex = 0;
-        //public float Width { get { return shape.Width; } }
-        //public float Height { get { return shape.Height; } }
         public IExportEntry Export => export;
         public virtual bool IsSelected { get; set; }
 
@@ -458,11 +448,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         protected DObj(ConvGraphEditor ConvGraphEditor)
         {
-            
-            //pcc = convoexport.FileRef;
-            //export = convoexport;
             g = ConvGraphEditor;
- 
         }
 
         public virtual void CreateConnections(IList<DObj> objects) { }
@@ -756,21 +742,27 @@ namespace ME3Explorer.Dialogue_Editor
     public class DStart : DBox
     {
         public int StartNumber;
+        public int Order;
+        private string Ordinal;
+        private DialogueEditorWPF Editor;
         public List<EventEdge> connections = new List<EventEdge>();
         public override IEnumerable<DiagEdEdge> Edges => connections.Union(base.Edges);
 
-        public DStart(int StartNbr, float x, float y, ConvGraphEditor ConvGraphEditor)
+        public DStart(DialogueEditorWPF editor, int orderKey, int StartNbr, float x, float y, ConvGraphEditor ConvGraphEditor)
             : base(x, y, ConvGraphEditor)
         {
+            Editor = editor;
+            Order = orderKey;
+            Ordinal = DialogueEditorWPF.AddOrdinal(orderKey + 1);
             StartNumber = StartNbr;
             outlinePen = new Pen(EventColor);
-            string s = $"Start Node: {StartNbr}";
+            string s = $"{Ordinal} Start Node: {StartNbr}";
             float starty = 0;
             float w = 15;
             float midW = 50;
             GetTitleBox(s, 20);
 
-
+            w += titleBox.Width;
             OutputLink l = new OutputLink
             {
                 Links = new List<int>(StartNbr),
@@ -807,18 +799,18 @@ namespace ME3Explorer.Dialogue_Editor
             outLinkBox.Brush = nodeBrush;
             float h = titleBox.Height + 1;
             outLinkBox.TranslateBy(titleBox.Width / 2 + midW / 2, h + 30);
+            
             h += outLinkBox.Height + 1;
             bounds = new RectangleF(0, 0, w, h);
             AddChild(titleBox);
             AddChild(outLinkBox);
-            
+            this.Pickable = true;
             SetOffset(x, y);
             MouseEnter += OnMouseEnter;
             MouseLeave += OnMouseLeave;
         }
 
         private bool _isSelected;
-
         public override bool IsSelected
         {
             get => _isSelected;
@@ -839,6 +831,19 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
+        public override void CreateOutlink(PNode n1, PNode n2)
+        {
+            DStart start = (DStart)n1.Parent.Parent.Parent;
+            DiagNode end = (DiagNode)n2.Parent.Parent.Parent;
+            if (end.GetType() != typeof(DiagNodeEntry))
+            {
+                MessageBox.Show("You cannot link start nodes to replies.\r\nStarts must link to entries.", "Dialogue Editor");
+                return;
+            }
+            Editor.SelectedConv.StartingList[Order] = end.NodeID;
+            Editor.RecreateNodesToProperties(Editor.SelectedConv);
+        }
+
         public void OnMouseEnter(object sender, PInputEventArgs e)
         {
 
@@ -848,6 +853,8 @@ namespace ME3Explorer.Dialogue_Editor
         {
 
         }
+
+
     }
 
     [DebuggerDisplay("DiagNode | #{UIndex}: {export.ObjectName}")]
@@ -1205,13 +1212,25 @@ namespace ME3Explorer.Dialogue_Editor
                         int linkedOp = reply.Index + 1000;
                         l.Links.Add(linkedOp);
                         l.InputIndices = 0;
-                        //if (OutputNumbers)
                         l.Desc = l.Desc + (linkedOp >= 0 ? "," : ": ") + "# R" + reply.Index;
-
                         l.node = CreateActionLinkBox();
-                        l.node.Brush = new SolidBrush(getColor(reply.RCategory));
+                        var linkcolor = getColor(reply.RCategory);
+                        l.node.Brush = new SolidBrush(linkcolor);
                         l.node.Pen = new Pen(getColor(reply.RCategory));
                         l.node.Pickable = false;
+
+                        DText paraphrase = new DText(reply.ReplyLine, linkcolor, false, 0.8f)
+                        {
+                            TextAlignment = StringAlignment.Near,
+                            ConstrainWidthToTextWidth = true,
+                            ConstrainHeightToTextHeight = true,
+                            X = 15,
+                            Y = -8,
+                            Pickable = false
+                        };
+                        l.node.AddChild(paraphrase);
+                        paraphrase.TranslateBy(0,0);
+
                         PPath dragger = CreateActionLinkBox();
                         dragger.Brush = mostlyTransparentBrush;
                         dragger.Pen = new Pen(getColor(reply.RCategory));
@@ -1252,6 +1271,11 @@ namespace ME3Explorer.Dialogue_Editor
         {
             DiagNode start = (DiagNode)n1.Parent.Parent.Parent;
             DiagNode end = (DiagNode)n2.Parent.Parent.Parent;
+            if (end.GetType() != typeof(DiagNodeReply))
+            {
+                MessageBox.Show("You cannot link entry nodes to entries.\r\nEntries must link to replies.", "Dialogue Editor");
+                return;
+            }
             var startNode = start.NodeID;
             var endNode = end.NodeID;
 
@@ -1370,7 +1394,13 @@ namespace ME3Explorer.Dialogue_Editor
 
             /// NEED TO ADD CHECK TO STOP ATTACH TO SAME TYPE.
             DiagNode start = (DiagNode)n1.Parent.Parent.Parent;
-            DiagNodeEntry end = (DiagNodeEntry)n2.Parent.Parent.Parent;
+            DiagNode end = (DiagNode)n2.Parent.Parent.Parent;
+            if (end.GetType() != typeof(DiagNodeEntry))
+            {
+                MessageBox.Show("You cannot link reply nodes to replies.\r\nReplies must link to entries.", "Dialogue Editor");
+                return;
+            }
+
             var startNode = start.NodeID;
             var endNode = end.NodeID;
 
@@ -1458,5 +1488,7 @@ namespace ME3Explorer.Dialogue_Editor
             base.Paint(paintContext);
         }
     }
+
+
     #endregion Graphobjects
 }
