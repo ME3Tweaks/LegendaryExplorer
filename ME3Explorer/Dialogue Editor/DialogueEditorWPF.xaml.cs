@@ -279,6 +279,18 @@ namespace ME3Explorer.Dialogue_Editor
                     DObj.hostileColor = c;
                     ClrPcker_Hostile.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
                 }
+                if (options.ContainsKey("EntryColor"))
+                {
+                    var c = ColorTranslator.FromHtml((string)options["EntryColor"]);
+                    DObj.entryColor = c;
+                    ClrPcker_Entry.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                }
+                if (options.ContainsKey("ReplyColor"))
+                {
+                    var c = ColorTranslator.FromHtml((string)options["ReplyColor"]);
+                    DObj.replyColor = c;
+                    ClrPcker_Reply.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                }
             }
             else
             {
@@ -323,8 +335,6 @@ namespace ME3Explorer.Dialogue_Editor
             StartDeleteCommand = new GenericCommand(StartDelete, StartCanDelete);
             StartEditCommand = new RelayCommand(StartAddEdit);
         }
-
-
 
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
@@ -381,6 +391,8 @@ namespace ME3Explorer.Dialogue_Editor
                 {"DisagreeRColor", ColorTranslator.ToHtml(DBox.disagreeColor)},
                 {"FriendlyRColor", ColorTranslator.ToHtml(DBox.friendlyColor)},
                 {"HostileRColor", ColorTranslator.ToHtml(DBox.hostileColor)},
+                {"EntryColor", ColorTranslator.ToHtml(DBox.entryColor)},
+                {"ReplyColor", ColorTranslator.ToHtml(DBox.replyColor)},
                 //{"OutputNumbers", DObj.OutputNumbers},
                 //{"AutoSave", AutoSaveView_MenuItem.IsChecked},
 
@@ -551,6 +563,7 @@ namespace ME3Explorer.Dialogue_Editor
                 GenerateSpeakerList();
                 ParseEntryList(SelectedConv);
                 ParseReplyList(SelectedConv);
+                ParseScripts(SelectedConv);
                 ParseNSFFX(SelectedConv);
                 ParseSequence(SelectedConv);
                 ParseWwiseBank(SelectedConv);
@@ -563,6 +576,7 @@ namespace ME3Explorer.Dialogue_Editor
                 ParseSpeakers(conv);
                 ParseEntryList(conv);
                 ParseReplyList(conv);
+                ParseScripts(conv);
                 ParseNSFFX(conv);
                 ParseSequence(conv);
                 ParseWwiseBank(conv);
@@ -622,7 +636,7 @@ namespace ME3Explorer.Dialogue_Editor
             BackParser.CancelAsync();
         }
 
-        public void ParseSpeakers(ConversationExtended conv)
+        private void ParseSpeakers(ConversationExtended conv)
         {
             conv.Speakers = new ObservableCollectionExtended<SpeakerExtended>();
             conv.Speakers.Add(new SpeakerExtended(-2, "player", null, null, 125303, "\"Shepard\""));
@@ -654,7 +668,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
-        public void ParseEntryList(ConversationExtended conv)
+        private void ParseEntryList(ConversationExtended conv)
         {
             conv.EntryList = new ObservableCollectionExtended<DialogueNodeExtended>();
             try
@@ -678,7 +692,7 @@ namespace ME3Explorer.Dialogue_Editor
                 //throw new Exception("Entry List Parse failed", e);
             }
         }
-        public void ParseReplyList(ConversationExtended conv)
+        private void ParseReplyList(ConversationExtended conv)
         {
             conv.ReplyList = new ObservableCollectionExtended<DialogueNodeExtended>();
             try
@@ -701,6 +715,35 @@ namespace ME3Explorer.Dialogue_Editor
             catch (Exception e)
             {
                 //throw new Exception("Reply List Parse failed", e);  //Note some convos don't have replies.
+            }
+        }
+        private void ParseScripts(ConversationExtended conv)
+        {
+            conv.ScriptList = new List<String>();
+            conv.ScriptList.Add("None");
+            if (CurrentConvoPackage.Game == MEGame.ME3)
+            {
+                var a_scripts = conv.BioConvo.GetProp<ArrayProperty<NameProperty>>("m_aScriptList");
+                if (a_scripts != null)
+                {
+                    foreach (var scriptprop in a_scripts)
+                    {
+                        var scriptname = scriptprop.ToString();
+                        conv.ScriptList.Add(scriptname);
+                    }
+                }
+            }
+            else
+            {
+                var a_sscripts = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ScriptList");
+                if (a_sscripts != null)
+                {
+                    foreach (var scriptprop in a_sscripts)
+                    {
+                        var s = scriptprop.GetProp<NameProperty>("sScriptTag");
+                        conv.ScriptList.Add(s.ToString());
+                    }
+                }
             }
         }
         private void GenerateSpeakerList()
@@ -976,6 +1019,7 @@ namespace ME3Explorer.Dialogue_Editor
                 node.IsAmbient = nodeprop.GetProp<BoolProperty>("bAmbient");
                 node.IsNonTextLine = nodeprop.GetProp<BoolProperty>("bNonTextLine");
                 node.IgnoreBodyGesture = nodeprop.GetProp<BoolProperty>("bIgnoreBodyGestures");
+                node.ScriptIdx = nodeprop.GetProp<IntProperty>("nScriptIndex") + 1; //SHIFT TO +1 SO USER CAN SELECT NULL SCRIPT AT -1
                 Enum.TryParse(nodeprop.GetProp<EnumProperty>("eGUIStyle").Value.Name, out EConvGUIStyles gstyle);
                 node.GUIStyle = gstyle;
                 if (Pcc.Game == MEGame.ME3)
@@ -1430,9 +1474,7 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 IsLocalUpdate = false;  //StrRef/Speaker change requires full reparse due to FaceFX/Rechart.
             }
-
             var needsRefresh = false; //Controls if refresh chart (auto happens on full parse)
-
 
             switch (e.PropertyName)         // Props in both replies and entries. All Games.
             {
@@ -1487,6 +1529,10 @@ namespace ME3Explorer.Dialogue_Editor
                     var bIgnoreBodyGestures = new BoolProperty(node.IgnoreBodyGesture, new NameReference("bIgnoreBodyGestures"));
                     prop.Properties.AddOrReplaceProp(bIgnoreBodyGestures);
                     break;
+                case "ScriptIdx":
+                    var nScriptIndex = new IntProperty(node.ScriptIdx - 1, new NameReference("nScriptIndex"));
+                    prop.Properties.AddOrReplaceProp(nScriptIndex);
+                    break;
                 case "GUIStyle":
                     var EConvGUIStyles = new EnumProperty(node.GUIStyle.ToString(), new NameReference("EConvGUIStyles"), Pcc, new NameReference("eGUIStyle"));
                     prop.Properties.AddOrReplaceProp(EConvGUIStyles);
@@ -1495,7 +1541,6 @@ namespace ME3Explorer.Dialogue_Editor
                     break;
             }
             //Skip SText
-            //nScriptIndex ignore
             if (Pcc.Game == MEGame.ME3 && e.PropertyName == "HideSubtitle")
             {
                 var bAlwaysHideSubtitle = new BoolProperty(node.HideSubtitle, new NameReference("bAlwaysHideSubtitle"));
@@ -2032,7 +2077,7 @@ namespace ME3Explorer.Dialogue_Editor
             else
             {
                 var nconv = Conversations[Conversations_ListBox.SelectedIndex];
-                SelectedConv = new ConversationExtended(nconv.ExportUID, nconv.ConvName, nconv.BioConvo, nconv.Export, nconv.IsParsed, nconv.IsFirstParsed, nconv.StartingList, nconv.Speakers, nconv.EntryList, nconv.ReplyList, nconv.WwiseBank, nconv.Sequence, nconv.NonSpkrFFX); ;
+                SelectedConv = new ConversationExtended(nconv.ExportUID, nconv.ConvName, nconv.BioConvo, nconv.Export, nconv.IsParsed, nconv.IsFirstParsed, nconv.StartingList, nconv.Speakers, nconv.EntryList, nconv.ReplyList, nconv.WwiseBank, nconv.Sequence, nconv.NonSpkrFFX, nconv.ScriptList); ;
                 CurrentLoadedExport = CurrentConvoPackage.getUExport(SelectedConv.ExportUID);
                 if (Pcc.Game == MEGame.ME1)
                 {
@@ -2287,68 +2332,6 @@ namespace ME3Explorer.Dialogue_Editor
             e.Handled = regex.IsMatch(e.Text);
         }
 
-        private void DialogueNode_Selected(DiagNode obj)
-        {
-            foreach (var oldselection in SelectedObjects)
-            {
-                oldselection.IsSelected = false;
-            }
-            SelectedObjects.ClearEx();
-            obj.IsSelected = true;
-            SelectedObjects.Add(obj);
-
-            ParseNodeData(obj.Node);
-            SelectedDialogueNode = obj.Node;
-            SelectedDialogueNode.PropertyChanged += NodePropertyChanged;
-            MirrorDialogueNode = new DialogueNodeExtended(SelectedDialogueNode);  //Setup gate
-
-
-
-            Node_Combo_Spkr.SelectedIndex = SelectedDialogueNode.SpeakerIndex + 2;
-            Node_Combo_Lstnr.SelectedIndex = SelectedDialogueNode.Listener + 3;
-
-            Node_Combo_Spkr.IsEnabled = true; //Enable/disable boxes
-
-            Node_CB_HideSubs.IsEnabled = false;
-            Node_CB_ESkippable.IsEnabled = false;
-            Node_CB_RMajor.IsEnabled = false;
-            Node_CB_RDefault.IsEnabled = false;
-            Node_CB_RUnskippable.IsEnabled = false;
-            Node_Combo_ReplyType.IsEnabled = false;
-
-            if (Pcc.Game == MEGame.ME3)
-            {
-                Node_CB_HideSubs.IsEnabled = true;
-            }
-
-            if (SelectedDialogueNode.IsReply)
-            {
-                Node_Text_Type.Text = "Reply Node";
-                Node_Combo_Spkr.IsEnabled = false;
-                Node_CB_RUnskippable.IsEnabled = true;
-                Node_Combo_ReplyType.IsEnabled = true;
-                if (Pcc.Game == MEGame.ME3)
-                {
-                    Node_CB_RMajor.IsEnabled = true;
-                    Node_CB_RDefault.IsEnabled = true;
-                }
-            }
-            else
-            {
-                Node_Text_Type.Text = "Entry Node";
-                Node_CB_ESkippable.IsEnabled = true;
-            }
-
-            SoundpanelWPF_F.LoadExport(SelectedDialogueNode.WwiseStream_Female);
-            SoundpanelWPF_M.LoadExport(SelectedDialogueNode.WwiseStream_Male);
-
-            if (SelectedDialogueNode.FiresConditional)
-                Node_Text_Cnd.Text = "Conditional: ";
-            else
-                Node_Text_Cnd.Text = "Bool: ";
-
-
-        }
         private void Start_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var startNodes = CurrentObjects.OfType<DStart>().ToList();
@@ -2454,6 +2437,69 @@ namespace ME3Explorer.Dialogue_Editor
                 Start_ListBox.SelectedIndex = i;
             }
             panToSelection = false;
+        }
+
+        private void DialogueNode_Selected(DiagNode obj)
+        {
+            foreach (var oldselection in SelectedObjects)
+            {
+                oldselection.IsSelected = false;
+            }
+            SelectedObjects.ClearEx();
+            obj.IsSelected = true;
+            SelectedObjects.Add(obj);
+
+            ParseNodeData(obj.Node);
+            SelectedDialogueNode = obj.Node;
+            SelectedDialogueNode.PropertyChanged += NodePropertyChanged;
+            MirrorDialogueNode = new DialogueNodeExtended(SelectedDialogueNode);  //Setup gate
+
+
+
+            Node_Combo_Spkr.SelectedIndex = SelectedDialogueNode.SpeakerIndex + 2;
+            Node_Combo_Lstnr.SelectedIndex = SelectedDialogueNode.Listener + 3;
+
+            Node_Combo_Spkr.IsEnabled = true; //Enable/disable boxes
+
+            Node_CB_HideSubs.IsEnabled = false;
+            Node_CB_ESkippable.IsEnabled = false;
+            Node_CB_RMajor.IsEnabled = false;
+            Node_CB_RDefault.IsEnabled = false;
+            Node_CB_RUnskippable.IsEnabled = false;
+            Node_Combo_ReplyType.IsEnabled = false;
+
+            if (Pcc.Game == MEGame.ME3)
+            {
+                Node_CB_HideSubs.IsEnabled = true;
+            }
+
+            if (SelectedDialogueNode.IsReply)
+            {
+                Node_Text_Type.Text = "Reply Node";
+                Node_Combo_Spkr.IsEnabled = false;
+                Node_CB_RUnskippable.IsEnabled = true;
+                Node_Combo_ReplyType.IsEnabled = true;
+                if (Pcc.Game == MEGame.ME3)
+                {
+                    Node_CB_RMajor.IsEnabled = true;
+                    Node_CB_RDefault.IsEnabled = true;
+                }
+            }
+            else
+            {
+                Node_Text_Type.Text = "Entry Node";
+                Node_CB_ESkippable.IsEnabled = true;
+            }
+
+            SoundpanelWPF_F.LoadExport(SelectedDialogueNode.WwiseStream_Female);
+            SoundpanelWPF_M.LoadExport(SelectedDialogueNode.WwiseStream_Male);
+
+            if (SelectedDialogueNode.FiresConditional)
+                Node_Text_Cnd.Text = "Conditional: ";
+            else
+                Node_Text_Cnd.Text = "Bool: ";
+
+
         }
         #endregion
 
@@ -3371,6 +3417,12 @@ namespace ME3Explorer.Dialogue_Editor
                     break;
                 case "ClrPcker_Hostile":
                     DObj.hostileColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    break;
+                case "ClrPcker_Entry":
+                    DObj.entryColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    break;
+                case "ClrPcker_Reply":
+                    DObj.replyColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
             }
 

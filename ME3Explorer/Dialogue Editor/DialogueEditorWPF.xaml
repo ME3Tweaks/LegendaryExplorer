@@ -89,9 +89,27 @@
                     <MenuItem Name="Menu_LineSize_20" Header="2.0" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="20"/>
                 </MenuItem>
                 <MenuItem Header="Adjust graph color settings" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="5*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Spoken Text: " DockPanel.Dock="Left" Grid.Column="0" Grid.Row="0"/>
+                        <xctk:ColorPicker Name="ClrPcker_Line" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Grid.Column="1" Grid.Row="0"></xctk:ColorPicker>
+                        <TextBlock Text="Entry outline: " Grid.Column="0" Grid.Row="1"/>
+                        <xctk:ColorPicker Name="ClrPcker_Entry" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="1"></xctk:ColorPicker>
+                        <TextBlock Text="Reply outline: " Grid.Column="0" Grid.Row="2"/>
+                        <xctk:ColorPicker Name="ClrPcker_Reply" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" Grid.Column="2" Grid.Row="2"></xctk:ColorPicker>
+                    </Grid>
                     <DockPanel ToolTip="Adjust the color of the spoken line text beside the title box.">
-                        <TextBlock Text="Spoken Text: " DockPanel.Dock="Left"/>
-                        <xctk:ColorPicker Name="ClrPcker_Line" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" DockPanel.Dock="Right" ></xctk:ColorPicker>
                         <TextBlock Text=""/>
                     </DockPanel>
                     <Separator/>
@@ -155,7 +173,7 @@
 <!-- Right side panel - Convo/Speakers/Nodes -->
             <DockPanel Name="RightSide_Dock" Grid.Column="2" Grid.RowSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
            <!--Convo Panel-->
-                <StackPanel Name="Convo_Panel" DockPanel.Dock="Top" IsEnabled="True" HorizontalAlignment="Stretch" Margin="3" Visibility="Collapsed">
+                <StackPanel Name="Convo_Panel" DockPanel.Dock="Top" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="3" Visibility="Collapsed">
                     <TextBlock  Name="ConvoDet_Header" Text="Conversation Details"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Top"/>
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Export:"  HorizontalAlignment="Stretch" TextAlignment="Right" FontWeight="Bold" FontSize="15" DockPanel.Dock="Left"/>
@@ -235,6 +253,11 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
+                    <TextBlock Text="Scripted Events:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Scripted Events that can be called from lines to start new sequences." FontWeight="Bold" FontSize="15"/>
+                    <ListBox ItemsSource="{Binding Path=SelectedConv.ScriptList}" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                        
+                    </ListBox>
+
                 </StackPanel>
            <!--Speaker Panel-->
                 <StackPanel Name="Speaker_Panel" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="3" Visibility="Hidden">
@@ -408,6 +431,10 @@
                                     <TextBlock  Text="Camera Intimacy:  " FontSize="15"/>
                                     <xctk:IntegerUpDown Name="Node_Text_CamInt" Value="{Binding Path=SelectedDialogueNode.CameraIntimacy}" HorizontalAlignment="Stretch" FontSize="12" Margin="2"/>
                                 </StackPanel>
+                                <DockPanel ToolTip="Links to event scripts that fire new sequences. ">
+                                    <TextBlock  Text="Script: " FontSize="15" DockPanel.Dock="Left"/>
+                                    <ComboBox Name="Node_Combo_ScriptIndex" MinWidth="80" ItemsSource="{Binding Path=SelectedConv.ScriptList, Mode=OneWay}" SelectedIndex="{Binding Path=SelectedDialogueNode.ScriptIdx}"  VerticalAlignment="Center" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True" HorizontalAlignment="Stretch" Margin="2"/>
+                                </DockPanel>
                             </StackPanel>
                         </TabItem>
                         <TabItem Header="GUI Control" ToolTip="Settings for the line's user interaction.">

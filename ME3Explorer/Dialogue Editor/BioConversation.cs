@@ -64,6 +64,8 @@ namespace ME3Explorer.Dialogue_Editor
             /// NonSpkrFaceFX IEntry
             /// </summary>
             public IEntry NonSpkrFFX { get => _NonSpkrFFX; set => SetProperty(ref _NonSpkrFFX, value); }
+            private List<String> _ScriptList;
+            public List<String> ScriptList { get => _ScriptList; set => SetProperty(ref _ScriptList, value); }
 
             public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList)
             {
@@ -76,7 +78,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.ReplyList = ReplyList;
             }
 
-            public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, bool IsParsed, bool IsFirstParsed, SortedDictionary<int, int> StartingList, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, IExportEntry WwiseBank, IEntry Sequence, IEntry NonSpkrFFX)
+            public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, bool IsParsed, bool IsFirstParsed, SortedDictionary<int, int> StartingList, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, IExportEntry WwiseBank, IEntry Sequence, IEntry NonSpkrFFX, List<string> ScriptList)
             {
                 this.ExportUID = ExportUID;
                 this.ConvName = ConvName;
@@ -91,6 +93,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.WwiseBank = WwiseBank;
                 this.Sequence = Sequence;
                 this.NonSpkrFFX = NonSpkrFFX;
+                this.ScriptList = ScriptList;
             }
         }
 
@@ -221,6 +224,8 @@ namespace ME3Explorer.Dialogue_Editor
             public int CameraIntimacy { get => _CameraIntimacy; set => SetProperty(ref _CameraIntimacy, value); }
             private bool _HideSubtitle = false;
             public bool HideSubtitle { get => _HideSubtitle; set => SetProperty(ref _HideSubtitle, value); }
+            private int _ScriptIdx;
+            public int ScriptIdx { get => _ScriptIdx; set => SetProperty(ref _ScriptIdx, value); }
             private  EConvGUIStyles _GUIStyle;
             public EConvGUIStyles GUIStyle
             {
@@ -250,7 +255,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int Transition, SpeakerExtended SpeakerTag,
                 IExportEntry Interpdata, IExportEntry WwiseStream_Male, IExportEntry WwiseStream_Female, string FaceFX_Male, string FaceFX_Female, int Listener, int ConditionalParam, int TransitionParam, int ExportID,
-                bool IsSkippable, bool IsUnskippable, bool IsDefaultAction, bool IsMajorDecision, bool IsNonTextLine, bool IgnoreBodyGesture, bool IsAmbient, int CameraIntimacy, bool HideSubtitle, EConvGUIStyles GUIStyle, 
+                bool IsSkippable, bool IsUnskippable, bool IsDefaultAction, bool IsMajorDecision, bool IsNonTextLine, bool IgnoreBodyGesture, bool IsAmbient, int CameraIntimacy, bool HideSubtitle, int ScriptIdx, EConvGUIStyles GUIStyle, 
                 EReplyTypes ReplyType, float InterpLength)
             {
                 this.NodeProp = NodeProp;
@@ -281,6 +286,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.IsAmbient = IsAmbient;
                 this.CameraIntimacy = CameraIntimacy;
                 this.HideSubtitle = HideSubtitle;
+                this.ScriptIdx = ScriptIdx;
                 this.GUIStyle = GUIStyle;
                 this.ReplyType = ReplyType;
                 this.InterpLength = InterpLength;
@@ -316,6 +322,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.IsAmbient = nodeExtended.IsAmbient;
                 this.CameraIntimacy = nodeExtended.CameraIntimacy;
                 this.HideSubtitle = nodeExtended.HideSubtitle;
+                this.ScriptIdx = nodeExtended.ScriptIdx;
                 this.GUIStyle = nodeExtended.GUIStyle;
                 this.ReplyType = nodeExtended.ReplyType;
             }
@@ -403,7 +410,6 @@ namespace ME3Explorer.Dialogue_Editor
     public class VarEdge : DiagEdEdge
     {
     }
-
     public class EventEdge : VarEdge
     {
     }
@@ -425,12 +431,16 @@ namespace ME3Explorer.Dialogue_Editor
         public static Color disagreeColor = Color.FromArgb(252, 69, 69);//light red
         public static Color friendlyColor = Color.FromArgb(3, 3, 116);//dark blue
         public static Color hostileColor = Color.FromArgb(116, 3, 3);//dark red
+        public static Color entryColor = Color.FromArgb(0, 0, 0);//Black
+        public static Color replyColor = Color.FromArgb(0, 0, 0);//Black
         protected static readonly Color EventColor = Color.FromArgb(214, 30, 28);
         protected static readonly Color titleColor = Color.FromArgb(255, 255, 128);
         protected static readonly Brush titleBoxBrush = new SolidBrush(Color.FromArgb(112, 112, 112));
         protected static readonly Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         protected static readonly Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static readonly Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
+        protected static Pen entryPen = new Pen(entryColor);
+        protected static Pen replyPen = new Pen(replyColor);
         public static bool draggingOutlink;
         public static PNode dragTarget;
         public static bool OutputNumbers;
@@ -619,7 +629,7 @@ namespace ME3Explorer.Dialogue_Editor
             };
 
             titleBox = PPath.CreateRectangle(0, 0, w, title.Height + 5);
-            titleBox.Pen = outlinePen;
+            titleBox.Pen = entryPen;
             titleBox.Brush = titleBoxBrush;
             titleBox.AddChild(nodeID);
             titleBox.AddChild(title);
@@ -1190,6 +1200,28 @@ namespace ME3Explorer.Dialogue_Editor
             GetEReplyLinks(Node);
         }
 
+        private bool _isSelected;
+        public override bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                if (value)
+                {
+                    titleBox.Pen = selectedPen;
+                    box.Pen = selectedPen;
+                    ((PPath)this[1]).Pen = selectedPen;
+                    MoveToFront();
+                }
+                else
+                {
+                    titleBox.Pen = entryPen;
+                    box.Pen = entryPen;
+                    ((PPath)this[1]).Pen = entryPen;
+                }
+            }
+        }
         protected void GetEReplyLinks(BioConversationExtended.DialogueNodeExtended node)
         {
             if (node != null)
@@ -1212,7 +1244,7 @@ namespace ME3Explorer.Dialogue_Editor
                         int linkedOp = reply.Index + 1000;
                         l.Links.Add(linkedOp);
                         l.InputIndices = 0;
-                        l.Desc = l.Desc + (linkedOp >= 0 ? "," : ": ") + "# R" + reply.Index;
+                        l.Desc = "R" + reply.Index;
                         l.node = CreateActionLinkBox();
                         var linkcolor = getColor(reply.RCategory);
                         l.node.Brush = new SolidBrush(linkcolor);
@@ -1323,7 +1355,28 @@ namespace ME3Explorer.Dialogue_Editor
             originalX = x;
             originalY = y;
         }
-
+        private bool _isSelected;
+        public override bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                if (value)
+                {
+                    titleBox.Pen = selectedPen;
+                    box.Pen = selectedPen;
+                    ((PPath)this[1]).Pen = selectedPen;
+                    MoveToFront();
+                }
+                else
+                {
+                    titleBox.Pen = replyPen;
+                    box.Pen = replyPen;
+                    ((PPath)this[1]).Pen = replyPen;
+                }
+            }
+        }
         protected void GetOutputLinks(BioConversationExtended.DialogueNodeExtended node)
         {
             if (node != null)
