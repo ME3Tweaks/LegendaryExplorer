@@ -212,7 +212,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private bool StartCanDelete()
         {
-            return SelectedConv != null && Start_ListBox.SelectedIndex >= 0 && Start_ListBox.Items.Count > 0;
+            return SelectedConv != null && Start_ListBox.SelectedIndex >= 0 && Start_ListBox.Items.Count > 1;
         }
         private bool ScriptCanDelete()
         {
@@ -2440,7 +2440,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
             var sdlg = InputComboBox.GetValue("Pick an entry node to link to", links, links[f], false);
             
-            if (sdlg == null)
+            if (sdlg == "")
                 return;
 
             var newVal = links.FindIndex(sdlg.Equals);
@@ -2676,10 +2676,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
-                if (FindResource("backContextMenu") is ContextMenu contextMenu)
-                {
-                    contextMenu.IsOpen = true;
-                }
+
             }
             else if (e.Shift)
             {
@@ -2761,7 +2758,28 @@ namespace ME3Explorer.Dialogue_Editor
 
         public void OpenNodeContextMenu(DObj obj)
         {
-            if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
+            if (obj is DStart dStart )
+            {
+                if (FindResource("startnodeContextMenu") is ContextMenu contextMenu)
+                {
+                    foreach (var oldselection in SelectedObjects)
+                    {
+                        oldselection.IsSelected = false;
+                    }
+                    SelectedObjects.ClearEx();
+                    dStart.IsSelected = true;
+                    SelectedObjects.Add(dStart);
+
+                    Start_ListBox.SelectedIndex = dStart.Order;
+                    SetUIMode(3, false);
+                    contextMenu.DataContext = this;
+                    contextMenu.IsOpen = true;
+                    graphEditor.DisableDragging();
+
+                }
+
+            }
+            else if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
             {
                 if (obj is DBox DBox && (DBox.Outlinks.Any())
                  && contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)

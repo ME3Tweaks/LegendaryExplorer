@@ -22,6 +22,14 @@
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <Converters:BoolToIndexConverter x:Key="BoolToIndexConverter"/>
+        <ContextMenu x:Key="startnodeContextMenu" Closed="ContextMenu_Closed">
+            <MenuItem Header="Add new start node" Command="{Binding StartAddCommand}" CommandParameter="Add" ToolTip="Create a new start node"/>
+            <MenuItem Header="Edit" Command="{Binding StartEditCommand}" CommandParameter="Edit" ToolTip="Edit which dialogue entry this node connects to."/>
+            <MenuItem Header="Remove start node" Command="{Binding StartDeleteCommand}" ToolTip="Delete this start node"/>
+        </ContextMenu>
+        <ContextMenu x:Key="backContextMenu">
+            <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Dialogue Object to this Dialogue"/>
+        </ContextMenu>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
            <Separator />
             <MenuItem Header="Clone Object" Click="CloneObject_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
@@ -30,9 +38,6 @@
                 <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Click="removeAllLinks"/>
             </MenuItem>
             <MenuItem Header="Remove from Dialogue" Name="removeFromDialogueMenuItem" Click="RemoveFromDialogue_Click"/>
-        </ContextMenu>
-        <ContextMenu x:Key="backContextMenu">
-            <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Dialogue Object to this Dialogue"/>
         </ContextMenu>
         <system:Boolean x:Key="True">True</system:Boolean>
     </Window.Resources>
