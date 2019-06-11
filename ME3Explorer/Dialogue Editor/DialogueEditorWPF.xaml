@@ -141,9 +141,9 @@
                 <MenuItem Name="ShowOutputNumbers_MenuItem" Header="NOT YET: Show Output Numbers" IsCheckable="True" Click="showOutputNumbers_Click"/>
                 <MenuItem Name="AutoSaveView_MenuItem" Header="NOT YET: Auto-Save View" IsCheckable="True"/>
             </MenuItem>
-                <MenuItem Header="Layout" Padding="4">
+            <MenuItem Header="Layout" Padding="4">
                 <MenuItem Header="Re-Run Auto Layout" Command="{Binding AutoLayoutCommand}" InputGestureText="Ctrl+L" ToolTip="Attempt to layout sequence objects in a comprehensible fashion"/>
-                </MenuItem>
+            </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
             <SharedUI:StatusBarGameIDIndicator Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
@@ -253,9 +253,26 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <TextBlock Text="Scripted Events:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Scripted Events that can be called from lines to start new sequences." FontWeight="Bold" FontSize="15"/>
-                    <ListBox ItemsSource="{Binding Path=SelectedConv.ScriptList}" ScrollViewer.VerticalScrollBarVisibility="Visible">
-                        
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50*"/>
+                            <ColumnDefinition Width="31"/>
+                            <ColumnDefinition Width="31"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Scripted Events:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Scripted Events that can be called from lines to start new sequences." FontWeight="Bold" FontSize="15"/>
+                        <Button Name="ScriptAddButton" Command="{Binding ScriptAddCommand}" CommandParameter="Add" Padding="3"  Grid.Column="1" Margin="2" ToolTip="Add a new script">
+                            <Button.Content>
+                                <fa:ImageAwesome Icon="PlusCircle" Width="16" Height="16" Foreground="DarkBlue"/>
+                            </Button.Content>
+                        </Button>
+                        <Button Name="ScriptDeleteButton" Command="{Binding ScriptDeleteCommand}" Padding="3"  Grid.Column="2" Margin="2" ToolTip="Delete selected script">
+                            <Button.Content>
+                                <fa:ImageAwesome Icon="MinusCircle" Width="16" Height="16" Foreground="DarkBlue"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                    <ListBox Name="Script_ListBox" ItemsSource="{Binding Path=SelectedConv.ScriptList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.VerticalScrollBarVisibility="Visible">
+
                     </ListBox>
 
                 </StackPanel>
@@ -321,7 +338,7 @@
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="3*" MinHeight="190"/>
-                        <RowDefinition Height="3*" MinHeight="150"/>
+                        <RowDefinition Height="3*" MinHeight="170"/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0">
                         <DockPanel HorizontalAlignment="Stretch">
@@ -331,7 +348,7 @@
                         <TextBlock Name="Node_Text_LineString" Text="{Binding Path=SelectedDialogueNode.Line, Mode=OneWay}" TextWrapping="Wrap" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15" DockPanel.Dock="Left" Padding="5"/>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Line String Ref:  " FontSize="15"/>
-                            <TextBox Name="Node_Text_StrRef" Text="{Binding Path=SelectedDialogueNode.LineStrRef, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
+                            <TextBox Name="Node_Text_StrRef" Text="{Binding Path=SelectedDialogueNode.LineStrRef, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
                         </StackPanel>
                         <DockPanel ToolTip="The speaker of the line.  Replies are always player">
                             <TextBlock Text="Speaker: " FontSize="15" DockPanel.Dock="Left" VerticalAlignment="Center"/>
@@ -433,7 +450,7 @@
                                 </StackPanel>
                                 <DockPanel ToolTip="Links to event scripts that fire new sequences. ">
                                     <TextBlock  Text="Script: " FontSize="15" DockPanel.Dock="Left"/>
-                                    <ComboBox Name="Node_Combo_ScriptIndex" MinWidth="80" ItemsSource="{Binding Path=SelectedConv.ScriptList, Mode=OneWay}" SelectedIndex="{Binding Path=SelectedDialogueNode.ScriptIdx}"  VerticalAlignment="Center" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True" HorizontalAlignment="Stretch" Margin="2"/>
+                                    <ComboBox Name="Node_Combo_ScriptIndex" MinWidth="80" ItemsSource="{Binding Path=SelectedConv.ScriptList}" SelectedItem="{Binding Path=SelectedDialogueNode.Script }" IsSynchronizedWithCurrentItem="False" SelectionChanged="ScriptIndex_SelectionChanged" VerticalAlignment="Center" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True" HorizontalAlignment="Stretch" Margin="2"/>
                                 </DockPanel>
                             </StackPanel>
                         </TabItem>

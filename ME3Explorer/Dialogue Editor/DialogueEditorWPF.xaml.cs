@@ -96,6 +96,16 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
         private int forcedSelectStart = -1;
+        private string _SelectedScript = "None";
+        public string SelectedScript
+        {
+            get => _SelectedScript;
+            set
+            {
+                if (value != _SelectedScript)
+                    SetProperty(ref _SelectedScript, value);
+            }
+        }
         #region ConvoBox //Conversation Box Links
         private ConversationExtended _SelectedConv;
         public ConversationExtended SelectedConv
@@ -166,11 +176,12 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand StartAddCommand { get; set; }
         public ICommand StartDeleteCommand { get; set; }
         public ICommand StartEditCommand { get; set; }
+        public ICommand ScriptAddCommand { get; set; }
+        public ICommand ScriptDeleteCommand { get; set; }
         private bool HasWwbank(object param)
         {
             return SelectedConv != null && SelectedConv.WwiseBank != null;
         }
-
         private bool HasFFXNS(object param)
         {
             return SelectedConv != null && SelectedConv.NonSpkrFFX != null;
@@ -202,6 +213,10 @@ namespace ME3Explorer.Dialogue_Editor
         private bool StartCanDelete()
         {
             return SelectedConv != null && Start_ListBox.SelectedIndex >= 0 && Start_ListBox.Items.Count > 0;
+        }
+        private bool ScriptCanDelete()
+        {
+            return SelectedConv != null && Script_ListBox.SelectedIndex > 0;
         }
         #endregion Declarations
 
@@ -334,6 +349,8 @@ namespace ME3Explorer.Dialogue_Editor
             StartAddCommand = new RelayCommand(StartAddEdit);
             StartDeleteCommand = new GenericCommand(StartDelete, StartCanDelete);
             StartEditCommand = new RelayCommand(StartAddEdit);
+            ScriptAddCommand = new GenericCommand(Script_Add);
+            ScriptDeleteCommand = new GenericCommand(Script_Delete, ScriptCanDelete);
         }
 
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
@@ -610,7 +627,7 @@ namespace ME3Explorer.Dialogue_Editor
                 ParseLinesInterpData(SelectedConv);
                 ParseLinesFaceFX(SelectedConv);
                 ParseLinesAudioStreams(SelectedConv);
-
+                ParseLinesScripts(SelectedConv);
                 SelectedConv.IsParsed = true;
             }
 
@@ -626,7 +643,7 @@ namespace ME3Explorer.Dialogue_Editor
                 ParseLinesInterpData(conv);
                 ParseLinesFaceFX(conv);
                 ParseLinesAudioStreams(conv);
-
+                ParseLinesScripts(conv);
                 conv.IsParsed = true;
             }
 
@@ -954,19 +971,11 @@ namespace ME3Explorer.Dialogue_Editor
         /// <param name="diag"></param>
         private void ParseLinesAudioStreams(ConversationExtended conv)
         {
-            //TO DO
-
             try
             {
                 //Pull Male/Female animsets from Speaker
                 //Get reference line how??
                 //
-                //
-                //Pull up WwiseEvent. 
-                //Look in that binary for stream.
-                //Dirty version
-                //Pull all wwisestreams with Name in them plus gender
-                //ME3/ME2 123456_F
                 if (Pcc.Game != MEGame.ME1)
                 {
                     Dictionary<string, IExportEntry> streams = Pcc.Exports.Where(x => x.ClassName == "WwiseStream").ToDictionary(x => x.ObjectName.ToLower(), x => x);
@@ -991,6 +1000,29 @@ namespace ME3Explorer.Dialogue_Editor
             catch
             {
                 //ignore
+            }
+        }
+        private void ParseLinesScripts(ConversationExtended conv)
+        {
+            if(conv.IsFirstParsed)
+            {
+                try
+                {
+                    foreach (var entry in conv.EntryList)
+                    {
+                        var scriptidx = entry.NodeProp.GetProp<IntProperty>("nScriptIndex");
+                        entry.Script = conv.ScriptList[scriptidx + 1];
+                    }
+                    foreach (var reply in conv.ReplyList)
+                    {
+                        var scriptidx = reply.NodeProp.GetProp<IntProperty>("nScriptIndex");
+                        reply.Script = conv.ScriptList[scriptidx + 1];
+                    }
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"Parse failure on script list{e}");//ignore
+                }
             }
         }
         private void ParseNodeData(DialogueNodeExtended node)
@@ -1019,7 +1051,6 @@ namespace ME3Explorer.Dialogue_Editor
                 node.IsAmbient = nodeprop.GetProp<BoolProperty>("bAmbient");
                 node.IsNonTextLine = nodeprop.GetProp<BoolProperty>("bNonTextLine");
                 node.IgnoreBodyGesture = nodeprop.GetProp<BoolProperty>("bIgnoreBodyGestures");
-                node.ScriptIdx = nodeprop.GetProp<IntProperty>("nScriptIndex") + 1; //SHIFT TO +1 SO USER CAN SELECT NULL SCRIPT AT -1
                 Enum.TryParse(nodeprop.GetProp<EnumProperty>("eGUIStyle").Value.Name, out EConvGUIStyles gstyle);
                 node.GUIStyle = gstyle;
                 if (Pcc.Game == MEGame.ME3)
@@ -1354,6 +1385,47 @@ namespace ME3Explorer.Dialogue_Editor
             PushConvoToFile(conv);
         }
 
+        private void SaveScriptsToProperties(ConversationExtended conv, bool pushtofile = true)
+        {
+            if(Pcc.Game == MEGame.ME3)
+            {
+                var newscriptList = new ArrayProperty<NameProperty>(ArrayType.Name, new NameReference("m_aScriptList"));
+                foreach (var script in conv.ScriptList)
+                {
+                    if(script != "None")
+                    {
+                        newscriptList.Add(new NameProperty("m_aScriptList") { Value = script });
+                    }
+                }
+                if (newscriptList.Count > 0)
+                {
+                    conv.BioConvo.AddOrReplaceProp(newscriptList);
+                }
+            }
+            else
+            {
+                var newscriptList = new ArrayProperty<StructProperty>(ArrayType.Name, new NameReference("m_ScriptList"));
+                foreach (var script in conv.ScriptList)
+                {
+                    if (script != "None")
+                    {
+                        var s = new PropertyCollection();
+                        s.AddOrReplaceProp(new NameProperty("sScriptTag", script));
+                        s.AddOrReplaceProp(new NoneProperty());
+                        newscriptList.Add(new StructProperty("BioDialogScript", s));
+                    }
+                }
+                if (newscriptList.Count > 0)
+                {
+                    conv.BioConvo.AddOrReplaceProp(newscriptList);
+                }
+            }
+            if(pushtofile)
+            {
+                PushConvoToFile(conv);
+            }
+        }
+
         #endregion RecreateToFile
 
         #region Handling-updates
@@ -1433,7 +1505,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             Conversations_ListBox.SelectedIndex = cSelectedIdx;
             Speakers_ListBox.SelectedIndex = sSelectedIdx;
-
+            SetUIMode(CurrentUIMode, true);
             if (SelectedObjects.Count > 0)
             {
                 if (SelectedObjects[0] is DiagNode d)
@@ -1449,8 +1521,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        //update handler for selecteddiagnode.
-        public void NodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void NodePropertyChanged(object sender, PropertyChangedEventArgs e) //update handler for selecteddiagnode.
         {
             if (sender == null || SelectedConv == null || SelectedDialogueNode == null)
                 return;
@@ -1529,8 +1600,9 @@ namespace ME3Explorer.Dialogue_Editor
                     var bIgnoreBodyGestures = new BoolProperty(node.IgnoreBodyGesture, new NameReference("bIgnoreBodyGestures"));
                     prop.Properties.AddOrReplaceProp(bIgnoreBodyGestures);
                     break;
-                case "ScriptIdx":
-                    var nScriptIndex = new IntProperty(node.ScriptIdx - 1, new NameReference("nScriptIndex"));
+                case "Script":
+                    var scriptidx = SelectedConv.ScriptList.FindIndex(s => s == node.Script) - 1;
+                    var nScriptIndex = new IntProperty(scriptidx, new NameReference("nScriptIndex"));
                     prop.Properties.AddOrReplaceProp(nScriptIndex);
                     break;
                 case "GUIStyle":
@@ -1579,7 +1651,7 @@ namespace ME3Explorer.Dialogue_Editor
                     prop.Properties.AddOrReplaceProp(bIsMajorDecision);
                 }
             }
-
+            
             RecreateNodesToProperties(SelectedConv);
 
             if (needsRefresh)
@@ -2068,6 +2140,7 @@ namespace ME3Explorer.Dialogue_Editor
             if (Conversations_ListBox.SelectedIndex < 0)
             {
                 SelectedConv = null;
+                SelectedDialogueNode = null;
                 SelectedSpeakerList.ClearEx();
                 Properties_InterpreterWPF.UnloadExport();
                 SoundpanelWPF_F.UnloadExport();
@@ -2076,6 +2149,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
             else
             {
+                SelectedDialogueNode = null; //Before convos change make sure no properties fire.
                 var nconv = Conversations[Conversations_ListBox.SelectedIndex];
                 SelectedConv = new ConversationExtended(nconv.ExportUID, nconv.ConvName, nconv.BioConvo, nconv.Export, nconv.IsParsed, nconv.IsFirstParsed, nconv.StartingList, nconv.Speakers, nconv.EntryList, nconv.ReplyList, nconv.WwiseBank, nconv.Sequence, nconv.NonSpkrFFX, nconv.ScriptList); ;
                 CurrentLoadedExport = CurrentConvoPackage.getUExport(SelectedConv.ExportUID);
@@ -2439,6 +2513,61 @@ namespace ME3Explorer.Dialogue_Editor
             panToSelection = false;
         }
 
+        private void Script_Add()
+        {
+            var sdlg = new PromptDialog("Enter the new script name", "Add a script", "script name");
+            sdlg.ShowDialog();
+            if (sdlg.ResponseText == null || sdlg.ResponseText == "script name")
+                return;
+            Pcc.FindNameOrAdd(sdlg.ResponseText);
+            SelectedConv.ScriptList.Add(sdlg.ResponseText);
+            SaveScriptsToProperties(SelectedConv);
+        }
+        private void Script_Delete()
+        {
+            var cdlg = MessageBox.Show("Are you sure you want to delete this script reference", "Confirm", MessageBoxButton.OKCancel);
+            if (cdlg == MessageBoxResult.Cancel)
+                return;
+            var script2remove = Script_ListBox.SelectedItem.ToString();
+            //CHECK IF ANY LINES REFERENCE THIS SCRIPT.
+            bool hasreferences = false;
+            hasreferences = SelectedConv.EntryList.Any(e => e.Script == script2remove);
+            if (!hasreferences)
+            {
+                hasreferences = SelectedConv.ReplyList.Any(r => r.Script == script2remove);
+            }
+
+            if(hasreferences)
+            {
+                MessageBox.Show("There are lines that reference this script.\r\nPlease remove all references before deleting", "Warning", MessageBoxButton.OK);
+                return;
+            }
+
+            SelectedConv.ScriptList.Remove(script2remove);
+            foreach(var e in SelectedConv.EntryList)
+            {
+                var scriptidx = SelectedConv.ScriptList.FindIndex(s => s == e.Script) - 1;
+                var nScriptIndex = new IntProperty(scriptidx, new NameReference("nScriptIndex"));
+                e.NodeProp.Properties.AddOrReplaceProp(nScriptIndex);
+            }
+            foreach (var r in SelectedConv.ReplyList)
+            {
+                var scriptidx = SelectedConv.ScriptList.FindIndex(s => s == r.Script) - 1;
+                var nScriptIndex = new IntProperty(scriptidx, new NameReference("nScriptIndex"));
+                r.NodeProp.Properties.AddOrReplaceProp(nScriptIndex);
+            }
+
+            SaveScriptsToProperties(SelectedConv, false);
+            RecreateNodesToProperties(SelectedConv);
+        }
+        private void ScriptIndex_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(SelectedDialogueNode != null && SelectedScript != null)
+            {
+                //SelectedDialogueNode.ScriptIdx = SelectedConv.ScriptList.FindIndex(s => s == SelectedScript) - 1;
+            }
+        }
+
         private void DialogueNode_Selected(DiagNode obj)
         {
             foreach (var oldselection in SelectedObjects)
@@ -2453,8 +2582,6 @@ namespace ME3Explorer.Dialogue_Editor
             SelectedDialogueNode = obj.Node;
             SelectedDialogueNode.PropertyChanged += NodePropertyChanged;
             MirrorDialogueNode = new DialogueNodeExtended(SelectedDialogueNode);  //Setup gate
-
-
 
             Node_Combo_Spkr.SelectedIndex = SelectedDialogueNode.SpeakerIndex + 2;
             Node_Combo_Lstnr.SelectedIndex = SelectedDialogueNode.Listener + 3;
@@ -3456,8 +3583,8 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        #endregion Helpers
 
+        #endregion Helpers
 
     }
 }

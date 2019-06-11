@@ -224,8 +224,8 @@ namespace ME3Explorer.Dialogue_Editor
             public int CameraIntimacy { get => _CameraIntimacy; set => SetProperty(ref _CameraIntimacy, value); }
             private bool _HideSubtitle = false;
             public bool HideSubtitle { get => _HideSubtitle; set => SetProperty(ref _HideSubtitle, value); }
-            private int _ScriptIdx;
-            public int ScriptIdx { get => _ScriptIdx; set => SetProperty(ref _ScriptIdx, value); }
+            private string _Script;
+            public string Script { get => _Script; set => SetProperty(ref _Script, value); }
             private  EConvGUIStyles _GUIStyle;
             public EConvGUIStyles GUIStyle
             {
@@ -255,7 +255,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int Transition, SpeakerExtended SpeakerTag,
                 IExportEntry Interpdata, IExportEntry WwiseStream_Male, IExportEntry WwiseStream_Female, string FaceFX_Male, string FaceFX_Female, int Listener, int ConditionalParam, int TransitionParam, int ExportID,
-                bool IsSkippable, bool IsUnskippable, bool IsDefaultAction, bool IsMajorDecision, bool IsNonTextLine, bool IgnoreBodyGesture, bool IsAmbient, int CameraIntimacy, bool HideSubtitle, int ScriptIdx, EConvGUIStyles GUIStyle, 
+                bool IsSkippable, bool IsUnskippable, bool IsDefaultAction, bool IsMajorDecision, bool IsNonTextLine, bool IgnoreBodyGesture, bool IsAmbient, int CameraIntimacy, bool HideSubtitle, string Script, EConvGUIStyles GUIStyle, 
                 EReplyTypes ReplyType, float InterpLength)
             {
                 this.NodeProp = NodeProp;
@@ -286,7 +286,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.IsAmbient = IsAmbient;
                 this.CameraIntimacy = CameraIntimacy;
                 this.HideSubtitle = HideSubtitle;
-                this.ScriptIdx = ScriptIdx;
+                this.Script = Script;
                 this.GUIStyle = GUIStyle;
                 this.ReplyType = ReplyType;
                 this.InterpLength = InterpLength;
@@ -322,7 +322,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.IsAmbient = nodeExtended.IsAmbient;
                 this.CameraIntimacy = nodeExtended.CameraIntimacy;
                 this.HideSubtitle = nodeExtended.HideSubtitle;
-                this.ScriptIdx = nodeExtended.ScriptIdx;
+                this.Script = nodeExtended.Script;
                 this.GUIStyle = nodeExtended.GUIStyle;
                 this.ReplyType = nodeExtended.ReplyType;
             }
@@ -398,8 +398,9 @@ namespace ME3Explorer.Dialogue_Editor
             REPLY_CATEGORY_PARAGON_INTERRUPT,
             //REPLY_CATEGORY_MAX,
         }
+        #endregion Convo
     }
-    #endregion Convo
+
     #region GraphObjects
     public abstract class DiagEdEdge : PPath
     {
@@ -1402,7 +1403,7 @@ namespace ME3Explorer.Dialogue_Editor
                             l.Links.Add(linkedOp);
                             l.InputIndices = 1;
                             //if (OutputNumbers)
-                            l.Desc = l.Desc + (linkedOp >= 0 ? "," : ": ") + "# E" + linkedOp;
+                            l.Desc = "E" + linkedOp;
 
                             l.node = CreateActionLinkBox();
                             l.node.Brush = outputBrush;
