@@ -107,7 +107,6 @@ namespace ME3Explorer.Dialogue_Editor
             get => _SelectedConv;
             set => SetProperty(ref _SelectedConv, value);
         }
-
         private string _level;
         public string Level
         {
@@ -349,7 +348,7 @@ namespace ME3Explorer.Dialogue_Editor
             ScriptAddCommand = new GenericCommand(Script_Add);
             ScriptDeleteCommand = new GenericCommand(Script_Delete, ScriptCanDelete);
             NodeAddCommand = new RelayCommand(DialogueNode_Add);
-            NodeRemoveCommand = new RelayCommand(DialogueNode_Add);
+            NodeRemoveCommand = new RelayCommand(DialogueNode_Delete);
             NodeDeleteAllLinksCommand = new RelayCommand(DialogueNode_DeleteLinks);
         }
 
@@ -479,7 +478,7 @@ namespace ME3Explorer.Dialogue_Editor
                     MessageBox.Show("This file does not contain any Conversations!");
                     return;
                 }
-
+                
                 CurrentConvoPackage = Pcc;
                 FirstParse();
                 RightBarColumn.Width = new GridLength(260);
@@ -1257,7 +1256,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         }
 
-        private void GenerateSpeakerArrays(ConversationExtended conv)
+        private void AutoGenerateSpeakerArrays(ConversationExtended conv)
         {
 
             foreach (var s in conv.StartingList)
@@ -1265,18 +1264,19 @@ namespace ME3Explorer.Dialogue_Editor
                 var aSpkrs = new SortedSet<int>();
                 var startNode = conv.EntryList[s.Value];
                 var visitedNodes = new HashSet<DialogueNodeExtended>();
-                var newNodes = new HashSet<DialogueNodeExtended>();
+                var newNodes = new Queue<DialogueNodeExtended>();
                 aSpkrs.Add(startNode.SpeakerIndex);
                 var startprop = startNode.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
                 foreach (var e in startprop)
                 {
                     var lprop = e.GetProp<IntProperty>("nIndex");
-                    newNodes.Add(conv.ReplyList[lprop.Value]);
-                    visitedNodes.Add(startNode);
+                    newNodes.Enqueue(conv.ReplyList[lprop.Value]);
+                    
                 }
-                while(newNodes.Any())
+                visitedNodes.Add(startNode);
+                while (newNodes.Any())
                 {
-                    var thisnode = newNodes.First();
+                    var thisnode = newNodes.Dequeue();
                     if(!visitedNodes.Contains(thisnode))
                     {
                         aSpkrs.Add(thisnode.SpeakerIndex);
@@ -1287,7 +1287,7 @@ namespace ME3Explorer.Dialogue_Editor
                             {
                                 foreach (var r in thisprop)
                                 {
-                                    newNodes.Add(conv.EntryList[r.Value]);
+                                    newNodes.Enqueue(conv.EntryList[r.Value]);
                                 }
                             }
                         }
@@ -1297,13 +1297,12 @@ namespace ME3Explorer.Dialogue_Editor
                             foreach (var e in thisprop)
                             {
                                 var eprop = e.GetProp<IntProperty>("nIndex");
-                                newNodes.Add(conv.ReplyList[eprop.Value]);
+                                newNodes.Enqueue(conv.ReplyList[eprop.Value]);
 
                             }
                         }
                         visitedNodes.Add(thisnode);
                     }
-                    newNodes.Remove(thisnode);
                 }
                 var newaSpkr = new ArrayProperty<IntProperty>(ArrayType.Int,"aSpeakerList");
                 foreach(var a in aSpkrs)
@@ -1386,7 +1385,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         public void RecreateNodesToProperties(ConversationExtended conv, bool pushtofile = true)
         {
-            GenerateSpeakerArrays(conv);
+            AutoGenerateSpeakerArrays(conv);
             var newstartlist = new ArrayProperty<IntProperty>(ArrayType.Int, new NameReference("m_StartingList"));
             foreach (var start in conv.StartingList)
             {
@@ -1414,7 +1413,7 @@ namespace ME3Explorer.Dialogue_Editor
                 conv.BioConvo.AddOrReplaceProp(newentryList);
             }
 
-            if (newreplyList.Count > 0)
+            if (newreplyList.Count >= 0)
             {
                 conv.BioConvo.AddOrReplaceProp(newreplyList);
             }
@@ -1653,8 +1652,8 @@ namespace ME3Explorer.Dialogue_Editor
 
             if (!SelectedDialogueNode.IsReply)
             {
-                //Ignore replylist for now //ME3
-                //Ignore aSpeakerList for now <-- autorecreate
+                //Ignore replylist for now
+                //Ignore aSpeakerList  <-- autorecreated
                 var nSpeakerIndex = new IntProperty(node.SpeakerIndex, new NameReference("nSpeakerIndex"));
                 prop.Properties.AddOrReplaceProp(nSpeakerIndex);
                 var bSkippable = new BoolProperty(node.IsSkippable, new NameReference("bSkippable"));
@@ -2781,6 +2780,100 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
+        private void DialogueNode_Delete(object obj)
+        {
+            //Warn
+            var wdlg = MessageBox.Show("Do you want to remove this dialogue node?", "Warning", MessageBoxButton.OKCancel);
+            if (wdlg == MessageBoxResult.Cancel)
+                return;
+
+            if (SelectedDialogueNode.IsReply == false && SelectedConv.EntryList.Count <= 1)
+            {
+                MessageBox.Show("Each conversation must have a minimum of one entry node.", "Warning", MessageBoxButton.OK);
+                return;
+            }
+
+            var deleteNode = SelectedDialogueNode;
+            SelectedDialogueNode = null;
+            SelectedObjects.ClearEx();
+            int deleteID = deleteNode.NodeCount;
+            if(deleteNode.IsReply)
+            {
+                foreach (var entry in SelectedConv.EntryList)
+                {
+                    var newReplyLinksProp = new ArrayProperty<StructProperty>(ArrayType.Struct, new NameReference("ReplyListNew"));
+                    var oldReplyLinksProp = entry.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
+                    if (oldReplyLinksProp != null)
+                    {
+                        foreach (var link in oldReplyLinksProp)
+                        {
+                            var linkval = link.GetProp<IntProperty>("nIndex").Value;
+                            if (linkval != deleteID)
+                            {
+                                if (linkval > deleteID)
+                                {
+                                    linkval -= 1;
+
+                                }
+                                var newip = new IntProperty(linkval, "nIndex");
+                                link.Properties.AddOrReplaceProp(newip);
+                                newReplyLinksProp.Add(link);
+                            }
+                        }
+                    }
+
+                    entry.NodeProp.Properties.AddOrReplaceProp(newReplyLinksProp);
+                }
+                SelectedConv.ReplyList.RemoveAt(deleteID);
+            }
+            else
+            {
+                
+                foreach (var reply in SelectedConv.ReplyList)
+                {
+                    var oldEntryLinksProp = reply.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
+                    var newEntryLinksProp = new ArrayProperty<IntProperty>(ArrayType.Int, "EntryList");
+                    if (oldEntryLinksProp != null)
+                    {
+                        foreach (var r in oldEntryLinksProp)
+                        {
+                            if(r.Value != deleteID)
+                            {
+                                if (r.Value > deleteID)
+                                {
+                                    r.Value -= 1;
+                                }
+                                newEntryLinksProp.Add(r);
+                            }
+                        }
+                    }
+                    reply.NodeProp.Properties.AddOrReplaceProp(newEntryLinksProp);
+                }
+
+                var newStartList = new SortedDictionary<int, int>();
+                foreach (KeyValuePair<int,int> s in SelectedConv.StartingList)
+                {
+                    int val = s.Value;
+                    int key = s.Key;
+                    if (val > deleteID)
+                    {
+                        newStartList.Add(key, val - 1);
+                    }
+                    else if(val < deleteID)
+                    {
+                        newStartList.Add(key, val);
+                    }
+                }
+                SelectedConv.StartingList.Clear();
+                foreach(var ns in newStartList)
+                {
+                    SelectedConv.StartingList.Add(ns.Key,ns.Value);
+                }
+
+                SelectedConv.EntryList.RemoveAt(deleteID);
+            }
+            RecreateNodesToProperties(SelectedConv);
+        }
         #endregion
 
         #region UIHandling-graph
@@ -2936,41 +3029,6 @@ namespace ME3Explorer.Dialogue_Editor
             //}
         }
 
-
-        private static void removeAllLinks(IExportEntry export)
-        {
-            var props = export.GetProperties();
-            var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outLinksProp != null)
-            {
-                foreach (var prop in outLinksProp)
-                {
-                    prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
-                }
-            }
-
-            var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-            if (varLinksProp != null)
-            {
-                foreach (var prop in varLinksProp)
-                {
-                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
-                }
-            }
-
-            var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
-            if (eventLinksProp != null)
-            {
-                foreach (var prop in eventLinksProp)
-                {
-                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Clear();
-                }
-            }
-
-            export.WriteProperties(props);
-        }
-
-
         protected void node_MouseDown(object sender, PInputEventArgs e)
         {
             if (sender is DObj obj)
@@ -2995,281 +3053,6 @@ namespace ME3Explorer.Dialogue_Editor
                     SelectedObjects.ClearEx();
                     panToSelection = false;
                 }
-            }
-        }
-
-        static void cloneObject(IExportEntry old, IExportEntry sequence, bool topLevel = true)
-        {
-            IMEPackage pcc = sequence.FileRef;
-            IExportEntry exp = old.Clone();
-            //needs to have the same index to work properly
-            if (exp.ClassName == "SeqVar_External")
-            {
-                exp.indexValue = old.indexValue;
-            }
-
-            pcc.addExport(exp);
-            addObjectToSequence(exp, topLevel, sequence);
-            cloneSequence(exp, sequence);
-        }
-
-        static void addObjectToSequence(IExportEntry newObject, bool removeLinks, IExportEntry sequenceExport)
-        {
-            var seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-            if (seqObjs != null)
-            {
-                seqObjs.Add(new ObjectProperty(newObject));
-                sequenceExport.WriteProperty(seqObjs);
-
-                PropertyCollection newObjectProps = newObject.GetProperties();
-                newObjectProps.AddOrReplaceProp(new ObjectProperty(sequenceExport, "ParentSequence"));
-                if (removeLinks)
-                {
-                    var outLinksProp = newObjectProps.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-                    if (outLinksProp != null)
-                    {
-                        foreach (var prop in outLinksProp)
-                        {
-                            prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
-                        }
-                    }
-
-                    var varLinksProp = newObjectProps.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-                    if (varLinksProp != null)
-                    {
-                        foreach (var prop in varLinksProp)
-                        {
-                            prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
-                        }
-                    }
-                }
-
-                newObject.WriteProperties(newObjectProps);
-                newObject.idxLink = sequenceExport.UIndex;
-            }
-        }
-
-        static void cloneSequence(IExportEntry exp, IExportEntry parentSequence)
-        {
-            IMEPackage pcc = exp.FileRef;
-            if (exp.ClassName == "Sequence")
-            {
-                var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                if (seqObjs == null || seqObjs.Count == 0)
-                {
-                    return;
-                }
-
-                //store original list of sequence objects;
-                List<int> oldObjects = seqObjs.Select(x => x.Value).ToList();
-
-                //clear original sequence objects
-                seqObjs.Clear();
-                exp.WriteProperty(seqObjs);
-
-                //clone all children
-                foreach (var obj in oldObjects)
-                {
-                    cloneObject(pcc.getUExport(obj), exp, false);
-                }
-
-                //re-point children's links to new objects
-                seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                foreach (var seqObj in seqObjs)
-                {
-                    IExportEntry obj = pcc.getUExport(seqObj.Value);
-                    var props = obj.GetProperties();
-                    var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-                    if (outLinksProp != null)
-                    {
-                        foreach (var outLinkStruct in outLinksProp)
-                        {
-                            var links = outLinkStruct.GetProp<ArrayProperty<StructProperty>>("Links");
-                            foreach (var link in links)
-                            {
-                                var linkedOp = link.GetProp<ObjectProperty>("LinkedOp");
-                                linkedOp.Value = seqObjs[oldObjects.IndexOf(linkedOp.Value)].Value;
-                            }
-                        }
-                    }
-
-                    var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-                    if (varLinksProp != null)
-                    {
-                        foreach (var varLinkStruct in varLinksProp)
-                        {
-                            var links = varLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
-                            foreach (var link in links)
-                            {
-                                link.Value = seqObjs[oldObjects.IndexOf(link.Value)].Value;
-                            }
-                        }
-                    }
-
-                    var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
-                    if (eventLinksProp != null)
-                    {
-                        foreach (var eventLinkStruct in eventLinksProp)
-                        {
-                            var links = eventLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents");
-                            foreach (var link in links)
-                            {
-                                link.Value = seqObjs[oldObjects.IndexOf(link.Value)].Value;
-                            }
-                        }
-                    }
-
-                    obj.WriteProperties(props);
-                }
-
-                //re-point sequence links to new objects
-                int oldObj;
-                int newObj;
-                var propCollection = exp.GetProperties();
-                var inputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("InputLinks");
-                if (inputLinksProp != null)
-                {
-                    foreach (var inLinkStruct in inputLinksProp)
-                    {
-                        var linkedOp = inLinkStruct.GetProp<ObjectProperty>("LinkedOp");
-                        oldObj = linkedOp.Value;
-                        if (oldObj != 0)
-                        {
-                            newObj = seqObjs[oldObjects.IndexOf(oldObj)].Value;
-                            linkedOp.Value = newObj;
-
-                            NameProperty linkAction = inLinkStruct.GetProp<NameProperty>("LinkAction");
-                            linkAction.Value = new NameReference(linkAction.Value.Name, pcc.getUExport(newObj).indexValue);
-                        }
-                    }
-                }
-
-                var outputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-                if (outputLinksProp != null)
-                {
-                    foreach (var outLinkStruct in outputLinksProp)
-                    {
-                        var linkedOp = outLinkStruct.GetProp<ObjectProperty>("LinkedOp");
-                        oldObj = linkedOp.Value;
-                        if (oldObj != 0)
-                        {
-                            newObj = seqObjs[oldObjects.IndexOf(oldObj)].Value;
-                            linkedOp.Value = newObj;
-
-                            NameProperty linkAction = outLinkStruct.GetProp<NameProperty>("LinkAction");
-                            linkAction.Value = new NameReference(linkAction.Value.Name, pcc.getUExport(newObj).indexValue);
-                        }
-                    }
-                }
-
-                exp.WriteProperties(propCollection);
-            }
-            else if (exp.ClassName == "SequenceReference")
-            {
-                //set OSequenceReference to new sequence
-                var oSeqRefProp = exp.GetProperty<ObjectProperty>("oSequenceReference");
-                if (oSeqRefProp == null || oSeqRefProp.Value == 0)
-                {
-                    return;
-                }
-
-                int oldSeqIndex = oSeqRefProp.Value;
-                oSeqRefProp.Value = exp.UIndex + 1;
-                exp.WriteProperty(oSeqRefProp);
-
-                //clone sequence
-                cloneObject(pcc.getUExport(oldSeqIndex), parentSequence, false);
-
-                //remove cloned sequence from SeqRef's parent's sequenceobjects
-                var seqObjs = parentSequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                seqObjs.RemoveAt(seqObjs.Count - 1);
-                parentSequence.WriteProperty(seqObjs);
-
-                //set SequenceReference's linked name indices
-                var inputIndices = new List<int>();
-                var outputIndices = new List<int>();
-
-                IExportEntry newSequence = pcc.getUExport(exp.UIndex + 1);
-                var props = newSequence.GetProperties();
-                var inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
-                if (inLinksProp != null)
-                {
-                    foreach (var inLink in inLinksProp)
-                    {
-                        inputIndices.Add(inLink.GetProp<NameProperty>("LinkAction").Value.Number);
-                    }
-                }
-
-                var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-                if (outLinksProp != null)
-                {
-                    foreach (var outLinks in outLinksProp)
-                    {
-                        outputIndices.Add(outLinks.GetProp<NameProperty>("LinkAction").Value.Number);
-                    }
-                }
-
-                props = exp.GetProperties();
-                inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
-                if (inLinksProp != null)
-                {
-                    for (int i = 0; i < inLinksProp.Count; i++)
-                    {
-                        NameProperty linkAction = inLinksProp[i].GetProp<NameProperty>("LinkAction");
-                        linkAction.Value = new NameReference(linkAction.Value.Name, inputIndices[i]);
-                    }
-                }
-
-                outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-                if (outLinksProp != null)
-                {
-                    for (int i = 0; i < outLinksProp.Count; i++)
-                    {
-                        NameProperty linkAction = outLinksProp[i].GetProp<NameProperty>("LinkAction");
-                        linkAction.Value = new NameReference(linkAction.Value.Name, outputIndices[i]);
-                    }
-                }
-
-                exp.WriteProperties(props);
-
-                //set new Sequence's link and ParentSequence prop to SeqRef
-                newSequence.WriteProperty(new ObjectProperty(exp.UIndex, "ParentSequence"));
-                newSequence.idxLink = exp.UIndex;
-
-                //set DefaultViewZoom to magic number to flag that this is a cloned Sequence Reference and global saves cannot be used with it
-                //ugly, but it should work
-                newSequence.WriteProperty(new FloatProperty(CLONED_SEQREF_MAGIC, "DefaultViewZoom"));
-            }
-        }
-
-        private void addObject(IExportEntry exportToAdd, bool removeLinks = true)
-        {
-            //extraSaveData.Add(new SaveData
-            //{
-            //    index = exportToAdd.Index,
-            //    X = graphEditor.Camera.Bounds.X + graphEditor.Camera.Bounds.Width / 2,
-            //    Y = graphEditor.Camera.Bounds.Y + graphEditor.Camera.Bounds.Height / 2
-            //});
-            //addObjectToSequence(exportToAdd, removeLinks, SelectedSequence);
-        }
-
-        private void AddObject_Clicked(object sender, RoutedEventArgs e)
-        {
-            if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is IExportEntry exportToAdd)
-            {
-                if (!exportToAdd.inheritsFrom("SequenceObject"))
-                {
-                    MessageBox.Show($"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is not a sequence object.");
-                    return;
-                }
-
-                if (CurrentObjects.Any(obj => obj.Export == exportToAdd))
-                {
-                    MessageBox.Show($"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is already in the sequence.");
-                    return;
-                }
-
-                addObject(exportToAdd);
             }
         }
 
@@ -3417,8 +3200,22 @@ namespace ME3Explorer.Dialogue_Editor
             graphEditor.AllowDragging();
             Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
         }
+        private void GotoBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems != e.RemovedItems)
+            {
+                if(GotoBox.SelectedItem is DiagNode dnode)
+                {
+                    DialogueNode_Selected(dnode);
 
-
+                }
+                if(GotoBox.SelectedItem is DObj o)
+                {
+                    graphEditor.Camera.AnimateViewToCenterBounds(o.GlobalFullBounds, false, 100);
+                    graphEditor.Refresh();
+                }
+            }
+        }
         private void OpenInInterpViewer_Clicked(object sender, RoutedEventArgs e)
         {
             if (Pcc.Game != MEGame.ME3)
@@ -3773,6 +3570,7 @@ namespace ME3Explorer.Dialogue_Editor
             return true;
         }
         #endregion Helpers
+
 
     }
 }

@@ -448,7 +448,8 @@ namespace ME3Explorer.Dialogue_Editor
 
         public RectangleF posAtDragStart;
 
-
+        protected string listname;
+        public string ListName => listname;
         public int UIndex = 0;
         public IExportEntry Export => export;
         public virtual bool IsSelected { get; set; }
@@ -599,9 +600,9 @@ namespace ME3Explorer.Dialogue_Editor
                 Y = 3,
                 Pickable = false
             };
-            if (title.Width + 40 > w)
+            if (title.Width + 60 > w)
             {
-                w = title.Width + 40;
+                w = title.Width + 60;
             }
             title.Width = w;
 
@@ -720,25 +721,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        public virtual void RemoveOutlink(int linkconnection, int linkIndex)
-        {
-
-            string linkDesc = Outlinks[linkconnection].Desc;
-            linkDesc = (OutputNumbers ? linkDesc.Substring(0, linkDesc.LastIndexOf(":")) : linkDesc);
-           
-            //if (outLinksProp != null)
-            //{
-            //    foreach (var prop in outLinksProp)
-            //    {
-            //        if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
-            //        {
-            //            prop.GetProp<ArrayProperty<StructProperty>>("Links").RemoveAt(linkIndex);
-            //            export.WriteProperty(outLinksProp);
-            //            return;
-            //        }
-            //    }
-            //}
-        }
+        public virtual void RemoveOutlink(int linkconnection, int linkIndex) { }
 
         public override void Dispose()
         {
@@ -763,16 +746,17 @@ namespace ME3Explorer.Dialogue_Editor
         public DStart(DialogueEditorWPF editor, int orderKey, int StartNbr, float x, float y, ConvGraphEditor ConvGraphEditor)
             : base(x, y, ConvGraphEditor)
         {
+            listname = $"{Ordinal} Start Node: {StartNbr}"; ;
             Editor = editor;
             Order = orderKey;
             Ordinal = DialogueEditorWPF.AddOrdinal(orderKey + 1);
             StartNumber = StartNbr;
             outlinePen = new Pen(EventColor);
-            string s = $"{Ordinal} Start Node: {StartNbr}";
+
             float starty = 0;
             float w = 15;
             float midW = 50;
-            GetTitleBox(s, 20);
+            GetTitleBox(listname, 20);
 
             w += titleBox.Width;
             OutputLink l = new OutputLink
@@ -973,7 +957,9 @@ namespace ME3Explorer.Dialogue_Editor
             //TitleBox
             string s = $"{Node.SpeakerTag.SpeakerName}";
             string l = $"{Node.Line}";
-            string n = $"{Node.NodeCount}";
+            string n = $"E{Node.NodeCount}";
+            if(Node.IsReply)
+            { n = $"R{Node.NodeCount}"; }
             float tW = GetTitlePlusLineBox(s, l, n, w);
             if (tW > w)
             {
@@ -1161,7 +1147,7 @@ namespace ME3Explorer.Dialogue_Editor
             NodeID = node.NodeCount;
             originalX = x;
             originalY = y;
-
+            listname = $"E{NodeID} {node.Line}";
             var rcarray = NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
             if (rcarray != null)
             {
@@ -1326,7 +1312,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             var newProps = new PropertyCollection();
             newProps.Add(new IntProperty(endNode - 1000, new NameReference("nIndex")));
-            newProps.Add(new StringRefProperty(123456, new NameReference("srParaphrase")));
+            newProps.Add(new StringRefProperty(0, new NameReference("srParaphrase")));
             newProps.Add(new StrProperty("", new NameReference("sParaphrase")));
             newProps.Add(new EnumProperty(new NameReference("REPLY_CATEGORY_DEFAULT"), new NameReference("EReplyCategory"), Editor.Pcc, new NameReference("Category")));
             newProps.Add(new NoneProperty());
@@ -1352,6 +1338,7 @@ namespace ME3Explorer.Dialogue_Editor
             Node = node;
             NodeProp = node.NodeProp;
             NodeID = Node.NodeCount + 1000;
+            listname = $"R{Node.NodeCount} {node.Line}";
             GetOutputLinks(Node);
             originalX = x;
             originalY = y;

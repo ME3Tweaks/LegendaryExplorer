@@ -28,7 +28,7 @@
             <MenuItem Header="Remove start node" Command="{Binding StartDeleteCommand}" ToolTip="Delete this start node"/>
         </ContextMenu>
         <ContextMenu x:Key="backContextMenu">
-            <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Dialogue Object to this Dialogue"/>
+            <MenuItem Header="Add Object" ToolTip="Add existing Dialogue Object to this Dialogue"/>
         </ContextMenu>
         <ContextMenu x:Key="replynodeContextMenu" Closed="ContextMenu_Closed">
             <MenuItem Header="Add Reply" Command="{Binding NodeAddCommand}" CommandParameter="AddReply" ToolTip="Create a new clean reply"/>
@@ -38,7 +38,7 @@
                 <MenuItem Header="Output Links" Name="outputLinksMenuItem"></MenuItem>
                 <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Command="{Binding NodeDeleteAllLinksCommand}" IsEnabled="{Binding SelectedDialogueNode, Converter={StaticResource NullEnabledConverter}}"/>
             </MenuItem>
-            <MenuItem Header="Remove from Dialogue" Command="{Binding NodeDeleteCommand}"/>
+            <MenuItem Header="Remove from Dialogue" Command="{Binding NodeRemoveCommand}"/>
         </ContextMenu>
         <ContextMenu x:Key="entrynodeContextMenu" Closed="ContextMenu_Closed">
             <MenuItem Header="Add Entry" Command="{Binding NodeAddCommand}" CommandParameter="AddEntry" ToolTip="Create a new clean entry"/>
@@ -48,7 +48,7 @@
                 <MenuItem Header="Output Links" Name="eoutputLinksMenuItem"></MenuItem>
                 <MenuItem Header="Break All Links" Name="ebreakAllLinksMenuItem" Command="{Binding NodeDeleteAllLinksCommand}" IsEnabled="{Binding SelectedDialogueNode, Converter={StaticResource NullEnabledConverter}}"/>
             </MenuItem>
-            <MenuItem Header="Remove from Dialogue" Command="{Binding NodeDeleteCommand}"/>
+            <MenuItem Header="Remove from Dialogue" Command="{Binding NodeRemoveCommand}"/>
         </ContextMenu>
         <system:Boolean x:Key="True">True</system:Boolean>
     </Window.Resources>
@@ -60,7 +60,8 @@
         <KeyBinding Key="G" Modifiers="Control" Command="{Binding GotoCommand}"/>
     </Window.InputBindings>
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top" HorizontalAlignment="Stretch">
+
             <MenuItem Header="File" Padding="4" >
                 <MenuItem Header="_Open" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
                 <MenuItem Header="_Save"  Command="{Binding SaveCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
@@ -163,6 +164,7 @@
             <MenuItem Header="Layout" Padding="4">
                 <MenuItem Header="Re-Run Auto Layout" Command="{Binding AutoLayoutCommand}" InputGestureText="Ctrl+L" ToolTip="Attempt to layout sequence objects in a comprehensible fashion"/>
             </MenuItem>
+            <ComboBox Name="GotoBox" Text="Go to:" ItemsSource="{Binding CurrentObjects}" DisplayMemberPath="ListName" IsEditable="True" SelectionChanged="GotoBox_SelectionChanged" ToolTip="Pick a Node to go to" IsEnabled="true" Width="260" HorizontalAlignment="Stretch" Visibility="{Binding SelectedConv, Converter={StaticResource NullVisibilityConverter}}"/>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
             <SharedUI:StatusBarGameIDIndicator Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
