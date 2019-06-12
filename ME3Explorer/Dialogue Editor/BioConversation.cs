@@ -720,23 +720,24 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        public void RemoveOutlink(int linkconnection, int linkIndex)
+        public virtual void RemoveOutlink(int linkconnection, int linkIndex)
         {
+
             string linkDesc = Outlinks[linkconnection].Desc;
             linkDesc = (OutputNumbers ? linkDesc.Substring(0, linkDesc.LastIndexOf(":")) : linkDesc);
-            var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outLinksProp != null)
-            {
-                foreach (var prop in outLinksProp)
-                {
-                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
-                    {
-                        prop.GetProp<ArrayProperty<StructProperty>>("Links").RemoveAt(linkIndex);
-                        export.WriteProperty(outLinksProp);
-                        return;
-                    }
-                }
-            }
+           
+            //if (outLinksProp != null)
+            //{
+            //    foreach (var prop in outLinksProp)
+            //    {
+            //        if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
+            //        {
+            //            prop.GetProp<ArrayProperty<StructProperty>>("Links").RemoveAt(linkIndex);
+            //            export.WriteProperty(outLinksProp);
+            //            return;
+            //        }
+            //    }
+            //}
         }
 
         public override void Dispose()
@@ -1299,7 +1300,6 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
-
         public override void CreateOutlink(PNode n1, PNode n2)
         {
             DiagNode start = (DiagNode)n1.Parent.Parent.Parent;
@@ -1474,8 +1474,15 @@ namespace ME3Explorer.Dialogue_Editor
 
             Editor.RecreateNodesToProperties(Editor.SelectedConv);
 
-            //Add new Item to list.
-            //Reload.
+        }
+
+        public override void RemoveOutlink(int linkconnection, int linkIndex)
+        {
+            var oldEntriesProp = NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
+            oldEntriesProp.RemoveAt(linkconnection);
+            NodeProp.Properties.AddOrReplaceProp(oldEntriesProp);
+            Editor.RecreateNodesToProperties(Editor.SelectedConv);
+
         }
     }
     public class DText : PText

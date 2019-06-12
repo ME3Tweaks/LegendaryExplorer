@@ -1,39 +1,33 @@
 ﻿using Gammtek.Conduit.Extensions.Collections.Generic;
+using KFreonLib.MEDirectories;
 using ME3Explorer;
 using ME3Explorer.Packages;
-using ME3Explorer.SequenceObjects;
+using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
-using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Unreal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Composition.Primitives;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
+using static ME3Explorer.Dialogue_Editor.BioConversationExtended;
+using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
+using InterpEditor = ME3Explorer.Matinee.InterpEditor;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using InterpEditor = ME3Explorer.Matinee.InterpEditor;
-using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
-using System.Windows.Threading;
-using KFreonLib.MEDirectories;
-using ME3Explorer.Sequence_Editor;
-using static ME3Explorer.Dialogue_Editor.BioConversationExtended;
-using System.Windows.Data;
-using System.Windows.Controls.Primitives;
-using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
 
 namespace ME3Explorer.Dialogue_Editor
 {
@@ -123,7 +117,7 @@ namespace ME3Explorer.Dialogue_Editor
         private int CurrentUIMode = -1; //Sets which panel is up.
         #endregion ConvoBox//Conversation Box Links
         private static BackgroundWorker BackParser = new BackgroundWorker();
-
+        private bool NoUIRefresh; //stops graph refresh on update.
         // FOR GRAPHING
         public ObservableCollectionExtended<DObj> CurrentObjects { get; } = new ObservableCollectionExtended<DObj>();
         public ObservableCollectionExtended<DObj> SelectedObjects { get; } = new ObservableCollectionExtended<DObj>();
@@ -178,6 +172,9 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand StartEditCommand { get; set; }
         public ICommand ScriptAddCommand { get; set; }
         public ICommand ScriptDeleteCommand { get; set; }
+        public ICommand NodeAddCommand { get; set; }
+        public ICommand NodeRemoveCommand { get; set; }
+        public ICommand NodeDeleteAllLinksCommand { get; set; }
         private bool HasWwbank(object param)
         {
             return SelectedConv != null && SelectedConv.WwiseBank != null;
@@ -351,6 +348,9 @@ namespace ME3Explorer.Dialogue_Editor
             StartEditCommand = new RelayCommand(StartAddEdit);
             ScriptAddCommand = new GenericCommand(Script_Add);
             ScriptDeleteCommand = new GenericCommand(Script_Delete, ScriptCanDelete);
+            NodeAddCommand = new RelayCommand(DialogueNode_Add);
+            NodeRemoveCommand = new RelayCommand(DialogueNode_Add);
+            NodeDeleteAllLinksCommand = new RelayCommand(DialogueNode_DeleteLinks);
         }
 
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
@@ -503,8 +503,7 @@ namespace ME3Explorer.Dialogue_Editor
                     Level = $"{Level.Remove(Level.Length - 4)}_LOC_INT{Path.GetExtension(Pcc.FileName)}";
                 }
 
-                //Build Animset list //DEBUG 
-                //Must be done on this thread not on Background worker....
+                //Build Animset list
                 FFXAnimsets.ClearEx();
                 foreach (var exp in Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAnimSet"))
                 {
@@ -538,25 +537,6 @@ namespace ME3Explorer.Dialogue_Editor
             CurrentFile = null;
             UnLoadMEPackage();
             StatusText = "Select a package file to load";
-        }
-
-        private int LookupTagRef(string actortag)
-        {
-            if (!TagDBLoaded)
-            {
-                if (File.Exists(ActorDatabasePath))
-                {
-                    ActorStrRefs = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(ActorDatabasePath));
-                    TagDBLoaded = true;
-                }
-            }
-            var strref = ActorStrRefs.FirstOrDefault(a => a.Key.ToLower() == actortag.ToLower());
-            if(strref.Key != null)
-            {
-                return strref.Value;
-            }
-            
-            return 0;
         }
 
         #endregion Startup/Exit
@@ -1277,7 +1257,64 @@ namespace ME3Explorer.Dialogue_Editor
 
         }
 
-        public void SaveSpeakersToProperties(ObservableCollectionExtended<SpeakerExtended> speakerCollection)
+        private void GenerateSpeakerArrays(ConversationExtended conv)
+        {
+
+            foreach (var s in conv.StartingList)
+            {
+                var aSpkrs = new SortedSet<int>();
+                var startNode = conv.EntryList[s.Value];
+                var visitedNodes = new HashSet<DialogueNodeExtended>();
+                var newNodes = new HashSet<DialogueNodeExtended>();
+                aSpkrs.Add(startNode.SpeakerIndex);
+                var startprop = startNode.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
+                foreach (var e in startprop)
+                {
+                    var lprop = e.GetProp<IntProperty>("nIndex");
+                    newNodes.Add(conv.ReplyList[lprop.Value]);
+                    visitedNodes.Add(startNode);
+                }
+                while(newNodes.Any())
+                {
+                    var thisnode = newNodes.First();
+                    if(!visitedNodes.Contains(thisnode))
+                    {
+                        aSpkrs.Add(thisnode.SpeakerIndex);
+                        if (thisnode.IsReply)
+                        {
+                            var thisprop = thisnode.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
+                            if (thisprop != null)
+                            {
+                                foreach (var r in thisprop)
+                                {
+                                    newNodes.Add(conv.EntryList[r.Value]);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var thisprop = thisnode.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
+                            foreach (var e in thisprop)
+                            {
+                                var eprop = e.GetProp<IntProperty>("nIndex");
+                                newNodes.Add(conv.ReplyList[eprop.Value]);
+
+                            }
+                        }
+                        visitedNodes.Add(thisnode);
+                    }
+                    newNodes.Remove(thisnode);
+                }
+                var newaSpkr = new ArrayProperty<IntProperty>(ArrayType.Int,"aSpeakerList");
+                foreach(var a in aSpkrs)
+                {
+                    newaSpkr.Add(a);
+                }
+                startNode.NodeProp.Properties.AddOrReplaceProp(newaSpkr);
+            }
+        }
+
+        private void SaveSpeakersToProperties(ObservableCollectionExtended<SpeakerExtended> speakerCollection)
         {
             try
             {
@@ -1347,8 +1384,9 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        public void RecreateNodesToProperties(ConversationExtended conv)
+        public void RecreateNodesToProperties(ConversationExtended conv, bool pushtofile = true)
         {
+            GenerateSpeakerArrays(conv);
             var newstartlist = new ArrayProperty<IntProperty>(ArrayType.Int, new NameReference("m_StartingList"));
             foreach (var start in conv.StartingList)
             {
@@ -1381,8 +1419,10 @@ namespace ME3Explorer.Dialogue_Editor
                 conv.BioConvo.AddOrReplaceProp(newreplyList);
             }
 
-
-            PushConvoToFile(conv);
+            if (pushtofile)
+            {
+                PushConvoToFile(conv);
+            }
         }
 
         private void SaveScriptsToProperties(ConversationExtended conv, bool pushtofile = true)
@@ -1440,7 +1480,6 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 return; //nothing is loaded
             }
-
             IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
                                                                             x.change != PackageChange.ImportAdd &&
                                                                             x.change != PackageChange.Names);
@@ -1501,24 +1540,16 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
             FirstParse();
-            RefreshView();
-
             Conversations_ListBox.SelectedIndex = cSelectedIdx;
             Speakers_ListBox.SelectedIndex = sSelectedIdx;
-            SetUIMode(CurrentUIMode, true);
-            if (SelectedObjects.Count > 0)
+            if (!NoUIRefresh)
             {
-                if (SelectedObjects[0] is DiagNode d)
-                {
-                    //Get redrawn node to keep in focus
-                    var dnode = CurrentObjects.OfType<DiagNode>().FirstOrDefault(o => o.Node.NodeCount == d.Node.NodeCount && o.Node.IsReply == d.Node.IsReply);
-
-                    if (dnode != null)
-                    {
-                        DialogueNode_Selected(dnode);
-                    }
-                }
+                RefreshView();
+                SetUIMode(CurrentUIMode, true);
+                DialogueNode_SelectByIndex(-1);
             }
+            NoUIRefresh = false;
+
         }
 
         public void NodePropertyChanged(object sender, PropertyChangedEventArgs e) //update handler for selecteddiagnode.
@@ -2182,27 +2213,8 @@ namespace ME3Explorer.Dialogue_Editor
                 }
 
             }
-            var PanObjects = new ObservableCollectionExtended<DObj>();
-            PanObjects.AddRange(CurrentObjects.Take(5));
+            graphEditor_PanTo();
 
-            if (PanObjects.Any())
-            {
-                if (panToSelection)
-                {
-                    if (PanObjects.Count == 1)
-                    {
-                        graphEditor.Camera.AnimateViewToCenterBounds(PanObjects[0].GlobalFullBounds, false, 100);
-                    }
-                    else
-                    {
-                        RectangleF boundingBox = PanObjects.Select(obj => obj.GlobalFullBounds).BoundingRect();
-                        graphEditor.Camera.AnimateViewToCenterBounds(boundingBox, true, 200);
-                    }
-                }
-            }
-
-            panToSelection = true;
-            graphEditor.Refresh();
         }
         private void Convo_NSFFX_DropDownClosed(object sender, EventArgs e)
         {
@@ -2368,6 +2380,24 @@ namespace ME3Explorer.Dialogue_Editor
         {
             TextBox_Speaker_Name.Focus();
             TextBox_Speaker_Name.CaretIndex = TextBox_Speaker_Name.Text.Length;
+        }
+        private int LookupTagRef(string actortag)
+        {
+            if (!TagDBLoaded)
+            {
+                if (File.Exists(ActorDatabasePath))
+                {
+                    ActorStrRefs = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(ActorDatabasePath));
+                    TagDBLoaded = true;
+                }
+            }
+            var strref = ActorStrRefs.FirstOrDefault(a => a.Key.ToLower() == actortag.ToLower());
+            if (strref.Key != null)
+            {
+                return strref.Value;
+            }
+
+            return 0;
         }
 
         private void EditBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
@@ -2560,14 +2590,36 @@ namespace ME3Explorer.Dialogue_Editor
             SaveScriptsToProperties(SelectedConv, false);
             RecreateNodesToProperties(SelectedConv);
         }
-        private void ScriptIndex_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        
+        private DiagNode DialogueNode_SelectByIndex(int index, bool isreply = false)
         {
-            if(SelectedDialogueNode != null && SelectedScript != null)
+            if (SelectedObjects.Count > 0 && index == -1) //In this case pull up first selected object on list.
             {
-                //SelectedDialogueNode.ScriptIdx = SelectedConv.ScriptList.FindIndex(s => s == SelectedScript) - 1;
-            }
-        }
+                if (SelectedObjects[0] is DiagNode d)
+                {
+                    //Get redrawn node to keep in focus
+                    var dnode = CurrentObjects.OfType<DiagNode>().FirstOrDefault(o => o.Node.NodeCount == d.Node.NodeCount && o.Node.IsReply == d.Node.IsReply);
 
+                    if (dnode != null)
+                    {
+                        DialogueNode_Selected(dnode);
+                        return dnode;
+                    }
+                }
+            }
+            else if (index >= 0 )
+            {
+                var dnode = CurrentObjects.OfType<DiagNode>().FirstOrDefault(o => o.Node.NodeCount == index && o.Node.IsReply == isreply);
+
+                if (dnode != null)
+                {
+                    DialogueNode_Selected(dnode);
+                    return dnode;
+                }
+            }
+
+            return null;
+        }
         private void DialogueNode_Selected(DiagNode obj)
         {
             foreach (var oldselection in SelectedObjects)
@@ -2628,6 +2680,107 @@ namespace ME3Explorer.Dialogue_Editor
 
 
         }
+        private async void DialogueNode_Add(object obj)
+        {
+            string command = obj as string;
+
+            if(command == "AddReply")
+            {
+                PropertyCollection newprop = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, "BioDialogReplyNode", true);
+                var props = SelectedConv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");
+                if(props == null)
+                {
+                    props = new ArrayProperty<StructProperty>(ArrayType.Struct,"m_ReplyList");
+                }
+                props.Add(new StructProperty("BioDialogReplyNode", newprop));
+                SelectedConv.BioConvo.AddOrReplaceProp(props);
+                PushConvoToFile(SelectedConv);
+                return;
+            }
+
+            if (command == "AddEntry")
+            {
+                PropertyCollection newprop = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, "BioDialogEntryNode", true);
+                var props = SelectedConv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
+                if (props == null)
+                {
+                    props = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_EntryList");
+                }
+                props.Add(new StructProperty("BioDialogEntryNode", newprop));
+                SelectedConv.BioConvo.AddOrReplaceProp(props);
+                PushConvoToFile(SelectedConv);
+                return;
+            }
+
+            if (command == "CloneReply")
+            {
+                int newIndex = SelectedConv.ReplyList.Count;
+                var newReply = new DialogueNodeExtended(SelectedDialogueNode);
+                newReply.NodeCount = newIndex;
+                SelectedConv.ReplyList.Add(newReply);
+                NoUIRefresh = true;
+                RecreateNodesToProperties(SelectedConv);
+                bool p = true;
+                while(p)
+                {
+                    p = await CheckProcess(NoUIRefresh, 100);
+                }
+                panToSelection = false;
+                GenerateGraph();
+                DiagNode node = DialogueNode_SelectByIndex(newIndex, true);
+                node.Visible = false;
+                DialogueNode_DeleteLinks(node);
+                node.Visible = true;
+                graphEditor.Camera.AnimateViewToCenterBounds(node.GlobalFullBounds, false, 1000);
+                graphEditor.Refresh();
+                return;
+            }
+
+            if (command == "CloneEntry")
+            {
+                int newIndex = SelectedConv.EntryList.Count;
+                var newEntry = new DialogueNodeExtended(SelectedDialogueNode);
+                newEntry.NodeCount = SelectedConv.ReplyList.Count;
+                SelectedConv.EntryList.Add(newEntry);
+                NoUIRefresh = true;
+                RecreateNodesToProperties(SelectedConv);
+                bool p = true;
+                while (p)
+                {
+                    p = await CheckProcess(NoUIRefresh, 100);
+                }
+                panToSelection = false;
+                GenerateGraph();
+                DiagNode node = DialogueNode_SelectByIndex(newIndex, false);
+                node.Visible = false;
+                DialogueNode_DeleteLinks(node);
+                node.Visible = true;
+                graphEditor.Camera.AnimateViewToCenterBounds(node.GlobalFullBounds, false, 1000);
+                graphEditor.Refresh();
+                return;
+            }
+        }
+        private void DialogueNode_DeleteLinks(object obj)
+        {
+            if(SelectedDialogueNode.IsReply)
+            {
+                var entrylinklist = SelectedDialogueNode.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
+                if(entrylinklist != null)
+                {
+                    entrylinklist.Clear();
+                    RecreateNodesToProperties(SelectedConv);
+                }
+            }
+            else
+            {
+                var replylinklist = SelectedDialogueNode.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
+                if(replylinklist != null)
+                {
+                    replylinklist.Clear();
+                    RecreateNodesToProperties(SelectedConv);
+                }
+            }
+        }
         #endregion
 
         #region UIHandling-graph
@@ -2670,38 +2823,34 @@ namespace ME3Explorer.Dialogue_Editor
 
         }
 
-        private void backMouseDown_Handler(object sender, PInputEventArgs e)
-        {
-            if (!(e.PickedNode is PCamera) || SelectedConv == null) return;
-
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
-            {
-
-            }
-            else if (e.Shift)
-            {
-                //graphEditor.StartBoxSelection(e);
-                //e.Handled = true;
-            }
-            else
-            {
-                //Conversations_ListBox.SelectedItems.Clear();
-            }
-        }
-
-        private void back_MouseUp(object sender, PInputEventArgs e)
-        {
-            //var nodesToSelect = graphEditor.OfType<DObj>();
-            //foreach (DObj DObj in nodesToSelect)
-            //{
-            //    panToSelection = false;
-            //    .SelectedItems.Add(DObj);
-            //}
-        }
-
         private void graphEditor_Click(object sender, EventArgs e)
         {
             graphEditor.Focus();
+        }
+
+        private void graphEditor_PanTo()
+        {
+            var PanObjects = new ObservableCollectionExtended<DObj>();
+            PanObjects.AddRange(CurrentObjects.Take(5));
+
+            if (PanObjects.Any())
+            {
+                if (panToSelection)
+                {
+                    if (PanObjects.Count == 1)
+                    {
+                        graphEditor.Camera.AnimateViewToCenterBounds(PanObjects[0].GlobalFullBounds, false, 100);
+                    }
+                    else
+                    {
+                        RectangleF boundingBox = PanObjects.Select(obj => obj.GlobalFullBounds).BoundingRect();
+                        graphEditor.Camera.AnimateViewToCenterBounds(boundingBox, true, 200);
+                    }
+                }
+            }
+
+            panToSelection = true;
+            graphEditor.Refresh();
         }
 
         private void DialogueEditor_DragEnter(object sender, System.Windows.Forms.DragEventArgs e)
@@ -2756,103 +2905,37 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        public void OpenNodeContextMenu(DObj obj)
+
+
+        private void backMouseDown_Handler(object sender, PInputEventArgs e)
         {
-            if (obj is DStart dStart )
+            if (!(e.PickedNode is PCamera) || SelectedConv == null) return;
+
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
-                if (FindResource("startnodeContextMenu") is ContextMenu contextMenu)
-                {
-                    foreach (var oldselection in SelectedObjects)
-                    {
-                        oldselection.IsSelected = false;
-                    }
-                    SelectedObjects.ClearEx();
-                    dStart.IsSelected = true;
-                    SelectedObjects.Add(dStart);
-
-                    Start_ListBox.SelectedIndex = dStart.Order;
-                    SetUIMode(3, false);
-                    contextMenu.DataContext = this;
-                    contextMenu.IsOpen = true;
-                    graphEditor.DisableDragging();
-
-                }
 
             }
-            else if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
+            else if (e.Shift)
             {
-                if (obj is DBox DBox && (DBox.Outlinks.Any())
-                 && contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
-                {
-                    bool hasLinks = false;
-                    if (breakLinksMenuItem.GetChild("outputLinksMenuItem") is MenuItem outputLinksMenuItem)
-                    {
-                        outputLinksMenuItem.Visibility = Visibility.Collapsed;
-                        outputLinksMenuItem.Items.Clear();
-                        for (int i = 0; i < DBox.Outlinks.Count; i++)
-                        {
-                            for (int j = 0; j < DBox.Outlinks[i].Links.Count; j++)
-                            {
-                                outputLinksMenuItem.Visibility = Visibility.Visible;
-                                hasLinks = true;
-                                var temp = new MenuItem
-                                {
-                                    Header = $"Break link from {DBox.Outlinks[i].Desc} to {DBox.Outlinks[i].Links[j]}"
-                                };
-                                int linkConnection = i;
-                                int linkIndex = j;
-                                temp.Click += (o, args) => { DBox.RemoveOutlink(linkConnection, linkIndex); };
-                                outputLinksMenuItem.Items.Add(temp);
-                            }
-                        }
-                    }
-
-                    if (breakLinksMenuItem.GetChild("breakAllLinksMenuItem") is MenuItem breakAllLinksMenuItem)
-                    {
-                        if (hasLinks)
-                        {
-                            breakLinksMenuItem.Visibility = Visibility.Visible;
-                            breakAllLinksMenuItem.Visibility = Visibility.Visible;
-                            breakAllLinksMenuItem.Tag = obj.Export;
-                        }
-                        else
-                        {
-                            breakLinksMenuItem.Visibility = Visibility.Collapsed;
-                            breakAllLinksMenuItem.Visibility = Visibility.Collapsed;
-                        }
-                    }
-                }
-
-                if (contextMenu.GetChild("interpViewerMenuItem") is MenuItem interpViewerMenuItem)
-                {
-                    //string className = obj.Export.ClassName;
-                }
-
-                if (contextMenu.GetChild("plotEditorMenuItem") is MenuItem plotEditorMenuItem)
-                {
-
-                    if (Pcc.Game == MEGame.ME3 && obj is DiagNode DiagNode &&
-                        DiagNode.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
-                        DiagNode.Export.GetProperty<IntProperty>("m_nIndex") != null)
-                    {
-                        plotEditorMenuItem.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        plotEditorMenuItem.Visibility = Visibility.Collapsed;
-                    }
-                }
-
-                contextMenu.IsOpen = true;
-                graphEditor.DisableDragging();
+                //graphEditor.StartBoxSelection(e);
+                //e.Handled = true;
+            }
+            else
+            {
+                //Conversations_ListBox.SelectedItems.Clear();
             }
         }
 
-        private void removeAllLinks(object sender, RoutedEventArgs args)
+        private void back_MouseUp(object sender, PInputEventArgs e)
         {
-            IExportEntry export = (IExportEntry)((MenuItem)sender).Tag;
-            removeAllLinks(export);
+            //var nodesToSelect = graphEditor.OfType<DObj>();
+            //foreach (DObj DObj in nodesToSelect)
+            //{
+            //    panToSelection = false;
+            //    .SelectedItems.Add(DObj);
+            //}
         }
+
 
         private static void removeAllLinks(IExportEntry export)
         {
@@ -2887,43 +2970,6 @@ namespace ME3Explorer.Dialogue_Editor
             export.WriteProperties(props);
         }
 
-        private void RemoveFromDialogue_Click(object sender, RoutedEventArgs e)
-        {
-            if (Conversations_ListBox.SelectedItem is DObj DObj)
-            {
-                //remove incoming connections
-                switch (DObj)
-                {
-                    case DiagNode DiagNode:
-                        foreach (DBox.InputLink inLink in DiagNode.InLinks)
-                        {
-                            foreach (ActionEdge edge in inLink.Edges)
-                            {
-                                edge.originator.RemoveOutlink(edge);
-                            }
-                        }
-                        break;
-                }
-
-                //remove outgoing links
-                removeAllLinks(DObj.Export);
-
-                //remove from sequence
-                //var seqObjs = SelectedSequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                //var arrayObj = seqObjs?.FirstOrDefault(x => x.Value == DObj.UIndex);
-                //if (arrayObj != null)
-                //{
-                //    seqObjs.Remove(arrayObj);
-                //    SelectedSequence.WriteProperty(seqObjs);
-                //}
-
-                //set ParentSequence to null
-                var parentSeqProp = DObj.Export.GetProperty<ObjectProperty>("ParentSequence");
-                parentSeqProp.Value = 0;
-                DObj.Export.WriteProperty(parentSeqProp);
-
-            }
-        }
 
         protected void node_MouseDown(object sender, PInputEventArgs e)
         {
@@ -2950,16 +2996,6 @@ namespace ME3Explorer.Dialogue_Editor
                     panToSelection = false;
                 }
             }
-        }
-
-
-
-        private void CloneObject_Clicked(object sender, RoutedEventArgs e)
-        {
-            //if (Conversations_ListBox.SelectedItem is DObj obj)
-            //{
-            //    cloneObject(obj.Export, SelectedSequence);
-            //}
         }
 
         static void cloneObject(IExportEntry old, IExportEntry sequence, bool topLevel = true)
@@ -3206,38 +3242,6 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        private void ContextMenu_Closed(object sender, RoutedEventArgs e)
-        {
-            graphEditor.AllowDragging();
-            Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
-        }
-
-        private void SaveImage()
-        {
-            if (CurrentObjects.Count == 0)
-                return;
-            string objectName = Regex.Replace(CurrentLoadedExport.ObjectName, @"[<>:""/\\|?*]", "");
-            SaveFileDialog d = new SaveFileDialog
-            {
-                Filter = "PNG Files (*.png)|*.png",
-                FileName = $"{CurrentFile}.{objectName}"
-            };
-            if (d.ShowDialog() == true)
-            {
-                PNode r = graphEditor.Root;
-                RectangleF rr = r.GlobalFullBounds;
-                PNode p = PPath.CreateRectangle(rr.X, rr.Y, rr.Width, rr.Height);
-                p.Brush = Brushes.White;
-                graphEditor.addBack(p);
-                graphEditor.Camera.Visible = false;
-                System.Drawing.Image image = graphEditor.Root.ToImage();
-                graphEditor.Camera.Visible = true;
-                image.Save(d.FileName, ImageFormat.Png);
-                graphEditor.backLayer.RemoveAllChildren();
-                MessageBox.Show("Done.");
-            }
-        }
-
         private void addObject(IExportEntry exportToAdd, bool removeLinks = true)
         {
             //extraSaveData.Add(new SaveData
@@ -3282,6 +3286,139 @@ namespace ME3Explorer.Dialogue_Editor
         #endregion UIHandling-graph
 
         #region UIHandling-menus
+        public void OpenNodeContextMenu(DObj obj)
+        {
+            if (obj is DStart dStart)
+            {
+                if (FindResource("startnodeContextMenu") is ContextMenu contextMenu)
+                {
+                    foreach (var oldselection in SelectedObjects)
+                    {
+                        oldselection.IsSelected = false;
+                    }
+                    SelectedObjects.ClearEx();
+                    dStart.IsSelected = true;
+                    SelectedObjects.Add(dStart);
+
+                    Start_ListBox.SelectedIndex = dStart.Order;
+                    SetUIMode(3, false);
+                    contextMenu.DataContext = this;
+                    contextMenu.IsOpen = true;
+                    graphEditor.DisableDragging();
+
+                }
+
+            }
+            else if (obj is DiagNodeReply dreply)
+            {
+                if (FindResource("replynodeContextMenu") is ContextMenu contextMenu)
+                {
+                    if (dreply.Outlinks.Any()
+                     && contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
+                    {
+                        bool hasLinks = false;
+                        if (breakLinksMenuItem.GetChild("outputLinksMenuItem") is MenuItem outputLinksMenuItem)
+                        {
+                            outputLinksMenuItem.Visibility = Visibility.Collapsed;
+                            outputLinksMenuItem.Items.Clear();
+                            for (int i = 0; i < dreply.Outlinks.Count; i++)
+                            {
+                                for (int j = 0; j < dreply.Outlinks[i].Links.Count; j++)
+                                {
+                                    outputLinksMenuItem.Visibility = Visibility.Visible;
+                                    hasLinks = true;
+                                    var temp = new MenuItem
+                                    {
+                                        Header = $"Break link from R{dreply.NodeID - 1000} to E{dreply.Outlinks[i].Links[j]}"
+                                    };
+                                    int linkConnection = i;
+                                    int linkIndex = j;
+                                    temp.Click += (o, args) => { dreply.RemoveOutlink(linkConnection, linkIndex); };
+                                    outputLinksMenuItem.Items.Add(temp);
+                                }
+                            }
+                        }
+
+                        if (breakLinksMenuItem.GetChild("breakAllLinksMenuItem") is MenuItem breakAllLinksMenuItem)
+                        {
+                            if (hasLinks)
+                            {
+                                breakLinksMenuItem.Visibility = Visibility.Visible;
+                                breakAllLinksMenuItem.Visibility = Visibility.Visible;
+                            }
+                            else
+                            {
+                                breakLinksMenuItem.Visibility = Visibility.Collapsed;
+                                breakAllLinksMenuItem.Visibility = Visibility.Collapsed;
+                            }
+                        }
+                    }
+                    DialogueNode_Selected(dreply);
+                    SetUIMode(2, false);
+                    contextMenu.DataContext = this;
+                    contextMenu.IsOpen = true;
+                    graphEditor.DisableDragging();
+                }
+            }
+            else if (obj is DiagNodeEntry dentry)
+            {
+                if (FindResource("entrynodeContextMenu") is ContextMenu contextMenu)
+                {
+                    if (dentry.Outlinks.Any()
+                     && contextMenu.GetChild("ebreakLinksMenuItem") is MenuItem breakLinksMenuItem)
+                    {
+                        bool hasLinks = false;
+                        if (breakLinksMenuItem.GetChild("eoutputLinksMenuItem") is MenuItem outputLinksMenuItem)
+                        {
+                            outputLinksMenuItem.Visibility = Visibility.Collapsed;
+                            outputLinksMenuItem.Items.Clear();
+                            for (int i = 0; i < dentry.Outlinks.Count; i++)
+                            {
+                                for (int j = 0; j < dentry.Outlinks[i].Links.Count; j++)
+                                {
+                                    outputLinksMenuItem.Visibility = Visibility.Visible;
+                                    hasLinks = true;
+                                    var temp = new MenuItem
+                                    {
+                                        Header = $"Break link from E{dentry.NodeID} to R{dentry.Outlinks[i].Links[j] - 1000}"
+                                    };
+                                    int linkConnection = i;
+                                    int linkIndex = j;
+                                    temp.Click += (o, args) => { dentry.RemoveOutlink(linkConnection, linkIndex); };
+                                    outputLinksMenuItem.Items.Add(temp);
+                                }
+                            }
+                        }
+
+                        if (breakLinksMenuItem.GetChild("ebreakAllLinksMenuItem") is MenuItem breakAllLinksMenuItem)
+                        {
+                            if (hasLinks)
+                            {
+                                breakLinksMenuItem.Visibility = Visibility.Visible;
+                                breakAllLinksMenuItem.Visibility = Visibility.Visible;
+                            }
+                            else
+                            {
+                                breakLinksMenuItem.Visibility = Visibility.Collapsed;
+                                breakAllLinksMenuItem.Visibility = Visibility.Collapsed;
+                            }
+                        }
+                    }
+                    DialogueNode_Selected(dentry);
+                    SetUIMode(2, false);
+                    contextMenu.DataContext = this;
+                    contextMenu.IsOpen = true;
+                    graphEditor.DisableDragging();
+                }
+            }
+        }
+        private void ContextMenu_Closed(object sender, RoutedEventArgs e)
+        {
+            graphEditor.AllowDragging();
+            Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
+        }
+
+
         private void OpenInInterpViewer_Clicked(object sender, RoutedEventArgs e)
         {
             if (Pcc.Game != MEGame.ME3)
@@ -3502,7 +3639,31 @@ namespace ME3Explorer.Dialogue_Editor
                 Application.Current.Windows.OfType<TlkManagerNS.TLKManagerWPF>().First().Focus();
             }
         }
-
+        private void SaveImage()
+        {
+            if (CurrentObjects.Count == 0)
+                return;
+            string objectName = Regex.Replace(CurrentLoadedExport.ObjectName, @"[<>:""/\\|?*]", "");
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = "PNG Files (*.png)|*.png",
+                FileName = $"{CurrentFile}.{objectName}"
+            };
+            if (d.ShowDialog() == true)
+            {
+                PNode r = graphEditor.Root;
+                RectangleF rr = r.GlobalFullBounds;
+                PNode p = PPath.CreateRectangle(rr.X, rr.Y, rr.Width, rr.Height);
+                p.Brush = Brushes.White;
+                graphEditor.addBack(p);
+                graphEditor.Camera.Visible = false;
+                System.Drawing.Image image = graphEditor.Root.ToImage();
+                graphEditor.Camera.Visible = true;
+                image.Save(d.FileName, ImageFormat.Png);
+                graphEditor.backLayer.RemoveAllChildren();
+                MessageBox.Show("Done.");
+            }
+        }
         private void ChangeLineSize(object obj)
         {
             string cmd = obj as string;
@@ -3601,7 +3762,16 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
+        public async Task<bool> CheckProcess(bool waitforfalse, int delay)
+        {
+            if (!waitforfalse)
+            {
+                return false;
+            }
 
+            await Task.Delay(new TimeSpan( 0, 0, 0, 0, delay));
+            return true;
+        }
         #endregion Helpers
 
     }

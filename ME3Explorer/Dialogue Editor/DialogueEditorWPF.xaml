@@ -30,14 +30,25 @@
         <ContextMenu x:Key="backContextMenu">
             <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Dialogue Object to this Dialogue"/>
         </ContextMenu>
-        <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
-           <Separator />
-            <MenuItem Header="Clone Object" Click="CloneObject_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
+        <ContextMenu x:Key="replynodeContextMenu" Closed="ContextMenu_Closed">
+            <MenuItem Header="Add Reply" Command="{Binding NodeAddCommand}" CommandParameter="AddReply" ToolTip="Create a new clean reply"/>
+            <MenuItem Header="Clone Reply" Command="{Binding NodeAddCommand}" CommandParameter="CloneReply" ToolTip="Create a new reply as a duplicate of this one"/>
+            <Separator />
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
                 <MenuItem Header="Output Links" Name="outputLinksMenuItem"></MenuItem>
-                <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Click="removeAllLinks"/>
+                <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Command="{Binding NodeDeleteAllLinksCommand}" IsEnabled="{Binding SelectedDialogueNode, Converter={StaticResource NullEnabledConverter}}"/>
             </MenuItem>
-            <MenuItem Header="Remove from Dialogue" Name="removeFromDialogueMenuItem" Click="RemoveFromDialogue_Click"/>
+            <MenuItem Header="Remove from Dialogue" Command="{Binding NodeDeleteCommand}"/>
+        </ContextMenu>
+        <ContextMenu x:Key="entrynodeContextMenu" Closed="ContextMenu_Closed">
+            <MenuItem Header="Add Entry" Command="{Binding NodeAddCommand}" CommandParameter="AddEntry" ToolTip="Create a new clean entry"/>
+            <MenuItem Header="Clone Entry" Command="{Binding NodeAddCommand}" CommandParameter="CloneEntry" ToolTip="Create a new entry as a duplicate of this one"/>
+            <Separator />
+            <MenuItem Header="Break Links" Name="ebreakLinksMenuItem">
+                <MenuItem Header="Output Links" Name="eoutputLinksMenuItem"></MenuItem>
+                <MenuItem Header="Break All Links" Name="ebreakAllLinksMenuItem" Command="{Binding NodeDeleteAllLinksCommand}" IsEnabled="{Binding SelectedDialogueNode, Converter={StaticResource NullEnabledConverter}}"/>
+            </MenuItem>
+            <MenuItem Header="Remove from Dialogue" Command="{Binding NodeDeleteCommand}"/>
         </ContextMenu>
         <system:Boolean x:Key="True">True</system:Boolean>
     </Window.Resources>
@@ -82,8 +93,11 @@
 
             <MenuItem Header="Tools" Padding="4">
                 <MenuItem Header="Manage TLKs" Command="{Binding LoadTLKManagerCommand}" ToolTip="Load TLK Manager"/>
-                <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Dialogue Object to this Dialogue" IsEnabled="{Binding SelectedDialogue, Converter={StaticResource NullEnabledConverter}}"/>
                 <MenuItem Header="Save Image" Command="{Binding SaveImageCommand}" ToolTip="Save image of full Dialogue"/>
+                <Separator/>
+                <MenuItem Header="Add New Start" Command="{Binding StartAddCommand}" CommandParameter="Add" ToolTip="Create a new start node" IsEnabled="{Binding SelectedConv, Converter={StaticResource NullEnabledConverter}}"/>
+                <MenuItem Header="Add New Entry" Command="{Binding NodeAddCommand}" CommandParameter="AddEntry" ToolTip="Add new entry to this Dialogue" IsEnabled="{Binding SelectedConv, Converter={StaticResource NullEnabledConverter}}"/>
+                <MenuItem Header="Add New Reply" Command="{Binding NodeAddCommand}" CommandParameter="AddReply" ToolTip="Add new reply to this Dialogue" IsEnabled="{Binding SelectedConv, Converter={StaticResource NullEnabledConverter}}"/>
             </MenuItem>
 
             <MenuItem Header="View Options" Padding="4">
@@ -455,7 +469,7 @@
                                 </StackPanel>
                                 <DockPanel ToolTip="Links to event scripts that fire new sequences. ">
                                     <TextBlock  Text="Script: " FontSize="15" DockPanel.Dock="Left"/>
-                                    <ComboBox Name="Node_Combo_ScriptIndex" MinWidth="80" ItemsSource="{Binding Path=SelectedConv.ScriptList}" SelectedItem="{Binding Path=SelectedDialogueNode.Script }" IsSynchronizedWithCurrentItem="False" SelectionChanged="ScriptIndex_SelectionChanged" VerticalAlignment="Center" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True" HorizontalAlignment="Stretch" Margin="2"/>
+                                    <ComboBox Name="Node_Combo_ScriptIndex" MinWidth="80" ItemsSource="{Binding Path=SelectedConv.ScriptList}" SelectedItem="{Binding Path=SelectedDialogueNode.Script }" IsSynchronizedWithCurrentItem="False" VerticalAlignment="Center" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True" HorizontalAlignment="Stretch" Margin="2"/>
                                 </DockPanel>
                             </StackPanel>
                         </TabItem>
