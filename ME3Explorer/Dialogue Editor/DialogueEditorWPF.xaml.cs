@@ -120,7 +120,6 @@ namespace ME3Explorer.Dialogue_Editor
         // FOR GRAPHING
         public ObservableCollectionExtended<DObj> CurrentObjects { get; } = new ObservableCollectionExtended<DObj>();
         public ObservableCollectionExtended<DObj> SelectedObjects { get; } = new ObservableCollectionExtended<DObj>();
-        //DEBUG THIS NEEDED?
         private readonly List<SaveData> extraSaveData = new List<SaveData>();
         private bool panToSelection = true;
         private string FileQueuedForLoad;
@@ -132,6 +131,9 @@ namespace ME3Explorer.Dialogue_Editor
 
         public static readonly string DialogueEditorDataFolder = Path.Combine(App.AppDataFolder, @"DialogueEditor\");
         public static readonly string OptionsPath = Path.Combine(DialogueEditorDataFolder, "DialogueEditorOptions.JSON");
+        public static readonly string ME3ViewsPath = Path.Combine(DialogueEditorDataFolder, @"ME3DialogueViews\");
+        public static readonly string ME2ViewsPath = Path.Combine(DialogueEditorDataFolder, @"ME2DialogueViews\");
+        public static readonly string ME1ViewsPath = Path.Combine(DialogueEditorDataFolder, @"ME1DialogueViews\");
         internal static string ActorDatabasePath = Path.Combine(App.ExecFolder, "ActorTagdb.json");
         private static bool TagDBLoaded;
         private static Dictionary<string, int> ActorStrRefs;
@@ -174,6 +176,7 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand NodeAddCommand { get; set; }
         public ICommand NodeRemoveCommand { get; set; }
         public ICommand NodeDeleteAllLinksCommand { get; set; }
+        public ICommand TestPathsCommand { get; set; }
         private bool HasWwbank(object param)
         {
             return SelectedConv != null && SelectedConv.WwiseBank != null;
@@ -230,7 +233,7 @@ namespace ME3Explorer.Dialogue_Editor
             LoadRecentList();
 
             graphEditor = (ConvGraphEditor)GraphHost.Child;
-            graphEditor.BackColor = System.Drawing.Color.FromArgb(130, 130, 130);
+            graphEditor.BackColor = Color.FromArgb(130, 130, 130);
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
             graphEditor.Camera.MouseUp += back_MouseUp;
 
@@ -290,18 +293,36 @@ namespace ME3Explorer.Dialogue_Editor
                     DObj.hostileColor = c;
                     ClrPcker_Hostile.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
                 }
+                if (options.ContainsKey("EntryPenColor"))
+                {
+                    var c = ColorTranslator.FromHtml((string)options["EntryPenColor"]);
+                    DObj.entryPenColor = c;
+                    ClrPcker_Entry.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                }
                 if (options.ContainsKey("EntryColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["EntryColor"]);
                     DObj.entryColor = c;
-                    ClrPcker_Entry.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_EntryHead.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
                 }
                 if (options.ContainsKey("ReplyColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["ReplyColor"]);
                     DObj.replyColor = c;
+                    ClrPcker_EntryHead.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                }
+                if (options.ContainsKey("ReplyPenColor"))
+                {
+                    var c = ColorTranslator.FromHtml((string)options["ReplyPenColor"]);
+                    DObj.replyPenColor = c;
                     ClrPcker_Reply.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
                 }
+                if (options.ContainsKey("AutoSave"))
+                    AutoSaveView_MenuItem.IsChecked = (bool)options["AutoSave"];
+                if (options.ContainsKey("OutputNumbers"))
+                    ShowOutputNumbers_MenuItem.IsChecked = (bool)options["OutputNumbers"];
+                if (options.ContainsKey("GlobalSeqRefView"))
+                    GlobalSeqRefViewSavesMenuItem.IsChecked = (bool)options["GlobalSeqRefView"];
             }
             else
             {
@@ -313,6 +334,10 @@ namespace ME3Explorer.Dialogue_Editor
                 ClrPcker_Disagree.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.disagreeColor.A, DObj.disagreeColor.R, DObj.disagreeColor.G, DObj.disagreeColor.B);
                 ClrPcker_Friendly.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.friendlyColor.A, DObj.friendlyColor.R, DObj.friendlyColor.G, DObj.friendlyColor.B);
                 ClrPcker_Hostile.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.hostileColor.A, DObj.hostileColor.R, DObj.hostileColor.G, DObj.hostileColor.B);
+                ClrPcker_EntryHead.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.entryColor.A, DObj.entryColor.R, DObj.entryColor.G, DObj.entryColor.B);
+                ClrPcker_Entry.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.entryPenColor.A, DObj.entryPenColor.R, DObj.entryPenColor.G, DObj.entryPenColor.B);
+                ClrPcker_ReplyHead.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.replyColor.A, DObj.replyColor.R, DObj.replyColor.G, DObj.replyColor.B);
+                ClrPcker_Reply.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.replyPenColor.A, DObj.replyPenColor.R, DObj.replyPenColor.G, DObj.replyPenColor.B);
             }
         }
 
@@ -327,6 +352,7 @@ namespace ME3Explorer.Dialogue_Editor
             OpenCommand = new GenericCommand(OpenPackage);
             SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
             SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
+            SaveViewCommand = new GenericCommand(() => saveView(), CurrentObjects.Any);
             SaveImageCommand = new GenericCommand(SaveImage, CurrentObjects.Any);
             AutoLayoutCommand = new GenericCommand(AutoLayout, CurrentObjects.Any);
             LoadTLKManagerCommand = new GenericCommand(LoadTLKManager);
@@ -350,7 +376,10 @@ namespace ME3Explorer.Dialogue_Editor
             NodeAddCommand = new RelayCommand(DialogueNode_Add);
             NodeRemoveCommand = new RelayCommand(DialogueNode_Delete);
             NodeDeleteAllLinksCommand = new RelayCommand(DialogueNode_DeleteLinks);
+            TestPathsCommand = new GenericCommand(TestPaths);
         }
+
+
 
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
@@ -401,16 +430,20 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 {"LineTextSize", DBox.LineScaleOption},
                 {"LineTextColor", ColorTranslator.ToHtml(DBox.lineColor)},
-                {"ParaIntRColor", ColorTranslator.ToHtml(DBox.paraintColor)},
-                {"RenIntRColor", ColorTranslator.ToHtml(DBox.renintColor)},
-                {"AgreeRColor", ColorTranslator.ToHtml(DBox.agreeColor)},
-                {"DisagreeRColor", ColorTranslator.ToHtml(DBox.disagreeColor)},
-                {"FriendlyRColor", ColorTranslator.ToHtml(DBox.friendlyColor)},
-                {"HostileRColor", ColorTranslator.ToHtml(DBox.hostileColor)},
-                {"EntryColor", ColorTranslator.ToHtml(DBox.entryColor)},
-                {"ReplyColor", ColorTranslator.ToHtml(DBox.replyColor)},
-                //{"OutputNumbers", DObj.OutputNumbers},
-                //{"AutoSave", AutoSaveView_MenuItem.IsChecked},
+                {"ParaIntRColor", ColorTranslator.ToHtml(DObj.paraintColor)},
+                {"RenIntRColor", ColorTranslator.ToHtml(DObj.renintColor)},
+                {"AgreeRColor", ColorTranslator.ToHtml(DObj.agreeColor)},
+                {"DisagreeRColor", ColorTranslator.ToHtml(DObj.disagreeColor)},
+                {"FriendlyRColor", ColorTranslator.ToHtml(DObj.friendlyColor)},
+                {"HostileRColor", ColorTranslator.ToHtml(DObj.hostileColor)},
+                {"EntryColor", ColorTranslator.ToHtml(DObj.entryColor)},
+                {"ReplyColor", ColorTranslator.ToHtml(DObj.replyColor)},
+                {"EntryPenColor", ColorTranslator.ToHtml(DObj.entryColor)},
+                {"ReplyPenColor", ColorTranslator.ToHtml(DObj.replyColor)},
+
+                {"OutputNumbers", DObj.OutputNumbers},
+                {"AutoSave", AutoSaveView_MenuItem.IsChecked},
+                {"GlobalSeqRefView", GlobalSeqRefViewSavesMenuItem.IsChecked}
 
             };
             string outputFile = JsonConvert.SerializeObject(options);
@@ -468,9 +501,11 @@ namespace ME3Explorer.Dialogue_Editor
                 Conversations.ClearEx();
                 SelectedSpeakerList.ClearEx();
                 SelectedObjects.ClearEx();
+                SelectedDialogueNode = null;
+                SelectedConv = null;
 
                 LoadMEPackage(fileName);
-                CurrentFile = System.IO.Path.GetFileName(fileName);
+                CurrentFile = Path.GetFileName(fileName);
                 LoadConversations();
                 if (Conversations.IsEmpty())
                 {
@@ -1256,8 +1291,15 @@ namespace ME3Explorer.Dialogue_Editor
 
         }
 
-        private void AutoGenerateSpeakerArrays(ConversationExtended conv)
+        private bool AutoGenerateSpeakerArrays(ConversationExtended conv)
         {
+            bool hasLoopingPaths = false;
+
+            var blankaSpkr = new ArrayProperty<IntProperty>(ArrayType.Int, "aSpeakerList");
+            foreach (var dnode in SelectedConv.EntryList)
+            {
+                dnode.NodeProp.Properties.AddOrReplaceProp(blankaSpkr);
+            }
 
             foreach (var s in conv.StartingList)
             {
@@ -1303,6 +1345,7 @@ namespace ME3Explorer.Dialogue_Editor
                         }
                         visitedNodes.Add(thisnode);
                     }
+                    else { hasLoopingPaths = true; }
                 }
                 var newaSpkr = new ArrayProperty<IntProperty>(ArrayType.Int,"aSpeakerList");
                 foreach(var a in aSpkrs)
@@ -1311,6 +1354,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 startNode.NodeProp.Properties.AddOrReplaceProp(newaSpkr);
             }
+            return hasLoopingPaths;
         }
 
         private void SaveSpeakersToProperties(ObservableCollectionExtended<SpeakerExtended> speakerCollection)
@@ -1824,6 +1868,17 @@ namespace ME3Explorer.Dialogue_Editor
 
         public void GenerateGraph()
         {
+
+            if (File.Exists(JSONpath))
+            {
+                SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
+            }
+            else
+            {
+                SavedPositions = new List<SaveData>();
+            }
+            extraSaveData.Clear();
+
             CurrentObjects.ClearEx();
             graphEditor.nodeLayer.RemoveAllChildren();
             graphEditor.edgeLayer.RemoveAllChildren();
@@ -1836,6 +1891,8 @@ namespace ME3Explorer.Dialogue_Editor
 
             LoadDialogueObjects();
             Layout();
+            graphEditor.Enabled = true;
+            graphEditor.UseWaitCursor = false;
             foreach (DObj o in CurrentObjects)
             {
                 o.MouseDown += node_MouseDown;
@@ -1846,11 +1903,6 @@ namespace ME3Explorer.Dialogue_Editor
             graphEditor.Camera.Y = 0;
             //if (SavedPositions.IsEmpty() && Pcc.Game != MEGame.ME1)
             //{
-            //    if (CurrentFile.Contains("_LOC_INT"))
-            //    {
-            //        LoadDialogueObjects();
-            //    }
-            //    else
             //    {
             //        AutoLayout();
             //    }
@@ -1907,76 +1959,69 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     DObj obj = CurrentObjects[i];
 
-
-
-
                     //SAVED DATA
-                    //SaveData savedInfo = new SaveData(-1);
-                    //if (SavedPositions.Any())
-                    //{
-                    //    if (RefOrRefChild)
-                    //        savedInfo = SavedPositions.FirstOrDefault(p => i == p.index);
-                    //    else
-                    //        savedInfo = SavedPositions.FirstOrDefault(p => obj.Index == p.index);
-                    //}
-
-                    //bool hasSavedPosition =
-                    //    savedInfo.index == (RefOrRefChild ? i : obj.Index);
-                    //if (hasSavedPosition)
-                    //{
-                    //    obj.Layout(savedInfo.X, savedInfo.Y);
-                    //}
-                    //else if (Pcc.Game == MEGame.ME1)
-                    //{
-                    //    obj.Layout();
-                    //}
-                    //else
-                    //{
-
-                    //SIMPLE LAYOUT THIS ONLY WORKS WHEN THERE ARE ENTRY NODES AND REPLY NODES MATCHED.
-
-                    switch (obj)
+                    SaveData savedInfo = new SaveData(-1);
+                    if (SavedPositions.Any())
                     {
-                        case DStart _:
-                            DStart dstart = obj as DStart;
-                            obj.Layout(0, StartPoDiagNodes);
-                            break;
-                        case DiagNodeEntry _:
-                            obj.Layout(250, StartPoDiagNodes);
-                            if (lastwasreply) { f = 3; }
-                            StartPoDiagNodes += obj.Height / f + 25;
-                            f = 1;
-                            lastwasreply = false;
-                            break;
-                        case DiagNodeReply _:
-                            obj.Layout(700, StartPoDiagNodes);
-                            StartPoDiagNodes += obj.Height + 25;
-                            lastwasreply = true;
-                            break;
+                        if (RefOrRefChild)
+                            savedInfo = SavedPositions.FirstOrDefault(p => i == p.index);
+                        else
+                            savedInfo = SavedPositions.FirstOrDefault(p => obj.NodeUID == p.index);
                     }
 
+                    bool hasSavedPosition =
+                        savedInfo.index == (RefOrRefChild ? i : obj.NodeUID);
+                    if (hasSavedPosition)
+                    {
+                        obj.Layout(savedInfo.X, savedInfo.Y);
+                    }
+                    else
+                    {
 
-                    //SIMPLE LAYOUT
-                    //switch (obj)
-                    //{
-                    //    case DStart _:
-                    //        DStart dstart = obj as DStart;
-                    //        float ystart = (dstart.StartNumber * 127);
-                    //        obj.Layout(0, ystart);
-                    //        //StartPoDStarts += obj.Height + 20;
-                    //        break;
-                    //    case DiagNodeReply _:
-                    //        obj.Layout(500, StartPoDReplyNodes);
-                    //        StartPoDReplyNodes += obj.Height + 25;
-                    //        break;
-                    //    case DiagNode _:
-                    //        obj.Layout(250, StartPoDiagNodes);
-                    //        StartPoDiagNodes += obj.Height + 25;
-                    //        break;
+                        //SIMPLE LAYOUT THIS ONLY WORKS WHEN THERE ARE ENTRY NODES AND REPLY NODES MATCHED.
 
-                    //}
-                    //    }
-                }
+                        switch (obj)
+                        {
+                            case DStart _:
+                                DStart dstart = obj as DStart;
+                                obj.Layout(0, StartPoDiagNodes);
+                                break;
+                            case DiagNodeEntry _:
+                                obj.Layout(250, StartPoDiagNodes);
+                                if (lastwasreply) { f = 3; }
+                                StartPoDiagNodes += obj.Height / f + 25;
+                                f = 1;
+                                lastwasreply = false;
+                                break;
+                            case DiagNodeReply _:
+                                obj.Layout(700, StartPoDiagNodes);
+                                StartPoDiagNodes += obj.Height + 25;
+                                lastwasreply = true;
+                                break;
+                        }
+                    }
+
+                        //SIMPLE LAYOUT
+                        //switch (obj)
+                        //{
+                        //    case DStart _:
+                        //        DStart dstart = obj as DStart;
+                        //        float ystart = (dstart.StartNumber * 127);
+                        //        obj.Layout(0, ystart);
+                        //        //StartPoDStarts += obj.Height + 20;
+                        //        break;
+                        //    case DiagNodeReply _:
+                        //        obj.Layout(500, StartPoDReplyNodes);
+                        //        StartPoDReplyNodes += obj.Height + 25;
+                        //        break;
+                        //    case DiagNode _:
+                        //        obj.Layout(250, StartPoDiagNodes);
+                        //        StartPoDiagNodes += obj.Height + 25;
+                        //        break;
+
+                        //}
+                        //    }
+                    }
 
                 foreach (DiagEdEdge edge in graphEditor.edgeLayer)
                 {
@@ -2108,8 +2153,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
 
                 GenerateGraph();
-                //saveView(false);
-                //LoadSequence(SelectedSequence, false);
+                saveView(false);
             }
         }
         #endregion CreateGraph  
@@ -2167,6 +2211,11 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void ConversationList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (AutoSaveView_MenuItem.IsChecked)
+            {
+                saveView();
+            }
+
             if (Conversations_ListBox.SelectedIndex < 0)
             {
                 SelectedConv = null;
@@ -2180,9 +2229,12 @@ namespace ME3Explorer.Dialogue_Editor
             else
             {
                 SelectedDialogueNode = null; //Before convos change make sure no properties fire.
+                graphEditor.Enabled = false;
+                graphEditor.UseWaitCursor = true;
                 var nconv = Conversations[Conversations_ListBox.SelectedIndex];
                 SelectedConv = new ConversationExtended(nconv.ExportUID, nconv.ConvName, nconv.BioConvo, nconv.Export, nconv.IsParsed, nconv.IsFirstParsed, nconv.StartingList, nconv.Speakers, nconv.EntryList, nconv.ReplyList, nconv.WwiseBank, nconv.Sequence, nconv.NonSpkrFFX, nconv.ScriptList); ;
                 CurrentLoadedExport = CurrentConvoPackage.getUExport(SelectedConv.ExportUID);
+                SetupConvJSON(CurrentLoadedExport);
                 if (Pcc.Game == MEGame.ME1)
                 {
                     LevelHeader.Text = "Audio/Matinee File:";
@@ -2224,6 +2276,81 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 SelectedConv.BioConvo.AddOrReplaceProp(new ObjectProperty(SelectedConv.NonSpkrFFX, new NameReference("m_pNonSpeakerFaceFXSet")));
                 PushConvoToFile(SelectedConv);
+            }
+        }
+        private void SetupConvJSON(IExportEntry export)
+        {
+            string objectName = Regex.Replace(export.ObjectName, @"[<>:""/\\|?*]", "");
+            bool isClonedSeqRef = false;
+            var defaultViewZoomProp = export.GetProperty<FloatProperty>("DefaultViewZoom");
+            if (defaultViewZoomProp != null && Math.Abs(defaultViewZoomProp.Value - CLONED_SEQREF_MAGIC) < 1.0E-30f)
+            {
+                isClonedSeqRef = true;
+            }
+
+            string packageFullName = export.PackageFullName;
+            if (GlobalSeqRefViewSavesMenuItem.IsChecked && packageFullName.Contains("SequenceReference") && !isClonedSeqRef)
+            {
+                string packageName = packageFullName.Substring(packageFullName.LastIndexOf("SequenceReference"));
+                if (Pcc.Game == MEGame.ME3)
+                {
+                    JSONpath = $"{ME3ViewsPath}{packageName}.{objectName}.JSON";
+                }
+                else
+                {
+                    packageName = packageName.Replace("SequenceReference", "");
+                    int idx = export.UIndex;
+                    string ObjName = "";
+                    while (idx > 0)
+                    {
+                        if (Pcc.getUExport(Pcc.getUExport(idx).idxLink).ClassName == "SequenceReference")
+                        {
+                            var objNameProp = Pcc.getUExport(idx).GetProperty<StrProperty>("ObjName");
+                            if (objNameProp != null)
+                            {
+                                ObjName = objNameProp.Value;
+                                break;
+                            }
+                        }
+
+                        idx = Pcc.getUExport(idx).idxLink;
+                    }
+
+                    if (objectName == "Sequence")
+                    {
+                        objectName = ObjName;
+                        packageName = "." + packageName;
+                    }
+                    else
+                        packageName = packageName.Replace("Sequence", ObjName) + ".";
+
+                    if (Pcc.Game == MEGame.ME2)
+                    {
+                        JSONpath = $"{ME2ViewsPath}SequenceReference{packageName}{objectName}.JSON";
+                    }
+                    else
+                    {
+                        JSONpath = $"{ME1ViewsPath}SequenceReference{packageName}{objectName}.JSON";
+                    }
+                }
+
+                RefOrRefChild = true;
+            }
+            else
+            {
+                string viewsPath = ME3ViewsPath;
+                switch (Pcc.Game)
+                {
+                    case MEGame.ME2:
+                        viewsPath = ME2ViewsPath;
+                        break;
+                    case MEGame.ME1:
+                        viewsPath = ME1ViewsPath;
+                        break;
+                }
+
+                JSONpath = $"{viewsPath}{CurrentFile}.#{export.Index}{objectName}.JSON";
+                RefOrRefChild = false;
             }
         }
 
@@ -2749,11 +2876,13 @@ namespace ME3Explorer.Dialogue_Editor
                     p = await CheckProcess(NoUIRefresh, 100);
                 }
                 panToSelection = false;
+                graphEditor.Enabled = false;
+                graphEditor.UseWaitCursor = true;
                 GenerateGraph();
                 DiagNode node = DialogueNode_SelectByIndex(newIndex, false);
-                node.Visible = false;
                 DialogueNode_DeleteLinks(node);
-                node.Visible = true;
+                graphEditor.Enabled = true;
+                graphEditor.UseWaitCursor = false;
                 graphEditor.Camera.AnimateViewToCenterBounds(node.GlobalFullBounds, false, 1000);
                 graphEditor.Refresh();
                 return;
@@ -2915,12 +3044,10 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
         }
-
         private void graphEditor_Click(object sender, EventArgs e)
         {
             graphEditor.Focus();
         }
-
         private void graphEditor_PanTo()
         {
             var PanObjects = new ObservableCollectionExtended<DObj>();
@@ -2945,7 +3072,6 @@ namespace ME3Explorer.Dialogue_Editor
             panToSelection = true;
             graphEditor.Refresh();
         }
-
         private void DialogueEditor_DragEnter(object sender, System.Windows.Forms.DragEventArgs e)
         {
             if (e.Data.GetDataPresent(System.Windows.Forms.DataFormats.FileDrop))
@@ -2953,7 +3079,6 @@ namespace ME3Explorer.Dialogue_Editor
             else
                 e.Effect = System.Windows.Forms.DragDropEffects.None;
         }
-
         private void DialogueEditor_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
         {
             if (e.Data.GetData(System.Windows.Forms.DataFormats.FileDrop) is string[] DroppedFiles)
@@ -2978,7 +3103,7 @@ namespace ME3Explorer.Dialogue_Editor
                     SavedPositions.Add(new SaveData
                     {
                         absoluteIndex = RefOrRefChild,
-                        index = RefOrRefChild ? i : obj.UIndex,
+                        index = RefOrRefChild ? i : obj.NodeUID,
                         X = obj.X + obj.Offset.X,
                         Y = obj.Y + obj.Offset.Y
                     });
@@ -3063,7 +3188,6 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 RefreshView();
             }
-
         }
 
         #endregion UIHandling-graph
@@ -3216,6 +3340,26 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
+        private void GlobalSeqRefViewSavesMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects.Any())
+            {
+                SetupConvJSON(SelectedConv.Export);
+            }
+        }
+
+        private void TestPaths()
+        {
+            if(AutoGenerateSpeakerArrays(SelectedConv))
+            {
+                MessageBox.Show("There are possible looping pathways to this conversation.\r\nThis can be a problem unless the player has control of the loop via choices.", "Dialogue Editor");
+            }
+            else
+            {
+                MessageBox.Show("No looping paths in the conversation.", "Dialogue Editor");
+            }
+        }
+
         private void OpenInInterpViewer_Clicked(object sender, RoutedEventArgs e)
         {
             if (Pcc.Game != MEGame.ME3)
@@ -3501,31 +3645,37 @@ namespace ME3Explorer.Dialogue_Editor
             switch(source.Name)
             {
                 case "ClrPcker_Line":
-                    DBox.lineColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DBox.lineColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
                 case "ClrPcker_ParaInt":
-                    DObj.paraintColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.paraintColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
                 case "ClrPcker_RenInt":
-                    DObj.renintColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.renintColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
                 case "ClrPcker_Agree":
-                    DObj.agreeColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.agreeColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
                 case "ClrPcker_Disagree":
-                    DObj.disagreeColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.disagreeColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
                 case "ClrPcker_Friendly":
-                    DObj.friendlyColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.friendlyColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
                 case "ClrPcker_Hostile":
-                    DObj.hostileColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.hostileColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
                 case "ClrPcker_Entry":
-                    DObj.entryColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.entryPenColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
                 case "ClrPcker_Reply":
-                    DObj.replyColor = System.Drawing.Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.replyPenColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    break;
+                case "ClrPcker_EntryHead":
+                    DObj.entryColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    break;
+                case "ClrPcker_ReplyHead":
+                    DObj.replyColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
             }
 

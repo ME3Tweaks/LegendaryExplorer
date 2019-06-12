@@ -432,16 +432,16 @@ namespace ME3Explorer.Dialogue_Editor
         public static Color disagreeColor = Color.FromArgb(252, 69, 69);//light red
         public static Color friendlyColor = Color.FromArgb(3, 3, 116);//dark blue
         public static Color hostileColor = Color.FromArgb(116, 3, 3);//dark red
-        public static Color entryColor = Color.FromArgb(0, 0, 0);//Black
-        public static Color replyColor = Color.FromArgb(0, 0, 0);//Black
+        public static Color entryColor = Color.FromArgb(95, 158, 160);//Blueish
+        public static Color replyColor = Color.FromArgb(219, 145, 22);//Orangeish
+        public static Color entryPenColor = Color.FromArgb(0, 0, 0);//Black
+        public static Color replyPenColor = Color.FromArgb(0, 0, 0);//Black
         protected static readonly Color EventColor = Color.FromArgb(214, 30, 28);
         protected static readonly Color titleColor = Color.FromArgb(255, 255, 128);
         protected static readonly Brush titleBoxBrush = new SolidBrush(Color.FromArgb(112, 112, 112));
         protected static readonly Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         protected static readonly Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static readonly Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
-        protected static Pen entryPen = new Pen(entryColor);
-        protected static Pen replyPen = new Pen(replyColor);
         public static bool draggingOutlink;
         public static PNode dragTarget;
         public static bool OutputNumbers;
@@ -450,7 +450,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         protected string listname;
         public string ListName => listname;
-        public int UIndex = 0;
+        public int NodeUID = 0;
         public IExportEntry Export => export;
         public virtual bool IsSelected { get; set; }
 
@@ -631,8 +631,19 @@ namespace ME3Explorer.Dialogue_Editor
             };
 
             titleBox = PPath.CreateRectangle(0, 0, w, title.Height + 5);
-            titleBox.Pen = entryPen;
-            titleBox.Brush = titleBoxBrush;
+            titleBox.Pen = new Pen(entryPenColor);
+            if(NodeUID < 1000)
+            {
+                titleBox.Brush = new SolidBrush(entryColor); ;
+            }
+            else if(NodeUID < 2000)
+            {
+                titleBox.Brush = new SolidBrush(replyColor); ;
+            }
+            else 
+            {
+                titleBox.Brush = titleBoxBrush;
+            }
             titleBox.AddChild(nodeID);
             titleBox.AddChild(title);
             if (LineScaleOption > 0)
@@ -746,12 +757,13 @@ namespace ME3Explorer.Dialogue_Editor
         public DStart(DialogueEditorWPF editor, int orderKey, int StartNbr, float x, float y, ConvGraphEditor ConvGraphEditor)
             : base(x, y, ConvGraphEditor)
         {
-            listname = $"{Ordinal} Start Node: {StartNbr}"; ;
+            NodeUID = 2000 + StartNbr;
             Editor = editor;
             Order = orderKey;
             Ordinal = DialogueEditorWPF.AddOrdinal(orderKey + 1);
             StartNumber = StartNbr;
             outlinePen = new Pen(EventColor);
+            listname = $"{Ordinal} Start Node: {StartNbr}"; ;
 
             float starty = 0;
             float w = 15;
@@ -910,7 +922,18 @@ namespace ME3Explorer.Dialogue_Editor
 
         public override void Layout(float x, float y)
         {
-            outlinePen = new Pen(Color.Black);
+            if(NodeUID < 1000)
+            {
+                outlinePen = new Pen(entryPenColor);
+            }
+            else if(NodeUID < 2000)
+            {
+                outlinePen = new Pen(replyPenColor);
+            }
+            else
+            {
+                outlinePen = new Pen(Color.Black);
+            }
             float starty = 8;
             float w = 160;
 
@@ -1145,6 +1168,7 @@ namespace ME3Explorer.Dialogue_Editor
             Node = node;
             NodeProp = node.NodeProp;
             NodeID = node.NodeCount;
+            NodeUID = NodeID;
             originalX = x;
             originalY = y;
             listname = $"E{NodeID} {node.Line}";
@@ -1204,6 +1228,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 else
                 {
+                    var entryPen = new Pen(entryPenColor);
                     titleBox.Pen = entryPen;
                     box.Pen = entryPen;
                     ((PPath)this[1]).Pen = entryPen;
@@ -1334,10 +1359,12 @@ namespace ME3Explorer.Dialogue_Editor
         public DiagNodeReply(DialogueEditorWPF editor, BioConversationExtended.DialogueNodeExtended node, float x, float y, ConvGraphEditor ConvGraphEditor)
             : base(editor, node, x, y, ConvGraphEditor)
         {
+
             Editor = editor;
             Node = node;
             NodeProp = node.NodeProp;
             NodeID = Node.NodeCount + 1000;
+            NodeUID = NodeID;
             listname = $"R{Node.NodeCount} {node.Line}";
             GetOutputLinks(Node);
             originalX = x;
@@ -1359,6 +1386,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 else
                 {
+                    var replyPen = new Pen(replyPenColor);
                     titleBox.Pen = replyPen;
                     box.Pen = replyPen;
                     ((PPath)this[1]).Pen = replyPen;

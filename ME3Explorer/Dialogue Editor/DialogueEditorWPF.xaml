@@ -27,9 +27,6 @@
             <MenuItem Header="Edit" Command="{Binding StartEditCommand}" CommandParameter="Edit" ToolTip="Edit which dialogue entry this node connects to."/>
             <MenuItem Header="Remove start node" Command="{Binding StartDeleteCommand}" ToolTip="Delete this start node"/>
         </ContextMenu>
-        <ContextMenu x:Key="backContextMenu">
-            <MenuItem Header="Add Object" ToolTip="Add existing Dialogue Object to this Dialogue"/>
-        </ContextMenu>
         <ContextMenu x:Key="replynodeContextMenu" Closed="ContextMenu_Closed">
             <MenuItem Header="Add Reply" Command="{Binding NodeAddCommand}" CommandParameter="AddReply" ToolTip="Create a new clean reply"/>
             <MenuItem Header="Clone Reply" Command="{Binding NodeAddCommand}" CommandParameter="CloneReply" ToolTip="Create a new reply as a duplicate of this one"/>
@@ -61,7 +58,6 @@
     </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Stretch">
-
             <MenuItem Header="File" Padding="4" >
                 <MenuItem Header="_Open" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
                 <MenuItem Header="_Save"  Command="{Binding SaveCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
@@ -95,6 +91,7 @@
             <MenuItem Header="Tools" Padding="4">
                 <MenuItem Header="Manage TLKs" Command="{Binding LoadTLKManagerCommand}" ToolTip="Load TLK Manager"/>
                 <MenuItem Header="Save Image" Command="{Binding SaveImageCommand}" ToolTip="Save image of full Dialogue"/>
+                <MenuItem Header="Test for looping paths" Command="{Binding TestPathsCommand}" ToolTip="Test the dialogue for looping paths." IsEnabled="{Binding SelectedConv, Converter={StaticResource NullEnabledConverter}}"/>
                 <Separator/>
                 <MenuItem Header="Add New Start" Command="{Binding StartAddCommand}" CommandParameter="Add" ToolTip="Create a new start node" IsEnabled="{Binding SelectedConv, Converter={StaticResource NullEnabledConverter}}"/>
                 <MenuItem Header="Add New Entry" Command="{Binding NodeAddCommand}" CommandParameter="AddEntry" ToolTip="Add new entry to this Dialogue" IsEnabled="{Binding SelectedConv, Converter={StaticResource NullEnabledConverter}}"/>
@@ -112,23 +109,25 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*" />
-                            <ColumnDefinition Width="5*" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="60" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Spoken Text: " DockPanel.Dock="Left" Grid.Column="0" Grid.Row="0"/>
-                        <xctk:ColorPicker Name="ClrPcker_Line" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Grid.Column="1" Grid.Row="0"></xctk:ColorPicker>
-                        <TextBlock Text="Entry outline: " Grid.Column="0" Grid.Row="1"/>
-                        <xctk:ColorPicker Name="ClrPcker_Entry" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="1"></xctk:ColorPicker>
-                        <TextBlock Text="Reply outline: " Grid.Column="0" Grid.Row="2"/>
-                        <xctk:ColorPicker Name="ClrPcker_Reply" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" Grid.Column="2" Grid.Row="2"></xctk:ColorPicker>
+                        <TextBlock Text="Spoken Text: " Grid.Column="0" Grid.Row="0"/>
+                        <xctk:ColorPicker Name="ClrPcker_Line" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Right"  Grid.Column="1" Grid.Row="0"></xctk:ColorPicker>
                     </Grid>
+                    <Separator/>
+                    <TextBlock Text="Entry outline: "/>
+                        <xctk:ColorPicker Name="ClrPcker_Entry" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
+                    <TextBlock Text="Entry Header: "/>
+                    <xctk:ColorPicker Name="ClrPcker_EntryHead" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
+                    <TextBlock Text="Reply outline: "/>
+                    <xctk:ColorPicker Name="ClrPcker_Reply" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
+                    <TextBlock Text="Reply Header: "/>
+                    <xctk:ColorPicker Name="ClrPcker_ReplyHead" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
+                       <Separator/>
+
                     <DockPanel ToolTip="Adjust the color of the spoken line text beside the title box.">
                         <TextBlock Text=""/>
                     </DockPanel>
@@ -159,9 +158,13 @@
                     </StackPanel>
                 </MenuItem>
                 <MenuItem Name="ShowOutputNumbers_MenuItem" Header="NOT YET: Show Output Numbers" IsCheckable="True" Click="showOutputNumbers_Click"/>
-                <MenuItem Name="AutoSaveView_MenuItem" Header="NOT YET: Auto-Save View" IsCheckable="True"/>
+
             </MenuItem>
             <MenuItem Header="Layout" Padding="4">
+                <MenuItem Header="Save Current View" Command="{Binding SaveViewCommand}" ToolTip="Save the node layout"/>
+                <Separator/>
+                <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save View" IsCheckable="True"/>
+                <MenuItem Name="GlobalSeqRefViewSavesMenuItem" Header="Use Global View Saves" IsCheckable="True" Click="GlobalSeqRefViewSavesMenuItem_OnClick"/>
                 <MenuItem Header="Re-Run Auto Layout" Command="{Binding AutoLayoutCommand}" InputGestureText="Ctrl+L" ToolTip="Attempt to layout sequence objects in a comprehensible fashion"/>
             </MenuItem>
             <ComboBox Name="GotoBox" Text="Go to:" ItemsSource="{Binding CurrentObjects}" DisplayMemberPath="ListName" IsEditable="True" SelectionChanged="GotoBox_SelectionChanged" ToolTip="Pick a Node to go to" IsEnabled="true" Width="260" HorizontalAlignment="Stretch" Visibility="{Binding SelectedConv, Converter={StaticResource NullVisibilityConverter}}"/>
