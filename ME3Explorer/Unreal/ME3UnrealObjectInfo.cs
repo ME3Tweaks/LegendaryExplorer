@@ -463,14 +463,13 @@ namespace ME3Explorer.Unreal
             bool isImmutable = UnrealObjectInfo.isImmutable(className, MEGame.ME3);
             if (Structs.ContainsKey(className))
             {
-                ClassInfo info = Structs[className];
                 try
                 {
                     PropertyCollection structProps = new PropertyCollection();
-                    ClassInfo tempInfo = info;
-                    while (tempInfo != null)
+                    ClassInfo info = Structs[className];
+                    while (info != null)
                     {
-                        foreach ((string propName, PropertyInfo propInfo) in tempInfo.properties)
+                        foreach ((string propName, PropertyInfo propInfo) in info.properties)
                         {
                             if (stripTransients && propInfo.transient)
                             {
@@ -481,31 +480,29 @@ namespace ME3Explorer.Unreal
                                 structProps.Add(uProp);
                             }
                         }
-                        if (!Structs.TryGetValue(tempInfo.baseClass, out tempInfo))
+                        string filepath = Path.Combine(ME3Directory.gamePath, "BIOGame", info.pccPath);
+                        if (File.Exists(info.pccPath))
                         {
-                            tempInfo = null;
+                            filepath = info.pccPath; //Used for dynamic lookup
                         }
+                        if (File.Exists(filepath))
+                        {
+                            using (ME3Package importPCC = MEPackageHandler.OpenME3Package(filepath))
+                            {
+                                var exportToRead = importPCC.getUExport(info.exportIndex);
+                                byte[] buff = exportToRead.Data.Skip(0x24).ToArray();
+                                PropertyCollection defaults = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
+                                foreach (var prop in defaults)
+                                {
+                                    structProps.TryReplaceProp(prop);
+                                }
+                            }
+                        }
+
+                        Structs.TryGetValue(info.baseClass, out info);
                     }
                     structProps.Add(new NoneProperty());
                     
-                    string filepath = Path.Combine(ME3Directory.gamePath, "BIOGame", info.pccPath);
-                    if (File.Exists(info.pccPath))
-                    {
-                        filepath = info.pccPath; //Used for dynamic lookup
-                    }
-                    if (File.Exists(filepath))
-                    {
-                        using (ME3Package importPCC = MEPackageHandler.OpenME3Package(filepath))
-                        {
-                            var exportToRead = importPCC.getUExport(info.exportIndex);
-                            byte[] buff = exportToRead.Data.Skip(0x24).ToArray();
-                            PropertyCollection defaults = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
-                            foreach (var prop in defaults)
-                            {
-                                structProps.TryReplaceProp(prop);
-                            }
-                        }
-                    }
                     return structProps;
                 }
                 catch

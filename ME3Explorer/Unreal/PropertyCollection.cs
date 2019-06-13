@@ -297,9 +297,9 @@ namespace ME3Explorer.Unreal
         public static PropertyCollection ReadImmutableStruct(IMEPackage pcc, MemoryStream stream, string structType, int size, IEntry parsingEntry = null)
         {
             PropertyCollection props = new PropertyCollection();
-            if (pcc.Game == MEGame.ME3)
+            switch (pcc.Game)
             {
-                if (ME3UnrealObjectInfo.Structs.ContainsKey(structType))
+                case MEGame.ME3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
                 {
                     bool stripTransients = true;
                     if (parsingEntry != null && parsingEntry.ClassName == "Class")
@@ -346,234 +346,96 @@ namespace ME3Explorer.Unreal
                     }
                     return props;
                 }
-            }
 
-            //TODO: implement getDefaultClassValue() for ME1 and ME2 so this isn't needed
-            if (structType == "Rotator")
-            {
-                string[] labels = { "Pitch", "Yaw", "Roll" };
-                for (int i = 0; i < 3; i++)
+                case MEGame.ME2 when ME2Explorer.Unreal.ME2UnrealObjectInfo.Structs.ContainsKey(structType):
                 {
-                    long startPos = stream.Position;
-                    props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "Vector2d" || structType == "Vector2D" || structType == "RwVector2")
-            {
-                string[] labels = { "X", "Y" };
-                for (int i = 0; i < 2; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "Vector" || structType == "RwVector3")
-            {
-                string[] labels = { "X", "Y", "Z" };
-                for (int i = 0; i < 3; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "Color")
-            {
-                string[] labels = { "B", "G", "R", "A" };
-                for (int i = 0; i < 4; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new ByteProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "LinearColor")
-            {
-                string[] labels = { "R", "G", "B", "A" };
-                for (int i = 0; i < 4; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            //uses EndsWith to support RwQuat, RwVector4, and RwPlane
-            else if (structType.EndsWith("Quat") || structType.EndsWith("Vector4") || structType.EndsWith("Plane"))
-            {
-                string[] labels = { "X", "Y", "Z", "W" };
-                for (int i = 0; i < 4; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "TwoVectors")
-            {
-                string[] labels = { "X", "Y", "Z", "X", "Y", "Z" };
-                for (int i = 0; i < 6; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "Matrix" || structType == "RwMatrix44")
-            {
-                string[] labels = { "X Plane", "Y Plane", "Z Plane", "W Plane" };
-                string[] labels2 = { "X", "Y", "Z", "W" };
-                for (int i = 0; i < 4; i++)
-                {
-                    long planePos = stream.Position;
-                    PropertyCollection structProps = new PropertyCollection();
-                    for (int j = 0; j < 4; j++)
+                    PropertyCollection defaultProps;
+                    bool stripTransients = true;
+                    if (parsingEntry != null && parsingEntry.ClassName == "Class")
                     {
-                        long startPos = stream.Position;
-                        structProps.Add(new FloatProperty(stream, labels2[j]) { StartOffset = startPos });
+                        stripTransients = false;
                     }
-                    props.Add(new StructProperty("Plane", structProps, labels[i], true) { StartOffset = planePos });
-                }
-            }
-            else if (structType == "Guid")
-            {
-                string[] labels = { "A", "B", "C", "D" };
-                for (int i = 0; i < 4; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "NavReference")
-            {
-                props.Add(new ObjectProperty(stream, "Actor"));
-                string[] labels = { "A", "B", "C", "D" };
-                for (int i = 0; i < 4; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "IntPoint")
-            {
-                string[] labels = { "X", "Y" };
-                for (int i = 0; i < 2; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "Box" || structType == "BioRwBox")
-            {
-                string[] labels = { "Min", "Max" };
-                string[] labels2 = { "X", "Y", "Z" };
-                for (int i = 0; i < 2; i++)
-                {
-                    long vectorPos = stream.Position;
-                    PropertyCollection structProps = new PropertyCollection();
-                    for (int j = 0; j < 3; j++)
+                    //Cache
+                    if (defaultStructValuesME2.ContainsKey(structType) && stripTransients)
                     {
-                        long startPos = stream.Position;
-                        structProps.Add(new FloatProperty(stream, labels2[j]) { StartOffset = startPos });
+                        defaultProps = defaultStructValuesME2[structType];
                     }
-                    props.Add(new StructProperty("Vector", structProps, labels[i], true) { StartOffset = vectorPos });
-                }
-                long validPos = stream.Position;
-                props.Add(new ByteProperty(stream, "IsValid") { StartOffset = validPos });
-            }
-            else
-            {
-                //Fallback: Attempt lookup. This may be able to be promoted to main lookup now, but we'll do that later
-                if (pcc.Game == MEGame.ME2)
-                {
-                    if (ME2Explorer.Unreal.ME2UnrealObjectInfo.Structs.ContainsKey(structType))
+                    else
                     {
-                        PropertyCollection defaultProps;
-                        bool stripTransients = true;
-                        if (parsingEntry != null && parsingEntry.ClassName == "Class")
+                        Debug.WriteLine("Build&cache for ME2 struct: " + structType);
+                        defaultProps = ME2Explorer.Unreal.ME2UnrealObjectInfo.getDefaultStructValue(structType, stripTransients);
+                        if (defaultProps == null)
                         {
-                            stripTransients = false;
+                            long pos = stream.Position;
+                            props.Add(new UnknownProperty(stream, size) { StartOffset = pos });
+                            return props;
                         }
-                        //Cache
-                        if (defaultStructValuesME2.ContainsKey(structType) && stripTransients)
+                        if (stripTransients)
                         {
-                            defaultProps = defaultStructValuesME2[structType];
+                            defaultStructValuesME2.TryAdd(structType, defaultProps);
                         }
-                        else
-                        {
-                            Debug.WriteLine("Build&cache for ME2 struct: " + structType);
-                            defaultProps = ME2Explorer.Unreal.ME2UnrealObjectInfo.getDefaultStructValue(structType, stripTransients);
-                            if (defaultProps == null)
-                            {
-                                long pos = stream.Position;
-                                props.Add(new UnknownProperty(stream, size) { StartOffset = pos });
-                                return props;
-                            }
-                            if (stripTransients)
-                            {
-                                defaultStructValuesME2.TryAdd(structType, defaultProps);
-                            }
-                        }
-                        //Debug.WriteLine("ME2: Build immuatable struct properties for struct type " + structType);
-                        foreach (var prop in defaultProps)
-                        {
-                            UProperty uProperty = ReadImmutableStructProp(pcc, stream, prop, structType);
-                            //Debug.WriteLine("  >> ME2: Built immutable property: " + uProperty.Name + " at 0x" + uProperty.StartOffset.ToString("X5"));
-                            if (uProperty.PropType != PropertyType.None)
-                            {
-                                props.Add(uProperty);
-                            }
-
-                        }
-                        return props;
                     }
-                }
-                else if (pcc.Game == MEGame.ME1)
-                {
-                    if (ME1Explorer.Unreal.ME1UnrealObjectInfo.Structs.ContainsKey(structType))
+                    //Debug.WriteLine("ME2: Build immuatable struct properties for struct type " + structType);
+                    foreach (var prop in defaultProps)
                     {
-                        PropertyCollection defaultProps;
-                        bool stripTransients = true;
-                        if (parsingEntry != null && parsingEntry.ClassName == "Class")
+                        UProperty uProperty = ReadImmutableStructProp(pcc, stream, prop, structType);
+                        //Debug.WriteLine("  >> ME2: Built immutable property: " + uProperty.Name + " at 0x" + uProperty.StartOffset.ToString("X5"));
+                        if (uProperty.PropType != PropertyType.None)
                         {
-                            stripTransients = false;
+                            props.Add(uProperty);
                         }
-                        //Cache
-                        if (defaultStructValuesME1.ContainsKey(structType) && stripTransients)
-                        {
-                            defaultProps = defaultStructValuesME1[structType];
-                        }
-                        else
-                        {
-                            Debug.WriteLine("Build&cache for ME1 struct: " + structType);
-                            defaultProps = ME1Explorer.Unreal.ME1UnrealObjectInfo.getDefaultStructValue(structType, stripTransients);
-                            if (defaultProps == null)
-                            {
-                                long pos = stream.Position;
-                                props.Add(new UnknownProperty(stream, size) { StartOffset = pos });
-                                return props;
-                            }
-                            if (stripTransients)
-                            {
-                                defaultStructValuesME1.TryAdd(structType, defaultProps);
-                            }
-                        }
-                        //Debug.WriteLine("ME1: Build immuatable struct properties for struct type " + structType);
-                        foreach (var prop in defaultProps)
-                        {
-                            //Debug.WriteLine("  > ME1: Building immutable property: " + prop.Name + " at 0x" + stream.Position.ToString("X5"));
 
-                            UProperty uProperty = ReadImmutableStructProp(pcc, stream, prop, structType);
-                            //Debug.WriteLine("  >> ME1: Built immutable property: " + uProperty.Name + " at 0x" + uProperty.StartOffset.ToString("X5"));
-                            if (uProperty.PropType != PropertyType.None)
-                            {
-                                props.Add(uProperty);
-                            }
-
-                        }
-                        return props;
                     }
+                    return props;
                 }
 
-                Debug.WriteLine("Unknown struct type: " + structType);
-                long startPos = stream.Position;
-                Debugger.Break();
-                props.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
+                case MEGame.ME1 when ME1Explorer.Unreal.ME1UnrealObjectInfo.Structs.ContainsKey(structType):
+                {
+                    PropertyCollection defaultProps;
+                    bool stripTransients = true;
+                    if (parsingEntry != null && parsingEntry.ClassName == "Class")
+                    {
+                        stripTransients = false;
+                    }
+                    //Cache
+                    if (defaultStructValuesME1.ContainsKey(structType) && stripTransients)
+                    {
+                        defaultProps = defaultStructValuesME1[structType];
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Build&cache for ME1 struct: " + structType);
+                        defaultProps = ME1Explorer.Unreal.ME1UnrealObjectInfo.getDefaultStructValue(structType, stripTransients);
+                        if (defaultProps == null)
+                        {
+                            long pos = stream.Position;
+                            props.Add(new UnknownProperty(stream, size) { StartOffset = pos });
+                            return props;
+                        }
+                        if (stripTransients)
+                        {
+                            defaultStructValuesME1.TryAdd(structType, defaultProps);
+                        }
+                    }
+                    //Debug.WriteLine("ME1: Build immuatable struct properties for struct type " + structType);
+                    foreach (var prop in defaultProps)
+                    {
+                        //Debug.WriteLine("  > ME1: Building immutable property: " + prop.Name + " at 0x" + stream.Position.ToString("X5"));
+
+                        UProperty uProperty = ReadImmutableStructProp(pcc, stream, prop, structType);
+                        //Debug.WriteLine("  >> ME1: Built immutable property: " + uProperty.Name + " at 0x" + uProperty.StartOffset.ToString("X5"));
+                        if (uProperty.PropType != PropertyType.None)
+                        {
+                            props.Add(uProperty);
+                        }
+
+                    }
+                    return props;
+                }
             }
+
+            Debug.WriteLine("Unknown struct type: " + structType);
+            props.Add(new UnknownProperty(stream, size) { StartOffset = stream.Position });
             return props;
         }
 
