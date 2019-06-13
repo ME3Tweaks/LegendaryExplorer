@@ -49,6 +49,8 @@ namespace ME3Explorer.Dialogue_Editor
             public ObservableCollectionExtended<SpeakerExtended> Speakers { get; set; }
             public ObservableCollectionExtended<DialogueNodeExtended> EntryList { get; set; }
             public ObservableCollectionExtended<DialogueNodeExtended> ReplyList { get; set; }
+            private ObservableCollectionExtended<StageDirection> _StageDirections;
+            public ObservableCollectionExtended<StageDirection> StageDirections { get => _StageDirections; set => SetProperty(ref _StageDirections, value); }
             private IExportEntry _WwiseBank;
             /// <summary>
             /// WwiseBank Reference Export
@@ -67,7 +69,7 @@ namespace ME3Explorer.Dialogue_Editor
             private List<String> _ScriptList;
             public List<String> ScriptList { get => _ScriptList; set => SetProperty(ref _ScriptList, value); }
 
-            public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList)
+            public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, ObservableCollectionExtended<StageDirection> StageDirections)
             {
                 this.ExportUID = ExportUID;
                 this.ConvName = ConvName;
@@ -76,9 +78,10 @@ namespace ME3Explorer.Dialogue_Editor
                 this.Speakers = Speakers;
                 this.EntryList = EntryList;
                 this.ReplyList = ReplyList;
+                this.StageDirections = StageDirections;
             }
 
-            public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, bool IsParsed, bool IsFirstParsed, SortedDictionary<int, int> StartingList, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, IExportEntry WwiseBank, IEntry Sequence, IEntry NonSpkrFFX, List<string> ScriptList)
+            public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, bool IsParsed, bool IsFirstParsed, SortedDictionary<int, int> StartingList, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, ObservableCollectionExtended<StageDirection> StageDirections, IExportEntry WwiseBank, IEntry Sequence, IEntry NonSpkrFFX, List<string> ScriptList)
             {
                 this.ExportUID = ExportUID;
                 this.ConvName = ConvName;
@@ -94,6 +97,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.Sequence = Sequence;
                 this.NonSpkrFFX = NonSpkrFFX;
                 this.ScriptList = ScriptList;
+                this.StageDirections = StageDirections;
             }
         }
 
@@ -334,7 +338,6 @@ namespace ME3Explorer.Dialogue_Editor
                 if (PropertyChanged != null)
 
                     PropertyChanged(this, new PropertyChangedEventArgs(PropertyName));
-
             }
 
         }
@@ -360,7 +363,7 @@ namespace ME3Explorer.Dialogue_Editor
             private string _ReplyLine;
             public string ReplyLine { get => _ReplyLine; set => SetProperty(ref _ReplyLine, value); }
 
-            public ReplyChoiceNode(int Index, string Paraphrase, int ReplyStrRef, EReplyCategory RCategory, string replyLine)
+            public ReplyChoiceNode(int Index, string Paraphrase, int ReplyStrRef, EReplyCategory RCategory, string ReplyLine)
             {
                 this.Index = Index;
                 this.Paraphrase = Paraphrase;
@@ -368,6 +371,34 @@ namespace ME3Explorer.Dialogue_Editor
                 this.RCategory = RCategory;
                 this.ReplyLine = ReplyLine;
             }
+        }
+
+        public class StageDirection : BioConversationExtended
+        {
+            private int _StageStrRef;
+            public int StageStrRef { get => _StageStrRef; set => SetProperty(ref _StageStrRef, value); }
+            private string _StageLine;
+            public string StageLine { get => _StageLine; set => SetProperty(ref _StageLine, value); }
+            private string _Direction;
+            public string Direction { get => _Direction; set => SetProperty(ref _Direction, value); }
+
+            public StageDirection(int StageStrRef, string StageLine, string Direction)
+            {
+
+                this.StageStrRef = StageStrRef;
+                this.StageLine = StageLine;
+                this.Direction = Direction;
+            }
+
+            public new event PropertyChangedEventHandler PropertyChanged;
+            protected override void OnPropertyChanged(string PropertyName)
+            {
+
+                if (PropertyChanged != null)
+
+                    PropertyChanged(this, new PropertyChangedEventArgs(PropertyName));
+            }
+
         }
 
         public enum EConvGUIStyles
@@ -429,16 +460,16 @@ namespace ME3Explorer.Dialogue_Editor
     {
         public IMEPackage pcc;
         public ConvGraphEditor g;
-        public static Color paraintColor = Color.FromArgb(0, 0, 255);//Strong Blue
-        public static Color renintColor = Color.FromArgb(255, 0, 0);//Strong Red
-        public static Color agreeColor = Color.FromArgb(69, 69, 252); //light blue
-        public static Color disagreeColor = Color.FromArgb(252, 69, 69);//light red
+        public static Color paraintColor = Color.Blue;
+        public static Color renintColor = Color.Red;
+        public static Color agreeColor = Color.DodgerBlue;
+        public static Color disagreeColor = Color.Tomato;
         public static Color friendlyColor = Color.FromArgb(3, 3, 116);//dark blue
         public static Color hostileColor = Color.FromArgb(116, 3, 3);//dark red
-        public static Color entryColor = Color.FromArgb(95, 158, 160);//Blueish
-        public static Color replyColor = Color.FromArgb(219, 145, 22);//Orangeish
-        public static Color entryPenColor = Color.FromArgb(0, 0, 0);//Black
-        public static Color replyPenColor = Color.FromArgb(0, 0, 0);//Black
+        public static Color entryColor = Color.DarkGoldenrod;
+        public static Color entryPenColor = Color.Black;
+        public static Color replyColor = Color.CadetBlue;
+        public static Color replyPenColor = Color.Black;
         protected static readonly Color EventColor = Color.FromArgb(214, 30, 28);
         protected static readonly Color titleColor = Color.FromArgb(255, 255, 128);
         protected static readonly Brush titleBoxBrush = new SolidBrush(Color.FromArgb(112, 112, 112));

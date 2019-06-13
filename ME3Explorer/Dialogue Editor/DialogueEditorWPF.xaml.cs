@@ -176,6 +176,8 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand NodeRemoveCommand { get; set; }
         public ICommand NodeDeleteAllLinksCommand { get; set; }
         public ICommand TestPathsCommand { get; set; }
+        public ICommand DefaultColorsCommand { get; set; }
+        public ICommand StageDirectionsModCommand { get; set; }
         private bool HasWwbank(object param)
         {
             return SelectedConv != null && SelectedConv.WwiseBank != null;
@@ -296,25 +298,25 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     var c = ColorTranslator.FromHtml((string)options["EntryPenColor"]);
                     DObj.entryPenColor = c;
-                    ClrPcker_Entry.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_EntryPen.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
                 }
                 if (options.ContainsKey("EntryColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["EntryColor"]);
                     DObj.entryColor = c;
-                    ClrPcker_EntryHead.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_Entry.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
                 }
                 if (options.ContainsKey("ReplyColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["ReplyColor"]);
                     DObj.replyColor = c;
-                    ClrPcker_EntryHead.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_Reply.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
                 }
                 if (options.ContainsKey("ReplyPenColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["ReplyPenColor"]);
                     DObj.replyPenColor = c;
-                    ClrPcker_Reply.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_ReplyPen.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
                 }
                 if (options.ContainsKey("AutoSave"))
                     AutoSaveView_MenuItem.IsChecked = (bool)options["AutoSave"];
@@ -333,10 +335,10 @@ namespace ME3Explorer.Dialogue_Editor
                 ClrPcker_Disagree.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.disagreeColor.A, DObj.disagreeColor.R, DObj.disagreeColor.G, DObj.disagreeColor.B);
                 ClrPcker_Friendly.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.friendlyColor.A, DObj.friendlyColor.R, DObj.friendlyColor.G, DObj.friendlyColor.B);
                 ClrPcker_Hostile.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.hostileColor.A, DObj.hostileColor.R, DObj.hostileColor.G, DObj.hostileColor.B);
-                ClrPcker_EntryHead.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.entryColor.A, DObj.entryColor.R, DObj.entryColor.G, DObj.entryColor.B);
-                ClrPcker_Entry.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.entryPenColor.A, DObj.entryPenColor.R, DObj.entryPenColor.G, DObj.entryPenColor.B);
-                ClrPcker_ReplyHead.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.replyColor.A, DObj.replyColor.R, DObj.replyColor.G, DObj.replyColor.B);
-                ClrPcker_Reply.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.replyPenColor.A, DObj.replyPenColor.R, DObj.replyPenColor.G, DObj.replyPenColor.B);
+                ClrPcker_Entry.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.entryColor.A, DObj.entryColor.R, DObj.entryColor.G, DObj.entryColor.B);
+                ClrPcker_EntryPen.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.entryPenColor.A, DObj.entryPenColor.R, DObj.entryPenColor.G, DObj.entryPenColor.B);
+                ClrPcker_Reply.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.replyColor.A, DObj.replyColor.R, DObj.replyColor.G, DObj.replyColor.B);
+                ClrPcker_ReplyPen.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.replyPenColor.A, DObj.replyPenColor.R, DObj.replyPenColor.G, DObj.replyPenColor.B);
             }
         }
 
@@ -375,10 +377,10 @@ namespace ME3Explorer.Dialogue_Editor
             NodeAddCommand = new RelayCommand(DialogueNode_Add);
             NodeRemoveCommand = new RelayCommand(DialogueNode_Delete);
             NodeDeleteAllLinksCommand = new RelayCommand(DialogueNode_DeleteLinks);
+            StageDirectionsModCommand = new RelayCommand(StageDirections_Modify);
             TestPathsCommand = new GenericCommand(TestPaths);
+            DefaultColorsCommand = new GenericCommand(ResetColorsToDefault);
         }
-
-
 
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
@@ -437,8 +439,8 @@ namespace ME3Explorer.Dialogue_Editor
                 {"HostileRColor", ColorTranslator.ToHtml(DObj.hostileColor)},
                 {"EntryColor", ColorTranslator.ToHtml(DObj.entryColor)},
                 {"ReplyColor", ColorTranslator.ToHtml(DObj.replyColor)},
-                {"EntryPenColor", ColorTranslator.ToHtml(DObj.entryColor)},
-                {"ReplyPenColor", ColorTranslator.ToHtml(DObj.replyColor)},
+                {"EntryPenColor", ColorTranslator.ToHtml(DObj.entryPenColor)},
+                {"ReplyPenColor", ColorTranslator.ToHtml(DObj.replyPenColor)},
 
                 {"OutputNumbers", DObj.OutputNumbers},
                 {"AutoSave", AutoSaveView_MenuItem.IsChecked},
@@ -580,7 +582,7 @@ namespace ME3Explorer.Dialogue_Editor
             Conversations.ClearEx();
             foreach (var exp in Pcc.Exports.Where(exp => exp.ClassName.Equals("BioConversation")))
             {
-                Conversations.Add(new ConversationExtended(exp.UIndex, exp.ObjectName, exp.GetProperties(), exp, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>()));
+                Conversations.Add(new ConversationExtended(exp.UIndex, exp.ObjectName, exp.GetProperties(), exp, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<StageDirection>()));
             }
         }
         private void FirstParse()
@@ -597,6 +599,7 @@ namespace ME3Explorer.Dialogue_Editor
                 ParseNSFFX(SelectedConv);
                 ParseSequence(SelectedConv);
                 ParseWwiseBank(SelectedConv);
+                ParseStageDirections(SelectedConv);
                 SelectedConv.IsFirstParsed = true;
             }
 
@@ -610,6 +613,7 @@ namespace ME3Explorer.Dialogue_Editor
                 ParseNSFFX(conv);
                 ParseSequence(conv);
                 ParseWwiseBank(conv);
+                ParseStageDirections(conv);
 
                 conv.IsFirstParsed = true;
             }
@@ -641,6 +645,7 @@ namespace ME3Explorer.Dialogue_Editor
                 ParseLinesFaceFX(SelectedConv);
                 ParseLinesAudioStreams(SelectedConv);
                 ParseLinesScripts(SelectedConv);
+
                 SelectedConv.IsParsed = true;
             }
 
@@ -657,6 +662,7 @@ namespace ME3Explorer.Dialogue_Editor
                 ParseLinesFaceFX(conv);
                 ParseLinesAudioStreams(conv);
                 ParseLinesScripts(conv);
+
                 conv.IsParsed = true;
             }
 
@@ -773,6 +779,32 @@ namespace ME3Explorer.Dialogue_Editor
                         var s = scriptprop.GetProp<NameProperty>("sScriptTag");
                         conv.ScriptList.Add(s.ToString());
                     }
+                }
+            }
+        }
+        private void ParseStageDirections(ConversationExtended conv)
+        {
+            conv.StageDirections = new ObservableCollectionExtended<StageDirection>();
+            var dprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_aStageDirections"); //ME3 Only not in ME1/2
+            if(dprop != null)
+            {
+                foreach(var direction in dprop)
+                {
+                    int strref = 0;
+                    string line = "No data";
+                    string action = "None";
+                    var strrefprop = direction.GetProp<StringRefProperty>("srStrRef");
+                    if(strrefprop != null)
+                    {
+                        strref = strrefprop.Value;
+                        line = GlobalFindStrRefbyID(strref, Pcc.Game);
+                    }
+                    var actionprop = direction.GetProp<StrProperty>("sText");
+                    if(actionprop != null)
+                    {
+                        action = actionprop.Value;
+                    }
+                    conv.StageDirections.Add(new StageDirection(strref, line, action));
                 }
             }
         }
@@ -1429,18 +1461,18 @@ namespace ME3Explorer.Dialogue_Editor
         public void RecreateNodesToProperties(ConversationExtended conv, bool pushtofile = true)
         {
             AutoGenerateSpeakerArrays(conv);
-            var newstartlist = new ArrayProperty<IntProperty>(ArrayType.Int, new NameReference("m_StartingList"));
+            var newstartlist = new ArrayProperty<IntProperty>(ArrayType.Int, "m_StartingList");
             foreach (var start in conv.StartingList)
             {
                 newstartlist.Add(start.Value);
             }
 
-            var newentryList = new ArrayProperty<StructProperty>(ArrayType.Struct, new NameReference("m_EntryList"));
+            var newentryList = new ArrayProperty<StructProperty>(ArrayType.Struct,"m_EntryList");
             foreach (var entry in conv.EntryList.OrderBy(entry => entry.NodeCount))
             {
                 newentryList.Add(entry.NodeProp);
             }
-            var newreplyList = new ArrayProperty<StructProperty>(ArrayType.Struct, new NameReference("m_ReplyList"));
+            var newreplyList = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_ReplyList");
             foreach (var reply in conv.ReplyList.OrderBy(reply => reply.NodeCount))
             {
                 newreplyList.Add(reply.NodeProp);
@@ -1471,7 +1503,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if(Pcc.Game == MEGame.ME3)
             {
-                var newscriptList = new ArrayProperty<NameProperty>(ArrayType.Name, new NameReference("m_aScriptList"));
+                var newscriptList = new ArrayProperty<NameProperty>(ArrayType.Name, "m_aScriptList");
                 foreach (var script in conv.ScriptList)
                 {
                     if(script != "None")
@@ -1486,7 +1518,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
             else
             {
-                var newscriptList = new ArrayProperty<StructProperty>(ArrayType.Name, new NameReference("m_ScriptList"));
+                var newscriptList = new ArrayProperty<StructProperty>(ArrayType.Name, "m_ScriptList");
                 foreach (var script in conv.ScriptList)
                 {
                     if (script != "None")
@@ -1508,6 +1540,20 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
+        private void SaveStageDirectionsToProperties(ConversationExtended conv)
+        {
+            var aStageDirs = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_aStageDirections");
+            foreach (var stageD in conv.StageDirections)
+            {
+                var p = new PropertyCollection();
+                p.AddOrReplaceProp(new StrProperty(stageD.Direction, "sText"));
+                p.AddOrReplaceProp(new StringRefProperty(stageD.StageStrRef, "srStrRef"));
+                p.AddOrReplaceProp(new NoneProperty());
+                aStageDirs.Add(new StructProperty("BioStageDirection", p));
+            }
+            conv.BioConvo.AddOrReplaceProp(aStageDirs);
+            PushConvoToFile(conv);
+        }
         #endregion RecreateToFile
 
         #region Handling-updates
@@ -1578,7 +1624,7 @@ namespace ME3Explorer.Dialogue_Editor
                 var exp = Pcc.getExport(uxp);
                 int index = Conversations.FindIndex(i => i.ExportUID == exp.UIndex);  //Can remove this nested loop?  How?
                 Conversations.RemoveAt(index);
-                Conversations.Insert(index, new ConversationExtended(exp.UIndex, exp.ObjectName, exp.GetProperties(), exp, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>()));
+                Conversations.Insert(index, new ConversationExtended(exp.UIndex, exp.ObjectName, exp.GetProperties(), exp, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<StageDirection>()));
             }
 
             FirstParse();
@@ -1623,63 +1669,63 @@ namespace ME3Explorer.Dialogue_Editor
             switch (e.PropertyName)         // Props in both replies and entries. All Games.
             {
                 case "Listener":
-                    var nListenerIndex = new IntProperty(node.Listener, new NameReference("nListenerIndex"));
+                    var nListenerIndex = new IntProperty(node.Listener, "nListenerIndex");
                     prop.Properties.AddOrReplaceProp(nListenerIndex);
                     break;
                 case "LineStrRef":
-                    var srText = new StringRefProperty(node.LineStrRef, new NameReference("srText"));
+                    var srText = new StringRefProperty(node.LineStrRef, "srText");
                     prop.Properties.AddOrReplaceProp(srText);
                     break;
                 case "ConditionalOrBool":
-                    var nConditionalFunc = new IntProperty(node.ConditionalOrBool, new NameReference("nConditionalFunc"));
+                    var nConditionalFunc = new IntProperty(node.ConditionalOrBool, "nConditionalFunc");
                     prop.Properties.AddOrReplaceProp(nConditionalFunc);
                     needsRefresh = true;
                     break;
                 case "ConditionalParam":
-                    var nConditionalParam = new IntProperty(node.ConditionalParam, new NameReference("nConditionalParam"));
+                    var nConditionalParam = new IntProperty(node.ConditionalParam, "nConditionalParam");
                     prop.Properties.AddOrReplaceProp(nConditionalParam);
                     break;
                 case "Transition":
-                    var nStateTransition = new IntProperty(node.Transition, new NameReference("nStateTransition"));
+                    var nStateTransition = new IntProperty(node.Transition, "nStateTransition");
                     prop.Properties.AddOrReplaceProp(nStateTransition);
                     needsRefresh = true;
                     break;
                 case "TransitionParam":
-                    var nStateTransitionParam = new IntProperty(node.TransitionParam, new NameReference("nStateTransitionParam"));
+                    var nStateTransitionParam = new IntProperty(node.TransitionParam,"nStateTransitionParam");
                     prop.Properties.AddOrReplaceProp(nStateTransitionParam);
                     break;
                 case "ExportID":
-                    var nExportID = new IntProperty(node.ExportID, new NameReference("nExportID"));
+                    var nExportID = new IntProperty(node.ExportID,"nExportID");
                     prop.Properties.AddOrReplaceProp(nExportID);
                     break;
                 case "CameraIntimacy":
-                    var CameraIntimacy = new IntProperty(node.CameraIntimacy, new NameReference("nCameraIntimacy"));
+                    var CameraIntimacy = new IntProperty(node.CameraIntimacy, "nCameraIntimacy");
                     prop.Properties.AddOrReplaceProp(CameraIntimacy);
                     break;
                 case "FiresConditional":
-                    var bFireConditional = new BoolProperty(node.FiresConditional, new NameReference("bFireConditional"));
+                    var bFireConditional = new BoolProperty(node.FiresConditional, "bFireConditional");
                     prop.Properties.AddOrReplaceProp(bFireConditional);
                     needsRefresh = true;
                     break;
                 case "IsAmbient":
-                    var bAmbient = new BoolProperty(node.IsAmbient, new NameReference("bAmbient"));
+                    var bAmbient = new BoolProperty(node.IsAmbient, "bAmbient");
                     prop.Properties.AddOrReplaceProp(bAmbient);
                     break;
                 case "IsNonTextLine":
-                    var bNonTextLine = new BoolProperty(node.IsNonTextLine, new NameReference("bNonTextLine"));
+                    var bNonTextLine = new BoolProperty(node.IsNonTextLine, "bNonTextLine");
                     prop.Properties.AddOrReplaceProp(bNonTextLine);
                     break;
                 case "IgnoreBodyGesture":
-                    var bIgnoreBodyGestures = new BoolProperty(node.IgnoreBodyGesture, new NameReference("bIgnoreBodyGestures"));
+                    var bIgnoreBodyGestures = new BoolProperty(node.IgnoreBodyGesture, "bIgnoreBodyGestures");
                     prop.Properties.AddOrReplaceProp(bIgnoreBodyGestures);
                     break;
                 case "Script":
                     var scriptidx = SelectedConv.ScriptList.FindIndex(s => s == node.Script) - 1;
-                    var nScriptIndex = new IntProperty(scriptidx, new NameReference("nScriptIndex"));
+                    var nScriptIndex = new IntProperty(scriptidx, "nScriptIndex");
                     prop.Properties.AddOrReplaceProp(nScriptIndex);
                     break;
                 case "GUIStyle":
-                    var EConvGUIStyles = new EnumProperty(new NameReference(node.GUIStyle.ToString()), new NameReference("EConvGUIStyles"), Pcc.Game, new NameReference("eGUIStyle"));
+                    var EConvGUIStyles = new EnumProperty(node.GUIStyle.ToString(), "EConvGUIStyles", Pcc.Game, "eGUIStyle");
                     prop.Properties.AddOrReplaceProp(EConvGUIStyles);
                     break;
                 default:
@@ -1688,7 +1734,7 @@ namespace ME3Explorer.Dialogue_Editor
             //Skip SText
             if (Pcc.Game == MEGame.ME3 && e.PropertyName == "HideSubtitle")
             {
-                var bAlwaysHideSubtitle = new BoolProperty(node.HideSubtitle, new NameReference("bAlwaysHideSubtitle"));
+                var bAlwaysHideSubtitle = new BoolProperty(node.HideSubtitle, "bAlwaysHideSubtitle");
                 prop.Properties.AddOrReplaceProp(bAlwaysHideSubtitle);
             }
 
@@ -1697,20 +1743,20 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 //Ignore replylist for now
                 //Ignore aSpeakerList  <-- autorecreated
-                var nSpeakerIndex = new IntProperty(node.SpeakerIndex, new NameReference("nSpeakerIndex"));
+                var nSpeakerIndex = new IntProperty(node.SpeakerIndex, "nSpeakerIndex");
                 prop.Properties.AddOrReplaceProp(nSpeakerIndex);
-                var bSkippable = new BoolProperty(node.IsSkippable, new NameReference("bSkippable"));
+                var bSkippable = new BoolProperty(node.IsSkippable, "bSkippable");
                 prop.Properties.AddOrReplaceProp(bSkippable);
 
             }
             else
             {
                 //Ignore Entry List
-                var bUnskippable = new BoolProperty(node.IsUnskippable, new NameReference("bUnskippable"));
+                var bUnskippable = new BoolProperty(node.IsUnskippable, "bUnskippable");
                 prop.Properties.AddOrReplaceProp(bUnskippable);
                 if (e.PropertyName == "ReplyType")
                 {
-                    var ReplyType = new EnumProperty(node.ReplyType.ToString(), new NameReference("EReplyTypes"), Pcc.Game, new NameReference("ReplyType"));
+                    var ReplyType = new EnumProperty(node.ReplyType.ToString(), "EReplyTypes", Pcc.Game, "ReplyType");
                     prop.Properties.AddOrReplaceProp(ReplyType);
                     needsRefresh = true;
                 }
@@ -1718,9 +1764,9 @@ namespace ME3Explorer.Dialogue_Editor
 
                 if (Pcc.Game == MEGame.ME3 && (e.PropertyName == "bIsDefaultAction" || e.PropertyName == "bIsMajorDecision"))
                 {
-                    var bIsDefaultAction = new BoolProperty(node.IsDefaultAction, new NameReference("bIsDefaultAction"));
+                    var bIsDefaultAction = new BoolProperty(node.IsDefaultAction, "bIsDefaultAction");
                     prop.Properties.AddOrReplaceProp(bIsDefaultAction);
-                    var bIsMajorDecision = new BoolProperty(node.IsMajorDecision, new NameReference("bIsMajorDecision"));
+                    var bIsMajorDecision = new BoolProperty(node.IsMajorDecision, "bIsMajorDecision");
                     prop.Properties.AddOrReplaceProp(bIsMajorDecision);
                 }
             }
@@ -1731,7 +1777,8 @@ namespace ME3Explorer.Dialogue_Editor
                 RefreshView();
 
         }
-        #endregion Handling-updates
+
+       #endregion Handling-updates
 
         #region Recents
 
@@ -2188,6 +2235,15 @@ namespace ME3Explorer.Dialogue_Editor
                     break;
 
             }
+
+            if (Pcc.Game == MEGame.ME3)
+            {
+                StageDirections_Expander.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                StageDirections_Expander.Visibility = Visibility.Collapsed;
+            }
             return CurrentUIMode;
         }
         private void ListBox_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -2230,7 +2286,7 @@ namespace ME3Explorer.Dialogue_Editor
                 graphEditor.Enabled = false;
                 graphEditor.UseWaitCursor = true;
                 var nconv = Conversations[Conversations_ListBox.SelectedIndex];
-                SelectedConv = new ConversationExtended(nconv.ExportUID, nconv.ConvName, nconv.BioConvo, nconv.Export, nconv.IsParsed, nconv.IsFirstParsed, nconv.StartingList, nconv.Speakers, nconv.EntryList, nconv.ReplyList, nconv.WwiseBank, nconv.Sequence, nconv.NonSpkrFFX, nconv.ScriptList); ;
+                SelectedConv = new ConversationExtended(nconv.ExportUID, nconv.ConvName, nconv.BioConvo, nconv.Export, nconv.IsParsed, nconv.IsFirstParsed, nconv.StartingList, nconv.Speakers, nconv.EntryList, nconv.ReplyList, nconv.StageDirections, nconv.WwiseBank, nconv.Sequence, nconv.NonSpkrFFX, nconv.ScriptList); ;
                 CurrentLoadedExport = CurrentConvoPackage.getUExport(SelectedConv.ExportUID);
                 SetupConvJSON(CurrentLoadedExport);
                 if (Pcc.Game == MEGame.ME1)
@@ -2272,7 +2328,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             if (Conversations[Conversations_ListBox.SelectedIndex].NonSpkrFFX.UIndex != FFXAnimsets[ComboBox_Conv_NSFFX.SelectedIndex].UIndex)
             {
-                SelectedConv.BioConvo.AddOrReplaceProp(new ObjectProperty(SelectedConv.NonSpkrFFX, new NameReference("m_pNonSpeakerFaceFXSet")));
+                SelectedConv.BioConvo.AddOrReplaceProp(new ObjectProperty(SelectedConv.NonSpkrFFX, "m_pNonSpeakerFaceFXSet"));
                 PushConvoToFile(SelectedConv);
             }
         }
@@ -2701,13 +2757,13 @@ namespace ME3Explorer.Dialogue_Editor
             foreach(var e in SelectedConv.EntryList)
             {
                 var scriptidx = SelectedConv.ScriptList.FindIndex(s => s == e.Script) - 1;
-                var nScriptIndex = new IntProperty(scriptidx, new NameReference("nScriptIndex"));
+                var nScriptIndex = new IntProperty(scriptidx, "nScriptIndex");
                 e.NodeProp.Properties.AddOrReplaceProp(nScriptIndex);
             }
             foreach (var r in SelectedConv.ReplyList)
             {
                 var scriptidx = SelectedConv.ScriptList.FindIndex(s => s == r.Script) - 1;
-                var nScriptIndex = new IntProperty(scriptidx, new NameReference("nScriptIndex"));
+                var nScriptIndex = new IntProperty(scriptidx,"nScriptIndex");
                 r.NodeProp.Properties.AddOrReplaceProp(nScriptIndex);
             }
 
@@ -2816,11 +2872,11 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     props = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_ReplyList");
                 }
-                var EConvGUIStyles = new EnumProperty(new NameReference("GUI_STYLE_NONE"), new NameReference("EConvGUIStyles"), Pcc.Game, new NameReference("eGUIStyle"));//THESE SHOULD NOT BE NEEDED
+                var EConvGUIStyles = new EnumProperty("GUI_STYLE_NONE","EConvGUIStyles", Pcc.Game, "eGUIStyle");//THESE SHOULD NOT BE NEEDED
                 newprop.AddOrReplaceProp(EConvGUIStyles);
-                var rtype = new EnumProperty(new NameReference("REPLY_STANDARD"), new NameReference("EReplyTypes"), Pcc.Game, new NameReference("ReplyType"));
+                var rtype = new EnumProperty("REPLY_STANDARD", "EReplyTypes", Pcc.Game, "ReplyType");
                 newprop.AddOrReplaceProp(rtype);
-                var nScriptIndex = new IntProperty(-1, new NameReference("nScriptIndex"));
+                var nScriptIndex = new IntProperty(-1, "nScriptIndex");
                 newprop.AddOrReplaceProp(nScriptIndex);
                 props.Add(new StructProperty("BioDialogReplyNode", newprop));
                 SelectedConv.BioConvo.AddOrReplaceProp(props);
@@ -2940,7 +2996,7 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 foreach (var entry in SelectedConv.EntryList)
                 {
-                    var newReplyLinksProp = new ArrayProperty<StructProperty>(ArrayType.Struct, new NameReference("ReplyListNew"));
+                    var newReplyLinksProp = new ArrayProperty<StructProperty>(ArrayType.Struct, "ReplyListNew");
                     var oldReplyLinksProp = entry.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
                     if (oldReplyLinksProp != null)
                     {
@@ -3012,6 +3068,59 @@ namespace ME3Explorer.Dialogue_Editor
                 SelectedConv.EntryList.RemoveAt(deleteID);
             }
             RecreateNodesToProperties(SelectedConv);
+        }
+
+        private void StageDirections_TextChanged(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Escape)
+            {
+                var tbox = sender as TextBox;
+                Keyboard.ClearFocus();
+                var be = tbox.GetBindingExpression(TextBox.TextProperty);
+                switch (e.Key)
+                {
+                    case Key.Enter:
+                        if (be != null) be.UpdateSource();
+                        SaveStageDirectionsToProperties(SelectedConv);
+                        break;
+                    case Key.Escape:
+                        if (be != null) be.UpdateTarget();
+                        break;
+                }
+            }
+        }
+        private void StageDirections_Modify(object obj)
+        {
+            string command = obj as string;
+            if (command == "Add")
+            {
+                int strRef = 0;
+                bool isNumber = false;
+                while (!isNumber)
+                {
+                    var sdlg = new PromptDialog("Enter the TLK String Reference for the direction:", "Add a Stage Direction", "0");
+                    sdlg.ShowDialog();
+                    if (sdlg.ResponseText == null || sdlg.ResponseText == "0")
+                        return;
+                    isNumber = int.TryParse(sdlg.ResponseText, out strRef);
+                    if(!isNumber || strRef <= 0)
+                    {
+                        var wdlg = MessageBox.Show("The string reference must be a positive whole number.", "Dialogue Editor", MessageBoxButton.OKCancel);
+                        if (wdlg == MessageBoxResult.Cancel)
+                            return;
+                    }
+                }
+
+                SelectedConv.StageDirections.Add(new StageDirection(strRef, GlobalFindStrRefbyID(strRef, Pcc.Game), "Add direction"));
+                SaveStageDirectionsToProperties(SelectedConv);
+
+            }
+            else if (command == "Delete" && StageDirs_ListBox.SelectedIndex >= 0)
+            {
+                SelectedConv.StageDirections.RemoveAt(StageDirs_ListBox.SelectedIndex);
+                SaveStageDirectionsToProperties(SelectedConv);
+            }
+
         }
         #endregion
 
@@ -3675,23 +3784,51 @@ namespace ME3Explorer.Dialogue_Editor
                 case "ClrPcker_Hostile":
                     DObj.hostileColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
-                case "ClrPcker_Entry":
+                case "ClrPcker_EntryPen":
                     DObj.entryPenColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
-                case "ClrPcker_Reply":
+                case "ClrPcker_ReplyPen":
                     DObj.replyPenColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
-                case "ClrPcker_EntryHead":
+                case "ClrPcker_Entry":
                     DObj.entryColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
-                case "ClrPcker_ReplyHead":
+                case "ClrPcker_Reply":
                     DObj.replyColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
                     break;
             }
 
             RefreshView();
         }
+        private void ResetColorsToDefault()
+        {
+            var cdlg = MessageBox.Show("Do you wish to reset the color scheme?", "Dialogue Editor", MessageBoxButton.OKCancel);
+            if (cdlg == MessageBoxResult.Cancel)
+                return;
 
+            DBox.lineColor = Color.FromArgb(74, 63, 190);
+            DObj.paraintColor = Color.Blue; ;//Strong Blue
+            DObj.renintColor = Color.Red;//Strong Red
+            DObj.agreeColor = Color.DodgerBlue;
+            DObj.disagreeColor = Color.Tomato;
+            DObj.friendlyColor = Color.FromArgb(3, 3, 116);//dark blue
+            DObj.hostileColor = Color.FromArgb(116, 3, 3);//dark red
+            DObj.entryColor = Color.DarkGoldenrod;
+            DObj.entryPenColor = Color.Black;
+            DObj.replyColor = Color.CadetBlue;
+            DObj.replyPenColor = Color.Black;
+            ClrPcker_Line.SelectedColor = System.Windows.Media.Color.FromArgb(DBox.lineColor.A, DBox.lineColor.R, DBox.lineColor.G, DBox.lineColor.B);
+            ClrPcker_ParaInt.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.paraintColor.A, DObj.paraintColor.R, DObj.paraintColor.G, DObj.paraintColor.B);
+            ClrPcker_RenInt.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.renintColor.A, DObj.renintColor.R, DObj.renintColor.G, DObj.renintColor.B);
+            ClrPcker_Agree.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.agreeColor.A, DObj.agreeColor.R, DObj.agreeColor.G, DObj.agreeColor.B);
+            ClrPcker_Disagree.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.disagreeColor.A, DObj.disagreeColor.R, DObj.disagreeColor.G, DObj.disagreeColor.B);
+            ClrPcker_Friendly.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.friendlyColor.A, DObj.friendlyColor.R, DObj.friendlyColor.G, DObj.friendlyColor.B);
+            ClrPcker_Hostile.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.hostileColor.A, DObj.hostileColor.R, DObj.hostileColor.G, DObj.hostileColor.B);
+            ClrPcker_Entry.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.entryColor.A, DObj.entryColor.R, DObj.entryColor.G, DObj.entryColor.B);
+            ClrPcker_EntryPen.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.entryPenColor.A, DObj.entryPenColor.R, DObj.entryPenColor.G, DObj.entryPenColor.B);
+            ClrPcker_Reply.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.replyColor.A, DObj.replyColor.R, DObj.replyColor.G, DObj.replyColor.B);
+            ClrPcker_ReplyPen.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.replyPenColor.A, DObj.replyPenColor.R, DObj.replyPenColor.G, DObj.replyPenColor.B);
+        }
 
         #endregion
 
@@ -3729,6 +3866,8 @@ namespace ME3Explorer.Dialogue_Editor
             await Task.Delay(new TimeSpan( 0, 0, 0, 0, delay));
             return true;
         }
+
+
         #endregion Helpers
 
 

@@ -106,62 +106,39 @@
                     <MenuItem Name="Menu_LineSize_20" Header="2.0" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="20"/>
                 </MenuItem>
                 <MenuItem Header="Adjust graph color settings" >
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="1*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="140" />
-                            <ColumnDefinition Width="60" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Spoken Text: " Grid.Column="0" Grid.Row="0"/>
-                        <xctk:ColorPicker Name="ClrPcker_Line" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Right"  Grid.Column="1" Grid.Row="0"></xctk:ColorPicker>
-                    </Grid>
+                    <TextBlock Text="Spoken Text: " Grid.Column="0" Grid.Row="0"/>
+                    <xctk:ColorPicker Name="ClrPcker_Line" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Right"  Grid.Column="1" Grid.Row="0"></xctk:ColorPicker>
                     <Separator/>
                     <TextBlock Text="Entry outline: "/>
-                        <xctk:ColorPicker Name="ClrPcker_Entry" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
+                        <xctk:ColorPicker Name="ClrPcker_EntryPen" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
                     <TextBlock Text="Entry Header: "/>
-                    <xctk:ColorPicker Name="ClrPcker_EntryHead" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
+                    <xctk:ColorPicker Name="ClrPcker_Entry" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
                     <TextBlock Text="Reply outline: "/>
-                    <xctk:ColorPicker Name="ClrPcker_Reply" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
+                    <xctk:ColorPicker Name="ClrPcker_ReplyPen" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
                     <TextBlock Text="Reply Header: "/>
-                    <xctk:ColorPicker Name="ClrPcker_ReplyHead" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
+                    <xctk:ColorPicker Name="ClrPcker_Reply" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
                        <Separator/>
+                    <TextBlock Text="Paragon Interrupt: " ToolTip="Adjust the color of Paragon Interrupt."/>
+                    <xctk:ColorPicker Name="ClrPcker_ParaInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ToolTip="Adjust the color of Paragon Interrupt." ></xctk:ColorPicker>
+                    <TextBlock Text="Renegade Interrupt: " ToolTip="Adjust the color of Renegade Interrupt." />
+                    <xctk:ColorPicker Name="ClrPcker_RenInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ToolTip="Adjust the color of Renegade Interrupt."></xctk:ColorPicker>
+                    <TextBlock Text="Agree: " />
+                    <xctk:ColorPicker Name="ClrPcker_Agree" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                    <TextBlock Text="Disagree: " />
+                    <xctk:ColorPicker Name="ClrPcker_Disagree" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                    <TextBlock Text="Friendly response: " />
+                    <xctk:ColorPicker Name="ClrPcker_Friendly" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                    <TextBlock Text="Hostile response: " />
+                    <xctk:ColorPicker Name="ClrPcker_Hostile" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
 
-                    <DockPanel ToolTip="Adjust the color of the spoken line text beside the title box.">
-                        <TextBlock Text=""/>
-                    </DockPanel>
-                    <Separator/>
-                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of Paragon Interrupt.">
-                        <TextBlock Text="Paragon Interrupt: " />
-                        <xctk:ColorPicker Name="ClrPcker_ParaInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of Paragon Interrupt.">
-                        <TextBlock Text="Renegade Interrupt: " />
-                        <xctk:ColorPicker Name="ClrPcker_RenInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of Paragon Interrupt.">
-                        <TextBlock Text="Agree: " />
-                        <xctk:ColorPicker Name="ClrPcker_Agree" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of Paragon Interrupt.">
-                        <TextBlock Text="Disagree: " />
-                        <xctk:ColorPicker Name="ClrPcker_Disagree" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of Paragon Interrupt.">
-                        <TextBlock Text="Friendly response: " />
-                        <xctk:ColorPicker Name="ClrPcker_Friendly" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" ToolTip="Adjust the color of Paragon Interrupt.">
-                        <TextBlock Text="Hostile response: " />
-                        <xctk:ColorPicker Name="ClrPcker_Hostile" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
-                    </StackPanel>
+
                 </MenuItem>
+                <MenuItem Header="Reset colors to default" Command="{Binding DefaultColorsCommand}"/>
                 <MenuItem Name="ShowOutputNumbers_MenuItem" Header="NOT YET: Show Output Numbers" IsCheckable="True" Click="showOutputNumbers_Click"/>
 
             </MenuItem>
             <MenuItem Header="Layout" Padding="4">
-                <MenuItem Header="Save Current View" Command="{Binding SaveViewCommand}" ToolTip="Save the node layout"/>
+                <MenuItem Header="Save Current Layout" Command="{Binding SaveViewCommand}" ToolTip="Save the node layout"/>
                 <Separator/>
                 <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save View" IsCheckable="True"/>
                 <MenuItem Name="GlobalSeqRefViewSavesMenuItem" Header="Use Global View Saves" IsCheckable="True" Click="GlobalSeqRefViewSavesMenuItem_OnClick"/>
@@ -181,6 +158,7 @@
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
+
         <!-- Main Content panel-->
         <Grid>
             <Grid.RowDefinitions>
@@ -195,9 +173,43 @@
                 <ColumnDefinition Width="0" Name="RightBarColumn" />
             </Grid.ColumnDefinitions>
 <!-- Right side panel - Convo/Speakers/Nodes -->
-            <DockPanel Name="RightSide_Dock" Grid.Column="2" Grid.RowSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
-           <!--Convo Panel-->
-                <StackPanel Name="Convo_Panel" DockPanel.Dock="Top" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="3" Visibility="Collapsed">
+            <DockPanel Name="RightSide_Dock" LastChildFill="True" Grid.Column="2" Grid.RowSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                <!--Stage Directions ME3 -->
+                <Expander Name="StageDirections_Expander" ExpandDirection="Up" IsExpanded="False" Background="Orange" Padding="2" Panel.ZIndex="250" DockPanel.Dock="Bottom" Visibility="Collapsed">
+                    <Expander.Header>
+                        <TextBlock Text="Stage Directions" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                    </Expander.Header>
+                    <DockPanel Background="White" Margin="0,3,4,3" LastChildFill="True">
+                        <TextBlock DockPanel.Dock="Top" Text="Stage Directions" Margin="5,5,5,0" FontWeight="Bold" TextAlignment="Center"/>
+                        <TextBlock DockPanel.Dock="Top" Text="Add stage directions or notes" Foreground="Gray" FontSize="10" TextWrapping="Wrap" TextAlignment="Center"/>
+                        <ListBox Name="StageDirs_ListBox" DockPanel.Dock="Bottom" ItemsSource="{Binding Path=SelectedConv.StageDirections}" VerticalContentAlignment="Stretch" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" >
+                            <ListBox.ItemTemplate >
+                                <DataTemplate>
+                                    <Grid  HorizontalAlignment="Stretch">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                            <TextBlock Text="{Binding StageStrRef}" FontWeight="DemiBold" />
+                                            <TextBlock Text=" : "/>
+                                            <TextBlock Text="{Binding StageLine}"/>
+                                        </StackPanel>
+                                        <TextBox  Grid.Row="1" Text="{Binding Direction, Mode=TwoWay, UpdateSourceTrigger=Explicit}" TextWrapping="Wrap" HorizontalAlignment="Stretch" KeyUp="StageDirections_TextChanged" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Add" Command="{Binding StageDirectionsModCommand}" CommandParameter="Add"/>
+                                    <MenuItem Header="Delete" Command="{Binding StageDirectionsModCommand}" CommandParameter="Delete"/>
+                                </ContextMenu>
+                            </ListBox.ContextMenu>
+                        </ListBox>
+                    </DockPanel>
+                </Expander>
+                <!--Convo Panel-->
+                <StackPanel Name="Convo_Panel" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="3" Visibility="Collapsed">
                     <TextBlock  Name="ConvoDet_Header" Text="Conversation Details"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Top"/>
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Export:"  HorizontalAlignment="Stretch" TextAlignment="Right" FontWeight="Bold" FontSize="15" DockPanel.Dock="Left"/>
@@ -301,7 +313,7 @@
 
                 </StackPanel>
            <!--Speaker Panel-->
-                <StackPanel Name="Speaker_Panel" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="3" Visibility="Hidden">
+                <StackPanel Name="Speaker_Panel" HorizontalAlignment="Stretch" Margin="3" Visibility="Hidden">
                     <TextBlock Text="Speaker Details"  HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left"/>
                     <DockPanel HorizontalAlignment="Stretch">
                         <TextBlock Name="Speaker_ID" Text="{Binding Path=SelectedSpeaker.SpeakerID, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" FontWeight="Bold" FontSize="18" DockPanel.Dock="Right" Padding="5"/>
@@ -356,13 +368,13 @@
                     <TextBlock Text="" FontSize="10"  />
                 </StackPanel>
            <!--Node Panel-->
-                <Grid Name="Node_Panel" DockPanel.Dock="Top" Visibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto" >
+                <Grid Name="Node_Panel" Visibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="3*" MinHeight="190"/>
-                        <RowDefinition Height="3*" MinHeight="170"/>
+                        <RowDefinition Height="3*" MinHeight="160"/>
+                        <RowDefinition Height="210"/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0">
                         <DockPanel HorizontalAlignment="Stretch">
@@ -403,7 +415,7 @@
                             </ComboBox>
                         </DockPanel>
                     </StackPanel>
-                    <TabControl Name="Node_Tab_Detail" Grid.Row="1" >
+                    <TabControl Name="Node_Tab_Detail" Grid.Row="1">
                         <TabItem Header="Plot Control" ToolTip="Set which plots determine if this line is played, and which plots are set if it does.">
                             <StackPanel Margin="4">
                                 <TextBlock Text="Plot checks" />
@@ -465,6 +477,7 @@
                                     <TextBox Text="{Binding Path=SelectedDialogueNode.ExportID}" HorizontalAlignment="Stretch" FontSize="15" VerticalAlignment="Center" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
                                 </StackPanel>
                                 <Separator/>
+                                
                                 <CheckBox Name="Node_CB_NonTextline" Content="Non vocal line" IsChecked="{Binding Path=SelectedDialogueNode.IsNonTextLine, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="15" VerticalAlignment="Center" ToolTip="Non-textline where only Matinee plays no vocals."/>
                                 <CheckBox Name="Node_CB_bAmbient" Content="Ambient line" IsChecked="{Binding Path=SelectedDialogueNode.IsAmbient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" ToolTip="Ambient line. Camera remains under player control."  FontSize="15"/>
                                 <CheckBox Name="Node_CB_BdyGesture" Content="Ignore Body Gestures" IsChecked="{Binding Path=SelectedDialogueNode.IgnoreBodyGesture, Mode=TwoWay}" ToolTip="Ignore non-facial matinee gestures." FontSize="15" VerticalAlignment="Center"/>
@@ -473,7 +486,7 @@
                                     <xctk:IntegerUpDown Name="Node_Text_CamInt" Value="{Binding Path=SelectedDialogueNode.CameraIntimacy}" HorizontalAlignment="Stretch" FontSize="12" Margin="2"/>
                                 </StackPanel>
                                 <DockPanel ToolTip="Links to event scripts that fire new sequences. ">
-                                    <TextBlock  Text="Script: " FontSize="15" DockPanel.Dock="Left"/>
+                                    <TextBlock  Text="Script: " VerticalAlignment="Center" FontSize="15" DockPanel.Dock="Left"/>
                                     <ComboBox Name="Node_Combo_ScriptIndex" MinWidth="80" ItemsSource="{Binding Path=SelectedConv.ScriptList}" SelectedItem="{Binding Path=SelectedDialogueNode.Script }" IsSynchronizedWithCurrentItem="False" VerticalAlignment="Center" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True" HorizontalAlignment="Stretch" Margin="2"/>
                                 </DockPanel>
                             </StackPanel>
@@ -545,7 +558,7 @@
                     </TabControl>
                 </Grid>
            <!-- Start List -->
-                <StackPanel Name="Start_Panel" DockPanel.Dock="Top"  Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                <StackPanel Name="Start_Panel" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                     <TextBlock Text="Starting Nodes"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Top" Padding="5"/>
                     <DockPanel LastChildFill="False">
                         <Grid Height="30" DockPanel.Dock="Top">
@@ -670,7 +683,6 @@
                     </ListBox.ContextMenu>
                 </ListBox>
             </DockPanel>
-            
 
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Grid.Column="0"/>
             <GridSplitter Grid.Row="0" Grid.RowSpan="3" Width="5" HorizontalAlignment="Stretch" Grid.Column="1"/>
