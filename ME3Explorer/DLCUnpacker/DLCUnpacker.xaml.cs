@@ -17,7 +17,6 @@
 */
 
 using ByteSizeLib;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using System;

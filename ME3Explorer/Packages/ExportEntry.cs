@@ -7,6 +7,7 @@ using System.Linq;
 using Gibbed.IO;
 using ME3Explorer.Unreal;
 using UsefulThings.WPF;
+using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
@@ -23,7 +24,9 @@ namespace ME3Explorer.Packages
             OriginalDataSize = 0;
         }
 
-        public bool HasStack => (ObjectFlags & (ulong) UnrealFlags.EObjectFlags.HasStack) != 0;
+        public bool HasStack => ObjectFlags.HasFlag(EObjectFlags.HasStack);
+
+        public bool IsDefaultObject => ObjectFlags.HasFlag(EObjectFlags.ClassDefaultObject);
 
         /// <summary>
         /// NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
@@ -110,8 +113,11 @@ namespace ME3Explorer.Packages
             get => BitConverter.ToInt32(Header, 16);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 16, sizeof(int));
-                HeaderChanged = true;
+                if (indexValue != value)
+                {
+                    Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 16, sizeof(int));
+                    HeaderChanged = true;
+                }
             }
         }
 
@@ -135,12 +141,12 @@ namespace ME3Explorer.Packages
             //}
         }
 
-        public ulong ObjectFlags
+        public EObjectFlags ObjectFlags
         {
-            get => BitConverter.ToUInt64(Header, 24);
+            get => (EObjectFlags)BitConverter.ToUInt64(Header, 24);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 24, sizeof(long));
+                Buffer.BlockCopy(BitConverter.GetBytes((ulong)value), 0, Header, 24, sizeof(ulong));
                 HeaderChanged = true;
             }
         }
@@ -213,6 +219,25 @@ namespace ME3Explorer.Packages
             }
         }
 
+        public string PackageNameInstanced
+        {
+            get
+            {
+                int val = idxLink;
+                if (val != 0)
+                {
+                    IEntry entry = FileRef.getEntry(val);
+                    string result =  FileRef.Names[entry.idxObjectName];
+                    if (entry.indexValue > 0)
+                    {
+                        return result + "_" + entry.indexValue; //Should be -1 for 4.1, will remain as-is for 4.0
+                    }
+                    return result;
+                }
+                else return "Package";
+            }
+        }
+
         public string PackageFullName
         {
             get
@@ -245,6 +270,41 @@ namespace ME3Explorer.Packages
         }
 
         public string GetIndexedFullPath => GetFullPath + "_" + indexValue;
+
+        public string PackageFullNameInstanced
+        {
+            get
+            {
+                string result = PackageNameInstanced;
+                int idxNewPackName = idxLink;
+
+                while (idxNewPackName != 0)
+                {
+                    IEntry e = FileRef.getEntry(idxNewPackName);
+                    string newPackageName = e.PackageNameInstanced;
+                    if (newPackageName != "Package")
+                        result = newPackageName + "." + result;
+                    idxNewPackName = FileRef.getEntry(idxNewPackName).idxLink;
+                }
+                return result;
+            }
+        }
+
+        public string GetInstancedFullPath
+        {
+            get
+            {
+                string s = "";
+                if (PackageFullNameInstanced != "Class" && PackageFullNameInstanced != "Package")
+                    s += PackageFullNameInstanced + ".";
+                s += ObjectName;
+                if (indexValue > 0)
+                {
+                    s += "_" + indexValue; // Should be -1, but will wait for 4.1 to correct this for consistency
+                }
+                return s;
+            }
+        }
 
         public bool HasParent => FileRef.isEntry(idxLink);
 
@@ -315,6 +375,7 @@ namespace ME3Explorer.Packages
                 //if (headerChanged != value)
                 //{
                 headerChanged = value;
+                EntryHasPendingChanges |= value;
                 //    if (value)
                 //    {
                 OnPropertyChanged();
@@ -370,7 +431,7 @@ namespace ME3Explorer.Packages
             MemoryStream stream = new MemoryStream(_data, false);
             stream.Seek(start, SeekOrigin.Current);
             IEntry parsingClass = this;
-            if (ObjectName.StartsWith("Default__"))
+            if (IsDefaultObject)
             {
                 parsingClass = FileRef.getEntry(idxClass); //class we are defaults of
             }
@@ -429,7 +490,7 @@ namespace ME3Explorer.Packages
         public int GetPropertyStart()
         {
             IMEPackage pcc = FileRef;
-            if ((ObjectFlags & (ulong) UnrealFlags.EObjectFlags.HasStack) != 0)
+            if (HasStack)
             {
                 if (pcc.Game != MEGame.ME3)
                 {
@@ -439,7 +500,7 @@ namespace ME3Explorer.Packages
                 return 30;
             }
 
-            //if (!ObjectName.StartsWith("Default__"))
+            //if (!IsDefaultObject)
             //{
             //    switch (ClassName)
             //    {
@@ -532,7 +593,7 @@ namespace ME3Explorer.Packages
             stream.Seek(DataOffset, SeekOrigin.Begin);
             _data = stream.ReadBytes(DataSize);
             stream.Seek(headerEnd, SeekOrigin.Begin);
-            if ((ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+            if (HasStack)
             {
                 ReadsFromConfig = (Data[25] & 64) != 0;
             }
@@ -587,7 +648,7 @@ namespace ME3Explorer.Packages
             stream.Seek(DataOffset, SeekOrigin.Begin);
             _data = stream.ReadBytes(DataSize);
             stream.Seek(headerEnd, SeekOrigin.Begin);
-            if ((ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+            if (HasStack)
             {
                 ReadsFromConfig = (Data[25] & 64) != 0;
             }
@@ -649,7 +710,7 @@ namespace ME3Explorer.Packages
             stream.Seek(DataOffset, SeekOrigin.Begin);
             _data = stream.ReadBytes(DataSize);
             stream.Seek(end, SeekOrigin.Begin);
-            if ((ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+            if (HasStack)
             {
                 ReadsFromConfig = (Data[25] & 64) != 0;
             }

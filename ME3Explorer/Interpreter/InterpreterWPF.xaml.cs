@@ -380,7 +380,7 @@ namespace ME3Explorer
                     case PropertyType.ByteProperty:
                         if (propInfo.IsEnumProp())
                         {
-                            newProperty = new EnumProperty(propInfo.reference, Pcc, propName);
+                            newProperty = new EnumProperty(propInfo.reference, Pcc.Game, propName);
                         }
                         else
                         {
@@ -663,6 +663,11 @@ namespace ME3Explorer
                         {
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
+                        if (ip.Name == "m_nStrRefID")
+                        {
+                            parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
+                        }
+
                         if (parent.Property is StructProperty property && property.StructType == "Rotator")
                         {
                             parsedValue = $"({ip.Value.ToDegrees():0.0######} degrees)";
@@ -840,7 +845,22 @@ namespace ME3Explorer
                             return $" (0x{value:X8})";
                     }
                     break;
+            }
 
+            if (name == "m_nStrRefID")
+            {
+                switch (export.FileRef.Game)
+                {
+                    case MEGame.ME3:
+                        return ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(value);
+                    case MEGame.ME2:
+                        return ME2Explorer.ME2TalkFiles.tlkList.Count == 0
+                            ? "(.tlk not loaded)"
+                            : ME2Explorer.ME2TalkFiles.findDataById(value);
+                    case MEGame.ME1:
+                        //Todo: Support local TLKs in this file.
+                        return ME1Explorer.ME1TalkFiles.findDataById(value);
+                }
             }
             return "";
         }
@@ -1299,6 +1319,9 @@ namespace ME3Explorer
                                 Interpreter_Hexbox.Highlight(np.StartOffset, np.ValueOffset + 8 - np.StartOffset);
                                 break;
                             }
+                        case StringRefProperty srefp:
+                            Interpreter_Hexbox.Highlight(srefp.StartOffset, srefp.GetLength(Pcc));
+                            break;
                         case NoneProperty nonep:
                             Interpreter_Hexbox.Highlight(nonep.StartOffset, 8);
                             break;
@@ -1554,6 +1577,7 @@ namespace ME3Explorer
         {
             if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null)
             {
+                string containingType = CurrentLoadedExport.ClassName;
                 ArrayPropertyBase propertyToAddItemTo;
                 int insertIndex;
                 if (tvi.Property is ArrayPropertyBase arrayProperty)
@@ -1561,12 +1585,20 @@ namespace ME3Explorer
                     propertyToAddItemTo = arrayProperty;
                     insertIndex = arrayProperty.Count;
                     ArrayElementJustAdded = true;
+                    if (tvi.Parent?.Property is StructProperty structProp)
+                    {
+                        containingType = structProp.StructType;
+                    }
                 }
                 else if (tvi.Parent?.Property is ArrayPropertyBase parentArray)
                 {
                     propertyToAddItemTo = parentArray;
                     insertIndex = tvi.Parent.ChildrenProperties.IndexOf(tvi);
                     ForcedRescanOffset = (int)tvi.Property.StartOffset;
+                    if (tvi.Parent.Parent?.Property is StructProperty structProp)
+                    {
+                        containingType = structProp.StructType;
+                    }
                 }
                 else
                 {
@@ -1584,9 +1616,9 @@ namespace ME3Explorer
                         break;
                     case ArrayProperty<EnumProperty> aep:
                         {
-                            PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, aep.Name, CurrentLoadedExport.ClassName);
+                            PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, aep.Name, containingType);
                             string typeName = p.reference;
-                            EnumProperty ep = new EnumProperty(typeName, Pcc);
+                            EnumProperty ep = new EnumProperty(typeName, Pcc.Game);
                             aep.Insert(insertIndex, ep);
                         }
                         break;
@@ -1617,7 +1649,7 @@ namespace ME3Explorer
                                 break;
                             }
 
-                            PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, CurrentLoadedExport.ClassName);
+                            PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, containingType);
                             if (p == null)
                             {
                                 //Attempt dynamic lookup
@@ -1639,7 +1671,7 @@ namespace ME3Explorer
                                         classInfo = ME3UnrealObjectInfo.generateClassInfo(exportToBuildFor);
                                         break;
                                 }
-                                p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, CurrentLoadedExport.ClassName, classInfo);
+                                p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, containingType, classInfo);
                             }
                             if (p != null)
                             {

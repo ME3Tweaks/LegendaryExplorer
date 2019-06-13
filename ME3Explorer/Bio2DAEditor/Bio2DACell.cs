@@ -14,7 +14,7 @@ namespace ME3Explorer
         public byte[] Data { get; set; }
         public int Offset { get; private set; }
         public IMEPackage Pcc { get; set; }
-        private bool _isModified = false;
+        private bool _isModified;
         public bool IsModified
         {
             get => _isModified;

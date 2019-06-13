@@ -1,6 +1,6 @@
 ﻿using ByteSizeLib;
 using FontAwesome.WPF;
-using KFreonLib.Debugging;
+using ME3Explorer.Debugging;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
@@ -620,7 +620,7 @@ namespace ME3Explorer.Soundplorer
                             IsFolderPicker = true
                         };
 
-                        if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+                        if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
                         {
                             return;
                         }
@@ -693,7 +693,7 @@ namespace ME3Explorer.Soundplorer
                 IsFolderPicker = true
             };
 
-            if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+            if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
             {
                 return;
             }
@@ -1157,7 +1157,7 @@ namespace ME3Explorer.Soundplorer
             string wwisePath = Soundpanel.GetWwiseCLIPath(false);
             if (wwisePath == null) return; //abort. getpath is not silent so it will show dialogs before this is reached.
             var dlg = new CommonOpenFileDialog("Select folder containing .wav files") { IsFolderPicker = true };
-            if (dlg.ShowDialog() != CommonFileDialogResult.Ok) { return; }
+            if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok) { return; }
 
             string[] filesToConvert = Directory.GetFiles(dlg.FileName, "*.wav");
             if (!filesToConvert.Any())
@@ -1187,7 +1187,7 @@ namespace ME3Explorer.Soundplorer
                 IsFolderPicker = true
             };
 
-            if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+            if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
             {
                 return;
             }

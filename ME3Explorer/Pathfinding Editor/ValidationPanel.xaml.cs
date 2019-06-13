@@ -339,7 +339,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 if (pieces.Length < 3 || pieces[0] != "TheWorld" || pieces[1] != "PersistentLevel")
                 {
-                    if ((exportEntry.ObjectFlags & (ulong) UnrealFlags.EObjectFlags.HasStack) != 0)
+                    if (exportEntry.HasStack)
                     {
                         if (exportEntry.NetIndex >= 0)
                         {
@@ -352,7 +352,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
 
                 int idOffset = 0;
-                if ((exportEntry.ObjectFlags & (ulong) UnrealFlags.EObjectFlags.HasStack) != 0)
+                if (exportEntry.HasStack)
                 {
                     byte[] exportData = exportEntry.Data;
                     int classId1 = BitConverter.ToInt32(exportData, 0);

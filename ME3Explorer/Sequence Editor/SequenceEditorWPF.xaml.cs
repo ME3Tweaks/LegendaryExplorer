@@ -29,7 +29,6 @@ using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using InterpEditor = ME3Explorer.Matinee.InterpEditor;
 using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
-using KFreonLib.MEDirectories;
 using MassEffect.NativesEditor.Views;
 
 namespace ME3Explorer.Sequence_Editor
@@ -343,6 +342,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 foreach (ObjectProperty seqObj in seqObjs)
                 {
+                    if (!pcc.isUExport(seqObj.Value)) continue;
                     IExportEntry exportEntry = pcc.getUExport(seqObj.Value);
                     if (exportEntry.ClassName == "Sequence" || exportEntry.ClassName.StartsWith("PrefabSequence"))
                     {
@@ -378,9 +378,9 @@ namespace ME3Explorer.Sequence_Editor
             SelectedSequence = seqExport;
             SetupJSON(SelectedSequence);
             var selectedExports = SelectedObjects.Select(o => o.Export).ToList();
+            Properties_InterpreterWPF.LoadExport(seqExport);
             if (fromFile)
             {
-                Properties_InterpreterWPF.LoadExport(seqExport);
                 if (File.Exists(JSONpath))
                 {
                     SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
@@ -497,7 +497,12 @@ namespace ME3Explorer.Sequence_Editor
             if (seqObjs != null)
             {
                 CurrentObjects.AddRange(seqObjs.OrderBy(prop => prop.Value)
-                    .Select(prop => LoadObject(Pcc.getUExport(prop.Value))));
+                                               .Where(prop => Pcc.isUExport(prop.Value))
+                                               .Select(prop => LoadObject(Pcc.getUExport(prop.Value))));
+                if (CurrentObjects.Count != seqObjs.Count)
+                {
+                    MessageBox.Show("Sequence contains invalid exports! Correct this by editing the SequenceObject array in the Interpreter");
+                }
             }
         }
 

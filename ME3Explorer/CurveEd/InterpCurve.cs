@@ -241,7 +241,7 @@ namespace ME3Explorer.CurveEd
                                 new FloatProperty(point.OutVal, "OutVal"),
                                 new FloatProperty(point.ArriveTangent, "ArriveTangent"),
                                 new FloatProperty(point.LeaveTangent, "LeaveTangent"),
-                                new EnumProperty(point.InterpMode.ToString(), "EInterpCurveMode", pcc, "InterpMode")
+                                new EnumProperty(point.InterpMode.ToString(), "EInterpCurveMode", pcc.Game, "InterpMode")
                             })
                         ).ToList(), ArrayType.Struct, "Points")
                     }, Name);
@@ -273,7 +273,7 @@ namespace ME3Explorer.CurveEd
                                 new FloatProperty(yNode.Value.LeaveTangent),
                                 new FloatProperty(zNode.Value.LeaveTangent)
                             }, "LeaveTangent", true),
-                            new EnumProperty(xNode.Value.InterpMode.ToString(), "EInterpCurveMode", pcc, "InterpMode")
+                            new EnumProperty(xNode.Value.InterpMode.ToString(), "EInterpCurveMode", pcc.Game, "InterpMode")
                         }));
                         xNode = xNode.Next;
                         yNode = yNode.Next;

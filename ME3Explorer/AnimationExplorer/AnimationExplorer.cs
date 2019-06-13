@@ -9,8 +9,6 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
-using KFreonLib.Debugging;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 
 namespace ME3Explorer.AnimationExplorer
@@ -88,13 +86,11 @@ namespace ME3Explorer.AnimationExplorer
                 {
                     using (ME3Package _pcc = MEPackageHandler.OpenME3Package(file))
                     {
-                        DebugOutput.PrintLn((count++) + "/" + files.Length + " : Scanning file " + Path.GetFileName(file) + " ...");
                         bool found = false;
                         IReadOnlyList<IExportEntry> Exports = _pcc.Exports;
                         foreach (IExportEntry ex in Exports)
                             if (ex.ClassName == "AnimTree" || ex.ClassName == "AnimSet")
                             {
-                                DebugOutput.PrintLn("Found Animation!");
                                 found = true;
                                 break;
                             }
@@ -104,8 +100,7 @@ namespace ME3Explorer.AnimationExplorer
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error:\n" + ex.Message);
-                    DebugOutput.PrintLn("Could not open " + Path.GetFileName(file));
+                    MessageBox.Show($"Error: Could not open {Path.GetFileName(file)}\n{ex.Message}");
                 }
             }
             RefreshLists();

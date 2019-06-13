@@ -44,9 +44,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="DDSImage.cs" />
     <Compile Include="LZO2Helper.cs" />
     <Compile Include="SevenZipHelper.cs" />

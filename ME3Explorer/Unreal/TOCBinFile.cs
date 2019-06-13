@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using KFreonLib.Debugging;
+using System.Windows;
 
 namespace ME3Explorer.Unreal
 {
@@ -37,7 +37,7 @@ namespace ME3Explorer.Unreal
             uint magic = (uint)ReadInt(Memory);
             if (magic != 0x3AB70C13)
             {
-                DebugOutput.PrintLn("Not a SFAR File.  DEBUG: in tocbin");
+                MessageBox.Show("Not a SFAR File.");
                 return;
             }
             Memory.Seek(8, 0);
@@ -103,15 +103,6 @@ namespace ME3Explorer.Unreal
                 Memory.Write(BitConverter.GetBytes(e.size), 0, 4);
             }
             return Memory;
-        }
-
-        public void DebugPrint()
-        {
-            int count = 0;
-            DebugOutput.PrintLn("Listing Files...(" + Entries.Count +")");
-            foreach (Entry e in Entries)
-                DebugOutput.PrintLn((count++) + " : " + e.name + " Size: " + DLCPackage.BytesToString(e.size), false);
-            //DebugOutput.Update();
         }
     }
 }

@@ -301,6 +301,11 @@ namespace ME3Explorer
         {
             return src.Where(obj => obj != null);
         }
+
+        public static string StringJoin<T>(this IEnumerable<T> values, string separator)
+        {
+            return string.Join(separator, values);
+        }
     }
 
     public static class DictionaryExtensions
@@ -322,6 +327,45 @@ namespace ME3Explorer
         {
             key = kvp.Key;
             value = kvp.Value;
+        }
+
+        public static bool ContainsKey<Tkey, TValue>(this List<KeyValuePair<Tkey, TValue>> list, Tkey key)
+        {
+            foreach (var kvp in list)
+            {
+                if (EqualityComparer<Tkey>.Default.Equals(kvp.Key, key))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool TryGetValue<Tkey, TValue>(this List<KeyValuePair<Tkey, TValue>> list, Tkey key, out TValue value)
+        {
+            foreach (var kvp in list)
+            {
+                if (EqualityComparer<Tkey>.Default.Equals(kvp.Key, key))
+                {
+                    value = kvp.Value;
+                    return true;
+                }
+            }
+            value = default;
+            return false;
+        }
+
+        public static void Add<Tkey, TValue>(this List<KeyValuePair<Tkey, TValue>> list, Tkey key, TValue value)
+        {
+            list.Add(new KeyValuePair<Tkey, TValue>(key, value));
+        }
+
+        public static IEnumerable<TValue> Values<Tkey, TValue>(this List<KeyValuePair<Tkey, TValue>> list)
+        {
+            foreach (var kvp in list)
+            {
+                yield return kvp.Value;
+            }
         }
     }
 
@@ -615,6 +659,11 @@ namespace ME3Explorer
                 output.Write(buffer, 0, read);
                 bytes -= read;
             }
+        }
+
+        public static NameReference ReadNameReference(this Stream stream, IMEPackage pcc)
+        {
+            return new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
         }
     }
 

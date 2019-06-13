@@ -333,12 +333,9 @@ namespace ME3Explorer.Matinee
 
         private void openInPCCEd_Click(object sender, EventArgs e)
         {
-            PackageEditor p = new PackageEditor();
-            //p.MdiParent = Form.MdiParent;
-            p.WindowState = FormWindowState.Maximized;
+            PackageEditorWPF p = new PackageEditorWPF();
             p.Show();
-            p.LoadFile(pcc.FileName);
-            p.goToNumber(index);
+            p.LoadFile(pcc.FileName, index + 1); //To UIndex
         }
 
         public virtual void ToTree()

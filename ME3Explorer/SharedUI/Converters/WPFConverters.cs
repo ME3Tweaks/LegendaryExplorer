@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 
 namespace ME3Explorer

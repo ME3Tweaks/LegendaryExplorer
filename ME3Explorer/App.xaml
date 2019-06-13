@@ -181,6 +181,7 @@
         <BitmapImage x:Key="iconMountEditor" UriSource="Resources/mounteditor_256x256.ico"/>
         <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/packageeditorwpf_256x256.ico"/>
         <BitmapImage x:Key="iconPackageEditorClassic" UriSource="Resources/packageeditorclassic_256x256.ico"/>
+        <BitmapImage x:Key="iconDialogueDumper" UriSource="Resources/dialoguedumper_256x256.ico"/>
         <BitmapImage x:Key="iconPackageDumper" UriSource="Resources/packagedumper_256x256.ico"/>
         <BitmapImage x:Key="iconPlotEditor" UriSource="Resources/ploteditor_256x256.ico"/>
         <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequenceeditor_256x256.ico"/>

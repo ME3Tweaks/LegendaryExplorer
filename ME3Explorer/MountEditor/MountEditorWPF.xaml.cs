@@ -97,7 +97,7 @@ namespace ME3Explorer.MountEditor
                 Title = "Select Mount.dlc file",
             };
             m.Filters.Add(new CommonFileDialogFilter("Mount files", ".dlc"));
-            if (m.ShowDialog() == CommonFileDialogResult.Ok)
+            if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 MountFile mf = new MountFile(m.FileName);
                 ME2CheckBox.IsChecked = mf.IsME2;

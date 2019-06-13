@@ -105,6 +105,25 @@ namespace ME3Explorer.Packages
             }
         }
 
+        public string PackageNameInstanced
+        {
+            get
+            {
+                int val = idxLink;
+                if (val != 0)
+                {
+                    IEntry entry = FileRef.getEntry(val);
+                    string result = FileRef.Names[entry.idxObjectName];
+                    if (entry.indexValue > 0)
+                    {
+                        return result + "_" + entry.indexValue; //Should be -1 for 4.1, will remain as-is for 4.0
+                    }
+                    return result;
+                }
+                else return "Package";
+            }
+        }
+
         public string PackageFullName
         {
             get
@@ -139,6 +158,42 @@ namespace ME3Explorer.Packages
             get
             {
                 return GetFullPath + "_" + indexValue;
+            }
+        }
+
+        public string PackageFullNameInstanced
+        {
+            get
+            {
+                string result = PackageName;
+                int idxNewPackName = idxLink;
+
+                while (idxNewPackName != 0)
+                {
+                    IEntry e = FileRef.getEntry(idxNewPackName);
+                    string newPackageName = e.PackageName;
+                    if (e.indexValue > 0)
+                    {
+                        newPackageName += "_" + e.indexValue;
+                    }
+                    if (newPackageName != "Package")
+                        result = newPackageName + "." + result;
+                    idxNewPackName = FileRef.getEntry(idxNewPackName).idxLink;
+                }
+                return result;
+            }
+        }
+
+        public string GetInstancedFullPath
+        {
+            get
+            {
+                string s = "";
+                if (PackageFullNameInstanced != "Class" && PackageFullNameInstanced != "Package")
+                    s += PackageFullNameInstanced + ".";
+                s += ObjectName;
+                s += "_" + indexValue;
+                return s;
             }
         }
 

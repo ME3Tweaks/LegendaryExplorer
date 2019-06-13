@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME1Explorer.Unreal.Classes;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer;
 using TalkFile = ME1Explorer.Unreal.Classes.TalkFile;

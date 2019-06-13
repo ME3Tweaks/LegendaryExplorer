@@ -57,6 +57,8 @@ namespace ME3Explorer.MetadataEditor
         private DynamicByteProvider headerByteProvider;
         private bool loadingNewData;
 
+        public string ObjectIndexOffsetText => CurrentLoadedEntry is ImportEntry ? "0x18 Object index:" : "0x10 Object index:";
+
         public MetadataEditorWPF()
         {
             DataContext = this;
@@ -100,10 +102,7 @@ namespace ME3Explorer.MetadataEditor
             }
         }
 
-        public override bool CanParse(IExportEntry exportEntry)
-        {
-            return true;
-        }
+        public override bool CanParse(IExportEntry exportEntry) => true;
 
         public void RefreshAllEntriesList(IMEPackage pcc)
         {
@@ -162,24 +161,12 @@ namespace ME3Explorer.MetadataEditor
 
                 LoadAllEntriesBindedItems(exportEntry);
 
-                InfoTab_Headersize_TextBox.Text = exportEntry.Header.Length + " bytes";
+                InfoTab_Headersize_TextBox.Text = $"{exportEntry.Header.Length} bytes";
                 InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(exportEntry.Header, HEADER_OFFSET_EXP_IDXOBJECTNAME + 4).ToString();
 
                 var flagsList = Enums.GetValues<EObjectFlags>().Distinct().ToList();
                 //Don't even get me started on how dumb it is that SelectedItems is read only...
-                string selectedFlags = "";
-                foreach (EObjectFlags flag in flagsList)
-                {
-                    bool selected = (exportEntry.ObjectFlags & (ulong)flag) != 0;
-                    if (selected)
-                    {
-                        if (selectedFlags != "")
-                        {
-                            selectedFlags += " ";
-                        }
-                        selectedFlags += flag;
-                    }
-                }
+                string selectedFlags = flagsList.Where(flag => exportEntry.ObjectFlags.HasFlag(flag)).StringJoin(" ");
 
                 InfoTab_Flags_ComboBox.ItemsSource = flagsList;
                 InfoTab_Flags_ComboBox.SelectedValue = selectedFlags;
@@ -219,6 +206,7 @@ namespace ME3Explorer.MetadataEditor
             headerByteProvider.ReplaceBytes(CurrentLoadedEntry.Header);
             HexChanged = false;
             Header_Hexbox.Refresh();
+            OnPropertyChanged(nameof(ObjectIndexOffsetText));
             loadingNewData = false;
         }
 
@@ -267,7 +255,6 @@ namespace ME3Explorer.MetadataEditor
                 else
                 {
                     InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
-                    Debug.WriteLine($"SelectedIndex: {InfoTab_Archetype_ComboBox.SelectedIndex}");
                 }
             }
             else if (entry is ImportEntry importEntry)
@@ -314,7 +301,7 @@ namespace ME3Explorer.MetadataEditor
             headerByteProvider.ReplaceBytes(CurrentLoadedEntry.Header);
             Header_Hexbox.Refresh();
             HexChanged = false;
-
+            OnPropertyChanged(nameof(ObjectIndexOffsetText));
             loadingNewData = false;
         }
 
@@ -572,12 +559,12 @@ namespace ME3Explorer.MetadataEditor
         {
             if (!loadingNewData)
             {
-                EPropertyFlags newFlags = 0U;
+                EObjectFlags newFlags = 0U;
                 foreach (var flag in InfoTab_Flags_ComboBox.Items)
                 {
-                    if (InfoTab_Flags_ComboBox.ItemContainerGenerator.ContainerFromItem(flag) is SelectorItem selectorItem && selectorItem.IsSelected != true)
+                    if (InfoTab_Flags_ComboBox.ItemContainerGenerator.ContainerFromItem(flag) is SelectorItem selectorItem && selectorItem.IsSelected == true)
                     {
-                        newFlags |= (EPropertyFlags)flag;
+                        newFlags |= (EObjectFlags)flag;
                     }
                 }
                 //Debug.WriteLine(newFlags);

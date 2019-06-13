@@ -58,10 +58,10 @@ namespace ME3Explorer.Unreal.Classes
                 BoneColor = boneColor;
             }
 
-            public static BoneStruct ImportFromUDK(UDKExplorer.UDK.Classes.SkeletalMesh.BoneStruct udkBone, UDKExplorer.UDK.UDKObject udkPackage, ME3Explorer.Packages.MEPackage mePackage)
+            public static BoneStruct ImportFromUDK(UDKExplorer.UDK.Classes.SkeletalMesh.BoneStruct udkBone, UDKPackage udkPackage, ME3Explorer.Packages.MEPackage mePackage)
             {
                 BoneStruct result = new BoneStruct(0, udkBone.Flags, udkBone.Unk1, udkBone.Orientation, udkBone.Position, udkBone.NumChildren, udkBone.Parent, udkBone.BoneColor);
-                string name = udkPackage.GetName(udkBone.Name);
+                string name = udkPackage.getNameEntry(udkBone.Name);
                 result.Name = mePackage.FindNameOrAdd(name);
                 return result;
             }
@@ -659,7 +659,7 @@ namespace ME3Explorer.Unreal.Classes
             Loaded = true;
             MyIndex = export.Index;
             Owner = export.FileRef;
-            Flags = (int)(export.ObjectFlags >> 32);
+            Flags = (int)((ulong)export.ObjectFlags >> 32);
             int start = GetPropertyEnd();
             byte[] data = export.Data;
             byte[] buff = new byte[data.Length - start];

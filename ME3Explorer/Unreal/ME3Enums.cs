@@ -1,4 +1,4 @@
-namespace Unreal.ME3Enums
+namespace ME3Explorer.Unreal.ME3Enums
 {
     public enum EPickupObjectEvent
     {
