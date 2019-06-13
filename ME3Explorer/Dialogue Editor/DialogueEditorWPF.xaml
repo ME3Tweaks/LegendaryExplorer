@@ -5,7 +5,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:unreal="clr-namespace:ME3Explorer.Unreal"
         xmlns:local="clr-namespace:ME3Explorer.Dialogue_Editor"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
@@ -54,7 +53,7 @@
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}"/>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
-        <KeyBinding Key="G" Modifiers="Control" Command="{Binding GotoCommand}"/>
+        <KeyBinding Key="G" Modifiers="Control" Command="{Binding GoToCommand}"/>
     </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Stretch">
@@ -144,7 +143,7 @@
                 <MenuItem Name="GlobalSeqRefViewSavesMenuItem" Header="Use Global View Saves" IsCheckable="True" Click="GlobalSeqRefViewSavesMenuItem_OnClick"/>
                 <MenuItem Header="Re-Run Auto Layout" Command="{Binding AutoLayoutCommand}" InputGestureText="Ctrl+L" ToolTip="Attempt to layout sequence objects in a comprehensible fashion"/>
             </MenuItem>
-            <ComboBox Name="GotoBox" Text="Go to:" ItemsSource="{Binding CurrentObjects}" DisplayMemberPath="ListName" IsEditable="True" SelectionChanged="GotoBox_SelectionChanged" ToolTip="Pick a Node to go to" IsEnabled="true" Width="260" HorizontalAlignment="Stretch" Visibility="{Binding SelectedConv, Converter={StaticResource NullVisibilityConverter}}"/>
+            <ComboBox Name="GotoBox" Text="Go to: (Ctrl+G)" ItemsSource="{Binding CurrentObjects}" DisplayMemberPath="ListName" IsEditable="True" SelectionChanged="GotoBox_SelectionChanged" ToolTip="Pick a Node to go to" IsEnabled="true" Width="260" HorizontalAlignment="Stretch" Visibility="{Binding SelectedConv, Converter={StaticResource NullVisibilityConverter}}"/>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
             <SharedUI:StatusBarGameIDIndicator Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
@@ -174,7 +173,7 @@
             </Grid.ColumnDefinitions>
 <!-- Right side panel - Convo/Speakers/Nodes -->
             <DockPanel Name="RightSide_Dock" LastChildFill="True" Grid.Column="2" Grid.RowSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
-                <!--Stage Directions ME3 -->
+           <!--Stage Directions ME3 -->
                 <Expander Name="StageDirections_Expander" ExpandDirection="Up" IsExpanded="False" Background="Orange" Padding="2" Panel.ZIndex="250" DockPanel.Dock="Bottom" Visibility="Collapsed">
                     <Expander.Header>
                         <TextBlock Text="Stage Directions" VerticalAlignment="Center" Margin="0,0,4,0"/>
@@ -208,7 +207,7 @@
                         </ListBox>
                     </DockPanel>
                 </Expander>
-                <!--Convo Panel-->
+           <!--Convo Panel-->
                 <StackPanel Name="Convo_Panel" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="3" Visibility="Collapsed">
                     <TextBlock  Name="ConvoDet_Header" Text="Conversation Details"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Top"/>
                     <DockPanel HorizontalAlignment="Stretch">
@@ -460,7 +459,7 @@
                                             <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
                                     </Button>
-                                    <Button Name="OpenLineIE_Button"  CommandParameter="InterpEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line in interpeditor" IsEnabled="False"  >
+                                    <Button Name="OpenLineIE_Button" Command="{Binding OpenInCommand_Line}" CommandParameter="InterpEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line in interpeditor" IsEnabled="True"  >
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="AreaChart" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
@@ -715,6 +714,10 @@
                              <LineBreak/>
                                 -  Drag and drop connections to see the path in the conversation.
                              <LineBreak/>
+                                -  You can quickly find a line using the goto box (Ctrl + G).
+                             <LineBreak/>
+                                -  All the colors and default layout can be set via the View options menu.
+                             <LineBreak/>
                     </TextBlock>
                 </StackPanel>
                 <Grid HorizontalAlignment="Center" Margin="20,0,20,15" Grid.Column="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
@@ -743,7 +746,7 @@
                     <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
                     <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
                 </Grid>
-<!-- Conversation Box-->
+                <!-- Conversation Box-->
                 <ListBox Name="Conversations_ListBox" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Conversations}" SelectionChanged="ConversationList_SelectedItemChanged" MouseLeftButtonUp="ListBox_MouseLeftButtonUp" HorizontalContentAlignment="Stretch"
                              Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                     <ListBox.ItemTemplate>
@@ -787,7 +790,7 @@
                     </ListBox.ContextMenu>
                 </ListBox>
                 <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"/>
-<!--Tab Control -->
+                <!--Tab Control -->
                 <TabControl TabStripPlacement="Left"  Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}">
                     <TabControl.Resources>
                         <Style TargetType="{x:Type TabItem}">

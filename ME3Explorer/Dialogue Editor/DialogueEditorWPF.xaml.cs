@@ -153,6 +153,7 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand SaveAsCommand { get; set; }
         public ICommand SaveImageCommand { get; set; }
         public ICommand SaveViewCommand { get; set; }
+        public ICommand GoToCommand { get; set; }
         public ICommand AutoLayoutCommand { get; set; }
         public ICommand LoadTLKManagerCommand { get; set; }
         public ICommand OpenInCommand { get; set; }
@@ -356,6 +357,7 @@ namespace ME3Explorer.Dialogue_Editor
             SaveViewCommand = new GenericCommand(() => saveView(), CurrentObjects.Any);
             SaveImageCommand = new GenericCommand(SaveImage, CurrentObjects.Any);
             AutoLayoutCommand = new GenericCommand(AutoLayout, CurrentObjects.Any);
+            GoToCommand = new GenericCommand(GoToBoxOpen);
             LoadTLKManagerCommand = new GenericCommand(LoadTLKManager);
             OpenInCommand = new RelayCommand(OpenInAction);
             OpenInCommand_FFXNS = new RelayCommand(OpenInAction, HasFFXNS);
@@ -381,6 +383,7 @@ namespace ME3Explorer.Dialogue_Editor
             TestPathsCommand = new GenericCommand(TestPaths);
             DefaultColorsCommand = new GenericCommand(ResetColorsToDefault);
         }
+
 
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
@@ -3478,33 +3481,25 @@ namespace ME3Explorer.Dialogue_Editor
                 MessageBox.Show("No looping paths in the conversation.", "Dialogue Editor");
             }
         }
-
-        private void OpenInInterpViewer_Clicked(object sender, RoutedEventArgs e)
+        //TEMPORARY UNTIL NEW BUILD
+        private void OpenInInterpViewer_Clicked(IExportEntry exportEntry)
         {
-            if (Pcc.Game != MEGame.ME3)
+
+            var p = new InterpEditor();
+            p.Show();
+            p.LoadPCC(Pcc.FileName);
+            if (exportEntry.ObjectName == "InterpData")
             {
-                MessageBox.Show("InterpViewer does not support ME1 or ME2 yet.", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(exportEntry.Index);
+                p.loadInterpData(exportEntry.Index);
+            }
+            else
+            {
+                ////int i = ((DiagNode)obj).Varlinks[0].Links[0] - 1; //0-based index because Interp Viewer is old
+                //p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(i);
+                //p.loadInterpData(i);
             }
 
-            if (Conversations_ListBox.SelectedItem is DObj obj)
-            {
-                var p = new InterpEditor();
-                p.Show();
-                p.LoadPCC(Pcc.FileName);
-                IExportEntry exportEntry = obj.Export;
-                if (exportEntry.ObjectName == "InterpData")
-                {
-                    p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(exportEntry.Index);
-                    p.loadInterpData(exportEntry.Index);
-                }
-                else
-                {
-                    ////int i = ((DiagNode)obj).Varlinks[0].Links[0] - 1; //0-based index because Interp Viewer is old
-                    //p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(i);
-                    //p.loadInterpData(i);
-                }
-            }
         }
 
 
@@ -3584,6 +3579,12 @@ namespace ME3Explorer.Dialogue_Editor
                     if (SelectedDialogueNode.WwiseStream_Female != null)
                     {
                         OpenInToolkit("SoundplorerWPF", SelectedDialogueNode.WwiseStream_Female.UIndex);
+                    }
+                    break;
+                case "InterpEdLine":
+                    if (SelectedDialogueNode.Interpdata != null)
+                    {
+                        OpenInInterpViewer_Clicked(SelectedDialogueNode.Interpdata);
                     }
                     break;
                 default:
@@ -3687,6 +3688,19 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
+        private void GoToBoxOpen()
+        {
+            if(!GotoBox.IsDropDownOpen)
+            {
+                GotoBox.IsDropDownOpen = true;
+                Keyboard.Focus(GotoBox);
+            }
+            else
+            {
+                GotoBox.IsDropDownOpen = false;
+            }
+            
+        }
         private void LoadTLKManager()
         {
             if (!Application.Current.Windows.OfType<TlkManagerNS.TLKManagerWPF>().Any())
