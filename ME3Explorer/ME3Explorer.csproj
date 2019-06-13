@@ -265,6 +265,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Dialogue Editor\DialogueEditorWPF.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="DLCUnpacker\DLCUnpacker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
