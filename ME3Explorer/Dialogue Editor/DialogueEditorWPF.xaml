@@ -500,7 +500,7 @@
                                 <StackPanel>
                                     <TextBlock Text="Male:" FontSize="12"/>
                                     <DockPanel HorizontalAlignment="Stretch">
-                                        <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
+                                        <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Male audio for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
                                         <Button Name="Open_WwStreamM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_StreamM" ToolTip="Open in Soundplorer">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
@@ -509,20 +509,20 @@
                                         <TextBlock Text="{Binding Path=SelectedDialogueNode.WwiseStream_Male.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
                                     </DockPanel>
                                     <DockPanel HorizontalAlignment="Stretch">
-                                        <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
+                                        <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Male facial animations for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
                                         <Button Name="Open_ffxM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXLineM" ToolTip="Open this line in FaceFX Editor">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
                                             </Button.Content>
                                         </Button>
-                                        <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Male, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
+                                        <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Male, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male facial animations for this line." FontSize="15" Margin="2"/>
                                     </DockPanel>
                                 </StackPanel>
                                 <Separator/>
                                 <StackPanel>
                                     <TextBlock Text="Female:" FontSize="12"/>
                                     <DockPanel HorizontalAlignment="Stretch">
-                                        <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
+                                        <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Female audio for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
                                         <Button Name="Open_WwStreamF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_StreamF" ToolTip="Open this stream in Soundplorer">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
@@ -531,13 +531,13 @@
                                         <TextBlock Text="{Binding Path=SelectedDialogueNode.WwiseStream_Female.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Female audio for this line." FontSize="15" Margin="2"/>
                                     </DockPanel>
                                     <DockPanel HorizontalAlignment="Stretch">
-                                        <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
+                                        <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Female facial animations for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
                                         <Button Name="Open_ffxF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXLineF" ToolTip="Open this line in FaceFX Editor">
                                             <Button.Content>
                                                 <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
                                             </Button.Content>
                                         </Button>
-                                        <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Female, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Female audio for this line." FontSize="15" Margin="2"/>
+                                        <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Female, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Female facial animations for this line." FontSize="15" Margin="2"/>
                                     </DockPanel>
                                 </StackPanel>
                             </StackPanel>

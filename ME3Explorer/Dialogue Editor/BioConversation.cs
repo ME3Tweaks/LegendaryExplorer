@@ -378,6 +378,7 @@ namespace ME3Explorer.Dialogue_Editor
             GUI_STYLE_PLAYER_ALERT,
             GUI_STYLE_ILLEGAL,
             //GUI_STYLE_MAX,
+            None
         }
         public enum EReplyTypes
         {
@@ -385,6 +386,7 @@ namespace ME3Explorer.Dialogue_Editor
             REPLY_AUTOCONTINUE,
             REPLY_DIALOGEND,
             //REPLY_MAX
+            None
         }
         public enum EReplyCategory
         {
@@ -397,6 +399,7 @@ namespace ME3Explorer.Dialogue_Editor
             REPLY_CATEGORY_RENEGADE_INTERRUPT,
             REPLY_CATEGORY_PARAGON_INTERRUPT,
             //REPLY_CATEGORY_MAX,
+            None
         }
         #endregion Convo
     }
@@ -1339,7 +1342,7 @@ namespace ME3Explorer.Dialogue_Editor
             newProps.Add(new IntProperty(endNode - 1000, new NameReference("nIndex")));
             newProps.Add(new StringRefProperty(0, new NameReference("srParaphrase")));
             newProps.Add(new StrProperty("", new NameReference("sParaphrase")));
-            newProps.Add(new EnumProperty(new NameReference("REPLY_CATEGORY_DEFAULT"), new NameReference("EReplyCategory"), Editor.Pcc, new NameReference("Category")));
+            newProps.Add(new EnumProperty(new NameReference("REPLY_CATEGORY_DEFAULT"), new NameReference("EReplyCategory"), Editor.Pcc.Game, new NameReference("Category")));
             newProps.Add(new NoneProperty());
 
             var newstruct = new StructProperty("BioDialogReplyListDetails", newProps);

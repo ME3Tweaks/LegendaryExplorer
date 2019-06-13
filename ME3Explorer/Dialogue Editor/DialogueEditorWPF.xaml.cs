@@ -1,5 +1,4 @@
 ﻿using Gammtek.Conduit.Extensions.Collections.Generic;
-using KFreonLib.MEDirectories;
 using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Sequence_Editor;
@@ -1680,7 +1679,7 @@ namespace ME3Explorer.Dialogue_Editor
                     prop.Properties.AddOrReplaceProp(nScriptIndex);
                     break;
                 case "GUIStyle":
-                    var EConvGUIStyles = new EnumProperty(node.GUIStyle.ToString(), new NameReference("EConvGUIStyles"), Pcc, new NameReference("eGUIStyle"));
+                    var EConvGUIStyles = new EnumProperty(new NameReference(node.GUIStyle.ToString()), new NameReference("EConvGUIStyles"), Pcc.Game, new NameReference("eGUIStyle"));
                     prop.Properties.AddOrReplaceProp(EConvGUIStyles);
                     break;
                 default:
@@ -1711,7 +1710,7 @@ namespace ME3Explorer.Dialogue_Editor
                 prop.Properties.AddOrReplaceProp(bUnskippable);
                 if (e.PropertyName == "ReplyType")
                 {
-                    var ReplyType = new EnumProperty(node.ReplyType.ToString(), new NameReference("EReplyTypes"), Pcc, new NameReference("ReplyType"));
+                    var ReplyType = new EnumProperty(node.ReplyType.ToString(), new NameReference("EReplyTypes"), Pcc.Game, new NameReference("ReplyType"));
                     prop.Properties.AddOrReplaceProp(ReplyType);
                     needsRefresh = true;
                 }
@@ -1901,7 +1900,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             graphEditor.Camera.X = 0;
             graphEditor.Camera.Y = 0;
-            //if (SavedPositions.IsEmpty() && Pcc.Game != MEGame.ME1)
+            //if (SavedPositions.IsEmpty())
             //{
             //    {
             //        AutoLayout();
@@ -1953,7 +1952,7 @@ namespace ME3Explorer.Dialogue_Editor
                     obj.CreateConnections(CurrentObjects);
                 }
 
-                Boolean lastwasreply = true;
+                bool lastwasreply = true;
                 float f = 3;
                 for (int i = 0; i < CurrentObjects.Count; i++)
                 {
@@ -1977,9 +1976,7 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                     else
                     {
-
                         //SIMPLE LAYOUT THIS ONLY WORKS WHEN THERE ARE ENTRY NODES AND REPLY NODES MATCHED.
-
                         switch (obj)
                         {
                             case DStart _:
@@ -2000,28 +1997,7 @@ namespace ME3Explorer.Dialogue_Editor
                                 break;
                         }
                     }
-
-                        //SIMPLE LAYOUT
-                        //switch (obj)
-                        //{
-                        //    case DStart _:
-                        //        DStart dstart = obj as DStart;
-                        //        float ystart = (dstart.StartNumber * 127);
-                        //        obj.Layout(0, ystart);
-                        //        //StartPoDStarts += obj.Height + 20;
-                        //        break;
-                        //    case DiagNodeReply _:
-                        //        obj.Layout(500, StartPoDReplyNodes);
-                        //        StartPoDReplyNodes += obj.Height + 25;
-                        //        break;
-                        //    case DiagNode _:
-                        //        obj.Layout(250, StartPoDiagNodes);
-                        //        StartPoDiagNodes += obj.Height + 25;
-                        //        break;
-
-                        //}
-                        //    }
-                    }
+                }
 
                 foreach (DiagEdEdge edge in graphEditor.edgeLayer)
                 {
@@ -2032,6 +2008,28 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void AutoLayout()
         {
+
+            //SIMPLE LAYOUT
+            //switch (obj)
+            //{
+            //    case DStart _:
+            //        DStart dstart = obj as DStart;
+            //        float ystart = (dstart.StartNumber * 127);
+            //        obj.Layout(0, ystart);
+            //        //StartPoDStarts += obj.Height + 20;
+            //        break;
+            //    case DiagNodeReply _:
+            //        obj.Layout(500, StartPoDReplyNodes);
+            //        StartPoDReplyNodes += obj.Height + 25;
+            //        break;
+            //    case DiagNode _:
+            //        obj.Layout(250, StartPoDiagNodes);
+            //        StartPoDiagNodes += obj.Height + 25;
+            //        break;
+
+            //}
+            //    }
+
             //foreach (DObj obj in CurrentObjects)
             //{
             //    obj.SetOffset(0, 0); //remove existing positioning
@@ -2158,7 +2156,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         #endregion CreateGraph  
 
-        #region UIHandling-boxes
+        #region UIHandling-items
         /// <summary>
         /// Sets UI to 0 = Convo (default), 1=Speakers, 2=Node.
         /// </summary>
@@ -2814,10 +2812,16 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 PropertyCollection newprop = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, "BioDialogReplyNode", true);
                 var props = SelectedConv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");
-                if(props == null)
+                if (props == null)
                 {
-                    props = new ArrayProperty<StructProperty>(ArrayType.Struct,"m_ReplyList");
+                    props = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_ReplyList");
                 }
+                var EConvGUIStyles = new EnumProperty(new NameReference("GUI_STYLE_NONE"), new NameReference("EConvGUIStyles"), Pcc.Game, new NameReference("eGUIStyle"));//THESE SHOULD NOT BE NEEDED
+                newprop.AddOrReplaceProp(EConvGUIStyles);
+                var rtype = new EnumProperty(new NameReference("REPLY_STANDARD"), new NameReference("EReplyTypes"), Pcc.Game, new NameReference("ReplyType"));
+                newprop.AddOrReplaceProp(rtype);
+                var nScriptIndex = new IntProperty(-1, new NameReference("nScriptIndex"));
+                newprop.AddOrReplaceProp(nScriptIndex);
                 props.Add(new StructProperty("BioDialogReplyNode", newprop));
                 SelectedConv.BioConvo.AddOrReplaceProp(props);
                 PushConvoToFile(SelectedConv);
@@ -2832,6 +2836,10 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     props = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_EntryList");
                 }
+                var EConvGUIStyles = new EnumProperty(new NameReference("GUI_STYLE_NONE"), new NameReference("EConvGUIStyles"), Pcc.Game, new NameReference("eGUIStyle"));  //THESE SHOULD NOT BE NEEDED
+                newprop.AddOrReplaceProp(EConvGUIStyles);
+                var nScriptIndex = new IntProperty(-1, new NameReference("nScriptIndex"));
+                newprop.AddOrReplaceProp(nScriptIndex);
                 props.Add(new StructProperty("BioDialogEntryNode", newprop));
                 SelectedConv.BioConvo.AddOrReplaceProp(props);
                 PushConvoToFile(SelectedConv);
@@ -2852,11 +2860,13 @@ namespace ME3Explorer.Dialogue_Editor
                     p = await CheckProcess(NoUIRefresh, 100);
                 }
                 panToSelection = false;
+                graphEditor.Enabled = false;
+                graphEditor.UseWaitCursor = true;
                 GenerateGraph();
                 DiagNode node = DialogueNode_SelectByIndex(newIndex, true);
-                node.Visible = false;
                 DialogueNode_DeleteLinks(node);
-                node.Visible = true;
+                graphEditor.Enabled = true;
+                graphEditor.UseWaitCursor = false;
                 graphEditor.Camera.AnimateViewToCenterBounds(node.GlobalFullBounds, false, 1000);
                 graphEditor.Refresh();
                 return;
