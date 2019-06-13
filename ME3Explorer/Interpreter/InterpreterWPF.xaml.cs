@@ -380,7 +380,7 @@ namespace ME3Explorer
                     case PropertyType.ByteProperty:
                         if (propInfo.IsEnumProp())
                         {
-                            newProperty = new EnumProperty(propInfo.reference, Pcc, propName);
+                            newProperty = new EnumProperty(propInfo.reference, Pcc.Game, propName);
                         }
                         else
                         {
@@ -1577,6 +1577,7 @@ namespace ME3Explorer
         {
             if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null)
             {
+                string containingType = CurrentLoadedExport.ClassName;
                 ArrayPropertyBase propertyToAddItemTo;
                 int insertIndex;
                 if (tvi.Property is ArrayPropertyBase arrayProperty)
@@ -1584,12 +1585,20 @@ namespace ME3Explorer
                     propertyToAddItemTo = arrayProperty;
                     insertIndex = arrayProperty.Count;
                     ArrayElementJustAdded = true;
+                    if (tvi.Parent?.Property is StructProperty structProp)
+                    {
+                        containingType = structProp.StructType;
+                    }
                 }
                 else if (tvi.Parent?.Property is ArrayPropertyBase parentArray)
                 {
                     propertyToAddItemTo = parentArray;
                     insertIndex = tvi.Parent.ChildrenProperties.IndexOf(tvi);
                     ForcedRescanOffset = (int)tvi.Property.StartOffset;
+                    if (tvi.Parent.Parent?.Property is StructProperty structProp)
+                    {
+                        containingType = structProp.StructType;
+                    }
                 }
                 else
                 {
@@ -1607,9 +1616,9 @@ namespace ME3Explorer
                         break;
                     case ArrayProperty<EnumProperty> aep:
                         {
-                            PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, aep.Name, CurrentLoadedExport.ClassName);
+                            PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, aep.Name, containingType);
                             string typeName = p.reference;
-                            EnumProperty ep = new EnumProperty(typeName, Pcc);
+                            EnumProperty ep = new EnumProperty(typeName, Pcc.Game);
                             aep.Insert(insertIndex, ep);
                         }
                         break;
@@ -1640,7 +1649,7 @@ namespace ME3Explorer
                                 break;
                             }
 
-                            PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, CurrentLoadedExport.ClassName);
+                            PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, containingType);
                             if (p == null)
                             {
                                 //Attempt dynamic lookup
@@ -1662,7 +1671,7 @@ namespace ME3Explorer
                                         classInfo = ME3UnrealObjectInfo.generateClassInfo(exportToBuildFor);
                                         break;
                                 }
-                                p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, CurrentLoadedExport.ClassName, classInfo);
+                                p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, containingType, classInfo);
                             }
                             if (p != null)
                             {

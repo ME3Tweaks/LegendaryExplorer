@@ -233,14 +233,14 @@ namespace ME3Explorer.Unreal
             if (infoExists) //|| (temp = !inStruct ? Structs : Classes).ContainsKey(className))
             {
                 //look in class properties
-                if (info.properties.ContainsKey(propName))
+                if (info.properties.TryGetValue(propName, out var propInfo))
                 {
-                    return info.properties[propName];
+                    return propInfo;
                 }
                 //look in structs
                 else
                 {
-                    foreach (PropertyInfo p in info.properties.Values)
+                    foreach (PropertyInfo p in info.properties.Values())
                     {
                         if ((p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty) && reSearch)
                         {
@@ -280,166 +280,6 @@ namespace ME3Explorer.Unreal
             //}
             return null;
         }
-
-        /*
-        public static byte[] getDefaultClassValue(ME3Package pcc, string className, bool fullProps = false)
-        {
-            if (Structs.ContainsKey(className))
-            {
-                bool immutable = UnrealObjectInfo.isImmutable(className, MEGame.ME3);
-                ClassInfo info = Structs[className];
-                try
-                {
-                    string filepath = (Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
-                    if (File.Exists(info.pccPath))
-                    {
-                        filepath = info.pccPath; //Used for dynamic lookup
-                    }
-                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(filepath))
-                    {
-                        byte[] buff;
-                        //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
-                        //thus, I have hardcoded what those default values should be 
-                        if (className == "Plane")
-                        {
-                            buff = PlaneDefault;
-                        }
-                        else if (className == "CoverReference")
-                        {
-                            buff = CoverReferenceDefault;
-                        }
-                        else
-                        {
-                            buff = importPCC.Exports[info.exportIndex].Data.Skip(0x24).ToArray();
-                        }
-                        List<PropertyReader.Property> Props = PropertyReader.ReadProp(importPCC, buff, 0);
-                        MemoryStream m = new MemoryStream();
-                        foreach (PropertyReader.Property p in Props)
-                        {
-                            string propName = importPCC.getNameEntry(p.Name);
-                            //check if property is transient, if so, skip (neither of the structs that inherit have transient props)
-                            if (info.properties.ContainsKey(propName) || propName == "None" || info.baseClass != "Class")
-                            {
-                                if (immutable && !fullProps)
-                                {
-                                    PropertyReader.ImportImmutableProperty(pcc, importPCC, p, className, m, true);
-                                }
-                                else
-                                {
-                                    PropertyReader.ImportProperty(pcc, importPCC, p, className, m, true);
-                                }
-                            }
-                        }
-                        return m.ToArray();
-                    }
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            }
-            else if (Classes.ContainsKey(className))
-            {
-                ClassInfo info = Structs[className];
-                try
-                {
-                    string filepath = (Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
-                    if (File.Exists(info.pccPath))
-                    {
-                        filepath = info.pccPath; //Used for dynamic lookup
-                    }
-                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(filepath))
-                    {
-                        IExportEntry entry = pcc.Exports[info.exportIndex + 1];
-                        List<PropertyReader.Property> Props = PropertyReader.getPropList(entry);
-                        MemoryStream m = new MemoryStream(entry.DataSize - 4);
-                        foreach (PropertyReader.Property p in Props)
-                        {
-                            if (!info.properties.ContainsKey(importPCC.getNameEntry(p.Name)))
-                            {
-                                //property is transient
-                                continue;
-                            }
-                            PropertyReader.ImportProperty(pcc, importPCC, p, className, m);
-                        }
-                        return m.ToArray();
-                    }
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-
-            }
-            return null;
-        }
-
-        public static PropertyCollection getDefaultStructValue(string className, bool stripTransients)
-        {
-            if (Structs.ContainsKey(className))
-            {
-                bool immutable = UnrealObjectInfo.isImmutable(className, MEGame.ME3);
-                ClassInfo info = Structs[className];
-                try
-                {
-                    string filepath = (Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
-                    if (File.Exists(info.pccPath))
-                    {
-                        filepath = info.pccPath; //Used for dynamic lookup
-                    }
-                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(filepath))
-                    {
-                        byte[] buff;
-                        //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
-                        //thus, I have hardcoded what those default values should be 
-                        if (className == "Plane")
-                        {
-                            buff = PlaneDefault;
-                        }
-                        else if (className == "CoverReference")
-                        {
-                            buff = CoverReferenceDefault;
-                        }
-                        else
-                        {
-                            var exportToRead = importPCC.Exports[info.exportIndex];
-                            buff = exportToRead.Data.Skip(0x24).ToArray();
-                        }
-                        PropertyCollection props = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
-                        if (stripTransients)
-                        {
-                            List<UProperty> toRemove = new List<UProperty>();
-                            foreach (var prop in props)
-                            {
-                                //remove transient props
-                                if (info.properties.TryGetValue(prop.Name, out PropertyInfo propInfo))
-                                {
-                                    if (propInfo.transient)
-                                    {
-                                        toRemove.Add(prop);
-                                    }
-                                }
-                                //if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class")
-                                //{
-                                //    toRemove.Add(prop);
-                                //}
-                            }
-                            foreach (var prop in toRemove)
-                            {
-                                Debug.WriteLine($"ME3: Get Default Struct value ({className}) - removing transient prop: {prop.Name}");
-                                props.Remove(prop);
-                            }
-                        }
-                        return props;
-                    }
-                }
-                catch
-                {
-                    return null;
-                }
-            }
-            return null;
-        }*/
 
         public static bool inheritsFrom(IEntry entry, string baseClass)
         {

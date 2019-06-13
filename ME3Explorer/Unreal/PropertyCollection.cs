@@ -43,17 +43,25 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public void AddOrReplaceProp(UProperty prop)
+        public bool TryReplaceProp(UProperty prop)
         {
             for (int i = 0; i < this.Count; i++)
             {
                 if (this[i].Name.Name == prop.Name.Name)
                 {
                     this[i] = prop;
-                    return;
+                    return true;
                 }
             }
-            this.Add(prop);
+            return false;
+        }
+
+        public void AddOrReplaceProp(UProperty prop)
+        {
+            if (!TryReplaceProp(prop))
+            {
+                this.Add(prop);
+            }
         }
 
         public void WriteTo(Stream stream, IMEPackage pcc, bool requireNoneAtEnd = true)
@@ -103,7 +111,7 @@ namespace ME3Explorer.Unreal
                     string name = pcc.getNameEntry(nameIdx);
                     if (name == "None")
                     {
-                        props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition, ValueOffset = propertyStartPosition });
+                        props.Add(new NoneProperty(stream) { StartOffset = propertyStartPosition, ValueOffset = propertyStartPosition });
                         stream.Seek(4, SeekOrigin.Current);
                         break;
                     }
@@ -249,7 +257,7 @@ namespace ME3Explorer.Unreal
                         case PropertyType.None:
                             if (includeNoneProperty)
                             {
-                                props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition });
+                                props.Add(new NoneProperty(stream) { StartOffset = propertyStartPosition });
                             }
                             break;
                     }
@@ -616,7 +624,7 @@ namespace ME3Explorer.Unreal
                     structProp.ValueOffset = valuePos;
                     return structProp;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.None:
-                    return new NoneProperty(template.Name) { StartOffset = startPos };
+                    return new NoneProperty() { StartOffset = startPos };
                 case PropertyType.DelegateProperty:
                     throw new NotImplementedException("cannot read Delegate property of Immutable struct");
                 case PropertyType.Unknown:
@@ -867,15 +875,14 @@ namespace ME3Explorer.Unreal
     [DebuggerDisplay("NoneProperty")]
     public class NoneProperty : UProperty
     {
-        public NoneProperty(NameReference? name = null) : base(name)
+        public NoneProperty() : base("None")
         {
             PropType = PropertyType.None;
         }
 
-        public NoneProperty(MemoryStream stream, NameReference? name = null) : base(name)
+        public NoneProperty(MemoryStream stream) : this()
         {
             ValueOffset = stream.Position;
-            PropType = PropertyType.None;
         }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
@@ -1516,6 +1523,12 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
+        public BioMask4Property(byte val, NameReference? name = null) : base(name)
+        {
+            Value = val;
+            PropType = PropertyType.BioMask4Property;
+        }
+
         public BioMask4Property(MemoryStream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
@@ -1558,12 +1571,12 @@ namespace ME3Explorer.Unreal
             PropType = PropertyType.ByteProperty;
         }
 
-        public EnumProperty(NameReference value, NameReference enumType, IMEPackage pcc, NameReference? name = null) : base(name)
+        public EnumProperty(NameReference value, NameReference enumType, MEGame meGame, NameReference? name = null) : base(name)
         {
             EnumType = enumType;
             NameReference enumVal = value;
             Value = enumVal;
-            EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
+            EnumValues = UnrealObjectInfo.GetEnumValues(meGame, enumType, true);
             PropType = PropertyType.ByteProperty;
         }
 
@@ -1573,10 +1586,10 @@ namespace ME3Explorer.Unreal
         /// <param name="enumType">Name of enum</param>
         /// <param name="pcc">PCC to lookup information from</param>
         /// <param name="name">Optional name of EnumProperty</param>
-        public EnumProperty(NameReference enumType, IMEPackage pcc, NameReference? name = null) : base(name)
+        public EnumProperty(NameReference enumType, MEGame meGame, NameReference? name = null) : base(name)
         {
             EnumType = enumType;
-            EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
+            EnumValues = UnrealObjectInfo.GetEnumValues(meGame, enumType, true);
             if (EnumValues == null)
             {
                 Debugger.Break();

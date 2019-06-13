@@ -3681,6 +3681,13 @@ namespace ME3Explorer
             ME3UnrealObjectInfo.generateInfo();
         }
 
+        private void BuildAllObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            ME1UnrealObjectInfo.generateInfo();
+            ME2Explorer.Unreal.ME2UnrealObjectInfo.generateInfo();
+            ME3UnrealObjectInfo.generateInfo();
+        }
+
         private void RefreshProperties_Clicked(object sender, RoutedEventArgs e)
         {
             var properties = InterpreterTab_Interpreter.CurrentLoadedExport?.GetProperties();
