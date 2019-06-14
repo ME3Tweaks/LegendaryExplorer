@@ -296,7 +296,7 @@ namespace ME3Explorer.DialogueDumper
             isProcessing = true;
             workbook = new XLWorkbook();
 #if DEBUG
-            shouldDoDebugOutput = true;  //Output for toolset devs
+            shouldDoDebugOutput = false;  //Output for toolset devs
 #endif
 
             var xlstrings = workbook.Worksheets.Add("TLKStrings");
@@ -670,27 +670,29 @@ namespace ME3Explorer.DialogueDumper
                                     }
 
                                     //If ME1 Setup Local talkfile
-                                    ME1Explorer.Unreal.Classes.TalkFile locTlk = null;
-                                    if (GameBeingDumped == MEGame.ME1)
-                                    {
-                                        byte[] lnkTLKbinary = pcc.getUExport(exp.GetProperty<ObjectProperty>("m_oTlkFileSet").Value).getBinaryData();
-                                        int offset = 0;
-                                        int tlkcount = BitConverter.ToInt32(lnkTLKbinary, offset);
-                                        for (int t = 0; t < tlkcount; t++)
-                                        {
-                                            offset = 4 + t * 20;
-                                            int n = BitConverter.ToInt32(lnkTLKbinary, offset);
-                                            if (exp.FileRef.findName("Int") == n)
-                                            {
-                                                offset += 16;
-                                                break;
-                                            }
-                                        }
+                                    //Package files will load this natively now
 
-                                        int indexTlk = BitConverter.ToInt32(lnkTLKbinary, offset);
-                                        locTlk = new ME1Explorer.Unreal.Classes.TalkFile(pcc as ME1Package, indexTlk);
-                                        locTlk.LoadTlkData();
-                                    }
+                                    //ME1Explorer.Unreal.Classes.TalkFile locTlk = null;
+                                    //if (GameBeingDumped == MEGame.ME1)
+                                    //{
+                                    //    byte[] lnkTLKbinary = pcc.getUExport(exp.GetProperty<ObjectProperty>("m_oTlkFileSet").Value).getBinaryData();
+                                    //    int offset = 0;
+                                    //    int tlkcount = BitConverter.ToInt32(lnkTLKbinary, offset);
+                                    //    for (int t = 0; t < tlkcount; t++)
+                                    //    {
+                                    //        offset = 4 + t * 20;
+                                    //        int n = BitConverter.ToInt32(lnkTLKbinary, offset);
+                                    //        if (exp.FileRef.findName("Int") == n)
+                                    //        {
+                                    //            offset += 16;
+                                    //            break;
+                                    //        }
+                                    //    }
+
+                                    //    int indexTlk = BitConverter.ToInt32(lnkTLKbinary, offset);
+                                    //    locTlk = new ME1Explorer.Unreal.Classes.TalkFile(pcc as ME1Package, indexTlk);
+                                    //    locTlk.LoadTlkData();
+                                    //}
 
 
                                     //2. Go through Entry list "m_EntryList"
@@ -720,20 +722,7 @@ namespace ME3Explorer.DialogueDumper
                                         if (lineStrRef > 0)
                                         {
                                             //Get StringRef Text
-                                            string lineTLKstring;
-                                            if (GameBeingDumped == MEGame.ME1)
-                                            {
-                                                lineTLKstring = locTlk.findDataById(lineStrRef);
-                                                if (lineTLKstring == "No Data")
-                                                {
-                                                    lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped);
-                                            }
-
+                                            string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped, exp.FileRef as ME1Package);
 
                                             if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" && lineTLKstring != "\" \"")
                                             {
@@ -760,21 +749,7 @@ namespace ME3Explorer.DialogueDumper
                                             {
 
                                                 //Get StringRef Text
-                                                string lineTLKstring;
-                                                if (GameBeingDumped == MEGame.ME1)
-                                                {
-                                                    lineTLKstring = locTlk.findDataById(lineStrRef);
-                                                    if (lineTLKstring == "No Data")
-                                                    {
-                                                        lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped);
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped);
-                                                }
-
-
+                                                string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped, exp.FileRef as ME1Package);
                                                 if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" && lineTLKstring != "\" \"")
                                                 {
                                                     //Write to Background thread (must be 8 strings)
@@ -932,7 +907,7 @@ namespace ME3Explorer.DialogueDumper
 
                                 if (tag != null && strref >= 0)
                                 {
-                                    string actorname = GlobalFindStrRefbyID(strref, GameBeingDumped);
+                                    string actorname = GlobalFindStrRefbyID(strref, GameBeingDumped, exp.FileRef as ME1Package);
                                     dumper._xlqueue.Add(new List<string> { "Tags", tag, strref.ToString(), actorname });
                                 }
                             }

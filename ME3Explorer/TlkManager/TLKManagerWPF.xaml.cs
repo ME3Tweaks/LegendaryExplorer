@@ -651,27 +651,27 @@ namespace ME3Explorer.TlkManagerNS
         /// <summary>
         /// Looks up current loaded file game ID and returns appropriate string reference.
         /// </summary>
-        /// <param name="stringRefID"></param>
-        /// <param name="game"></param>
+        /// <param name="stringRefID">The StringRef ID you want to resolve</param>
+        /// <param name="game">Which game to look up TLK data for</param>
+        /// <param name="me1Package">ME1 package to parse. You can pass in null if you're not using a ME1 Pacakge, or don't have a reference to one you need</param>
         /// <returns></returns>
-        public static string GlobalFindStrRefbyID(int stringRefID, MEGame game)
+        public static string GlobalFindStrRefbyID(int stringRefID, MEGame game, ME1Package me1Package)
         {
             if (stringRefID <= 0)
             {
                 return null;
             }
 
-            if (game == MEGame.ME1)
+            switch (game)
             {
-                return ME1TalkFiles.findDataById(stringRefID);
-            }
-            else if (game == MEGame.ME2)
-            {
-                return ME2TalkFiles.findDataById(stringRefID);
-            }
-            else
-            {
-                return ME3TalkFiles.findDataById(stringRefID);
+                case MEGame.ME1:
+                    return ME1TalkFiles.findDataById(stringRefID, me1Package);
+                case MEGame.ME2:
+                    return ME2TalkFiles.findDataById(stringRefID);
+                case MEGame.ME3:
+                    return ME3TalkFiles.findDataById(stringRefID);
+                default:
+                    return "UDK String Refs Not Supported";
             }
         }
     }

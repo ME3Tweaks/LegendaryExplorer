@@ -230,7 +230,7 @@
                     </TabItem>
                 </TabControl>
             </DockPanel>
-            <DockPanel DockPanel.Dock="Bottom" MaxHeight="300" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed', FallbackValue=Collapsed}">
+            <DockPanel DockPanel.Dock="Bottom" MinHeight="200" MaxHeight="200" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed', FallbackValue=Collapsed}">
                 <StackPanel DockPanel.Dock="Left">
                     <TextBlock Margin="5" Text="Welcome to Pathfinding Editor WPF, the rewritten version of Pathfinding Editor" FontWeight="Bold"/>
                     <TextBlock Margin="5">
@@ -247,10 +247,6 @@
                             <LineBreak/>
                                 -  0 indicates null, empty, or "Class", depending on the context
                              <LineBreak/>
-                                <LineBreak/>
-                                Pathfinding Editor WPF is still in development and not all features are functional or ported
-                                <LineBreak/>
-                                over from the classic version.
                     </TextBlock>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left" Margin="10" VerticalAlignment="Center">
@@ -282,7 +278,7 @@
                     </Grid>
                 </StackPanel>
             </DockPanel>
-            <DockPanel DockPanel.Dock="Bottom" MaxHeight="300" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Visible}">
+            <DockPanel DockPanel.Dock="Bottom" MinHeight="300" MaxHeight="300" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Visible}">
                 <DockPanel DockPanel.Dock="Left">
                     <Expander DockPanel.Dock="Left" Name="CombatZonesSMC_Expander" ExpandDirection="Right" IsExpanded="False" Background="Orange" Padding="2" MaxWidth="310">
                         <Expander.Header>
@@ -382,7 +378,7 @@
                 </DockPanel>
 
                 <!-- Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" -->
-                <global:InterpreterWPF x:Name="Properties_InterpreterWPF"/>
+                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" HideHexBox="True"/>
             </DockPanel>
             <WindowsFormsHost Name="GraphHost" VerticalAlignment="Stretch">
                 <local:PathingGraphEditor DragEnter="GraphEditor_DragEnter" DragDrop="GraphEditor_DragDrop"/>

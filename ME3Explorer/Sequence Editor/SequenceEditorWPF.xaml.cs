@@ -1040,6 +1040,7 @@ namespace ME3Explorer.Sequence_Editor
         private bool panToSelection = true;
         private string FileQueuedForLoad;
         private IExportEntry ExportQueuedForFocusing;
+        private bool AllowWindowRefocus = true;
 
         private void saveView(bool toFile = true)
         {
@@ -1392,9 +1393,11 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (CurrentObjects_ListBox.SelectedItem is SObj obj)
             {
+                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
                 p.LoadFile(obj.Export.FileRef.FileName, obj.UIndex);
+                p.Activate(); //bring to front
             }
         }
 
@@ -1653,7 +1656,12 @@ namespace ME3Explorer.Sequence_Editor
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)
         {
             graphEditor.AllowDragging();
-            Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
+            if (AllowWindowRefocus)
+            {
+                Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
+            }
+
+            AllowWindowRefocus = true;
         }
 
         private void CurrentObjectsList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
