@@ -34,7 +34,7 @@
             <Separator />
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
  
-                <MenuItem Header="Output Links" Name="outputLinksMenuItem"></MenuItem>
+                <MenuItem Header="Individual Links" Name="outputLinksMenuItem"></MenuItem>
                 <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Command="{Binding NodeDeleteAllLinksCommand}" IsEnabled="{Binding SelectedDialogueNode, Converter={StaticResource NullEnabledConverter}}"/>
             </MenuItem>
             <MenuItem Header="Remove from Dialogue" Command="{Binding NodeRemoveCommand}"/>
@@ -46,7 +46,7 @@
             <MenuItem Header="Clone Entry" Command="{Binding NodeAddCommand}" CommandParameter="CloneEntry" ToolTip="Create a new entry as a duplicate of this one"/>
             <Separator />
             <MenuItem Header="Break Links" Name="ebreakLinksMenuItem">
-                <MenuItem Header="Output Links" Name="eoutputLinksMenuItem"></MenuItem>
+                <MenuItem Header="Individual Links" Name="eoutputLinksMenuItem"></MenuItem>
                 <MenuItem Header="Break All Links" Name="ebreakAllLinksMenuItem" Command="{Binding NodeDeleteAllLinksCommand}" IsEnabled="{Binding SelectedDialogueNode, Converter={StaticResource NullEnabledConverter}}"/>
             </MenuItem>
             <MenuItem Header="Remove from Dialogue" Command="{Binding NodeRemoveCommand}"/>

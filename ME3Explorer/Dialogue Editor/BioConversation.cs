@@ -1408,6 +1408,14 @@ namespace ME3Explorer.Dialogue_Editor
             //Add new entry2ReplyNode
             //Reload
         }
+        public override void RemoveOutlink(int linkconnection, int linkIndex)
+        {
+            var oldEntriesProp = NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
+            oldEntriesProp.RemoveAt(linkconnection);
+            NodeProp.Properties.AddOrReplaceProp(oldEntriesProp);
+            Editor.RecreateNodesToProperties(Editor.SelectedConv);
+
+        }
     }
 
     public class DiagNodeReply : DiagNode
