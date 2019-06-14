@@ -344,6 +344,9 @@ namespace ME3Explorer.Dialogue_Editor
 
         public class ReplyChoiceNode : BioConversationExtended
         {
+            private int _order;
+            public int Order { get => _order; set => SetProperty(ref _order, value); }
+
             private int _Index;
             public int Index { get => _Index; set => SetProperty(ref _Index, value); }
 
@@ -362,6 +365,11 @@ namespace ME3Explorer.Dialogue_Editor
             public EReplyCategory RCategory { get => _RCategory; set => SetProperty(ref _RCategory, value); }
             private string _ReplyLine;
             public string ReplyLine { get => _ReplyLine; set => SetProperty(ref _ReplyLine, value); }
+            public string NodeIDLink { get; set; }
+            public string Ordinal { get; set; }
+            public int TgtCondition { get; set; }
+            public string TgtFireCnd { get; set; }
+            public string TgtLine { get; set; }
 
             public ReplyChoiceNode(int Index, string Paraphrase, int ReplyStrRef, EReplyCategory RCategory, string ReplyLine)
             {
@@ -370,6 +378,21 @@ namespace ME3Explorer.Dialogue_Editor
                 this.ReplyStrRef = ReplyStrRef;
                 this.RCategory = RCategory;
                 this.ReplyLine = ReplyLine;
+            }
+
+            public ReplyChoiceNode(int Order, int Index, string Paraphrase, int ReplyStrRef, EReplyCategory RCategory, string ReplyLine, string NodeIDLink, string Ordinal, int TgtCondition, string TgtFireCnd, string TgtLine)
+            {
+                this.Order = Order;
+                this.Index = Index;
+                this.Paraphrase = Paraphrase;
+                this.ReplyStrRef = ReplyStrRef;
+                this.RCategory = RCategory;
+                this.ReplyLine = ReplyLine;
+                this.NodeIDLink = NodeIDLink;
+                this.Ordinal = Ordinal;
+                this.TgtCondition = TgtCondition;
+                this.TgtFireCnd = TgtFireCnd;
+                this.TgtLine = TgtLine;
             }
         }
 
@@ -409,7 +432,6 @@ namespace ME3Explorer.Dialogue_Editor
             GUI_STYLE_PLAYER_ALERT,
             GUI_STYLE_ILLEGAL,
             //GUI_STYLE_MAX,
-            None
         }
         public enum EReplyTypes
         {
@@ -417,7 +439,6 @@ namespace ME3Explorer.Dialogue_Editor
             REPLY_AUTOCONTINUE,
             REPLY_DIALOGEND,
             //REPLY_MAX
-            None
         }
         public enum EReplyCategory
         {
@@ -430,7 +451,6 @@ namespace ME3Explorer.Dialogue_Editor
             REPLY_CATEGORY_RENEGADE_INTERRUPT,
             REPLY_CATEGORY_PARAGON_INTERRUPT,
             //REPLY_CATEGORY_MAX,
-            None
         }
         #endregion Convo
     }
@@ -912,6 +932,7 @@ namespace ME3Explorer.Dialogue_Editor
         public StructProperty NodeProp;
         public BioConversationExtended.DialogueNodeExtended Node;
         public int NodeID;
+        public ObservableCollectionExtended<BioConversationExtended.ReplyChoiceNode> Links = new ObservableCollectionExtended<BioConversationExtended.ReplyChoiceNode>();
         static readonly Color insideTextColor = Color.FromArgb(213, 213, 213);//white
         protected InputDragHandler inputDragHandler = new InputDragHandler();
         protected DialogueEditorWPF Editor;
@@ -1195,7 +1216,6 @@ namespace ME3Explorer.Dialogue_Editor
 
     public class DiagNodeEntry : DiagNode
     {
-        private ObservableCollectionExtended<BioConversationExtended.ReplyChoiceNode> ReplyChoiceList = new ObservableCollectionExtended<BioConversationExtended.ReplyChoiceNode>();
         public DiagNodeEntry(DialogueEditorWPF editor, BioConversationExtended.DialogueNodeExtended node, MEGame game, float x, float y, ConvGraphEditor ConvGraphEditor)
             : base(editor, node, x, y, ConvGraphEditor)
         {
@@ -1234,7 +1254,7 @@ namespace ME3Explorer.Dialogue_Editor
                             Enum.TryParse(rcatprop.Value.Name, out BioConversationExtended.EReplyCategory eReply);
                             replychoice.RCategory = eReply;
                         }
-                        ReplyChoiceList.Add(replychoice);
+                        Links.Add(replychoice);
                     }
                 }
                 catch
@@ -1273,10 +1293,10 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if (node != null)
             {
-                if (ReplyChoiceList.Count > 0)
+                if (Links.Count > 0)
                 {
                     int n = 0;
-                    foreach (var reply in ReplyChoiceList)
+                    foreach (var reply in Links)
                     {
 
                         OutputLink l = new OutputLink
@@ -1291,7 +1311,8 @@ namespace ME3Explorer.Dialogue_Editor
                         int linkedOp = reply.Index + 1000;
                         l.Links.Add(linkedOp);
                         l.InputIndices = 0;
-                        l.Desc = "R" + reply.Index;
+                        if (OutputNumbers)
+                            l.Desc = "R" + reply.Index;
                         l.node = CreateActionLinkBox();
                         var linkcolor = getColor(reply.RCategory);
                         l.node.Brush = new SolidBrush(linkcolor);
@@ -1451,8 +1472,8 @@ namespace ME3Explorer.Dialogue_Editor
                             int linkedOp = prop.Value;
                             l.Links.Add(linkedOp);
                             l.InputIndices = 1;
-                            //if (OutputNumbers)
-                            l.Desc = "E" + linkedOp;
+                            if (OutputNumbers)
+                                l.Desc = "E" + linkedOp;
 
                             l.node = CreateActionLinkBox();
                             l.node.Brush = outputBrush;
@@ -1465,6 +1486,10 @@ namespace ME3Explorer.Dialogue_Editor
                             l.node.AddChild(dragger);
                             Outlinks.Add(l);
                             n++;
+
+                            //Add to links package
+                            var replychoice = new BioConversationExtended.ReplyChoiceNode(linkedOp, "", -1, BioConversationExtended.EReplyCategory.REPLY_CATEGORY_DEFAULT, "No data");
+                            Links.Add(replychoice);
                         }
                     }
                     else //Create default node.

@@ -261,6 +261,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dialogue Editor\LinkEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DialogueDumper\DialogueDumper.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -318,6 +322,9 @@
     </Compile>
     <Compile Include="Dialogue Editor\DialogueEditorWPF.xaml.cs">
       <DependentUpon>DialogueEditorWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogue Editor\LinkEditor.xaml.cs">
+      <DependentUpon>LinkEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="DialogueDumper\DialogueDumper.xaml.cs">
       <DependentUpon>DialogueDumper.xaml</DependentUpon>

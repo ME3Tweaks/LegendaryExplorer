@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -173,6 +174,7 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand StartEditCommand { get; set; }
         public ICommand ScriptAddCommand { get; set; }
         public ICommand ScriptDeleteCommand { get; set; }
+        public ICommand NodeEditCommand { get; set; }
         public ICommand NodeAddCommand { get; set; }
         public ICommand NodeRemoveCommand { get; set; }
         public ICommand NodeDeleteAllLinksCommand { get; set; }
@@ -376,6 +378,7 @@ namespace ME3Explorer.Dialogue_Editor
             StartEditCommand = new RelayCommand(StartAddEdit);
             ScriptAddCommand = new GenericCommand(Script_Add);
             ScriptDeleteCommand = new GenericCommand(Script_Delete, ScriptCanDelete);
+            NodeEditCommand = new RelayCommand(DialogueNode_OpenLinkEditor);
             NodeAddCommand = new RelayCommand(DialogueNode_Add);
             NodeRemoveCommand = new RelayCommand(DialogueNode_Delete);
             NodeDeleteAllLinksCommand = new RelayCommand(DialogueNode_DeleteLinks);
@@ -383,7 +386,6 @@ namespace ME3Explorer.Dialogue_Editor
             TestPathsCommand = new GenericCommand(TestPaths);
             DefaultColorsCommand = new GenericCommand(ResetColorsToDefault);
         }
-
 
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
@@ -470,6 +472,8 @@ namespace ME3Explorer.Dialogue_Editor
             CurrentObjects.Clear();
             graphEditor.Dispose();
             Properties_InterpreterWPF.Dispose();
+            SoundpanelWPF_F.Dispose();
+            SoundpanelWPF_M.Dispose();
             GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
             GraphHost.Dispose();
             DataContext = null;
@@ -620,7 +624,7 @@ namespace ME3Explorer.Dialogue_Editor
 
                 conv.IsFirstParsed = true;
             }
-
+            Debug.WriteLine("FirstParse Done");
             BackParser = new BackgroundWorker()
             {
                 WorkerReportsProgress = true,
@@ -634,7 +638,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void BackParse(object sender, DoWorkEventArgs e)
         {
-
+            Debug.WriteLine( "BackParse Starting");
             //TOO MANY PROBLEMS ON BACK THREAD. OPTIMISE LATER.
             if (SelectedConv != null && SelectedConv.IsParsed == false) //Get Active setup pronto.
             {
@@ -673,6 +677,7 @@ namespace ME3Explorer.Dialogue_Editor
         private void BackParser_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             BackParser.CancelAsync();
+            Debug.WriteLine("BackParse Done");
         }
 
         private void ParseSpeakers(ConversationExtended conv)
@@ -788,26 +793,29 @@ namespace ME3Explorer.Dialogue_Editor
         private void ParseStageDirections(ConversationExtended conv)
         {
             conv.StageDirections = new ObservableCollectionExtended<StageDirection>();
-            var dprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_aStageDirections"); //ME3 Only not in ME1/2
-            if(dprop != null)
+            if(Pcc.Game == MEGame.ME3)
             {
-                foreach(var direction in dprop)
+                var dprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_aStageDirections"); //ME3 Only not in ME1/2
+                if (dprop != null)
                 {
-                    int strref = 0;
-                    string line = "No data";
-                    string action = "None";
-                    var strrefprop = direction.GetProp<StringRefProperty>("srStrRef");
-                    if(strrefprop != null)
+                    foreach (var direction in dprop)
                     {
-                        strref = strrefprop.Value;
-                        line = GlobalFindStrRefbyID(strref, Pcc.Game);
+                        int strref = 0;
+                        string line = "No data";
+                        string action = "None";
+                        var strrefprop = direction.GetProp<StringRefProperty>("srStrRef");
+                        if (strrefprop != null)
+                        {
+                            strref = strrefprop.Value;
+                            line = GlobalFindStrRefbyID(strref, Pcc.Game);
+                        }
+                        var actionprop = direction.GetProp<StrProperty>("sText");
+                        if (actionprop != null)
+                        {
+                            action = actionprop.Value;
+                        }
+                        conv.StageDirections.Add(new StageDirection(strref, line, action));
                     }
-                    var actionprop = direction.GetProp<StrProperty>("sText");
-                    if(actionprop != null)
-                    {
-                        action = actionprop.Value;
-                    }
-                    conv.StageDirections.Add(new StageDirection(strref, line, action));
                 }
             }
         }
@@ -2863,6 +2871,13 @@ namespace ME3Explorer.Dialogue_Editor
 
 
         }
+        private void DialogueNode_OpenLinkEditor(object obj)
+        {
+            var linkEdDlg = new LinkEditor(this, SelectedObjects[0] as DiagNode);
+            linkEdDlg.Owner = this;
+            linkEdDlg.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            linkEdDlg.ShowDialog();
+        }
         private async void DialogueNode_Add(object obj)
         {
             string command = obj as string;
@@ -2875,12 +2890,18 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     props = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_ReplyList");
                 }
-                var EConvGUIStyles = new EnumProperty("GUI_STYLE_NONE","EConvGUIStyles", Pcc.Game, "eGUIStyle");//THESE SHOULD NOT BE NEEDED
+                //Set to needed defaults.
+                var EConvGUIStyles = new EnumProperty("GUI_STYLE_NONE","EConvGUIStyles", Pcc.Game, "eGUIStyle");
                 newprop.AddOrReplaceProp(EConvGUIStyles);
                 var rtype = new EnumProperty("REPLY_STANDARD", "EReplyTypes", Pcc.Game, "ReplyType");
                 newprop.AddOrReplaceProp(rtype);
-                var nScriptIndex = new IntProperty(-1, "nScriptIndex");
-                newprop.AddOrReplaceProp(nScriptIndex);
+                newprop.GetProp<IntProperty>("nScriptIndex").Value = -1;
+                newprop.GetProp<BoolProperty>("bFireConditional").Value = true;
+                newprop.GetProp<IntProperty>("nConditionalFunc").Value = -1;
+                newprop.GetProp<IntProperty>("nConditionalParam").Value = -1;
+                newprop.GetProp<IntProperty>("nStateTransition").Value = -1;
+                newprop.GetProp<IntProperty>("nStateTransitionParam").Value = -1;
+                newprop.GetProp<IntProperty>("nCameraIntimacy").Value = 1;
                 props.Add(new StructProperty("BioDialogReplyNode", newprop));
                 SelectedConv.BioConvo.AddOrReplaceProp(props);
                 PushConvoToFile(SelectedConv);
@@ -2895,10 +2916,16 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     props = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_EntryList");
                 }
-                var EConvGUIStyles = new EnumProperty(new NameReference("GUI_STYLE_NONE"), new NameReference("EConvGUIStyles"), Pcc.Game, new NameReference("eGUIStyle"));  //THESE SHOULD NOT BE NEEDED
+                var EConvGUIStyles = new EnumProperty("GUI_STYLE_NONE", "EConvGUIStyles", Pcc.Game, "eGUIStyle");
                 newprop.AddOrReplaceProp(EConvGUIStyles);
-                var nScriptIndex = new IntProperty(-1, new NameReference("nScriptIndex"));
-                newprop.AddOrReplaceProp(nScriptIndex);
+                newprop.GetProp<IntProperty>("nSpeakerIndex").Value = -1;
+                newprop.GetProp<IntProperty>("nScriptIndex").Value = -1;
+                newprop.GetProp<BoolProperty>("bFireConditional").Value = true;
+                newprop.GetProp<IntProperty>("nConditionalFunc").Value = -1;
+                newprop.GetProp<IntProperty>("nConditionalParam").Value = -1;
+                newprop.GetProp<IntProperty>("nStateTransition").Value = -1;
+                newprop.GetProp<IntProperty>("nStateTransitionParam").Value = -1;
+                newprop.GetProp<IntProperty>("nCameraIntimacy").Value = 1;
                 props.Add(new StructProperty("BioDialogEntryNode", newprop));
                 SelectedConv.BioConvo.AddOrReplaceProp(props);
                 PushConvoToFile(SelectedConv);

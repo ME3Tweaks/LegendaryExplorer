@@ -27,16 +27,21 @@
             <MenuItem Header="Remove start node" Command="{Binding StartDeleteCommand}" ToolTip="Delete this start node"/>
         </ContextMenu>
         <ContextMenu x:Key="replynodeContextMenu" Closed="ContextMenu_Closed">
+            <MenuItem Header="Edit Links" Command="{Binding NodeEditCommand}" CommandParameter="Reply" ToolTip="Edit Links order and details" Background="CadetBlue"/>
+            <Separator />
             <MenuItem Header="Add Reply" Command="{Binding NodeAddCommand}" CommandParameter="AddReply" ToolTip="Create a new clean reply"/>
             <MenuItem Header="Clone Reply" Command="{Binding NodeAddCommand}" CommandParameter="CloneReply" ToolTip="Create a new reply as a duplicate of this one"/>
             <Separator />
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
+ 
                 <MenuItem Header="Output Links" Name="outputLinksMenuItem"></MenuItem>
                 <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Command="{Binding NodeDeleteAllLinksCommand}" IsEnabled="{Binding SelectedDialogueNode, Converter={StaticResource NullEnabledConverter}}"/>
             </MenuItem>
             <MenuItem Header="Remove from Dialogue" Command="{Binding NodeRemoveCommand}"/>
         </ContextMenu>
         <ContextMenu x:Key="entrynodeContextMenu" Closed="ContextMenu_Closed">
+            <MenuItem Header="Edit Links" Command="{Binding NodeEditCommand}" CommandParameter="Entry" ToolTip="Edit Links order and details" Background="Goldenrod"/>
+            <Separator />
             <MenuItem Header="Add Entry" Command="{Binding NodeAddCommand}" CommandParameter="AddEntry" ToolTip="Create a new clean entry"/>
             <MenuItem Header="Clone Entry" Command="{Binding NodeAddCommand}" CommandParameter="CloneEntry" ToolTip="Create a new entry as a duplicate of this one"/>
             <Separator />
@@ -845,7 +850,6 @@
                 <local:ConvGraphEditor/>
             </WindowsFormsHost>
             <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="3"/>
-
         </Grid>
     </DockPanel>
 </global:WPFBase>
