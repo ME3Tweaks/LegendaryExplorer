@@ -370,6 +370,7 @@ namespace ME3Explorer.Dialogue_Editor
             public int TgtCondition { get; set; }
             public string TgtFireCnd { get; set; }
             public string TgtLine { get; set; }
+            public string TgtSpeaker { get; set; }
 
             public ReplyChoiceNode(int Index, string Paraphrase, int ReplyStrRef, EReplyCategory RCategory, string ReplyLine)
             {
@@ -380,7 +381,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.ReplyLine = ReplyLine;
             }
 
-            public ReplyChoiceNode(int Order, int Index, string Paraphrase, int ReplyStrRef, EReplyCategory RCategory, string ReplyLine, string NodeIDLink, string Ordinal, int TgtCondition, string TgtFireCnd, string TgtLine)
+            public ReplyChoiceNode(int Order, int Index, string Paraphrase, int ReplyStrRef, EReplyCategory RCategory, string ReplyLine, string NodeIDLink, string Ordinal, int TgtCondition, string TgtFireCnd, string TgtLine, string TgtSpeaker)
             {
                 this.Order = Order;
                 this.Index = Index;
@@ -393,6 +394,7 @@ namespace ME3Explorer.Dialogue_Editor
                 this.TgtCondition = TgtCondition;
                 this.TgtFireCnd = TgtFireCnd;
                 this.TgtLine = TgtLine;
+                this.TgtSpeaker = TgtSpeaker;
             }
         }
 
@@ -1378,7 +1380,7 @@ namespace ME3Explorer.Dialogue_Editor
             var startNode = start.NodeID;
             var endNode = end.NodeID;
 
-            var newReplyListProp = new ArrayProperty<StructProperty>(ArrayType.Struct, new NameReference("ReplyListNew"));
+            var newReplyListProp = new ArrayProperty<StructProperty>(ArrayType.Struct, "ReplyListNew");
             var oldReplyListProp = start.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
 
 
@@ -1391,10 +1393,10 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
             var newProps = new PropertyCollection();
-            newProps.Add(new IntProperty(endNode - 1000, new NameReference("nIndex")));
-            newProps.Add(new StringRefProperty(0, new NameReference("srParaphrase")));
-            newProps.Add(new StrProperty("", new NameReference("sParaphrase")));
-            newProps.Add(new EnumProperty(new NameReference("REPLY_CATEGORY_DEFAULT"), new NameReference("EReplyCategory"), Editor.Pcc.Game, new NameReference("Category")));
+            newProps.Add(new IntProperty(endNode - 1000, "nIndex"));
+            newProps.Add(new StringRefProperty(0, "srParaphrase"));
+            newProps.Add(new StrProperty("", "sParaphrase"));
+            newProps.Add(new EnumProperty("REPLY_CATEGORY_DEFAULT", "EReplyCategory", Editor.Pcc.Game,"Category"));
             newProps.Add(new NoneProperty());
 
             var newstruct = new StructProperty("BioDialogReplyListDetails", newProps);

@@ -2877,6 +2877,12 @@ namespace ME3Explorer.Dialogue_Editor
             linkEdDlg.Owner = this;
             linkEdDlg.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             linkEdDlg.ShowDialog();
+
+            if(linkEdDlg.NeedsPush)
+            {
+                RecreateNodesToProperties(SelectedConv);
+            }
+            
         }
         private async void DialogueNode_Add(object obj)
         {
