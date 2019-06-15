@@ -115,7 +115,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private int CurrentUIMode = -1; //Sets which panel is up.
         #endregion ConvoBox//Conversation Box Links
-        private static BackgroundWorker BackParser = new BackgroundWorker();
+        private BackgroundWorker BackParser = new BackgroundWorker();
         private bool NoUIRefresh; //stops graph refresh on update.
         // FOR GRAPHING
         public ObservableCollectionExtended<DObj> CurrentObjects { get; } = new ObservableCollectionExtended<DObj>();
@@ -507,7 +507,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private bool PackageIsLoaded()
         {
-            System.Diagnostics.Debug.WriteLine("Package Is Loaded.");
+            //System.Diagnostics.Debug.WriteLine("Package Is Loaded.");
             return Pcc != null;
         }
         public void LoadFile(string fileName)
@@ -630,7 +630,7 @@ namespace ME3Explorer.Dialogue_Editor
 
                 conv.IsFirstParsed = true;
             }
-            Debug.WriteLine("FirstParse Done");
+            //Debug.WriteLine("FirstParse Done");
             BackParser = new BackgroundWorker()
             {
                 WorkerReportsProgress = true,
@@ -644,7 +644,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void BackParse(object sender, DoWorkEventArgs e)
         {
-            Debug.WriteLine("BackParse Starting");
+            //Debug.WriteLine("BackParse Starting");
             //TOO MANY PROBLEMS ON BACK THREAD. OPTIMISE LATER.
             if (SelectedConv != null && SelectedConv.IsParsed == false) //Get Active setup pronto.
             {
@@ -683,7 +683,7 @@ namespace ME3Explorer.Dialogue_Editor
         private void BackParser_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             BackParser.CancelAsync();
-            Debug.WriteLine("BackParse Done");
+            //Debug.WriteLine("BackParse Done");
         }
 
         private void ParseSpeakers(ConversationExtended conv)

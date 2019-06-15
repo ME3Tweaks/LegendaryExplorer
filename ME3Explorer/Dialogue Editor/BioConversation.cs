@@ -23,7 +23,7 @@ using System.ComponentModel;
 
 namespace ME3Explorer.Dialogue_Editor
 {
-    public partial class BioConversationExtended : NotifyPropertyChangedWindowBase
+    public partial class BioConversationExtended : NotifyPropertyChangedBase
     {
 
         #region Convo
