@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
-using Gibbed.IO;
+using Gammtek.Conduit.Extensions.IO;
+using StreamHelpers;
 
 namespace ME3Explorer.Packages
 {
@@ -38,7 +40,8 @@ namespace ME3Explorer.Packages
         int Compression { get => BitConverter.ToInt32(header, header.Length - 4);
             set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, header.Length - 4, sizeof(int));
         }
-       
+        public List<ME1Explorer.Unreal.Classes.TalkFile> LocalTalkFiles { get; } = new List<ME1Explorer.Unreal.Classes.TalkFile>();
+
         static bool isInitialized;
         public static Func<string, ME1Package> Initialize()
         {
@@ -73,12 +76,12 @@ namespace ME3Explorer.Packages
             }
 
             tempStream.Seek(12, SeekOrigin.Begin);
-            int tempNameSize = tempStream.ReadValueS32();
+            int tempNameSize = tempStream.ReadInt32();
             tempStream.Seek(64 + tempNameSize, SeekOrigin.Begin);
-            int tempGenerations = tempStream.ReadValueS32();
+            int tempGenerations = tempStream.ReadInt32();
             tempStream.Seek(36 + tempGenerations * 12, SeekOrigin.Current);
 
-            tempStream.ReadValueU32(); //Compression Type. We read this from header[] in MEPackage.cs intead when accessing value
+            tempStream.ReadUInt32(); //Compression Type. We read this from header[] in MEPackage.cs intead when accessing value
             int tempPos = (int)tempStream.Position;
             tempStream.Seek(0, SeekOrigin.Begin);
             header = tempStream.ReadBytes(tempPos);
@@ -103,11 +106,11 @@ namespace ME3Explorer.Packages
                 listsStream.WriteBytes(header);
 
                 // Set numblocks to zero
-                listsStream.WriteValueS32(0);
+                listsStream.WriteInt32(0);
                 //Write the magic number
                 listsStream.WriteBytes(new byte[] { 0xF2, 0x56, 0x1B, 0x4E });
                 // Write 4 bytes of 0
-                listsStream.WriteValueS32(0);
+                listsStream.WriteInt32(0);
             }
             else
             {
@@ -121,8 +124,45 @@ namespace ME3Explorer.Packages
             ReadNames(listsStream);
             ReadImports(listsStream);
             ReadExports(listsStream);
+            ReadLocalTLKs();
+        }
 
-            ME1Explorer.ME1TalkFiles.LoadLocalTlkData(this);
+        private void ReadLocalTLKs()
+        {
+            LocalTalkFiles.Clear();
+            var tlkFileSets = Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.ObjectName.StartsWith("Default__")).ToList();
+            var exportsToLoad = new List<IExportEntry>();
+            foreach(var tlkFileSet in tlkFileSets)
+            {
+                MemoryStream r = new MemoryStream(tlkFileSet.Data);
+                r.Position = tlkFileSet.propsEnd();
+                int count = r.ReadInt32();
+                for (int i = 0; i < count; i++)
+                {
+                    int langRef = r.ReadInt32();
+                    r.ReadInt32(); //second half of name
+                    string lang = getNameEntry(langRef);
+                    int numTlksForLang = r.ReadInt32(); //I beleive this is always 2. Hopefully I am not wrong.
+                    int maleTlk = r.ReadInt32();
+                    int femaleTlk = r.ReadInt32();
+
+                    if (Properties.Settings.Default.TLKLanguage.Equals(lang,StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        exportsToLoad.Add(getUExport(Properties.Settings.Default.TLKGender_IsMale ? maleTlk : femaleTlk));
+                        break;
+                    }
+
+                    //r.ReadInt64();
+                    //talkFiles.Add(new TalkFile(pcc, r.ReadInt32(), true, langRef, index));
+                    //talkFiles.Add(new TalkFile(pcc, r.ReadInt32(), false, langRef, index));
+                }
+            }
+
+            foreach(var exp in exportsToLoad)
+            {
+                Debug.WriteLine("Loading local TLK: " + exp.GetIndexedFullPath);
+                LocalTalkFiles.Add(new ME1Explorer.Unreal.Classes.TalkFile(exp));
+            }
         }
 
         private void ReadNames(MemoryStream fs)
@@ -131,7 +171,7 @@ namespace ME3Explorer.Packages
             fs.Seek(NameOffset, SeekOrigin.Begin);
             for (int i = 0; i < NameCount; i++)
             {
-                int len = fs.ReadValueS32();
+                int len = fs.ReadInt32();
                 string s = "";
                 if (len > 0)
                 {
@@ -215,22 +255,22 @@ namespace ME3Explorer.Packages
                 m.WriteBytes(header);
 
                 // Set numblocks to zero
-                m.WriteValueS32(0);
+                m.WriteInt32(0);
                 //Write the magic number (What is this?)
                 m.WriteBytes(new byte[] { 0xF2, 0x56, 0x1B, 0x4E });
                 // Write 4 bytes of 0
-                m.WriteValueS32(0);
+                m.WriteInt32(0);
 
                 //name table
                 NameOffset = (int)m.Position;
                 NameCount = names.Count;
                 foreach (string name in names)
                 {
-                    m.WriteValueS32(name.Length + 1);
+                    m.WriteInt32(name.Length + 1);
                     m.WriteString(name);
                     m.WriteByte(0);
-                    m.WriteValueS32(0);
-                    m.WriteValueS32(458768);
+                    m.WriteInt32(0);
+                    m.WriteInt32(458768);
                 }
                 //import table
                 ImportOffset = (int)m.Position;
@@ -262,8 +302,8 @@ namespace ME3Explorer.Packages
                     m.WriteBytes(e.Data);
                     long pos = m.Position;
                     m.Seek(e.HeaderOffset + 32, SeekOrigin.Begin);
-                    m.WriteValueS32(e.DataSize);
-                    m.WriteValueS32(e.DataOffset);
+                    m.WriteInt32(e.DataSize);
+                    m.WriteInt32(e.DataOffset);
                     m.Seek(pos, SeekOrigin.Begin);
                 }
                 //update header

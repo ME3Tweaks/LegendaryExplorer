@@ -308,17 +308,7 @@ namespace ME3Explorer.SequenceObjects
                             if ((prop.Name == "m_srValue" || prop.Name == "m_srStringID")
                                 && prop is StringRefProperty strRefProp)
                             {
-                                switch (pcc.Game)
-                                {
-                                    case MEGame.ME1:
-                                        return ME1TalkFiles.findDataById(strRefProp.Value);
-                                    case MEGame.ME2:
-                                        return ME2Explorer.ME2TalkFiles.findDataById(strRefProp.Value);
-                                    case MEGame.ME3:
-                                        return ME3TalkFiles.findDataById(strRefProp.Value);
-                                    case MEGame.UDK:
-                                        return "UDK StrRef not supported";
-                                }
+                                return TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strRefProp.Value, export.FileRef.Game, export.FileRef as ME1Package);
                             }
                         }
                         return "???";

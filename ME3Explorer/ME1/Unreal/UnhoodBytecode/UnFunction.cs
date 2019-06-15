@@ -226,6 +226,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     return "ArrayProperty";
                 case "DelegateProperty":
                     return "delegate";
+                case "InterfaceProperty":
+                    return "interface";
                 default:
                     Debug.WriteLine("Unknown property type for ME1 Function signature parsing: " + exp.ClassName);
                     return "???";

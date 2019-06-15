@@ -2108,7 +2108,7 @@ namespace ME3Explorer
                         offset += 4;
 
                         int gTitle = BitConverter.ToInt32(data, offset); //Goal Name
-                        string gttlkLookup = GlobalFindStrRefbyID(gTitle, game);
+                        string gttlkLookup = GlobalFindStrRefbyID(gTitle, game, CurrentLoadedExport.FileRef as ME1Package);
                         nGoalIDs.Items.Add(new BinInterpTreeItem
                         {
                             Header = $"0x{offset:X5} Goal Name StrRef: {gTitle} { gttlkLookup }",
@@ -2118,7 +2118,7 @@ namespace ME3Explorer
                         offset += 4;
 
                         int gDescription = BitConverter.ToInt32(data, offset); //Goal Description
-                        string gdtlkLookup = GlobalFindStrRefbyID(gDescription, game);
+                        string gdtlkLookup = GlobalFindStrRefbyID(gDescription, game, CurrentLoadedExport.FileRef as ME1Package);
                         nGoalIDs.Items.Add(new BinInterpTreeItem
                         {
                             Header = $"0x{offset:X5} Goal Description StrRef: {gDescription} { gdtlkLookup }",
@@ -2188,7 +2188,7 @@ namespace ME3Explorer
                         offset += 4;
 
                         int tTitle = BitConverter.ToInt32(data, offset); //Task Name
-                        string tttlkLookup = GlobalFindStrRefbyID(tTitle, game);
+                        string tttlkLookup = GlobalFindStrRefbyID(tTitle, game, CurrentLoadedExport.FileRef as ME1Package);
                         nTaskIDs.Items.Add(new BinInterpTreeItem
                         {
                             Header = $"0x{offset:X5} Task Name StrRef: {tTitle} { tttlkLookup }",
@@ -2198,7 +2198,7 @@ namespace ME3Explorer
                         offset += 4;
 
                         int tDescription = BitConverter.ToInt32(data, offset); //Task Description
-                        string tdtlkLookup = GlobalFindStrRefbyID(tDescription, game);
+                        string tdtlkLookup = GlobalFindStrRefbyID(tDescription, game, CurrentLoadedExport.FileRef as ME1Package);
                         nTaskIDs.Items.Add(new BinInterpTreeItem
                         {
                             Header = $"0x{offset:X5} Task Description StrRef: {tDescription} { tdtlkLookup }",
@@ -2292,7 +2292,7 @@ namespace ME3Explorer
                         offset += 4;
 
                         int pTitle = BitConverter.ToInt32(data, offset); //Plot item Name
-                        string pitlkLookup = GlobalFindStrRefbyID(pTitle, game);
+                        string pitlkLookup = GlobalFindStrRefbyID(pTitle, game, CurrentLoadedExport.FileRef as ME1Package);
                         nPlotItemIDs.Items.Add(new BinInterpTreeItem
                         {
                             Header = $"0x{offset:X5} Goal Name StrRef: {pTitle} { pitlkLookup }",
@@ -2696,7 +2696,7 @@ namespace ME3Explorer
                     offset += 4;
 
                     int sTitle = BitConverter.ToInt32(data, offset); //Codex Title
-                    string ttlkLookup = GlobalFindStrRefbyID(sTitle, game);
+                    string ttlkLookup = GlobalFindStrRefbyID(sTitle, game, CurrentLoadedExport.FileRef as ME1Package);
                     SectionIDs.Items.Add(new BinInterpTreeItem
                     {
                         Header = $"0x{offset:X5} Section Title StrRef: {sTitle} { ttlkLookup }",
@@ -2706,7 +2706,7 @@ namespace ME3Explorer
                     offset += 4;
 
                     int sDescription = BitConverter.ToInt32(data, offset); //Codex Description
-                    string dtlkLookup = GlobalFindStrRefbyID(sDescription, game);
+                    string dtlkLookup = GlobalFindStrRefbyID(sDescription, game, CurrentLoadedExport.FileRef as ME1Package);
                     SectionIDs.Items.Add(new BinInterpTreeItem
                     {
                         Header = $"0x{offset:X5} Section Description StrRef: {sDescription} { dtlkLookup }",
@@ -2790,7 +2790,7 @@ namespace ME3Explorer
                     offset += 4;
 
                     int pTitle = BitConverter.ToInt32(data, offset); //Codex Title
-                    string ttlkLookup = GlobalFindStrRefbyID(pTitle, game);
+                    string ttlkLookup = GlobalFindStrRefbyID(pTitle, game, CurrentLoadedExport.FileRef as ME1Package);
                     PageIDs.Items.Add(new BinInterpTreeItem
                     {
                         Header = $"0x{offset:X5} Page Title StrRef: {pTitle} { ttlkLookup }",
@@ -2800,7 +2800,7 @@ namespace ME3Explorer
                     offset += 4;
 
                     int pDescription = BitConverter.ToInt32(data, offset); //Codex Description
-                    string dtlkLookup = GlobalFindStrRefbyID(pDescription, game);
+                    string dtlkLookup = GlobalFindStrRefbyID(pDescription, game, CurrentLoadedExport.FileRef as ME1Package);
                     PageIDs.Items.Add(new BinInterpTreeItem
                     {
                         Header = $"0x{offset:X5} Page Description StrRef: {pDescription} { dtlkLookup }",

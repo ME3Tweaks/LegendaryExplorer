@@ -522,6 +522,9 @@
     <Compile Include="PackageEditor\EmbeddedTextureViewer.xaml.cs">
       <DependentUpon>EmbeddedTextureViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PackageEditor\ExternalToolLauncher.xaml.cs">
+      <DependentUpon>ExternalToolLauncher.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PackageEditor\PackageEditorWPFRelinker.cs" />
     <Compile Include="PackageEditor\PackageEditorWPF.xaml.cs">
       <DependentUpon>PackageEditorWPF.xaml</DependentUpon>
@@ -946,6 +949,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PackageEditor\EmbeddedTextureViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageEditor\ExternalToolLauncher.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

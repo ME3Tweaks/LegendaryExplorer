@@ -58,61 +58,24 @@ namespace ME1Explorer
             }
         }
 
-        /// <summary>
-        /// Loads local Tlk data for ME1 strings.
-        /// </summary>
-        /// <param name="pcc"></param>
-        /// <param name="language">if null then English/INT, else ES, DE, FR, IT. Use M_DE for Male TlkSet. </param>
-        public static void LoadLocalTlkData(IMEPackage Pcc, string language = null)
+        public static string findDataById(int strRefID, ME1Package package, bool withFileName = false)
         {
-            if(Pcc.Game == MEGame.ME1)
-            {
-                string slang = null;
-                if (language != null)
-                {
-                    slang = $"tlk_{language}".ToLower();
-                }
-                else
-                {
-                    slang = "tlk";
-                }
+            string s = "No Data";
 
-                foreach (var exp in Pcc.Exports.Where(exp => exp.ClassName.Equals("BioTlkFile") && exp.ObjectName.ToLower().Equals(slang)))
+            //Look in package local first
+            if (package != null)
+            {
+                foreach (TalkFile tlk in package.LocalTalkFiles)
                 {
-                    TalkFile tlk = new TalkFile(Pcc as ME1Package, exp.UIndex);
-                    if (!localtlkList.ContainsKey(tlk))
+                    s = tlk.findDataById(strRefID, withFileName);
+                    if (s != "No Data")
                     {
-                        tlk.LoadTlkData();
-                        localtlkList.Add(tlk, Pcc.FileName);
+                        return s;
                     }
                 }
             }
-        }
 
-        public static void UnLoadLocalTlkData(IMEPackage Pcc)
-        {
-            var toRemove = localtlkList.Where(t => t.Value.Contains(Pcc.FileName))
-                         .Select(pair => pair.Key)
-                         .ToList();
-
-            foreach (var key in toRemove)
-            {
-                localtlkList.Remove(key);
-            }
-        }
-
-        public static string findDataById(int strRefID, bool withFileName = false)
-        {
-            string s = "No Data";
-            foreach (var tlk in localtlkList)
-            {
-                s = tlk.Key.findDataById(strRefID, withFileName);
-                if (s != "No Data")
-                {
-                    return s;
-                }
-            }
-
+            //Look in loaded list
             foreach (TalkFile tlk in tlkList)
             {
                 s = tlk.findDataById(strRefID, withFileName);
