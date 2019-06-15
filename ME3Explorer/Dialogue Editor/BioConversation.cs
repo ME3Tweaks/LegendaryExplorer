@@ -558,6 +558,7 @@ namespace ME3Explorer.Dialogue_Editor
         public override IEnumerable<DiagEdEdge> Edges => Outlinks.SelectMany(l => l.Edges).Cast<DiagEdEdge>();
         protected static Brush outputBrush = new SolidBrush(Color.Black);
         public static float LineScaleOption = 1.0f;
+        public static bool LinesAtTop;
         public static Color lineColor = Color.FromArgb(74, 63, 190);
         public struct OutputLink
         {
@@ -662,6 +663,13 @@ namespace ME3Explorer.Dialogue_Editor
             }
             title.Width = w;
 
+            float lineX = w / LineScaleOption + 5;
+            float lineY = 3;
+            if (LinesAtTop)
+            {
+                lineX = 2;
+                lineY = -title.Height + 2;
+            }
             DText line = null;
             if(LineScaleOption > 0)
             {
@@ -670,8 +678,8 @@ namespace ME3Explorer.Dialogue_Editor
                     TextAlignment = StringAlignment.Near,
                     ConstrainWidthToTextWidth = false,
                     ConstrainHeightToTextHeight = false,
-                    X = w / LineScaleOption + 5,
-                    Y = 3,
+                    X = lineX,
+                    Y = lineY,
                     Pickable = false
                 };
             }
@@ -938,6 +946,7 @@ namespace ME3Explorer.Dialogue_Editor
         static readonly Color insideTextColor = Color.FromArgb(213, 213, 213);//white
         protected InputDragHandler inputDragHandler = new InputDragHandler();
         protected DialogueEditorWPF Editor;
+
         public DiagNode(DialogueEditorWPF editor, BioConversationExtended.DialogueNodeExtended node, float x, float y, ConvGraphEditor ConvGraphEditor)
             : base(x, y, ConvGraphEditor)
         {
@@ -994,7 +1003,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
             float starty = 8;
             float w = 160;
-
+            
             //OutputLinks
             outLinkBox = new PPath();
             float outW = 0;
@@ -1314,25 +1323,27 @@ namespace ME3Explorer.Dialogue_Editor
                         int linkedOp = reply.Index + 1000;
                         l.Links.Add(linkedOp);
                         l.InputIndices = 0;
-                        if (OutputNumbers)
-                            l.Desc = "R" + reply.Index;
+                        
+                        l.Desc = "R" + reply.Index;
                         l.node = CreateActionLinkBox();
                         var linkcolor = getColor(reply.RCategory);
                         l.node.Brush = new SolidBrush(linkcolor);
                         l.node.Pen = new Pen(getColor(reply.RCategory));
                         l.node.Pickable = false;
-
-                        DText paraphrase = new DText(reply.ReplyLine, linkcolor, false, 0.8f)
+                        if(!OutputNumbers)
                         {
-                            TextAlignment = StringAlignment.Near,
-                            ConstrainWidthToTextWidth = true,
-                            ConstrainHeightToTextHeight = true,
-                            X = 15,
-                            Y = -8,
-                            Pickable = false
-                        };
-                        l.node.AddChild(paraphrase);
-                        paraphrase.TranslateBy(0,0);
+                            DText paraphrase = new DText(reply.ReplyLine, linkcolor, false, 0.8f)
+                            {
+                                TextAlignment = StringAlignment.Near,
+                                ConstrainWidthToTextWidth = true,
+                                ConstrainHeightToTextHeight = true,
+                                X = 15,
+                                Y = -8,
+                                Pickable = false
+                            };
+                            l.node.AddChild(paraphrase);
+                            paraphrase.TranslateBy(0, 0);
+                        }
 
                         PPath dragger = CreateActionLinkBox();
                         dragger.Brush = mostlyTransparentBrush;
@@ -1406,8 +1417,6 @@ namespace ME3Explorer.Dialogue_Editor
             Node.NodeProp.Properties.AddOrReplaceProp(newReplyListProp);
             Editor.RecreateNodesToProperties(Editor.SelectedConv);
 
-            //Add new entry2ReplyNode
-            //Reload
         }
         public override void RemoveOutlink(int linkconnection, int linkIndex)
         {
@@ -1483,9 +1492,8 @@ namespace ME3Explorer.Dialogue_Editor
                             int linkedOp = prop.Value;
                             l.Links.Add(linkedOp);
                             l.InputIndices = 1;
-                            if (OutputNumbers)
-                                l.Desc = "E" + linkedOp;
-
+                            
+                            l.Desc = "E" + linkedOp;
                             l.node = CreateActionLinkBox();
                             l.node.Brush = outputBrush;
                             l.node.Pickable = false;
