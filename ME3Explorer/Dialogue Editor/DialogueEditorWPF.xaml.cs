@@ -723,7 +723,7 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     int speakerindex = Node.GetProp<IntProperty>("nSpeakerIndex");
                     int linestrref = Node.GetProp<StringRefProperty>("srText").Value;
-                    string line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage.Game);
+                    string line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage);
                     int cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
                     int stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
                     bool bcond = Node.GetProp<BoolProperty>("bFireConditional");
@@ -747,7 +747,7 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     int speakerindex = -2;
                     int linestrref = Node.GetProp<StringRefProperty>("srText").Value;
-                    string line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage.Game);
+                    string line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage);
                     int cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
                     int stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
                     bool bcond = Node.GetProp<BoolProperty>("bFireConditional");
@@ -807,7 +807,7 @@ namespace ME3Explorer.Dialogue_Editor
                         if (strrefprop != null)
                         {
                             strref = strrefprop.Value;
-                            line = GlobalFindStrRefbyID(strref, Pcc.Game);
+                            line = GlobalFindStrRefbyID(strref, Pcc);
                         }
                         var actionprop = direction.GetProp<StrProperty>("sText");
                         if (actionprop != null)
@@ -2428,7 +2428,7 @@ namespace ME3Explorer.Dialogue_Editor
                     if(SelectedSpeaker.StrRefID <= 0)
                     {
                         SelectedSpeaker.StrRefID = LookupTagRef(SelectedSpeaker.SpeakerName);
-                        SelectedSpeaker.FriendlyName = GlobalFindStrRefbyID(SelectedSpeaker.StrRefID, Pcc.Game);
+                        SelectedSpeaker.FriendlyName = GlobalFindStrRefbyID(SelectedSpeaker.StrRefID, Pcc);
                     }
 
                     if (SelectedSpeaker.SpeakerID < 0)
@@ -2520,7 +2520,7 @@ namespace ME3Explorer.Dialogue_Editor
                     Keyboard.ClearFocus();
                     SelectedSpeakerList[Speakers_ListBox.SelectedIndex].SpeakerName = SelectedSpeaker.SpeakerName;
                     SelectedSpeaker.StrRefID = LookupTagRef(SelectedSpeaker.SpeakerName);
-                    SelectedSpeaker.FriendlyName = GlobalFindStrRefbyID(SelectedSpeakerList[Speakers_ListBox.SelectedIndex].StrRefID, Pcc.Game);
+                    SelectedSpeaker.FriendlyName = GlobalFindStrRefbyID(SelectedSpeakerList[Speakers_ListBox.SelectedIndex].StrRefID, Pcc);
 
                     SaveSpeakersToProperties(SelectedSpeakerList);
                 }
@@ -3147,7 +3147,7 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                 }
 
-                SelectedConv.StageDirections.Add(new StageDirection(strRef, GlobalFindStrRefbyID(strRef, Pcc.Game), "Add direction"));
+                SelectedConv.StageDirections.Add(new StageDirection(strRef, GlobalFindStrRefbyID(strRef, Pcc), "Add direction"));
                 SaveStageDirectionsToProperties(SelectedConv);
 
             }

@@ -945,6 +945,7 @@ namespace ME3Explorer.Dialogue_Editor
             Node = node;
             NodeProp = node.NodeProp;
             NodeID = Node.NodeCount;
+            pcc = editor.Pcc;
             originalX = x;
             originalY = y;
         }
@@ -1247,7 +1248,7 @@ namespace ME3Explorer.Dialogue_Editor
                         if (strRefPara != null)
                         {
                             replychoice.ReplyStrRef = strRefPara.Value;
-                            replychoice.ReplyLine = GlobalFindStrRefbyID(replychoice.ReplyStrRef, game);
+                            replychoice.ReplyLine = GlobalFindStrRefbyID(replychoice.ReplyStrRef, pcc);
                         }
 
                         var rcatprop = rc.GetProp<EnumProperty>("Category");

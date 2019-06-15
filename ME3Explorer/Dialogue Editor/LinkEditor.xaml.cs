@@ -99,7 +99,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
             link.NodeIDLink = $"{a}{link.Index}";
 
-            link.ReplyLine = GlobalFindStrRefbyID(link.ReplyStrRef, ParentWindow.Pcc.Game);
+            link.ReplyLine = GlobalFindStrRefbyID(link.ReplyStrRef, ParentWindow.Pcc);
 
             var tgtObj = ParentWindow.CurrentObjects.FirstOrDefault(t => t.NodeUID == tgtUID);
             var tgtNode = tgtObj as DiagNode;
