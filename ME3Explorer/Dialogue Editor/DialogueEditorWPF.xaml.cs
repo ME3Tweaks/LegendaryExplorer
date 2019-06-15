@@ -3375,6 +3375,10 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 if (FindResource("replynodeContextMenu") is ContextMenu contextMenu)
                 {
+                    if(contextMenu.GetChild("replyLinkEditContextMenu") is MenuItem editHeader)
+                    {
+                        editHeader.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(DBox.replyColor.A, DBox.replyColor.R, DBox.replyColor.G, DBox.replyColor.B));
+                    }
                     if (dreply.Outlinks.Any()
                      && contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
                     {
@@ -3426,6 +3430,11 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 if (FindResource("entrynodeContextMenu") is ContextMenu contextMenu)
                 {
+                    if (contextMenu.GetChild("entryLinkEditContextMenu") is MenuItem editHeader)
+                    {
+                        editHeader.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(DBox.entryColor.A, DBox.entryColor.R, DBox.entryColor.G, DBox.entryColor.B));
+                    }
+
                     if (dentry.Outlinks.Any()
                      && contextMenu.GetChild("ebreakLinksMenuItem") is MenuItem breakLinksMenuItem)
                     {
