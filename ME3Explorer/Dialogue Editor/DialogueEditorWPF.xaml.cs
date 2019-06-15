@@ -645,7 +645,6 @@ namespace ME3Explorer.Dialogue_Editor
         private void BackParse(object sender, DoWorkEventArgs e)
         {
             //Debug.WriteLine("BackParse Starting");
-            //TOO MANY PROBLEMS ON BACK THREAD. OPTIMISE LATER.
             if (SelectedConv != null && SelectedConv.IsParsed == false) //Get Active setup pronto.
             {
                 foreach (var spkr in SelectedConv.Speakers)
