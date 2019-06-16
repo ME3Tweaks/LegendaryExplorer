@@ -646,7 +646,7 @@ namespace ME3Explorer.Unreal
             //or by new classes designed in the modding scene that must be present in order for parsing to work properly
 
             //Kinkojiro - New Class - SFXSeqAct_AttachToSocket
-            Classes["SFXSeqAct_AttachToSocket"] = new ClassInfo
+            NewClasses["SFXSeqAct_AttachToSocket"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = "ME3Explorer_CustomNativeAdditions",
@@ -678,7 +678,7 @@ namespace ME3Explorer.Unreal
 
             //Kinkojiro - New Class - BioSeqAct_ShowMedals
             //Sequence object for showing the medals UI
-            Classes["BioSeqAct_ShowMedals"] = new ClassInfo
+            NewClasses["BioSeqAct_ShowMedals"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = "ME3Explorer_CustomNativeAdditions",
@@ -697,7 +697,7 @@ namespace ME3Explorer.Unreal
             };
 
             //Kinkojiro - New Class - SFXSeqAct_SetFaceFX
-            Classes["SFXSeqAct_SetFaceFX"] = new ClassInfo
+            NewClasses["SFXSeqAct_SetFaceFX"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = "ME3Explorer_CustomNativeAdditions",
