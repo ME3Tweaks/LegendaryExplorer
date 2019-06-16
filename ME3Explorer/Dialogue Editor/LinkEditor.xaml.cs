@@ -262,15 +262,15 @@ namespace ME3Explorer.Dialogue_Editor
                 editLink.ReplyStrRef = strRef;
 
                 ////Set GUI Reply style
-                //var eRCats = Enum.GetValues(typeof(EReplyCategory)).Cast<EReplyCategory>();
-                //var rc = editLink.RCategory; //Get current link
-            
-                //var rdlg = InputComboBox.GetValue("Pick the wheel position or interrupt:", eRCats, rc.ToString(), false);
+                var eRCats = Enum.GetNames(typeof(EReplyCategory)).Cast<string>();
+                var rc = editLink.RCategory; //Get current link
 
-                //if (rdlg == "")
-                //    return;
-                //Enum.TryParse(rdlg.ToString(), out rc);
-                //editLink.RCategory = rc;
+                var rdlg = InputComboBox.GetValue("Pick the wheel position or interrupt:", eRCats, rc.ToString(), false);
+
+                if (rdlg == "")
+                    return;
+                Enum.TryParse(rdlg.ToString(), out rc);
+                editLink.RCategory = rc;
             }
             ParseLink(editLink);
             ReOrderTable();
