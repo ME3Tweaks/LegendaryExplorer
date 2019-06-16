@@ -7,6 +7,7 @@ using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Unreal;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -15,6 +16,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -115,6 +117,8 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private int CurrentUIMode = -1; //Sets which panel is up.
         #endregion ConvoBox//Conversation Box Links
+
+        private BlockingCollection<ConversationExtended> BackQueue = new BlockingCollection<ConversationExtended>();
         private BackgroundWorker BackParser = new BackgroundWorker();
         private bool NoUIRefresh; //stops graph refresh on update.
         // FOR GRAPHING
@@ -604,7 +608,16 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void FirstParse()
         {
-            Conversations_ListBox.IsEnabled = false;
+            BackQueue = new BlockingCollection<ConversationExtended>();
+            BackParser = new BackgroundWorker()
+            {
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
+            };
+            BackParser.DoWork += BackParse;
+            BackParser.RunWorkerCompleted += BackParser_RunWorkerCompleted;
+            BackParser.RunWorkerAsync();
+
             if (SelectedConv != null && SelectedConv.IsFirstParsed == false) //Get Active setup pronto.
             {
                 ParseStartingList(SelectedConv);
@@ -617,7 +630,9 @@ namespace ME3Explorer.Dialogue_Editor
                 ParseSequence(SelectedConv);
                 ParseWwiseBank(SelectedConv);
                 ParseStageDirections(SelectedConv);
+
                 SelectedConv.IsFirstParsed = true;
+                DetailParse(SelectedConv);
             }
 
             foreach (var conv in Conversations.Where(conv => conv.IsFirstParsed == false)) //Get Speakers entry and replies plus convo data first
@@ -631,72 +646,52 @@ namespace ME3Explorer.Dialogue_Editor
                 ParseSequence(conv);
                 ParseWwiseBank(conv);
                 ParseStageDirections(conv);
-
                 conv.IsFirstParsed = true;
+
+                if(!conv.IsParsed)
+                    BackQueue.Add(conv);
             }
 #if DEBUG
             Debug.WriteLine("FirstParse Done");
 #endif
-            BackParser = new BackgroundWorker()
-            {
-                WorkerReportsProgress = true,
-                WorkerSupportsCancellation = true
-            };
-            BackParser.DoWork += BackParse;
-            BackParser.RunWorkerCompleted += BackParser_RunWorkerCompleted;
-            BackParser.RunWorkerAsync();
-
-            Conversations_ListBox.IsEnabled = true;
+            BackQueue.CompleteAdding();
         }
         private void BackParse(object sender, DoWorkEventArgs e)
         {
 #if DEBUG
             Debug.WriteLine("BackParse Starting");
 #endif
-
-            //TO DO MAKE THREADSAFE
-            if (SelectedConv != null && SelectedConv.IsParsed == false) //Get Active setup pronto.
-            {
-                foreach (var spkr in SelectedConv.Speakers)
-                {
-                    spkr.FaceFX_Male = GetFaceFX(SelectedConv, spkr.SpeakerID, true);
-                    spkr.FaceFX_Female = GetFaceFX(SelectedConv, spkr.SpeakerID, false);
-                }
-                GenerateSpeakerTags(SelectedConv);
-                ParseLinesInterpData(SelectedConv);
-                ParseLinesFaceFX(SelectedConv);
-                ParseLinesAudioStreams(SelectedConv);
-                ParseLinesScripts(SelectedConv);
-
-                SelectedConv.IsParsed = true;
-            }
-
             //Do minor stuff
-            foreach (var conv in Conversations.Where(conv => conv.IsParsed == false))
+            foreach (var conv in BackQueue.GetConsumingEnumerable(CancellationToken.None))
             {
-                foreach (var spkr in conv.Speakers)
-                {
-                    spkr.FaceFX_Male = GetFaceFX(conv, spkr.SpeakerID, true);
-                    spkr.FaceFX_Female = GetFaceFX(conv, spkr.SpeakerID, false);
-                }
-                GenerateSpeakerTags(conv);
-                ParseLinesInterpData(conv);
-                ParseLinesFaceFX(conv);
-                ParseLinesAudioStreams(conv);
-                ParseLinesScripts(conv);
-
-                conv.IsParsed = true;
+                DetailParse(conv);
             }
 
         }
         private void BackParser_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+
             BackParser.CancelAsync();
 #if DEBUG
             Debug.WriteLine("BackParse Done");
 #endif
         }
+        private void DetailParse(ConversationExtended conv)
+        {
+            
+            foreach (var spkr in conv.Speakers)
+            {
+                spkr.FaceFX_Male = GetFaceFX(conv, spkr.SpeakerID, true);
+                spkr.FaceFX_Female = GetFaceFX(conv, spkr.SpeakerID, false);
+            }
+            GenerateSpeakerTags(conv);
+            ParseLinesInterpData(conv);
+            ParseLinesFaceFX(conv);
+            ParseLinesAudioStreams(conv);
+            ParseLinesScripts(conv);
 
+            conv.IsParsed = true;
+        }
         private void ParseSpeakers(ConversationExtended conv)
         {
             conv.Speakers = new ObservableCollectionExtended<SpeakerExtended>();
@@ -741,12 +736,13 @@ namespace ME3Explorer.Dialogue_Editor
         private void ParseEntryList(ConversationExtended conv)
         {
             conv.EntryList = new ObservableCollectionExtended<DialogueNodeExtended>();
-            try
+            var entryprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
+            int cnt = 0;
+            foreach (StructProperty Node in entryprop)
             {
-                var entryprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_EntryList"); //ME3/ME1
-                int cnt = 0;
-                foreach (StructProperty Node in entryprop)
+                try
                 {
+
                     int speakerindex = Node.GetProp<IntProperty>("nSpeakerIndex");
                     int linestrref = Node.GetProp<StringRefProperty>("srText").Value;
                     string line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage);
@@ -755,13 +751,14 @@ namespace ME3Explorer.Dialogue_Editor
                     bool bcond = Node.GetProp<BoolProperty>("bFireConditional");
                     conv.EntryList.Add(new DialogueNodeExtended(Node, false, cnt, speakerindex, linestrref, line, bcond, cond, stevent, EReplyTypes.REPLY_STANDARD));
                     cnt++;
+
                 }
-            }
-            catch (Exception e)
-            {
+                catch (Exception e)
+                {
 #if DEBUG
-                throw new Exception("Entry List Parse failed", e);
+                    throw new Exception($"Entry List Parse failed {conv.ConvName}:E{cnt}", e);
 #endif
+                }
             }
         }
         private void ParseReplyList(ConversationExtended conv)
@@ -790,7 +787,7 @@ namespace ME3Explorer.Dialogue_Editor
             catch (Exception e)
             {
 #if DEBUG
-                throw new Exception("Reply List Parse failed", e);  //Note some convos don't have replies.
+                throw new Exception($"Reply List Parse failed {conv.ConvName}", e);  //Note some convos don't have replies.
 #endif
             }
         }
@@ -825,32 +822,42 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void ParseStageDirections(ConversationExtended conv)
         {
-            conv.StageDirections = new ObservableCollectionExtended<StageDirection>();
-            if (Pcc.Game == MEGame.ME3)
+            try
             {
-                var dprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_aStageDirections"); //ME3 Only not in ME1/2
-                if (dprop != null)
+                conv.StageDirections = new ObservableCollectionExtended<StageDirection>();
+                if (Pcc.Game == MEGame.ME3)
                 {
-                    foreach (var direction in dprop)
+                    var dprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_aStageDirections"); //ME3 Only not in ME1/2
+                    if (dprop != null)
                     {
-                        int strref = 0;
-                        string line = "No data";
-                        string action = "None";
-                        var strrefprop = direction.GetProp<StringRefProperty>("srStrRef");
-                        if (strrefprop != null)
+                        foreach (var direction in dprop)
                         {
-                            strref = strrefprop.Value;
-                            line = GlobalFindStrRefbyID(strref, Pcc);
+                            int strref = 0;
+                            string line = "No data";
+                            string action = "None";
+                            var strrefprop = direction.GetProp<StringRefProperty>("srStrRef");
+                            if (strrefprop != null)
+                            {
+                                strref = strrefprop.Value;
+                                line = GlobalFindStrRefbyID(strref, Pcc);
+                            }
+                            var actionprop = direction.GetProp<StrProperty>("sText");
+                            if (actionprop != null)
+                            {
+                                action = actionprop.Value;
+                            }
+                            conv.StageDirections.Add(new StageDirection(strref, line, action));
                         }
-                        var actionprop = direction.GetProp<StrProperty>("sText");
-                        if (actionprop != null)
-                        {
-                            action = actionprop.Value;
-                        }
-                        conv.StageDirections.Add(new StageDirection(strref, line, action));
                     }
                 }
             }
+            catch (Exception e)
+            {
+#if DEBUG
+                throw new Exception($"Reply List Parse failed {conv.ConvName}", e); 
+#endif
+            }
+            
         }
         private void GenerateSpeakerList()
         {
@@ -2389,20 +2396,43 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void RefreshExportLoaders()
         {
+            if(SelectedDialogueNode.WwiseStream_Female == null)
+            {
+                SoundpanelWPF_F.UnloadExport();
+            }
+            else
+            {
+                SoundpanelWPF_F.LoadExport(SelectedDialogueNode.WwiseStream_Female);
+            }
+                    
+            if(SelectedDialogueNode.WwiseStream_Male == null)
+            {
+                SoundpanelWPF_M.UnloadExport();
+            }
+            else
+            {
+                SoundpanelWPF_M.LoadExport(SelectedDialogueNode.WwiseStream_Male);
+            }
 
-            SoundpanelWPF_F.LoadExport(SelectedDialogueNode.WwiseStream_Female);
-            SoundpanelWPF_M.LoadExport(SelectedDialogueNode.WwiseStream_Male);
             soundPanelTabControl.SelectedIndex = faceFXEditorTabControl.SelectedIndex = SelectedDialogueNode.WwiseStream_Female == null ? 1 : 0;
             if (SelectedDialogueNode.SpeakerTag.FaceFX_Female is IExportEntry faceFX_f)
             {
                 FaceFXAnimSetEditorControl_F.LoadExport(faceFX_f);
                 FaceFXAnimSetEditorControl_F.SelectLineByName(SelectedDialogueNode.FaceFX_Female);
             }
+            else
+            {
+                FaceFXAnimSetEditorControl_F.UnloadExport();
+            }
 
             if (SelectedDialogueNode.SpeakerTag.FaceFX_Male is IExportEntry faceFX_m)
             {
                 FaceFXAnimSetEditorControl_M.LoadExport(faceFX_m);
                 FaceFXAnimSetEditorControl_M.SelectLineByName(SelectedDialogueNode.FaceFX_Male);
+            }
+            else
+            {
+                FaceFXAnimSetEditorControl_M.UnloadExport();
             }
         }
 
@@ -3105,7 +3135,7 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 int newIndex = SelectedConv.EntryList.Count;
                 var newEntry = new DialogueNodeExtended(SelectedDialogueNode);
-                newEntry.NodeCount = SelectedConv.ReplyList.Count;
+                newEntry.NodeCount = newIndex;
                 SelectedConv.EntryList.Add(newEntry);
                 NoUIRefresh = true;
                 RecreateNodesToProperties(SelectedConv);
@@ -4119,7 +4149,12 @@ namespace ME3Explorer.Dialogue_Editor
                     return num + "th";
             }
         }
-
+        /// <summary>
+        /// Waut for bool condition to switch to false. Used for async delay.
+        /// </summary>
+        /// <param name="waitforfalse">condition</param>
+        /// <param name="delay">Delay in milliseconds.</param>
+        /// <returns></returns>
         public async Task<bool> CheckProcess(bool waitforfalse, int delay)
         {
             if (!waitforfalse)

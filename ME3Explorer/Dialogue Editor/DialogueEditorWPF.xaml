@@ -789,6 +789,9 @@
                                                 <Setter Property="Background" Value="Yellow"/>
                                                 <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
                                             </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsParsed}" Value="False">
+                                                <Setter Property="Background" Value="GhostWhite"/>
+                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Grid.Style>
@@ -803,13 +806,13 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                     <ListBox.ItemContainerStyle>
-                        <Style>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="IsEnabled" Value="{Binding IsParsed}"/>
                             <Style.Triggers>
                                 <Trigger Property="Selector.IsSelected" Value="True">
                                     <Setter Property="TextElement.FontWeight" Value="Bold"/>
                                 </Trigger>
                             </Style.Triggers>
-
                         </Style>
                     </ListBox.ItemContainerStyle>
                     <ListBox.ContextMenu>

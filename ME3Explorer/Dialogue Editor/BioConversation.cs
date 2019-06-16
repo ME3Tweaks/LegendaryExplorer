@@ -42,7 +42,8 @@ namespace ME3Explorer.Dialogue_Editor
             public IExportEntry Export { get; set; }
             private string _ConvName;
             public string ConvName { get => _ConvName; set => SetProperty(ref _ConvName, value); }
-            public bool IsParsed { get; set; }
+            private bool _IsParsed;
+            public bool IsParsed { get => _IsParsed; set => SetProperty(ref _IsParsed, value); }
             public bool IsFirstParsed { get; set; }
             private SortedDictionary<int, int> _StartingList = new SortedDictionary<int, int>();
             public SortedDictionary<int, int> StartingList { get => _StartingList; set => SetProperty(ref _StartingList, value); }

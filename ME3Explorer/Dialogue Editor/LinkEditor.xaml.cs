@@ -184,7 +184,7 @@ namespace ME3Explorer.Dialogue_Editor
             clnH.Header = "Speaker";
             clnH.Binding = new Binding("TgtSpeaker");
             clnH.IsReadOnly = true;
-            clnH.Width = 60;
+            clnH.Width = 100;
             clnH.Foreground = Brushes.DarkSlateGray;
             datagrid_Links.Columns.Add(clnH);
 
@@ -194,11 +194,14 @@ namespace ME3Explorer.Dialogue_Editor
             clnG.IsReadOnly = true;
             clnG.Width = 355;
             clnG.Foreground = Brushes.DarkSlateGray;
+            datagrid_Links.Columns.Add(clnG);
+
             if (!IsReply)
             {
+                clnH.Width = 60;
                 clnG.Width = 200;
             }
-            datagrid_Links.Columns.Add(clnG);
+
 
             datagrid_Links.MouseDoubleClick += Datagrid_Table_MouseDoubleClick;
         }
