@@ -185,26 +185,32 @@ namespace ME3Explorer
             AddPropertyCommand = new GenericCommand(AddProperty, CanAddProperty);
             CollapseChildrenCommand = new GenericCommand(CollapseChildren, CanExpandOrCollapseChildren);
             ExpandChildrenCommand = new GenericCommand(ExpandChildren, CanExpandOrCollapseChildren);
-            SortChildrenCommand = new GenericCommand(SortChildren, CanExpandOrCollapseChildren);
+            SortChildrenCommand = new GenericCommand(SortChildren, CanSortChildren);
 
             SortParsedArrayAscendingCommand = new GenericCommand(SortParsedArrayAscending, CanSortArrayPropByParsedValue);
             SortParsedArrayDescendingCommand = new GenericCommand(SortParsedArrayDescending, CanSortArrayPropByParsedValue);
             SortValueArrayAscendingCommand = new GenericCommand(SortValueArrayAscending, CanSortArrayPropByValue);
             SortValueArrayDescendingCommand = new GenericCommand(SortValueArrayDescending, CanSortArrayPropByValue);
-            ClearArrayCommand = new GenericCommand(ClearArray, ArrayIsSelected);
+            ClearArrayCommand = new GenericCommand(ClearArray, CanClearArray);
             PopoutInterpreterForObjectValueCommand = new GenericCommand(PopoutInterpreterForObj, ObjectPropertyExportIsSelected);
 
             SaveHexChangesCommand = new GenericCommand(Interpreter_SaveHexChanges, IsExportLoaded);
             ToggleHexBoxWidthCommand = new GenericCommand(Interpreter_ToggleHexboxWidth);
-            AddArrayElementCommand = new GenericCommand(AddArrayElement, () => ArrayPropertyIsSelected() || ArrayElementIsSelected());
+            AddArrayElementCommand = new GenericCommand(AddArrayElement, CanAddArrayElement);
             RemoveArrayElementCommand = new GenericCommand(RemoveArrayElement, ArrayElementIsSelected);
             MoveArrayElementUpCommand = new GenericCommand(MoveArrayElementUp, CanMoveArrayElementUp);
             MoveArrayElementDownCommand = new GenericCommand(MoveArrayElementDown, CanMoveArrayElementDown);
         }
 
+        private bool CanAddArrayElement()
+        {
+            return SelectedItem != null && !SelectedItem.HasTooManyChildrenToDisplay
+                && (ArrayPropertyIsSelected() || ArrayElementIsSelected());
+        }
+
         private void ClearArray()
         {
-            if (SelectedItem != null && SelectedItem.Property != null)
+            if (SelectedItem != null && SelectedItem.Property != null && !SelectedItem.HasTooManyChildrenToDisplay)
             {
                 var araryProperty = (ArrayPropertyBase)SelectedItem.Property;
                 araryProperty.Clear();
@@ -212,7 +218,7 @@ namespace ME3Explorer
             }
         }
 
-        private bool ArrayIsSelected() => SelectedItem != null && SelectedItem.Property != null && SelectedItem.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>));
+        private bool CanClearArray() => SelectedItem != null && SelectedItem.Property != null && SelectedItem.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)) && !SelectedItem.HasTooManyChildrenToDisplay;
 
         private bool ArrayPropertyIsSelected() => SelectedItem?.Property is ArrayPropertyBase;
 
@@ -328,16 +334,17 @@ namespace ME3Explorer
 
         private bool CanSortArrayPropByParsedValue()
         {
-            return SelectedItem?.Property is ArrayProperty<NameProperty> ||
-                   SelectedItem?.Property is ArrayProperty<ObjectProperty>;
+            return SelectedItem != null && !SelectedItem.HasTooManyChildrenToDisplay && (SelectedItem.Property is ArrayProperty<NameProperty> ||
+                   SelectedItem.Property is ArrayProperty<ObjectProperty>);
         }
 
         private bool CanSortArrayPropByValue()
         {
-            return SelectedItem?.Property is ArrayProperty<NameProperty> ||
-                   SelectedItem?.Property is ArrayProperty<ObjectProperty> ||
-                   SelectedItem?.Property is ArrayProperty<IntProperty> ||
-                   SelectedItem?.Property is ArrayProperty<FloatProperty>;
+            return SelectedItem != null && !SelectedItem.HasTooManyChildrenToDisplay &&
+                   (SelectedItem.Property is ArrayProperty<NameProperty> ||
+                   SelectedItem.Property is ArrayProperty<ObjectProperty> ||
+                   SelectedItem.Property is ArrayProperty<IntProperty> ||
+                   SelectedItem.Property is ArrayProperty<FloatProperty>);
         }
 
         private void SortChildren() => SelectedItem?.ChildrenProperties.Sort(x => x.Property.Name.Name);
@@ -360,6 +367,8 @@ namespace ME3Explorer
         }
 
         private bool CanExpandOrCollapseChildren() => SelectedItem is UPropertyTreeViewEntry tvi && tvi.ChildrenProperties.Count > 0;
+        private bool CanSortChildren() => SelectedItem is UPropertyTreeViewEntry tvi && !tvi.HasTooManyChildrenToDisplay && tvi.ChildrenProperties.Count > 0;
+
 
         private void CollapseChildren()
         {
@@ -561,8 +570,8 @@ namespace ME3Explorer
                 topLevelTree.ChildrenProperties.Add(new UPropertyTreeViewEntry
                 {
                     DisplayName = "Class objects do not have properties",
-                    Property = new UnknownProperty(),
-                    Parent = topLevelTree
+                    Parent = topLevelTree,
+                    AdvancedModeText = "" //blank the bottom line
                 });
 
                 PropertyNodes.Add(topLevelTree);
@@ -639,13 +648,16 @@ namespace ME3Explorer
                 case ArrayPropertyBase arrayProp:
                     {
                         int i = 0;
-                        if (arrayProp.Count > 1000)
+                        if (arrayProp.Count > 1000 && Properties.Settings.Default.InterpreterWPF_LimitArrayPropertySize)
                         {
                             //Too big to load reliably, users won't edit huge things like this anyways.
                             UPropertyTreeViewEntry wontshowholder = new UPropertyTreeViewEntry()
                             {
-                                DisplayName = "Too many children to display"
+                                DisplayName = "Too many children to display",
+                                HasTooManyChildrenToDisplay = true,
+                                AdvancedModeText = "Disable this optimization in Package Editor WPF Options menu"
                             };
+                            upropertyEntry.HasTooManyChildrenToDisplay = true;
                             upropertyEntry.ChildrenProperties.Add(wontshowholder);
                         }
                         else
@@ -1766,8 +1778,7 @@ namespace ME3Explorer
     {
         static readonly string[] PropertyDumperSuppressedPropertyNames = { "CompressedTrackOffsets", "LookupTable" };
 
-        private Brush _foregroundColor = Brushes.DarkSeaGreen;
-
+        public bool HasTooManyChildrenToDisplay { get; set; }
         public IExportEntry AttachedExport;
         private string _colorStructCode;
         /// <summary>
@@ -1991,7 +2002,10 @@ namespace ME3Explorer
                             return Property.PropType.ToString();
                     }
                 }
-
+                if (AdvancedModeText != null)
+                {
+                    return AdvancedModeText;
+                }
                 return "Currently loaded export";
                 //string type = UIndex < 0 ? "Imp" : "Exp";
                 //return $"({type}) {UIndex} {Entry.ObjectName}({Entry.ClassName})"; */
@@ -1999,6 +2013,16 @@ namespace ME3Explorer
             //set { _displayName = value; }
         }
 
+        private string _advancedModeText;
+        public string AdvancedModeText
+        {
+            get => _advancedModeText;
+            internal set
+            {
+                SetProperty(ref _advancedModeText, value);
+                OnPropertyChanged(nameof(AdvancedModeText));
+            }
+        }
         public void PrintPretty(string indent, StreamWriter str, bool last, IExportEntry associatedExport)
         {
             bool supressNewLine = false;

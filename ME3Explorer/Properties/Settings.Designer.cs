@@ -466,5 +466,17 @@ namespace ME3Explorer.Properties {
                 this["TLKLanguage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InterpreterWPF_LimitArrayPropertySize {
+            get {
+                return ((bool)(this["InterpreterWPF_LimitArrayPropertySize"]));
+            }
+            set {
+                this["InterpreterWPF_LimitArrayPropertySize"] = value;
+            }
+        }
     }
 }

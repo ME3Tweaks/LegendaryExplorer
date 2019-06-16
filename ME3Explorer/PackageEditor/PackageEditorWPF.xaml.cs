@@ -3982,5 +3982,11 @@ namespace ME3Explorer
             Properties.Settings.Default.InterpreterWPF_Colorize = !Properties.Settings.Default.InterpreterWPF_Colorize;
             Properties.Settings.Default.Save();
         }
+
+        private void InterpreterWPF_ArrayPropertySizeLimit_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.InterpreterWPF_LimitArrayPropertySize = !Properties.Settings.Default.InterpreterWPF_LimitArrayPropertySize;
+            Properties.Settings.Default.Save();
+        }
     }
 }

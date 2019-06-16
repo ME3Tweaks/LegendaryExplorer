@@ -130,7 +130,7 @@
                     <MenuItem Header="Pop out current view into new window" ToolTip="Opens the panel on the right side in a new windowstored in package header" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL + P"/>
                     <Separator/>
                     <MenuItem Header="Multi-drop relinking mode" ToolTip="Enables the multi-drop relinking mode" IsChecked="{Binding MultiRelinkingModeActive}" Command="{Binding MultidropRelinkingCommand}"/>
-                    <MenuItem Header="Perform relinking" ToolTip="Runs the relinker against the items that have been added to the relinking map since the mode was turned on.&#10;Selecting this option will relink and then clear the cross-file map."
+                    <MenuItem Header="Perform relinking" ToolTip="Runs the relinker against the items that have been added to the relinking map since the mode was turned on.&#x0a;Selecting this option will relink and then clear the cross-file map."
                               Command="{Binding PerformMultiRelinkCommand}"/>
                     <Separator/>
                     <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}"/>
@@ -172,6 +172,7 @@
                     <MenuItem Header="Interpreter">
                         <MenuItem Name="InterpreterWPF_AdvancedMode_MenuItem" Header="Advanced Mode" Click="InterpreterWPF_AdvancedMode_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_AdvancedDisplay, Mode=TwoWay}" ToolTip="Displays data types, array sizes for each property in InterpreterWPF. Turning this off will condense the interface"/>
                         <MenuItem Name="InterpreterWPF_Colorize_MenuItem" Header="Colorize property types" Click="InterpreterWPF_Colorize_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize, Mode=TwoWay}" ToolTip="Changes the background color for different property types. Makes it easier to quickly identify different types of data."/>
+                        <MenuItem Name="InterpreterWPF_ArrayPropertyLimit_MenuItem" Header="Limit ArrayProperties to 1000 items for performance" Click="InterpreterWPF_ArrayPropertySizeLimit_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_LimitArrayPropertySize, Mode=TwoWay}" ToolTip="Enables or disables the 1000 item limit of ArrayProperty when displaying properties.&#10;Some arrayproperties are huge and will stall the program while it generates thousands of UI nodes."/>
                     </MenuItem>
                     <MenuItem Header="Texture Viewer">
                         <MenuItem Name="EmbeddedTextureViewerWPF_AutoPreviewTextures" Header="Automatically preview textures on export selection" Click="EmbeddedTextureViewer_AutoLoad_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=EmbeddedTextureViewer_AutoLoad, Mode=TwoWay}" ToolTip="Automatically load texture exports for viewing. Turn this feature off to improve performance and increase application stability"/>
