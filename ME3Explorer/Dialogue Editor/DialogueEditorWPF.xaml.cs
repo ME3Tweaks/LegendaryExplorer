@@ -485,6 +485,8 @@ namespace ME3Explorer.Dialogue_Editor
             Properties_InterpreterWPF.Dispose();
             SoundpanelWPF_F.Dispose();
             SoundpanelWPF_M.Dispose();
+            FaceFXAnimSetEditorControl_F.Dispose();
+            FaceFXAnimSetEditorControl_M.Dispose();
             GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
             GraphHost.Dispose();
             DataContext = null;
@@ -580,6 +582,8 @@ namespace ME3Explorer.Dialogue_Editor
             Properties_InterpreterWPF.UnloadExport();
             SoundpanelWPF_F.UnloadExport();
             SoundpanelWPF_M.UnloadExport();
+            FaceFXAnimSetEditorControl_F.UnloadExport();
+            FaceFXAnimSetEditorControl_M.UnloadExport();
             CurrentObjects.Clear();
             graphEditor.nodeLayer.RemoveAllChildren();
             graphEditor.edgeLayer.RemoveAllChildren();
@@ -1599,6 +1603,8 @@ namespace ME3Explorer.Dialogue_Editor
                 Properties_InterpreterWPF.UnloadExport();
                 SoundpanelWPF_F.UnloadExport();
                 SoundpanelWPF_M.UnloadExport();
+                FaceFXAnimSetEditorControl_F.UnloadExport();
+                FaceFXAnimSetEditorControl_M.UnloadExport();
                 LoadConversations();
                 return;
             }
@@ -2335,8 +2341,7 @@ namespace ME3Explorer.Dialogue_Editor
                 Properties_InterpreterWPF.LoadExport(CurrentLoadedExport);
                 if (SelectedDialogueNode != null)
                 {
-                    SoundpanelWPF_F.LoadExport(SelectedDialogueNode.WwiseStream_Female);
-                    SoundpanelWPF_M.LoadExport(SelectedDialogueNode.WwiseStream_Male);
+                    RefreshExportLoaders();
                 }
 
                 GenerateGraph();
@@ -2346,6 +2351,26 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
+
+        private void RefreshExportLoaders()
+        {
+
+            SoundpanelWPF_F.LoadExport(SelectedDialogueNode.WwiseStream_Female);
+            SoundpanelWPF_M.LoadExport(SelectedDialogueNode.WwiseStream_Male);
+            soundPanelTabControl.SelectedIndex = faceFXEditorTabControl.SelectedIndex = SelectedDialogueNode.WwiseStream_Female == null ? 1 : 0;
+            if (SelectedDialogueNode.SpeakerTag.FaceFX_Female is IExportEntry faceFX_f)
+            {
+                FaceFXAnimSetEditorControl_F.LoadExport(faceFX_f);
+                FaceFXAnimSetEditorControl_F.SelectLineByName(SelectedDialogueNode.FaceFX_Female);
+            }
+
+            if (SelectedDialogueNode.SpeakerTag.FaceFX_Male is IExportEntry faceFX_m)
+            {
+                FaceFXAnimSetEditorControl_M.LoadExport(faceFX_m);
+                FaceFXAnimSetEditorControl_M.SelectLineByName(SelectedDialogueNode.FaceFX_Male);
+            }
+        }
+
         #endregion CreateGraph  
 
         #region UIHandling-items
@@ -2423,6 +2448,8 @@ namespace ME3Explorer.Dialogue_Editor
                 Properties_InterpreterWPF.UnloadExport();
                 SoundpanelWPF_F.UnloadExport();
                 SoundpanelWPF_M.UnloadExport();
+                FaceFXAnimSetEditorControl_F.UnloadExport();
+                FaceFXAnimSetEditorControl_M.UnloadExport();
                 Convo_Panel.Visibility = Visibility.Collapsed;
             }
             else
@@ -2937,8 +2964,7 @@ namespace ME3Explorer.Dialogue_Editor
                 Node_CB_ESkippable.IsEnabled = true;
             }
 
-            SoundpanelWPF_F.LoadExport(SelectedDialogueNode.WwiseStream_Female);
-            SoundpanelWPF_M.LoadExport(SelectedDialogueNode.WwiseStream_Male);
+            RefreshExportLoaders();
 
             if (SelectedDialogueNode.FiresConditional)
                 Node_Text_Cnd.Text = "Conditional: ";

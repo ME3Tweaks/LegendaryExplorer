@@ -7,6 +7,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:ME3Explorer.Dialogue_Editor"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
+        xmlns:facefx="clr-namespace:ME3Explorer.FaceFX"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
@@ -841,9 +842,8 @@
                         <global:InterpreterWPF x:Name="Properties_InterpreterWPF" HideHexBox="True"/>
                     </TabItem>
                     <TabItem Header="InterpData"></TabItem>
-                    <TabItem Header="FaceFX"></TabItem>
-                    <TabItem Header="Audio">
-                        <TabControl>
+                    <TabItem Header="FaceFX">
+                        <TabControl Name="faceFXEditorTabControl">
                             <TabControl.Resources>
                                 <Style TargetType="{x:Type TabItem}">
                                     <Setter Property="HeaderTemplate">
@@ -860,11 +860,37 @@
                                     <Setter Property="Padding" Value="3" />
                                 </Style>
                             </TabControl.Resources>
-                            <TabItem Header="Male">
-                                <global:Soundpanel x:Name="SoundpanelWPF_M" />
+                            <TabItem Header="Female">
+                                <facefx:FaceFXAnimSetEditorControl x:Name="FaceFXAnimSetEditorControl_F" SingleLineMode="True"/>
                             </TabItem>
+                            <TabItem Header="Male">
+                                <facefx:FaceFXAnimSetEditorControl x:Name="FaceFXAnimSetEditorControl_M" SingleLineMode="True"/>
+                            </TabItem>
+                        </TabControl>
+                    </TabItem>
+                    <TabItem Header="Audio">
+                        <TabControl Name="soundPanelTabControl">
+                            <TabControl.Resources>
+                                <Style TargetType="{x:Type TabItem}">
+                                    <Setter Property="HeaderTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <ContentPresenter Content="{TemplateBinding Content}">
+                                                    <ContentPresenter.LayoutTransform>
+                                                        <RotateTransform Angle="0" />
+                                                    </ContentPresenter.LayoutTransform>
+                                                </ContentPresenter>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Padding" Value="3" />
+                                </Style>
+                            </TabControl.Resources>
                             <TabItem Header="Female">
                                 <global:Soundpanel x:Name="SoundpanelWPF_F" />
+                            </TabItem>
+                            <TabItem Header="Male">
+                                <global:Soundpanel x:Name="SoundpanelWPF_M" />
                             </TabItem>
                         </TabControl>
                     </TabItem>

@@ -76,11 +76,6 @@ namespace ME3Explorer.SharedUI
                 if ((update.change == PackageChange.ExportAdd || update.change == PackageChange.ExportData)
                     && update.index == LoadedExport.Index)
                 {
-                    if (hostedControl is CurveEditor)
-                    {
-                        //CurveEditor handles its own refresh
-                        continue;
-                    }
                     hostedControl.LoadExport(LoadedExport); //reload export
                     return;
                 }

@@ -1377,6 +1377,7 @@ namespace ME3Explorer
             ExportLoaders[MetadataTab_MetadataEditor] = Metadata_Tab;
             ExportLoaders[SoundTab_Soundpanel] = Sound_Tab;
             ExportLoaders[CurveTab_CurveEditor] = CurveEditor_Tab;
+            ExportLoaders[FaceFXTab_Editor] = FaceFXAnimSet_Tab;
             ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
             ExportLoaders[ScriptTab_UnrealScriptEditor] = Script_Tab;
             ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
@@ -2044,10 +2045,10 @@ namespace ME3Explorer
             }
             if (selectedEntry == null)
             {
-                foreach (KeyValuePair<ExportLoaderControl, TabItem> e in ExportLoaders)
+                foreach ((ExportLoaderControl exportLoader, TabItem tab) in ExportLoaders)
                 {
-                    e.Key.UnloadExport();
-                    e.Value.Visibility = Visibility.Collapsed;
+                    exportLoader.UnloadExport();
+                    tab.Visibility = Visibility.Collapsed;
                 }
                 EditorTabs.IsEnabled = false;
                 Metadata_Tab.Visibility = Visibility.Collapsed;
@@ -2066,23 +2067,18 @@ namespace ME3Explorer
                 Interpreter_Tab.IsEnabled = selectedEntry is IExportEntry;
                 if (selectedEntry is IExportEntry exportEntry)
                 {
-                    foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
+                    foreach ((ExportLoaderControl exportLoader, TabItem tab) in ExportLoaders)
                     {
-                        if (entry.Key.CanParse(exportEntry))
+                        if (exportLoader.CanParse(exportEntry))
                         {
-                            if (isRefresh && entry.Key is CurveEditor && entry.Value.Visibility == Visibility.Visible)
-                            {
-                                //CurveEditor handles its own refresh
-                                continue;
-                            }
-                            entry.Key.LoadExport(exportEntry);
-                            entry.Value.Visibility = Visibility.Visible;
+                            exportLoader.LoadExport(exportEntry);
+                            tab.Visibility = Visibility.Visible;
 
                         }
                         else
                         {
-                            entry.Value.Visibility = Visibility.Collapsed;
-                            entry.Key.UnloadExport();
+                            tab.Visibility = Visibility.Collapsed;
+                            exportLoader.UnloadExport();
                         }
                     }
                     if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Class")

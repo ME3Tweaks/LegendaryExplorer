@@ -46,12 +46,13 @@ namespace ME3Explorer.SharedUI
             txtResponse.Focus();
         }
 
-        public static string Prompt(Window owner, string question, string title = "", string defaultValue = "", bool selectText = false, InputType inputType = InputType.Text)
+        public static string Prompt(Control owner, string question, string title = "", string defaultValue = "", bool selectText = false, InputType inputType = InputType.Text)
         {
-            PromptDialog inst = new PromptDialog(question, title, defaultValue, selectText, inputType)
+            PromptDialog inst = new PromptDialog(question, title, defaultValue, selectText, inputType);
+            if (owner != null)
             {
-                Owner = owner
-            };
+                inst.Owner = owner as Window ?? GetWindow(owner);
+            }
             inst.ShowDialog();
             if (inst.DialogResult == true)
                 return inst.ResponseText;

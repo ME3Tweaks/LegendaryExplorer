@@ -99,7 +99,7 @@ namespace ME3Explorer.FaceFX
             {
                 if (Container.isLoading)
                     data.Data[i] = new ME2FaceFXLine();
-                ME2FaceFXLine d = data.Data[i];
+                ME2FaceFXLine d = (ME2FaceFXLine)data.Data[i];
                 d.unk0 = Container + d.unk0;
                 d.unk1 = Container + d.unk1;
                 d.Name = Container + d.Name;
@@ -301,8 +301,8 @@ namespace ME3Explorer.FaceFX
             if (n < 0 || n >= data.Data.Length)
                 return;
             List<ME2FaceFXLine> list = new List<ME2FaceFXLine>();
-            list.AddRange(data.Data);
-            list.Add(data.Data[n]);
+            list.AddRange((ME2FaceFXLine[])data.Data);
+            list.Add((ME2FaceFXLine)data.Data[n]);
             data.Data = list.ToArray();
         }
         public void RemoveEntry(int n)
@@ -310,7 +310,7 @@ namespace ME3Explorer.FaceFX
             if (n < 0 || n >= data.Data.Length)
                 return;
             List<ME2FaceFXLine> list = new List<ME2FaceFXLine>();
-            list.AddRange(data.Data);
+            list.AddRange((ME2FaceFXLine[])data.Data);
             list.RemoveAt(n);
             data.Data = list.ToArray();
         }
@@ -322,8 +322,8 @@ namespace ME3Explorer.FaceFX
             List<ME2FaceFXLine> list = new List<ME2FaceFXLine>();
             for (int i = 0; i < data.Data.Length; i++)
                 if (i != n)
-                    list.Add(data.Data[i]);
-            list.Insert(m, data.Data[n]);
+                    list.Add((ME2FaceFXLine)data.Data[i]);
+            list.Insert(m, (ME2FaceFXLine)data.Data[n]);
             data.Data = list.ToArray();
         }
 

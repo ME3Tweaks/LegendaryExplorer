@@ -277,6 +277,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="FaceFXAnimSetEditor\FaceFXAnimSetEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FileHexViewer\FileHexViewerWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -338,6 +342,9 @@
     </Compile>
     <Compile Include="DLCUnpacker\DLCUnpacker.xaml.cs">
       <DependentUpon>DLCUnpacker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditorControl.xaml.cs">
+      <DependentUpon>FaceFXAnimSetEditorControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="FaceFXAnimSetEditor\ME1FaceFXAnimSet.cs" />
     <Compile Include="FileHexViewer\FileHexViewerWPF.xaml.cs">
