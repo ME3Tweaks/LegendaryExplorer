@@ -634,7 +634,9 @@ namespace ME3Explorer.Dialogue_Editor
 
                 conv.IsFirstParsed = true;
             }
-            //Debug.WriteLine("FirstParse Done");
+#if DEBUG
+            Debug.WriteLine("FirstParse Done");
+#endif
             BackParser = new BackgroundWorker()
             {
                 WorkerReportsProgress = true,
@@ -648,7 +650,11 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void BackParse(object sender, DoWorkEventArgs e)
         {
-            //Debug.WriteLine("BackParse Starting");
+#if DEBUG
+            Debug.WriteLine("BackParse Starting");
+#endif
+
+            //TO DO MAKE THREADSAFE
             if (SelectedConv != null && SelectedConv.IsParsed == false) //Get Active setup pronto.
             {
                 foreach (var spkr in SelectedConv.Speakers)
@@ -686,7 +692,9 @@ namespace ME3Explorer.Dialogue_Editor
         private void BackParser_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             BackParser.CancelAsync();
-            //Debug.WriteLine("BackParse Done");
+#if DEBUG
+            Debug.WriteLine("BackParse Done");
+#endif
         }
 
         private void ParseSpeakers(ConversationExtended conv)
@@ -694,31 +702,40 @@ namespace ME3Explorer.Dialogue_Editor
             conv.Speakers = new ObservableCollectionExtended<SpeakerExtended>();
             conv.Speakers.Add(new SpeakerExtended(-2, "player", null, null, 125303, "\"Shepard\""));
             conv.Speakers.Add(new SpeakerExtended(-1, "owner", null, null, 0, "No data"));
-            if (CurrentConvoPackage.Game != MEGame.ME3)
+            try
             {
-                var s_speakers = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_SpeakerList");
-                if (s_speakers != null)
+                if (CurrentConvoPackage.Game != MEGame.ME3)
                 {
-                    for (int id = 0; id < s_speakers.Count; id++)
+                    var s_speakers = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_SpeakerList");
+                    if (s_speakers != null)
                     {
-                        var spkr = new SpeakerExtended(id, s_speakers[id].GetProp<NameProperty>("sSpeakerTag").ToString());
-                        conv.Speakers.Add(spkr);
+                        for (int id = 0; id < s_speakers.Count; id++)
+                        {
+                            var spkr = new SpeakerExtended(id, s_speakers[id].GetProp<NameProperty>("sSpeakerTag").ToString());
+                            conv.Speakers.Add(spkr);
+                        }
+                    }
+                }
+                else
+                {
+                    var a_speakers = conv.BioConvo.GetProp<ArrayProperty<NameProperty>>("m_aSpeakerList");
+                    if (a_speakers != null)
+                    {
+                        int id = 0;
+                        foreach (NameProperty n in a_speakers)
+                        {
+                            var spkr = new SpeakerExtended(id, n.ToString());
+                            conv.Speakers.Add(spkr);
+                            id++;
+                        }
                     }
                 }
             }
-            else
+            catch (Exception e)
             {
-                var a_speakers = conv.BioConvo.GetProp<ArrayProperty<NameProperty>>("m_aSpeakerList");
-                if (a_speakers != null)
-                {
-                    int id = 0;
-                    foreach (NameProperty n in a_speakers)
-                    {
-                        var spkr = new SpeakerExtended(id, n.ToString());
-                        conv.Speakers.Add(spkr);
-                        id++;
-                    }
-                }
+#if DEBUG
+                throw new Exception("Starting List Parse failed", e);
+#endif
             }
         }
         private void ParseEntryList(ConversationExtended conv)
@@ -742,7 +759,9 @@ namespace ME3Explorer.Dialogue_Editor
             }
             catch (Exception e)
             {
-                //throw new Exception("Entry List Parse failed", e);
+#if DEBUG
+                throw new Exception("Entry List Parse failed", e);
+#endif
             }
         }
         private void ParseReplyList(ConversationExtended conv)
@@ -752,22 +771,27 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 var replyprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList"); //ME3
                 int cnt = 0;
-                foreach (StructProperty Node in replyprop)
+                if(replyprop != null)
                 {
-                    int speakerindex = -2;
-                    int linestrref = Node.GetProp<StringRefProperty>("srText").Value;
-                    string line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage);
-                    int cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
-                    int stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
-                    bool bcond = Node.GetProp<BoolProperty>("bFireConditional");
-                    Enum.TryParse(Node.GetProp<EnumProperty>("ReplyType").Value.Name, out EReplyTypes eReply);
-                    conv.ReplyList.Add(new DialogueNodeExtended(Node, true, cnt, speakerindex, linestrref, line, bcond, cond, stevent, eReply));
-                    cnt++;
+                    foreach (StructProperty Node in replyprop)
+                    {
+                        int speakerindex = -2;
+                        int linestrref = Node.GetProp<StringRefProperty>("srText").Value;
+                        string line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage);
+                        int cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
+                        int stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
+                        bool bcond = Node.GetProp<BoolProperty>("bFireConditional");
+                        Enum.TryParse(Node.GetProp<EnumProperty>("ReplyType").Value.Name, out EReplyTypes eReply);
+                        conv.ReplyList.Add(new DialogueNodeExtended(Node, true, cnt, speakerindex, linestrref, line, bcond, cond, stevent, eReply));
+                        cnt++;
+                    }
                 }
             }
             catch (Exception e)
             {
-                //throw new Exception("Reply List Parse failed", e);  //Note some convos don't have replies.
+#if DEBUG
+                throw new Exception("Reply List Parse failed", e);  //Note some convos don't have replies.
+#endif
             }
         }
         private void ParseScripts(ConversationExtended conv)
@@ -952,7 +976,9 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 catch (Exception e)
                 {
+#if DEBUG
                     throw new Exception($"EntryList parse interpdata failed: {entry.NodeCount}", e);
+#endif
                 }
             }
 
@@ -974,7 +1000,7 @@ namespace ME3Explorer.Dialogue_Editor
                                 {
                                     var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
                                     var interpseqact = Pcc.getUExport(link);
-                                    if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
+                                    if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / SFXSeqAct_SetFaceFX"
                                     {
                                         var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
                                         if (outLinksProp2 != null)
@@ -984,7 +1010,7 @@ namespace ME3Explorer.Dialogue_Editor
                                             {
                                                 var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
                                                 interpseqact = Pcc.getUExport(link2);
-                                                if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
+                                                if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / SFXSeqAct_SetFaceFX"
                                                 {
                                                     var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
                                                     if (outLinksProp3 != null)
@@ -1038,12 +1064,10 @@ namespace ME3Explorer.Dialogue_Editor
         {
             try
             {
-                //Pull Male/Female animsets from Speaker
-                //Get reference line how??
-                //
+
                 if (Pcc.Game != MEGame.ME1)
                 {
-                    Dictionary<string, IExportEntry> streams = Pcc.Exports.Where(x => x.ClassName == "WwiseStream").ToDictionary(x => x.ObjectName.ToLower(), x => x);
+                    Dictionary<string, IExportEntry> streams = Pcc.Exports.Where(x => x.ClassName == "WwiseStream").ToDictionary(x => $"{x.ObjectName.ToLower()}_{x.UIndex}", x => x);
 
                     foreach (var node in conv.EntryList)
                     {
@@ -1062,9 +1086,11 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
-                //ignore
+#if DEBUG
+                throw new Exception("Failure to parse wwisestreams for lines", e);
+#endif
             }
         }
         private void ParseLinesScripts(ConversationExtended conv)
@@ -1086,7 +1112,9 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show($"Parse failure on script list{e}");//ignore
+#if DEBUG
+                    throw new Exception($"Parse failure on script list", e);
+#endif
                 }
             }
         }
@@ -1139,7 +1167,9 @@ namespace ME3Explorer.Dialogue_Editor
             }
             catch (Exception e)
             {
-                MessageBox.Show($"DiagNodeParse Failed. {e}");
+#if DEBUG
+                throw new Exception("DiagNodeParse Failed.", e);
+#endif
             }
         }
         private void ParseLinesFaceFX(ConversationExtended conv)
@@ -1242,50 +1272,55 @@ namespace ME3Explorer.Dialogue_Editor
         public void ParseWwiseBank(ConversationExtended conv)
         {
             conv.WwiseBank = null;
-            try
+            if(Pcc.Game != MEGame.ME1)
             {
-                IEntry ffxo = GetFaceFX(conv, -1, true); //find owner animset
-                if (!Pcc.isUExport(ffxo.UIndex))
-                    return;
-                IExportEntry ffxoExport = ffxo as IExportEntry;
-
-                var wwevents = ffxoExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull a wwiseevent array
-                if (wwevents == null)
+                try
                 {
-                    IEntry ffxp = GetFaceFX(conv, -2, true); //find player as alternative
+                    IEntry ffxo = GetFaceFX(conv, -1, true); //find owner animset
                     if (!Pcc.isUExport(ffxo.UIndex))
                         return;
-                    IExportEntry ffxpExport = ffxp as IExportEntry;
-                    wwevents = ffxpExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
-                }
+                    IExportEntry ffxoExport = ffxo as IExportEntry;
 
-                if (Pcc.Game == MEGame.ME3)
-                {
-                    StructProperty r = CurrentConvoPackage.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
-                    var bank = r.GetProp<ObjectProperty>("Bank");
-                    conv.WwiseBank = Pcc.getUExport(bank.Value);
-                }
-                else if (Pcc.Game == MEGame.ME2) //Game is ME2.  Wwisebank ref in Binary.
-                {
-                    var data = Pcc.getUExport(wwevents[0].Value).getBinaryData();
-                    int binarypos = 4;
-                    int count = BitConverter.ToInt32(data, binarypos);
-                    if (count > 0)
+                    var wwevents = ffxoExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull a wwiseevent array
+                    if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
                     {
-                        binarypos += 4;
-                        int bnkcount = BitConverter.ToInt32(data, binarypos);
-                        if (bnkcount > 0)
+                        IEntry ffxp = GetFaceFX(conv, -2, true); //find player as alternative
+                        if (!Pcc.isUExport(ffxo.UIndex))
+                            return;
+                        IExportEntry ffxpExport = ffxp as IExportEntry;
+                        wwevents = ffxpExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+                    }
+
+                    if (Pcc.Game == MEGame.ME3)
+                    {
+                        StructProperty r = CurrentConvoPackage.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
+                        var bank = r.GetProp<ObjectProperty>("Bank");
+                        conv.WwiseBank = Pcc.getUExport(bank.Value);
+                    }
+                    else if (Pcc.Game == MEGame.ME2) //Game is ME2.  Wwisebank ref in Binary.
+                    {
+                        var data = Pcc.getUExport(wwevents[0].Value).getBinaryData();
+                        int binarypos = 4;
+                        int count = BitConverter.ToInt32(data, binarypos);
+                        if (count > 0)
                         {
                             binarypos += 4;
-                            int bank = BitConverter.ToInt32(data, binarypos);
-                            conv.WwiseBank = Pcc.getUExport(bank);
+                            int bnkcount = BitConverter.ToInt32(data, binarypos);
+                            if (bnkcount > 0)
+                            {
+                                binarypos += 4;
+                                int bank = BitConverter.ToInt32(data, binarypos);
+                                conv.WwiseBank = Pcc.getUExport(bank);
+                            }
                         }
                     }
                 }
-            }
-            catch
-            {
-                //ignore
+                catch (Exception e)
+                {
+#if DEBUG
+                    throw new Exception("WwiseBank Parse Failed.", e);
+#endif
+                }
             }
         }
         public int ParseActorsNames(ConversationExtended conv, string tag)
@@ -3605,6 +3640,10 @@ namespace ME3Explorer.Dialogue_Editor
                     break;
                 case "Lay_AutoSave":
                     SaveViewMode = 0;
+                    if (CurrentObjects.Any())
+                    {
+                        SetupConvJSON(SelectedConv.Export);
+                    }
                     break;
                 case "Lay_AutoGen":
                     SaveViewMode = 2;
@@ -3672,14 +3711,14 @@ namespace ME3Explorer.Dialogue_Editor
                 RefreshView();
             }
         }
-        private void GlobalSeqRefViewSavesMenuItem_OnClick(object sender, RoutedEventArgs e)
+        private void GenderTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CurrentObjects.Any())
+            if(e.Source is TabControl tabctrl)
             {
-                SetupConvJSON(SelectedConv.Export);
+                soundPanelTabControl.SelectedIndex = tabctrl.SelectedIndex;
+                faceFXEditorTabControl.SelectedIndex = tabctrl.SelectedIndex;
             }
-        } //NEED TO BUILD JSON EVER?
-
+        }
         private void TestPaths()
         {
             if (AutoGenerateSpeakerArrays(SelectedConv))
@@ -4094,6 +4133,8 @@ namespace ME3Explorer.Dialogue_Editor
 
 
 
+
         #endregion Helpers
+
     }
 }

@@ -482,12 +482,12 @@
                                                     <fa:ImageAwesome Icon="Cube" Width="16" Height="16" Foreground="DarkBlue"/>
                                                 </Button.Content>
                                             </Button>
-                                            <Button Name="OpenLineSE_Button" Command="{Binding OpenInCommand}" CommandParameter="SeqEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's sequence" IsEnabled="False" >
+                                            <Button Name="OpenLineSE_Button" Command="{Binding OpenInCommand_Line}" CommandParameter="SeqEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's sequence" >
                                                 <Button.Content>
                                                     <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkBlue"/>
                                                 </Button.Content>
                                             </Button>
-                                            <Button Name="OpenLineIE_Button" Command="{Binding OpenInCommand_Line}" CommandParameter="InterpEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line in interpeditor" IsEnabled="True"  >
+                                            <Button Name="OpenLineIE_Button" Command="{Binding OpenInCommand_Line}" CommandParameter="InterpEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line in interpeditor">
                                                 <Button.Content>
                                                     <fa:ImageAwesome Icon="AreaChart" Width="16" Height="16" Foreground="DarkBlue"/>
                                                 </Button.Content>
@@ -843,7 +843,7 @@
                     </TabItem>
                     <TabItem Header="InterpData"></TabItem>
                     <TabItem Header="FaceFX">
-                        <TabControl Name="faceFXEditorTabControl">
+                        <TabControl Name="faceFXEditorTabControl" SelectionChanged="GenderTabControl_SelectionChanged">
                             <TabControl.Resources>
                                 <Style TargetType="{x:Type TabItem}">
                                     <Setter Property="HeaderTemplate">
@@ -860,40 +860,40 @@
                                     <Setter Property="Padding" Value="3" />
                                 </Style>
                             </TabControl.Resources>
-                            <TabItem Header="Female">
+                            <TabItem x:Name="FaceFxTab_F" Header="Female">
                                 <facefx:FaceFXAnimSetEditorControl x:Name="FaceFXAnimSetEditorControl_F" SingleLineMode="True"/>
                             </TabItem>
-                            <TabItem Header="Male">
+                            <TabItem x:Name="FaceFxTab_M" Header="Male">
                                 <facefx:FaceFXAnimSetEditorControl x:Name="FaceFXAnimSetEditorControl_M" SingleLineMode="True"/>
                             </TabItem>
                         </TabControl>
                     </TabItem>
                     <TabItem Header="Audio">
-                        <TabControl Name="soundPanelTabControl">
-                            <TabControl.Resources>
-                                <Style TargetType="{x:Type TabItem}">
-                                    <Setter Property="HeaderTemplate">
-                                        <Setter.Value>
-                                            <DataTemplate>
-                                                <ContentPresenter Content="{TemplateBinding Content}">
-                                                    <ContentPresenter.LayoutTransform>
-                                                        <RotateTransform Angle="0" />
-                                                    </ContentPresenter.LayoutTransform>
-                                                </ContentPresenter>
-                                            </DataTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Setter Property="Padding" Value="3" />
-                                </Style>
-                            </TabControl.Resources>
-                            <TabItem Header="Female">
-                                <global:Soundpanel x:Name="SoundpanelWPF_F" />
-                            </TabItem>
-                            <TabItem Header="Male">
-                                <global:Soundpanel x:Name="SoundpanelWPF_M" />
-                            </TabItem>
-                        </TabControl>
-                    </TabItem>
+                    <TabControl Name="soundPanelTabControl" SelectionChanged="GenderTabControl_SelectionChanged">
+                        <TabControl.Resources>
+                            <Style TargetType="{x:Type TabItem}">
+                                <Setter Property="HeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <ContentPresenter Content="{TemplateBinding Content}">
+                                                <ContentPresenter.LayoutTransform>
+                                                    <RotateTransform Angle="0" />
+                                                </ContentPresenter.LayoutTransform>
+                                            </ContentPresenter>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Padding" Value="3" />
+                            </Style>
+                        </TabControl.Resources>
+                        <TabItem x:Name="SoundTab_F" Header="Female">
+                            <global:Soundpanel x:Name="SoundpanelWPF_F" />
+                        </TabItem>
+                        <TabItem x:Name="SoundTab_M" Header="Male">
+                            <global:Soundpanel x:Name="SoundpanelWPF_M" />
+                        </TabItem>
+                    </TabControl>
+                </TabItem>
                 </TabControl>
             </Grid>
             <WindowsFormsHost Grid.Column="0" Grid.Row="0" Name="GraphHost" VerticalAlignment="Stretch">
