@@ -1283,25 +1283,38 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 try
                 {
+                    var wwevents = new ArrayProperty<ObjectProperty>(ArrayType.Object,"WwiseEvent_Links");
                     IEntry ffxo = GetFaceFX(conv, -1, true); //find owner animset
-                    if (!Pcc.isUExport(ffxo.UIndex))
-                        return;
-                    IExportEntry ffxoExport = ffxo as IExportEntry;
 
-                    var wwevents = ffxoExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull a wwiseevent array
-                    if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
+                    if (ffxo == null) //if no facefx then maybe soundobject conversation
                     {
-                        IEntry ffxp = GetFaceFX(conv, -2, true); //find player as alternative
-                        if (!Pcc.isUExport(ffxo.UIndex))
-                            return;
-                        IExportEntry ffxpExport = ffxp as IExportEntry;
-                        wwevents = ffxpExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+                        wwevents = conv.Export.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleSoundObjects");
                     }
+                    else
+                    {
+                        IExportEntry ffxoExport = ffxo as IExportEntry;
+
+                        wwevents = ffxoExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull an owner wwiseevent array
+                        if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
+                        {
+                            IEntry ffxp = GetFaceFX(conv, -2, true); //find player as alternative
+                            if (!Pcc.isUExport(ffxp.UIndex))
+                                return;
+                            IExportEntry ffxpExport = ffxp as IExportEntry;
+                            wwevents = ffxpExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+                        }
+                    }
+
 
                     if (Pcc.Game == MEGame.ME3)
                     {
                         StructProperty r = CurrentConvoPackage.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
                         var bank = r.GetProp<ObjectProperty>("Bank");
+                        if (bank.Value > 5324)
+                        {
+                            int x = 11;
+                        }
+                            
                         conv.WwiseBank = Pcc.getUExport(bank.Value);
                     }
                     else if (Pcc.Game == MEGame.ME2) //Game is ME2.  Wwisebank ref in Binary.
@@ -2267,113 +2280,122 @@ namespace ME3Explorer.Dialogue_Editor
         private void AutoLayout_Waterfall()
         {
 
-            //foreach (DObj obj in CurrentObjects)
-            //{
-            //    obj.SetOffset(0, 0); //remove existing positioning
-            //}
+            foreach (DObj obj in CurrentObjects)
+            {
+                obj.SetOffset(0, 0); //remove existing positioning
+            }
+            int rowAt = 0;
+            int columnAt = 0;
+            int maxrow = 0;
+            const float COLUMN_SPACING = 220;
+            const float WATERFALL_SPACING = 40;
+            const float ROW_SPACING = 200;
+            var visitedNodes = new HashSet<int>();
+            var startNodes = CurrentObjects.OfType<DStart>().ToList();
+            var allNodes = CurrentObjects.OfType<DiagNode>().OrderBy(n => n.NodeUID).ToList();
+            DiagNode nextNode = null;
+            var BranchStack = new Stack<KeyValuePair<DiagNode, int>>();
 
-            //const float HORIZONTAL_SPACING = 40;
-            //const float VERTICAL_SPACING = 20;
-            //var visitedNodes = new HashSet<int>();
-            //var eventNodes = CurrentObjects.OfType<DStart>().ToList();
-            //DObj firstNode = eventNodes.FirstOrDefault();
+            //TAKE First Start - use to get first layer of waterfall.
+            //add to first layer until end. any other branches add to branch stack LIFO to create second etc layer.
+            // If no branches in stack then go back to new start.
 
-            //var rootTree = new List<DObj>();
-            ////DStarts are natural root nodes. ALmost everything will proceed from one of these
-            //foreach (DStart eventNode in eventNodes)
-            //{
-            //    LayoutTree(eventNode, 5 * VERTICAL_SPACING);
-            //}
+            while (allNodes.Count > 0)
+            {
+                DStart firstNode = startNodes.FirstOrDefault();
+                if(firstNode != null)
+                {
+                    if (rowAt > maxrow)
+                    {
+                        maxrow = rowAt;
+                    }
+                    else
+                    {
+                        rowAt = maxrow;
+                    }
 
-            ////Find DiagNodes with no inputs. These will not have been reached from an DStart
-            //var orphanRoots = CurrentObjects.OfType<DiagNode>().Where(node => node.InputEdges.IsEmpty());
-            //foreach (DiagNode orphan in orphanRoots)
-            //{
-            //    LayoutTree(orphan, VERTICAL_SPACING);
-            //}
+                    columnAt = 0;
+                    
+                    firstNode.SetOffset(columnAt, maxrow * ROW_SPACING);
+                    maxrow++;
+                    startNodes.Remove(firstNode);
+                    visitedNodes.Add(firstNode.NodeUID);
+                    nextNode = allNodes.FirstOrDefault(x => x.NodeUID == firstNode.StartNumber);
+                    if (nextNode != null && !visitedNodes.Contains(nextNode.NodeUID))
+                    {
+                        while (!(nextNode == null && BranchStack.IsEmpty()))
+                        {
+                            var thisNode = nextNode;
+                            nextNode = null;
+                            if (thisNode != null && !visitedNodes.Contains(thisNode.NodeUID))
+                            {
+                                columnAt++;
+                                thisNode.SetOffset(columnAt * COLUMN_SPACING, rowAt * ROW_SPACING + columnAt * WATERFALL_SPACING);
+                                visitedNodes.Add(thisNode.NodeUID);
+                                allNodes.Remove(thisNode);
+                                if (thisNode.Links.Count != 0)
+                                {
+                                    int r = 0;
+                                    if(!thisNode.Node.IsReply) //Conversion factor from nIndex to NodeUID
+                                    {
+                                        r = 1000;
+                                    }
+                                    for (int i = thisNode.Links.Count - 1; i >= 0; i--) //DO IN REVERSE SO STACK IS CORRECTLY DONE
+                                    {
+                                        if (i == 0)
+                                        {
+                                            nextNode = allNodes.FirstOrDefault(x => x.NodeUID == (thisNode.Links[0].Index + r));
+                                        }
+                                        else
+                                        {
+                                            var pushstack = allNodes.FirstOrDefault(x => x.NodeUID == thisNode.Links[i].Index + r);
+                                            if(pushstack != null) //means link to visited node.  Don't add to Branchstack.
+                                            {
+                                                BranchStack.Push(new KeyValuePair<DiagNode, int>(pushstack, columnAt));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if(!BranchStack.IsEmpty())//REACHED END OF BRANCH PULL nextNode from STACK
+                            {
+                                var branchpair = BranchStack.Pop();
+                                nextNode = branchpair.Key;
+                                columnAt = branchpair.Value;
+                                if(visitedNodes.Contains(branchpair.Key.NodeUID)) //if nextnode is already up, make sure stack is pulled again without moving down.
+                                {
+                                    nextNode = null;
+                                }
+                                else
+                                {
+                                    rowAt++;
+                                    maxrow++;
+                                }
+                            }
+                        }
+                    }
+                }
+                else //everything else is orphan.
+                {
+                    int orphanrow = maxrow;
+                    foreach(var obj in allNodes)
+                    {
+                        int orphancol = 1;
+                        if (obj.Node.IsReply)
+                            orphancol = 2;
+                        obj.SetOffset(orphancol * COLUMN_SPACING, orphanrow * ROW_SPACING);
+                        orphanrow++;
+                    }
 
-            ////It's possible that there are groups of otherwise unconnected DiagNodes that form cycles.
-            ////Might be possible to make a better heuristic for choosing a root than sequence order, but this situation is so rare it's not worth the effort
-            //var cycleNodes = CurrentObjects.OfType<DiagNode>().Where(node => !visitedNodes.Contains(node.UIndex));
-            //foreach (DiagNode cycleNode in cycleNodes)
-            //{
-            //    LayoutTree(cycleNode, VERTICAL_SPACING);
-            //}
+                    break;
+                }
 
-            ////Lonely unconnected variables. Put them in a row below everything else
-            //var unusedVars = CurrentObjects.OfType<SVar>().Where(obj => !visitedNodes.Contains(obj.UIndex));
-            //float varOffset = 0;
-            //float vertOffset = rootTree.BoundingRect().Bottom + VERTICAL_SPACING;
-            //foreach (SVar unusedVar in unusedVars)
-            //{
-            //    unusedVar.OffsetBy(varOffset, vertOffset);
-            //    varOffset += unusedVar.GlobalFullWidth + HORIZONTAL_SPACING;
-            //}
+            }
 
-            //if (firstNode != null) CurrentObjects.OffsetBy(0, -firstNode.OffsetY);
-
-            //foreach (DiagEdEdge edge in graphEditor.edgeLayer)
-            //    ConvGraphEditor.UpdateEdge(edge);
-
-
-            //void LayoutTree(DBox DiagNode, float verticalSpacing)
-            //{
-            //    if (firstNode == null) firstNode = DiagNode;
-            //    visitedNodes.Add(DiagNode.UIndex);
-            //    var subTree = LayoutSubTree(DiagNode);
-            //    float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING;
-            //    //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
-            //    float dy = rootTree.Where(node => node.GlobalFullBounds.Left < width).BoundingRect().Bottom;
-            //    if (dy > 0) dy += verticalSpacing;
-            //    subTree.OffsetBy(0, dy);
-            //    rootTree.AddRange(subTree);
-            //}
-
-            //List<DObj> LayoutSubTree(DBox root)
-            //{
-            //    //Task.WaitAll(Task.Delay(1500));
-            //    var tree = new List<DObj>();
-            //    var childTrees = new List<List<DObj>>();
-            //    var children = root.Outlinks.SelectMany(link => link.Links).Where(uIndex => !visitedNodes.Contains(uIndex));
-            //    foreach (int uIndex in children)
-            //    {
-            //        visitedNodes.Add(uIndex);
-            //        if (opNodeLookup.TryGetValue(uIndex, out DBox node))
-            //        {
-            //            List<DObj> subTree = LayoutSubTree(node);
-            //            childTrees.Add(subTree);
-            //        }
-            //    }
-
-            //    if (childTrees.Any())
-            //    {
-            //        float dx = root.GlobalFullWidth + (HORIZONTAL_SPACING * (1 + childTrees.Count * 0.4f));
-            //        foreach (List<DObj> subTree in childTrees)
-            //        {
-            //            float subTreeWidth = subTree.BoundingRect().Width + HORIZONTAL_SPACING + dx;
-            //            //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
-            //            float dy = tree.Where(node => node.GlobalFullBounds.Left < subTreeWidth).BoundingRect().Bottom;
-            //            if (dy > 0) dy += VERTICAL_SPACING;
-            //            subTree.OffsetBy(dx, dy);
-            //            //TODO: fix this so it doesn't screw up some sequences. eg: BioD_ProEar_310BigFall.pcc
-            //            /*float treeWidth = tree.BoundingRect().Width + HORIZONTAL_SPACING;
-            //            //tighten spacing when this subtree is wider than existing tree. 
-            //            dy -= subTree.Where(node => node.GlobalFullBounds.Left < treeWidth).BoundingRect().Top;
-            //            if (dy < 0) dy += VERTICAL_SPACING;
-            //            subTree.OffsetBy(0, dy);*/
-
-            //            tree.AddRange(subTree);
-            //        }
-
-            //        //center the root on its children
-            //        float centerOffset = tree.OfType<DBox>().BoundingRect().Height / 2 - root.GlobalFullHeight / 2;
-            //        root.OffsetBy(0, centerOffset);
-            //    }
-
-
-            //    tree.Add(root);
-            //    return tree;
-            //}
+            foreach (DiagEdEdge edge in graphEditor.edgeLayer)
+            {
+                ConvGraphEditor.UpdateEdge(edge);
+            }
         }
 
         public void RefreshView()
@@ -4150,7 +4172,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
         /// <summary>
-        /// Waut for bool condition to switch to false. Used for async delay.
+        /// Wait for bool condition to switch to false. Used for async delay.
         /// </summary>
         /// <param name="waitforfalse">condition</param>
         /// <param name="delay">Delay in milliseconds.</param>
