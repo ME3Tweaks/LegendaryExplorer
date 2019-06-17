@@ -38,6 +38,8 @@ namespace ME3Explorer.Matinee
             }
         }
 
+        public event Action<IExportEntry> SelectionChanged;
+
         public ObservableCollectionExtended<InterpGroup> InterpGroups { get; } = new ObservableCollectionExtended<InterpGroup>();
 
         public Timeline()
@@ -53,6 +55,19 @@ namespace ME3Explorer.Matinee
             {
                 var groupExports = groupsProp.Where(prop => Pcc.isUExport(prop.Value)).Select(prop => Pcc.getUExport(prop.Value));
                 InterpGroups.AddRange(groupExports.Select(exp => new InterpGroup(exp)));
+            }
+        }
+
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            switch (e.NewValue)
+            {
+                case InterpGroup group:
+                    SelectionChanged?.Invoke(group.Export);
+                    break;
+                case InterpTrack track:
+                    SelectionChanged?.Invoke(track.Export);
+                    break;
             }
         }
     }

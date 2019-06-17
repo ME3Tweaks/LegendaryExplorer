@@ -15,6 +15,8 @@ namespace ME3Explorer.Matinee
 {
     public class InterpGroup : NotifyPropertyChangedBase
     {
+        public IExportEntry Export { get; }
+
         public string GroupName { get; set; }
 
         public Color GroupColor { get; set; } = Color.FromArgb(0, 0, 0, 0);
@@ -23,6 +25,7 @@ namespace ME3Explorer.Matinee
 
         public InterpGroup(IExportEntry export)
         {
+            Export = export;
             GroupName = export.GetProperty<NameProperty>("GroupName")?.Value ?? "Group";
 
             if (export.GetProperty<StructProperty>("GroupColor") is StructProperty colorStruct)
@@ -96,13 +99,16 @@ namespace ME3Explorer.Matinee
 
     public abstract class InterpTrack : NotifyPropertyChangedBase
     {
+        public IExportEntry Export { get; }
+
         public string TrackTitle { get; set; }
 
         public ObservableCollectionExtended<Key> Keys { get; } = new ObservableCollectionExtended<Key>();
 
         protected InterpTrack(IExportEntry export)
         {
-            TrackTitle = export.ObjectName;
+            Export = export;
+            TrackTitle = export.GetProperty<StrProperty>("TrackTitle")?.Value ?? export.ObjectName;
         }
     }
 
@@ -167,6 +173,15 @@ namespace ME3Explorer.Matinee
     {
         public InterpTrackFaceFX(IExportEntry export) : base(export)
         {
+            var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("FaceFXSeqs");
+            if (trackKeys != null)
+            {
+                foreach (StructProperty trackKey in trackKeys)
+                {
+                    var fTime = trackKey.GetProp<FloatProperty>("StartTime");
+                    Keys.Add(new Key(fTime));
+                }
+            }
         }
     }
     public class InterpTrackAnimControl : InterpTrack

@@ -37,7 +37,15 @@ namespace ME3Explorer.Matinee
             InitializeComponent();
 
             LoadRecentList();
+
+            timelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
         }
+
+        private void TimelineControlOnSelectionChanged(IExportEntry export)
+        {
+            Properties_InterpreterWPF.LoadExport(export);
+        }
+
         public ObservableCollectionExtended<IExportEntry> InterpDataExports { get; } = new ObservableCollectionExtended<IExportEntry>();
 
         #region Properties and Bindings
@@ -272,6 +280,14 @@ namespace ME3Explorer.Matinee
         private void InterpDataExportsList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+
+        private void WPFBase_Closing(object sender, CancelEventArgs e)
+        {
+            if (e.Cancel)
+                return;
+
+            timelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
         }
     }
 }

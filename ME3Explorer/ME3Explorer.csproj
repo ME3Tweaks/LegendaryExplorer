@@ -273,11 +273,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="InterpEditor\InterpEditor.xaml">
+    <Page Include="Matinee\InterpEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="InterpEditor\Timeline.xaml">
+    <Page Include="Matinee\Timeline.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -332,12 +332,13 @@
     <Compile Include="FileHexViewer\FileHexViewerWPF.xaml.cs">
       <DependentUpon>FileHexViewerWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="InterpEditor\InterpEditor.xaml.cs">
+    <Compile Include="Matinee\Converters.cs" />
+    <Compile Include="Matinee\InterpEditor.xaml.cs">
       <DependentUpon>InterpEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="InterpEditor\InterpEditorTracks.cs" />
-    <Compile Include="InterpEditor\Key.cs" />
-    <Compile Include="InterpEditor\Timeline.xaml.cs">
+    <Compile Include="Matinee\InterpEditorTracks.cs" />
+    <Compile Include="Matinee\Key.cs" />
+    <Compile Include="Matinee\Timeline.xaml.cs">
       <DependentUpon>Timeline.xaml</DependentUpon>
     </Compile>
     <Compile Include="CoalesceTool\CoalesceAsset.cs" />
@@ -863,14 +864,14 @@
     <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.Designer.cs">
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="InterpEditor\InterpViewer\InterpEditor.cs">
+    <Compile Include="Matinee\InterpViewer\InterpEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InterpEditor\InterpViewer\InterpEditor.Designer.cs">
+    <Compile Include="Matinee\InterpViewer\InterpEditor.Designer.cs">
       <DependentUpon>InterpEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="InterpEditor\InterpViewer\InterpViewerTracks.cs" />
-    <Compile Include="InterpEditor\InterpViewer\Timeline.cs">
+    <Compile Include="Matinee\InterpViewer\InterpViewerTracks.cs" />
+    <Compile Include="Matinee\InterpViewer\Timeline.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Main Window\MainWindow.xaml.cs">
@@ -1172,10 +1173,10 @@
     <EmbeddedResource Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.resx">
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InterpEditor\InterpViewer\InterpEditor.resx">
+    <EmbeddedResource Include="Matinee\InterpViewer\InterpEditor.resx">
       <DependentUpon>InterpEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InterpEditor\InterpViewer\Timeline.resx">
+    <EmbeddedResource Include="Matinee\InterpViewer\Timeline.resx">
       <DependentUpon>Timeline.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\LevelExplorer.resx">
