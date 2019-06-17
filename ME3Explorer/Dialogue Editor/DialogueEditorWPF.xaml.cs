@@ -2813,7 +2813,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void NumberValidationEditBox(object sender, TextCompositionEventArgs e)
         {
-            var regex = new Regex("[^0-9]+");
+            var regex = new Regex("[^-]+[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
         }
 
