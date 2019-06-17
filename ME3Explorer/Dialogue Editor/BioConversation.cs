@@ -478,7 +478,7 @@ namespace ME3Explorer.Dialogue_Editor
         public int inputIndex;
     }
 
-    [DebuggerDisplay("DObj | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("DObj | #{NodeUID}")]
     public abstract class DObj : PNode, IDisposable
     {
         public IMEPackage pcc;
@@ -553,7 +553,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
     }
 
-    [DebuggerDisplay("DBox | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("DBox | #{NodeUID}")]
     public abstract class DBox : DObj
     {
         public override IEnumerable<DiagEdEdge> Edges => Outlinks.SelectMany(l => l.Edges).Cast<DiagEdEdge>();
@@ -623,9 +623,53 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
+        public void RecreateConnections(IList<DObj> objects)
+        {
+            foreach (OutputLink outLink in Outlinks)
+            {
+                for (int j = 0; j < outLink.Links.Count; j++)
+                {
+                    foreach (DiagNode destAction in objects.OfType<DiagNode>())
+                    {
+                        if (destAction.NodeID == outLink.Links[j])
+                        {
+                            PPath p1 = outLink.node;
+                            var edge = new ActionEdge();
+                            if (p1.Tag == null)
+                                p1.Tag = new List<ActionEdge>();
+                            ((List<ActionEdge>)p1.Tag).Add(edge);
+                            destAction.InputEdges.Add(edge);
+                            edge.Pen = new Pen(getColor(outLink.RCat));
+                            edge.start = p1;
+                            edge.end = destAction;
+                            edge.originator = this;
+                            edge.inputIndex = outLink.InputIndices;
+                            g.addEdge(edge);
+                            outLink.Edges.Add(edge);
+                            destAction.RefreshInputLinks();
+                        }
+                    }
+                }
+            }
+        }
+
+        public void RemoveConnections()
+        {
+            foreach (OutputLink outLink in Outlinks)
+            {
+                var edges = outLink.Edges.ToArray();
+                foreach(var e in edges)
+                {
+                    g.edgeLayer.RemoveChild(e);
+                    
+                }
+                outLink.Edges.Clear();
+            }
+        }
+
+
         protected float GetTitleBox(string s, float w)
         {
-            //s = $"#{UIndex} : {s}";
             DText title = new DText(s, titleColor)
             {
                 TextAlignment = StringAlignment.Center,
@@ -649,7 +693,6 @@ namespace ME3Explorer.Dialogue_Editor
 
         protected float GetTitlePlusLineBox(string s, string l, string n, float w)
         {
-            //s = $"#{UIndex} : {s}";
             DText title = new DText(s, titleColor)
             {
                 TextAlignment = StringAlignment.Center,
@@ -809,7 +852,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
     }
 
-    [DebuggerDisplay("DStart | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("DStart | #{NodeUID}")]
     public class DStart : DBox
     {
         public int StartNumber;
@@ -930,7 +973,7 @@ namespace ME3Explorer.Dialogue_Editor
 
     }
 
-    [DebuggerDisplay("DiagNode | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("DiagNode | #{NodeUID}")]
     public class DiagNode : DBox
     {
         public override IEnumerable<DiagEdEdge> Edges => InLinks.SelectMany(l => l.Edges).Union(base.Edges);
@@ -990,11 +1033,12 @@ namespace ME3Explorer.Dialogue_Editor
 
         public override void Layout(float x, float y)
         {
-            if(NodeUID < 1000)
+
+            if (NodeUID < 1000)
             {
                 outlinePen = new Pen(entryPenColor);
             }
-            else if(NodeUID < 2000)
+            else if (NodeUID < 2000)
             {
                 outlinePen = new Pen(replyPenColor);
             }
@@ -1004,7 +1048,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
             float starty = 8;
             float w = 160;
-            
+
             //OutputLinks
             outLinkBox = new PPath();
             float outW = 0;
@@ -1049,7 +1093,7 @@ namespace ME3Explorer.Dialogue_Editor
             string s = $"{Node.SpeakerTag.SpeakerName}";
             string l = $"{Node.Line}";
             string n = $"E{Node.NodeCount}";
-            if(Node.IsReply)
+            if (Node.IsReply)
             { n = $"R{Node.NodeCount}"; }
             float tW = GetTitlePlusLineBox(s, l, n, w);
             if (tW > w)
@@ -1068,7 +1112,7 @@ namespace ME3Explorer.Dialogue_Editor
             string plotCnd = "";
             string trans = "";
             string type = "";
-            if(Node.ConditionalOrBool >= 0)
+            if (Node.ConditionalOrBool >= 0)
             {
                 string cnd = "Cnd:";
                 if (Node.FiresConditional == false)
@@ -1097,12 +1141,12 @@ namespace ME3Explorer.Dialogue_Editor
             };
             h += insidetext.Height;
             float iw = insidetext.Width;
-            if(iw > w) { w = iw; }
+            if (iw > w) { w = iw; }
             box = PPath.CreateRectangle(0, titleBox.Height + 2, w, h - (titleBox.Height + 2));
             box.Brush = nodeBrush;
             box.Pen = outlinePen;
             box.Pickable = false;
-            insidetext.TranslateBy((w - iw)/2, 0);
+            insidetext.TranslateBy((w - iw) / 2, 0);
             box.AddChild(insidetext);
             this.Bounds = new RectangleF(0, 0, w, h);
             this.AddChild(box);
@@ -1111,8 +1155,8 @@ namespace ME3Explorer.Dialogue_Editor
             this.AddChild(inputLinkBox);
             SetOffset(x, y);
         }
-
-        private void GetInputLinks(BioConversationExtended.DialogueNodeExtended node = null)
+        public virtual void GetOutputLinks(BioConversationExtended.DialogueNodeExtended node) { }
+        public void GetInputLinks(BioConversationExtended.DialogueNodeExtended node = null)
         {
             InLinks = new List<InputLink>();
 
@@ -1138,14 +1182,6 @@ namespace ME3Explorer.Dialogue_Editor
                 CreateInputLink("Start", 0, true);
             }
             CreateInputLink("In", 1, true);
-
-            //if (inputLinksProp != null)
-            //{
-            //    for (int i = 0; i < inputLinksProp.Count; i++)
-            //    {
-            //        CreateInputLink(inputLinksProp[i].GetProp<StrProperty>("LinkDesc"), i);
-            //    }
-            //}
 
             if (InputEdges.Any())
             {
@@ -1173,7 +1209,22 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
+        public void RefreshInputLinks(BioConversationExtended.DialogueNodeExtended node = null)
+        {
 
+            if (InputEdges.Any() && InLinks != null)
+            {
+                foreach (ActionEdge edge in InputEdges)
+                {
+                    int inputNum = edge.inputIndex;
+                    if (inputNum >= 0)
+                    {
+                        edge.end = InLinks[inputNum].node;
+                        InLinks[inputNum].Edges.Add(edge);
+                    }
+                }
+            }
+        }
         public override void CreateOutlink(PNode n1, PNode n2)
         {
 
@@ -1239,44 +1290,9 @@ namespace ME3Explorer.Dialogue_Editor
             originalX = x;
             originalY = y;
             listname = $"E{NodeID} {node.Line}";
-            var rcarray = NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
-            if (rcarray != null)
-            {
-                try
-                {
 
-                    foreach (var rc in rcarray)
-                    {
-                        var replychoice = new BioConversationExtended.ReplyChoiceNode(-1, "", -1, BioConversationExtended.EReplyCategory.REPLY_CATEGORY_DEFAULT, "No data");
-                        var nIDprop = rc.GetProp<IntProperty>("nIndex");
-                        if (nIDprop != null)
-                        {
-                            replychoice.Index = nIDprop.Value;
-                        }
 
-                        var strRefPara = rc.GetProp<StringRefProperty>("srParaphrase");
-                        if (strRefPara != null)
-                        {
-                            replychoice.ReplyStrRef = strRefPara.Value;
-                            replychoice.ReplyLine = GlobalFindStrRefbyID(replychoice.ReplyStrRef, pcc);
-                        }
-
-                        var rcatprop = rc.GetProp<EnumProperty>("Category");
-                        if (rcatprop != null)
-                        {
-                            Enum.TryParse(rcatprop.Value.Name, out BioConversationExtended.EReplyCategory eReply);
-                            replychoice.RCategory = eReply;
-                        }
-                        Links.Add(replychoice);
-                    }
-                }
-                catch
-                {
-                    //ignore
-                }
-            }
-
-            GetEReplyLinks(Node);
+            GetOutputLinks(Node);
         }
 
         private bool _isSelected;
@@ -1302,10 +1318,48 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
-        protected void GetEReplyLinks(BioConversationExtended.DialogueNodeExtended node)
+        public override void GetOutputLinks(BioConversationExtended.DialogueNodeExtended node)
         {
+
             if (node != null)
             {
+                Links.Clear();
+                Outlinks.Clear();
+                var rcarray = NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
+                if (rcarray != null)
+                {
+                    try
+                    {
+                        foreach (var rc in rcarray)
+                        {
+                            var replychoice = new BioConversationExtended.ReplyChoiceNode(-1, "", -1, BioConversationExtended.EReplyCategory.REPLY_CATEGORY_DEFAULT, "No data");
+                            var nIDprop = rc.GetProp<IntProperty>("nIndex");
+                            if (nIDprop != null)
+                            {
+                                replychoice.Index = nIDprop.Value;
+                            }
+
+                            var strRefPara = rc.GetProp<StringRefProperty>("srParaphrase");
+                            if (strRefPara != null)
+                            {
+                                replychoice.ReplyStrRef = strRefPara.Value;
+                                replychoice.ReplyLine = GlobalFindStrRefbyID(replychoice.ReplyStrRef, pcc);
+                            }
+
+                            var rcatprop = rc.GetProp<EnumProperty>("Category");
+                            if (rcatprop != null)
+                            {
+                                Enum.TryParse(rcatprop.Value.Name, out BioConversationExtended.EReplyCategory eReply);
+                                replychoice.RCategory = eReply;
+                            }
+                            Links.Add(replychoice);
+                        }
+                    }
+                    catch
+                    {
+                        //ignore
+                    }
+                }
                 if (Links.Count > 0)
                 {
                     int n = 0;
@@ -1416,7 +1470,7 @@ namespace ME3Explorer.Dialogue_Editor
             newReplyListProp.Add(newstruct);
 
             Node.NodeProp.Properties.AddOrReplaceProp(newReplyListProp);
-            Editor.RecreateNodesToProperties(Editor.SelectedConv);
+            Editor.PushLocalGraphChanges(this);
 
         }
         public override void RemoveOutlink(int linkconnection, int linkIndex)
@@ -1424,8 +1478,8 @@ namespace ME3Explorer.Dialogue_Editor
             var oldEntriesProp = NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
             oldEntriesProp.RemoveAt(linkconnection);
             NodeProp.Properties.AddOrReplaceProp(oldEntriesProp);
-            Editor.RecreateNodesToProperties(Editor.SelectedConv);
-
+            //Editor.RecreateNodesToProperties(Editor.SelectedConv);
+            Editor.PushLocalGraphChanges(this);
         }
     }
 
@@ -1469,10 +1523,12 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
-        protected void GetOutputLinks(BioConversationExtended.DialogueNodeExtended node)
+        public override void GetOutputLinks(BioConversationExtended.DialogueNodeExtended node)
         {
             if (node != null)
             {
+                Outlinks.Clear();
+                Links.Clear();
                 var replytoEntryList = node.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
                 if (replytoEntryList != null)
                 {
@@ -1539,8 +1595,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         public override void CreateOutlink(PNode n1, PNode n2)
         {
-
-            /// NEED TO ADD CHECK TO STOP ATTACH TO SAME TYPE.
+            
             DiagNode start = (DiagNode)n1.Parent.Parent.Parent;
             DiagNode end = (DiagNode)n2.Parent.Parent.Parent;
             if (end.GetType() != typeof(DiagNodeEntry))
@@ -1553,7 +1608,7 @@ namespace ME3Explorer.Dialogue_Editor
             var endNode = end.NodeID;
 
             var newEntriesProp = new ArrayProperty<IntProperty>(ArrayType.Int, "EntryList");
-            var oldEntriesProp = start.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
+            var oldEntriesProp = start.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList"); 
             if(oldEntriesProp != null)
             {
                 foreach (var i in oldEntriesProp)
@@ -1563,19 +1618,16 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
             newEntriesProp.Add(new IntProperty(endNode));
+            start.NodeProp.Properties.AddOrReplaceProp(newEntriesProp);  //Push to Property
 
-            start.NodeProp.Properties.AddOrReplaceProp(newEntriesProp);
-
-            Editor.RecreateNodesToProperties(Editor.SelectedConv);
-
+            Editor.PushLocalGraphChanges(this);
         }
-
         public override void RemoveOutlink(int linkconnection, int linkIndex)
         {
             var oldEntriesProp = NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
             oldEntriesProp.RemoveAt(linkconnection);
             NodeProp.Properties.AddOrReplaceProp(oldEntriesProp);
-            Editor.RecreateNodesToProperties(Editor.SelectedConv);
+            Editor.PushLocalGraphChanges(this);
 
         }
     }

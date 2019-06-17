@@ -73,7 +73,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
         private DialogueNodeExtended MirrorDialogueNode;
-        private Boolean IsLocalUpdate = false; //Used to prevent uneccessary UI updates.
+        private bool IsLocalUpdate = false; //Used to prevent uneccessary UI updates.
         //SPEAKERS
         private SpeakerExtended _SelectedSpeaker;
         public SpeakerExtended SelectedSpeaker
@@ -1396,7 +1396,25 @@ namespace ME3Explorer.Dialogue_Editor
             convo.Export.WriteProperties(convo.BioConvo);
 
         }
+        public void PushLocalGraphChanges(DiagNode obj)
+        {
+            IsLocalUpdate = true;
+            RecreateNodesToProperties(SelectedConv);
 
+            float newX = obj.X + obj.OffsetX;
+            float newY = obj.Y + obj.OffsetY;
+            obj.RemoveAllChildren();
+            obj.RemoveConnections();
+            obj.GetOutputLinks(obj.Node);
+            obj.Layout(newX, newY);
+            obj.RecreateConnections(CurrentObjects);
+
+            foreach (DiagEdEdge edge in graphEditor.edgeLayer)
+            {
+                ConvGraphEditor.UpdateEdge(edge);
+            }
+
+        }
         private bool AutoGenerateSpeakerArrays(ConversationExtended conv)
         {
             bool hasLoopingPaths = false;
