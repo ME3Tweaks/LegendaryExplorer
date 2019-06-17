@@ -100,6 +100,8 @@ namespace ME3Explorer.SharedUI.Converters
                         return "/PackageEditor/EntryIcons/icon_texture2d.png";
                     case "WwiseStream":
                         return "/PackageEditor/EntryIcons/icon_sound.png";
+                    case "BioTlkFile":
+                        return "/PackageEditor/EntryIcons/icon_tlkfile.png";
                 }
             }
 
