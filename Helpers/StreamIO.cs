@@ -158,7 +158,10 @@ namespace StreamHelpers
 
         public static int ReadInt32(this Stream stream)
         {
-            return (int)stream.ReadUInt32();
+            var buffer = new byte[sizeof(int)];
+            if (stream.Read(buffer, 0, sizeof(int)) != sizeof(int))
+                throw new Exception();
+            return BitConverter.ToInt32(buffer, 0);
         }
 
         public static void WriteUInt32(this Stream stream, uint data)

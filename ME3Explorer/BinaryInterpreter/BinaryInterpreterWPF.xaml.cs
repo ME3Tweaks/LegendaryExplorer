@@ -2930,7 +2930,7 @@ namespace ME3Explorer
                     subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                 }
 
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game != MEGame.ME2)
                 {
                     int hNodeCount = bin.ReadInt32();
                     var hNodes = new List<object>();
@@ -3023,21 +3023,23 @@ namespace ME3Explorer
                         }
                     }
 
-                    if (animationCount > 0)
+                    int pointsCount = bin.ReadInt32();
+                    nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Points: {pointsCount} items")
                     {
-                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Points: {bin.ReadInt32()} items")
+                        Items = Enumerable.Range(0, pointsCount).Select(j => (object)new BinInterpTreeItem(bin.Position, $"{j}")
                         {
-                            Items = Enumerable.Range(0, bin.Skip(-4).ReadInt32()).Select(j => (object)new BinInterpTreeItem(bin.Position, $"{j}")
+                            Items = new List<object>
                             {
-                                Items = new List<object>
-                                {
-                                    new BinInterpTreeItem(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
-                                    new BinInterpTreeItem(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
-                                    new BinInterpTreeItem(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
-                                    new BinInterpTreeItem(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
-                                }
-                            }).ToList()
-                        });
+                                new BinInterpTreeItem(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpTreeItem(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpTreeItem(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpTreeItem(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
+                            }
+                        }).ToList()
+                    });
+
+                    if (pointsCount > 0)
+                    {
                         if (Pcc.Game == MEGame.ME2)
                         {
                             nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
@@ -3046,10 +3048,6 @@ namespace ME3Explorer
                         {
                             Items = Enumerable.Range(0, bin.Skip(-4).ReadInt32()).Select(j => (object)new BinInterpTreeItem(bin.Position, $"{bin.ReadInt32()} keys")).ToList()
                         });
-                    }
-                    else
-                    {
-                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
                     }
                     nodes.Add(new BinInterpTreeItem(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
                     nodes.Add(new BinInterpTreeItem(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") { Length = 4 });
