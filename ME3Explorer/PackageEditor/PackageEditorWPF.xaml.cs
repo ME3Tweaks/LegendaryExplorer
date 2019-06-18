@@ -3121,6 +3121,17 @@ namespace ME3Explorer
             TouchComfySettings.ModeSwitched();
         }
 
+        private void ShowImpExpPrefix_Clicked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix = !Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix;
+            Properties.Settings.Default.Save();
+            if (AllTreeViewNodesX.Any())
+            {
+                AllTreeViewNodesX[0].FlattenTree().ForEach(x => x.RefreshDisplayName());
+            }
+        }
+        
+
         private void PackageEditorWPF_Closing(object sender, CancelEventArgs e)
         {
             if (!e.Cancel)

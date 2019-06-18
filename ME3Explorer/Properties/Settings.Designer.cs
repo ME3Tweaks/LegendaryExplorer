@@ -478,5 +478,17 @@ namespace ME3Explorer.Properties {
                 this["InterpreterWPF_LimitArrayPropertySize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PackageEditorWPF_ShowImpExpPrefix {
+            get {
+                return ((bool)(this["PackageEditorWPF_ShowImpExpPrefix"]));
+            }
+            set {
+                this["PackageEditorWPF_ShowImpExpPrefix"] = value;
+            }
+        }
     }
 }
