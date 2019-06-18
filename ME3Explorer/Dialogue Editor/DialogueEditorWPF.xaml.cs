@@ -606,7 +606,7 @@ namespace ME3Explorer.Dialogue_Editor
                 Conversations.Add(new ConversationExtended(exp.UIndex, exp.ObjectName, exp.GetProperties(), exp, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<StageDirection>()));
             }
         }
-        private void FirstParse()
+        private async void FirstParse()
         {
             BackQueue = new BlockingCollection<ConversationExtended>();
             BackParser = new BackgroundWorker()
@@ -617,6 +617,15 @@ namespace ME3Explorer.Dialogue_Editor
             BackParser.DoWork += BackParse;
             BackParser.RunWorkerCompleted += BackParser_RunWorkerCompleted;
             BackParser.RunWorkerAsync();
+
+            if(!App.TlkFirstLoadDone)
+            {
+                bool waitingfortlks = true;
+                while(waitingfortlks)
+                {
+                    waitingfortlks = await CheckProcess(100, App.TlkFirstLoadDone, true);
+                }
+            }
 
             if (SelectedConv != null && SelectedConv.IsFirstParsed == false) //Get Active setup pronto.
             {
@@ -738,16 +747,36 @@ namespace ME3Explorer.Dialogue_Editor
             conv.EntryList = new ObservableCollectionExtended<DialogueNodeExtended>();
             var entryprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
             int cnt = 0;
+
             foreach (StructProperty Node in entryprop)
             {
+                int speakerindex = -1;
+                int linestrref = 0;
+                int cond = -1;
+                string line = "Unknown Reference";
+                int stevent = -1;
                 try
                 {
 
-                    int speakerindex = Node.GetProp<IntProperty>("nSpeakerIndex");
-                    int linestrref = Node.GetProp<StringRefProperty>("srText").Value;
-                    string line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage);
-                    int cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
-                    int stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
+                    speakerindex = Node.GetProp<IntProperty>("nSpeakerIndex");
+                    var linestrrefprop = Node.GetProp<StringRefProperty>("srText");
+                    if(linestrrefprop != null)
+                    {
+                        linestrref = linestrrefprop.Value;
+                        line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage);
+                    }
+                    
+                    var condprop = Node.GetProp<IntProperty>("nConditionalFunc");
+                    if (condprop != null)
+                    {
+                        cond = condprop.Value;
+                    }
+                    
+                    var steventprop = Node.GetProp<IntProperty>("nStateTransition");
+                    if (steventprop != null)
+                    {
+                        stevent = steventprop.Value;
+                    }
                     bool bcond = Node.GetProp<BoolProperty>("bFireConditional");
                     conv.EntryList.Add(new DialogueNodeExtended(Node, false, cnt, speakerindex, linestrref, line, bcond, cond, stevent, EReplyTypes.REPLY_STANDARD));
                     cnt++;
@@ -756,7 +785,7 @@ namespace ME3Explorer.Dialogue_Editor
                 catch (Exception e)
                 {
 #if DEBUG
-                    throw new Exception($"Entry List Parse failed {conv.ConvName}:E{cnt}", e);
+                    throw new Exception($"Entry List Parse failed {conv.ConvName}:E{cnt} {speakerindex}, {linestrref}, {line}, {cond}, {stevent}", e);
 #endif
                 }
             }
@@ -764,31 +793,37 @@ namespace ME3Explorer.Dialogue_Editor
         private void ParseReplyList(ConversationExtended conv)
         {
             conv.ReplyList = new ObservableCollectionExtended<DialogueNodeExtended>();
-            try
+            var replyprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList"); //ME3
+            if (replyprop != null)
             {
-                var replyprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList"); //ME3
                 int cnt = 0;
-                if(replyprop != null)
+                foreach (StructProperty Node in replyprop)
                 {
-                    foreach (StructProperty Node in replyprop)
+                    int speakerindex = -2;
+                    int linestrref = 0;
+                    int cond = -1;
+                    string line = "Unknown Reference";
+                    int stevent = -1;
+                    bool bcond = false;
+                    EReplyTypes eReply = EReplyTypes.REPLY_STANDARD;
+                    try
                     {
-                        int speakerindex = -2;
-                        int linestrref = Node.GetProp<StringRefProperty>("srText").Value;
-                        string line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage);
-                        int cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
-                        int stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
-                        bool bcond = Node.GetProp<BoolProperty>("bFireConditional");
-                        Enum.TryParse(Node.GetProp<EnumProperty>("ReplyType").Value.Name, out EReplyTypes eReply);
+                        linestrref = Node.GetProp<StringRefProperty>("srText").Value;
+                        //line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage);
+                        cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
+                        stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
+                        bcond = Node.GetProp<BoolProperty>("bFireConditional");
+                        Enum.TryParse(Node.GetProp<EnumProperty>("ReplyType").Value.Name, out eReply);
                         conv.ReplyList.Add(new DialogueNodeExtended(Node, true, cnt, speakerindex, linestrref, line, bcond, cond, stevent, eReply));
                         cnt++;
                     }
-                }
-            }
-            catch (Exception e)
-            {
+                    catch (Exception e)
+                    {
 #if DEBUG
-                throw new Exception($"Reply List Parse failed {conv.ConvName}", e);  //Note some convos don't have replies.
+                        throw new Exception($"Reply List Parse failed {conv.ConvName}:R{cnt} {speakerindex}, {linestrref}, {line}, {cond}, {stevent}, {bcond.ToString()}, {eReply.ToString()}", e);  //Note some convos don't have replies.
 #endif
+                    }
+                }
             }
         }
         private void ParseScripts(ConversationExtended conv)
@@ -822,19 +857,19 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void ParseStageDirections(ConversationExtended conv)
         {
-            try
+            conv.StageDirections = new ObservableCollectionExtended<StageDirection>();
+            if (Pcc.Game == MEGame.ME3)
             {
-                conv.StageDirections = new ObservableCollectionExtended<StageDirection>();
-                if (Pcc.Game == MEGame.ME3)
+                var dprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_aStageDirections"); //ME3 Only not in ME1/2
+                if (dprop != null)
                 {
-                    var dprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_aStageDirections"); //ME3 Only not in ME1/2
-                    if (dprop != null)
+                    foreach (var direction in dprop)
                     {
-                        foreach (var direction in dprop)
+                        int strref = 0;
+                        string line = "No data";
+                        string action = "None";
+                        try
                         {
-                            int strref = 0;
-                            string line = "No data";
-                            string action = "None";
                             var strrefprop = direction.GetProp<StringRefProperty>("srStrRef");
                             if (strrefprop != null)
                             {
@@ -848,16 +883,15 @@ namespace ME3Explorer.Dialogue_Editor
                             }
                             conv.StageDirections.Add(new StageDirection(strref, line, action));
                         }
+                        catch (Exception e)
+                        {
+#if DEBUG
+                            throw new Exception($"stage directions parse failed {conv.ConvName}", e);
+#endif
+                        }
                     }
                 }
             }
-            catch (Exception e)
-            {
-#if DEBUG
-                throw new Exception($"Reply List Parse failed {conv.ConvName}", e); 
-#endif
-            }
-            
         }
         private void GenerateSpeakerList()
         {
@@ -3266,7 +3300,7 @@ namespace ME3Explorer.Dialogue_Editor
                 bool p = true;
                 while (p)
                 {
-                    p = await CheckProcess(NoUIRefresh, 100);
+                    p = await CheckProcess(100, NoUIRefresh, false);
                 }
                 panToSelection = false;
                 graphEditor.Enabled = false;
@@ -3292,7 +3326,7 @@ namespace ME3Explorer.Dialogue_Editor
                 bool p = true;
                 while (p)
                 {
-                    p = await CheckProcess(NoUIRefresh, 100);
+                    p = await CheckProcess(100, NoUIRefresh, false);
                 }
                 panToSelection = false;
                 graphEditor.Enabled = false;
@@ -4300,14 +4334,15 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
         /// <summary>
-        /// Wait for bool condition to switch to false. Used for async delay.
+        /// Wait for bool condition to switch to false. Used for async delay. Await until awaitforfalse and awaitfortrue are synchronised or straight delay.
         /// </summary>
         /// <param name="waitforfalse">condition</param>
+        /// <param name="waitfortrue">condition</param>
         /// <param name="delay">Delay in milliseconds.</param>
         /// <returns></returns>
-        public async Task<bool> CheckProcess(bool waitforfalse, int delay)
+        public async Task<bool> CheckProcess(int delay, bool waitforfalse = false, bool waitfortrue = true)
         {
-            if (!waitforfalse)
+            if (waitforfalse == waitfortrue)
             {
                 return false;
             }

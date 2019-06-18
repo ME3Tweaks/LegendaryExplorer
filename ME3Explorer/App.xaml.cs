@@ -29,7 +29,7 @@ namespace ME3Explorer
 
         public static string HexConverterPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HexConverter.exe");
 
-
+        public static bool TlkFirstLoadDone; //Set when the TLK loading at startup is finished.
         public const string FileFilter = "*.pcc;*.u;*.upk;*sfm|*.pcc;*.u;*.upk;*sfm|All Files (*.*)|*.*";
 
         public static string Version => GetVersion();
