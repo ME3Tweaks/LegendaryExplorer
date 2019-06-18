@@ -143,7 +143,7 @@ namespace ME3Explorer
                 try
                 {
                     if (_displayName != null) return _displayName;
-                    string type = UIndex < 0 ? "(Imp) " : "(Exp)";
+                    string type = UIndex < 0 ? "(Imp) " : "(Exp) ";
                     string returnvalue = $"{UIndex} {Entry.ObjectName}";
                     if (Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix)
                     {
