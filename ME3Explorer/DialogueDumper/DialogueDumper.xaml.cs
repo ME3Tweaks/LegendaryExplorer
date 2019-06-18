@@ -296,7 +296,7 @@ namespace ME3Explorer.DialogueDumper
             isProcessing = true;
             workbook = new XLWorkbook();
 #if DEBUG
-            shouldDoDebugOutput = false;  //Output for toolset devs
+            shouldDoDebugOutput = true;  //Output for toolset devs
 #endif
 
             var xlstrings = workbook.Worksheets.Add("TLKStrings");
@@ -321,6 +321,15 @@ namespace ME3Explorer.DialogueDumper
                 xltags.Cell(1, 1).Value = "ActorTag";
                 xltags.Cell(1, 2).Value = "StrRef";
                 xltags.Cell(1, 3).Value = "FriendlyName";
+
+
+                var xlanims = workbook.Worksheets.Add("Animations");
+                xlanims.Cell(1, 1).Value = "Name";
+                xlanims.Cell(1, 2).Value = "Package";
+                xlanims.Cell(1, 3).Value = "Sequence Name";
+                xlanims.Cell(1, 4).Value = "Length(sec)";
+                xlanims.Cell(1, 5).Value = "Filename";
+                xlanims.Cell(1, 6).Value = "Filename";
 
                 var xldebug = workbook.Worksheets.Add("DEBUG");
                 xldebug.Cell(1, 1).Value = "Status";
@@ -669,32 +678,6 @@ namespace ME3Explorer.DialogueDumper
                                         }
                                     }
 
-                                    //If ME1 Setup Local talkfile
-                                    //Package files will load this natively now
-
-                                    //ME1Explorer.Unreal.Classes.TalkFile locTlk = null;
-                                    //if (GameBeingDumped == MEGame.ME1)
-                                    //{
-                                    //    byte[] lnkTLKbinary = pcc.getUExport(exp.GetProperty<ObjectProperty>("m_oTlkFileSet").Value).getBinaryData();
-                                    //    int offset = 0;
-                                    //    int tlkcount = BitConverter.ToInt32(lnkTLKbinary, offset);
-                                    //    for (int t = 0; t < tlkcount; t++)
-                                    //    {
-                                    //        offset = 4 + t * 20;
-                                    //        int n = BitConverter.ToInt32(lnkTLKbinary, offset);
-                                    //        if (exp.FileRef.findName("Int") == n)
-                                    //        {
-                                    //            offset += 16;
-                                    //            break;
-                                    //        }
-                                    //    }
-
-                                    //    int indexTlk = BitConverter.ToInt32(lnkTLKbinary, offset);
-                                    //    locTlk = new ME1Explorer.Unreal.Classes.TalkFile(pcc as ME1Package, indexTlk);
-                                    //    locTlk.LoadTlkData();
-                                    //}
-
-
                                     //2. Go through Entry list "m_EntryList"
                                     // Parse line TLK StrRef, TLK Line, Speaker -1 = Owner, -2 = Shepard, or from m_aSpeakerList
 
@@ -859,7 +842,7 @@ namespace ME3Explorer.DialogueDumper
                             {
                                 string tag = null;
                                 int strref = -1;
-                                if(GameBeingDumped == MEGame.ME1 && className == "BioPawn")
+                                if (GameBeingDumped == MEGame.ME1 && className == "BioPawn")
                                 {
                                     var tagprop = exp.GetProperty<NameProperty>("Tag");
                                     tag = tagprop.ToString();
@@ -871,7 +854,7 @@ namespace ME3Explorer.DialogueDumper
                                         strref = strrefprop.Value;
                                     }
                                 }
-                                else if(GameBeingDumped == MEGame.ME2 && className == "BioPawn")
+                                else if (GameBeingDumped == MEGame.ME2 && className == "BioPawn")
                                 {
                                     var tagprop = exp.GetProperty<NameProperty>("Tag");
                                     tag = tagprop.ToString();
@@ -882,7 +865,7 @@ namespace ME3Explorer.DialogueDumper
                                         strref = strrefprop.Value;
                                     }
                                 }
-                                else if(className == "SFXStuntActor" || className == "SFXPointOfInterest")
+                                else if (className == "SFXStuntActor" || className == "SFXPointOfInterest")
                                 {
 
                                     var tagprop = exp.GetProperty<NameProperty>("Tag");
@@ -909,6 +892,15 @@ namespace ME3Explorer.DialogueDumper
                                 {
                                     string actorname = GlobalFindStrRefbyID(strref, GameBeingDumped, exp.FileRef as ME1Package);
                                     dumper._xlqueue.Add(new List<string> { "Tags", tag, strref.ToString(), actorname });
+                                }
+
+                                if (className == "AnimSequence")
+                                {
+                                    string animname = exp.ObjectName;
+                                    string animpackage = exp.Parent.ObjectName;
+                                    var seqName = exp.GetProperty<NameProperty>("SequenceName");
+                                    float length = exp.GetProperty<FloatProperty>("SequenceLength");
+                                    dumper._xlqueue.Add(new List<string> { "Animations", animname, animpackage, seqName.ToString(), length.ToString(), fileName, GameBeingDumped.ToString() });
                                 }
                             }
                         }
