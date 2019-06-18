@@ -2955,7 +2955,8 @@ namespace ME3Explorer
                 int nameCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Names: {nameCount} items")
                 {
-                    Items = Enumerable.Range(0, nameCount).Select(i => (object)new BinInterpTreeItem(bin.Skip(Pcc.Game == MEGame.ME2 ? 4 : 0).Position, $"{bin.ReadStringASCII(bin.ReadInt32())}")).ToList()
+                    //This does not work for ME1.
+                    Items = Enumerable.Range(0, nameCount).Select(i => (object)new BinInterpTreeItem(bin.Skip(Pcc.Game == MEGame.ME3 ? 0 : 4).Position, $"{bin.ReadStringASCII(bin.ReadInt32())}")).ToList()
                 });
 
                 subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
