@@ -158,7 +158,7 @@ namespace ME3Explorer.FaceFX
                 }
                 else if (Container.isLoading)
                 {
-                    d.numKeys = new int[0];
+                    d.numKeys = new int[d.animations.Length];
                 }
                 d.FadeInTime = Container + d.FadeInTime;
                 d.FadeOutTime = Container + d.FadeOutTime;

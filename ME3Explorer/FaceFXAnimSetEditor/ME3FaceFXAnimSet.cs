@@ -143,7 +143,7 @@ namespace ME3Explorer.FaceFX
                     u.leaveTangent = Container + u.leaveTangent;
                     d.points[j] = u;
                 }
-                if (d.animations.Length > 0)
+                if (d.points.Length > 0)
                 {
                     count2 = 0;
                     if (!Container.isLoading)
@@ -156,7 +156,7 @@ namespace ME3Explorer.FaceFX
                 }
                 else if (Container.isLoading)
                 {
-                    d.numKeys = new int[0];
+                    d.numKeys = new int[d.animations.Length];
                 }
                 d.FadeInTime = Container + d.FadeInTime;
                 d.FadeOutTime = Container + d.FadeOutTime;
