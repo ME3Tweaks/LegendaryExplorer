@@ -1303,6 +1303,19 @@ namespace ME3Explorer.Dialogue_Editor
                             IExportEntry ffxpExport = ffxp as IExportEntry;
                             wwevents = ffxpExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
                         }
+                        if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
+                        {
+                            IEntry ffxS = GetFaceFX(conv, 0, true); //find speaker 1 as alternative
+                            if (!Pcc.isUExport(ffxS.UIndex))
+                                return;
+                            IExportEntry ffxSExport = ffxS as IExportEntry;
+                            wwevents = ffxSExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+                            if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
+                            {
+                                conv.WwiseBank = null;
+                                return;
+                            }
+                        }
                     }
 
 
@@ -1338,7 +1351,7 @@ namespace ME3Explorer.Dialogue_Editor
                 catch (Exception e)
                 {
 #if DEBUG
-                    throw new Exception("WwiseBank Parse Failed.", e);
+                    throw new Exception($"WwiseBank Parse Failed. {conv.ConvName}", e);
 #endif
                 }
             }
@@ -2242,57 +2255,150 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void AutoLayout_AdvancedColumn()
         {
-            if (CurrentObjects != null && CurrentObjects.Any())
+            foreach (DObj obj in CurrentObjects)
             {
-                float f = 3; //Division factor for overlap gap.
-                for (int i = 0; i < CurrentObjects.Count; i++)
+                obj.SetOffset(0, 0); //remove existing positioning
+            }
+            int rowAt = 0;
+            int maxEntryRow = -1;
+            int maxReplyRow = -1;
+            int maxStartrow = -1;
+            float maxobjHeight = 0;
+            float rowShift = 0;
+            const float COLUMN_SPACING = 350;
+            const float WATERFALL_SPACING = 40;
+            const float ROW_SPACING = 200;
+            var visitedNodes = new HashSet<int>();
+            var startNodes = CurrentObjects.OfType<DStart>().ToList();
+            var allNodes = CurrentObjects.OfType<DiagNode>().OrderBy(n => n.NodeUID).ToList();
+            DiagNode nextNode = null;
+            var BranchStack = new Stack<KeyValuePair<DiagNode, int>>();
+
+            //TAKE First Start - use to get first stack of columns
+            //add to first layer until end. any other branches add to branch stack LIFO to create second etc layer.
+            // If no branches in stack then go back to new start.
+            // Every start
+
+            while (allNodes.Count > 0)
+            {
+                DStart firstNode = startNodes.FirstOrDefault();
+                if (firstNode != null)
                 {
-                    DObj obj = CurrentObjects[i];
-
-                    switch (obj)
+                    if (maxEntryRow <= maxReplyRow) // means finished on reply
                     {
-                        case DStart _:
-                            DStart dstart = obj as DStart;
-                            float ystart = (dstart.StartNumber * 127);
-                            obj.Layout(0, ystart);
-                            //StartPoDStarts += obj.Height + 20;
-                            break;
-                        case DiagNodeReply _:
-                            obj.Layout(500, StartPoDReplyNodes);
-                            StartPoDReplyNodes += obj.Height + 25;
-                            break;
-                        case DiagNode _:
-                            obj.Layout(250, StartPoDiagNodes);
-                            StartPoDiagNodes += obj.Height + 25;
-                            break;
-
+                        maxStartrow = maxReplyRow + 1; //start next row.
+                    }
+                    else
+                    {
+                        maxStartrow = maxEntryRow + 1;
                     }
 
-                }
+                    firstNode.SetOffset(0, maxStartrow * ROW_SPACING + rowShift);
+                    startNodes.Remove(firstNode);
+                    visitedNodes.Add(firstNode.NodeUID);
+                    nextNode = allNodes.FirstOrDefault(x => x.NodeUID == firstNode.StartNumber);
+                    if (nextNode != null && !visitedNodes.Contains(nextNode.NodeUID))
+                    {
+                        while (!(nextNode == null && BranchStack.IsEmpty()))
+                        {
+                            var thisNode = nextNode;
+                            nextNode = null;
+                            if (thisNode != null && !visitedNodes.Contains(thisNode.NodeUID))
+                            {
 
-                //                    else
-                //{
-                //    //SIMPLE LAYOUT THIS ONLY WORKS WHEN THERE ARE ENTRY NODES AND REPLY NODES MATCHED.
-                //    switch (obj)
-                //    {
-                //        case DStart _:
-                //            DStart dstart = obj as DStart;
-                //            obj.Layout(0, StartPoDiagNodes);
-                //            break;
-                //        case DiagNodeEntry _:
-                //            obj.Layout(250, StartPoDiagNodes);
-                //            if (lastwasreply) { f = 3; }
-                //            StartPoDiagNodes += obj.Height / f + 25;
-                //            f = 1;
-                //            lastwasreply = false;
-                //            break;
-                //        case DiagNodeReply _:
-                //            obj.Layout(700, StartPoDiagNodes);
-                //            StartPoDiagNodes += obj.Height + 25;
-                //            lastwasreply = true;
-                //            break;
-                //    }
-                //}
+                                int r = 0;
+                                if (!thisNode.Node.IsReply) 
+                                {
+                                    if (maxobjHeight > ROW_SPACING) //On entry set spacing for this row
+                                    {
+                                        rowShift += maxobjHeight + 30 - ROW_SPACING;
+                                    }
+
+
+
+                                    if (maxEntryRow >= rowAt)
+                                        rowAt = maxEntryRow + 1;
+
+                                    r = 1000; //Conversion factor from nIndex to NodeUID to link to reply
+                                    thisNode.SetOffset(COLUMN_SPACING, rowAt * ROW_SPACING + rowShift);
+                                    maxEntryRow = rowAt;
+                                    maxobjHeight = thisNode.Height;
+
+                                }
+                                else
+                                {
+                                    if (maxReplyRow >= rowAt)
+                                        rowAt = maxReplyRow + 1;
+
+                                    thisNode.SetOffset(2 * COLUMN_SPACING, rowAt * ROW_SPACING + rowShift + WATERFALL_SPACING);
+                                    maxReplyRow = rowAt;
+                                    rowAt++;  //After reply go to next row.
+                                    if(thisNode.Height > maxobjHeight)
+                                    {
+                                        maxobjHeight = thisNode.Height;
+                                    }
+                                }
+                                visitedNodes.Add(thisNode.NodeUID);
+                                allNodes.Remove(thisNode);
+                                if (thisNode.Links.Count != 0)
+                                {
+                                    for (int i = thisNode.Links.Count - 1; i >= 0; i--) //DO IN REVERSE SO STACK IS CORRECTLY DONE
+                                    {
+                                        if (i == 0)
+                                        {
+                                            nextNode = allNodes.FirstOrDefault(x => x.NodeUID == (thisNode.Links[0].Index + r));
+                                        }
+                                        else
+                                        {
+                                            var pushstack = allNodes.FirstOrDefault(x => x.NodeUID == thisNode.Links[i].Index + r);
+                                            if (pushstack != null) //means link to visited node.  Don't add to Branchstack.
+                                            {
+                                                BranchStack.Push(new KeyValuePair<DiagNode, int>(pushstack, pushstack.NodeUID));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (!BranchStack.IsEmpty())//REACHED END OF BRANCH PULL nextNode from STACK
+                            {
+                                var branchpair = BranchStack.Pop();
+                                nextNode = branchpair.Key;
+                                if (visitedNodes.Contains(branchpair.Value)) //if nextnode is already up, make sure stack is pulled again without moving down.
+                                {
+                                    nextNode = null;
+                                }
+                            }
+                            else
+                            {
+                                rowAt++;
+                            }
+                        }
+                    }
+                }
+                else //everything else is orphan.
+                {
+                    int orphanrowEntry = maxStartrow;
+                    int orphanrowReply = maxStartrow;
+                    foreach (var obj in allNodes)
+                    {
+                        if (obj.Node.IsReply)
+                        {
+                            obj.SetOffset(2 * COLUMN_SPACING, orphanrowReply * ROW_SPACING + WATERFALL_SPACING);
+                            orphanrowReply++;
+                        }
+                        else
+                        {
+                            obj.SetOffset(1 * COLUMN_SPACING, orphanrowEntry * ROW_SPACING);
+                            orphanrowEntry++;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            foreach (DiagEdEdge edge in graphEditor.edgeLayer)
+            {
+                ConvGraphEditor.UpdateEdge(edge);
             }
         }
         private void AutoLayout_Waterfall()
@@ -2395,19 +2501,23 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 else //everything else is orphan.
                 {
-                    int orphanrow = maxrow;
-                    foreach(var obj in allNodes)
+                    int orphanrowEntry = maxrow;
+                    int orphanrowReply = maxrow;
+                    foreach (var obj in allNodes)
                     {
-                        int orphancol = 1;
                         if (obj.Node.IsReply)
-                            orphancol = 2;
-                        obj.SetOffset(orphancol * COLUMN_SPACING, orphanrow * ROW_SPACING);
-                        orphanrow++;
-                    }
-
+                        {
+                            obj.SetOffset(2 * COLUMN_SPACING, orphanrowReply * ROW_SPACING + WATERFALL_SPACING);
+                            orphanrowReply++;
+                        }
+                        else
+                        {
+                            obj.SetOffset(1 * COLUMN_SPACING, orphanrowEntry * ROW_SPACING);
+                            orphanrowEntry++;
+                        }
+                      }
                     break;
                 }
-
             }
 
             foreach (DiagEdEdge edge in graphEditor.edgeLayer)
