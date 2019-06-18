@@ -2268,7 +2268,7 @@ namespace ME3Explorer.Dialogue_Editor
                     if (layoutReplies.Count > 0)
                     {
                         DiagNodeReply reply = layoutReplies.Dequeue();
-                        reply.SetOffset(HORIZONTAL_SPACING * 2, StartPoDStarts + 25);
+                        reply.SetOffset(HORIZONTAL_SPACING * 2, StartPoDStarts + 30);
                         if (reply.Height > addheight)
                         {
                             addheight = reply.Height;
@@ -2306,7 +2306,7 @@ namespace ME3Explorer.Dialogue_Editor
             var startNodes = CurrentObjects.OfType<DStart>().ToList();
             var allNodes = CurrentObjects.OfType<DiagNode>().OrderBy(n => n.NodeUID).ToList();
             DiagNode nextNode = null;
-            var BranchStack = new Stack<KeyValuePair<DiagNode, int>>();
+            var BranchQueue = new Queue<KeyValuePair<DiagNode, int>>();
 
             //TAKE First Start - use to get first stack of columns
             //add to first layer until end. any other branches add to branch stack LIFO to create second etc layer.
@@ -2333,7 +2333,7 @@ namespace ME3Explorer.Dialogue_Editor
                     nextNode = allNodes.FirstOrDefault(x => x.NodeUID == firstNode.StartNumber);
                     if (nextNode != null && !visitedNodes.Contains(nextNode.NodeUID))
                     {
-                        while (!(nextNode == null && BranchStack.IsEmpty()))
+                        while (!(nextNode == null && BranchQueue.IsEmpty()))
                         {
                             var thisNode = nextNode;
                             nextNode = null;
@@ -2376,7 +2376,7 @@ namespace ME3Explorer.Dialogue_Editor
                                 allNodes.Remove(thisNode);
                                 if (thisNode.Links.Count != 0)
                                 {
-                                    for (int i = thisNode.Links.Count - 1; i >= 0; i--) //DO IN REVERSE SO STACK IS CORRECTLY DONE
+                                    for (int i = 0; i < thisNode.Links.Count; i++) //DO IN REVERSE SO STACK IS CORRECTLY DONE
                                     {
                                         if (i == 0)
                                         {
@@ -2384,18 +2384,18 @@ namespace ME3Explorer.Dialogue_Editor
                                         }
                                         else
                                         {
-                                            var pushstack = allNodes.FirstOrDefault(x => x.NodeUID == thisNode.Links[i].Index + r);
-                                            if (pushstack != null) //means link to visited node.  Don't add to Branchstack.
+                                            var pushqueue = allNodes.FirstOrDefault(x => x.NodeUID == thisNode.Links[i].Index + r);
+                                            if (pushqueue != null) //means link to visited node.  Don't add to Branchstack.
                                             {
-                                                BranchStack.Push(new KeyValuePair<DiagNode, int>(pushstack, pushstack.NodeUID));
+                                                BranchQueue.Enqueue(new KeyValuePair<DiagNode, int>(pushqueue, pushqueue.NodeUID));
                                             }
                                         }
                                     }
                                 }
                             }
-                            else if (!BranchStack.IsEmpty())//REACHED END OF BRANCH PULL nextNode from STACK
+                            else if (!BranchQueue.IsEmpty())//REACHED END OF BRANCH PULL nextNode from STACK
                             {
-                                var branchpair = BranchStack.Pop();
+                                var branchpair = BranchQueue.Dequeue();
                                 nextNode = branchpair.Key;
                                 if (visitedNodes.Contains(branchpair.Value)) //if nextnode is already up, make sure stack is pulled again without moving down.
                                 {
