@@ -821,6 +821,36 @@ namespace ME3Explorer
                             editableValue += $" InChunkName: {inChunkName.Value.Name}";
                         }
                     }
+                    else if (sp.StructType == "ScalarParameterValue")
+                    {
+                        var parmValue = sp.GetProp<FloatProperty>("ParameterValue");
+                        var parmName = sp.GetProp<NameProperty>("ParameterName");
+                        if (parmName != null && parmValue != null)
+                        {
+                            parsedValue += $" {parmName}: {parmValue.Value}";
+                        }
+                    }
+                    else if (sp.StructType == "VectorParameterValue")
+                    {
+                        var parmValue = sp.GetProp<StructProperty>("ParameterValue");
+                        var parmName = sp.GetProp<NameProperty>("ParameterName");
+                        if (parmName != null && parmValue != null)
+                        {
+                            string structParam = string.Join(", ", parmValue.Properties.Where(x => !(x is NoneProperty)).Select(p =>
+                            {
+                                switch (p)
+                                {
+                                    case FloatProperty fp:
+                                        return $"{p.Name}={fp.Value}";
+                                    case IntProperty ip:
+                                        return $"{p.Name}={ip.Value}";
+                                    default:
+                                        return "";
+                                }
+                            }));
+                            parsedValue += $" {parmName}: {structParam}";
+                        }
+                    }
                     else
                     {
                         parsedValue = sp.StructType;

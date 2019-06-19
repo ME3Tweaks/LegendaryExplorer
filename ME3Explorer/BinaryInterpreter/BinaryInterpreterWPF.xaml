@@ -8,7 +8,7 @@
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:global="clr-namespace:ME3Explorer"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
         d:DesignHeight="450" d:DesignWidth="800"
         xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
@@ -29,7 +29,7 @@
             <TextBlock Name="OnDemand_Title_TextBlock" Text="This export is larger than 20KB" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" />
             <TextBlock Name="OnDemand_Subtext_TextBlock" Text="Large exports are not automatically parsed to improve performance" HorizontalAlignment="Center"/>
             <Button Name="ParseBinary_Button" Content="Parse binary" HorizontalAlignment="Center" Margin="5" Padding="3" Click="ParseBinary_Button_Click"/>
-            <fa:ImageAwesome  Name="ParseBinary_Spinner" Grid.Column="7" Icon="Spinner" Spin="True" SpinDuration="2" Width="24" Height="24" Margin="5"/>
+            <fa:ImageAwesome  Name="ParseBinary_Spinner" Grid.Column="7" Icon="Solid_Spinner" Spin="True" SpinDuration="2" Width="24" Height="24" Margin="5"/>
         </StackPanel>
         <DockPanel Name="LoadedContent_Panel">
             <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
@@ -69,7 +69,7 @@
                 </StackPanel>
 
                 <Button Name="CopyTree_Button" ToolTip="Copies the tree to the clipboard as text" Click="CopyTree_Button_OnClick" VerticalAlignment="Center" Margin="5,0" Width="26">
-                    <fa:ImageAwesome Icon="Copy" Height="16" Width="16" Foreground="CornflowerBlue"/>
+                    <fa:ImageAwesome Icon="Solid_Copy" Height="16" Width="16" Foreground="CornflowerBlue"/>
                 </Button>
 
                 <!--<Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>-->

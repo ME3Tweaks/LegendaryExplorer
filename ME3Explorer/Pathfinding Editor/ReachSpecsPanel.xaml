@@ -7,7 +7,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ME3Explorer.Pathfinding_Editor"
     xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-    xmlns:fa="http://schemas.fontawesome.io/icons/"
+    xmlns:fa="http://schemas.fontawesome.com/icons/"
     mc:Ignorable="d" 
     Loaded="ReachSpecsPanel_Loaded"
              d:DesignHeight="700" d:DesignWidth="250">
@@ -89,7 +89,7 @@
                             <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" FontSize="10" Text="{Binding DestinationTypeTextUI}" TextAlignment="Right"/>
                             <Button Grid.Column="2" Grid.RowSpan="2" Margin="5,0,0,0" ToolTip="Delete this reachspec" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.DeleteSelectedReachSpecCommand}" CommandParameter="{Binding .}">
                                 <Button.Content>
-                                    <fa:ImageAwesome Icon="TrashOutline" Width="16" Foreground="DarkRed"/>
+                                    <fa:ImageAwesome Icon="Solid_TrashAlt" Width="16" Foreground="DarkRed"/>
                                 </Button.Content>
                             </Button>
                         </Grid>

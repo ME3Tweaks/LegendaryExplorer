@@ -10,7 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using FontAwesome.WPF;
+using FontAwesome5;
 using ME3Explorer.SharedUI;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -105,7 +105,7 @@ namespace ME3Explorer.AutoTOC
             TOCTasks.Add(new ListBoxTask
             {
                 Header = "Done",
-                Icon = FontAwesomeIcon.Check,
+                Icon = EFontAwesomeIcon.Solid_Check,
                 Foreground = Brushes.Green,
                 Spinning = false
             });
@@ -135,7 +135,7 @@ namespace ME3Explorer.AutoTOC
             TOCTasks.Add(new ListBoxTask
             {
                 Header = "TOC created",
-                Icon = FontAwesomeIcon.Check,
+                Icon = EFontAwesomeIcon.Solid_Check,
                 Foreground = Brushes.Green,
                 Spinning = false
             });
@@ -171,7 +171,7 @@ namespace ME3Explorer.AutoTOC
             TOCTasks.Add(new ListBoxTask
             {
                 Header = "AutoTOC complete",
-                Icon = FontAwesomeIcon.Check,
+                Icon = EFontAwesomeIcon.Solid_Check,
                 Foreground = Brushes.Green,
                 Spinning = false
             });

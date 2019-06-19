@@ -1,5 +1,4 @@
 ﻿using ByteSizeLib;
-using FontAwesome.WPF;
 using ME3Explorer.Debugging;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -34,6 +33,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml.Linq;
+using FontAwesome5.WPF;
+using FontAwesome5;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -462,7 +463,7 @@ namespace ME3Explorer.Soundplorer
                 {
                     se.SubText = "Refreshing";
                     se.NeedsLoading = true;
-                    se.Icon = FontAwesomeIcon.Spinner;
+                    se.Icon = EFontAwesomeIcon.Solid_Spinner;
                 }
             }
             if (backgroundScanner != null && backgroundScanner.IsBusy)
@@ -1397,8 +1398,8 @@ namespace ME3Explorer.Soundplorer
             set => SetProperty(ref _needsLoading, value);
         }
 
-        private FontAwesomeIcon _icon;
-        public FontAwesomeIcon Icon
+        private EFontAwesomeIcon _icon;
+        public EFontAwesomeIcon Icon
         {
             get => _icon;
             set => SetProperty(ref _icon, value);
@@ -1425,7 +1426,7 @@ namespace ME3Explorer.Soundplorer
             this.ME2 = ME2;
             Offset = offset;
             SubText = "Calculating length";
-            Icon = FontAwesomeIcon.Spinner;
+            Icon = EFontAwesomeIcon.Solid_Spinner;
             NeedsLoading = true;
             UpdateDisplay();
         }
@@ -1456,7 +1457,7 @@ namespace ME3Explorer.Soundplorer
                 }
             }
             NeedsLoading = false;
-            Icon = FontAwesomeIcon.VolumeUp;
+            Icon = EFontAwesomeIcon.Solid_VolumeUp;
         }
     }
 
@@ -1471,8 +1472,8 @@ namespace ME3Explorer.Soundplorer
             set => SetProperty(ref _needsLoading, value);
         }
 
-        private FontAwesomeIcon _icon;
-        public FontAwesomeIcon Icon
+        private EFontAwesomeIcon _icon;
+        public EFontAwesomeIcon Icon
         {
             get => _icon;
             set => SetProperty(ref _icon, value);
@@ -1496,7 +1497,7 @@ namespace ME3Explorer.Soundplorer
         {
             this.Entry = entry;
             SubText = "Calculating stream length";
-            Icon = FontAwesomeIcon.Spinner;
+            Icon = EFontAwesomeIcon.Solid_Spinner;
             NeedsLoading = true;
             UpdateDisplay();
         }
@@ -1528,7 +1529,7 @@ namespace ME3Explorer.Soundplorer
                 SubText = "Sound stub only";
             }
             NeedsLoading = false;
-            Icon = FontAwesomeIcon.VolumeUp;
+            Icon = EFontAwesomeIcon.Solid_VolumeUp;
         }
     }
 
@@ -1543,8 +1544,8 @@ namespace ME3Explorer.Soundplorer
             set => SetProperty(ref _needsLoading, value);
         }
 
-        private FontAwesomeIcon _icon;
-        public FontAwesomeIcon Icon
+        private EFontAwesomeIcon _icon;
+        public EFontAwesomeIcon Icon
         {
             get => _icon;
             set => SetProperty(ref _icon, value);
@@ -1574,7 +1575,7 @@ namespace ME3Explorer.Soundplorer
             {
                 SubText = "Calculating number of embedded WEMs";
             }
-            Icon = FontAwesomeIcon.Spinner;
+            Icon = EFontAwesomeIcon.Solid_Spinner;
             NeedsLoading = true;
             UpdateDisplay();
         }
@@ -1610,7 +1611,7 @@ namespace ME3Explorer.Soundplorer
                     }
                 }
                 NeedsLoading = false;
-                Icon = FontAwesomeIcon.VolumeUp;
+                Icon = EFontAwesomeIcon.Solid_VolumeUp;
             }
             if (Export.ClassName == "WwiseBank")
             {
@@ -1618,7 +1619,7 @@ namespace ME3Explorer.Soundplorer
                 List<(uint, int, int)> embeddedWEMFiles = wb.GetWEMFilesMetadata();
                 SubText = $"{embeddedWEMFiles.Count} embedded WEM{(embeddedWEMFiles.Count != 1 ? "s" : "")}";
                 NeedsLoading = false;
-                Icon = FontAwesomeIcon.University;
+                Icon = EFontAwesomeIcon.Solid_University;
             }
 
         }

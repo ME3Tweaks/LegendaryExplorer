@@ -1,4 +1,5 @@
-﻿using FontAwesome.WPF;
+﻿using FontAwesome5;
+using FontAwesome5.WPF;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -210,7 +211,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 ValidationTasks.Add(new ListBoxTask
                 {
                     Header = $"{reachSpecExport.UIndex} {reachSpecExport.ObjectName} start does not match it's containing pathlist reference ({startNodeExport.UIndex} {startNodeExport.ObjectName})",
-                    Icon = FontAwesomeIcon.Times,
+                    Icon = EFontAwesomeIcon.Solid_Times,
                     Foreground = Brushes.Red,
                     Spinning = false
                 });
@@ -538,7 +539,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         ListBoxTask v = new ListBoxTask
                         {
                             Header = $"Dupliate GUID found on export {guid.export.UIndex} {guid.export.ObjectName}_{guid.export.indexValue}",
-                            Icon = FontAwesomeIcon.TimesRectangle,
+                            Icon = EFontAwesomeIcon.Solid_Times,
                             Spinning = false,
                             Foreground = Brushes.Red
                         };

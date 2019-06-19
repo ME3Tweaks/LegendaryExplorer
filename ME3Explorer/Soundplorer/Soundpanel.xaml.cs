@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -9,27 +7,21 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Linq;
 using Be.Windows.Forms;
-using FontAwesome.WPF;
+using FontAwesome5;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
-using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using NAudio.Wave;
@@ -91,7 +83,7 @@ namespace ME3Explorer
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Soundpanel Export Loader", new WeakReference(this));
 
-            PlayPauseIcon = FontAwesomeIcon.Play;
+            PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
             LoadCommands();
             CurrentVolume = 0.65f;
             _playbackState = PlaybackState.Stopped;
@@ -467,8 +459,8 @@ namespace ME3Explorer
             set => SetProperty(ref _repeating, value);
         }
 
-        private FontAwesomeIcon _playPauseImageSource;
-        public FontAwesomeIcon PlayPauseIcon
+        private EFontAwesomeIcon _playPauseImageSource;
+        public EFontAwesomeIcon PlayPauseIcon
         {
             get => _playPauseImageSource;
             set => SetProperty(ref _playPauseImageSource, value);
@@ -1460,7 +1452,7 @@ namespace ME3Explorer
         private void _audioPlayer_PlaybackStopped()
         {
             _playbackState = PlaybackState.Stopped;
-            PlayPauseIcon = FontAwesomeIcon.Play;
+            PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
 
             CommandManager.InvalidateRequerySuggested();
             CurrentTrackPosition = 0;
@@ -1476,14 +1468,14 @@ namespace ME3Explorer
         private void _audioPlayer_PlaybackResumed()
         {
             _playbackState = PlaybackState.Playing;
-            PlayPauseIcon = FontAwesomeIcon.Pause;
+            PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
         }
 
         private void _audioPlayer_PlaybackPaused()
         {
             UpdateSeekBarPos(null, null);
             _playbackState = PlaybackState.Paused;
-            PlayPauseIcon = FontAwesomeIcon.Play;
+            PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
         }
 
         #endregion

@@ -8,7 +8,7 @@
         xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    xmlns:fa="http://schemas.fontawesome.io/icons/"
+    xmlns:fa="http://schemas.fontawesome.com/icons/"
     xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
     mc:Ignorable="d"
         DragOver="Window_DragOver"
@@ -186,7 +186,7 @@
                                             <Grid.InputBindings>
                                                 <MouseBinding Gesture="LeftDoubleClick" Command="{Binding NodeTypeChangeCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
                                             </Grid.InputBindings>
-                                            <fa:ImageAwesome Icon="CheckSquare" Grid.Column="0" Foreground="Gray" Height="16" HorizontalAlignment="Left">
+                                            <fa:ImageAwesome Icon="Solid_CheckSquare" Grid.Column="0" Foreground="Gray" Height="16" HorizontalAlignment="Left">
                                                 <fa:ImageAwesome.Style>
                                                     <Style TargetType="{x:Type fa:ImageAwesome}">
                                                         <Style.Triggers>
