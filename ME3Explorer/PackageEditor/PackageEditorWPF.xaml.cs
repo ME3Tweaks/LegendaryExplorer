@@ -3189,27 +3189,9 @@ namespace ME3Explorer
             switch (myValue)
             {
                 case "DialogueEditor":
-                    if (Pcc.Game == MEGame.ME3)
-                    {
-                        var diaEditor = new DialogEditor.DialogEditor();
-                        diaEditor.LoadFile(Pcc.FileName);
-                        diaEditor.Show();
-                        break;
-                    }
-                    else if (Pcc.Game == MEGame.ME2)
-                    {
-                        var dia2Editor = new ME2Explorer.DialogEditor();
-                        dia2Editor.LoadFile(Pcc.FileName);
-                        dia2Editor.Show();
-                        break;
-                    }
-                    else if (Pcc.Game == MEGame.ME1)
-                    {
-                        var dia1Editor = new ME1Explorer.DialogEditor();
-                        dia1Editor.LoadFile(Pcc.FileName);
-                        dia1Editor.Show();
-                        break;
-                    }
+                    var dialogueEditorWPF = new Dialogue_Editor.DialogueEditorWPF();
+                    dialogueEditorWPF.LoadFile(Pcc.FileName);
+                    dialogueEditorWPF.Show();
                     break;
                 case "FaceFXEditor":
                     var facefxEditor = new FaceFX.FaceFXEditor();
