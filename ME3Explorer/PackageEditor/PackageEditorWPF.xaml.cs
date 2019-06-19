@@ -48,7 +48,7 @@ namespace ME3Explorer
             Exports,
             Tree
         }
-        public static readonly string[] ExportFileTypes = { "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream" };
+        public static readonly string[] ExportFileTypes = { "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile" };
 
         /// <summary>
         /// Used to populate the metadata editor values so the list does not constantly need to rebuilt, which can slow down the program on large files like SFXGame or BIOC_Base.
@@ -771,6 +771,7 @@ namespace ME3Explorer
                 {
                     case "BioSWF":
                     case "GFxMovieInfo":
+                    case "BioTlkFile":
                         return true;
                 }
             }
@@ -785,27 +786,46 @@ namespace ME3Explorer
                 {
                     case "BioSWF":
                     case "GFxMovieInfo":
-                        try
                         {
-                            var props = exp.GetProperties();
-                            string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
-                            byte[] data = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName).Select(x => x.Value).ToArray();
-                            string extension = Path.GetExtension(".swf");
+                            try
+                            {
+                                var props = exp.GetProperties();
+                                string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
+                                byte[] data = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName).Select(x => x.Value).ToArray();
+                                string extension = Path.GetExtension(".swf");
+                                SaveFileDialog d = new SaveFileDialog
+                                {
+                                    Title = "Save SWF",
+                                    FileName = exp.GetFullPath + ".swf",
+                                    Filter = $"*{extension}|*{extension}"
+                                };
+                                if (d.ShowDialog() == true)
+                                {
+                                    File.WriteAllBytes(d.FileName, data);
+                                    MessageBox.Show("Done");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Error reading/saving SWF data:\n\n" + ExceptionHandlerDialogWPF.FlattenException(ex));
+                            }
+                        }
+                        break;
+                    case "BioTlkFile":
+                        {
+                            string extension = Path.GetExtension(".xml");
                             SaveFileDialog d = new SaveFileDialog
                             {
-                                Title = "Save SWF",
-                                FileName = exp.GetFullPath + ".swf",
+                                Title = "Export TLK as XML",
+                                FileName = exp.GetFullPath + ".xml",
                                 Filter = $"*{extension}|*{extension}"
                             };
                             if (d.ShowDialog() == true)
                             {
-                                File.WriteAllBytes(d.FileName, data);
+                                var exportingTalk = new ME1Explorer.Unreal.Classes.TalkFile(exp);
+                                exportingTalk.saveToFile(d.FileName);
                                 MessageBox.Show("Done");
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Error reading/saving SWF data:\n\n" + ExceptionHandlerDialogWPF.FlattenException(ex));
                         }
                         break;
                 }
@@ -820,50 +840,69 @@ namespace ME3Explorer
                 {
                     case "BioSWF":
                     case "GFxMovieInfo":
-                        try
                         {
-                            string extension = Path.GetExtension(".swf");
+                            try
+                            {
+                                string extension = Path.GetExtension(".swf");
+                                OpenFileDialog d = new OpenFileDialog
+                                {
+                                    Title = "Replace SWF",
+                                    FileName = exp.GetFullPath + ".swf",
+                                    Filter = $"*{extension}|*{extension}"
+                                };
+                                if (d.ShowDialog() == true)
+                                {
+                                    var bytes = File.ReadAllBytes(d.FileName);
+                                    var props = exp.GetProperties();
+
+                                    string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
+                                    var rawData = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName);
+                                    //Write SWF data
+                                    rawData.Values = bytes.Select(b => new ByteProperty(b)).ToList();
+
+                                    //Write SWF metadata
+                                    if (exp.FileRef.Game == MEGame.ME1 || exp.FileRef.Game == MEGame.ME2)
+                                    {
+                                        string sourceFilePropName = exp.FileRef.Game != MEGame.ME1 ? "SourceFile" : "SourceFilePath";
+                                        StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
+                                        if (sourceFilePath == null)
+                                        {
+                                            sourceFilePath = new StrProperty(d.FileName, sourceFilePropName);
+                                            props.Add(sourceFilePath);
+                                        }
+                                        sourceFilePath.Value = d.FileName;
+                                    }
+
+                                    if (exp.FileRef.Game == MEGame.ME1)
+                                    {
+                                        StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
+                                        sourceFileTimestamp = File.GetLastWriteTime(d.FileName).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                                    }
+                                    exp.WriteProperties(props);
+                                    MessageBox.Show("Done");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Error reading/setting SWF data:\n\n" + ExceptionHandlerDialogWPF.FlattenException(ex));
+                            }
+                        }
+                        break;
+                    case "BioTlkFile":
+                        {
+                            string extension = Path.GetExtension(".xml");
                             OpenFileDialog d = new OpenFileDialog
                             {
-                                Title = "Replace SWF",
-                                FileName = exp.GetFullPath + ".swf",
+                                Title = "Replace TLK from exported XML (ME1 Only)",
+                                FileName = exp.GetFullPath + ".xml",
                                 Filter = $"*{extension}|*{extension}"
                             };
                             if (d.ShowDialog() == true)
                             {
-                                var bytes = File.ReadAllBytes(d.FileName);
-                                var props = exp.GetProperties();
-
-                                string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
-                                var rawData = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName);
-                                //Write SWF data
-                                rawData.Values = bytes.Select(b => new ByteProperty(b)).ToList();
-
-                                //Write SWF metadata
-                                if (exp.FileRef.Game == MEGame.ME1 || exp.FileRef.Game == MEGame.ME2)
-                                {
-                                    string sourceFilePropName = exp.FileRef.Game != MEGame.ME1 ? "SourceFile" : "SourceFilePath";
-                                    StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
-                                    if (sourceFilePath == null)
-                                    {
-                                        sourceFilePath = new StrProperty(d.FileName, sourceFilePropName);
-                                        props.Add(sourceFilePath);
-                                    }
-                                    sourceFilePath.Value = d.FileName;
-                                }
-
-                                if (exp.FileRef.Game == MEGame.ME1)
-                                {
-                                    StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
-                                    sourceFileTimestamp = File.GetLastWriteTime(d.FileName).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-                                }
-                                exp.WriteProperties(props);
-                                MessageBox.Show("Done");
+                                ME1Explorer.HuffmanCompression compressor = new ME1Explorer.HuffmanCompression();
+                                compressor.LoadInputData(d.FileName);
+                                compressor.serializeTalkfileToExport(exp, false);
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Error reading/setting SWF data:\n\n" + ExceptionHandlerDialogWPF.FlattenException(ex));
                         }
                         break;
                 }
@@ -991,7 +1030,8 @@ namespace ME3Explorer
                 {
                     indexList = new List<int>();
                     duplicatesPackagePathIndexMapping[key] = indexList;
-                } else
+                }
+                else
                 {
                     duplicates.Add($"{exp.UIndex} {exp.GetInstancedFullPath} has duplicate index (index value {exp.indexValue})");
                 }
@@ -3120,6 +3160,17 @@ namespace ME3Explorer
             Properties.Settings.Default.Save();
             TouchComfySettings.ModeSwitched();
         }
+
+        private void ShowImpExpPrefix_Clicked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix = !Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix;
+            Properties.Settings.Default.Save();
+            if (AllTreeViewNodesX.Any())
+            {
+                AllTreeViewNodesX[0].FlattenTree().ForEach(x => x.RefreshDisplayName());
+            }
+        }
+        
 
         private void PackageEditorWPF_Closing(object sender, CancelEventArgs e)
         {

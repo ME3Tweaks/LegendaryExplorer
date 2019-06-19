@@ -96,10 +96,10 @@ namespace ME1Explorer
             {
                 throw new Exception("Cannot save a ME1 TLK to a game that is not Mass Effect 1.");
             }
-            serializeTalkfileToExport(export.FileRef as ME1Package, export, savePackage);
+            serializeTalkfileToExport(export, savePackage);
         }
 
-        public void serializeTalkfileToExport(ME1Package pcc, IExportEntry export, bool savePackage = false)
+        public void serializeTalkfileToExport(IExportEntry export, bool savePackage = false)
         {
             /* converts Huffmann Tree to binary form */
             byte[] treeBuffer = ConvertHuffmanTreeToBuffer();
@@ -163,7 +163,7 @@ namespace ME1Explorer
             export.setBinaryData(buff);
             if (savePackage)
             {
-                pcc.save(pcc.FileName);
+                export.FileRef.save(export.FileRef.FileName);
             }
         }
 

@@ -134,7 +134,7 @@ namespace ME1Explorer.Unreal.Classes
             tlkSetIndex = -1;
             LoadTlkData();
         }
-
+        
         public TalkFile(ME1Package _pcc, int uindex, bool _male, int _langRef, int _tlkSetIndex)
         {
             pcc = _pcc;
@@ -188,10 +188,12 @@ namespace ME1Explorer.Unreal.Classes
         #endregion
 
         #region Load Data
-        public void LoadTlkData()
+        public void LoadTlkData(BinaryReader r = null)
         {
-            BinaryReader r = new BinaryReader(new MemoryStream(pcc.getUExport(uindex).getBinaryData()), Encoding.Unicode);
-
+            if (r == null)
+            {
+                r = new BinaryReader(new MemoryStream(pcc.getUExport(uindex).getBinaryData()), Encoding.Unicode);
+            }
             //hashtable
             int entryCount = r.ReadInt32();
             StringRefs = new TLKStringRef[entryCount];

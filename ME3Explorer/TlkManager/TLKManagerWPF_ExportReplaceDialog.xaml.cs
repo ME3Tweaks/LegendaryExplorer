@@ -151,7 +151,7 @@ namespace ME3Explorer.TlkManagerNS
                             compressor.LoadInputData(openFileDialog.FileName);
                             using (ME1Package pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath))
                             {
-                                compressor.serializeTalkfileToExport(pcc, pcc.getUExport(tlk.exportNumber), true); //Code uses 0 based
+                                compressor.serializeTalkfileToExport(pcc.getUExport(tlk.exportNumber), true); 
                             };
                         };
                     }
