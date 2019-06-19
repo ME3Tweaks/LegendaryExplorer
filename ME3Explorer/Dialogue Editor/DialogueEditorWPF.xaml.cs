@@ -809,7 +809,7 @@ namespace ME3Explorer.Dialogue_Editor
                     try
                     {
                         linestrref = Node.GetProp<StringRefProperty>("srText").Value;
-                        //line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage);
+                        line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage);
                         cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
                         stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
                         bcond = Node.GetProp<BoolProperty>("bFireConditional");
@@ -3511,7 +3511,12 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void node_Click(object sender, PInputEventArgs e)
         {
-            if (sender is DiagNode obj)
+            if (e.Shift && e.PickedNode is DObj dObj)
+            {
+                dObj.IsSelected = true;
+                SelectedObjects.Add(dObj);
+            }
+            else if (sender is DiagNode obj)
             {
                 SetUIMode(2, false);
                 if (e.Button != System.Windows.Forms.MouseButtons.Left && obj.GlobalFullBounds == obj.posAtDragStart)
@@ -3659,15 +3664,7 @@ namespace ME3Explorer.Dialogue_Editor
             {
 
             }
-            else if (e.Shift)
-            {
-                //graphEditor.StartBoxSelection(e);
-                //e.Handled = true;
-            }
-            else
-            {
 
-            }
         }
         private void back_MouseUp(object sender, PInputEventArgs e)
         {
