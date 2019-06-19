@@ -10,7 +10,7 @@
         xmlns:facefx="clr-namespace:ME3Explorer.FaceFX"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
         Loaded="DialogueEditorWPF_Loaded"
         Closing="DialogueEditorWPF_Closing"
@@ -259,14 +259,14 @@
                                         <ColumnDefinition Width="25" />
                                         <ColumnDefinition Width="25" />
                                     </Grid.ColumnDefinitions>
-                                    <Button Name="OpenLevelPackEd_Button" Grid.Column="0" Command="{Binding OpenInCommand}" CommandParameter="PackEdLvl" Padding="3" ToolTip="Open the Actor's level in Package Editor">
+                                    <Button Name="OpenLevelPackEd_Button" Grid.Column="0" Command="{Binding OpenInCommand}" CommandParameter="PackEdLvl" Padding="2" ToolTip="Open the Actor's level in Package Editor">
                                         <Button.Content>
-                                            <fa:ImageAwesome Icon="Cube" Width="16" Height="16" Foreground="DarkBlue"/>
+                                            <fa:ImageAwesome Icon="Solid_Cube" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
                                     </Button>
                                     <Button Name="OpenLevelSeqEd_Button" Grid.Column="1" Command="{Binding OpenInCommand}" CommandParameter="SeqEdLvl" Padding="3" ToolTip="Open the Actor's level in Sequence Editor">
                                         <Button.Content>
-                                            <fa:ImageAwesome Icon="ShareAlt" Width="16" Height="16" Foreground="DarkBlue"/>
+                                            <fa:ImageAwesome Icon="Solid_ShareAlt" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
                                     </Button>
                                 </Grid>
@@ -277,7 +277,7 @@
                                 <TextBlock Text="Dialogue Sequence:" Name="Data" VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Sequence for this conversation." DockPanel.Dock="Left" FontWeight="Normal" FontSize="15"/>
                                 <Button Name="OpenSeqEd_Button" Command="{Binding OpenInCommand}" CommandParameter="SeqEdNode" Padding="3" DockPanel.Dock="Right" ToolTip="Open this dialogue's sequence" >
                                     <Button.Content>
-                                        <fa:ImageAwesome Icon="ShareAlt" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        <fa:ImageAwesome Icon="Solid_ShareAlt" Width="16" Height="16" Foreground="DarkBlue"/>
                                     </Button.Content>
                                 </Button>
                                 <TextBlock Text="" FontSize="10" />
@@ -290,7 +290,7 @@
                                 <TextBlock Text="Wwisebank:"  HorizontalAlignment="Left" VerticalAlignment="Bottom"  ToolTip="Main conversation Wwisebank" DockPanel.Dock="Left" FontWeight="Normal" FontSize="15"/>
                                 <Button Name="OpenWWbnk_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_Bank" ToolTip="Open in Soundplorer">
                                     <Button.Content>
-                                        <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        <fa:ImageAwesome Icon="Solid_VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
                                     </Button.Content>
                                 </Button>
                                 <TextBlock Text="" FontSize="10"/>
@@ -303,7 +303,7 @@
                                 <TextBlock Text="Non-Speaker FaceFX:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Conversation animations for non-speakers" DockPanel.Dock="Left" FontWeight="Normal" FontSize="15"/>
                                 <Button Name="OpenFFX_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_FFXNS}" CommandParameter="FaceFXNS" ToolTip="Open Non-speaker's AnimSet in FaceFX Editor">
                                     <Button.Content>
-                                        <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        <fa:ImageAwesome Icon="Solid_TheaterMasks" Width="16" Height="16" Foreground="DarkBlue"/>
                                     </Button.Content>
                                 </Button>
                                 <TextBlock Text=""/>
@@ -326,12 +326,12 @@
                                 <TextBlock Text="Scripted Events:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Scripted Events that can be called from lines to start new sequences." FontWeight="Normal" FontSize="15"/>
                                 <Button Name="ScriptAddButton" Command="{Binding ScriptAddCommand}" CommandParameter="Add" Padding="3"  Grid.Column="1" Margin="2" ToolTip="Add a new script">
                                     <Button.Content>
-                                        <fa:ImageAwesome Icon="PlusCircle" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        <fa:ImageAwesome Icon="Solid_PlusCircle" Width="16" Height="16" Foreground="DarkBlue"/>
                                     </Button.Content>
                                 </Button>
                                 <Button Name="ScriptDeleteButton" Command="{Binding ScriptDeleteCommand}" Padding="3"  Grid.Column="2" Margin="2" ToolTip="Delete selected script">
                                     <Button.Content>
-                                        <fa:ImageAwesome Icon="MinusCircle" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        <fa:ImageAwesome Icon="Solid_MinusCircle" Width="16" Height="16" Foreground="DarkBlue"/>
                                     </Button.Content>
                                 </Button>
                             </Grid>
@@ -359,7 +359,7 @@
                                 <TextBlock Text="Male FaceFX Animation Set:" VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Facial Animations for when the Player is Male" DockPanel.Dock="Left"/>
                                 <Button Name="Button_Spkr_OpenFFXM" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXSpkrM" ToolTip="Open this Speaker's Male AnimSet in FaceFX Editor.">
                                     <Button.Content>
-                                        <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        <fa:ImageAwesome Icon="Solid_TheaterMasks" Width="16" Height="16" Foreground="DarkBlue"/>
                                     </Button.Content>
                                 </Button>
                                 <TextBlock Text="" FontSize="10"/>
@@ -378,7 +378,7 @@
                                 <TextBlock Text="Female FaceFX Animation Set:" VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Facial Animations for when the Player is Female" DockPanel.Dock="Left"/>
                                 <Button Name="Button_Spkr_OpenFFXF" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXSpkrF" ToolTip="Open this Speaker's Female AnimSet in FaceFX Editor.">
                                     <Button.Content>
-                                        <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        <fa:ImageAwesome Icon="Solid_TheaterMasks" Width="16" Height="16" Foreground="DarkBlue"/>
                                     </Button.Content>
                                 </Button>
                                 <TextBlock Text=""/>
@@ -479,17 +479,17 @@
                                             <TextBlock Text="Line InterpData: "  HorizontalAlignment="Left" VerticalAlignment="Center" ToolTip="Matinee object for this line." DockPanel.Dock="Left" FontSize="15" Margin="2"/>
                                             <Button Name="OpenLinePE_Button" Command="{Binding OpenInCommand_Line}" CommandParameter="PackEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's interpdata in Package editor" >
                                                 <Button.Content>
-                                                    <fa:ImageAwesome Icon="Cube" Width="16" Height="16" Foreground="DarkBlue"/>
+                                                    <fa:ImageAwesome Icon="Solid_Cube" Width="16" Height="16" Foreground="DarkBlue"/>
                                                 </Button.Content>
                                             </Button>
                                             <Button Name="OpenLineSE_Button" Command="{Binding OpenInCommand_Line}" CommandParameter="SeqEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's sequence" >
                                                 <Button.Content>
-                                                    <fa:ImageAwesome Icon="ShareAlt" Width="16" Height="16" Foreground="DarkBlue"/>
+                                                    <fa:ImageAwesome Icon="Solid_ShareAlt" Width="16" Height="16" Foreground="DarkBlue"/>
                                                 </Button.Content>
                                             </Button>
                                             <Button Name="OpenLineIE_Button" Command="{Binding OpenInCommand_Line}" CommandParameter="InterpEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line in interpeditor">
                                                 <Button.Content>
-                                                    <fa:ImageAwesome Icon="AreaChart" Width="16" Height="16" Foreground="DarkBlue"/>
+                                                    <fa:ImageAwesome Icon="Solid_ChartArea" Width="16" Height="16" Foreground="DarkBlue"/>
                                                 </Button.Content>
                                             </Button>
                                             <TextBlock Text="{Binding Path=SelectedDialogueNode.Interpdata.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Matinee interpdata for this line." FontSize="15" Margin="2"/>
@@ -543,7 +543,7 @@
                                                 <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Male audio for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
                                                 <Button Name="Open_WwStreamM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_StreamM" ToolTip="Open in Soundplorer">
                                                     <Button.Content>
-                                                        <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                                                        <fa:ImageAwesome Icon="Solid_VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
                                                     </Button.Content>
                                                 </Button>
                                                 <TextBlock Text="{Binding Path=SelectedDialogueNode.WwiseStream_Male.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male audio for this line." FontSize="15" Margin="2"/>
@@ -552,7 +552,7 @@
                                                 <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Male facial animations for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
                                                 <Button Name="Open_ffxM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXLineM" ToolTip="Open this line in FaceFX Editor">
                                                     <Button.Content>
-                                                        <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
+                                                        <fa:ImageAwesome Icon="Solid_TheaterMasks" Width="16" Height="16" Foreground="DarkBlue"/>
                                                     </Button.Content>
                                                 </Button>
                                                 <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Male, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Male facial animations for this line." FontSize="15" Margin="2"/>
@@ -565,7 +565,7 @@
                                                 <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Female audio for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
                                                 <Button Name="Open_WwStreamF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_StreamF" ToolTip="Open this stream in Soundplorer">
                                                     <Button.Content>
-                                                        <fa:ImageAwesome Icon="VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                                                        <fa:ImageAwesome Icon="Solid_VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
                                                     </Button.Content>
                                                 </Button>
                                                 <TextBlock Text="{Binding Path=SelectedDialogueNode.WwiseStream_Female.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Female audio for this line." FontSize="15" Margin="2"/>
@@ -574,7 +574,7 @@
                                                 <TextBlock Text="FaceFX:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Female facial animations for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
                                                 <Button Name="Open_ffxF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand}" CommandParameter="FaceFXLineF" ToolTip="Open this line in FaceFX Editor">
                                                     <Button.Content>
-                                                        <fa:ImageAwesome Icon="SmileOutline" Width="16" Height="16" Foreground="DarkBlue"/>
+                                                        <fa:ImageAwesome Icon="Solid_TheaterMasks" Width="16" Height="16" Foreground="DarkBlue"/>
                                                     </Button.Content>
                                                 </Button>
                                                 <TextBlock Text="{Binding Path=SelectedDialogueNode.FaceFX_Female, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Female facial animations for this line." FontSize="15" Margin="2"/>
@@ -601,22 +601,22 @@
                                     <Label Grid.Column="1" Background="GhostWhite">Entry Link</Label>
                                     <Button Name="StartAddButton" Command="{Binding StartAddCommand}" CommandParameter="Add" Padding="3" DockPanel.Dock="Right" IsEnabled="True" Grid.Column="2" Margin="2" ToolTip="Add a new start">
                                         <Button.Content>
-                                            <fa:ImageAwesome Icon="PlusCircle" Width="16" Height="16" Foreground="DarkBlue"/>
+                                            <fa:ImageAwesome Icon="Solid_PlusCircle" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
                                     </Button>
                                     <Button Name="StartDeleteButton" Command="{Binding StartDeleteCommand}" Padding="3" DockPanel.Dock="Right" IsEnabled="True" Grid.Column="3" Margin="2" ToolTip="Delete selected start">
                                         <Button.Content>
-                                            <fa:ImageAwesome Icon="MinusCircle" Width="16" Height="16" Foreground="DarkBlue"/>
+                                            <fa:ImageAwesome Icon="Solid_MinusCircle" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
                                     </Button>
                                     <Button Name="StartUpButton" Command="{Binding StartUpCommand}" CommandParameter="Up" Padding="3" DockPanel.Dock="Right" IsEnabled="True" Grid.Column="4" Margin="2" ToolTip="Move selected start up">
                                         <Button.Content>
-                                            <fa:ImageAwesome Icon="ArrowCircleUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                                            <fa:ImageAwesome Icon="Solid_ArrowCircleUp" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
                                     </Button>
                                     <Button Name="StartDownButton" Command="{Binding StartDownCommand}" CommandParameter="Down" Padding="3" DockPanel.Dock="Right" IsEnabled="True" Grid.Column="5" Margin="2" ToolTip="Move selected start down">
                                         <Button.Content>
-                                            <fa:ImageAwesome Icon="ArrowCircleDown" Width="16" Height="16" Foreground="DarkBlue"/>
+                                            <fa:ImageAwesome Icon="Solid_ArrowCircleDown" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
                                     </Button>
                                 </Grid>
@@ -671,12 +671,12 @@
                     <Label Grid.Column="1" Background="GhostWhite">Speaker Tag</Label>
                     <Button Name="SpkrUpButton" Command="{Binding SpeakerMoveUpCommand}" CommandParameter="Up" Padding="3" DockPanel.Dock="Right" IsEnabled="True" Grid.Column="2" Margin="2">
                         <Button.Content>
-                            <fa:ImageAwesome Icon="ArrowCircleUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                            <fa:ImageAwesome Icon="Solid_ArrowCircleUp" Width="16" Height="16" Foreground="DarkBlue"/>
                         </Button.Content>
                     </Button>
                     <Button Name="SpkrDownButton" Command="{Binding SpeakerMoveDownCommand}" CommandParameter="Down" Padding="3" DockPanel.Dock="Right" IsEnabled="True" Grid.Column="3" Margin="2">
                         <Button.Content>
-                            <fa:ImageAwesome Icon="ArrowCircleDown" Width="16" Height="16" Foreground="DarkBlue"/>
+                            <fa:ImageAwesome Icon="Solid_ArrowCircleDown" Width="16" Height="16" Foreground="DarkBlue"/>
                         </Button.Content>
                     </Button>
                 </Grid>

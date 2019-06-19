@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:ME3Explorer.Dialogue_Editor"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
@@ -32,7 +32,7 @@
                         <DataTemplate>
                             <Button Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.DeleteCommand}" CommandParameter="{Binding}" Margin="2">
                                 <Button.Content>
-                                    <fa:ImageAwesome Icon="TrashOutline" Width="16" Height="16" Foreground="DarkBlue"/>
+                                    <fa:ImageAwesome Icon="Regular_TrashAlt" Width="16" Height="16" Foreground="DarkBlue"/>
                                 </Button.Content>
                             </Button>
                         </DataTemplate>
@@ -43,7 +43,7 @@
                         <DataTemplate>
                             <Button Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.UpCommand}" CommandParameter="Up" Margin="2">
                                 <Button.Content>
-                                    <fa:ImageAwesome Icon="AngleUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                                    <fa:ImageAwesome Icon="Solid_AngleUp" Width="16" Height="16" Foreground="DarkBlue"/>
                                 </Button.Content>
                             </Button>
                         </DataTemplate>
@@ -54,7 +54,7 @@
                         <DataTemplate>
                             <Button Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.DownCommand}" CommandParameter="Down" Margin="2">
                                 <Button.Content>
-                                    <fa:ImageAwesome Icon="AngleDown" Width="16" Height="16" Foreground="DarkBlue"/>
+                                    <fa:ImageAwesome Icon="Solid_AngleDown" Width="16" Height="16" Foreground="DarkBlue"/>
                                 </Button.Content>
                             </Button>
                         </DataTemplate>
