@@ -390,7 +390,7 @@ namespace ME3Explorer.Sequence_Editor
                     SavedPositions = new List<SaveData>();
                 }
 
-                extraSaveData.Clear();
+                customSaveData.Clear();
                 selectedExports.Clear();
             }
 #if !DEBUG
@@ -523,14 +523,7 @@ namespace ME3Explorer.Sequence_Editor
 
             if (SavedPositions.IsEmpty() && Pcc.Game != MEGame.ME1)
             {
-                if (CurrentFile.Contains("_LOC_INT"))
-                {
-                    LoadDialogueObjects();
-                }
-                else
-                {
-                    AutoLayout();
-                }
+                AutoLayout();
             }
         }
 
@@ -571,38 +564,6 @@ namespace ME3Explorer.Sequence_Editor
             {
                 return new SAction(export, x, y, graphEditor);
             }
-        }
-
-        public bool LoadDialogueObjects()
-        {
-            float StartPosDialog = 0;
-            try
-            {
-                foreach (SObj obj in CurrentObjects)
-                {
-                    if (obj.Export.ObjectName.StartsWith("BioSeqEvt_ConvNode"))
-                    {
-                        obj.SetOffset(StartPosDialog, 600); //Startconv event
-                        SAction interp = (SAction)CurrentObjects.First(o => o.UIndex == ((SEvent)obj).Outlinks[0].Links[0]);
-                        interp.SetOffset(StartPosDialog + 150, 600); //Interp
-                        CurrentObjects.First(o => o.UIndex == interp.Varlinks[0].Links[0]).SetOffset(StartPosDialog + 165, 770); //Interpdata
-                        StartPosDialog += interp.Width + 200;
-                        CurrentObjects.First(o => o.UIndex == interp.Outlinks[0].Links[0]).SetOffset(StartPosDialog, 600); //Endconv node
-                        StartPosDialog += 270;
-                    }
-                }
-
-                foreach (SeqEdEdge edge in graphEditor.edgeLayer)
-                    GraphEditor.UpdateEdge(edge);
-            }
-            catch (Exception)
-            {
-                foreach (SeqEdEdge edge in graphEditor.edgeLayer)
-                    GraphEditor.UpdateEdge(edge);
-                return false;
-            }
-
-            return true;
         }
 
         public void Layout()
@@ -1036,7 +997,7 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        private readonly List<SaveData> extraSaveData = new List<SaveData>();
+        private readonly List<SaveData> customSaveData = new List<SaveData>();
         private bool panToSelection = true;
         private string FileQueuedForLoad;
         private IExportEntry ExportQueuedForFocusing;
@@ -1061,9 +1022,8 @@ namespace ME3Explorer.Sequence_Editor
                     });
                 }
             }
-
-            SavedPositions.AddRange(extraSaveData);
-            extraSaveData.Clear();
+            SavedPositions.AddRange(customSaveData);
+            customSaveData.Clear();
 
             if (toFile)
             {
@@ -1405,11 +1365,17 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (CurrentObjects_ListBox.SelectedItem is SObj obj)
             {
-                cloneObject(obj.Export, SelectedSequence);
+                IExportEntry clonedExport = cloneObject(obj.Export, SelectedSequence);
+                customSaveData.Add(new SaveData
+                {
+                    index = clonedExport.Index,
+                    X = graphEditor.Camera.ViewCenterX,
+                    Y = graphEditor.Camera.ViewCenterY
+                });
             }
         }
 
-        static void cloneObject(IExportEntry old, IExportEntry sequence, bool topLevel = true)
+        static IExportEntry cloneObject(IExportEntry old, IExportEntry sequence, bool topLevel = true)
         {
             IMEPackage pcc = sequence.FileRef;
             IExportEntry exp = old.Clone();
@@ -1422,6 +1388,7 @@ namespace ME3Explorer.Sequence_Editor
             pcc.addExport(exp);
             addObjectToSequence(exp, topLevel, sequence);
             cloneSequence(exp, sequence);
+            return exp;
         }
 
         static void addObjectToSequence(IExportEntry newObject, bool removeLinks, IExportEntry sequenceExport)
@@ -1741,11 +1708,11 @@ namespace ME3Explorer.Sequence_Editor
 
         private void addObject(IExportEntry exportToAdd, bool removeLinks = true)
         {
-            extraSaveData.Add(new SaveData
+            customSaveData.Add(new SaveData
             {
                 index = exportToAdd.Index,
-                X = graphEditor.Camera.Bounds.X + graphEditor.Camera.Bounds.Width / 2,
-                Y = graphEditor.Camera.Bounds.Y + graphEditor.Camera.Bounds.Height / 2
+                X = graphEditor.Camera.ViewCenterX,
+                Y = graphEditor.Camera.ViewCenterY
             });
             addObjectToSequence(exportToAdd, removeLinks, SelectedSequence);
         }
@@ -1799,11 +1766,15 @@ namespace ME3Explorer.Sequence_Editor
                     p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(exportEntry.Index);
                     p.loadInterpData(exportEntry.Index);
                 }
-                else
+                else if (obj is SAction sAction && sAction.Varlinks.Any() && sAction.Varlinks[0].Links.Any())
                 {
                     int i = ((SAction)obj).Varlinks[0].Links[0] - 1; //0-based index because Interp Viewer is old
                     p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(i);
                     p.loadInterpData(i);
+                }
+                else
+                {
+                    MessageBox.Show("No InterpData to open!", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

@@ -693,19 +693,24 @@ namespace UMD.HCIL.Piccolo {
 		public virtual PMatrix ViewMatrixReference {
 			get { return viewMatrix; }
 		}
-		#endregion
 
-		#region View Matrix Constraints
-		//****************************************************************
-		// View Matrix Constraints - Methods for setting and applying
-		// constraints to the view matrix.
-		//****************************************************************
+        public float ViewCenterX => ViewBounds.X + ViewBounds.Width / 2;
 
-		/// <summary>
-		/// Gets or sets a constraint that will be applied to the camera's view matrix.
-		/// </summary>
-		/// <value>A constraint to apply to the camera's view matrix.</value>
-		public virtual CameraViewConstraint ViewConstraint {
+        public float ViewCenterY => ViewBounds.Y + ViewBounds.Height / 2;
+
+        #endregion
+
+        #region View Matrix Constraints
+        //****************************************************************
+        // View Matrix Constraints - Methods for setting and applying
+        // constraints to the view matrix.
+        //****************************************************************
+
+        /// <summary>
+        /// Gets or sets a constraint that will be applied to the camera's view matrix.
+        /// </summary>
+        /// <value>A constraint to apply to the camera's view matrix.</value>
+        public virtual CameraViewConstraint ViewConstraint {
 			get { return viewConstraint; }
 			set {
 				viewConstraint = value;
