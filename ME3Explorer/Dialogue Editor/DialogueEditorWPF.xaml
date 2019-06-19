@@ -266,7 +266,7 @@
                                     </Button>
                                     <Button Name="OpenLevelSeqEd_Button" Grid.Column="1" Command="{Binding OpenInCommand}" CommandParameter="SeqEdLvl" Padding="3" ToolTip="Open the Actor's level in Sequence Editor">
                                         <Button.Content>
-                                            <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkBlue"/>
+                                            <fa:ImageAwesome Icon="ShareAlt" Width="16" Height="16" Foreground="DarkBlue"/>
                                         </Button.Content>
                                     </Button>
                                 </Grid>
@@ -277,7 +277,7 @@
                                 <TextBlock Text="Dialogue Sequence:" Name="Data" VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Sequence for this conversation." DockPanel.Dock="Left" FontWeight="Normal" FontSize="15"/>
                                 <Button Name="OpenSeqEd_Button" Command="{Binding OpenInCommand}" CommandParameter="SeqEdNode" Padding="3" DockPanel.Dock="Right" ToolTip="Open this dialogue's sequence" >
                                     <Button.Content>
-                                        <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        <fa:ImageAwesome Icon="ShareAlt" Width="16" Height="16" Foreground="DarkBlue"/>
                                     </Button.Content>
                                 </Button>
                                 <TextBlock Text="" FontSize="10" />
@@ -484,7 +484,7 @@
                                             </Button>
                                             <Button Name="OpenLineSE_Button" Command="{Binding OpenInCommand_Line}" CommandParameter="SeqEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line's sequence" >
                                                 <Button.Content>
-                                                    <fa:ImageAwesome Icon="CodeFork" Width="16" Height="16" Foreground="DarkBlue"/>
+                                                    <fa:ImageAwesome Icon="ShareAlt" Width="16" Height="16" Foreground="DarkBlue"/>
                                                 </Button.Content>
                                             </Button>
                                             <Button Name="OpenLineIE_Button" Command="{Binding OpenInCommand_Line}" CommandParameter="InterpEdLine" Padding="3" DockPanel.Dock="Right" ToolTip="Open this line in interpeditor">
@@ -844,7 +844,7 @@
                     <TabItem Header="Interpreter">
                         <global:InterpreterWPF x:Name="Properties_InterpreterWPF" HideHexBox="True"/>
                     </TabItem>
-                    <TabItem Header="InterpData"></TabItem>
+                    <TabItem Header="InterpData" IsEnabled="False"></TabItem>
                     <TabItem Header="FaceFX">
                         <TabControl Name="faceFXEditorTabControl" SelectionChanged="GenderTabControl_SelectionChanged">
                             <TabControl.Resources>
