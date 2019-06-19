@@ -133,76 +133,7 @@ namespace ME3Explorer.Dialogue_Editor
             edge.Reset();
             edge.AddBezier(start.X, start.Y, start.X + h1x, start.Y + h1y, end.X - h2x, end.Y - h2y, end.X, end.Y);
         }
-
-        //private PNode boxSelectOriginNode;
-        //private PNode boxSelectExtentNode;
-        //private readonly PDragEventHandler boxSelectDragEventHandler = new BoxSelectDragHandler();
-        //public void StartBoxSelection(PInputEventArgs e)
-        //{
-        //    var (x, y) = e.Position;
-        //    boxSelectOriginNode = new PNode
-        //    {
-        //        X = x,
-        //        Y = y
-        //    };
-        //    boxSelectExtentNode = new PNode
-        //    {
-        //        X = x,
-        //        Y = y
-        //    };
-        //    nodeLayer.AddChild(boxSelectOriginNode);
-        //    nodeLayer.AddChild(boxSelectExtentNode);
-        //    boxSelectExtentNode.AddInputEventListener(boxSelectDragEventHandler);
-        //    e.PickedNode = boxSelectExtentNode;
-        //    boxSelectExtentNode.OnMouseDown(e);
-        //}
-
-        //public List<PNode> EndBoxSelection()
-        //{
-        //    if (boxSelectExtentNode != null)
-        //    {
-        //        var (x1, y1) = boxSelectOriginNode.GlobalFullBounds;
-        //        var (x2, y2) = boxSelectExtentNode.GlobalFullBounds;
-        //        boxSelectExtentNode.RemoveInputEventListener(boxSelectDragEventHandler);
-        //        nodeLayer.RemoveChild(boxSelectOriginNode);
-        //        nodeLayer.RemoveChild(boxSelectExtentNode);
-        //        boxSelectExtentNode = boxSelectOriginNode = null;
-
-        //        var size = new SizeF(x2.Difference(x1), y2.Difference(y1));
-        //        var origin = new PointF(Math.Min(x1, x2), Math.Min(y1, y2));
-        //        return nodeLayer.FindIntersectingNodes(new RectangleF(origin, size));
-        //    }
-
-        //    return new List<PNode>();
-        //}
-        //public class BoxSelectDragHandler : PDragEventHandler
-        //{
-        //    public override bool DoesAcceptEvent(PInputEventArgs e)
-        //    {
-        //        return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave);
-        //    }
-
-        //    protected override void OnStartDrag(object sender, PInputEventArgs e)
-        //    {
-
-        //        base.OnStartDrag(sender, e);
-        //        e.Handled = true;
-        //    }
-
-        //    protected override void OnDrag(object sender, PInputEventArgs e)
-        //    {
-        //        Debug.WriteLine($"dragging: {e.Position}");
-        //        base.OnDrag(sender, e);
-        //        if (false &&!e.Handled)
-        //        {
-        //        }
-        //    }
-
-        //    protected override void OnEndDrag(object sender, PInputEventArgs e)
-        //    {
-        //        ((PNode)sender).SetOffset(e.Position);
-        //    }
-        //}
+       
 
         private readonly NodeDragHandler dragHandler;
         /// <summary>

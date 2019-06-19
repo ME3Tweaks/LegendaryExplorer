@@ -1527,7 +1527,6 @@ namespace ME3Explorer.Dialogue_Editor
             }
             return hasLoopingPaths;
         }
-
         private void SaveSpeakersToProperties(ObservableCollectionExtended<SpeakerExtended> speakerCollection)
         {
             try
@@ -1597,7 +1596,6 @@ namespace ME3Explorer.Dialogue_Editor
 
             }
         }
-
         public void RecreateNodesToProperties(ConversationExtended conv, bool pushtofile = true)
         {
             AutoGenerateSpeakerArrays(conv);
@@ -1638,7 +1636,6 @@ namespace ME3Explorer.Dialogue_Editor
                 PushConvoToFile(conv);
             }
         }
-
         private void SaveScriptsToProperties(ConversationExtended conv, bool pushtofile = true)
         {
             if (Pcc.Game == MEGame.ME3)
@@ -1679,7 +1676,6 @@ namespace ME3Explorer.Dialogue_Editor
                 PushConvoToFile(conv);
             }
         }
-
         private void SaveStageDirectionsToProperties(ConversationExtended conv)
         {
             var aStageDirs = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_aStageDirections");

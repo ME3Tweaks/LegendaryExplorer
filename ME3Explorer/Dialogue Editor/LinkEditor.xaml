@@ -32,7 +32,7 @@
                         <DataTemplate>
                             <Button Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.DeleteCommand}" CommandParameter="{Binding}" Margin="2">
                                 <Button.Content>
-                                    <fa:ImageAwesome Icon="MinusCircle" Width="16" Height="16" Foreground="DarkBlue"/>
+                                    <fa:ImageAwesome Icon="TrashOutline" Width="16" Height="16" Foreground="DarkBlue"/>
                                 </Button.Content>
                             </Button>
                         </DataTemplate>
@@ -43,7 +43,7 @@
                         <DataTemplate>
                             <Button Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.UpCommand}" CommandParameter="Up" Margin="2">
                                 <Button.Content>
-                                    <fa:ImageAwesome Icon="ToggleUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                                    <fa:ImageAwesome Icon="AngleUp" Width="16" Height="16" Foreground="DarkBlue"/>
                                 </Button.Content>
                             </Button>
                         </DataTemplate>
@@ -54,7 +54,7 @@
                         <DataTemplate>
                             <Button Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.DownCommand}" CommandParameter="Down" Margin="2">
                                 <Button.Content>
-                                    <fa:ImageAwesome Icon="ToggleDown" Width="16" Height="16" Foreground="DarkBlue"/>
+                                    <fa:ImageAwesome Icon="AngleDown" Width="16" Height="16" Foreground="DarkBlue"/>
                                 </Button.Content>
                             </Button>
                         </DataTemplate>
