@@ -729,7 +729,7 @@ namespace ME3Explorer
                         {
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
-                        if (ip.Name == "m_nStrRefID")
+                        if (ip.Name == "m_nStrRefID" || ip.Name == "nLineStrRef")
                         {
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
@@ -931,7 +931,7 @@ namespace ME3Explorer
                     break;
             }
 
-            if (name == "m_nStrRefID")
+            if (name == "m_nStrRefID" || name == "nLineStrRef")
             {
                 return TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef as ME1Package);
             }
