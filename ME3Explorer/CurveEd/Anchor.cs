@@ -228,7 +228,7 @@ namespace ME3Explorer.CurveEd
         {
             float prev = point.Previous?.Value.InVal ?? float.MinValue;
             float next = point.Next?.Value.InVal ?? float.MaxValue;
-            string res = PromptDialog.Prompt(null, $"Enter time between {prev} and {next}", "Set Time", point.Value.InVal.ToString());
+            string res = PromptDialog.Prompt(this, $"Enter time between {prev} and {next}", "Set Time", point.Value.InVal.ToString());
             if (float.TryParse(res, out var result) && result > prev && result < next)
             {
                 X = graph.localX(result);
@@ -238,7 +238,7 @@ namespace ME3Explorer.CurveEd
 
         private void SetValue_Click(object sender, RoutedEventArgs e)
         {
-            string res = PromptDialog.Prompt(null, "Enter new value", "Set Value", point.Value.OutVal.ToString());
+            string res = PromptDialog.Prompt(this, "Enter new value", "Set Value", point.Value.OutVal.ToString());
             if (float.TryParse(res, out var result))
             {
                 Y = graph.localY(result);

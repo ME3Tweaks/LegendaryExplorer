@@ -398,9 +398,9 @@ namespace ME3Explorer.CurveEd
 
         private void OffsetKeys_Click(object sender, RoutedEventArgs e)
         {
-            Point pos = (Point)(sender as MenuItem).Tag;
+            Point pos = (Point)((MenuItem)sender).Tag;
             double inVal = unrealX(pos.X);
-            string res = SharedUI.PromptDialog.Prompt(Window.GetWindow(this), "Seconds to offset keys by", "Curve Editor", "0.0", true);
+            string res = SharedUI.PromptDialog.Prompt(this, "Seconds to offset keys by", "Curve Editor", "0.0", true);
             if (float.TryParse(res, out var delta))
             {
                 LinkedListNode<CurvePoint> node = SelectedCurve.CurvePoints.First;

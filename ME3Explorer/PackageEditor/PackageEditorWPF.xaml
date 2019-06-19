@@ -10,6 +10,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:Commands="clr-namespace:ME3Explorer.Commands"
         xmlns:CurveEd="clr-namespace:ME3Explorer.CurveEd"
+        xmlns:facefx="clr-namespace:ME3Explorer.FaceFX"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:Packages="clr-namespace:ME3Explorer.Packages"
         xmlns:dd="urn:gong-wpf-dragdrop"
@@ -465,6 +466,12 @@
                             <TextBlock Text="Curve Editor" ToolTip="Edit curves"/>
                         </TabItem.Header>
                         <CurveEd:CurveEditor x:Name="CurveTab_CurveEditor"/>
+                    </TabItem>
+                    <TabItem Name="FaceFXAnimSet_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="FaceFX" ToolTip="Edit FaceFXAnimSets"/>
+                        </TabItem.Header>
+                        <facefx:FaceFXAnimSetEditorControl x:Name="FaceFXTab_Editor"/>
                     </TabItem>
                     <TabItem Name="Sound_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

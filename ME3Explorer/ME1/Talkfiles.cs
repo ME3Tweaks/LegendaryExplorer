@@ -15,6 +15,7 @@ namespace ME1Explorer
     public static class ME1TalkFiles
     {
         public static List<TalkFile> tlkList = new List<TalkFile>();
+        public static Dictionary<TalkFile, string> localtlkList = new Dictionary<TalkFile, string>();
         public static readonly string LoadedTLKsPath = App.AppDataFolder + "ME1LoadedTLKs.JSON";
         public static void LoadSavedTlkList()
         {

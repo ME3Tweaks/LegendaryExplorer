@@ -54,9 +54,12 @@ namespace ME3Explorer.CurveEd
 
         public override void LoadExport(IExportEntry exportEntry)
         {
-            graph.Clear();
-            CurrentLoadedExport = exportEntry;
-            Load();
+            if (CurrentLoadedExport != exportEntry || !IsKeyboardFocusWithin)
+            {
+                graph.Clear();
+                CurrentLoadedExport = exportEntry;
+                Load();
+            }
         }
 
         public CurveEditor(IExportEntry exp)

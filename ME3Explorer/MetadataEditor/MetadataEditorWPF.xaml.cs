@@ -625,7 +625,7 @@ namespace ME3Explorer.MetadataEditor
                 {
                     Keyboard.ClearFocus();
                     string input = $"The name \"{text}\" does not exist in the current loaded package.\nIf you'd like to add this name, press enter below, or change the name to what you would like it to be.";
-                    string result = PromptDialog.Prompt(Window.GetWindow(this), input, "Enter new name", text);
+                    string result = PromptDialog.Prompt(this, input, "Enter new name", text);
                     if (!string.IsNullOrEmpty(result))
                     {
                         int idx = CurrentLoadedEntry.FileRef.FindNameOrAdd(result);

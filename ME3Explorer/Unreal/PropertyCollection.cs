@@ -1751,6 +1751,12 @@ namespace ME3Explorer.Unreal
                 stream.WriteValueS32(Value);
             }
         }
+
+        public StringRefProperty(int val, NameReference? name = null) : base(name)
+        {
+            Value = val;
+            PropType = PropertyType.StringRefProperty;
+        }
     }
 
     public class DelegateProperty : UProperty

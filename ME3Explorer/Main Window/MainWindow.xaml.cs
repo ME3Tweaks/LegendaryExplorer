@@ -146,6 +146,7 @@ namespace ME3Explorer
                 {
                     //?
                 }
+                App.TlkFirstLoadDone = true;
             }).ContinueWithOnUIThread(prevTask =>
             {
                 //StartingUpPanel.Visibility = Visibility.Invisible;
