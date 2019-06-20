@@ -251,7 +251,7 @@ namespace ME1Explorer.Unreal
 
         public static PropertyCollection getDefaultStructValue(string className, bool stripTransients)
         {
-            bool isImmutable = UnrealObjectInfo.isImmutable(className, MEGame.ME2);
+            bool isImmutable = UnrealObjectInfo.isImmutable(className, MEGame.ME1);
             if (Structs.ContainsKey(className))
             {
                 ClassInfo info = Structs[className];
