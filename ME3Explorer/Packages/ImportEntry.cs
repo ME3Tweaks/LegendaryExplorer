@@ -2,12 +2,11 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using UsefulThings.WPF;
 
 namespace ME3Explorer.Packages
 {
     [DebuggerDisplay("ImportEntry | {UIndex} = {GetFullPath}")]
-    public class ImportEntry : ViewModelBase, IEntry
+    public class ImportEntry : NotifyPropertyChangedBase, IEntry
     {
         public ImportEntry(IMEPackage pccFile, Stream importData)
         {

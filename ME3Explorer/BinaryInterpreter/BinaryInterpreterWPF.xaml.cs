@@ -636,7 +636,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Friendly Name: {bin.ReadStringASCIINull()}") { Length = friendlyNameLen + 4 });
+                        nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Friendly Name: {bin.ReadStringASCIINull(friendlyNameLen)}") { Length = friendlyNameLen + 4 });
                     }
 
                     nodes.AddRange(ReadFStaticParameterSetStream(bin));

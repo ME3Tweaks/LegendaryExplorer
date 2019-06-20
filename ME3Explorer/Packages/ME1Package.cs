@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Gammtek.Conduit.Extensions.IO;
 using StreamHelpers;
 
 namespace ME3Explorer.Packages
@@ -84,7 +83,7 @@ namespace ME3Explorer.Packages
             tempStream.ReadUInt32(); //Compression Type. We read this from header[] in MEPackage.cs intead when accessing value
             int tempPos = (int)tempStream.Position;
             tempStream.Seek(0, SeekOrigin.Begin);
-            header = tempStream.ReadBytes(tempPos);
+            header = tempStream.ReadToBuffer(tempPos);
             tempStream.Seek(0, SeekOrigin.Begin);
 
             if (magic != packageTag)
@@ -103,12 +102,12 @@ namespace ME3Explorer.Packages
                 //Correct the header
                 IsCompressed = false;
                 listsStream.Seek(0, SeekOrigin.Begin);
-                listsStream.WriteBytes(header);
+                listsStream.WriteFromBuffer(header);
 
                 // Set numblocks to zero
                 listsStream.WriteInt32(0);
                 //Write the magic number
-                listsStream.WriteBytes(new byte[] { 0xF2, 0x56, 0x1B, 0x4E });
+                listsStream.WriteFromBuffer(new byte[] { 0xF2, 0x56, 0x1B, 0x4E });
                 // Write 4 bytes of 0
                 listsStream.WriteInt32(0);
             }
@@ -130,7 +129,7 @@ namespace ME3Explorer.Packages
         private void ReadLocalTLKs()
         {
             LocalTalkFiles.Clear();
-            var tlkFileSets = Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.ObjectName.StartsWith("Default__")).ToList();
+            List<IExportEntry> tlkFileSets = Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.ObjectName.StartsWith("Default__")).ToList();
             var exportsToLoad = new List<IExportEntry>();
             foreach(var tlkFileSet in tlkFileSets)
             {
@@ -175,8 +174,8 @@ namespace ME3Explorer.Packages
                 string s = "";
                 if (len > 0)
                 {
-                    s = fs.ReadString((uint)(len - 1));
-                    fs.Seek(9, SeekOrigin.Current);
+                    s = fs.ReadStringASCIINull(len);
+                    fs.Skip(8);
                 }
                 else
                 {
@@ -186,7 +185,7 @@ namespace ME3Explorer.Packages
                         s += (char)fs.ReadByte();
                         fs.ReadByte();
                     }
-                    fs.Seek(10, SeekOrigin.Current);
+                    fs.Skip(10);
                 }
                 names.Add(s);
             }
@@ -252,12 +251,12 @@ namespace ME3Explorer.Packages
             {
                 this.IsCompressed = false;
                 MemoryStream m = new MemoryStream();
-                m.WriteBytes(header);
+                m.WriteFromBuffer(header);
 
                 // Set numblocks to zero
                 m.WriteInt32(0);
                 //Write the magic number (What is this?)
-                m.WriteBytes(new byte[] { 0xF2, 0x56, 0x1B, 0x4E });
+                m.WriteFromBuffer(new byte[] { 0xF2, 0x56, 0x1B, 0x4E });
                 // Write 4 bytes of 0
                 m.WriteInt32(0);
 
@@ -266,9 +265,7 @@ namespace ME3Explorer.Packages
                 NameCount = names.Count;
                 foreach (string name in names)
                 {
-                    m.WriteInt32(name.Length + 1);
-                    m.WriteString(name);
-                    m.WriteByte(0);
+                    m.WriteUnrealStringASCII(name);
                     m.WriteInt32(0);
                     m.WriteInt32(458768);
                 }
@@ -277,16 +274,15 @@ namespace ME3Explorer.Packages
                 ImportCount = imports.Count;
                 foreach (ImportEntry e in imports)
                 {
-                    m.WriteBytes(e.Header);
+                    m.WriteFromBuffer(e.Header);
                 }
                 //export table
                 ExportOffset = (int)m.Position;
                 ExportCount = exports.Count;
-                for (int i = 0; i < exports.Count; i++)
+                foreach (IExportEntry e in exports)
                 {
-                    IExportEntry e = exports[i];
                     e.HeaderOffset = (uint)m.Position;
-                    m.WriteBytes(e.Header);
+                    m.WriteFromBuffer(e.Header);
                 }
                 //freezone
                 int FreeZoneSize = expDataBegOffset - FreeZoneStart;
@@ -294,12 +290,11 @@ namespace ME3Explorer.Packages
                 m.Write(new byte[FreeZoneSize], 0, FreeZoneSize);
                 expDataBegOffset = (int)m.Position;
                 //export data
-                for (int i = 0; i < exports.Count; i++)
+                foreach (IExportEntry e in exports)
                 {
-                    IExportEntry e = exports[i];
                     e.DataOffset = (int)m.Position;
                     e.DataSize = e.Data.Length;
-                    m.WriteBytes(e.Data);
+                    m.WriteFromBuffer(e.Data);
                     long pos = m.Position;
                     m.Seek(e.HeaderOffset + 32, SeekOrigin.Begin);
                     m.WriteInt32(e.DataSize);
@@ -308,7 +303,7 @@ namespace ME3Explorer.Packages
                 }
                 //update header
                 m.Seek(0, SeekOrigin.Begin);
-                m.WriteBytes(header);
+                m.WriteFromBuffer(header);
 
                 File.WriteAllBytes(path, m.ToArray());
                 AfterSave();

@@ -16,9 +16,9 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using Gibbed.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using StreamHelpers;
 
 namespace ME3Explorer
 {
@@ -584,7 +584,7 @@ namespace ME3Explorer
 
         private static void OnIsExternalChanged(object sender, DependencyPropertyChangedEventArgs args)
         {
-            var hyperlink = sender as Hyperlink;
+            var hyperlink = (Hyperlink)sender;
 
             if ((bool)args.NewValue)
                 hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
@@ -601,22 +601,22 @@ namespace ME3Explorer
 
     public static class IOExtensions
     {
-        public static void WriteStringASCII(this Stream stream, string value)
+        public static void WriteUnrealStringASCII(this Stream stream, string value)
         {
-            stream.WriteValueS32(value.Length + 1);
-            stream.WriteStringZ(value, Encoding.ASCII);
+            stream.WriteInt32(value.Length + 1);
+            stream.WriteStringASCIINull(value);
         }
 
-        public static void WriteStringUnicode(this Stream stream, string value)
+        public static void WriteUnrealStringUnicode(this Stream stream, string value)
         {
             if (value.Length > 0)
             {
-                stream.WriteValueS32(-(value.Length + 1));
-                stream.WriteStringZ(value, Encoding.Unicode);
+                stream.WriteInt32(-(value.Length + 1));
+                stream.WriteStringUnicodeNull(value);
             }
             else
             {
-                stream.WriteValueS32(0);
+                stream.WriteInt32(0);
             }
         }
 
@@ -645,7 +645,7 @@ namespace ME3Explorer
 
         public static NameReference ReadNameReference(this Stream stream, IMEPackage pcc)
         {
-            return new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
+            return new NameReference(pcc.getNameEntry(stream.ReadInt32()), stream.ReadInt32());
         }
     }
 

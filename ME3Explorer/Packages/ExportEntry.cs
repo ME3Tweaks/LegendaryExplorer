@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Gibbed.IO;
 using ME3Explorer.Unreal;
-using UsefulThings.WPF;
+using StreamHelpers;
 using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
-    public abstract class ExportEntry : ViewModelBase, IEntry
+    public abstract class ExportEntry : NotifyPropertyChangedBase, IEntry
     {
         public IMEPackage FileRef { get; protected set; }
 
@@ -383,7 +382,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        private bool _entryHasPendingChanges = false;
+        private bool _entryHasPendingChanges;
 
         public bool EntryHasPendingChanges
         {
@@ -582,16 +581,16 @@ namespace ME3Explorer.Packages
         {
             HeaderOffset = (uint)stream.Position;
             stream.Seek(44, SeekOrigin.Current);
-            int count = stream.ReadValueS32();
+            int count = stream.ReadInt32();
             stream.Seek(-48, SeekOrigin.Current);
 
             int expInfoSize = 68 + (count * 4);
-            Header = stream.ReadBytes(expInfoSize);
+            Header = stream.ReadToBuffer(expInfoSize);
             OriginalDataSize = DataSize;
             long headerEnd = stream.Position;
 
             stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadBytes(DataSize);
+            _data = stream.ReadToBuffer(DataSize);
             stream.Seek(headerEnd, SeekOrigin.Begin);
             if (HasStack)
             {
@@ -637,16 +636,16 @@ namespace ME3Explorer.Packages
         {
             HeaderOffset = (uint)stream.Position;
             stream.Seek(44, SeekOrigin.Current);
-            int count = stream.ReadValueS32();
+            int count = stream.ReadInt32();
             stream.Seek(-48, SeekOrigin.Current);
 
             int expInfoSize = 68 + (count * 4);
-            Header = stream.ReadBytes(expInfoSize);
+            Header = stream.ReadToBuffer(expInfoSize);
             OriginalDataSize = DataSize;
             long headerEnd = stream.Position;
 
             stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadBytes(DataSize);
+            _data = stream.ReadToBuffer(DataSize);
             stream.Seek(headerEnd, SeekOrigin.Begin);
             if (HasStack)
             {
@@ -693,22 +692,22 @@ namespace ME3Explorer.Packages
             //determine header length
             long start = stream.Position;
             stream.Seek(40, SeekOrigin.Current);
-            int count = stream.ReadValueS32();
+            int count = stream.ReadInt32();
             stream.Seek(4 + count * 12, SeekOrigin.Current);
-            count = stream.ReadValueS32();
+            count = stream.ReadInt32();
             stream.Seek(16, SeekOrigin.Current);
             stream.Seek(4 + count * 4, SeekOrigin.Current);
             long end = stream.Position;
             stream.Seek(start, SeekOrigin.Begin);
 
             //read header
-            Header = stream.ReadBytes((int)(end - start));
+            Header = stream.ReadToBuffer((int)(end - start));
             HeaderOffset = (uint)start;
             OriginalDataSize = DataSize;
 
             //read data
             stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadBytes(DataSize);
+            _data = stream.ReadToBuffer(DataSize);
             stream.Seek(end, SeekOrigin.Begin);
             if (HasStack)
             {
@@ -755,22 +754,22 @@ namespace ME3Explorer.Packages
             //determine header length
             long start = stream.Position;
             stream.Seek(40, SeekOrigin.Current);
-            int count = stream.ReadValueS32();
+            int count = stream.ReadInt32();
             stream.Seek(4 + count * 12, SeekOrigin.Current);
-            count = stream.ReadValueS32();
+            count = stream.ReadInt32();
             stream.Seek(16, SeekOrigin.Current);
             stream.Seek(4 + count * 4, SeekOrigin.Current);
             long end = stream.Position;
             stream.Seek(start, SeekOrigin.Begin);
 
             //read header
-            Header = stream.ReadBytes((int)(end - start));
+            Header = stream.ReadToBuffer((int)(end - start));
             HeaderOffset = (uint)start;
             OriginalDataSize = DataSize;
 
             //read data
             stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadBytes(DataSize);
+            _data = stream.ReadToBuffer(DataSize);
             stream.Seek(end, SeekOrigin.Begin);
             if (ClassName.Contains("Property"))
             {

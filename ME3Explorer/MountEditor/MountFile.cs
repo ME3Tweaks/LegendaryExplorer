@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Gammtek.Conduit.Extensions.IO;
+using StreamHelpers;
 
 namespace ME3Explorer
 {
@@ -61,9 +61,9 @@ namespace ME3Explorer
             ms.Seek(0xC, SeekOrigin.Begin);
             MountPriority = ms.ReadUInt16();
             ms.Seek(0x2C, SeekOrigin.Begin);
-            ME2Only_DLCHumanName = ms.ReadString(ms.ReadUInt32(), true);
+            ME2Only_DLCHumanName = ms.ReadStringASCIINull(ms.ReadInt32());
             TLKID = ms.ReadInt32();
-            ME2Only_DLCFolderName = ms.ReadString(ms.ReadUInt32(), true);
+            ME2Only_DLCFolderName = ms.ReadStringASCIINull(ms.ReadInt32());
 
         }
 
@@ -105,20 +105,20 @@ namespace ME3Explorer
 
                 //@ 0x14 - Appears to be a GUID. Common across all DLC though. Maybe some sort of magic GUID or something.
                 var guidbytes = new byte[] { 0xAE, 0x0F, 0x43, 0xDD, 0x0B, 0x52, 0x5D, 0x4C, 0x9E, 0x28, 0x0D, 0x77, 0x6D, 0x86, 0x91, 0x55 };
-                ms.WriteBytes(guidbytes);
+                ms.WriteFromBuffer(guidbytes);
                 ms.WriteInt32(0x0);
                 ms.WriteInt32(0x2);
 
                 //@ 0x2C - Common Name
                 //ms.WriteInt32(commonname.Length);
-                ms.WriteStringASCII(ME2Only_DLCHumanName);
+                ms.WriteUnrealStringASCII(ME2Only_DLCHumanName);
 
                 //@ 0x00 After CommonName - TLK ID
                 ms.WriteInt32(TLKID);
 
                 //@ 0x00 After TLKID - FolderName
                 //ms.WriteInt32(dlcfolder.Length);
-                ms.WriteStringASCII(ME2Only_DLCFolderName);
+                ms.WriteUnrealStringASCII(ME2Only_DLCFolderName);
 
                 //@ Final 4 bytes
                 ms.WriteInt32(0x0);
@@ -147,7 +147,7 @@ namespace ME3Explorer
                 //@ 0x2C - Unknown, Possible double GUID?
                 // Also all remaining zeros.
                 var guidbytes = new byte[] { 0x5A, 0x7B, 0xBD, 0x26, 0xDD, 0x41, 0x7E, 0x49, 0x9C, 0xC6, 0x60, 0xD2, 0x58, 0x72, 0x78, 0xEB, 0x2E, 0x2C, 0x6A, 0x06, 0x13, 0x0A, 0xE4, 0x47, 0x83, 0xEA, 0x08, 0xF3, 0x87, 0xA0, 0xE2, 0xDA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-                ms.WriteBytes(guidbytes);
+                ms.WriteFromBuffer(guidbytes);
 
             }
             File.WriteAllBytes(path, ms.ToArray());

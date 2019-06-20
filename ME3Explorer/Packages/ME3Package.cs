@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Gibbed.IO;
 using ME3Explorer.Unreal;
 using System.Windows;
 using System.Diagnostics;
@@ -113,11 +112,9 @@ namespace ME3Explorer.Packages
             {
                 throw new Exception(nameof(ME3Package) + " can only be initialized once");
             }
-            else
-            {
-                isInitialized = true;
-                return f => new ME3Package(f);
-            }
+
+            isInitialized = true;
+            return f => new ME3Package(f);
         }
 
         /// <summary>
@@ -133,7 +130,7 @@ namespace ME3Explorer.Packages
             MemoryStream inStream;
             using (FileStream pccStream = File.OpenRead(FileName))
             {
-                header = pccStream.ReadBytes(headerSize);
+                header = pccStream.ReadToBuffer(headerSize);
                 if (magic != packageTag)
                 {
                     throw new FormatException("Not an Unreal package!");
@@ -162,8 +159,8 @@ namespace ME3Explorer.Packages
             inStream.Seek(NameOffset, SeekOrigin.Begin);
             for (int i = 0; i < NameCount; i++)
             {
-                int strLength = inStream.ReadValueS32();
-                string str = inStream.ReadString(strLength * -2, true, Encoding.Unicode);
+                int strLength = inStream.ReadInt32();
+                string str = inStream.ReadStringUnicodeNull(strLength * -2);
                 names.Add(str);
             }
             imports = new List<ImportEntry>();
@@ -212,20 +209,20 @@ namespace ME3Explorer.Packages
             {
                 IsCompressed = false;
                 MemoryStream m = new MemoryStream();
-                m.WriteBytes(header);
+                m.WriteFromBuffer(header);
                 //name table
                 NameOffset = (int)m.Position;
                 NameCount = names.Count;
                 foreach (string s in names)
                 {
-                    m.WriteStringUnicode(s);
+                    m.WriteUnrealStringUnicode(s);
                 }
                 //import table
                 ImportOffset = (int)m.Position;
                 ImportCount = imports.Count;
                 foreach (ImportEntry e in imports)
                 {
-                    m.WriteBytes(e.Header);
+                    m.WriteFromBuffer(e.Header);
                 }
                 //export table
                 ExportOffset = (int)m.Position;
@@ -233,12 +230,12 @@ namespace ME3Explorer.Packages
                 foreach (IExportEntry e in exports)
                 {
                     e.HeaderOffset = (uint)m.Position;
-                    m.WriteBytes(e.Header);
+                    m.WriteFromBuffer(e.Header);
                 }
                 //freezone
                 int DependencyTableSize = DependencyTableEnd - DependencyTableStart; //Should be ExportsCount * 4, technically.
                 DependencyTableStart = (int)m.Position;
-                m.WriteBytes(new byte[DependencyTableSize]);
+                m.WriteFromBuffer(new byte[DependencyTableSize]);
                 DependencyTableEnd = expDataBegOffset = (int)m.Position;
                 Generations0ExportCount = ExportCount;
                 Generations0NameCount = NameCount;
@@ -251,18 +248,18 @@ namespace ME3Explorer.Packages
                     e.DataSize = e.Data.Length;
 
 
-                    m.WriteBytes(e.Data);
+                    m.WriteFromBuffer(e.Data);
                     //update size and offset in already-written header
                     long pos = m.Position;
                     m.Seek(e.HeaderOffset + 32, SeekOrigin.Begin);
-                    m.WriteValueS32(e.DataSize);
-                    m.WriteValueS32(e.DataOffset);
+                    m.WriteInt32(e.DataSize);
+                    m.WriteInt32(e.DataOffset);
                     m.Seek(pos, SeekOrigin.Begin);
                 }
 
                 //update header
                 m.Seek(0, SeekOrigin.Begin);
-                m.WriteBytes(header);
+                m.WriteFromBuffer(header);
 
                 if (compress)
                 {
@@ -305,13 +302,13 @@ namespace ME3Explorer.Packages
             {
                 int baseOffset = newDataOffset + export.propsEnd();
                 MemoryStream binData = new MemoryStream(export.getBinaryData());
-                for (int i = binData.ReadValueS32(); i > 0 && binData.Position < binData.Length; i--)
+                for (int i = binData.ReadInt32(); i > 0 && binData.Position < binData.Length; i--)
                 {
-                    if (binData.ReadValueS32() == 0) //pcc-stored
+                    if (binData.ReadInt32() == 0) //pcc-stored
                     {
-                        int uncompressedSize = binData.ReadValueS32();
+                        int uncompressedSize = binData.ReadInt32();
                         binData.Seek(4, SeekOrigin.Current); //skip compressed size
-                        binData.WriteValueS32(baseOffset + (int)binData.Position + 4);//update offset
+                        binData.WriteInt32(baseOffset + (int)binData.Position + 4);//update offset
                         binData.Seek(uncompressedSize + 8, SeekOrigin.Current); //skip texture and width + height values
                     }
                     else

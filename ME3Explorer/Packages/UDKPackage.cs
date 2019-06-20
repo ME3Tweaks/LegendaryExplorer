@@ -3,11 +3,9 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Gibbed.IO;
-using AmaroK86.MassEffect3.ZlibBlock;
 using System.Diagnostics;
 using ME3Explorer.Unreal;
-using System.Windows;
+using StreamHelpers;
 
 namespace ME3Explorer.Packages
 {
@@ -363,7 +361,7 @@ namespace ME3Explorer.Packages
             //tempStream.Seek(36 + tempGenerations * 12, SeekOrigin.Current);
             //int tempPos = (int)tempStream.Position;
             tempStream.Seek(0, SeekOrigin.Begin);
-            header = tempStream.ReadBytes(headerSize);
+            header = tempStream.ReadToBuffer(headerSize);
             tempStream.Seek(0, SeekOrigin.Begin);
 
             MemoryStream listsStream;
@@ -400,8 +398,8 @@ namespace ME3Explorer.Packages
             {
                 try
                 {
-                    int len = listsStream.ReadValueS32();
-                    string s = listsStream.ReadString((uint)(len - 1));
+                    int len = listsStream.ReadInt32();
+                    string s = listsStream.ReadStringASCII(len - 1);
                     //skipping irrelevant data
 
                     listsStream.Seek(9, SeekOrigin.Current); // 8 + 1 for terminator character

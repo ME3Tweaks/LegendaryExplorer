@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Gibbed.IO;
 using ME3Explorer.Unreal;
 using StreamHelpers;
 
@@ -87,14 +86,14 @@ namespace ME3Explorer.Packages
             }
 
             tempStream.Seek(12, SeekOrigin.Begin);
-            int tempNameSize = tempStream.ReadValueS32();
+            int tempNameSize = tempStream.ReadInt32();
             tempStream.Seek(64 + tempNameSize, SeekOrigin.Begin);
-            int tempGenerations = tempStream.ReadValueS32();
+            int tempGenerations = tempStream.ReadInt32();
             tempStream.Seek(32 + tempGenerations * 12, SeekOrigin.Current);
-            tempStream.ReadValueU32(); //Compression Type. We read this from header[] in MEPackage.cs intead when accessing value
+            tempStream.ReadUInt32(); //Compression Type. We read this from header[] in MEPackage.cs intead when accessing value
             int tempPos = (int)tempStream.Position;
             tempStream.Seek(0, SeekOrigin.Begin);
-            header = tempStream.ReadBytes(tempPos);
+            header = tempStream.ReadToBuffer(tempPos);
             tempStream.Seek(0, SeekOrigin.Begin);
 
             if (magic != packageTag)
@@ -114,15 +113,15 @@ namespace ME3Explorer.Packages
                 //Correct the header
                 //IsCompressed = false; // DO NOT MARK FILE AS DECOMPRESSED AS THIS WILL CORRUPT FILES ON SAVE
                 listsStream.Seek(0, SeekOrigin.Begin);
-                listsStream.WriteBytes(header);
+                listsStream.WriteFromBuffer(header);
 
                 //Set numblocks to zero
-                listsStream.WriteValueS32(0);
+                listsStream.WriteInt32(0);
                 //Write the magic number
-                listsStream.WriteValueS32(1026281201);
+                listsStream.WriteInt32(1026281201);
                 //Write 8 bytes of 0
-                listsStream.WriteValueS32(0);
-                listsStream.WriteValueS32(0);
+                listsStream.WriteInt32(0);
+                listsStream.WriteInt32(0);
             }
             else
             {
@@ -133,8 +132,8 @@ namespace ME3Explorer.Packages
             listsStream.Seek(NameOffset, SeekOrigin.Begin);
             for (int i = 0; i < NameCount; i++)
             {
-                int len = listsStream.ReadValueS32();
-                string s = listsStream.ReadString((uint)(len - 1));
+                int len = listsStream.ReadInt32();
+                string s = listsStream.ReadStringASCII(len - 1);
                 //skipping irrelevant data
                 listsStream.Seek(5, SeekOrigin.Current);
                 names.Add(s);
@@ -188,30 +187,30 @@ namespace ME3Explorer.Packages
             {
                 this.IsCompressed = false;
                 MemoryStream m = new MemoryStream();
-                m.WriteBytes(header);
+                m.WriteFromBuffer(header);
                 //m.Seek(-4, SeekOrigin.Current);
                 //m.WriteByte((byte)CompressionType.None); //Write header compression type to None
                 //Set numblocks to zero
-                m.WriteValueS32(0);
+                m.WriteInt32(0);
                 //Write the magic number
-                m.WriteValueS32(1026281201);
+                m.WriteInt32(1026281201);
                 //Write 8 bytes of 0
-                m.WriteValueS64(0);
+                m.WriteInt64(0);
 
                 //name table
                 NameOffset = (int)m.Position;
                 NameCount = names.Count;
                 foreach (string name in names)
                 {
-                    m.WriteStringASCII(name);
-                    m.WriteValueS32(-14);
+                    m.WriteUnrealStringASCII(name);
+                    m.WriteInt32(-14);
                 }
                 //import table
                 ImportOffset = (int)m.Position;
                 ImportCount = imports.Count;
                 foreach (ImportEntry e in imports)
                 {
-                    m.WriteBytes(e.Header);
+                    m.WriteFromBuffer(e.Header);
                 }
                 //export table
                 ExportOffset = (int)m.Position;
@@ -219,7 +218,7 @@ namespace ME3Explorer.Packages
                 foreach (IExportEntry e in exports)
                 {
                     e.HeaderOffset = (uint)m.Position;
-                    m.WriteBytes(e.Header);
+                    m.WriteFromBuffer(e.Header);
                 }
                 //freezone
                 int FreeZoneSize = expDataBegOffset - FreeZoneStart;
@@ -233,16 +232,16 @@ namespace ME3Explorer.Packages
 
                     e.DataOffset = (int)m.Position;
                     e.DataSize = e.Data.Length;
-                    m.WriteBytes(e.Data);
+                    m.WriteFromBuffer(e.Data);
                     long pos = m.Position;
                     m.Seek(e.HeaderOffset + 32, SeekOrigin.Begin);
-                    m.WriteValueS32(e.DataSize);
-                    m.WriteValueS32(e.DataOffset);
+                    m.WriteInt32(e.DataSize);
+                    m.WriteInt32(e.DataOffset);
                     m.Seek(pos, SeekOrigin.Begin);
                 }
                 //update header
                 m.Seek(0, SeekOrigin.Begin);
-                m.WriteBytes(header);
+                m.WriteFromBuffer(header);
 
                 File.WriteAllBytes(path, m.ToArray());
                 AfterSave();
@@ -273,13 +272,13 @@ namespace ME3Explorer.Packages
                 MemoryStream binData = new MemoryStream(export.getBinaryData());
                 binData.Skip(12);
                 binData.WriteInt32(baseOffset + (int)binData.Position + 4);
-                for (int i = binData.ReadValueS32(); i > 0 && binData.Position < binData.Length; i--)
+                for (int i = binData.ReadInt32(); i > 0 && binData.Position < binData.Length; i--)
                 {
-                    if (binData.ReadValueS32() == 0) //pcc-stored
+                    if (binData.ReadInt32() == 0) //pcc-stored
                     {
-                        int uncompressedSize = binData.ReadValueS32();
+                        int uncompressedSize = binData.ReadInt32();
                         binData.Seek(4, SeekOrigin.Current); //skip compressed size
-                        binData.WriteValueS32(baseOffset + (int)binData.Position + 4);//update offset
+                        binData.WriteInt32(baseOffset + (int)binData.Position + 4);//update offset
                         binData.Seek(uncompressedSize + 8, SeekOrigin.Current); //skip texture and width + height values
                     }
                     else

@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Gibbed.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ME3Explorer.Packages;
-using System.ComponentModel;
 using System.Collections.ObjectModel;
-using UsefulThings.WPF;
 using System.Collections;
 using System.Diagnostics;
 using System.Collections.Concurrent;
 using System.Reflection;
+using StreamHelpers;
 using PropertyInfo = ME3Explorer.Packages.PropertyInfo;
 
 namespace ME3Explorer.Unreal
@@ -102,7 +99,7 @@ namespace ME3Explorer.Unreal
                 while (stream.Position + 8 <= stream.Length)
                 {
                     long propertyStartPosition = stream.Position;
-                    int nameIdx = stream.ReadValueS32();
+                    int nameIdx = stream.ReadInt32();
                     if (!pcc.isName(nameIdx))
                     {
                         stream.Seek(-4, SeekOrigin.Current);
@@ -115,10 +112,10 @@ namespace ME3Explorer.Unreal
                         stream.Seek(4, SeekOrigin.Current);
                         break;
                     }
-                    NameReference nameRef = new NameReference (name, stream.ReadValueS32());
-                    int typeIdx = stream.ReadValueS32();
+                    NameReference nameRef = new NameReference (name, stream.ReadInt32());
+                    int typeIdx = stream.ReadInt32();
                     stream.Seek(4, SeekOrigin.Current);
-                    int size = stream.ReadValueS32();
+                    int size = stream.ReadInt32();
                     if (!pcc.isName(typeIdx) || size < 0 || size > stream.Length - stream.Position)
                     {
                         stream.Seek(-16, SeekOrigin.Current);
@@ -139,7 +136,7 @@ namespace ME3Explorer.Unreal
                     switch (type)
                     {
                         case PropertyType.StructProperty:
-                            string structType = pcc.getNameEntry(stream.ReadValueS32());
+                            string structType = pcc.getNameEntry(stream.ReadInt32());
                             stream.Seek(4, SeekOrigin.Current);
                             long valOffset = stream.Position;
                             if (UnrealObjectInfo.isImmutable(structType, pcc.Game))
@@ -180,7 +177,7 @@ namespace ME3Explorer.Unreal
                                     NameReference enumType;
                                     if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                                     {
-                                        enumType = new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
+                                        enumType = new NameReference(pcc.getNameEntry(stream.ReadInt32()), stream.ReadInt32());
                                     }
                                     else
                                     {
@@ -500,7 +497,7 @@ namespace ME3Explorer.Unreal
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
             ArrayType arrayType = UnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType, parsingEntry);
             //Debug.WriteLine("Reading array length at 0x" + stream.Position.ToString("X5"));
-            int count = stream.ReadValueS32();
+            int count = stream.ReadInt32();
             switch (arrayType)
             {
                 case ArrayType.Object:
@@ -588,7 +585,7 @@ namespace ME3Explorer.Unreal
                             {
                                 stream.Seek(-16, SeekOrigin.Current);
                                 //Debug.WriteLine("Arraysize at 0x" + stream.Position.ToString("X5"));
-                                arraySize = stream.ReadValueS32();
+                                arraySize = stream.ReadInt32();
                                 stream.Seek(12, SeekOrigin.Current);
                             }
                             for (int i = 0; i < count; i++)
@@ -693,7 +690,7 @@ namespace ME3Explorer.Unreal
 
     }
 
-    public abstract class UProperty : ViewModelBase
+    public abstract class UProperty : NotifyPropertyChangedBase
     {
         public PropertyType PropType;
         private NameReference _name;
@@ -1009,7 +1006,7 @@ namespace ME3Explorer.Unreal
         public IntProperty(MemoryStream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadValueS32();
+            Value = stream.ReadInt32();
             PropType = PropertyType.IntProperty;
         }
 
@@ -1027,7 +1024,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                stream.WriteValueS32(Value);
+                stream.WriteInt32(Value);
             }
         }
 
@@ -1068,7 +1065,7 @@ namespace ME3Explorer.Unreal
         public FloatProperty(MemoryStream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadValueF32();
+            Value = stream.ReadFloat();
             PropType = PropertyType.FloatProperty;
         }
 
@@ -1086,7 +1083,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                stream.WriteValueF32(Value);
+                stream.WriteFloat(Value);
             }
         }
 
@@ -1127,7 +1124,7 @@ namespace ME3Explorer.Unreal
         public ObjectProperty(MemoryStream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadValueS32();
+            Value = stream.ReadInt32();
             PropType = PropertyType.ObjectProperty;
         }
 
@@ -1151,7 +1148,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                stream.WriteValueS32(Value);
+                stream.WriteInt32(Value);
             }
         }
 
@@ -1222,7 +1219,7 @@ namespace ME3Explorer.Unreal
         public NameProperty(MemoryStream stream, IMEPackage pcc, NameReference? propertyName = null) : base(propertyName)
         {
             ValueOffset = stream.Position;
-            Value = new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
+            Value = new NameReference(pcc.getNameEntry(stream.ReadInt32()), stream.ReadInt32());
             PropType = PropertyType.NameProperty;
         }
 
@@ -1234,8 +1231,8 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                stream.WriteValueS32(pcc.FindNameOrAdd(Value.Name));
-                stream.WriteValueS32(Value.Number);
+                stream.WriteInt32(pcc.FindNameOrAdd(Value.Name));
+                stream.WriteInt32(Value.Number);
             }
         }
 
@@ -1293,11 +1290,11 @@ namespace ME3Explorer.Unreal
             {
                 //ME2 seems to read 1 byte... sometimes...
                 //ME1 as well
-                Value = stream.ReadValueB8();
+                Value = stream.ReadBoolByte();
             }
             else
             {
-                Value = (game == MEGame.ME3 || game == MEGame.UDK) ? stream.ReadValueB8() : stream.ReadValueB32();
+                Value = (game == MEGame.ME3 || game == MEGame.UDK) ? stream.ReadBoolByte() : stream.ReadBoolInt();
             }
             PropType = PropertyType.BoolProperty;
         }
@@ -1316,7 +1313,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                stream.WriteValueB8(Value);
+                stream.WriteBoolByte(Value);
 
                 //if (pcc.Game == MEGame.ME3 || isArrayContained)
                 //{
@@ -1359,7 +1356,7 @@ namespace ME3Explorer.Unreal
         public ByteProperty(MemoryStream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadValueU8();
+            Value = (byte)stream.ReadByte();
             PropType = PropertyType.ByteProperty;
         }
 
@@ -1371,7 +1368,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                stream.WriteValueU8(Value);
+                stream.WriteByte(Value);
             }
         }
     }
@@ -1394,7 +1391,7 @@ namespace ME3Explorer.Unreal
         public BioMask4Property(MemoryStream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadValueU8();
+            Value = (byte)stream.ReadByte();
             PropType = PropertyType.BioMask4Property;
         }
 
@@ -1404,7 +1401,7 @@ namespace ME3Explorer.Unreal
             {
                 stream.WritePropHeader(pcc, Name, PropType, 1);
             }
-            stream.WriteValueU8(Value);
+            stream.WriteByte(Value);
         }
     }
 
@@ -1424,9 +1421,9 @@ namespace ME3Explorer.Unreal
         {
             ValueOffset = stream.Position;
             EnumType = enumType;
-            var eNameIdx = stream.ReadValueS32();
+            var eNameIdx = stream.ReadInt32();
             var eName = pcc.getNameEntry(eNameIdx);
-            var eNameNumber = stream.ReadValueS32();
+            var eNameNumber = stream.ReadInt32();
 
             Value = new NameReference(eName, eNameNumber);
             EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
@@ -1468,8 +1465,8 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                stream.WriteValueS32(pcc.FindNameOrAdd(Value.Name));
-                stream.WriteValueS32(Value.Number);
+                stream.WriteInt32(pcc.FindNameOrAdd(Value.Name));
+                stream.WriteInt32(Value.Number);
             }
         }
     }
@@ -1540,7 +1537,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                stream.WriteValueS32(Values.Count);
+                stream.WriteInt32(Values.Count);
                 foreach (var prop in Values)
                 {
                     prop.WriteTo(stream, pcc, true);
@@ -1640,22 +1637,22 @@ namespace ME3Explorer.Unreal
         public StrProperty(MemoryStream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            int count = stream.ReadValueS32();
+            int count = stream.ReadInt32();
             var streamPos = stream.Position;
 
             if (count < -1) // originally 0
             {
                 count *= -2;
-                Value = stream.ReadString(count, true, Encoding.Unicode);
+                Value = stream.ReadStringUnicodeNull(count);
             }
             else if (count > 0)
             {
-                Value = stream.ReadString(count, true, Encoding.ASCII);
+                Value = stream.ReadStringASCIINull(count);
             }
             else
             {
                 Value = string.Empty;
-                //ME3Explroer 3.0.2 and below wrote a null terminator character when writing an empty string.
+                //ME3Explorer 3.0.2 and below wrote a null terminator character when writing an empty string.
                 //The game however does not write an empty string if the length is 0 - it just happened to still work but not 100% of the time
                 //This is for backwards compatibility with that as it will have a count of 0 instead of -1
                 if (count == -1)
@@ -1689,11 +1686,11 @@ namespace ME3Explorer.Unreal
             {
                 if (pcc.Game == MEGame.ME3)
                 {
-                    stream.WriteStringUnicode(Value);
+                    stream.WriteUnrealStringUnicode(Value);
                 }
                 else
                 {
-                    stream.WriteStringASCII(Value);
+                    stream.WriteUnrealStringASCII(Value);
                 }
             }
         }
@@ -1727,7 +1724,7 @@ namespace ME3Explorer.Unreal
         public StringRefProperty(MemoryStream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadValueS32();
+            Value = stream.ReadInt32();
             PropType = PropertyType.StringRefProperty;
         }
 
@@ -1748,7 +1745,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                stream.WriteValueS32(Value);
+                stream.WriteInt32(Value);
             }
         }
 
@@ -1766,8 +1763,8 @@ namespace ME3Explorer.Unreal
 
         public DelegateProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
         {
-            unk = stream.ReadValueS32();
-            Value = new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
+            unk = stream.ReadInt32();
+            Value = new NameReference(pcc.getNameEntry(stream.ReadInt32()), stream.ReadInt32());
             PropType = PropertyType.DelegateProperty;
         }
 
@@ -1779,9 +1776,9 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                stream.WriteValueS32(unk);
-                stream.WriteValueS32(pcc.FindNameOrAdd(Value.Name));
-                stream.WriteValueS32(Value.Number);
+                stream.WriteInt32(unk);
+                stream.WriteInt32(pcc.FindNameOrAdd(Value.Name));
+                stream.WriteInt32(Value.Number);
             }
         }
     }
@@ -1800,7 +1797,7 @@ namespace ME3Explorer.Unreal
         {
             ValueOffset = stream.Position;
             TypeName = typeName ?? "Unknown";
-            raw = stream.ReadBytes(size);
+            raw = stream.ReadToBuffer(size);
             PropType = PropertyType.Unknown;
         }
 
@@ -1808,14 +1805,14 @@ namespace ME3Explorer.Unreal
         {
             if (!valueOnly)
             {
-                stream.WriteValueS32(pcc.FindNameOrAdd(Name));
-                stream.WriteValueS32(0);
-                stream.WriteValueS32(pcc.FindNameOrAdd(TypeName));
-                stream.WriteValueS32(0);
-                stream.WriteValueS32(raw.Length);
-                stream.WriteValueS32(0);
+                stream.WriteInt32(pcc.FindNameOrAdd(Name));
+                stream.WriteInt32(0);
+                stream.WriteInt32(pcc.FindNameOrAdd(TypeName));
+                stream.WriteInt32(0);
+                stream.WriteInt32(raw.Length);
+                stream.WriteInt32(0);
             }
-            stream.WriteBytes(raw);
+            stream.WriteFromBuffer(raw);
         }
     }
 }

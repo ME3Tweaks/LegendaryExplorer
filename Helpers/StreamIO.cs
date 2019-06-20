@@ -94,6 +94,11 @@ namespace StreamHelpers
             return str;
         }
 
+        public static string ReadStringASCIINull(this Stream stream, int count)
+        {
+            return stream.ReadStringASCII(count).Trim('\0');
+        }
+
         public static string ReadStringUnicode(this Stream stream, int count)
         {
             var buffer = stream.ReadToBuffer(count);
@@ -133,14 +138,17 @@ namespace StreamHelpers
             return BitConverter.ToUInt64(buffer, 0);
         }
 
-        public static long ReadInt64(this Stream stream)
-        {
-            return (long)stream.ReadUInt64();
-        }
-
         public static void WriteUInt64(this Stream stream, ulong data)
         {
             stream.Write(BitConverter.GetBytes(data), 0, sizeof(ulong));
+        }
+
+        public static long ReadInt64(this Stream stream)
+        {
+            var buffer = new byte[sizeof(long)];
+            if (stream.Read(buffer, 0, sizeof(long)) != sizeof(long))
+                throw new Exception();
+            return BitConverter.ToInt64(buffer, 0);
         }
 
         public static void WriteInt64(this Stream stream, long data)
@@ -156,17 +164,17 @@ namespace StreamHelpers
             return BitConverter.ToUInt32(buffer, 0);
         }
 
+        public static void WriteUInt32(this Stream stream, uint data)
+        {
+            stream.Write(BitConverter.GetBytes(data), 0, sizeof(uint));
+        }
+
         public static int ReadInt32(this Stream stream)
         {
             var buffer = new byte[sizeof(int)];
             if (stream.Read(buffer, 0, sizeof(int)) != sizeof(int))
                 throw new Exception();
             return BitConverter.ToInt32(buffer, 0);
-        }
-
-        public static void WriteUInt32(this Stream stream, uint data)
-        {
-            stream.Write(BitConverter.GetBytes(data), 0, sizeof(uint));
         }
 
         public static void WriteInt32(this Stream stream, int data)
@@ -182,14 +190,17 @@ namespace StreamHelpers
             return BitConverter.ToUInt16(buffer, 0);
         }
 
-        public static short ReadInt16(this Stream stream)
-        {
-            return (short)stream.ReadUInt16();
-        }
-
         public static void WriteUInt16(this Stream stream, ushort data)
         {
             stream.Write(BitConverter.GetBytes(data), 0, sizeof(ushort));
+        }
+
+        public static short ReadInt16(this Stream stream)
+        {
+            var buffer = new byte[sizeof(short)];
+            if (stream.Read(buffer, 0, sizeof(short)) != sizeof(short))
+                throw new Exception();
+            return BitConverter.ToInt16(buffer, 0);
         }
 
         public static void WriteInt16(this Stream stream, short data)
@@ -223,6 +234,26 @@ namespace StreamHelpers
             stream.Write(BitConverter.GetBytes(data), 0, sizeof(double));
         }
 
+        public static bool ReadBoolByte(this Stream stream)
+        {
+            return stream.ReadByte() > 0;
+        }
+
+        public static void WriteBoolByte(this Stream stream, bool data)
+        {
+            stream.WriteByte((byte)(data ? 1 : 0));
+        }
+
+        public static bool ReadBoolInt(this Stream stream)
+        {
+            return stream.ReadUInt32() > 0;
+        }
+
+        public static void WriteBoolInt(this Stream stream, bool data)
+        {
+            stream.WriteInt32(data ? 1 : 0);
+        }
+
         public static void WriteZeros(this Stream stream, uint count)
         {
             for (int i = 0; i < count; i++)
@@ -234,14 +265,16 @@ namespace StreamHelpers
             WriteZeros(stream, (uint)count);
         }
 
-        public static void SeekBegin(this Stream stream)
+        public static Stream SeekBegin(this Stream stream)
         {
             stream.Seek(0, SeekOrigin.Begin);
+            return stream;
         }
 
-        public static void SeekEnd(this Stream stream)
+        public static Stream SeekEnd(this Stream stream)
         {
             stream.Seek(0, SeekOrigin.End);
+            return stream;
         }
 
         public static Stream JumpTo(this Stream stream, int offset)

@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
-using Gibbed.IO;
+using StreamHelpers;
 using System.Diagnostics;
 
 namespace ME3Explorer.FaceFX
@@ -320,9 +320,9 @@ namespace ME3Explorer.FaceFX
             MemoryStream res = new MemoryStream();
             int start = export.propsEnd();
             res.Write(export.Data, 0, start);
-            res.WriteValueS32((int)m.Length);
+            res.WriteInt32((int)m.Length);
             res.WriteStream(m);
-            res.WriteValueS32(0);
+            res.WriteInt32(0);
             export.Data = res.ToArray();
         }
 

@@ -3,13 +3,12 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Gibbed.IO;
-using AmaroK86.MassEffect3.ZlibBlock;
 using System.Collections.Concurrent;
 using System.Windows;
 using System.Windows.Forms;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using StreamHelpers;
 
 namespace ME3Explorer.Packages
 {
@@ -43,8 +42,8 @@ namespace ME3Explorer.Packages
                 using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
                 {
                     fs.Seek(4, SeekOrigin.Begin);
-                    version = fs.ReadValueU16();
-                    licenseVersion = fs.ReadValueU16();
+                    version = fs.ReadUInt16();
+                    licenseVersion = fs.ReadUInt16();
                 }
 
 
