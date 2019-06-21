@@ -115,6 +115,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "ASI Manager",
+                type = typeof(ASI.ASIManager),
+                icon = Application.Current.FindResource("iconASIManager") as ImageSource,
+                open = () =>
+                {
+                    (new ASI.ASIManager()).Show();
+                },
+                tags = new List<string> { "utility", "asi", "debug", "log" },
+                subCategory = "Debugging",
+                description = "ASI Manager allows you to install and uninstall ASI mods for all three Mass Effect Trilogy games. ASI mods allow you to run native mods that allow you to do things such as kismet logging or function call monitoring."
+            });
+            set.Add(new Tool
+            {
                 name = "Bik Movie Extractor",
                 type = typeof(BIKExtract),
                 icon = Application.Current.FindResource("iconBikExtractor") as ImageSource,

@@ -164,6 +164,7 @@
 
         <!--<BitmapImage x:Key="iconAudioEditor" UriSource="Resources/audio_editor_icon.ico"/>-->
         <BitmapImage x:Key="iconAnimationExplorer" UriSource="Resources/animationexplorer_256x256.ico"/>
+        <BitmapImage x:Key="iconASIManager" UriSource="Resources/asimanager_256x256.ico"/>
         <BitmapImage x:Key="iconCameraTool" UriSource="Resources/camera_tool_64x64.png"/>
         <BitmapImage x:Key="iconCoalescedEditor" UriSource="Resources/coalescededitor_256x256.ico"/>
         <BitmapImage x:Key="iconDLCUnpacker" UriSource="Resources/dlc_unpacker_256x256.ico"/>
