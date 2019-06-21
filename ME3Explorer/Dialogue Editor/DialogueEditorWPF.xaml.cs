@@ -942,7 +942,10 @@ namespace ME3Explorer.Dialogue_Editor
                 if (seqobj.ClassName == "BioSeqEvt_ConvNode")
                 {
                     int key = seqobj.GetProperty<IntProperty>("m_nNodeID"); //ME3
-                    convStarts.Add(key, seqobj);
+                    if(!convStarts.ContainsKey(key))
+                    {
+                        convStarts.Add(key, seqobj);
+                    }
                 }
             }
 
@@ -1056,7 +1059,7 @@ namespace ME3Explorer.Dialogue_Editor
                                                     var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
                                                     if (outLinksProp3 != null)
                                                     {
-                                                        var linksProp3 = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                                        var linksProp3 = outLinksProp3[0].GetProp<ArrayProperty<StructProperty>>("Links");
                                                         if (linksProp3 != null)
                                                         {
                                                             var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
@@ -1073,8 +1076,8 @@ namespace ME3Explorer.Dialogue_Editor
                                     {
                                         foreach (var prop in varLinksProp)
                                         {
-                                            var desc = prop.GetProp<StrProperty>("LinkDesc").Value; //ME3/ME2/ME1
-                                            if (desc == "Data") //ME3/ME1
+                                            var desc = prop.GetProp<StrProperty>("LinkDesc").Value; 
+                                            if (desc == "Data")
                                             {
                                                 var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
                                                 if (linkedVars != null)
@@ -1323,6 +1326,7 @@ namespace ME3Explorer.Dialogue_Editor
                     if (ffxo == null) //if no facefx then maybe soundobject conversation
                     {
                         wwevents = conv.Export.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleSoundObjects");
+
                     }
                     else
                     {
@@ -1340,18 +1344,18 @@ namespace ME3Explorer.Dialogue_Editor
                         if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
                         {
                             IEntry ffxS = GetFaceFX(conv, 0, true); //find speaker 1 as alternative
-                            if (!Pcc.isUExport(ffxS.UIndex))
+                            if (ffxS == null || !Pcc.isUExport(ffxS.UIndex))
                                 return;
                             IExportEntry ffxSExport = ffxS as IExportEntry;
                             wwevents = ffxSExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
-                            if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
-                            {
-                                conv.WwiseBank = null;
-                                return;
-                            }
                         }
                     }
 
+                    if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
+                    {
+                        conv.WwiseBank = null;
+                        return;
+                    }
 
                     if (Pcc.Game == MEGame.ME3)
                     {
@@ -1725,13 +1729,16 @@ namespace ME3Explorer.Dialogue_Editor
                 return;
             }
 
+            List<int> updatedConvos = relevantUpdates.Select(x => x.index).Where(update => Pcc.getExport(update).ClassName == "BioConversation").ToList();
+
             if (relevantUpdates.Select(x => x.index).Where(update => Pcc.getExport(update).ClassName == "FaceFXAnimSet").Any())
             {
-                FFXAnimsets.ClearEx(); //REBUILD ANIMSET LIST IF NEW ONES.
+                FFXAnimsets.Clear(); //REBUILD ANIMSET LIST IF NEW ONES and Rerun parsing of speakers.
                 foreach (var exp in Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAnimSet"))
                 {
                     FFXAnimsets.Add(exp);
                 }
+                updatedConvos.Add(SelectedConv.Export.Index);
             }
 
             if (SelectedDialogueNode != null) //Update any changes to live dialogue node
@@ -1751,7 +1758,7 @@ namespace ME3Explorer.Dialogue_Editor
 
 
 
-            List<int> updatedConvos = relevantUpdates.Select(x => x.index).Where(update => Pcc.getExport(update).ClassName == "BioConversation").ToList();
+
             if (updatedConvos.IsEmpty())
                 return;
 

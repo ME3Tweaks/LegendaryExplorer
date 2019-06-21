@@ -64,7 +64,7 @@
                     </Style>
                 </ListBox.Style>
             </ListBox>
-            <WindowsFormsHost Grid.Row="1">
+            <WindowsFormsHost Grid.Row="1" Name="treeView_WinFormsHost">
                 <forms:TreeView x:Name="treeView" MouseDoubleClick="treeView_MouseDoubleClick"/>
             </WindowsFormsHost>
         </Grid>

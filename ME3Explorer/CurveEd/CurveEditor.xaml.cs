@@ -217,7 +217,15 @@ namespace ME3Explorer.CurveEd
 
         public override void Dispose()
         {
-            //nothing to dispose in this control for now
+            UnloadExport();
+            if (TrackList.ItemsSource is List<InterpCurve> curvelist)
+                foreach (var interpCurve in curvelist)
+            {
+                foreach (var curve in interpCurve.Curves)
+                {
+                    curve.SaveChanges = null;
+                }
+            }
         }
     }
 }

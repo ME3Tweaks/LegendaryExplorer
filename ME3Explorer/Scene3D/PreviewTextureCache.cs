@@ -22,24 +22,23 @@ namespace ME3Explorer.Scene3D
             /// <summary>
             /// The full path of the pcc file;
             /// </summary>
-            public string PCCPath = "";
+            public string PCCPath;
 
-            public int ExportID = 0;
+            public int ExportID;
 
             /// <summary>
             /// The Direct3D ShaderResourceView for binding to shaders.
             /// </summary>
-            public ShaderResourceView TextureView = null;
+            public ShaderResourceView TextureView;
 
             /// <summary>
             /// The Direct3D texture for SHaderResourceView creation.
             /// </summary>
-            public Texture2D Texture = null;
+            public Texture2D Texture;
 
             /// <summary>
             /// Creates a new cache entry for the given texture.
             /// </summary>
-            /// <param name="fullpath">The full path of the texture.</param>
             public PreviewTextureEntry(string pcc, int exportid)
             {
                 PCCPath = pcc;
@@ -59,13 +58,12 @@ namespace ME3Explorer.Scene3D
         /// <summary>
         /// The DIrect3D11 device to create textures and resource views with.
         /// </summary>
-        public Device Device { get; private set; } = null;
+        public Device Device { get; }
 
         /// <summary>
         /// Creates a new PreviewTextureCache.
         /// </summary>
         /// <param name="device">The DIrect3D11 device to create textures and resource views with.</param>
-        /// <param name="pccfiles">The PCC file paths to scan for textures.</param>
         public PreviewTextureCache(Device device)
         {
             Device = device;
@@ -86,12 +84,13 @@ namespace ME3Explorer.Scene3D
         /// <summary>
         /// Stores loaded textures by their full name.
         /// </summary>
-        private List<PreviewTextureEntry> cache = new List<PreviewTextureEntry>();
-        
+        private readonly List<PreviewTextureEntry> cache = new List<PreviewTextureEntry>();
+
         /// <summary>
         /// Queues a texture for eventual loading.
         /// </summary>
         /// <param name="pcc">The full path of the pcc where the texture export is.</param>
+        /// <param name="exportid"></param>
         public PreviewTextureEntry LoadTexture(string pcc, int exportid)
         {
             foreach (PreviewTextureEntry e in cache)
@@ -105,10 +104,9 @@ namespace ME3Explorer.Scene3D
             {
                 PreviewTextureEntry entry = new PreviewTextureEntry(pcc, exportid);
                 Unreal.Classes.Texture2D metex = new Unreal.Classes.Texture2D(texpcc, exportid);
-                Texture2DDescription desc = new Texture2DDescription();
                 try
                 {
-                    entry.Texture = metex.generatePreviewTexture(Device, out desc);
+                    entry.Texture = metex.generatePreviewTexture(Device, out Texture2DDescription _);
                     entry.TextureView = new ShaderResourceView(Device, entry.Texture);
                     cache.Add(entry);
                     return entry;
