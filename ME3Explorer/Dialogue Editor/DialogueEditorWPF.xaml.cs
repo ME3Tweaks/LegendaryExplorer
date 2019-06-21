@@ -1726,13 +1726,16 @@ namespace ME3Explorer.Dialogue_Editor
                 return;
             }
 
+            List<int> updatedConvos = relevantUpdates.Select(x => x.index).Where(update => Pcc.getExport(update).ClassName == "BioConversation").ToList();
+
             if (relevantUpdates.Select(x => x.index).Where(update => Pcc.getExport(update).ClassName == "FaceFXAnimSet").Any())
             {
-                FFXAnimsets.ClearEx(); //REBUILD ANIMSET LIST IF NEW ONES.
+                FFXAnimsets.Clear(); //REBUILD ANIMSET LIST IF NEW ONES and Rerun parsing of speakers.
                 foreach (var exp in Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAnimSet"))
                 {
                     FFXAnimsets.Add(exp);
                 }
+                updatedConvos.Add(SelectedConv.Export.Index);
             }
 
             if (SelectedDialogueNode != null) //Update any changes to live dialogue node
@@ -1752,7 +1755,7 @@ namespace ME3Explorer.Dialogue_Editor
 
 
 
-            List<int> updatedConvos = relevantUpdates.Select(x => x.index).Where(update => Pcc.getExport(update).ClassName == "BioConversation").ToList();
+
             if (updatedConvos.IsEmpty())
                 return;
 
