@@ -942,7 +942,10 @@ namespace ME3Explorer.Dialogue_Editor
                 if (seqobj.ClassName == "BioSeqEvt_ConvNode")
                 {
                     int key = seqobj.GetProperty<IntProperty>("m_nNodeID"); //ME3
-                    convStarts.Add(key, seqobj);
+                    if(!convStarts.ContainsKey(key))
+                    {
+                        convStarts.Add(key, seqobj);
+                    }
                 }
             }
 
