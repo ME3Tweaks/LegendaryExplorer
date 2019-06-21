@@ -39,7 +39,7 @@ namespace ME3Explorer.Propertydb
             public string ffpath;
             public int ffidx;
         }
-        private void Form1_FormClosed(object sender, FormClosingEventArgs e)
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             windowOpen = false;
         }
@@ -71,18 +71,21 @@ namespace ME3Explorer.Propertydb
                     pb1.Value = i;
                     Application.DoEvents();
                 }
-                ClassDef tmp = new ClassDef();
-                tmp.name = ReadString(fs);
+                ClassDef tmp = new ClassDef
+                {
+                    name = ReadString(fs),
+                    props = new List<PropDef>()
+                };
                 int pcount = ReadInt(fs);
-                tmp.props = new List<PropDef>();
                 for (int j = 0; j < pcount; j++)
                 {
-                    PropDef p = new PropDef();
-                    p.name = ReadString(fs);
-                    p.type = ReadInt(fs);
-                    p.ffpath = ReadString(fs);
-                    p.ffidx = ReadInt(fs);
-                    tmp.props.Add(p);
+                    tmp.props.Add(new PropDef
+                    {
+                        name = ReadString(fs),
+                        type = ReadInt(fs),
+                        ffpath = ReadString(fs),
+                        ffidx = ReadInt(fs)
+                    });
                 }
                 Classes.Add(tmp);
             }
@@ -98,7 +101,8 @@ namespace ME3Explorer.Propertydb
             while (run)
             {
                 run = false;
-                for (int i = 0; i < Classes.Count() - 1; i++)
+                for (int i = 0; i < Classes.Count - 1; i++)
+                {
                     if (Classes[i].name.CompareTo(Classes[i + 1].name) > 0) 
                     {
                         ClassDef tmp = Classes[i];
@@ -106,6 +110,7 @@ namespace ME3Explorer.Propertydb
                         Classes[i + 1] = tmp;
                         run = true;
                     }
+                }
             }
             foreach (ClassDef c in Classes)
             {
@@ -113,7 +118,8 @@ namespace ME3Explorer.Propertydb
                 while (run)
                 {
                     run = false;
-                    for (int i = 0; i < c.props.Count() - 1; i++)
+                    for (int i = 0; i < c.props.Count - 1; i++)
+                    {
                         if (c.props[i].type < c.props[i + 1].type)
                         {
                             PropDef tmp = c.props[i];
@@ -121,13 +127,14 @@ namespace ME3Explorer.Propertydb
                             c.props[i + 1] = tmp;
                             run = true;
                         }
+                    }
                 }
             }
         }
 
         public void UpdateStatus()
         {
-            status.Text = "Classes : " + Classes.Count();
+            status.Text = "Classes : " + Classes.Count;
         }
 
         private void startScanToolStripMenuItem_Click(object sender, EventArgs e)
@@ -157,13 +164,13 @@ namespace ME3Explorer.Propertydb
                     using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                     {
                         IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                        pb2.Maximum = Exports.Count();
+                        pb2.Maximum = Exports.Count;
                         {
                             pb1.Value = i;
                             RefreshLists();
                             Application.DoEvents();
                         }
-                        for (int j = 0; j < Exports.Count() && windowOpen; j++)
+                        for (int j = 0; j < Exports.Count && windowOpen; j++)
                         {
                             if (j % 100 == 0) //refresh
                             {
@@ -173,7 +180,7 @@ namespace ME3Explorer.Propertydb
                             }
 
                             int f = -1;
-                            for (int k = 0; k < Classes.Count(); k++)
+                            for (int k = 0; k < Classes.Count; k++)
                                 if (Classes[k].name == Exports[j].ClassName)
                                 {
                                     f = k;
@@ -182,11 +189,13 @@ namespace ME3Explorer.Propertydb
 
                             if (f == -1) //New Class found, add
                             {
-                                ClassDef tmp = new ClassDef();
-                                tmp.name = Exports[j].ClassName;
-                                tmp.props = new List<PropDef>();
+                                ClassDef tmp = new ClassDef
+                                {
+                                    name = Exports[j].ClassName,
+                                    props = new List<PropDef>()
+                                };
                                 Classes.Add(tmp);
-                                f = Classes.Count() - 1;
+                                f = Classes.Count - 1;
                                 UpdateStatus();
                             }
 
@@ -196,7 +205,7 @@ namespace ME3Explorer.Propertydb
                             {
                                 int f2 = -1;
                                 string name = pcc.getNameEntry(p.Name);
-                                for (int k = 0; k < res.props.Count(); k++)
+                                for (int k = 0; k < res.props.Count; k++)
                                     if (res.props[k].name == name)
                                     {
                                         f2 = k;
@@ -205,12 +214,13 @@ namespace ME3Explorer.Propertydb
 
                                 if (f2 == -1) //found new prop
                                 {
-                                    PropDef ptmp = new PropDef();
-                                    ptmp.name = name;
-                                    ptmp.type = (int) p.TypeVal;
-                                    ptmp.ffpath = Path.GetFileName(file);
-                                    ptmp.ffidx = j;
-                                    res.props.Add(ptmp);
+                                    res.props.Add(new PropDef
+                                    {
+                                        name = name,
+                                        type = (int)p.TypeVal,
+                                        ffpath = Path.GetFileName(file),
+                                        ffidx = j
+                                    });
                                     //DebugOutput.PrintLn("\tin object #" 
                                     //                    + j 
                                     //                    + " class \"" 
@@ -254,17 +264,19 @@ namespace ME3Explorer.Propertydb
 
         private void saveDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "*.bin|*.bin";
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = "*.bin|*.bin"
+            };
             if (d.ShowDialog() == DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
 
-                WriteInt(Classes.Count(), fs);
-                for (int i = 0; i < Classes.Count(); i++)
+                WriteInt(Classes.Count, fs);
+                for (int i = 0; i < Classes.Count; i++)
                 {
                     WriteString(Classes[i].name, fs);
-                    WriteInt(Classes[i].props.Count(), fs);
+                    WriteInt(Classes[i].props.Count, fs);
                     foreach (PropDef p in Classes[i].props)
                     {
                         WriteString(p.name, fs);
@@ -289,8 +301,8 @@ namespace ME3Explorer.Propertydb
         {
             byte[] buff = BitConverter.GetBytes(s.Length);
             fs.Write(buff, 0, 4);
-            for (int i = 0; i < s.Length; i++)
-                fs.WriteByte((byte)s[i]);
+            foreach (char c in s)
+                fs.WriteByte((byte)c);
         }
 
         public int ReadInt(FileStream fs)
@@ -315,9 +327,11 @@ namespace ME3Explorer.Propertydb
 
         private void loadDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.bin|*.bin";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            OpenFileDialog d = new OpenFileDialog
+            {
+                Filter = "*.bin|*.bin"
+            };
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 loadDB(d.FileName);
             }
@@ -334,7 +348,7 @@ namespace ME3Explorer.Propertydb
                 if (!c.name.StartsWith("Default_"))
                 {
                     countnodef++;
-                    if (c.props.Count() > 1)//None doesnt count!
+                    if (c.props.Count > 1)//None doesnt count!
                         countndnotempt++;
                 }
             }
@@ -345,164 +359,6 @@ namespace ME3Explorer.Propertydb
                      + "\nClasses found except \"Default_...\" with at least 1 property: "
                      + countndnotempt;
             MessageBox.Show(s);
-        }
-
-        private void warrantyVoiderMethodToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CommonOpenFileDialog d = new CommonOpenFileDialog();
-            d.IsFolderPicker = true;
-            d.EnsurePathExists = true;
-            d.Title = "Select Folder to Output to";
-            if (d.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                string folder = d.FileName;
-                string loc = Path.GetDirectoryName(Application.ExecutablePath);
-                string template = File.ReadAllText(loc + "\\exec\\template.code");
-                DebugOutput.Clear();
-                DebugOutput.PrintLn("Generating SDK into folder: " + folder);
-                foreach (ClassDef c in Classes)
-                    if(c.props.Count > 1 && !c.name.StartsWith("Default_"))
-                    {
-                        string file = Path.Combine(folder, c.name + ".cs");
-                        DebugOutput.PrintLn(".\\" + c.name + ".cs generated...");
-                        FileStream fs = new FileStream(file , FileMode.Create, FileAccess.Write);
-                        string tmp = template;
-                        tmp = tmp.Replace("**CLASSNAME**", c.name);
-                        tmp = GenerateProps(tmp, c);
-                        tmp = GenerateLoadSwitch(tmp, c);
-                        tmp = GenerateTree(tmp, c);
-                        for (int i = 0; i < tmp.Length; i++)
-                            fs.WriteByte((byte)tmp[i]);
-                        fs.Close();
-                    }
-                MessageBox.Show("Done.");
-            }
-        }
-
-        public string GenerateProps(string template, ClassDef c)
-        {
-            string t = template;
-            string rep = "";
-            bool hadbool = false;
-            bool hadint = false;
-            bool hadobj = false;
-            bool hadname = false;
-            bool hadbyte = false;
-            bool hadfloat = false;
-
-            foreach (PropDef p in c.props)
-            {
-                string type = PropertyReader.TypeToString(p.type);
-                switch (type)
-                {
-                    case "Bool Property":
-                        if (!hadbool)
-                        {
-                            rep += "\t//Bool Properties\r\n\r\n";
-                            hadbool = true;
-                        }
-                        rep += "\tpublic bool " + p.name + " = false;\r\n";
-                        break;
-                    case "Integer Property":
-                        if (!hadint)
-                        {
-                            rep += "\t//Integer Properties\r\n\r\n";
-                            hadint = true;
-                        }
-                        rep += "\tpublic int " + p.name + ";\r\n";
-                        break;
-                    case "Object Property":
-                        if (!hadobj)
-                        {
-                            rep += "\t//Object Properties\r\n\r\n";
-                            hadobj = true;
-                        }
-                        rep += "\tpublic int " + p.name + ";\r\n";
-                        break;
-                    case "Name Property":
-                        if (!hadname)
-                        {
-                            rep += "\t//Name Properties\r\n\r\n";
-                            hadname = true;
-                        }
-                        rep += "\tpublic int " + p.name + ";\r\n";
-                        break;
-                    case "Byte Property":
-                        if (!hadbyte)
-                        {
-                            rep += "\t//Byte Properties\r\n\r\n";
-                            hadbyte = true;
-                        }
-                        rep += "\tpublic int " + p.name + ";\r\n";
-                        break;
-                    case "Float Property":
-                        if (!hadfloat)
-                        {
-                            rep += "\t//Float Properties\r\n\r\n";
-                            hadfloat = true;
-                        }
-                        rep += "\tpublic float " + p.name + ";\r\n";
-                        break;
-                }
-            }
-            return t.Replace("**UNEALPROPS**", rep);
-        }
-
-        public string GenerateLoadSwitch(string template, ClassDef c)
-        {
-            string t = template;
-            string rep = "";
-            foreach (PropDef p in c.props)
-            {               
-                string type = PropertyReader.TypeToString(p.type);
-                switch (type)
-                {
-                    case "Bool Property":
-                        rep += "\t\t\t\t\tcase \"" + p.name + "\":\r\n";
-                        rep += "\t\t\t\t\t\tif (p.raw[p.raw.Length - 1] == 1)\r\n";
-                        rep += "\t\t\t\t\t\t" + p.name + " = true;\r\n";
-                        rep += "\t\t\t\t\t\tbreak;\r\n";
-                        break;
-                    case "Integer Property":
-                    case "Object Property":
-                    case "Name Property":
-                    case "Byte Property":
-                        rep += "\t\t\t\t\tcase \"" + p.name + "\":\r\n";
-                        rep += "\t\t\t\t\t\t" + p.name + " = p.Value.IntValue;\r\n";
-                        rep += "\t\t\t\t\t\tbreak;\r\n";
-                        break;
-                    case "Float Property":
-                        rep += "\t\t\t\t\tcase \"" + p.name + "\":\r\n";
-                        rep += "\t\t\t\t\t\t" + p.name + " = BitConverter.ToSingle(p.raw, p.raw.Length - 4);\r\n";
-                        rep += "\t\t\t\t\t\tbreak;\r\n";
-                        break;
-                }
-            }
-            return t.Replace("**LOADINGSWITCH**", rep);
-        }
-
-        public string GenerateTree(string template, ClassDef c)
-        {
-            string t = template;
-            string rep = "";
-            foreach (PropDef p in c.props)
-            {
-                string type = PropertyReader.TypeToString(p.type);
-                switch (type)
-                {
-                    case "Object Property":
-                    case "Integer Property":
-                    case "Bool Property":
-                    case "Float Property":
-                        rep += "\t\t\tres.Nodes.Add(\"" + p.name + " : \" + " + p.name + ");\r\n";
-                        break;
-                    case "Name Property":
-                    case "Byte Property":
-                        rep += "\t\t\tres.Nodes.Add(\"" + p.name + " : \" + pcc.getNameEntry(" + p.name + "));\r\n";
-                        break;
-                }
-            }
-            return t.Replace("**TREEGEN**", rep);
         }
     }
 }
