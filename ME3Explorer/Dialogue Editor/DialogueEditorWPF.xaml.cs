@@ -415,9 +415,9 @@ namespace ME3Explorer.Dialogue_Editor
                     LoadFile(FileQueuedForLoad);
                     FileQueuedForLoad = null;
 
-                    if (ExportQueuedForFocusing != null)
+                    if (ExportQueuedForFocusing != null && ExportQueuedForFocusing.ClassName == "BioConversation")
                     {
-                        //GoToExport(ExportQueuedForFocusing);
+                        Conversations_ListBox.SelectedItem = Conversations.FirstOrDefault(x => x.Export == ExportQueuedForFocusing);
                         ExportQueuedForFocusing = null;
                     }
 
@@ -465,7 +465,6 @@ namespace ME3Explorer.Dialogue_Editor
                 {"OutputNumbers", DObj.OutputNumbers},
                 {"AutoSaveMode", SaveViewMode},
                 {"LayoutMode", LayoutMode},
-                //{"GlobalSeqRefView", GlobalSeqRefViewSavesMenuItem.IsChecked}
             };
             string outputFile = JsonConvert.SerializeObject(options);
             if (!Directory.Exists(DialogueEditorDataFolder))
