@@ -130,7 +130,11 @@ namespace ME3Explorer.FaceFX
 
         public override void Dispose()
         {
-            //
+            treeView_WinFormsHost.Child.MouseDoubleClick -= treeView_MouseDoubleClick;
+            treeView_WinFormsHost.Child.Dispose();
+            treeView_WinFormsHost.Child = null;
+            treeView_WinFormsHost.Dispose();
+            treeView_WinFormsHost = null;
         }
 
         #endregion
