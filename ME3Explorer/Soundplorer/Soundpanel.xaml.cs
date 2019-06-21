@@ -87,7 +87,7 @@ namespace ME3Explorer
             LoadCommands();
             CurrentVolume = 0.65f;
             _playbackState = PlaybackState.Stopped;
-            seekbarUpdateTimer.Interval = new TimeSpan(0, 0, 1);
+            seekbarUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 250);
             seekbarUpdateTimer.Tick += UpdateSeekBarPos;
             InitializeComponent();
         }
@@ -572,6 +572,7 @@ namespace ME3Explorer
             set
             {
                 if (value.Equals(_currentTrackPosition)) return;
+                Debug.WriteLine("trackpos: " + value);
                 _currentTrackPosition = value;
                 SeekUpdatingDueToTimer = true;
                 OnPropertyChanged(nameof(CurrentTrackPosition));
