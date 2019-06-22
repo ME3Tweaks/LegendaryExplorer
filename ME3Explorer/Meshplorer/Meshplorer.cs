@@ -14,6 +14,7 @@ using Be.Windows.Forms;
 using ME3Explorer.Scene3D;
 using System.Globalization;
 using ME3Explorer.SharedUI;
+using StreamHelpers;
 
 namespace ME3Explorer.Meshplorer
 {
@@ -302,55 +303,6 @@ namespace ME3Explorer.Meshplorer
             if (lOD2ToolStripMenuItem.Checked) res = 2;
             if (lOD3ToolStripMenuItem.Checked) res = 3;
             return res;
-        }
-
-        private void dumpBinaryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int n;
-            if (stm != null)
-            {
-                n = stm.index;
-            }
-            else if (skm != null)
-            {
-                n = skm.MyIndex;
-            }
-            else
-            {
-                return;
-            }
-            if (Pcc.Exports[n].ClassName == "StaticMesh")
-            {
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "*.bin|*.bin";
-                d.FileName = Pcc.Exports[n].ObjectName + ".bin";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                    byte[] buff = Pcc.Exports[n].Data;
-                    int start = stm.props[stm.props.Count - 1].offend;
-                    for (int i = start; i < buff.Length; i++)
-                        fs.WriteByte(buff[i]);
-                    fs.Close();
-                    MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-                }
-            }
-            if (Pcc.Exports[n].ClassName == "SkeletalMesh")
-            {
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "*.bin|*.bin";
-                d.FileName = Pcc.Exports[n].ObjectName + ".bin";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                    byte[] buff = Pcc.Exports[n].Data;
-                    int start = skm.GetPropertyEnd();
-                    for (int i = start; i < buff.Length; i++)
-                        fs.WriteByte(buff[i]);
-                    fs.Close();
-                    MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-                }
-            }
         }
 
         private void serializeToFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -671,31 +623,30 @@ namespace ME3Explorer.Meshplorer
             {
                 return;
             }
-            if (Pcc.Exports[n].ClassName == "StaticMesh")
+
+            IExportEntry export = Pcc.getExport(n);
+            if (export.ClassName == "StaticMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = Pcc.Exports[n].ObjectName + ".bin";
+                d.FileName = export.ObjectName + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                    byte[] buff = Pcc.Exports[n].Data;
-                    int start = stm.props[stm.props.Count - 1].offend;
-                    for (int i = start; i < buff.Length; i++)
-                        fs.WriteByte(buff[i]);
+                    fs.WriteFromBuffer(export.getBinaryData());
                     fs.Close();
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
-            if (Pcc.Exports[n].ClassName == "SkeletalMesh")
+            if (export.ClassName == "SkeletalMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = Pcc.Exports[n].ObjectName + ".bin";
+                d.FileName = export.ObjectName + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                    byte[] buff = Pcc.Exports[n].Data;
+                    byte[] buff = export.Data;
                     int start = skm.GetPropertyEnd();
                     for (int i = start; i < buff.Length; i++)
                         fs.WriteByte(buff[i]);
