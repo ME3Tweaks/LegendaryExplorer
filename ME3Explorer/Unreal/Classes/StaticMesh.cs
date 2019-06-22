@@ -22,7 +22,6 @@ namespace ME3Explorer.Unreal.Classes
         public int index;
         public int memsize;
         public IMEPackage pcc;
-        public List<PropertyReader.Property> props;
         public int readerpos;
         public PSKFile psk;
 
@@ -182,7 +181,6 @@ namespace ME3Explorer.Unreal.Classes
                 isVolumetric = true;
             memory = pcc.Exports[index].Data;
             memsize = memory.Length;
-            props = PropertyReader.getPropList(pcc.Exports[index]);
             Deserialize();
         }
 
@@ -1041,7 +1039,7 @@ namespace ME3Explorer.Unreal.Classes
         public void WriteProperties(MemoryStream fs)
 
         {
-            int len = props[props.Count - 1].offend;            
+            int len = pcc.getExport(index).propsEnd();            
             byte[] buffer = new byte[len];
             for (int i = 0; i < len; i++)
                 buffer[i] = memory[i];
@@ -1498,15 +1496,9 @@ namespace ME3Explorer.Unreal.Classes
             return res;
         }
 
-        public TreeNode ToTreeShort()
-        {
-            TreeNode res = new TreeNode($"#{index} : Static Mesh");
-            return res;
-        }
-
         public byte[] Dump()
         {
-            int startbinary = props[props.Count - 1].offend;
+            int startbinary = pcc.getExport(index).propsEnd();
             int lenofbinary = memsize - startbinary;
             byte[] buffer = new byte[lenofbinary];
             for (int i = 0; i < lenofbinary; i++)

@@ -34,12 +34,9 @@ namespace ME3Explorer.Propertydb
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PropertyDB));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.startScanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.generateTemplatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.warrantyVoiderMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.amaroksMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.startScanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statistiksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
@@ -55,15 +52,11 @@ namespace ME3Explorer.Propertydb
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
-
-            this.FormClosing += Form1_FormClosed;
-
             // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.generateTemplatesToolStripMenuItem,
             this.statistiksToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -81,48 +74,26 @@ namespace ME3Explorer.Propertydb
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // startScanToolStripMenuItem
+            // loadDBToolStripMenuItem
             // 
-            this.startScanToolStripMenuItem.Name = "startScanToolStripMenuItem";
-            this.startScanToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.startScanToolStripMenuItem.Text = "Start Scan";
-            this.startScanToolStripMenuItem.Click += new System.EventHandler(this.startScanToolStripMenuItem_Click);
+            this.loadDBToolStripMenuItem.Name = "loadDBToolStripMenuItem";
+            this.loadDBToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadDBToolStripMenuItem.Text = "Load DB";
+            this.loadDBToolStripMenuItem.Click += new System.EventHandler(this.loadDBToolStripMenuItem_Click);
             // 
             // saveDBToolStripMenuItem
             // 
             this.saveDBToolStripMenuItem.Name = "saveDBToolStripMenuItem";
-            this.saveDBToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveDBToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveDBToolStripMenuItem.Text = "Save DB";
             this.saveDBToolStripMenuItem.Click += new System.EventHandler(this.saveDBToolStripMenuItem_Click);
             // 
-            // loadDBToolStripMenuItem
+            // startScanToolStripMenuItem
             // 
-            this.loadDBToolStripMenuItem.Name = "loadDBToolStripMenuItem";
-            this.loadDBToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.loadDBToolStripMenuItem.Text = "Load DB";
-            this.loadDBToolStripMenuItem.Click += new System.EventHandler(this.loadDBToolStripMenuItem_Click);
-            // 
-            // generateTemplatesToolStripMenuItem
-            // 
-            this.generateTemplatesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.warrantyVoiderMethodToolStripMenuItem,
-            this.amaroksMethodToolStripMenuItem});
-            this.generateTemplatesToolStripMenuItem.Name = "generateTemplatesToolStripMenuItem";
-            this.generateTemplatesToolStripMenuItem.Size = new System.Drawing.Size(124, 20);
-            this.generateTemplatesToolStripMenuItem.Text = "Generate Templates";
-            // 
-            // warrantyVoiderMethodToolStripMenuItem
-            // 
-            this.warrantyVoiderMethodToolStripMenuItem.Name = "warrantyVoiderMethodToolStripMenuItem";
-            this.warrantyVoiderMethodToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.warrantyVoiderMethodToolStripMenuItem.Text = "Warranty Voiders Method";
-            this.warrantyVoiderMethodToolStripMenuItem.Click += new System.EventHandler(this.warrantyVoiderMethodToolStripMenuItem_Click);
-            // 
-            // amaroksMethodToolStripMenuItem
-            // 
-            this.amaroksMethodToolStripMenuItem.Name = "amaroksMethodToolStripMenuItem";
-            this.amaroksMethodToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.amaroksMethodToolStripMenuItem.Text = "Amaroks Method";
+            this.startScanToolStripMenuItem.Name = "startScanToolStripMenuItem";
+            this.startScanToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.startScanToolStripMenuItem.Text = "Start Scan";
+            this.startScanToolStripMenuItem.Click += new System.EventHandler(this.startScanToolStripMenuItem_Click);
             // 
             // statistiksToolStripMenuItem
             // 
@@ -211,6 +182,7 @@ namespace ME3Explorer.Propertydb
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "PropertyDB";
             this.Text = "Property Database";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -241,8 +213,5 @@ namespace ME3Explorer.Propertydb
         private System.Windows.Forms.ToolStripMenuItem loadDBToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel status;
         private System.Windows.Forms.ToolStripMenuItem statistiksToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem generateTemplatesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem warrantyVoiderMethodToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem amaroksMethodToolStripMenuItem;
     }
 }

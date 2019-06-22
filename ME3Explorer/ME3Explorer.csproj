@@ -252,6 +252,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="ASI\ASIManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AutoTOC\AutoTOCWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -308,6 +312,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="ASI\ASIManager.xaml.cs">
+      <DependentUpon>ASIManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AutoTOC\AutoTOCWPF.xaml.cs">
       <DependentUpon>AutoTOCWPF.xaml</DependentUpon>
     </Compile>
@@ -1450,6 +1457,7 @@
     <Resource Include="Resources\filehexanalyzer_256x256.ico" />
     <Resource Include="Resources\dialoguedumper_256x256.ico" />
     <Resource Include="PackageEditor\EntryIcons\icon_tlkfile.png" />
+    <Resource Include="Resources\asimanager_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
