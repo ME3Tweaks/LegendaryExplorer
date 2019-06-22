@@ -176,6 +176,8 @@ namespace ME3Explorer
         public ICommand PopoutCurrentViewCommand { get; set; }
         public ICommand MultidropRelinkingCommand { get; set; }
         public ICommand PerformMultiRelinkCommand { get; set; }
+        public ICommand BulkExportSWFCommand { get; set; }
+        public ICommand BulkImportSWFCommand { get; set; }
 
         public ICommand OpenFileCommand { get; set; }
         public ICommand SaveFileCommand { get; set; }
@@ -200,7 +202,7 @@ namespace ME3Explorer
             AddNameCommand = new RelayCommand(AddName, CanAddName);
             CopyNameCommand = new GenericCommand(CopyName, NameIsSelected);
             RebuildStreamingLevelsCommand = new GenericCommand(RebuildStreamingLevels, PackageIsLoaded);
-            ExportEmbeddedFileCommand = new GenericCommand(ExportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
+            ExportEmbeddedFileCommand = new GenericCommand(ExportEmbeddedFilePrompt, DoesSelectedItemHaveEmbeddedFile);
             ImportEmbeddedFileCommand = new GenericCommand(ImportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
             ReindexCommand = new GenericCommand(ReindexObjectByName, ExportIsSelected);
             TrashCommand = new GenericCommand(TrashEntryAndChildren, TreeEntryIsSelected);
@@ -221,6 +223,60 @@ namespace ME3Explorer
             TabRightCommand = new GenericCommand(TabRight, PackageIsLoaded);
             TabLeftCommand = new GenericCommand(TabLeft, PackageIsLoaded);
 
+            BulkExportSWFCommand = new GenericCommand(BulkExportSWFs, PackageIsLoaded);
+            BulkImportSWFCommand = new GenericCommand(BulkImportSWFs, PackageIsLoaded);
+        }
+
+        private void ExportEmbeddedFilePrompt()
+        {
+            ExportEmbeddedFile();
+        }
+
+        private void BulkExportSWFs()
+        {
+            var swfsInFile = Pcc.Exports.Where(x => x.ClassName == (Pcc.Game == MEGame.ME1 ? "BioSWF" : "GFxMovieInfo") && !x.ObjectName.StartsWith("Defaut__")).ToList();
+            if (swfsInFile.Count > 0)
+            {
+                CommonOpenFileDialog m = new CommonOpenFileDialog
+                {
+                    IsFolderPicker = true,
+                    EnsurePathExists = true,
+                    Title = "Select output folder"
+                };
+                if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
+                {
+
+                    string dir = m.FileName;
+                    string extension = Pcc.Game != MEGame.ME1 ? "gfx" : "swf";
+                    Stopwatch stopwatch = Stopwatch.StartNew(); //creates and start the instance of Stopwatch
+                                                                //your sample code                    
+                    foreach (var export in swfsInFile)
+                    {
+                        string exportFilename = $"{export.GetFullPath}.{extension}";
+                        string outputPath = Path.Combine(dir, exportFilename);
+                        ExportEmbeddedFile(export, outputPath);
+                    }
+                    stopwatch.Stop();
+                    Console.WriteLine(stopwatch.ElapsedMilliseconds);
+                }
+            }
+            else
+            {
+                MessageBox.Show("This file contains no scaleform exports.");
+            }
+        }
+
+        private void BulkImportSWFs()
+        {
+            var swfsInFile = Pcc.Exports.Where(x => x.ClassName == (Pcc.Game == MEGame.ME1 ? "BioSWF" : "GFxMovieInfo") && !x.ObjectName.StartsWith("Defaut__")).ToList();
+            if (swfsInFile.Count > 0)
+            {
+
+            }
+            else
+            {
+                MessageBox.Show("This file contains no scaleform exports.");
+            }
         }
 
         private void TabRight()
@@ -778,9 +834,16 @@ namespace ME3Explorer
             return false;
         }
 
-        private void ExportEmbeddedFile()
+        /// <summary>
+        /// Exports the embedded file in the given export to the given path. If the export given is empty, the one currently selected in the tree is exported.
+        /// If the given save path is null, it will prompt the user and say Done when completed in a messagebox.
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <param name="savePath"></param>
+        private void ExportEmbeddedFile(IExportEntry exp = null, string savePath = null)
         {
-            if (TryGetSelectedExport(out IExportEntry exp))
+            if (exp == null) TryGetSelectedExport(out exp);
+            if (exp != null)
             {
                 switch (exp.ClassName)
                 {
@@ -791,18 +854,39 @@ namespace ME3Explorer
                             {
                                 var props = exp.GetProperties();
                                 string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
-                                byte[] data = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName).Select(x => x.Value).ToArray();
-                                string extension = Path.GetExtension(".swf");
-                                SaveFileDialog d = new SaveFileDialog
+                                var DataProp = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName);
+                                byte[] data = null;
+                                if (DataProp.Count > 10000)
                                 {
-                                    Title = "Save SWF",
-                                    FileName = exp.GetFullPath + ".swf",
-                                    Filter = $"*{extension}|*{extension}"
-                                };
-                                if (d.ShowDialog() == true)
+                                    data = new byte[DataProp.Count];
+                                    Buffer.BlockCopy(exp.Data, (int)DataProp[0].ValueOffset, data, 0, data.Length);
+                                }
+                                else
                                 {
-                                    File.WriteAllBytes(d.FileName, data);
-                                    MessageBox.Show("Done");
+                                    data = DataProp.Select(x => x.Value).ToArray();
+                                }
+
+                                if (savePath == null)
+                                {
+                                    //GFX is scaleform extensions for SWF
+                                    //SWC is Shockwave Compressed
+                                    //SWF is Shockwave Flash (uncompressed)
+                                    string extension = exp.FileRef.Game != MEGame.ME1 ? "gfx" : "swf";
+                                    SaveFileDialog d = new SaveFileDialog
+                                    {
+                                        Title = "Save " + extension.ToUpper(),
+                                        FileName = exp.GetFullPath + "." + extension,
+                                        Filter = $"*{extension}|*.{extension}"
+                                    };
+                                    if (d.ShowDialog() == true)
+                                    {
+                                        File.WriteAllBytes(d.FileName, data);
+                                        MessageBox.Show("Done");
+                                    }
+                                }
+                                else
+                                {
+                                    File.WriteAllBytes(savePath, data);
                                 }
                             }
                             catch (Exception ex)
@@ -848,7 +932,7 @@ namespace ME3Explorer
                                 {
                                     Title = "Replace SWF",
                                     FileName = exp.GetFullPath + ".swf",
-                                    Filter = $"*{extension}|*{extension}"
+                                    Filter = $"*{extension};*.gfx|*{extension};*.gfx"
                                 };
                                 if (d.ShowDialog() == true)
                                 {
@@ -3166,7 +3250,7 @@ namespace ME3Explorer
                 AllTreeViewNodesX[0].FlattenTree().ForEach(x => x.RefreshDisplayName());
             }
         }
-        
+
 
         private void PackageEditorWPF_Closing(object sender, CancelEventArgs e)
         {
