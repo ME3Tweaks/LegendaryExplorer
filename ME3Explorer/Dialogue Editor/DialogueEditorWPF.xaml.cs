@@ -958,7 +958,7 @@ namespace ME3Explorer.Dialogue_Editor
                         if (convstart != null)
                         {
                             var outLinksProp = convstart.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                            if (outLinksProp != null)
+                            if (outLinksProp != null && outLinksProp.Count > 0)
                             {
                                 var linksProp = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
                                 if (linksProp != null)
@@ -968,17 +968,17 @@ namespace ME3Explorer.Dialogue_Editor
                                     if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
                                     {
                                         var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                                        if (outLinksProp2 != null)
+                                        if (outLinksProp2 != null && outLinksProp2.Count > 0)
                                         {
                                             var linksProp2 = outLinksProp2[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                            if (linksProp2 != null)
+                                            if (linksProp2 != null && linksProp2.Count > 0)
                                             {
                                                 var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
                                                 interpseqact = Pcc.getUExport(link2);
                                                 if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
                                                 {
                                                     var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                                                    if (outLinksProp3 != null)
+                                                    if (outLinksProp3 != null && outLinksProp3.Count > 0)
                                                     {
                                                         var linksProp3 = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
                                                         if (linksProp3 != null)
@@ -1001,7 +1001,7 @@ namespace ME3Explorer.Dialogue_Editor
                                             if (desc == "Data") //ME3/ME1
                                             {
                                                 var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
-                                                if (linkedVars != null)
+                                                if (linkedVars != null && linkedVars.Count > 0)
                                                 {
                                                     var datalink = linkedVars[0].Value;
                                                     entry.Interpdata = Pcc.getUExport(datalink);
@@ -1035,30 +1035,30 @@ namespace ME3Explorer.Dialogue_Editor
                         if (convstart != null)
                         {
                             var outLinksProp = convstart.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                            if (outLinksProp != null)
+                            if (outLinksProp != null && outLinksProp.Count > 0)
                             {
                                 var linksProp = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                if (linksProp != null)
+                                if (linksProp != null && linksProp.Count > 0)
                                 {
                                     var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
                                     var interpseqact = Pcc.getUExport(link);
                                     if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / SFXSeqAct_SetFaceFX"
                                     {
                                         var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                                        if (outLinksProp2 != null)
+                                        if (outLinksProp2 != null && outLinksProp2.Count > 0)
                                         {
                                             var linksProp2 = outLinksProp2[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                            if (linksProp2 != null)
+                                            if (linksProp2 != null && linksProp2.Count > 0)
                                             {
                                                 var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
                                                 interpseqact = Pcc.getUExport(link2);
                                                 if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / SFXSeqAct_SetFaceFX"
                                                 {
                                                     var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                                                    if (outLinksProp3 != null)
+                                                    if (outLinksProp3 != null && outLinksProp3.Count > 0)
                                                     {
                                                         var linksProp3 = outLinksProp3[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                                        if (linksProp3 != null)
+                                                        if (linksProp3 != null && linksProp3.Count > 0)
                                                         {
                                                             var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
                                                             interpseqact = Pcc.getUExport(link3);
@@ -1078,7 +1078,7 @@ namespace ME3Explorer.Dialogue_Editor
                                             if (desc == "Data")
                                             {
                                                 var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
-                                                if (linkedVars != null)
+                                                if (linkedVars != null && linkedVars.Count > 0)
                                                 {
                                                     var datalink = linkedVars[0].Value;
                                                     reply.Interpdata = Pcc.getUExport(datalink);
