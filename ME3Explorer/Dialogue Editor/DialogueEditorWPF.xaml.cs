@@ -191,19 +191,19 @@ namespace ME3Explorer.Dialogue_Editor
 
         private bool HasWwbank(object param)
         {
-            return SelectedConv != null && SelectedConv.WwiseBank != null;
+            return SelectedConv?.WwiseBank != null;
         }
         private bool HasFFXNS(object param)
         {
-            return SelectedConv != null && SelectedConv.NonSpkrFFX != null;
+            return SelectedConv?.NonSpkrFFX != null;
         }
         private bool SpkrCanMoveUp(object param)
         {
-            return SelectedSpeaker != null && SelectedSpeaker.SpeakerID > 0;
+            return SelectedSpeaker?.SpeakerID > 0;
         }
         private bool SpkrCanMoveDown(object param)
         {
-            return SelectedSpeaker != null && SelectedSpeaker.SpeakerID >= 0 && (SelectedSpeaker.SpeakerID + 3) < SelectedSpeakerList.Count;
+            return SelectedSpeaker?.SpeakerID >= 0 && (SelectedSpeaker.SpeakerID + 3) < SelectedSpeakerList.Count;
         }
         private bool HasActiveSpkr()
         {
@@ -211,7 +211,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private bool LineHasInterpdata(object param)
         {
-            return SelectedDialogueNode != null && SelectedDialogueNode.Interpdata != null;
+            return SelectedDialogueNode?.Interpdata != null;
         }
         private bool StartCanMoveUp(object param)
         {
@@ -798,7 +798,6 @@ namespace ME3Explorer.Dialogue_Editor
                 int cnt = 0;
                 foreach (StructProperty Node in replyprop)
                 {
-                    int speakerindex = -2;
                     int linestrref = 0;
                     int cond = -1;
                     string line = "Unknown Reference";
@@ -813,13 +812,13 @@ namespace ME3Explorer.Dialogue_Editor
                         stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
                         bcond = Node.GetProp<BoolProperty>("bFireConditional");
                         Enum.TryParse(Node.GetProp<EnumProperty>("ReplyType").Value.Name, out eReply);
-                        conv.ReplyList.Add(new DialogueNodeExtended(Node, true, cnt, speakerindex, linestrref, line, bcond, cond, stevent, eReply));
+                        conv.ReplyList.Add(new DialogueNodeExtended(Node, true, cnt, -2, linestrref, line, bcond, cond, stevent, eReply));
                         cnt++;
                     }
                     catch (Exception e)
                     {
 #if DEBUG
-                        throw new Exception($"Reply List Parse failed {conv.ConvName}:R{cnt} {speakerindex}, {linestrref}, {line}, {cond}, {stevent}, {bcond.ToString()}, {eReply.ToString()}", e);  //Note some convos don't have replies.
+                        throw new Exception($"Reply List Parse failed {conv.ConvName}:R{cnt} Player, {linestrref}, {line}, {cond}, {stevent}, {bcond.ToString()}, {eReply.ToString()}", e);  //Note some convos don't have replies.
 #endif
                     }
                 }
