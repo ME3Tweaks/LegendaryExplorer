@@ -72,7 +72,7 @@ namespace ME3Explorer
             if (CurrentLoadedExport != null)
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Soundpanel(), CurrentLoadedExport);
-                elhw.Title = $"Sound Player - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Title = $"Sound Player - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FilePath}";
                 elhw.Height = 400;
                 elhw.Width = 400;
                 elhw.Show();
@@ -154,7 +154,7 @@ namespace ME3Explorer
                     {
                         try
                         {
-                            var samefolderpath = Directory.GetParent(exportEntry.FileRef.FileName);
+                            var samefolderpath = Directory.GetParent(exportEntry.FileRef.FilePath);
                             string samefolderfilepath = System.IO.Path.Combine(samefolderpath.FullName, w.FileName + ".afc");
                             byte[] headerbytes = new byte[0x56];
                             bool bytesread = false;
@@ -411,7 +411,7 @@ namespace ME3Explorer
                         string path;
                         if (wwiseStream.IsPCCStored)
                         {
-                            path = localCurrentExport.FileRef.FileName;
+                            path = localCurrentExport.FileRef.FilePath;
                         }
                         else
                         {

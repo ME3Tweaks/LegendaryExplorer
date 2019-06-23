@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ME3Explorer.Packages;
 using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer.SharedUI
@@ -33,6 +34,15 @@ namespace ME3Explorer.SharedUI
                 OnPropertyChanged();
             }
         }
+
+        private int _number;
+
+        public int Number
+        {
+            get => _number;
+            set => SetProperty(ref _number, value);
+        }
+
         public NamePromptDialog(string question, string title, List<IndexedName> NameList, int defaultValue = 0)
         {
             this.NameList = NameList;
@@ -47,10 +57,30 @@ namespace ME3Explorer.SharedUI
         {
             NamePromptDialog inst = new NamePromptDialog(question, title, NameList, defaultValue);
             inst.Owner = owner;
+            inst.numberColumn.Width = new GridLength(0);
             inst.ShowDialog();
             if (inst.DialogResult == true)
+            {
                 return (IndexedName)inst.answerChoicesCombobox.SelectedItem;
+            }
+
             return null;
+        }
+
+        public static bool Prompt(Window owner, string question, string title, IMEPackage pcc, out NameReference result, int defaultValue = 0)
+        {
+            NamePromptDialog inst = new NamePromptDialog(question, title, pcc.Names.Select((nr, i) => new IndexedName(i, nr)).ToList(), defaultValue);
+            inst.Owner = owner;
+            inst.ShowDialog();
+            if (inst.DialogResult == true)
+            {
+                IndexedName name = (IndexedName)inst.answerChoicesCombobox.SelectedItem;
+                result = new NameReference(name.Name.Name, inst.Number);
+                return true;
+            }
+
+            result = default;
+            return false;
         }
 
         private void btnOk_Click(object sender, RoutedEventArgs e)

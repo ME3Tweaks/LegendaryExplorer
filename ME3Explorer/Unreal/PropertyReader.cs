@@ -42,6 +42,16 @@ namespace ME3Explorer.Unreal
             return Name ?? string.Empty;
         }
 
+        public static bool operator ==(NameReference n1, NameReference n2)
+        {
+            return n1.Equals(n2);
+        }
+
+        public static bool operator !=(NameReference n1, NameReference n2)
+        {
+            return !n1.Equals(n2);
+        }
+
         public static bool operator ==(NameReference r, string s)
         {
             return s == r.Name;

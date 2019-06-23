@@ -118,32 +118,30 @@
                     <MenuItem Name="Menu_LineSize_20" Header="2.0" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="20"/>
                 </MenuItem>
                 <MenuItem Header="Adjust graph color settings" >
-                    <TextBlock Text="Spoken Text: " Grid.Column="0" Grid.Row="0"/>
-                    <xctk:ColorPicker Name="ClrPcker_Line" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Right"  Grid.Column="1" Grid.Row="0"></xctk:ColorPicker>
-                    <Separator/>
+                    <TextBlock Text="Spoken Text: "/>
+                    <xctk:ColorPicker Name="ClrPcker_Line" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Right"/>
+                        <Separator/>
                     <TextBlock Text="Entry outline: "/>
-                        <xctk:ColorPicker Name="ClrPcker_EntryPen" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
+                    <xctk:ColorPicker Name="ClrPcker_EntryPen" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"/>
                     <TextBlock Text="Entry Header: "/>
-                    <xctk:ColorPicker Name="ClrPcker_Entry" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
+                    <xctk:ColorPicker Name="ClrPcker_Entry" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"/>
                     <TextBlock Text="Reply outline: "/>
-                    <xctk:ColorPicker Name="ClrPcker_ReplyPen" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
+                    <xctk:ColorPicker Name="ClrPcker_ReplyPen" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"/>
                     <TextBlock Text="Reply Header: "/>
-                    <xctk:ColorPicker Name="ClrPcker_Reply" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"></xctk:ColorPicker>
+                    <xctk:ColorPicker Name="ClrPcker_Reply" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"/>
                        <Separator/>
                     <TextBlock Text="Paragon Interrupt: " ToolTip="Adjust the color of Paragon Interrupt."/>
-                    <xctk:ColorPicker Name="ClrPcker_ParaInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ToolTip="Adjust the color of Paragon Interrupt." ></xctk:ColorPicker>
+                    <xctk:ColorPicker Name="ClrPcker_ParaInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ToolTip="Adjust the color of Paragon Interrupt."/>
                     <TextBlock Text="Renegade Interrupt: " ToolTip="Adjust the color of Renegade Interrupt." />
-                    <xctk:ColorPicker Name="ClrPcker_RenInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ToolTip="Adjust the color of Renegade Interrupt."></xctk:ColorPicker>
+                    <xctk:ColorPicker Name="ClrPcker_RenInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ToolTip="Adjust the color of Renegade Interrupt."/>
                     <TextBlock Text="Agree: " />
-                    <xctk:ColorPicker Name="ClrPcker_Agree" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                    <xctk:ColorPicker Name="ClrPcker_Agree" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"/>
                     <TextBlock Text="Disagree: " />
-                    <xctk:ColorPicker Name="ClrPcker_Disagree" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                    <xctk:ColorPicker Name="ClrPcker_Disagree" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"/>
                     <TextBlock Text="Friendly response: " />
-                    <xctk:ColorPicker Name="ClrPcker_Friendly" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
+                    <xctk:ColorPicker Name="ClrPcker_Friendly" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"/>
                     <TextBlock Text="Hostile response: " />
-                    <xctk:ColorPicker Name="ClrPcker_Hostile" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ></xctk:ColorPicker>
-
-
+                    <xctk:ColorPicker Name="ClrPcker_Hostile" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"/>
                 </MenuItem>
                 <MenuItem Header="Reset colors to default" Command="{Binding DefaultColorsCommand}"/>
                 <MenuItem Name="HideEntryOutput_MenuItem" Header="Hide GUI choice text" IsCheckable="True" Command="{Binding UpdateLayoutDefaultsCommand}"  CommandParameter="Toggle_Output" ToolTip="Hide the the dialogue wheel text on each entry output"/>
@@ -202,7 +200,7 @@
                 <ColumnDefinition Width="0" Name="RightBarColumn" />
             </Grid.ColumnDefinitions>
 <!-- Right side panel - Convo/Speakers/Nodes -->
-            <DockPanel Name="RightSide_Dock" LastChildFill="True" Grid.Column="2" Grid.Row="0" Grid.RowSpan="1" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" ScrollViewer.CanContentScroll="False">
+            <DockPanel Name="RightSide_Dock" LastChildFill="True" Grid.Column="2" Grid.Row="0" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" ScrollViewer.CanContentScroll="False">
            <!--Stage Directions ME3 -->
                 <Expander Name="StageDirections_Expander" ExpandDirection="Up" IsExpanded="False" Background="Orange" Padding="2" Panel.ZIndex="250" DockPanel.Dock="Bottom" Visibility="Collapsed">
                     <Expander.Header>
@@ -337,7 +335,11 @@
                                 </Button>
                             </Grid>
                             <ListView Name="Script_ListBox" ItemsSource="{Binding Path=SelectedConv.ScriptList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.VerticalScrollBarVisibility="Visible" MinHeight="30" >
-
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding InstancedString}"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
                             </ListView>
                         </StackPanel>
                         <!--Speaker Panel-->
@@ -397,9 +399,6 @@
                         </StackPanel>
                         <!--Node Panel-->
                         <Grid Name="Node_Panel" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Auto" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="3*" MinHeight="160"/>
                                 <RowDefinition Height="210"/>
@@ -659,7 +658,7 @@
             </DockPanel>
             
 <!-- Speaker List -->
-            <DockPanel LastChildFill="True" Grid.Row="2" Grid.Column="2" Grid.RowSpan="1" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+            <DockPanel LastChildFill="True" Grid.Row="2" Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                 <Grid DockPanel.Dock="Top" Height="30">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40"></ColumnDefinition>

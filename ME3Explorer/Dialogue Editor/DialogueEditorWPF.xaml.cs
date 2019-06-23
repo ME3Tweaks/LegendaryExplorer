@@ -25,7 +25,7 @@ using System.Windows.Threading;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
-using static ME3Explorer.Dialogue_Editor.BioConversationExtended;
+using ME3Explorer.Dialogue_Editor.BioConversationExtended;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 using InterpEditor = ME3Explorer.Matinee.InterpEditor;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
@@ -41,7 +41,6 @@ namespace ME3Explorer.Dialogue_Editor
         #region Declarations
         private struct SaveData
         {
-            public bool absoluteIndex;
             public int index;
             public float X;
             public float Y;
@@ -52,28 +51,20 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        private const float CLONED_SEQREF_MAGIC = 2.237777E-35f;
-
         private readonly ConvGraphEditor graphEditor;
         public ObservableCollectionExtended<IEntry> FFXAnimsets { get; } = new ObservableCollectionExtended<IEntry>();
         public ObservableCollectionExtended<ConversationExtended> Conversations { get; } = new ObservableCollectionExtended<ConversationExtended>();
-        public PropertyCollection CurrentConvoProperties;
         public IExportEntry CurrentLoadedExport;
-        public IMEPackage CurrentConvoPackage;
         public ObservableCollectionExtended<SpeakerExtended> SelectedSpeakerList { get; } = new ObservableCollectionExtended<SpeakerExtended>();
         public ObservableCollectionExtended<SpeakerExtended> ListenersList { get; } = new ObservableCollectionExtended<SpeakerExtended>();
         private DialogueNodeExtended _SelectedDialogueNode;
         public DialogueNodeExtended SelectedDialogueNode
         {
             get => _SelectedDialogueNode;
-            set
-            {
-                if (value != _SelectedDialogueNode)
-                    SetProperty(ref _SelectedDialogueNode, value);
-            }
+            set => SetProperty(ref _SelectedDialogueNode, value);
         }
         private DialogueNodeExtended MirrorDialogueNode;
-        private bool IsLocalUpdate = false; //Used to prevent uneccessary UI updates.
+        private bool IsLocalUpdate; //Used to prevent uneccessary UI updates.
         //SPEAKERS
         private SpeakerExtended _SelectedSpeaker;
         public SpeakerExtended SelectedSpeaker
@@ -85,22 +76,14 @@ namespace ME3Explorer.Dialogue_Editor
         public Dictionary<string, int> SelectedStarts
         {
             get => _SelectedStarts;
-            set
-            {
-                if (value != _SelectedStarts)
-                    SetProperty(ref _SelectedStarts, value);
-            }
+            set => SetProperty(ref _SelectedStarts, value);
         }
         private int forcedSelectStart = -1;
         private string _SelectedScript = "None";
         public string SelectedScript
         {
             get => _SelectedScript;
-            set
-            {
-                if (value != _SelectedScript)
-                    SetProperty(ref _SelectedScript, value);
-            }
+            set => SetProperty(ref _SelectedScript, value);
         }
         #region ConvoBox //Conversation Box Links
         private ConversationExtended _SelectedConv;
@@ -131,7 +114,6 @@ namespace ME3Explorer.Dialogue_Editor
         public string CurrentFile;
         public string JSONpath;
         private List<SaveData> SavedPositions;
-        public bool RefOrRefChild;
 
         public static readonly string DialogueEditorDataFolder = Path.Combine(App.AppDataFolder, @"DialogueEditor\");
         public static readonly string OptionsPath = Path.Combine(DialogueEditorDataFolder, "DialogueEditorOptions.JSON");
@@ -148,8 +130,8 @@ namespace ME3Explorer.Dialogue_Editor
             get => _statusText;
             set => SetProperty(ref _statusText, $"{CurrentFile} {value}");
         }
-        private int LayoutMode = 0; //0 = column, 1 = waterfall.
-        private int SaveViewMode = 0; //0 = auto save, 1 = manual save, 2 = autogenerate.
+        private int LayoutMode; //0 = column, 1 = waterfall.
+        private int SaveViewMode; //0 = auto save, 1 = manual save, 2 = autogenerate.
         public float StartPoDStarts;
         public float StartPoDiagNodes;
         public float StartPoDReplyNodes;
@@ -191,11 +173,11 @@ namespace ME3Explorer.Dialogue_Editor
 
         private bool HasWwbank(object param)
         {
-            return SelectedConv != null && SelectedConv.WwiseBank != null;
+            return SelectedConv?.WwiseBank != null;
         }
         private bool HasFFXNS(object param)
         {
-            return SelectedConv != null && SelectedConv.NonSpkrFFX != null;
+            return SelectedConv?.NonSpkrFFX != null;
         }
         private bool SpkrCanMoveUp(object param)
         {
@@ -203,7 +185,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private bool SpkrCanMoveDown(object param)
         {
-            return SelectedSpeaker != null && SelectedSpeaker.SpeakerID >= 0 && (SelectedSpeaker.SpeakerID + 3) < SelectedSpeakerList.Count;
+            return SelectedSpeaker != null && SelectedSpeaker.SpeakerID >= 0 && SelectedSpeaker.SpeakerID + 3 < SelectedSpeakerList.Count;
         }
         private bool HasActiveSpkr()
         {
@@ -211,7 +193,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private bool LineHasInterpdata(object param)
         {
-            return SelectedDialogueNode != null && SelectedDialogueNode.Interpdata != null;
+            return SelectedDialogueNode?.Interpdata != null;
         }
         private bool StartCanMoveUp(object param)
         {
@@ -253,8 +235,8 @@ namespace ME3Explorer.Dialogue_Editor
             this.graphEditor.DragDrop += DialogueEditor_DragDrop;
             this.graphEditor.DragEnter += DialogueEditor_DragEnter;
 
-            Node_Combo_GUIStyle.ItemsSource = Enum.GetValues(typeof(EConvGUIStyles)).Cast<EConvGUIStyles>();
-            Node_Combo_ReplyType.ItemsSource = Enum.GetValues(typeof(EReplyTypes)).Cast<EReplyTypes>();
+            Node_Combo_GUIStyle.ItemsSource = Enums.GetValues<EConvGUIStyles>();
+            Node_Combo_ReplyType.ItemsSource = Enums.GetValues<EReplyTypes>();
 
             if (File.Exists(OptionsPath)) //Handle options
             {
@@ -267,78 +249,76 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     var c = ColorTranslator.FromHtml((string)options["LineTextColor"]);
                     DBox.lineColor = c;
-                    ClrPcker_Line.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_Line.SelectedColor = c.ToWPFColor();
                 }
                 if (options.ContainsKey("ParaIntRColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["ParaIntRColor"]);
                     DObj.paraintColor = c;
-                    ClrPcker_ParaInt.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_ParaInt.SelectedColor = c.ToWPFColor();
                 }
                 if (options.ContainsKey("RenIntRColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["RenIntRColor"]);
                     DObj.renintColor = c;
-                    ClrPcker_RenInt.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_RenInt.SelectedColor = c.ToWPFColor();
                 }
                 if (options.ContainsKey("AgreeRColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["AgreeRColor"]);
                     DObj.agreeColor = c;
-                    ClrPcker_Agree.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_Agree.SelectedColor = c.ToWPFColor();
                 }
                 if (options.ContainsKey("DisagreeRColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["DisagreeRColor"]);
                     DObj.disagreeColor = c;
-                    ClrPcker_Disagree.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_Disagree.SelectedColor = c.ToWPFColor();
                 }
                 if (options.ContainsKey("FriendlyRColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["FriendlyRColor"]);
                     DObj.friendlyColor = c;
-                    ClrPcker_Friendly.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_Friendly.SelectedColor = c.ToWPFColor();
                 }
                 if (options.ContainsKey("HostileRColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["HostileRColor"]);
                     DObj.hostileColor = c;
-                    ClrPcker_Hostile.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_Hostile.SelectedColor = c.ToWPFColor();
                 }
                 if (options.ContainsKey("EntryPenColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["EntryPenColor"]);
                     DObj.entryPenColor = c;
-                    ClrPcker_EntryPen.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_EntryPen.SelectedColor = c.ToWPFColor();
                 }
                 if (options.ContainsKey("EntryColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["EntryColor"]);
                     DObj.entryColor = c;
-                    ClrPcker_Entry.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_Entry.SelectedColor = c.ToWPFColor();
                 }
                 if (options.ContainsKey("ReplyColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["ReplyColor"]);
                     DObj.replyColor = c;
-                    ClrPcker_Reply.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_Reply.SelectedColor = c.ToWPFColor();
                 }
                 if (options.ContainsKey("ReplyPenColor"))
                 {
                     var c = ColorTranslator.FromHtml((string)options["ReplyPenColor"]);
                     DObj.replyPenColor = c;
-                    ClrPcker_ReplyPen.SelectedColor = System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    ClrPcker_ReplyPen.SelectedColor = c.ToWPFColor();
                 }
                 if (options.ContainsKey("AutoSaveMode"))
                 {
-                    int a = 0;
-                    int.TryParse(options["AutoSaveMode"].ToString(), out a);
+                    int.TryParse(options["AutoSaveMode"].ToString(), out int a);
                     SaveViewMode = a;
                 }
                 if (options.ContainsKey("LayoutMode"))
                 {
-                    int l = 0;
-                    int.TryParse(options["LayoutMode"].ToString(), out l);
+                    int.TryParse(options["LayoutMode"].ToString(), out int l);
                     LayoutMode = l;
                 }
                 if (options.ContainsKey("LinesAtTop"))
@@ -349,23 +329,23 @@ namespace ME3Explorer.Dialogue_Editor
             else
             {
                 Menu_LineSize_10.IsChecked = true;
-                ClrPcker_Line.SelectedColor = System.Windows.Media.Color.FromArgb(DBox.lineColor.A, DBox.lineColor.R, DBox.lineColor.G, DBox.lineColor.B);
-                ClrPcker_ParaInt.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.paraintColor.A, DObj.paraintColor.R, DObj.paraintColor.G, DObj.paraintColor.B);
-                ClrPcker_RenInt.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.renintColor.A, DObj.renintColor.R, DObj.renintColor.G, DObj.renintColor.B);
-                ClrPcker_Agree.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.agreeColor.A, DObj.agreeColor.R, DObj.agreeColor.G, DObj.agreeColor.B);
-                ClrPcker_Disagree.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.disagreeColor.A, DObj.disagreeColor.R, DObj.disagreeColor.G, DObj.disagreeColor.B);
-                ClrPcker_Friendly.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.friendlyColor.A, DObj.friendlyColor.R, DObj.friendlyColor.G, DObj.friendlyColor.B);
-                ClrPcker_Hostile.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.hostileColor.A, DObj.hostileColor.R, DObj.hostileColor.G, DObj.hostileColor.B);
-                ClrPcker_Entry.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.entryColor.A, DObj.entryColor.R, DObj.entryColor.G, DObj.entryColor.B);
-                ClrPcker_EntryPen.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.entryPenColor.A, DObj.entryPenColor.R, DObj.entryPenColor.G, DObj.entryPenColor.B);
-                ClrPcker_Reply.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.replyColor.A, DObj.replyColor.R, DObj.replyColor.G, DObj.replyColor.B);
-                ClrPcker_ReplyPen.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.replyPenColor.A, DObj.replyPenColor.R, DObj.replyPenColor.G, DObj.replyPenColor.B);
+                ClrPcker_Line.SelectedColor = DBox.lineColor.ToWPFColor();
+                ClrPcker_ParaInt.SelectedColor = DObj.paraintColor.ToWPFColor();
+                ClrPcker_RenInt.SelectedColor = DObj.renintColor.ToWPFColor();
+                ClrPcker_Agree.SelectedColor = DObj.agreeColor.ToWPFColor();
+                ClrPcker_Disagree.SelectedColor = DObj.disagreeColor.ToWPFColor();
+                ClrPcker_Friendly.SelectedColor = DObj.friendlyColor.ToWPFColor();
+                ClrPcker_Hostile.SelectedColor = DObj.hostileColor.ToWPFColor();
+                ClrPcker_Entry.SelectedColor = DObj.entryColor.ToWPFColor();
+                ClrPcker_EntryPen.SelectedColor = DObj.entryPenColor.ToWPFColor();
+                ClrPcker_Reply.SelectedColor = DObj.replyColor.ToWPFColor();
+                ClrPcker_ReplyPen.SelectedColor = DObj.replyPenColor.ToWPFColor();
             }
-            UpdateLayoutDefaults("startup" as object);
+            UpdateLayoutDefaults("startup");
         }
         public DialogueEditorWPF(IExportEntry export) : this()
         {
-            FileQueuedForLoad = export.FileRef.FileName;
+            FileQueuedForLoad = export.FileRef.FilePath;
             ExportQueuedForFocusing = export;
         }
         private void LoadCommands()
@@ -427,7 +407,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void SavePackageAs()
         {
-            string extension = Path.GetExtension(Pcc.FileName);
+            string extension = Path.GetExtension(Pcc.FilePath);
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
@@ -534,8 +514,6 @@ namespace ME3Explorer.Dialogue_Editor
                     MessageBox.Show("This file does not contain any Conversations!");
                     return;
                 }
-
-                CurrentConvoPackage = Pcc;
                 FirstParse();
                 RightBarColumn.Width = new GridLength(260);
                 graphEditor.nodeLayer.RemoveAllChildren();
@@ -548,14 +526,14 @@ namespace ME3Explorer.Dialogue_Editor
                 Title = $"Dialogue Editor WPF - {fileName}";
                 StatusText = null;
 
-                Level = Path.GetFileName(Pcc.FileName);
-                if (Pcc.Game != MEGame.ME1)
+                Level = Path.GetFileName(Pcc.FilePath);
+                if (Pcc.Game == MEGame.ME1)
                 {
-                    Level = $"{Level.Remove(Level.Length - 12)}.pcc";
+                    Level = $"{Level.Remove(Level.Length - 4)}_LOC_INT{Path.GetExtension(Pcc.FilePath)}";
                 }
                 else
                 {
-                    Level = $"{Level.Remove(Level.Length - 4)}_LOC_INT{Path.GetExtension(Pcc.FileName)}";
+                    Level = $"{Level.Remove(Level.Length - 12)}.pcc";
                 }
 
                 //Build Animset list
@@ -579,7 +557,6 @@ namespace ME3Explorer.Dialogue_Editor
             RightBarColumn.Width = new GridLength(0);
             SelectedConv = null;
             CurrentLoadedExport = null;
-            CurrentConvoPackage = null;
             Conversations.ClearEx();
             SelectedSpeakerList.ClearEx();
             Properties_InterpreterWPF.UnloadExport();
@@ -608,7 +585,7 @@ namespace ME3Explorer.Dialogue_Editor
         private async void FirstParse()
         {
             BackQueue = new BlockingCollection<ConversationExtended>();
-            BackParser = new BackgroundWorker()
+            BackParser = new BackgroundWorker
             {
                 WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
@@ -702,12 +679,14 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void ParseSpeakers(ConversationExtended conv)
         {
-            conv.Speakers = new ObservableCollectionExtended<SpeakerExtended>();
-            conv.Speakers.Add(new SpeakerExtended(-2, "player", null, null, 125303, "\"Shepard\""));
-            conv.Speakers.Add(new SpeakerExtended(-1, "owner", null, null, 0, "No data"));
+            conv.Speakers = new ObservableCollectionExtended<SpeakerExtended>
+            {
+                new SpeakerExtended(-2, "player", null, null, 125303, "\"Shepard\""),
+                new SpeakerExtended(-1, "owner", null, null, 0, "No data")
+            };
             try
             {
-                if (CurrentConvoPackage.Game != MEGame.ME3)
+                if (Pcc.Game != MEGame.ME3)
                 {
                     var s_speakers = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_SpeakerList");
                     if (s_speakers != null)
@@ -762,7 +741,7 @@ namespace ME3Explorer.Dialogue_Editor
                     if(linestrrefprop != null)
                     {
                         linestrref = linestrrefprop.Value;
-                        line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage);
+                        line = GlobalFindStrRefbyID(linestrref, Pcc);
                     }
                     
                     var condprop = Node.GetProp<IntProperty>("nConditionalFunc");
@@ -808,7 +787,7 @@ namespace ME3Explorer.Dialogue_Editor
                     try
                     {
                         linestrref = Node.GetProp<StringRefProperty>("srText").Value;
-                        line = GlobalFindStrRefbyID(linestrref, CurrentConvoPackage);
+                        line = GlobalFindStrRefbyID(linestrref, Pcc);
                         cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
                         stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
                         bcond = Node.GetProp<BoolProperty>("bFireConditional");
@@ -827,16 +806,15 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void ParseScripts(ConversationExtended conv)
         {
-            conv.ScriptList = new List<String>();
             conv.ScriptList.Add("None");
-            if (CurrentConvoPackage.Game == MEGame.ME3)
+            if (Pcc.Game == MEGame.ME3)
             {
                 var a_scripts = conv.BioConvo.GetProp<ArrayProperty<NameProperty>>("m_aScriptList");
                 if (a_scripts != null)
                 {
                     foreach (var scriptprop in a_scripts)
                     {
-                        var scriptname = scriptprop.ToString();
+                        var scriptname = scriptprop.Value;
                         conv.ScriptList.Add(scriptname);
                     }
                 }
@@ -849,14 +827,13 @@ namespace ME3Explorer.Dialogue_Editor
                     foreach (var scriptprop in a_sscripts)
                     {
                         var s = scriptprop.GetProp<NameProperty>("sScriptTag");
-                        conv.ScriptList.Add(s.ToString());
+                        conv.ScriptList.Add(s.Value);
                     }
                 }
             }
         }
         private void ParseStageDirections(ConversationExtended conv)
         {
-            conv.StageDirections = new ObservableCollectionExtended<StageDirection>();
             if (Pcc.Game == MEGame.ME3)
             {
                 var dprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_aStageDirections"); //ME3 Only not in ME1/2
@@ -901,13 +878,12 @@ namespace ME3Explorer.Dialogue_Editor
                 SelectedSpeakerList.Add(spkr);
             }
         }
-        private void GenerateSpeakerTags(ConversationExtended conv)
+        private static void GenerateSpeakerTags(ConversationExtended conv)
         {
-            var spkrlist = conv.Speakers;
             foreach (var e in conv.EntryList)
             {
                 int spkridx = e.SpeakerIndex;
-                var spkrtag = conv.Speakers.Where(s => s.SpeakerID == spkridx).FirstOrDefault();
+                var spkrtag = conv.Speakers.FirstOrDefault(s => s.SpeakerID == spkridx);
                 if (spkrtag != null)
                     e.SpeakerTag = spkrtag;
             }
@@ -915,7 +891,7 @@ namespace ME3Explorer.Dialogue_Editor
             foreach (var r in conv.ReplyList)
             {
                 int spkridx = r.SpeakerIndex;
-                var spkrtag = conv.Speakers.Where(s => s.SpeakerID == spkridx).FirstOrDefault();
+                var spkrtag = conv.Speakers.FirstOrDefault(s => s.SpeakerID == spkridx);
                 if (spkrtag != null)
                     r.SpeakerTag = spkrtag;
             }
@@ -931,178 +907,158 @@ namespace ME3Explorer.Dialogue_Editor
             //Get sequence from convo
             //Get list of BioConvoStarts
             //Match to export id => SeqAct_Interp => Interpdata
-            var sequence = conv.Sequence as IExportEntry;
-            var seqobjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-
-            var convStarts = new Dictionary<int, IExportEntry>();
-            foreach (var prop in seqobjs)
+            if (conv.Sequence is IExportEntry sequence)
             {
-                var seqobj = Pcc.getUExport(prop.Value);
-                if (seqobj.ClassName == "BioSeqEvt_ConvNode")
+                var seqobjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+
+                var convStarts = new Dictionary<int, IExportEntry>();
+                foreach (var prop in seqobjs)
                 {
-                    int key = seqobj.GetProperty<IntProperty>("m_nNodeID"); //ME3
-                    if(!convStarts.ContainsKey(key))
+                    var seqobj = Pcc.getUExport(prop.Value);
+                    if (seqobj.ClassName == "BioSeqEvt_ConvNode")
                     {
-                        convStarts.Add(key, seqobj);
+                        int key = seqobj.GetProperty<IntProperty>("m_nNodeID"); //ME3
+                        if(!convStarts.ContainsKey(key))
+                        {
+                            convStarts.Add(key, seqobj);
+                        }
                     }
                 }
-            }
 
-            foreach (var entry in conv.EntryList)
-            {
-                try
+                foreach (var entry in conv.EntryList)
                 {
-                    entry.ExportID = entry.NodeProp.GetProp<IntProperty>("nExportID");
-                    if (entry.ExportID != 0)
+                    try
                     {
-                        var convstart = convStarts.Where(s => s.Key == entry.ExportID).FirstOrDefault().Value;
-                        if (convstart != null)
+                        entry.ExportID = entry.NodeProp.GetProp<IntProperty>("nExportID");
+                        if (entry.ExportID != 0)
                         {
-                            var outLinksProp = convstart.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                            if (outLinksProp != null)
+                            var convstart = convStarts.FirstOrDefault(s => s.Key == entry.ExportID).Value;
+                            var outLinksProp = convstart?.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                            var linksProp = outLinksProp?[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                            if (linksProp != null && linksProp.Any())
                             {
-                                var linksProp = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                if (linksProp != null)
+                                var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                var interpseqact = Pcc.getUExport(link);
+                                if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
                                 {
-                                    var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                    var interpseqact = Pcc.getUExport(link);
-                                    if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
+                                    var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                                    var linksProp2 = outLinksProp2?[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                    if (linksProp2 != null && linksProp2.Any())
                                     {
-                                        var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                                        if (outLinksProp2 != null)
+                                        var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                        interpseqact = Pcc.getUExport(link2);
+                                        if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
                                         {
-                                            var linksProp2 = outLinksProp2[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                            if (linksProp2 != null)
+                                            var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                                            if (outLinksProp3 != null && outLinksProp3.Any())
                                             {
-                                                var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                                interpseqact = Pcc.getUExport(link2);
-                                                if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
+                                                var linksProp3 = outLinksProp3[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                                if (linksProp3 != null && linksProp3.Any())
                                                 {
-                                                    var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                                                    if (outLinksProp3 != null)
-                                                    {
-                                                        var linksProp3 = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                                        if (linksProp3 != null)
-                                                        {
-                                                            var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                                            interpseqact = Pcc.getUExport(link3);
-                                                        }
-                                                    }
+                                                    var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                                    interpseqact = Pcc.getUExport(link3);
                                                 }
                                             }
                                         }
                                     }
+                                }
 
-                                    var varLinksProp = interpseqact.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
-                                    if (varLinksProp != null)
+                                var varLinksProp = interpseqact.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+                                if (varLinksProp != null)
+                                {
+                                    foreach (var prop in varLinksProp)
                                     {
-                                        foreach (var prop in varLinksProp)
+                                        var desc = prop.GetProp<StrProperty>("LinkDesc").Value; //ME3/ME2/ME1
+                                        if (desc == "Data") //ME3/ME1
                                         {
-                                            var desc = prop.GetProp<StrProperty>("LinkDesc").Value; //ME3/ME2/ME1
-                                            if (desc == "Data") //ME3/ME1
+                                            var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                                            if (linkedVars != null && linkedVars.Any())
                                             {
-                                                var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
-                                                if (linkedVars != null)
-                                                {
-                                                    var datalink = linkedVars[0].Value;
-                                                    entry.Interpdata = Pcc.getUExport(datalink);
+                                                var datalink = linkedVars[0].Value;
+                                                entry.Interpdata = Pcc.getUExport(datalink);
 
-                                                }
-                                                break;
                                             }
+                                            break;
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                catch (Exception e)
-                {
+                    catch (Exception e)
+                    {
 #if DEBUG
-                    throw new Exception($"EntryList parse interpdata failed: {entry.NodeCount}", e);
+                        throw new Exception($"EntryList parse interpdata failed: {entry.NodeCount}", e);
 #endif
+                    }
                 }
-            }
 
-            foreach (var reply in conv.ReplyList)
-            {
-                try
+                foreach (var reply in conv.ReplyList)
                 {
-                    reply.ExportID = reply.NodeProp.GetProp<IntProperty>("nExportID");
-                    if (reply.ExportID != 0)
+                    try
                     {
-                        var convstart = convStarts.Where(s => s.Key == reply.ExportID).FirstOrDefault().Value;
-                        if (convstart != null)
+                        reply.ExportID = reply.NodeProp.GetProp<IntProperty>("nExportID");
+                        if (reply.ExportID != 0)
                         {
-                            var outLinksProp = convstart.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                            if (outLinksProp != null)
+                            var convstart = convStarts.FirstOrDefault(s => s.Key == reply.ExportID).Value;
+                            var outLinksProp = convstart?.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                            var linksProp = outLinksProp?[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                            if (linksProp != null)
                             {
-                                var linksProp = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                if (linksProp != null)
+                                var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                var interpseqact = Pcc.getUExport(link);
+                                if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / SFXSeqAct_SetFaceFX"
                                 {
-                                    var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                    var interpseqact = Pcc.getUExport(link);
-                                    if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / SFXSeqAct_SetFaceFX"
+                                    var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                                    var linksProp2 = outLinksProp2?[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                    if (linksProp2 != null)
                                     {
-                                        var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                                        if (outLinksProp2 != null)
+                                        var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                        interpseqact = Pcc.getUExport(link2);
+                                        if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / SFXSeqAct_SetFaceFX"
                                         {
-                                            var linksProp2 = outLinksProp2[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                            if (linksProp2 != null)
+                                            var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                                            var linksProp3 = outLinksProp3?[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                            if (linksProp3 != null)
                                             {
-                                                var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                                interpseqact = Pcc.getUExport(link2);
-                                                if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / SFXSeqAct_SetFaceFX"
-                                                {
-                                                    var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                                                    if (outLinksProp3 != null)
-                                                    {
-                                                        var linksProp3 = outLinksProp3[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                                        if (linksProp3 != null)
-                                                        {
-                                                            var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                                            interpseqact = Pcc.getUExport(link3);
-                                                        }
-                                                    }
-                                                }
+                                                var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                                interpseqact = Pcc.getUExport(link3);
                                             }
                                         }
                                     }
+                                }
 
-                                    var varLinksProp = interpseqact.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
-                                    if (varLinksProp != null)
+                                var varLinksProp = interpseqact.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+                                if (varLinksProp != null)
+                                {
+                                    foreach (var prop in varLinksProp)
                                     {
-                                        foreach (var prop in varLinksProp)
+                                        var desc = prop.GetProp<StrProperty>("LinkDesc").Value; 
+                                        if (desc == "Data")
                                         {
-                                            var desc = prop.GetProp<StrProperty>("LinkDesc").Value; 
-                                            if (desc == "Data")
+                                            var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                                            if (linkedVars != null)
                                             {
-                                                var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
-                                                if (linkedVars != null)
-                                                {
-                                                    var datalink = linkedVars[0].Value;
-                                                    reply.Interpdata = Pcc.getUExport(datalink);
-                                                }
-                                                break;
+                                                var datalink = linkedVars[0].Value;
+                                                reply.Interpdata = Pcc.getUExport(datalink);
                                             }
+                                            break;
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                catch (Exception e)
-                {
-                    throw new Exception($"ReplyList parse interpdata failed: {reply.NodeCount}", e);
+                    catch (Exception e)
+                    {
+                        throw new Exception($"ReplyList parse interpdata failed: {reply.NodeCount}", e);
+                    }
                 }
             }
         }
         /// <summary>
         /// Parses for male and female wwisestream IEntry for every line in the conversation.
         /// </summary>
-        /// <param name="diag"></param>
         private void ParseLinesAudioStreams(ConversationExtended conv)
         {
             try
@@ -1110,7 +1066,7 @@ namespace ME3Explorer.Dialogue_Editor
 
                 if (Pcc.Game != MEGame.ME1)
                 {
-                    Dictionary<string, IExportEntry> streams = Pcc.Exports.Where(x => x.ClassName == "WwiseStream").ToDictionary(x => $"{x.ObjectName.ToLower()}_{x.UIndex}", x => x);
+                    Dictionary<string, IExportEntry> streams = Pcc.Exports.Where(x => x.ClassName == "WwiseStream").ToDictionary(x => $"{x.ObjectName.ToLower()}_{x.UIndex}");
 
                     foreach (var node in conv.EntryList)
                     {
@@ -1136,7 +1092,7 @@ namespace ME3Explorer.Dialogue_Editor
 #endif
             }
         }
-        private void ParseLinesScripts(ConversationExtended conv)
+        private static void ParseLinesScripts(ConversationExtended conv)
         {
             if (conv.IsFirstParsed)
             {
@@ -1156,7 +1112,7 @@ namespace ME3Explorer.Dialogue_Editor
                 catch (Exception e)
                 {
 #if DEBUG
-                    throw new Exception($"Parse failure on script list", e);
+                    throw new Exception("Parse failure on script list", e);
 #endif
                 }
             }
@@ -1187,8 +1143,7 @@ namespace ME3Explorer.Dialogue_Editor
                 node.IsAmbient = nodeprop.GetProp<BoolProperty>("bAmbient");
                 node.IsNonTextLine = nodeprop.GetProp<BoolProperty>("bNonTextLine");
                 node.IgnoreBodyGesture = nodeprop.GetProp<BoolProperty>("bIgnoreBodyGestures");
-                Enum.TryParse(nodeprop.GetProp<EnumProperty>("eGUIStyle").Value.Name, out EConvGUIStyles gstyle);
-                node.GUIStyle = gstyle;
+                node.GUIStyle = Enums.Parse<EConvGUIStyles>(nodeprop.GetProp<EnumProperty>("eGUIStyle").Value.Name);
                 if (Pcc.Game == MEGame.ME3)
                 {
                     node.HideSubtitle = nodeprop.GetProp<BoolProperty>("bAlwaysHideSubtitle");
@@ -1199,13 +1154,10 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                 }
 
-                if (node.Interpdata != null)
+                var lengthprop = node.Interpdata?.GetProperty<FloatProperty>("InterpLength");
+                if (lengthprop != null)
                 {
-                    var lengthprop = node.Interpdata.GetProperty<FloatProperty>("InterpLength");
-                    if (lengthprop != null)
-                    {
-                        node.InterpLength = lengthprop.Value;
-                    }
+                    node.InterpLength = lengthprop.Value;
                 }
             }
             catch (Exception e)
@@ -1215,11 +1167,11 @@ namespace ME3Explorer.Dialogue_Editor
 #endif
             }
         }
-        private void ParseLinesFaceFX(ConversationExtended conv)
+        private static void ParseLinesFaceFX(ConversationExtended conv)
         {
             foreach (var entry in conv.EntryList)
             {
-                if (entry.Line != "No data" && entry.Line != " " && entry.Line != "" && entry.Line != "  ")
+                if (entry.Line != "No data" && !string.IsNullOrWhiteSpace(entry.Line))
                 {
                     entry.FaceFX_Female = $"FXA_{entry.LineStrRef}_F";
                     entry.FaceFX_Male = $"FXA_{entry.LineStrRef}_M";
@@ -1233,7 +1185,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             foreach (var reply in conv.ReplyList)
             {
-                if (reply.Line != "No data" && reply.Line != " " && reply.Line != "" && reply.Line != "  ")
+                if (reply.Line != "No data" && !string.IsNullOrWhiteSpace(reply.Line))
                 {
                     reply.FaceFX_Female = $"FXA_{reply.LineStrRef}_F";
                     reply.FaceFX_Male = $"FXA_{reply.LineStrRef}_M";
@@ -1245,10 +1197,12 @@ namespace ME3Explorer.Dialogue_Editor
                 }
             }
         }
+
         /// <summary>
         /// Returns the IEntry of FaceFXAnimSet
         /// </summary>
-        /// <param name="speakerID">SpeakerID -1 = Owner, -2 = Player</param>
+        /// <param name="conv"></param>
+        /// <param name="speakerID">SpeakerID: -1 = Owner, -2 = Player</param>
         /// <param name="isMale">will pull female by default</param>
         public IEntry GetFaceFX(ConversationExtended conv, int speakerID, bool isMale = false)
         {
@@ -1262,10 +1216,8 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 return Pcc.getEntry(ffxList[speakerID + 2].Value);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
         /// <summary>
         /// Sets the IEntry of appropriate sequence
@@ -1273,7 +1225,7 @@ namespace ME3Explorer.Dialogue_Editor
         public void ParseSequence(ConversationExtended conv)
         {
             string propname = "MatineeSequence";
-            if (CurrentConvoPackage.Game == MEGame.ME1)
+            if (Pcc.Game == MEGame.ME1)
             {
                 propname = "m_pEvtSystemSeq";
             }
@@ -1294,7 +1246,7 @@ namespace ME3Explorer.Dialogue_Editor
         public void ParseNSFFX(ConversationExtended conv)
         {
             string propname = "m_pNonSpeakerFaceFXSet";
-            if (CurrentConvoPackage.Game == MEGame.ME1)
+            if (Pcc.Game == MEGame.ME1)
             {
                 propname = "m_pConvFaceFXSet";
             }
@@ -1319,7 +1271,7 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 try
                 {
-                    var wwevents = new ArrayProperty<ObjectProperty>(ArrayType.Object,"WwiseEvent_Links");
+                    ArrayProperty<ObjectProperty> wwevents;
                     IEntry ffxo = GetFaceFX(conv, -1, true); //find owner animset
 
                     if (ffxo == null) //if no facefx then maybe soundobject conversation
@@ -1329,7 +1281,7 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                     else
                     {
-                        IExportEntry ffxoExport = ffxo as IExportEntry;
+                        IExportEntry ffxoExport = (IExportEntry)ffxo;
 
                         wwevents = ffxoExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull an owner wwiseevent array
                         if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
@@ -1337,7 +1289,7 @@ namespace ME3Explorer.Dialogue_Editor
                             IEntry ffxp = GetFaceFX(conv, -2, true); //find player as alternative
                             if (!Pcc.isUExport(ffxp.UIndex))
                                 return;
-                            IExportEntry ffxpExport = ffxp as IExportEntry;
+                            IExportEntry ffxpExport = (IExportEntry)ffxp;
                             wwevents = ffxpExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
                         }
                         if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
@@ -1345,7 +1297,7 @@ namespace ME3Explorer.Dialogue_Editor
                             IEntry ffxS = GetFaceFX(conv, 0, true); //find speaker 1 as alternative
                             if (ffxS == null || !Pcc.isUExport(ffxS.UIndex))
                                 return;
-                            IExportEntry ffxSExport = ffxS as IExportEntry;
+                            IExportEntry ffxSExport = (IExportEntry)ffxS;
                             wwevents = ffxSExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
                         }
                     }
@@ -1358,18 +1310,13 @@ namespace ME3Explorer.Dialogue_Editor
 
                     if (Pcc.Game == MEGame.ME3)
                     {
-                        StructProperty r = CurrentConvoPackage.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
+                        StructProperty r = Pcc.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
                         var bank = r.GetProp<ObjectProperty>("Bank");
-                        if (bank.Value > 5324)
-                        {
-                            int x = 11;
-                        }
-                            
                         conv.WwiseBank = Pcc.getUExport(bank.Value);
                     }
                     else if (Pcc.Game == MEGame.ME2) //Game is ME2.  Wwisebank ref in Binary.
                     {
-                        var data = Pcc.getUExport(wwevents[0].Value).getBinaryData();
+                        byte[] data = Pcc.getUExport(wwevents[0].Value).getBinaryData();
                         int binarypos = 4;
                         int count = BitConverter.ToInt32(data, binarypos);
                         if (count > 0)
@@ -1395,15 +1342,15 @@ namespace ME3Explorer.Dialogue_Editor
         }
         public int ParseActorsNames(ConversationExtended conv, string tag)
         {
-            if (CurrentConvoPackage.Game == MEGame.ME1)
+            if (Pcc.Game == MEGame.ME1)
             {
                 try
                 {
-                    var actors = CurrentConvoPackage.Exports.Where(xp => xp.ClassName == "BioPawn");
-                    IExportEntry actor = actors.FirstOrDefault(a => a.GetProperty<NameProperty>("Tag").ToString() == tag);
+                    var actors = Pcc.Exports.Where(xp => xp.ClassName == "BioPawn");
+                    IExportEntry actor = actors.First(a => a.GetProperty<NameProperty>("Tag").ToString() == tag);
                     var behav = actor.GetProperty<ObjectProperty>("m_oBehavior");
-                    var set = CurrentConvoPackage.getUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
-                    var strrefprop = CurrentConvoPackage.getUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
+                    var set = Pcc.getUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
+                    var strrefprop = Pcc.getUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
                     if (strrefprop != null)
                     {
                         return strrefprop.Value;
@@ -1469,16 +1416,16 @@ namespace ME3Explorer.Dialogue_Editor
         {
             bool hasLoopingPaths = false;
 
-            var blankaSpkr = new ArrayProperty<IntProperty>(ArrayType.Int, "aSpeakerList");
+            var blankaSpkr = new ArrayProperty<IntProperty>("aSpeakerList");
             foreach (var dnode in SelectedConv.EntryList)
             {
                 dnode.NodeProp.Properties.AddOrReplaceProp(blankaSpkr);
             }
 
-            foreach (var s in conv.StartingList)
+            foreach ((var _, int entryIndex) in conv.StartingList)
             {
                 var aSpkrs = new SortedSet<int>();
-                var startNode = conv.EntryList[s.Value];
+                var startNode = conv.EntryList[entryIndex];
                 var visitedNodes = new HashSet<DialogueNodeExtended>();
                 var newNodes = new Queue<DialogueNodeExtended>();
                 aSpkrs.Add(startNode.SpeakerIndex);
@@ -1521,7 +1468,7 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                     else { hasLoopingPaths = true; }
                 }
-                var newaSpkr = new ArrayProperty<IntProperty>(ArrayType.Int, "aSpeakerList");
+                var newaSpkr = new ArrayProperty<IntProperty>("aSpeakerList");
                 foreach (var a in aSpkrs)
                 {
                     newaSpkr.Add(a);
@@ -1530,15 +1477,15 @@ namespace ME3Explorer.Dialogue_Editor
             }
             return hasLoopingPaths;
         }
-        private void SaveSpeakersToProperties(ObservableCollectionExtended<SpeakerExtended> speakerCollection)
+        private void SaveSpeakersToProperties(IEnumerable<SpeakerExtended> speakerCollection)
         {
             try
             {
 
-                var m_aSpeakerList = new ArrayProperty<NameProperty>(ArrayType.Name, "m_aSpeakerList");
-                var m_SpeakerList = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_SpeakerList");
-                var m_aMaleFaceSets = new ArrayProperty<ObjectProperty>(ArrayType.Object, "m_aMaleFaceSets");
-                var m_aFemaleFaceSets = new ArrayProperty<ObjectProperty>(ArrayType.Object, "m_aFemaleFaceSets");
+                var m_aSpeakerList = new ArrayProperty<NameProperty>("m_aSpeakerList");
+                var m_SpeakerList = new ArrayProperty<StructProperty>("m_SpeakerList");
+                var m_aMaleFaceSets = new ArrayProperty<ObjectProperty>("m_aMaleFaceSets");
+                var m_aFemaleFaceSets = new ArrayProperty<ObjectProperty>("m_aFemaleFaceSets");
 
                 foreach (SpeakerExtended spkr in speakerCollection)
                 {
@@ -1546,14 +1493,15 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         if (Pcc.Game == MEGame.ME3)
                         {
-                            m_aSpeakerList.Add(new NameProperty("m_aSpeakerList") { Value = spkr.SpeakerName });
+                            m_aSpeakerList.Add(new NameProperty("m_aSpeakerList", spkr.SpeakerName));
                         }
                         else
                         {
-                            var spkrProp = new PropertyCollection();
-                            spkrProp.Add(new NameProperty("sSpeakerTag") { Value = spkr.SpeakerName });
-                            spkrProp.Add(new NoneProperty());
-                            m_SpeakerList.Add(new StructProperty("BioDialogSpeaker", spkrProp));
+                            m_SpeakerList.Add(new StructProperty("BioDialogSpeaker", new PropertyCollection
+                            {
+                                new NameProperty("sSpeakerTag", spkr.SpeakerName),
+                                new NoneProperty()
+                            }));
                         }
                     }
 
@@ -1563,7 +1511,7 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                     else
                     {
-                        m_aMaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Male, "m_aMaleFaceSets"));
+                        m_aMaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Male));
                     }
                     if (spkr.FaceFX_Female == null)
                     {
@@ -1571,7 +1519,7 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                     else
                     {
-                        m_aFemaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Female, "m_aFemaleFaceSets"));
+                        m_aFemaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Female));
                     }
                 }
 
@@ -1602,18 +1550,18 @@ namespace ME3Explorer.Dialogue_Editor
         public void RecreateNodesToProperties(ConversationExtended conv, bool pushtofile = true)
         {
             AutoGenerateSpeakerArrays(conv);
-            var newstartlist = new ArrayProperty<IntProperty>(ArrayType.Int, "m_StartingList");
-            foreach (var start in conv.StartingList)
+            var newstartlist = new ArrayProperty<IntProperty>("m_StartingList");
+            foreach ((var _, int value) in conv.StartingList)
             {
-                newstartlist.Add(start.Value);
+                newstartlist.Add(value);
             }
 
-            var newentryList = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_EntryList");
+            var newentryList = new ArrayProperty<StructProperty>("m_EntryList");
             foreach (var entry in conv.EntryList.OrderBy(entry => entry.NodeCount))
             {
                 newentryList.Add(entry.NodeProp);
             }
-            var newreplyList = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_ReplyList");
+            var newreplyList = new ArrayProperty<StructProperty>("m_ReplyList");
             foreach (var reply in conv.ReplyList.OrderBy(reply => reply.NodeCount))
             {
                 newreplyList.Add(reply.NodeProp);
@@ -1643,35 +1591,44 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if (Pcc.Game == MEGame.ME3)
             {
-                var newscriptList = new ArrayProperty<NameProperty>(ArrayType.Name, "m_aScriptList");
+                var newscriptList = new ArrayProperty<NameProperty>("m_aScriptList");
                 foreach (var script in conv.ScriptList)
                 {
-                    if (script != "None")
+                    if (script.Name != "None")
                     {
-                        newscriptList.Add(new NameProperty("m_aScriptList") { Value = script });
+                        newscriptList.Add(new NameProperty("m_aScriptList", script));
                     }
                 }
                 if (newscriptList.Count > 0)
                 {
                     conv.BioConvo.AddOrReplaceProp(newscriptList);
+                }
+                else
+                {
+                    conv.BioConvo.TryReplaceProp(newscriptList);
                 }
             }
             else
             {
-                var newscriptList = new ArrayProperty<StructProperty>(ArrayType.Name, "m_ScriptList");
+                var newscriptList = new ArrayProperty<StructProperty>("m_ScriptList");
                 foreach (var script in conv.ScriptList)
                 {
-                    if (script != "None")
+                    if (script.Name != "None")
                     {
-                        var s = new PropertyCollection();
-                        s.AddOrReplaceProp(new NameProperty("sScriptTag", script));
-                        s.AddOrReplaceProp(new NoneProperty());
-                        newscriptList.Add(new StructProperty("BioDialogScript", s));
+                        newscriptList.Add(new StructProperty("BioDialogScript", new PropertyCollection
+                        {
+                            new NameProperty("sScriptTag", script),
+                            new NoneProperty()
+                        }));
                     }
                 }
                 if (newscriptList.Count > 0)
                 {
                     conv.BioConvo.AddOrReplaceProp(newscriptList);
+                }
+                else
+                {
+                    conv.BioConvo.TryReplaceProp(newscriptList);
                 }
             }
             if (pushtofile)
@@ -1679,9 +1636,9 @@ namespace ME3Explorer.Dialogue_Editor
                 PushConvoToFile(conv);
             }
         }
-        private void SaveStageDirectionsToProperties(ConversationExtended conv)
+        private static void SaveStageDirectionsToProperties(ConversationExtended conv)
         {
-            var aStageDirs = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_aStageDirections");
+            var aStageDirs = new ArrayProperty<StructProperty>("m_aStageDirections");
             foreach (var stageD in conv.StageDirections)
             {
                 var p = new PropertyCollection();
@@ -1707,9 +1664,9 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 return; //nothing is loaded
             }
-            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+            List<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
                                                                             x.change != PackageChange.ImportAdd &&
-                                                                            x.change != PackageChange.Names);
+                                                                            x.change != PackageChange.Names).ToList();
 
             if (SelectedConv != null && CurrentLoadedExport.ClassName != "BioConversation")
             {
@@ -1730,19 +1687,20 @@ namespace ME3Explorer.Dialogue_Editor
 
             List<int> updatedConvos = relevantUpdates.Select(x => x.index).Where(update => Pcc.getExport(update).ClassName == "BioConversation").ToList();
 
-            if (relevantUpdates.Select(x => x.index).Where(update => Pcc.getExport(update).ClassName == "FaceFXAnimSet").Any())
+            if (relevantUpdates.Select(x => x.index).Any(update => Pcc.getExport(update).ClassName == "FaceFXAnimSet"))
             {
                 FFXAnimsets.Clear(); //REBUILD ANIMSET LIST IF NEW ONES and Rerun parsing of speakers.
                 foreach (var exp in Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAnimSet"))
                 {
                     FFXAnimsets.Add(exp);
                 }
-                updatedConvos.Add(SelectedConv.Export.Index);
+
+                if (SelectedConv != null) updatedConvos.Add(SelectedConv.Export.Index);
             }
 
             if (SelectedDialogueNode != null) //Update any changes to live dialogue node
             {
-                if (relevantUpdates.Select(x => x.index).Where(update => Pcc.getExport(update) == SelectedDialogueNode.Interpdata).Any())
+                if (relevantUpdates.Select(x => x.index).Any(update => Pcc.getExport(update) == SelectedDialogueNode.Interpdata))
                 {
                     if (SelectedDialogueNode.Interpdata.ClassName == "Interpdata") //If changed??
                     {
@@ -1766,7 +1724,7 @@ namespace ME3Explorer.Dialogue_Editor
             foreach (var uxp in updatedConvos)
             {
                 var exp = Pcc.getExport(uxp);
-                int index = Conversations.FindIndex(i => i.ExportUID == exp.UIndex);  //Can remove this nested loop?  How?
+                int index = Conversations.FindIndex(i => i.ExportUID == exp.UIndex);
                 Conversations.RemoveAt(index);
                 Conversations.Insert(index, new ConversationExtended(exp.UIndex, exp.ObjectName, exp.GetProperties(), exp, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<StageDirection>()));
             }
@@ -1789,7 +1747,7 @@ namespace ME3Explorer.Dialogue_Editor
             if (sender == null || SelectedConv == null || SelectedDialogueNode == null)
                 return;
 
-            var diagnode = sender as DialogueNodeExtended;  //THIS IS A GATE TO CHECK IF VALUES HAVE CHANGED
+            var diagnode = (DialogueNodeExtended)sender;  //THIS IS A GATE TO CHECK IF VALUES HAVE CHANGED
             var newvalue = diagnode.GetType().GetProperty(e.PropertyName).GetValue(diagnode, null);
             var oldvalue = MirrorDialogueNode.GetType().GetProperty(e.PropertyName).GetValue(MirrorDialogueNode, null);
             if (newvalue.ToString() == oldvalue.ToString())
@@ -1928,7 +1886,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private readonly List<Button> RecentButtons = new List<Button>();
         public List<string> RFiles;
-        private readonly string RECENTFILES_FILE = "RECENTFILES";
+        private const string RECENTFILES_FILE = "RECENTFILES";
 
         private void LoadRecentList()
         {
@@ -1936,7 +1894,7 @@ namespace ME3Explorer.Dialogue_Editor
             Recents_MenuItem.IsEnabled = false;
             RFiles = new List<string>();
             RFiles.Clear();
-            string path = DialogueEditorDataFolder + RECENTFILES_FILE;
+            string path = Path.Combine(DialogueEditorDataFolder, RECENTFILES_FILE);
             if (File.Exists(path))
             {
                 string[] recents = File.ReadAllLines(path);
@@ -1959,7 +1917,7 @@ namespace ME3Explorer.Dialogue_Editor
                 Directory.CreateDirectory(DialogueEditorDataFolder);
             }
 
-            string path = DialogueEditorDataFolder + RECENTFILES_FILE;
+            string path = Path.Combine(DialogueEditorDataFolder, RECENTFILES_FILE);
             if (File.Exists(path))
                 File.Delete(path);
             File.WriteAllLines(path, RFiles);
@@ -1996,7 +1954,7 @@ namespace ME3Explorer.Dialogue_Editor
             int i = 0;
             foreach (string filepath in RFiles)
             {
-                MenuItem fr = new MenuItem()
+                MenuItem fr = new MenuItem
                 {
                     Header = filepath.Replace("_", "__"),
                     Tag = filepath
@@ -2102,8 +2060,7 @@ namespace ME3Explorer.Dialogue_Editor
             float y = 0;
             int ecnt = SelectedConv.EntryList.Count;
             int rcnt = SelectedConv.ReplyList.Count;
-            int[] m = { ecnt, rcnt };
-            int max = m.Max();
+            int max = Math.Max(ecnt, rcnt);
             var startlist = new Dictionary<int, int>(SelectedConv.StartingList); //Dictionary (Key = position on list, value = outlink)
             for (int n = 0; n < max; n++)
             {
@@ -2116,7 +2073,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 if (n < ecnt)
                 {
-                    CurrentObjects.Add(new DiagNodeEntry(this, SelectedConv.EntryList[n], Pcc.Game, x, y, graphEditor));
+                    CurrentObjects.Add(new DiagNodeEntry(this, SelectedConv.EntryList[n], x, y, graphEditor));
                 }
 
                 if (n < rcnt)
@@ -2141,22 +2098,17 @@ namespace ME3Explorer.Dialogue_Editor
                     obj.CreateConnections(CurrentObjects);
                 }
 
-                for (int i = 0; i < CurrentObjects.Count; i++)
+                foreach (DObj obj in CurrentObjects)
                 {
-                    DObj obj = CurrentObjects[i];
-
                     //SAVED DATA
                     SaveData savedInfo = new SaveData(-1);
                     if (SavedPositions.Any() && LayoutMode != 2)
                     {
-                        if (RefOrRefChild)
-                            savedInfo = SavedPositions.FirstOrDefault(p => i == p.index);
-                        else
-                            savedInfo = SavedPositions.FirstOrDefault(p => obj.NodeUID == p.index);
+                        DObj obj1 = obj;
+                        savedInfo = SavedPositions.FirstOrDefault(p => obj1.NodeUID == p.index);
                     }
 
-                    bool hasSavedPosition =
-                        savedInfo.index == (RefOrRefChild ? i : obj.NodeUID);
+                    bool hasSavedPosition = savedInfo.index == obj.NodeUID;
                     if (hasSavedPosition)
                     {
                         obj.Layout(savedInfo.X, savedInfo.Y);
@@ -2165,9 +2117,8 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         switch (obj)
                         {
-                            case DStart _:
-                                DStart dstart = obj as DStart;
-                                float ystart = (dstart.StartNumber * 127);
+                            case DStart dStart:
+                                float ystart = dStart.StartNumber * 127;
                                 obj.Layout(0, ystart);
                                 //StartPoDStarts += obj.Height + 20;
                                 break;
@@ -2219,7 +2170,6 @@ namespace ME3Explorer.Dialogue_Editor
                 if (ShowLinesOnTop_MenuItem.IsChecked)
                     VERTICAL_SPACING = 45;
 
-                var layoutobjects = CurrentObjects.OrderBy(o => o.NodeUID);
                 var layoutEntries = new Queue<DiagNodeEntry>();
                 var layoutReplies = new Queue<DiagNodeReply>();
                 var layoutStarts = new ObservableCollectionExtended<DStart>();
@@ -2227,14 +2177,14 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     switch (obj)
                     {
-                        case DStart _:
-                            layoutStarts.Add(obj as DStart);
+                        case DStart dStart:
+                            layoutStarts.Add(dStart);
                             break;
-                        case DiagNodeReply _:
-                            layoutReplies.Enqueue(obj as DiagNodeReply);
+                        case DiagNodeReply diagNodeReply:
+                            layoutReplies.Enqueue(diagNodeReply);
                             break;
-                        case DiagNodeEntry _:
-                            layoutEntries.Enqueue(obj as DiagNodeEntry);
+                        case DiagNodeEntry diagNodeEntry:
+                            layoutEntries.Enqueue(diagNodeEntry);
                             break;
                     }
                 }
@@ -2305,10 +2255,9 @@ namespace ME3Explorer.Dialogue_Editor
             const float WATERFALL_SPACING = 40;
             const float ROW_SPACING = 200;
             var visitedNodes = new HashSet<int>();
-            var startNodes = CurrentObjects.OfType<DStart>().ToList();
-            var allNodes = CurrentObjects.OfType<DiagNode>().OrderBy(n => n.NodeUID).ToList();
-            DiagNode nextNode = null;
-            var BranchQueue = new Queue<KeyValuePair<DiagNode, int>>();
+            List<DStart> startNodes = CurrentObjects.OfType<DStart>().ToList();
+            List<DiagNode> allNodes = CurrentObjects.OfType<DiagNode>().OrderBy(n => n.NodeUID).ToList();
+            var BranchQueue = new Queue<DiagNode>();
 
             //TAKE First Start - use to get first stack of columns
             //add to first layer until end. any other branches add to branch stack LIFO to create second etc layer.
@@ -2332,7 +2281,7 @@ namespace ME3Explorer.Dialogue_Editor
                     firstNode.SetOffset(0, maxStartrow * ROW_SPACING + rowShift);
                     startNodes.Remove(firstNode);
                     visitedNodes.Add(firstNode.NodeUID);
-                    nextNode = allNodes.FirstOrDefault(x => x.NodeUID == firstNode.StartNumber);
+                    DiagNode nextNode = allNodes.FirstOrDefault(x => x.NodeUID == firstNode.StartNumber);
                     if (nextNode != null && !visitedNodes.Contains(nextNode.NodeUID))
                     {
                         while (!(nextNode == null && BranchQueue.IsEmpty()))
@@ -2389,7 +2338,7 @@ namespace ME3Explorer.Dialogue_Editor
                                             var pushqueue = allNodes.FirstOrDefault(x => x.NodeUID == thisNode.Links[i].Index + r);
                                             if (pushqueue != null) //means link to visited node.  Don't add to Branchstack.
                                             {
-                                                BranchQueue.Enqueue(new KeyValuePair<DiagNode, int>(pushqueue, pushqueue.NodeUID));
+                                                BranchQueue.Enqueue(pushqueue);
                                             }
                                         }
                                     }
@@ -2397,9 +2346,8 @@ namespace ME3Explorer.Dialogue_Editor
                             }
                             else if (!BranchQueue.IsEmpty())//REACHED END OF BRANCH PULL nextNode from STACK
                             {
-                                var branchpair = BranchQueue.Dequeue();
-                                nextNode = branchpair.Key;
-                                if (visitedNodes.Contains(branchpair.Value)) //if nextnode is already up, make sure stack is pulled again without moving down.
+                                nextNode = BranchQueue.Dequeue();
+                                if (visitedNodes.Contains(nextNode.NodeUID)) //if nextnode is already up, make sure stack is pulled again without moving down.
                                 {
                                     nextNode = null;
                                 }
@@ -2451,10 +2399,9 @@ namespace ME3Explorer.Dialogue_Editor
             const float WATERFALL_SPACING = 40;
             const float ROW_SPACING = 200;
             var visitedNodes = new HashSet<int>();
-            var startNodes = CurrentObjects.OfType<DStart>().ToList();
-            var allNodes = CurrentObjects.OfType<DiagNode>().OrderBy(n => n.NodeUID).ToList();
-            DiagNode nextNode = null;
-            var BranchStack = new Stack<KeyValuePair<DiagNode, int>>();
+            List<DStart> startNodes = CurrentObjects.OfType<DStart>().ToList();
+            List<DiagNode> allNodes = CurrentObjects.OfType<DiagNode>().OrderBy(n => n.NodeUID).ToList();
+            var BranchStack = new Stack<(DiagNode node, int column)>();
 
             //TAKE First Start - use to get first layer of waterfall.
             //add to first layer until end. any other branches add to branch stack LIFO to create second etc layer.
@@ -2480,7 +2427,7 @@ namespace ME3Explorer.Dialogue_Editor
                     maxrow++;
                     startNodes.Remove(firstNode);
                     visitedNodes.Add(firstNode.NodeUID);
-                    nextNode = allNodes.FirstOrDefault(x => x.NodeUID == firstNode.StartNumber);
+                    DiagNode nextNode = allNodes.FirstOrDefault(x => x.NodeUID == firstNode.StartNumber);
                     if (nextNode != null && !visitedNodes.Contains(nextNode.NodeUID))
                     {
                         while (!(nextNode == null && BranchStack.IsEmpty()))
@@ -2511,7 +2458,7 @@ namespace ME3Explorer.Dialogue_Editor
                                             var pushstack = allNodes.FirstOrDefault(x => x.NodeUID == thisNode.Links[i].Index + r);
                                             if(pushstack != null) //means link to visited node.  Don't add to Branchstack.
                                             {
-                                                BranchStack.Push(new KeyValuePair<DiagNode, int>(pushstack, columnAt));
+                                                BranchStack.Push((pushstack, columnAt));
                                             }
                                         }
                                     }
@@ -2519,10 +2466,9 @@ namespace ME3Explorer.Dialogue_Editor
                             }
                             else if(!BranchStack.IsEmpty())//REACHED END OF BRANCH PULL nextNode from STACK
                             {
-                                var branchpair = BranchStack.Pop();
-                                nextNode = branchpair.Key;
-                                columnAt = branchpair.Value;
-                                if(visitedNodes.Contains(branchpair.Key.NodeUID)) //if nextnode is already up, make sure stack is pulled again without moving down.
+                                (nextNode, columnAt) = BranchStack.Pop();
+
+                                if(visitedNodes.Contains(nextNode.NodeUID)) //if nextnode is already up, make sure stack is pulled again without moving down.
                                 {
                                     nextNode = null;
                                 }
@@ -2551,7 +2497,7 @@ namespace ME3Explorer.Dialogue_Editor
                             obj.SetOffset(1 * COLUMN_SPACING, orphanrowEntry * ROW_SPACING);
                             orphanrowEntry++;
                         }
-                      }
+                    }
                     break;
                 }
             }
@@ -2628,11 +2574,11 @@ namespace ME3Explorer.Dialogue_Editor
         /// <summary>
         /// Sets UI to 0 = Convo (default), 1=Speakers, 2=Node.
         /// </summary>
-        private int SetUIMode(int mode, Boolean force = false)
+        private void SetUIMode(int mode, bool force = false)
         {
             if (mode == CurrentUIMode && !force)
             {
-                return CurrentUIMode;
+                return;
             }
             CurrentUIMode = mode;
 
@@ -2657,15 +2603,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             }
 
-            if (Pcc.Game == MEGame.ME3)
-            {
-                StageDirections_Expander.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                StageDirections_Expander.Visibility = Visibility.Collapsed;
-            }
-            return CurrentUIMode;
+            StageDirections_Expander.Visibility = Pcc.Game == MEGame.ME3 ? Visibility.Visible : Visibility.Collapsed;
         }
         private void ListBox_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -2709,8 +2647,8 @@ namespace ME3Explorer.Dialogue_Editor
                 graphEditor.Enabled = false;
                 graphEditor.UseWaitCursor = true;
                 var nconv = Conversations[Conversations_ListBox.SelectedIndex];
-                SelectedConv = new ConversationExtended(nconv.ExportUID, nconv.ConvName, nconv.BioConvo, nconv.Export, nconv.IsParsed, nconv.IsFirstParsed, nconv.StartingList, nconv.Speakers, nconv.EntryList, nconv.ReplyList, nconv.StageDirections, nconv.WwiseBank, nconv.Sequence, nconv.NonSpkrFFX, nconv.ScriptList); ;
-                CurrentLoadedExport = CurrentConvoPackage.getUExport(SelectedConv.ExportUID);
+                SelectedConv = new ConversationExtended(nconv);
+                CurrentLoadedExport = SelectedConv.Export;
                 SetupConvJSON(CurrentLoadedExport);
                 if (Pcc.Game == MEGame.ME1)
                 {
@@ -2758,7 +2696,6 @@ namespace ME3Explorer.Dialogue_Editor
         private void SetupConvJSON(IExportEntry export)
         {
             string objectName = Regex.Replace(export.ObjectName, @"[<>:""/\\|?*]", "");
-            string packageFullName = export.PackageFullName;
             string viewsPath = ME3ViewsPath;
             switch (Pcc.Game)
             {
@@ -2770,7 +2707,7 @@ namespace ME3Explorer.Dialogue_Editor
                     break;
             }
 
-            JSONpath = $"{viewsPath}{CurrentFile}.#{export.Index}{objectName}.JSON";
+            JSONpath = Path.Combine(viewsPath, $"{CurrentFile}.#{export.Index}{objectName}.JSON");
         }
 
         private void Speakers_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2785,15 +2722,7 @@ namespace ME3Explorer.Dialogue_Editor
                         SelectedSpeaker.FriendlyName = GlobalFindStrRefbyID(SelectedSpeaker.StrRefID, Pcc);
                     }
 
-                    if (SelectedSpeaker.SpeakerID < 0)
-                    {
-                        TextBox_Speaker_Name.IsEnabled = false;
-                    }
-                    else
-                    {
-                        TextBox_Speaker_Name.IsEnabled = true;
-                    }
-
+                    TextBox_Speaker_Name.IsEnabled = SelectedSpeaker.SpeakerID >= 0;
                 }
                 else
                 {
@@ -2865,11 +2794,7 @@ namespace ME3Explorer.Dialogue_Editor
             if (e.Key == Key.Enter)
             {
                 var dlg = MessageBox.Show("Do you want to change this actor's tag?", "Confirm", MessageBoxButton.YesNo);
-                if (dlg == MessageBoxResult.No)
-                {
-                    return;
-                }
-                else
+                if (dlg != MessageBoxResult.No)
                 {
                     Keyboard.ClearFocus();
                     SelectedSpeakerList[Speakers_ListBox.SelectedIndex].SpeakerName = SelectedSpeaker.SpeakerName;
@@ -2926,7 +2851,7 @@ namespace ME3Explorer.Dialogue_Editor
             TextBox_Speaker_Name.Focus();
             TextBox_Speaker_Name.CaretIndex = TextBox_Speaker_Name.Text.Length;
         }
-        private int LookupTagRef(string actortag)
+        private static int LookupTagRef(string actortag)
         {
             if (!TagDBLoaded)
             {
@@ -2936,7 +2861,7 @@ namespace ME3Explorer.Dialogue_Editor
                     TagDBLoaded = true;
                 }
             }
-            var strref = ActorStrRefs.FirstOrDefault(a => a.Key.ToLower() == actortag.ToLower());
+            var strref = ActorStrRefs.FirstOrDefault(a => string.Equals(a.Key, actortag, StringComparison.CurrentCultureIgnoreCase));
             if (strref.Key != null)
             {
                 return strref.Value;
@@ -2947,13 +2872,13 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void EditBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            var editbox = sender as TextBox;
+            var editbox = (TextBox)sender;
             editbox.BorderThickness = new Thickness(2, 2, 2, 2);
             editbox.Background = System.Windows.Media.Brushes.GhostWhite;
         }
         private void EditBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            var editbox = sender as TextBox;
+            var editbox = (TextBox)sender;
             editbox.BorderThickness = new Thickness(0, 0, 0, 0);
             editbox.Background = System.Windows.Media.Brushes.White;
         }
@@ -2961,16 +2886,16 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if (e.Key == Key.Enter || e.Key == Key.Escape)
             {
-                var tbox = sender as TextBox;
+                var tbox = (TextBox)sender;
                 Keyboard.ClearFocus();
                 var be = tbox.GetBindingExpression(TextBox.TextProperty);
                 switch (e.Key)
                 {
                     case Key.Enter:
-                        if (be != null) be.UpdateSource();
+                        be?.UpdateSource();
                         break;
                     case Key.Escape:
-                        if (be != null) be.UpdateTarget();
+                        be?.UpdateTarget();
                         break;
                 }
             }
@@ -2983,8 +2908,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void Start_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var startNodes = CurrentObjects.OfType<DStart>().ToList();
-            var start = startNodes.FirstOrDefault(s => s.Order == Start_ListBox.SelectedIndex);
+            var start = CurrentObjects.OfType<DStart>().FirstOrDefault(s => s.Order == Start_ListBox.SelectedIndex);
             if (start == null)
                 return;
 
@@ -3090,23 +3014,21 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void Script_Add()
         {
-            var sdlg = new PromptDialog("Enter the new script name", "Add a script", "script name");
-            sdlg.ShowDialog();
-            if (sdlg.ResponseText == null || sdlg.ResponseText == "script name")
-                return;
-            Pcc.FindNameOrAdd(sdlg.ResponseText);
-            SelectedConv.ScriptList.Add(sdlg.ResponseText);
-            SaveScriptsToProperties(SelectedConv);
+            if (NamePromptDialog.Prompt(this, "Enter the new script name", "Add a script", Pcc, out NameReference result))
+            {
+                Pcc.FindNameOrAdd(result);
+                SelectedConv.ScriptList.Add(result);
+                SaveScriptsToProperties(SelectedConv);
+            }
         }
         private void Script_Delete()
         {
-            var cdlg = MessageBox.Show("Are you sure you want to delete this script reference", "Confirm", MessageBoxButton.OKCancel);
+            var cdlg = MessageBox.Show("Are you sure you want to delete this script reference?", "Confirm", MessageBoxButton.OKCancel);
             if (cdlg == MessageBoxResult.Cancel)
                 return;
-            var script2remove = Script_ListBox.SelectedItem.ToString();
+            var script2remove = (NameReference)Script_ListBox.SelectedItem;
             //CHECK IF ANY LINES REFERENCE THIS SCRIPT.
-            bool hasreferences = false;
-            hasreferences = SelectedConv.EntryList.Any(e => e.Script == script2remove);
+            bool hasreferences = SelectedConv.EntryList.Any(e => e.Script == script2remove);
             if (!hasreferences)
             {
                 hasreferences = SelectedConv.ReplyList.Any(r => r.Script == script2remove);
@@ -3119,18 +3041,6 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
             SelectedConv.ScriptList.Remove(script2remove);
-            foreach (var e in SelectedConv.EntryList)
-            {
-                var scriptidx = SelectedConv.ScriptList.FindIndex(s => s == e.Script) - 1;
-                var nScriptIndex = new IntProperty(scriptidx, "nScriptIndex");
-                e.NodeProp.Properties.AddOrReplaceProp(nScriptIndex);
-            }
-            foreach (var r in SelectedConv.ReplyList)
-            {
-                var scriptidx = SelectedConv.ScriptList.FindIndex(s => s == r.Script) - 1;
-                var nScriptIndex = new IntProperty(scriptidx, "nScriptIndex");
-                r.NodeProp.Properties.AddOrReplaceProp(nScriptIndex);
-            }
 
             SaveScriptsToProperties(SelectedConv, false);
             RecreateNodesToProperties(SelectedConv);
@@ -3226,9 +3136,11 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void DialogueNode_OpenLinkEditor(object obj)
         {
-            var linkEdDlg = new LinkEditor(this, SelectedObjects[0] as DiagNode);
-            linkEdDlg.Owner = this;
-            linkEdDlg.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            var linkEdDlg = new LinkEditor(this, SelectedObjects[0] as DiagNode)
+            {
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
             linkEdDlg.ShowDialog();
 
             if (linkEdDlg.NeedsPush)
@@ -3244,16 +3156,11 @@ namespace ME3Explorer.Dialogue_Editor
             if (command == "AddReply")
             {
                 PropertyCollection newprop = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, "BioDialogReplyNode", true);
-                var props = SelectedConv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");
-                if (props == null)
-                {
-                    props = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_ReplyList");
-                }
+                var props = SelectedConv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList") ??
+                            new ArrayProperty<StructProperty>("m_ReplyList");
                 //Set to needed defaults.
-                var EConvGUIStyles = new EnumProperty("GUI_STYLE_NONE", "EConvGUIStyles", Pcc.Game, "eGUIStyle");
-                newprop.AddOrReplaceProp(EConvGUIStyles);
-                var rtype = new EnumProperty("REPLY_STANDARD", "EReplyTypes", Pcc.Game, "ReplyType");
-                newprop.AddOrReplaceProp(rtype);
+                newprop.AddOrReplaceProp(new EnumProperty("GUI_STYLE_NONE", "EConvGUIStyles", Pcc.Game, "eGUIStyle"));
+                newprop.AddOrReplaceProp(new EnumProperty("REPLY_STANDARD", "EReplyTypes", Pcc.Game, "ReplyType"));
                 newprop.GetProp<IntProperty>("nScriptIndex").Value = -1;
                 newprop.GetProp<BoolProperty>("bFireConditional").Value = true;
                 newprop.GetProp<IntProperty>("nConditionalFunc").Value = -1;
@@ -3270,11 +3177,8 @@ namespace ME3Explorer.Dialogue_Editor
             if (command == "AddEntry")
             {
                 PropertyCollection newprop = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, "BioDialogEntryNode", true);
-                var props = SelectedConv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
-                if (props == null)
-                {
-                    props = new ArrayProperty<StructProperty>(ArrayType.Struct, "m_EntryList");
-                }
+                var props = SelectedConv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_EntryList") ??
+                            new ArrayProperty<StructProperty>("m_EntryList");
                 var EConvGUIStyles = new EnumProperty("GUI_STYLE_NONE", "EConvGUIStyles", Pcc.Game, "eGUIStyle");
                 newprop.AddOrReplaceProp(EConvGUIStyles);
                 newprop.GetProp<IntProperty>("nSpeakerIndex").Value = -1;
@@ -3294,9 +3198,7 @@ namespace ME3Explorer.Dialogue_Editor
             if (command == "CloneReply")
             {
                 int newIndex = SelectedConv.ReplyList.Count;
-                var newReply = new DialogueNodeExtended(SelectedDialogueNode);
-                newReply.NodeCount = newIndex;
-                SelectedConv.ReplyList.Add(newReply);
+                SelectedConv.ReplyList.Add(new DialogueNodeExtended(SelectedDialogueNode) { NodeCount = newIndex });
                 NoUIRefresh = true;
                 RecreateNodesToProperties(SelectedConv);
                 bool p = true;
@@ -3320,9 +3222,7 @@ namespace ME3Explorer.Dialogue_Editor
             if (command == "CloneEntry")
             {
                 int newIndex = SelectedConv.EntryList.Count;
-                var newEntry = new DialogueNodeExtended(SelectedDialogueNode);
-                newEntry.NodeCount = newIndex;
-                SelectedConv.EntryList.Add(newEntry);
+                SelectedConv.EntryList.Add(new DialogueNodeExtended(SelectedDialogueNode) { NodeCount = newIndex });
                 NoUIRefresh = true;
                 RecreateNodesToProperties(SelectedConv);
                 bool p = true;
@@ -3340,7 +3240,6 @@ namespace ME3Explorer.Dialogue_Editor
                 graphEditor.UseWaitCursor = false;
                 graphEditor.Camera.AnimateViewToCenterBounds(node.GlobalFullBounds, false, 1000);
                 graphEditor.Refresh();
-                return;
             }
         }
         private void DialogueNode_DeleteLinks(object obj)
@@ -3385,7 +3284,7 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 foreach (var entry in SelectedConv.EntryList)
                 {
-                    var newReplyLinksProp = new ArrayProperty<StructProperty>(ArrayType.Struct, "ReplyListNew");
+                    var newReplyLinksProp = new ArrayProperty<StructProperty>("ReplyListNew");
                     var oldReplyLinksProp = entry.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
                     if (oldReplyLinksProp != null)
                     {
@@ -3416,7 +3315,7 @@ namespace ME3Explorer.Dialogue_Editor
                 foreach (var reply in SelectedConv.ReplyList)
                 {
                     var oldEntryLinksProp = reply.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
-                    var newEntryLinksProp = new ArrayProperty<IntProperty>(ArrayType.Int, "EntryList");
+                    var newEntryLinksProp = new ArrayProperty<IntProperty>("EntryList");
                     if (oldEntryLinksProp != null)
                     {
                         foreach (var r in oldEntryLinksProp)
@@ -3435,10 +3334,8 @@ namespace ME3Explorer.Dialogue_Editor
                 }
 
                 var newStartList = new SortedDictionary<int, int>();
-                foreach (KeyValuePair<int, int> s in SelectedConv.StartingList)
+                foreach ((int key, int val) in SelectedConv.StartingList)
                 {
-                    int val = s.Value;
-                    int key = s.Key;
                     if (val > deleteID)
                     {
                         newStartList.Add(key, val - 1);
@@ -3463,17 +3360,17 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if (e.Key == Key.Enter || e.Key == Key.Escape)
             {
-                var tbox = sender as TextBox;
+                var tbox = (TextBox)sender;
                 Keyboard.ClearFocus();
                 var be = tbox.GetBindingExpression(TextBox.TextProperty);
                 switch (e.Key)
                 {
                     case Key.Enter:
-                        if (be != null) be.UpdateSource();
+                        be?.UpdateSource();
                         SaveStageDirectionsToProperties(SelectedConv);
                         break;
                     case Key.Escape:
-                        if (be != null) be.UpdateTarget();
+                        be?.UpdateTarget();
                         break;
                 }
             }
@@ -3607,15 +3504,13 @@ namespace ME3Explorer.Dialogue_Editor
             if (CurrentObjects.Count == 0)
                 return;
             SavedPositions = new List<SaveData>();
-            for (int i = 0; i < CurrentObjects.Count; i++)
+            foreach (DObj obj in CurrentObjects)
             {
-                DObj obj = CurrentObjects[i];
                 if (obj.Pickable)
                 {
                     SavedPositions.Add(new SaveData
                     {
-                        absoluteIndex = RefOrRefChild,
-                        index = RefOrRefChild ? i : obj.NodeUID,
+                        index = obj.NodeUID,
                         X = obj.X + obj.Offset.X,
                         Y = obj.Y + obj.Offset.Y
                     });
@@ -3714,7 +3609,7 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     if (contextMenu.GetChild("replyLinkEditContextMenu") is MenuItem editHeader)
                     {
-                        editHeader.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(DBox.replyColor.A, DBox.replyColor.R, DBox.replyColor.G, DBox.replyColor.B));
+                        editHeader.Background = new System.Windows.Media.SolidColorBrush(DObj.replyColor.ToWPFColor());
                     }
                     if (dreply.Outlinks.Any()
                      && contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
@@ -3769,7 +3664,7 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     if (contextMenu.GetChild("entryLinkEditContextMenu") is MenuItem editHeader)
                     {
-                        editHeader.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(DBox.entryColor.A, DBox.entryColor.R, DBox.entryColor.G, DBox.entryColor.B));
+                        editHeader.Background = new System.Windows.Media.SolidColorBrush(DObj.entryColor.ToWPFColor());
                     }
 
                     if (dentry.Outlinks.Any()
@@ -3950,7 +3845,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             var p = new InterpEditor();
             p.Show();
-            p.LoadPCC(Pcc.FileName);
+            p.LoadPCC(Pcc.FilePath);
             if (exportEntry.ObjectName == "InterpData")
             {
                 p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(exportEntry.Index);
@@ -4060,7 +3955,7 @@ namespace ME3Explorer.Dialogue_Editor
             string filePath = null;
             if (filename != null)  //If file is a new loaded file need to find path.
             {
-                filePath = Path.Combine(Path.GetDirectoryName(Pcc.FileName), filename);
+                filePath = Path.Combine(Path.GetDirectoryName(Pcc.FilePath), filename);
 
                 if (!File.Exists(filePath))
                 {
@@ -4093,7 +3988,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             if (filePath == null)
             {
-                filePath = Pcc.FileName;
+                filePath = Pcc.FilePath;
             }
 
             switch (tool)
@@ -4120,7 +4015,7 @@ namespace ME3Explorer.Dialogue_Editor
                     packEditor.Show();
                     if (Pcc.isUExport(export))
                     {
-                        packEditor.LoadFile(Pcc.FileName, export);
+                        packEditor.LoadFile(Pcc.FilePath, export);
                     }
                     else
                     {
@@ -4129,7 +4024,7 @@ namespace ME3Explorer.Dialogue_Editor
                     break;
                 case "SoundplorerWPF":
                     var soundplorerWPF = new Soundplorer.SoundplorerWPF();
-                    soundplorerWPF.LoadFile(Pcc.FileName);
+                    soundplorerWPF.LoadFile(Pcc.FilePath);
                     soundplorerWPF.Show();
                     if (Pcc.isUExport(export))
                     {
@@ -4164,7 +4059,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
         }
-        private void LoadTLKManager()
+        private static void LoadTLKManager()
         {
             if (!Application.Current.Windows.OfType<TlkManagerNS.TLKManagerWPF>().Any())
             {
@@ -4203,8 +4098,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void ChangeLineSize(object obj)
         {
-            string cmd = obj as string;
-            if (cmd == null)
+            if (!(obj is string cmd))
             {
                 var options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(OptionsPath));
                 cmd = ((double)options["LineTextSize"] * 10).ToString();
@@ -4236,42 +4130,42 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void ChangeLineColor(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
         {
-            var source = sender as Xceed.Wpf.Toolkit.ColorPicker;
+            var source = (Xceed.Wpf.Toolkit.ColorPicker)sender;
             var newcolor = e.NewValue.Value;
             switch (source.Name)
             {
                 case "ClrPcker_Line":
-                    DBox.lineColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DBox.lineColor = newcolor.ToWinformsColor();
                     break;
                 case "ClrPcker_ParaInt":
-                    DObj.paraintColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.paraintColor = newcolor.ToWinformsColor();;
                     break;
                 case "ClrPcker_RenInt":
-                    DObj.renintColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.renintColor = newcolor.ToWinformsColor();;
                     break;
                 case "ClrPcker_Agree":
-                    DObj.agreeColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.agreeColor = newcolor.ToWinformsColor();;
                     break;
                 case "ClrPcker_Disagree":
-                    DObj.disagreeColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.disagreeColor = newcolor.ToWinformsColor();;
                     break;
                 case "ClrPcker_Friendly":
-                    DObj.friendlyColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.friendlyColor = newcolor.ToWinformsColor();;
                     break;
                 case "ClrPcker_Hostile":
-                    DObj.hostileColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.hostileColor = newcolor.ToWinformsColor();;
                     break;
                 case "ClrPcker_EntryPen":
-                    DObj.entryPenColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.entryPenColor = newcolor.ToWinformsColor();;
                     break;
                 case "ClrPcker_ReplyPen":
-                    DObj.replyPenColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.replyPenColor = newcolor.ToWinformsColor();;
                     break;
                 case "ClrPcker_Entry":
-                    DObj.entryColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.entryColor = newcolor.ToWinformsColor();;
                     break;
                 case "ClrPcker_Reply":
-                    DObj.replyColor = Color.FromArgb(newcolor.A, newcolor.R, newcolor.G, newcolor.B);
+                    DObj.replyColor = newcolor.ToWinformsColor();;
                     break;
             }
 
@@ -4294,17 +4188,17 @@ namespace ME3Explorer.Dialogue_Editor
             DObj.entryPenColor = Color.Black;
             DObj.replyColor = Color.CadetBlue;
             DObj.replyPenColor = Color.Black;
-            ClrPcker_Line.SelectedColor = System.Windows.Media.Color.FromArgb(DBox.lineColor.A, DBox.lineColor.R, DBox.lineColor.G, DBox.lineColor.B);
-            ClrPcker_ParaInt.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.paraintColor.A, DObj.paraintColor.R, DObj.paraintColor.G, DObj.paraintColor.B);
-            ClrPcker_RenInt.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.renintColor.A, DObj.renintColor.R, DObj.renintColor.G, DObj.renintColor.B);
-            ClrPcker_Agree.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.agreeColor.A, DObj.agreeColor.R, DObj.agreeColor.G, DObj.agreeColor.B);
-            ClrPcker_Disagree.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.disagreeColor.A, DObj.disagreeColor.R, DObj.disagreeColor.G, DObj.disagreeColor.B);
-            ClrPcker_Friendly.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.friendlyColor.A, DObj.friendlyColor.R, DObj.friendlyColor.G, DObj.friendlyColor.B);
-            ClrPcker_Hostile.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.hostileColor.A, DObj.hostileColor.R, DObj.hostileColor.G, DObj.hostileColor.B);
-            ClrPcker_Entry.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.entryColor.A, DObj.entryColor.R, DObj.entryColor.G, DObj.entryColor.B);
-            ClrPcker_EntryPen.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.entryPenColor.A, DObj.entryPenColor.R, DObj.entryPenColor.G, DObj.entryPenColor.B);
-            ClrPcker_Reply.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.replyColor.A, DObj.replyColor.R, DObj.replyColor.G, DObj.replyColor.B);
-            ClrPcker_ReplyPen.SelectedColor = System.Windows.Media.Color.FromArgb(DObj.replyPenColor.A, DObj.replyPenColor.R, DObj.replyPenColor.G, DObj.replyPenColor.B);
+            ClrPcker_Line.SelectedColor = DBox.lineColor.ToWPFColor();
+            ClrPcker_ParaInt.SelectedColor = DObj.paraintColor.ToWPFColor();
+            ClrPcker_RenInt.SelectedColor = DObj.renintColor.ToWPFColor();
+            ClrPcker_Agree.SelectedColor = DObj.agreeColor.ToWPFColor();
+            ClrPcker_Disagree.SelectedColor = DObj.disagreeColor.ToWPFColor();
+            ClrPcker_Friendly.SelectedColor = DObj.friendlyColor.ToWPFColor();
+            ClrPcker_Hostile.SelectedColor = DObj.hostileColor.ToWPFColor();
+            ClrPcker_Entry.SelectedColor = DObj.entryColor.ToWPFColor();
+            ClrPcker_EntryPen.SelectedColor = DObj.entryPenColor.ToWPFColor();
+            ClrPcker_Reply.SelectedColor = DObj.replyColor.ToWPFColor();
+            ClrPcker_ReplyPen.SelectedColor = DObj.replyPenColor.ToWPFColor();
         }
 
         #endregion

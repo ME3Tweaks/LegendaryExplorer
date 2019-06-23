@@ -328,7 +328,8 @@
     <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BoolToIndexConverter.cs" />
+    <Compile Include="Dialogue Editor\DialogueObjects.cs" />
+    <Compile Include="SharedUI\Converters\BoolToIndexConverter.cs" />
     <Compile Include="CodeWriter.cs" />
     <Compile Include="Dialogue Editor\BioConversation.cs" />
     <Compile Include="Dialogue Editor\ConvGraphEditor.cs">

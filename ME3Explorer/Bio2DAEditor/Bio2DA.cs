@@ -307,7 +307,7 @@ namespace ME3Explorer
                 PropertyCollection props = new PropertyCollection();
                 if (export.ClassName == "Bio2DA")
                 {
-                    var indicies = new ArrayProperty<NameProperty>(ArrayType.Name, "m_sRowLabel");
+                    var indicies = new ArrayProperty<NameProperty>("m_sRowLabel");
                     foreach (var rowname in RowNames)
                     {
                         indicies.Add(new NameProperty { Value = rowname });
@@ -316,7 +316,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    var indices = new ArrayProperty<IntProperty>(ArrayType.Int, "m_lstRowNumbers");
+                    var indices = new ArrayProperty<IntProperty>("m_lstRowNumbers");
                     foreach (var rowname in RowNames)
                     {
                         indices.Add(new IntProperty(int.Parse(rowname)));

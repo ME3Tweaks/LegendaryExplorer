@@ -55,7 +55,7 @@ namespace ME3Explorer.Sequence_Editor
                 string nameAndIndex = path.Last();
                 string sequence = path[path.Length - 2];
                 string packageName = args[1].Trim('(', ')').ToLower();
-                if (Pcc == null || Path.GetFileNameWithoutExtension(Pcc.FileName).ToLower() == packageName)
+                if (Pcc == null || Path.GetFileNameWithoutExtension(Pcc.FilePath).ToLower() == packageName)
                 {
                     if (int.TryParse(nameAndIndex.Substring(nameAndIndex.LastIndexOf('_') + 1), out int nameIndex))
                     {

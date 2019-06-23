@@ -95,7 +95,7 @@ namespace ME3Explorer.Packages
 
         private static void Package_noLongerUsed(MEPackage sender)
         {
-            var package = sender.FileName;
+            var package = sender.FilePath;
             if (Path.GetFileNameWithoutExtension(package) != "Core") //Keep Core loaded as it is very often referenced
             {
                 openPackages.TryRemove(package, out IMEPackage _);

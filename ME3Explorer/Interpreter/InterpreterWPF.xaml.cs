@@ -245,7 +245,7 @@ namespace ME3Explorer
                 IExportEntry export = Pcc.getUExport(op.Value);
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export)
                 {
-                    Title = $"Interpreter - {export.UIndex} {export.GetInstancedFullPath} - {Pcc.FileName}"
+                    Title = $"Interpreter - {export.UIndex} {export.GetInstancedFullPath} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }
@@ -439,7 +439,7 @@ namespace ME3Explorer
                         newProperty = new StrProperty("", propName);
                         break;
                     case PropertyType.ArrayProperty:
-                        newProperty = new ArrayProperty<IntProperty>(ArrayType.Int, propName); //We can just set it to int as it will be reparsed and resolved.
+                        newProperty = new ArrayProperty<IntProperty>(propName); //We can just set it to int as it will be reparsed and resolved.
                         break;
                     case PropertyType.NameProperty:
                         newProperty = new NameProperty(propName) { Value = "None" };
@@ -1574,7 +1574,7 @@ namespace ME3Explorer
                         if (index == -1)
                         {
                             //couldn't find name
-                            if (MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(Pcc.FileName)} does not contain the Name: {input}\nWould you like to add it to the Name list?", "Name not found", MessageBoxButton.YesNo))
+                            if (MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(Pcc.FilePath)} does not contain the Name: {input}\nWould you like to add it to the Name list?", "Name not found", MessageBoxButton.YesNo))
                             {
                                 break;
                             }
@@ -1782,7 +1782,7 @@ namespace ME3Explorer
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), CurrentLoadedExport)
                 {
-                    Title = $"Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetInstancedFullPath} - {Pcc.FileName}"
+                    Title = $"Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetInstancedFullPath} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }

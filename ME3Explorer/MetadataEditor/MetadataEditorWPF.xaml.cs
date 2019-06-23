@@ -128,7 +128,7 @@ namespace ME3Explorer.MetadataEditor
                 {
                     Height = 620,
                     Width = 780,
-                    Title = $"Metadata Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FileName}"
+                    Title = $"Metadata Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FilePath}"
                 };
                 mde.RefreshAllEntriesList(CurrentLoadedEntry.FileRef);
                 elhw.Show();

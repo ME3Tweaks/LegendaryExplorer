@@ -291,14 +291,14 @@ namespace ME3Explorer
 
         public static T MaxBy<T, R>(this IEnumerable<T> en, Func<T, R> evaluate) where R : IComparable<R>
         {
-            return en.Select(t => new Tuple<T, R>(t, evaluate(t)))
-                .Aggregate((max, next) => next.Item2.CompareTo(max.Item2) > 0 ? next : max).Item1;
+            return en.Select(t => (obj: t, key: evaluate(t)))
+                .Aggregate((max, next) => next.key.CompareTo(max.key) > 0 ? next : max).obj;
         }
 
         public static T MinBy<T, R>(this IEnumerable<T> en, Func<T, R> evaluate) where R : IComparable<R>
         {
-            return en.Select(t => new Tuple<T, R>(t, evaluate(t)))
-                .Aggregate((max, next) => next.Item2.CompareTo(max.Item2) < 0 ? next : max).Item1;
+            return en.Select(t => (obj: t, key: evaluate(t)))
+                .Aggregate((max, next) => next.key.CompareTo(max.key) < 0 ? next : max).obj;
         }
     }
 
@@ -491,6 +491,16 @@ namespace ME3Explorer
         public static FrameworkElement GetChild(this ItemsControl itemsControl, string withName)
         {
             return itemsControl.Items.OfType<FrameworkElement>().FirstOrDefault(m => m.Name == withName);
+        }
+
+        public static System.Windows.Media.Color ToWPFColor(this System.Drawing.Color color)
+        {
+            return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
+        }
+
+        public static System.Drawing.Color ToWinformsColor(this System.Windows.Media.Color color)
+        {
+            return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
     }
 
@@ -798,6 +808,10 @@ namespace ME3Explorer
         public static T[] GetValues<T>() where T : Enum
         {
             return (T[])Enum.GetValues(typeof(T));
+        }
+        public static string[] GetNames<T>() where T : Enum
+        {
+            return Enum.GetNames(typeof(T));
         }
 
         public static T Parse<T>(string val) where T : Enum

@@ -63,7 +63,7 @@ namespace ME3Explorer.Packages
         IReadOnlyList<ImportEntry> Imports { get; }
         IReadOnlyList<string> Names { get; }
         MEGame Game { get; }
-        string FileName { get; }
+        string FilePath { get; }
         DateTime LastSaved { get; }
         long FileSize { get; }
 

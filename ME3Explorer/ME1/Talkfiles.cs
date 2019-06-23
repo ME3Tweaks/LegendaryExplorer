@@ -44,7 +44,7 @@ namespace ME1Explorer
 
         public static void SaveTLKList()
         {
-            File.WriteAllText(LoadedTLKsPath, JsonConvert.SerializeObject(tlkList.Select(x => (x.uindex, x.pcc.FileName))));
+            File.WriteAllText(LoadedTLKsPath, JsonConvert.SerializeObject(tlkList.Select(x => (x.uindex, x.pcc.FilePath))));
         }
 
         public static void LoadTlkData(string fileName, int index)

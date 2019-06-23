@@ -656,7 +656,7 @@ namespace ME3Explorer.Matinee
                         addTrack(new InterpTrackColorScale(i, pcc));
                         break;
                     default:
-                        MessageBox.Show($"{pcc.Exports[i].ClassName} is not recognized.\nPlease make a bug report here: {App.BugReportURL} \nwith this information: #{i} {pcc.FileName.Substring(pcc.FileName.LastIndexOf(@"\"))}");
+                        MessageBox.Show($"{pcc.Exports[i].ClassName} is not recognized.\nPlease make a bug report here: {App.BugReportURL} \nwith this information: #{i} {pcc.FilePath.Substring(pcc.FilePath.LastIndexOf(@"\"))}");
                         break;
                 }
             }
@@ -693,7 +693,7 @@ namespace ME3Explorer.Matinee
         {
             PackageEditorWPF p = new PackageEditorWPF();
             p.Show();
-            p.LoadFile(pcc.FileName, index + 1); //To UIndex
+            p.LoadFile(pcc.FilePath, index + 1); //To UIndex
         }
 
         public void addTrack(InterpTrack t)

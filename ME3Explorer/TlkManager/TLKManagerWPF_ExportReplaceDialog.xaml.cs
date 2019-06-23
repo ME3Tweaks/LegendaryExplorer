@@ -71,7 +71,7 @@ namespace ME3Explorer.TlkManagerNS
                 ME1Package pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath);
                 var export = pcc.getUExport(tlk.exportNumber);
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditor.ME1TlkEditorWPF(), export);
-                elhw.Title = $"TLK Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FileName}";
+                elhw.Title = $"TLK Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FilePath}";
                 elhw.Show();
             }
         }

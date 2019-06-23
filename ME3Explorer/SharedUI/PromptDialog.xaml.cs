@@ -52,6 +52,7 @@ namespace ME3Explorer.SharedUI
             if (owner != null)
             {
                 inst.Owner = owner as Window ?? GetWindow(owner);
+                inst.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             }
             inst.ShowDialog();
             if (inst.DialogResult == true)

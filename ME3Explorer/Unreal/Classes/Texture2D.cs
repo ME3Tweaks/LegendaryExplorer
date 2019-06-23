@@ -210,7 +210,7 @@ namespace ME3Explorer.Unreal.Classes
                     throw new FormatException("Unknown ME3 texture format");
             }
 
-            byte[] compressedData = extractRawData(info, Path.GetDirectoryName(pccRef.FileName));
+            byte[] compressedData = extractRawData(info, Path.GetDirectoryName(pccRef.FilePath));
             Bitmap bmp = DDSImage.ToBitmap(compressedData, format, width, height);
 
             // Load the decompressed data into an array
