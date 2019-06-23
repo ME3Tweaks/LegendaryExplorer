@@ -137,6 +137,12 @@
                     <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}"/>
                     <MenuItem Header="Convenience tools" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem Header="Rebuild BioWorld StreamingLevels"  Command="{Binding RebuildStreamingLevelsCommand}" ToolTip="Updates BioWorldInfo's list of StreamingLevels to include all LevelStreamingKismet"/>
+                        <MenuItem Header="Bulk export...">
+                            <MenuItem Header="GFX/SWF files"  Command="{Binding BulkExportSWFCommand}" ToolTip="Export all GFxMovieInfo/BioSWF files in this package to a folder"/>
+                        </MenuItem>
+                        <MenuItem Header="Bulk import...">
+                            <MenuItem Header="GFX/SWF files"  Command="{Binding BulkImportSWFCommand}" ToolTip="Imports a folder of Gfx/SWF files from a folder and replaces exports matching the path by the name of the file"/>
+                        </MenuItem>
                     </MenuItem>
 
                     <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">

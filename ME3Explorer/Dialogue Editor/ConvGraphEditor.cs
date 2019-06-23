@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Data;
 using System.Diagnostics;
 using System.Windows.Forms;
-//using ME3Explorer.SequenceObjects;
 using SharpDX.Direct2D1.Effects;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
