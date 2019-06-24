@@ -19,7 +19,7 @@ namespace ME3Explorer.Unreal.Classes
 
         //Bool Properties
 
-        public bool bAnimRotationOnly = false;
+        public bool bAnimRotationOnly;
         //Array Properties
 
         public List<string> TrackBoneNames;
@@ -30,69 +30,24 @@ namespace ME3Explorer.Unreal.Classes
         public int MyIndex;
         public ME3Package pcc;
         public byte[] data;
-        public List<PropertyReader.Property> Props;
 
         public BioAnimSetData(ME3Package Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;
-            if (pcc.isExport(Index))
-                data = pcc.Exports[Index].Data;
-            Props = PropertyReader.getPropList(pcc.Exports[Index]);
-            
-            TrackBoneNames = new List<string>();
-            UseTranslationBoneNames = new List<string>();
-            foreach (PropertyReader.Property p in Props)
-                switch (pcc.getNameEntry(p.Name))
-                {
-
-                    case "bAnimRotationOnly":
-                        if (p.raw[p.raw.Length - 1] == 1)
-                            bAnimRotationOnly = true;
-                        break;
-                    case "TrackBoneNames":
-                        ReadTBN(p.raw);
-                        break;
-                    case "UseTranslationBoneNames":
-                        ReadUTBN(p.raw);
-                        break;
-                }
-        }
-
-        public void ReadTBN(byte[] raw)
-        {
-            int count = GetArrayCount(raw);
-            byte[] buff = GetArrayContent(raw);
-            for (int i = 0; i < count; i++)
-                TrackBoneNames.Add(pcc.getNameEntry(BitConverter.ToInt32(buff, i * 8)));
-        }
-
-        public void ReadUTBN(byte[] raw)
-        {
-            int count = GetArrayCount(raw);
-            byte[] buff = GetArrayContent(raw);
-            for (int i = 0; i < count; i++)
-                UseTranslationBoneNames.Add(pcc.getNameEntry(BitConverter.ToInt32(buff, i * 8)));
-        }
-
-        public int GetArrayCount(byte[] raw)
-        {
-            return BitConverter.ToInt32(raw, 24);
-        }
-
-        public byte[] GetArrayContent(byte[] raw)
-        {
-            byte[] buff = new byte[raw.Length - 28];
-            for (int i = 0; i < raw.Length - 28; i++)
-                buff[i] = raw[i + 28];
-            return buff;
+            IExportEntry export = pcc.getExport(Index);
+            data = export.Data;
+            PropertyCollection props = export.GetProperties();
+            bAnimRotationOnly = props.GetPropOrDefault<BoolProperty>("bAnimRotationOnly").Value;
+            TrackBoneNames = props.GetPropOrDefault<ArrayProperty<NameProperty>>("TrackBoneNames").Select(n => n.Value.InstancedString).ToList();
+            UseTranslationBoneNames = props.GetPropOrDefault<ArrayProperty<NameProperty>>("UseTranslationBoneNames").Select(n => n.Value.InstancedString).ToList();
         }
 
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode(pcc.Exports[MyIndex].ObjectName + "(#" + MyIndex + ")");
-            res.Nodes.Add("bAnimRotationOnly : " + bAnimRotationOnly);
+            TreeNode res = new TreeNode($"{pcc.Exports[MyIndex].ObjectName}(#{MyIndex})");
+            res.Nodes.Add($"bAnimRotationOnly : {bAnimRotationOnly}");
             res.Nodes.Add(TBNToTree());
             res.Nodes.Add(UTBNToTree());
             return res;
@@ -103,7 +58,7 @@ namespace ME3Explorer.Unreal.Classes
             TreeNode res = new TreeNode("TrackBoneNames");
             int count = 0;
             foreach (string s in TrackBoneNames)
-                res.Nodes.Add((count++) + " : " + s);
+                res.Nodes.Add($"{count++} : {s}");
             return res;
         }
 
@@ -112,7 +67,7 @@ namespace ME3Explorer.Unreal.Classes
             TreeNode res = new TreeNode("UseTranslationBoneNames");
             int count = 0;
             foreach (string s in UseTranslationBoneNames)
-                res.Nodes.Add((count++) + " : " + s);
+                res.Nodes.Add($"{count++} : {s}");
             return res;
         }
 

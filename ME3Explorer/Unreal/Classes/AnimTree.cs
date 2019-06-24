@@ -50,154 +50,43 @@ namespace ME3Explorer.Unreal.Classes
 
         #endregion
         
-        public int MyIndex;
-        public ME3Package pcc;
+        public IExportEntry Export;
+        public IMEPackage pcc;
         public byte[] data;
-        public List<PropertyReader.Property> Props;
 
-        public AnimTree(ME3Package Pcc, int Index)
+        public AnimTree(IExportEntry export)
         {
-            pcc = Pcc;
-            MyIndex = Index;
-            if (pcc.isExport(Index))
-                data = pcc.Exports[Index].Data;
-            Props = PropertyReader.getPropList(pcc.Exports[Index]);
-            
-            AnimGroups = new List<AnimGroupEntry>();
-            ComposePrePassBoneNames = new List<string>();
-            SkelControlLists = new List<SkelControlListEntry>();
-            Children = new List<ChildrenEntry>();
-            
-            foreach (PropertyReader.Property p in Props)
-                switch (pcc.getNameEntry(p.Name))
-                {
+            pcc = export.FileRef;
+            Export = export;
+            data = export.Data;
 
-                    case "NodeTotalWeight":
-                        NodeTotalWeight = BitConverter.ToSingle(p.raw, p.raw.Length - 4);
-                        break;
-                    case "AnimGroups":
-                        ReadAnimGroups(p.raw);
-                        break;
-                    case "ComposePrePassBoneNames":
-                        ReadPrePassBoneNames(p.raw);
-                        break;
-                    case "SkelControlLists":
-                        ReadSkelControlLists(p.raw);
-                        break;
-                    case "Children":
-                        ReadChildren(p.raw);
-                        break;
-                }
-        }
-
-        public void ReadAnimGroups(byte[] raw)
-        {
-            int count = GetArrayCount(raw);
-            byte[] buff = GetArrayContent(raw);
-            int pos = 0;
-            for (int i = 0; i < count; i++)
+            PropertyCollection props = export.GetProperties();
+            NodeTotalWeight = props.GetPropOrDefault<FloatProperty>("NodeTotalWeight").Value;
+            ComposePrePassBoneNames = props.GetPropOrDefault<ArrayProperty<NameProperty>>("ComposePrePassBoneNames").Select(n => n.Value.InstancedString).ToList();
+            AnimGroups = props.GetPropOrDefault<ArrayProperty<StructProperty>>("AnimGroups").Select(prop => new AnimGroupEntry
             {
-                List<PropertyReader.Property> pp = PropertyReader.ReadProp(pcc, buff, pos);
-                pos = pp[pp.Count - 1].offend;
-                AnimGroupEntry e = new AnimGroupEntry();
-                foreach(PropertyReader.Property p in pp)
-                    switch (pcc.getNameEntry(p.Name))
-                    {
-                        case "GroupName":
-                            e.GroupName = pcc.getNameEntry(p.Value.IntValue);
-                            break;
-                        case "RateScale":
-                            e.RateScale = BitConverter.ToSingle(p.raw, p.raw.Length - 4);
-                            break;
-                        case "SynchPctPosition":
-                            e.SynchPctPosition = BitConverter.ToSingle(p.raw, p.raw.Length - 4);
-                            break;                        
-                    }
-                AnimGroups.Add(e);
-            }
-        }
-
-        public void ReadPrePassBoneNames(byte[] raw)
-        {
-            int count = GetArrayCount(raw);
-            byte[] buff = GetArrayContent(raw);
-            for (int i = 0; i < count; i++)
-                ComposePrePassBoneNames.Add(pcc.getNameEntry(BitConverter.ToInt32(buff, i * 8)));
-        }
-
-        public void ReadSkelControlLists(byte[] raw)
-        {
-            int count = GetArrayCount(raw);
-            byte[] buff = GetArrayContent(raw);
-            int pos = 0;
-            for (int i = 0; i < count; i++)
+                GroupName = prop.GetPropOrDefault<NameProperty>("GroupName").Value.InstancedString,
+                RateScale = prop.GetPropOrDefault<FloatProperty>("RateScale").Value,
+                SynchPctPosition = prop.GetPropOrDefault<FloatProperty>("SynchPctPosition").Value
+            }).ToList();
+            SkelControlLists = props.GetPropOrDefault<ArrayProperty<StructProperty>>("SkelControlLists").Select(prop => new SkelControlListEntry
             {
-                List<PropertyReader.Property> pp = PropertyReader.ReadProp(pcc, buff, pos);
-                pos = pp[pp.Count - 1].offend;
-                SkelControlListEntry e = new SkelControlListEntry();
-                foreach (PropertyReader.Property p in pp)
-                    switch (pcc.getNameEntry(p.Name))
-                    {
-                        case "BoneName":
-                            e.BoneName = pcc.getNameEntry(p.Value.IntValue);
-                            break;
-                        case "ControlHead":
-                            e.ControlHead = p.Value.IntValue;
-                            break;
-                    }
-                SkelControlLists.Add(e);
-            }
-        }
-
-        public void ReadChildren(byte[] raw)
-        {
-            int count = GetArrayCount(raw);
-            byte[] buff = GetArrayContent(raw);
-            int pos = 0;
-            for (int i = 0; i < count; i++)
+                BoneName = prop.GetPropOrDefault<NameProperty>("BoneName").Value.InstancedString,
+                ControlHead = prop.GetPropOrDefault<ObjectProperty>("ControlHead").Value
+            }).ToList();
+            Children = props.GetPropOrDefault<ArrayProperty<StructProperty>>("Children").Select(prop => new ChildrenEntry
             {
-                List<PropertyReader.Property> pp = PropertyReader.ReadProp(pcc, buff, pos);
-                pos = pp[pp.Count - 1].offend;
-                ChildrenEntry e = new ChildrenEntry();
-                foreach (PropertyReader.Property p in pp)
-                    switch (pcc.getNameEntry(p.Name))
-                    {
-                        case "Name":
-                            e.Name = pcc.getNameEntry(p.Value.IntValue);
-                            break;
-                        case "Weight":
-                            e.Weight = BitConverter.ToSingle(p.raw, p.raw.Length - 4);
-                            break;
-                        case "Anim":
-                            e.Anim = p.Value.IntValue;
-                            break;
-                        case "bMirrorSkeleton":
-                            e.bMirrorSkeleton = (p.raw[p.raw.Length - 1] == 1);
-                            break;
-                        case "bIsAdditive":
-                            e.bIsAdditive = (p.raw[p.raw.Length - 1] == 1);
-                            break;
-                    }
-                Children.Add(e);
-            }
-        }
-
-        public int GetArrayCount(byte[] raw)
-        {
-            return BitConverter.ToInt32(raw, 24);
-        }
-
-        public byte[] GetArrayContent(byte[] raw)
-        {
-            byte[] buff = new byte[raw.Length - 28];
-            for (int i = 0; i < raw.Length - 28; i++)
-                buff[i] = raw[i + 28];
-            return buff;
+                Name = prop.GetPropOrDefault<NameProperty>("Name").Value.InstancedString,
+                Weight = prop.GetPropOrDefault<FloatProperty>("Weight").Value,
+                Anim = prop.GetPropOrDefault<ObjectProperty>("Anim").Value,
+                bIsAdditive = prop.GetPropOrDefault<BoolProperty>("bIsAdditive").Value,
+                bMirrorSkeleton = prop.GetPropOrDefault<BoolProperty>("bMirrorSkeleton").Value
+            }).ToList();
         }
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode("AnimTree : " + pcc.Exports[MyIndex].ObjectName + "(#" + MyIndex + ")");
+            TreeNode res = new TreeNode($"AnimTree : {Export.ObjectName}(#{Export.UIndex})");
             res.Nodes.Add("NodeTotalWeight : " + NodeTotalWeight);
             res.Nodes.Add(AnimGroupsToTree());
             res.Nodes.Add(PrePassBoneNamesToTree());
@@ -251,11 +140,11 @@ namespace ME3Explorer.Unreal.Classes
                 t.Nodes.Add("Name : " + Children[i].Name);
                 t.Nodes.Add("Weight : " + Children[i].Weight);
                 t.Nodes.Add("Anim : " + Children[i].Anim);
-                if (pcc.isExport(idx))
-                    switch (pcc.Exports[idx].ClassName)
+                if (pcc.isUExport(idx))
+                    switch (pcc.getUExport(idx).ClassName)
                     {
                         case "AnimNodeSlot":
-                            AnimNodeSlot ans = new AnimNodeSlot(pcc, idx);
+                            AnimNodeSlot ans = new AnimNodeSlot(pcc.getUExport(idx));
                             t.Nodes.Add(ans.ToTree());
                             break;
                     }

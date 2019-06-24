@@ -1515,13 +1515,13 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         if (Pcc.Game == MEGame.ME3)
                         {
-                            m_aSpeakerList.Add(new NameProperty("m_aSpeakerList", spkr.SpeakerName));
+                            m_aSpeakerList.Add(new NameProperty(spkr.SpeakerName, "m_aSpeakerList"));
                         }
                         else
                         {
                             m_SpeakerList.Add(new StructProperty("BioDialogSpeaker", new PropertyCollection
                             {
-                                new NameProperty("sSpeakerTag", spkr.SpeakerName),
+                                new NameProperty(spkr.SpeakerName, "sSpeakerTag"),
                                 new NoneProperty()
                             }));
                         }
@@ -1618,7 +1618,7 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     if (script.Name != "None")
                     {
-                        newscriptList.Add(new NameProperty("m_aScriptList", script));
+                        newscriptList.Add(new NameProperty(script, "m_aScriptList"));
                     }
                 }
                 if (newscriptList.Count > 0)
@@ -1639,7 +1639,7 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         newscriptList.Add(new StructProperty("BioDialogScript", new PropertyCollection
                         {
-                            new NameProperty("sScriptTag", script),
+                            new NameProperty(script, "sScriptTag"),
                             new NoneProperty()
                         }));
                     }

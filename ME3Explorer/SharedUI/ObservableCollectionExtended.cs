@@ -47,6 +47,7 @@ namespace ME3Explorer.SharedUI
         public void RemoveRange(IEnumerable<T> collection)
         {
             if (collection == null) throw new ArgumentNullException(nameof(collection));
+            // ReSharper disable once PossibleUnintendedReferenceComparison
             if (collection == Items) throw new Exception("Cannot remove range of same collection");
             int oldcount = Count;
             //Todo: catch reachspec crash when changing size
@@ -78,7 +79,7 @@ namespace ME3Explorer.SharedUI
         /// </summary> 
         public void Replace(T item)
         {
-            ReplaceAll(new T[] { item });
+            ReplaceAll(new[] { item });
         }
 
         /// <summary> 
@@ -150,8 +151,7 @@ namespace ME3Explorer.SharedUI
         /// <summary> 
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class. 
         /// </summary> 
-        public ObservableCollectionExtended()
-            : base() { }
+        public ObservableCollectionExtended() { }
 
         /// <summary> 
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class that contains elements copied from the specified collection. 

@@ -10,7 +10,7 @@ using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
-    public abstract class ExportEntry : NotifyPropertyChangedBase, IEntry
+    public abstract class ExportEntry : NotifyPropertyChangedBase, IExportEntry
     {
         public IMEPackage FileRef { get; protected set; }
 
@@ -572,10 +572,12 @@ namespace ME3Explorer.Packages
         {
             this.Data = _data.Take(propsEnd()).Concat(binaryData).ToArray();
         }
+
+        public abstract IExportEntry Clone();
     }
 
     [DebuggerDisplay("UDKExportEntry | {UIndex} = {GetFullPath}")]
-    public class UDKExportEntry : ExportEntry, IExportEntry
+    public class UDKExportEntry : ExportEntry
     {
         public UDKExportEntry(UDKPackage udkFile, Stream stream) : base(udkFile)
         {
@@ -594,7 +596,7 @@ namespace ME3Explorer.Packages
             stream.Seek(headerEnd, SeekOrigin.Begin);
             if (HasStack)
             {
-                ReadsFromConfig = (Data[25] & 64) != 0;
+                ReadsFromConfig = (_data[25] & 64) != 0;
             }
             else
             {
@@ -606,7 +608,7 @@ namespace ME3Explorer.Packages
         {
         }
 
-        public IExportEntry Clone()
+        public override IExportEntry Clone()
         {
             UDKExportEntry newExport = new UDKExportEntry(FileRef as UDKPackage)
             {
@@ -630,7 +632,7 @@ namespace ME3Explorer.Packages
     }
 
     [DebuggerDisplay("ME3ExportEntry | {UIndex} = {GetFullPath}")]
-    public class ME3ExportEntry : ExportEntry, IExportEntry
+    public class ME3ExportEntry : ExportEntry
     {
         public ME3ExportEntry(ME3Package pccFile, Stream stream) : base(pccFile)
         {
@@ -649,7 +651,7 @@ namespace ME3Explorer.Packages
             stream.Seek(headerEnd, SeekOrigin.Begin);
             if (HasStack)
             {
-                ReadsFromConfig = (Data[25] & 64) != 0;
+                ReadsFromConfig = (_data[25] & 64) != 0;
             }
             else
             {
@@ -661,7 +663,7 @@ namespace ME3Explorer.Packages
         {
         }
 
-        public IExportEntry Clone()
+        public override IExportEntry Clone()
         {
             ME3ExportEntry newExport = new ME3ExportEntry(FileRef as ME3Package)
             {
@@ -685,7 +687,7 @@ namespace ME3Explorer.Packages
     }
 
     [DebuggerDisplay("ME2ExportEntry | {UIndex} = {GetFullPath}")]
-    public class ME2ExportEntry : ExportEntry, IExportEntry
+    public class ME2ExportEntry : ExportEntry
     {
         public ME2ExportEntry(ME2Package pccFile, Stream stream) : base(pccFile)
         {
@@ -711,7 +713,7 @@ namespace ME3Explorer.Packages
             stream.Seek(end, SeekOrigin.Begin);
             if (HasStack)
             {
-                ReadsFromConfig = (Data[25] & 64) != 0;
+                ReadsFromConfig = (_data[25] & 64) != 0;
             }
             else
             {
@@ -723,7 +725,7 @@ namespace ME3Explorer.Packages
         {
         }
 
-        public IExportEntry Clone()
+        public override IExportEntry Clone()
         {
             ME2ExportEntry newExport = new ME2ExportEntry(FileRef as ME2Package)
             {
@@ -747,7 +749,7 @@ namespace ME3Explorer.Packages
     }
 
     [DebuggerDisplay("ME1ExportEntry | {UIndex} = {GetFullPath}")]
-    public class ME1ExportEntry : ExportEntry, IExportEntry
+    public class ME1ExportEntry : ExportEntry
     {
         public ME1ExportEntry(ME1Package pccFile, Stream stream) : base(pccFile)
         {
@@ -773,7 +775,7 @@ namespace ME3Explorer.Packages
             stream.Seek(end, SeekOrigin.Begin);
             if (ClassName.Contains("Property"))
             {
-                ReadsFromConfig = Data.Length > 25 && (Data[25] & 64) != 0;
+                ReadsFromConfig = _data.Length > 25 && (_data[25] & 64) != 0;
             }
             else
             {
@@ -785,7 +787,7 @@ namespace ME3Explorer.Packages
         {
         }
 
-        public IExportEntry Clone()
+        public override IExportEntry Clone()
         {
             ME1ExportEntry newExport = new ME1ExportEntry(FileRef as ME1Package)
             {

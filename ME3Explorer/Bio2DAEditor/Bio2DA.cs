@@ -328,7 +328,7 @@ namespace ME3Explorer
                     var indicies = new ArrayProperty<NameProperty>("m_sRowLabel");
                     foreach (var rowname in RowNames)
                     {
-                        indicies.Add(new NameProperty { Value = rowname });
+                        indicies.Add(new NameProperty(rowname));
                     }
                     props.Add(indicies);
                 }
