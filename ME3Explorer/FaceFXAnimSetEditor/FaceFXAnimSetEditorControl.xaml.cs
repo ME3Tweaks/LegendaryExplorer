@@ -122,7 +122,7 @@ namespace ME3Explorer.FaceFX
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new FaceFXAnimSetEditorControl(), CurrentLoadedExport)
                 {
-                    Title = $"FaceFX - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {Pcc.FileName}"
+                    Title = $"FaceFX - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }

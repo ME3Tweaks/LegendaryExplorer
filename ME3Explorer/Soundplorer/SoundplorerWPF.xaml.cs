@@ -492,12 +492,12 @@ namespace ME3Explorer.Soundplorer
         private void GetStreamTimes_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
             IsBusyTaskbar = true; //enforce spinner
-            TaskbarText = "Parsing " + System.IO.Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc.FileName) + " (" + e.ProgressPercentage + "%)";
+            TaskbarText = "Parsing " + System.IO.Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc.FilePath) + " (" + e.ProgressPercentage + "%)";
         }
 
         private void GetStreamTimes_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
-            TaskbarText = System.IO.Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc.FileName);
+            TaskbarText = System.IO.Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc.FilePath);
             IsBusyTaskbar = false;
         }
 
@@ -509,7 +509,7 @@ namespace ME3Explorer.Soundplorer
         private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             SaveFileDialog d = new SaveFileDialog();
-            string extension = System.IO.Path.GetExtension(Pcc.FileName);
+            string extension = System.IO.Path.GetExtension(Pcc.FilePath);
             d.Filter = $"*{extension}|*{extension}";
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
@@ -1286,7 +1286,7 @@ namespace ME3Explorer.Soundplorer
         private void OpenInWwiseBankEditor_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var editor = new WwiseEditor();
-            editor.LoadFile(Pcc.FileName);
+            editor.LoadFile(Pcc.FilePath);
             editor.Show();
         }
 

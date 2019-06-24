@@ -158,7 +158,7 @@ namespace ME1Explorer.Unreal.Classes
                     data = "\"" + StringRefs[i].Data + "\"";
                     if (withFileName)
                     {
-                        data += " (" + Path.GetFileName(pcc.FileName) + " -> " + BioTlkSetName + Name + ")";
+                        data += " (" + Path.GetFileName(pcc.FilePath) + " -> " + BioTlkSetName + Name + ")";
                     }
                     break;
                 }
@@ -169,7 +169,7 @@ namespace ME1Explorer.Unreal.Classes
         #region IEquatable
         public bool Equals(TalkFile other)
         {
-            return (other?.uindex == uindex && other.pcc.FileName == pcc.FileName);
+            return (other?.uindex == uindex && other.pcc.FilePath == pcc.FilePath);
         }
 
         public override bool Equals(object obj)

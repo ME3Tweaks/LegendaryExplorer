@@ -105,11 +105,8 @@ namespace ME3Explorer
             //{
             //    sourceObjReference++; //make 0 based for mapping.
             //}
-            if (objProperty.Name != null)
-            {
-                Debug.WriteLine(debugPrefix + " Relinking:" + objProperty.Name);
-            }
-            KeyValuePair<IEntry, IEntry> mapping = crossPCCObjectMappingList.Where(pair => pair.Key.UIndex == sourceObjReference).FirstOrDefault();
+            Debug.WriteLine(debugPrefix + " Relinking:" + objProperty.Name);
+            KeyValuePair<IEntry, IEntry> mapping = crossPCCObjectMappingList.FirstOrDefault(pair => pair.Key.UIndex == sourceObjReference);
             var defaultKVP = default(KeyValuePair<IEntry, IEntry>); //struct comparison
 
             if (!mapping.Equals(defaultKVP))
@@ -828,7 +825,7 @@ namespace ME3Explorer
                         }
                         if (donorUpstreamExport == null)
                         {
-                            Debug.WriteLine("An error has occured. Could not find an upstream import or export for relinking: " + fullobjectname + " from " + importingPCC.FileName);
+                            Debug.WriteLine("An error has occured. Could not find an upstream import or export for relinking: " + fullobjectname + " from " + importingPCC.FilePath);
                             return null;
                         }
                     }

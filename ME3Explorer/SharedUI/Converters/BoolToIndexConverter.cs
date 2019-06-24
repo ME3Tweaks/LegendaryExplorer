@@ -10,17 +10,17 @@ using System.Windows.Data;
 
 namespace ME3Explorer.SharedUI.Converters
 {
-    [ValueConversion(typeof(bool), typeof(Int32))]
+    [ValueConversion(typeof(bool), typeof(int))]
     public class BoolToIndexConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((bool)value == true) ? 1 : 0;
+            return (bool)value ? 1 : 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((int)value == 0) ? false : true;
+            return (int)value == 0 ? false : true;
         }
     }
 }

@@ -10,7 +10,7 @@ using StreamHelpers;
 
 namespace ME3Explorer.Packages
 {
-    [DebuggerDisplay("ME3Package | {" + nameof(FileName) + "}")]
+    [DebuggerDisplay("ME3Package | {" + nameof(FilePath) + "}")]
     public sealed class ME3Package : MEPackage, IMEPackage
     {
         const uint packageTag = 0x9E2A83C1;
@@ -126,9 +126,9 @@ namespace ME3Explorer.Packages
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"ME3Package {Path.GetFileName(pccFilePath)}", new WeakReference(this));
 
             //Debug.WriteLine(" >> Opening me3 package " + pccFilePath);
-            FileName = Path.GetFullPath(pccFilePath);
+            FilePath = Path.GetFullPath(pccFilePath);
             MemoryStream inStream;
-            using (FileStream pccStream = File.OpenRead(FileName))
+            using (FileStream pccStream = File.OpenRead(FilePath))
             {
                 header = pccStream.ReadToBuffer(headerSize);
                 if (magic != packageTag)
@@ -186,7 +186,7 @@ namespace ME3Explorer.Packages
         /// </summary>
         public void save()
         {
-            save(FileName);
+            save(FilePath);
         }
 
         /// <summary>

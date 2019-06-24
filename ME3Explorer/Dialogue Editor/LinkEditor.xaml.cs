@@ -1,5 +1,4 @@
-﻿using ME3Explorer.Packages;
-using ME3Explorer.SharedUI;
+﻿using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
@@ -15,8 +14,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ME3Explorer.Dialogue_Editor.BioConversationExtended;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
-using static ME3Explorer.Dialogue_Editor.BioConversationExtended;
 
 namespace ME3Explorer.Dialogue_Editor
 {
@@ -26,9 +25,9 @@ namespace ME3Explorer.Dialogue_Editor
     public partial class LinkEditor : Window
     {
         public Enum ERCategory;
-        private DialogueEditorWPF ParentWindow;
-        private DiagNode Dnode;
-        private bool IsReply;
+        private readonly DialogueEditorWPF ParentWindow;
+        private readonly DiagNode Dnode;
+        private readonly bool IsReply;
         public ObservableCollectionExtended<ReplyChoiceNode> linkTable { get; } = new ObservableCollectionExtended<ReplyChoiceNode>();
         private bool NeedsSave;
         public bool NeedsPush;
@@ -101,8 +100,8 @@ namespace ME3Explorer.Dialogue_Editor
 
             link.ReplyLine = GlobalFindStrRefbyID(link.ReplyStrRef, ParentWindow.Pcc);
 
-            var tgtObj = ParentWindow.CurrentObjects.FirstOrDefault(t => t.NodeUID == tgtUID);
-            var tgtNode = tgtObj as DiagNode;
+            var tgtObj = ParentWindow.CurrentObjects.First(t => t.NodeUID == tgtUID);
+            var tgtNode = (DiagNode)tgtObj;
 
             link.TgtFireCnd = "Conditional";
             if (!tgtNode.Node.FiresConditional)
@@ -119,81 +118,99 @@ namespace ME3Explorer.Dialogue_Editor
             
             datagrid_Links.ItemsSource = linkTable;
 
-            var clnO = new DataGridTextColumn();
-            clnO.Header = "#";
-            clnO.Binding = new Binding("Ordinal");
-            clnO.Width = 30;
-            clnO.IsReadOnly = true;
-            clnO.Foreground = Brushes.DarkSlateGray;
+            var clnO = new DataGridTextColumn
+            {
+                Header = "#",
+                Binding = new Binding(nameof(ReplyChoiceNode.Ordinal)),
+                Width = 30,
+                IsReadOnly = true,
+                Foreground = Brushes.DarkSlateGray
+            };
             datagrid_Links.Columns.Add(clnO);
 
-            var clnA = new DataGridTextColumn();
-            clnA.Header = "Link";
-            clnA.Binding = new Binding("NodeIDLink");
-            clnA.IsReadOnly = true;
-            clnA.Width = 40;
-            clnA.FontWeight = FontWeights.Heavy;
+            var clnA = new DataGridTextColumn
+            {
+                Header = "Link",
+                Binding = new Binding(nameof(ReplyChoiceNode.NodeIDLink)),
+                IsReadOnly = true,
+                Width = 40,
+                FontWeight = FontWeights.Heavy
+            };
             datagrid_Links.Columns.Add(clnA);
 
             if(!IsReply)
             {
-                var clnB = new DataGridTextColumn();
-                clnB.Header = "GUI StrRef";
-                clnB.Binding = new Binding("ReplyStrRef");
-                clnB.IsReadOnly = false;
-                clnB.Width = 70;
-                clnB.FontWeight = FontWeights.Bold;
+                var clnB = new DataGridTextColumn
+                {
+                    Header = "GUI StrRef",
+                    Binding = new Binding(nameof(ReplyChoiceNode.ReplyStrRef)),
+                    IsReadOnly = false,
+                    Width = 70,
+                    FontWeight = FontWeights.Bold
+                };
                 datagrid_Links.Columns.Add(clnB);
 
-                var clnC = new DataGridTextColumn();
-                clnC.Header = "GUI Choice Line";
-                clnC.Binding = new Binding("ReplyLine");
-                clnC.IsReadOnly = true;
-                clnC.Width = 120;
-                clnC.Foreground = Brushes.DarkSlateGray;
+                var clnC = new DataGridTextColumn
+                {
+                    Header = "GUI Choice Line",
+                    Binding = new Binding(nameof(ReplyChoiceNode.ReplyLine)),
+                    IsReadOnly = true,
+                    Width = 120,
+                    Foreground = Brushes.DarkSlateGray
+                };
                 datagrid_Links.Columns.Add(clnC);
 
 
-                var clnD = new DataGridComboBoxColumn();
-                clnD.Header = "GUI Category";
-                clnD.ItemsSource = Enum.GetValues(typeof(EReplyCategory)).Cast<EReplyCategory>();
-                clnD.SelectedItemBinding = new Binding("RCategory");
-                clnD.IsReadOnly = false;
-                clnD.Width = 150;
+                var clnD = new DataGridComboBoxColumn
+                {
+                    Header = "GUI Category",
+                    ItemsSource = Enum.GetValues(typeof(EReplyCategory)).Cast<EReplyCategory>(),
+                    SelectedItemBinding = new Binding(nameof(ReplyChoiceNode.RCategory)),
+                    IsReadOnly = false,
+                    Width = 150
+                };
                 clnB.FontWeight = FontWeights.Bold;
                 datagrid_Links.Columns.Add(clnD);
             }
 
-            var clnE = new DataGridTextColumn();
-            clnE.Header = "Target Check";
-            clnE.Binding = new Binding("TgtFireCnd");
-            clnE.IsReadOnly = true;
-            clnE.Width = 80;
-            clnE.Foreground = Brushes.DarkSlateGray;
+            var clnE = new DataGridTextColumn
+            {
+                Header = "Target Check",
+                Binding = new Binding(nameof(ReplyChoiceNode.TgtFireCnd)),
+                IsReadOnly = true,
+                Width = 80,
+                Foreground = Brushes.DarkSlateGray
+            };
             datagrid_Links.Columns.Add(clnE);
 
-            var clnF = new DataGridTextColumn();
-            clnF.Header = "Plot Check";
-            clnF.Binding = new Binding("TgtCondition");
-            clnF.IsReadOnly = true;
-            clnF.Width = 65;
-            clnF.Foreground = Brushes.DarkSlateGray;
+            var clnF = new DataGridTextColumn
+            {
+                Header = "Plot Check",
+                Binding = new Binding(nameof(ReplyChoiceNode.TgtCondition)),
+                IsReadOnly = true,
+                Width = 65,
+                Foreground = Brushes.DarkSlateGray
+            };
             datagrid_Links.Columns.Add(clnF);
 
-            var clnH = new DataGridTextColumn();
-            clnH.Header = "Speaker";
-            clnH.Binding = new Binding("TgtSpeaker");
-            clnH.IsReadOnly = true;
-            clnH.Width = 100;
-            clnH.Foreground = Brushes.DarkSlateGray;
+            var clnH = new DataGridTextColumn
+            {
+                Header = "Speaker",
+                Binding = new Binding(nameof(ReplyChoiceNode.TgtSpeaker)),
+                IsReadOnly = true,
+                Width = 100,
+                Foreground = Brushes.DarkSlateGray
+            };
             datagrid_Links.Columns.Add(clnH);
 
-            var clnG = new DataGridTextColumn();
-            clnG.Header = "Target Line";
-            clnG.Binding = new Binding("TgtLine");
-            clnG.IsReadOnly = true;
-            clnG.Width = 355;
-            clnG.Foreground = Brushes.DarkSlateGray;
+            var clnG = new DataGridTextColumn
+            {
+                Header = "Target Line",
+                Binding = new Binding(nameof(ReplyChoiceNode.TgtLine)),
+                IsReadOnly = true,
+                Width = 355,
+                Foreground = Brushes.DarkSlateGray
+            };
             datagrid_Links.Columns.Add(clnG);
 
             if (!IsReply)
@@ -235,7 +252,7 @@ namespace ME3Explorer.Dialogue_Editor
                     links.Add($"{entry.NodeCount}: {entry.LineStrRef} {entry.Line}");
                 }
             }
-            var ldlg = InputComboBox.GetValue("Pick the next dialogue node to link to", links, links[l], false);
+            var ldlg = InputComboBox.GetValue("Pick the next dialogue node to link to", links, links[l]);
 
             if (ldlg == "")
                 return;
@@ -248,13 +265,10 @@ namespace ME3Explorer.Dialogue_Editor
                 bool isNumber = false;
                 while (!isNumber)
                 {
-                    var sdlg = new PromptDialog("Enter the TLK String Reference for the dialogue wheel:", "Link Editor", editLink.ReplyStrRef.ToString());
-                    sdlg.Owner = this;
-                    sdlg.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                    sdlg.ShowDialog();
-                    if (sdlg.ResponseText == null || sdlg.ResponseText == "0")
+                    var response = PromptDialog.Prompt(this,"Enter the TLK String Reference for the dialogue wheel:", "Link Editor", editLink.ReplyStrRef.ToString());
+                    if (response == null || response == "0")
                         return;
-                    isNumber = int.TryParse(sdlg.ResponseText, out strRef);
+                    isNumber = int.TryParse(response, out strRef);
                     if (!isNumber || strRef <= 0)
                     {
                         var wdlg = MessageBox.Show("The string reference must be a positive whole number.", "Dialogue Editor", MessageBoxButton.OKCancel);
@@ -265,14 +279,13 @@ namespace ME3Explorer.Dialogue_Editor
                 editLink.ReplyStrRef = strRef;
 
                 ////Set GUI Reply style
-                var eRCats = Enum.GetNames(typeof(EReplyCategory)).Cast<string>();
                 var rc = editLink.RCategory; //Get current link
 
-                var rdlg = InputComboBox.GetValue("Pick the wheel position or interrupt:", eRCats, rc.ToString(), false);
+                var rdlg = InputComboBox.GetValue("Pick the wheel position or interrupt:", Enums.GetNames<EReplyCategory>(), rc.ToString());
 
                 if (rdlg == "")
                     return;
-                Enum.TryParse(rdlg.ToString(), out rc);
+                rc = Enums.Parse<EReplyCategory>(rdlg);
                 editLink.RCategory = rc;
             }
             ParseLink(editLink);
@@ -303,29 +316,20 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if (IsReply)
             {
-                var newEntriesProp = new ArrayProperty<IntProperty>(ArrayType.Int, "EntryList");
-                foreach (var link in linkTable)
-                {
-                    newEntriesProp.Add(new IntProperty(link.Index));
-                }
-                Dnode.NodeProp.Properties.AddOrReplaceProp(newEntriesProp);
+                Dnode.NodeProp.Properties.AddOrReplaceProp(new ArrayProperty<IntProperty>(linkTable.Select(link => new IntProperty(link.Index)), "EntryList"));
             }
             else
             {
-                var newReplyListProp = new ArrayProperty<StructProperty>(ArrayType.Struct, "ReplyListNew");
-
-                foreach (var link in linkTable)
-                {
-                    var newProps = new PropertyCollection();
-                    newProps.Add(new IntProperty(link.Index, "nIndex"));
-                    newProps.Add(new StringRefProperty(link.ReplyStrRef, "srParaphrase"));
-                    newProps.Add(new StrProperty("", "sParaphrase"));
-                    newProps.Add(new EnumProperty(link.RCategory.ToString(), "EReplyCategory", ParentWindow.Pcc.Game, "Category"));
-                    newProps.Add(new NoneProperty());
-                    var newstruct = new StructProperty("BioDialogReplyListDetails", newProps);
-                    newReplyListProp.Add(newstruct);
-                }
-                Dnode.NodeProp.Properties.AddOrReplaceProp(newReplyListProp);
+                Dnode.NodeProp.Properties.AddOrReplaceProp(new ArrayProperty<StructProperty>(linkTable.Select(link =>
+                    new StructProperty("BioDialogReplyListDetails", new PropertyCollection
+                    {
+                        new IntProperty(link.Index, "nIndex"),
+                        new StringRefProperty(link.ReplyStrRef, "srParaphrase"),
+                        new StrProperty("", "sParaphrase"),
+                        new EnumProperty(link.RCategory.ToString(), "EReplyCategory", ParentWindow.Pcc.Game, "Category"),
+                        new NoneProperty()
+                    })
+                ), "ReplyListNew"));
             }
             NeedsPush = true;
             NeedsSave = false;
@@ -347,9 +351,7 @@ namespace ME3Explorer.Dialogue_Editor
         private void CloneLink()
         {
             var donor = linkTable[datagrid_Links.SelectedIndex];
-            ReplyChoiceNode newlink = new ReplyChoiceNode(donor.Order, donor.Index, donor.Paraphrase, donor.ReplyStrRef, donor.RCategory, donor.ReplyLine, donor.NodeIDLink, donor.Ordinal, donor.TgtCondition, donor.TgtFireCnd, donor.TgtLine, donor.TgtSpeaker);
-            newlink.Order = linkTable.Count + 1;
-            linkTable.Add(newlink);
+            linkTable.Add(new ReplyChoiceNode(donor) {Order = linkTable.Count + 1});
             NeedsSave = true;
             ReOrderTable();
         }

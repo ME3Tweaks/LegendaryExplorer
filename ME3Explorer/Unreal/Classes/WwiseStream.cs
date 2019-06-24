@@ -187,7 +187,7 @@ namespace ME3Explorer.Unreal.Classes
             string path;
             if (IsPCCStored)
             {
-                path = export.FileRef.FileName; //we must load it decompressed.
+                path = export.FileRef.FilePath; //we must load it decompressed.
             }
             else
             {
@@ -222,7 +222,7 @@ namespace ME3Explorer.Unreal.Classes
             //Look in currect directory first
 
 
-            string path = Path.Combine(Path.GetDirectoryName(export.FileRef.FileName), FileName + ".afc");
+            string path = Path.Combine(Path.GetDirectoryName(export.FileRef.FilePath), FileName + ".afc");
             if (File.Exists(path))
             {
                 return path; //in current directory of this pcc file

@@ -542,23 +542,23 @@ namespace ME3Explorer.Unreal
                     switch (getArrayType(propInfo))
                     {
                         case ArrayType.Object:
-                            return new ArrayProperty<ObjectProperty>(ArrayType.Object, propName);
+                            return new ArrayProperty<ObjectProperty>(propName);
                         case ArrayType.Name:
-                            return new ArrayProperty<NameProperty>(ArrayType.Name, propName);
+                            return new ArrayProperty<NameProperty>(propName);
                         case ArrayType.Enum:
-                            return new ArrayProperty<EnumProperty>(ArrayType.Enum, propName);
+                            return new ArrayProperty<EnumProperty>(propName);
                         case ArrayType.Struct:
-                            return new ArrayProperty<StructProperty>(ArrayType.Struct, propName);
+                            return new ArrayProperty<StructProperty>(propName);
                         case ArrayType.Bool:
-                            return new ArrayProperty<BoolProperty>(ArrayType.Bool, propName);
+                            return new ArrayProperty<BoolProperty>(propName);
                         case ArrayType.String:
-                            return new ArrayProperty<StrProperty>(ArrayType.String, propName);
+                            return new ArrayProperty<StrProperty>(propName);
                         case ArrayType.Float:
-                            return new ArrayProperty<FloatProperty>(ArrayType.Float, propName);
+                            return new ArrayProperty<FloatProperty>(propName);
                         case ArrayType.Int:
-                            return new ArrayProperty<IntProperty>(ArrayType.Int, propName);
+                            return new ArrayProperty<IntProperty>(propName);
                         case ArrayType.Byte:
-                            return new ArrayProperty<ByteProperty>(ArrayType.Byte, propName);
+                            return new ArrayProperty<ByteProperty>(propName);
                         default:
                             return null;
                     }
@@ -745,13 +745,13 @@ namespace ME3Explorer.Unreal
                 baseClass = export.ClassParent,
                 exportIndex = export.UIndex
             };
-            if (pcc.FileName.Contains("BIOGame"))
+            if (pcc.FilePath.Contains("BIOGame"))
             {
-                info.pccPath = new string(pcc.FileName.Skip(pcc.FileName.LastIndexOf("BIOGame") + 8).ToArray());
+                info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BIOGame") + 8).ToArray());
             }
             else
             {
-                info.pccPath = pcc.FileName; //used for dynamic resolution of files outside the game directory.
+                info.pccPath = pcc.FilePath; //used for dynamic resolution of files outside the game directory.
             }
             int nextExport = BitConverter.ToInt32(export.Data, isStruct ? 0x14 : 0xC);
             while (nextExport > 0)

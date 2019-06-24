@@ -27,7 +27,7 @@ namespace MassEffect.NativesEditor.Views
             FindObjectUsagesControl.parentRef = this;
         }
 
-        public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FileName) : "Select a file to load";
+        public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "Select a file to load";
 
         public void OpenFile()
         {

@@ -726,7 +726,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 if (ExternalFile != null)
                 {
-                    PathfindingEditorWPF pe = new PathfindingEditorWPF(ExternalFile.FileName);
+                    PathfindingEditorWPF pe = new PathfindingEditorWPF(ExternalFile.FilePath);
                     pe.Show();
                 }
             }

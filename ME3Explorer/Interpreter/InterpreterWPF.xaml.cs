@@ -245,7 +245,7 @@ namespace ME3Explorer
                 IExportEntry export = Pcc.getUExport(op.Value);
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export)
                 {
-                    Title = $"Interpreter - {export.UIndex} {export.GetInstancedFullPath} - {Pcc.FileName}"
+                    Title = $"Interpreter - {export.UIndex} {export.GetInstancedFullPath} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }
@@ -439,7 +439,7 @@ namespace ME3Explorer
                         newProperty = new StrProperty("", propName);
                         break;
                     case PropertyType.ArrayProperty:
-                        newProperty = new ArrayProperty<IntProperty>(ArrayType.Int, propName); //We can just set it to int as it will be reparsed and resolved.
+                        newProperty = new ArrayProperty<IntProperty>(propName); //We can just set it to int as it will be reparsed and resolved.
                         break;
                     case PropertyType.NameProperty:
                         newProperty = new NameProperty(propName) { Value = "None" };
@@ -1062,7 +1062,7 @@ namespace ME3Explorer
             UPropertyTreeViewEntry newSelectedItem = (UPropertyTreeViewEntry)e.NewValue;
             //list of visible elements for editing
             var SupportedEditorSetElements = new List<FrameworkElement>();
-            if (newSelectedItem?.Property != null)
+            if (newSelectedItem.Property != null)
             {
                 switch (newSelectedItem.Property)
                 {
@@ -1096,7 +1096,7 @@ namespace ME3Explorer
                         break;
                     case ObjectProperty op:
                         Value_TextBox.Text = op.Value.ToString();
-                        UpdateParsedEditorValue();
+                        UpdateParsedEditorValue(newSelectedItem);
                         SupportedEditorSetElements.Add(Value_TextBox);
                         SupportedEditorSetElements.Add(ParsedValue_TextBlock);
                         break;
@@ -1136,7 +1136,7 @@ namespace ME3Explorer
                         Value_TextBox.Text = strrefp.Value.ToString();
                         SupportedEditorSetElements.Add(Value_TextBox);
                         SupportedEditorSetElements.Add(ParsedValue_TextBlock);
-                        UpdateParsedEditorValue();
+                        UpdateParsedEditorValue(newSelectedItem);
                         break;
                 }
 
@@ -1152,9 +1152,10 @@ namespace ME3Explorer
             }
         }
 
-        private void UpdateParsedEditorValue()
+        private void UpdateParsedEditorValue(UPropertyTreeViewEntry treeViewEntry = null)
         {
-            if (SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null)
+            UPropertyTreeViewEntry tvi = treeViewEntry ?? SelectedItem;
+            if (tvi?.Property != null)
             {
                 switch (tvi.Property)
                 {
@@ -1574,7 +1575,7 @@ namespace ME3Explorer
                         if (index == -1)
                         {
                             //couldn't find name
-                            if (MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(Pcc.FileName)} does not contain the Name: {input}\nWould you like to add it to the Name list?", "Name not found", MessageBoxButton.YesNo))
+                            if (MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(Pcc.FilePath)} does not contain the Name: {input}\nWould you like to add it to the Name list?", "Name not found", MessageBoxButton.YesNo))
                             {
                                 break;
                             }
@@ -1782,7 +1783,7 @@ namespace ME3Explorer
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), CurrentLoadedExport)
                 {
-                    Title = $"Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetInstancedFullPath} - {Pcc.FileName}"
+                    Title = $"Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetInstancedFullPath} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }

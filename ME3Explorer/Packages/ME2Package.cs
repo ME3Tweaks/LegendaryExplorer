@@ -76,11 +76,11 @@ namespace ME3Explorer.Packages
             //Debug.WriteLine(" >> Opening me2 package " + path);
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"ME2Package {Path.GetFileName(path)}", new WeakReference(this));
 
-            FileName = Path.GetFullPath(path);
+            FilePath = Path.GetFullPath(path);
             MemoryStream tempStream = new MemoryStream();
-            if (!File.Exists(FileName))
+            if (!File.Exists(FilePath))
                 throw new FileNotFoundException("PCC file not found");
-            using (FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+            using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
             {
                 fs.CopyTo(tempStream);
             }
@@ -165,7 +165,7 @@ namespace ME3Explorer.Packages
         /// </summary>
         public void save()
         {
-            save(FileName);
+            save(FilePath);
         }
 
         /// <summary>

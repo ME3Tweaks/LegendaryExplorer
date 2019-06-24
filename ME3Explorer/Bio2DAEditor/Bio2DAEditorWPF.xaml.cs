@@ -69,7 +69,7 @@ namespace ME3Explorer
             if (CurrentLoadedExport != null)
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Bio2DAEditorWPF(), CurrentLoadedExport);
-                elhw.Title = $"Bio2DA Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Title = $"Bio2DA Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FilePath}";
                 elhw.Show();
             }
         }

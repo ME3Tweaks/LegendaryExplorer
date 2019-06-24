@@ -68,7 +68,7 @@ namespace ME3Explorer
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new EmbeddedTextureViewer(), CurrentLoadedExport)
                 {
-                    Title = $"Texture Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {Pcc.FileName}"
+                    Title = $"Texture Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }
@@ -227,7 +227,7 @@ namespace ME3Explorer
                 {
                     string archive = CurrentLoadedCacheName;
                     filename = System.IO.Path.Combine(MEDirectories.CookedPath(Pcc.Game), archive + ".tfc");
-                    string packagePath = Pcc.FileName;
+                    string packagePath = Pcc.FilePath;
                     string currentPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(packagePath), archive + ".tfc");
                     if (File.Exists(currentPath))
                         filename = currentPath;

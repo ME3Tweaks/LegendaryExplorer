@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
+using StreamHelpers;
 
 namespace ME3Explorer.AnimationExplorer
 {
@@ -26,8 +27,7 @@ namespace ME3Explorer.AnimationExplorer
 
         private void openPccToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.pcc|*.pcc";
+            OpenFileDialog d = new OpenFileDialog {Filter = "*.pcc|*.pcc"};
             if (d.ShowDialog() == DialogResult.OK)
                 LoadPcc(d.FileName);
         }
@@ -49,7 +49,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             AT = new List<AnimTree>();
             AS = new List<AnimSet>();
-            for (int i = 0; i < Pcc.ExportCount; i++)
+            for (int i = 0; i < Pcc.Exports.Count; i++)
             {
                 IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
                 switch (Exports[i].ClassName)
@@ -79,21 +79,14 @@ namespace ME3Explorer.AnimationExplorer
             }
             string[] files = Directory.GetFiles(path, "*.pcc");
             filenames = new List<string>();
-            int count = 1;
             foreach (string file in files)
             {
                 try
                 {
                     using (ME3Package _pcc = MEPackageHandler.OpenME3Package(file))
                     {
-                        bool found = false;
-                        IReadOnlyList<IExportEntry> Exports = _pcc.Exports;
-                        foreach (IExportEntry ex in Exports)
-                            if (ex.ClassName == "AnimTree" || ex.ClassName == "AnimSet")
-                            {
-                                found = true;
-                                break;
-                            }
+                        bool found = _pcc.Exports.Any(ex => ex.ClassName == "AnimTree" || ex.ClassName == "AnimSet");
+
                         if (found)
                             filenames.Add(file); 
                     }
@@ -121,71 +114,34 @@ namespace ME3Explorer.AnimationExplorer
             LoadPcc(filenames[n]);
         }
 
-        public void WriteString(FileStream fs, string s)
-        {
-            fs.Write(BitConverter.GetBytes(s.Length), 0, 4);
-            fs.Write(GetBytes(s), 0, s.Length);
-        }
-
-        public string ReadString(FileStream fs)
-        {
-            string s = "";
-            byte[] buff = new byte[4];
-            for (int i = 0; i < 4; i++)
-                buff[i] = (byte)fs.ReadByte();
-            int count = BitConverter.ToInt32(buff, 0);
-            buff = new byte[count];
-            for (int i = 0; i < count; i++)
-                buff[i] = (byte)fs.ReadByte();
-            s = GetString(buff);
-            return s;
-        }
-
-        public byte[] GetBytes(string str)
-        {
-            byte[] bytes = new byte[str.Length];
-            for (int i = 0; i < str.Length; i++)
-                bytes[i] = (byte)str[i];
-            return bytes;
-        }
-
-        public string GetString(byte[] bytes)
-        {
-            string s = "";
-            for (int i = 0; i < bytes.Length; i++)
-                s += (char)bytes[i];
-            return s;
-        }
-
         private void saveDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "*.dbs|*.dbs";
+            SaveFileDialog d = new SaveFileDialog {Filter = "*.dbs|*.dbs"};
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
                 
-                fs.Write(BitConverter.GetBytes(filenames.Count), 0, 4);
+                fs.WriteInt32(filenames.Count);
                 foreach (string s in filenames)
-                    WriteString(fs, s);
+                {
+                    fs.WriteInt32(s.Length);
+                    fs.WriteStringASCII(s);
+                }
                 fs.Close();
             }
         }
 
         private void loadDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.dbs|*.dbs";
+            OpenFileDialog d = new OpenFileDialog {Filter = "*.dbs|*.dbs"};
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 filenames = new List<string>();
                 FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
                 
-                byte[] buff = new byte[4];
-                fs.Read(buff, 0, 4);
-                int count = BitConverter.ToInt32(buff, 0);
+                int count = fs.ReadInt32();
                 for (int i = 0; i < count; i++)
-                    filenames.Add(ReadString(fs));
+                    filenames.Add(fs.ReadStringASCII(fs.ReadInt32()));
                 fs.Close();
                 RefreshLists();
             }
@@ -196,12 +152,11 @@ namespace ME3Explorer.AnimationExplorer
             TreeNode n = treeView1.SelectedNode;
             if (n == null)
                 return;
-            int idx = GetRootIndex(n) - AT.Count();
+            int idx = GetRootIndex(n) - AT.Count;
             if (idx >= 0 && idx < AS.Count)
             {
                 AnimSet ans = AS[idx];
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "*.psa|*.psa";
+                SaveFileDialog d = new SaveFileDialog {Filter = "*.psa|*.psa"};
                 if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     ans.ExportToPSA(d.FileName);
@@ -212,10 +167,11 @@ namespace ME3Explorer.AnimationExplorer
 
         public int GetRootIndex(TreeNode t)
         {
-            if (t.Parent == null)
-                return t.Index;
-            else
-                return GetRootIndex(t.Parent);
+            while (true)
+            {
+                if (t.Parent == null) return t.Index;
+                t = t.Parent;
+            }
         }
 
         private void importFromPSAToolStripMenuItem_Click(object sender, EventArgs e)
@@ -223,12 +179,11 @@ namespace ME3Explorer.AnimationExplorer
             TreeNode n = treeView1.SelectedNode;
             if (n == null)
                 return;
-            int idx = GetRootIndex(n) - AT.Count();
+            int idx = GetRootIndex(n) - AT.Count;
             if (idx >= 0 && idx < AS.Count)
             {
                 AnimSet ans = AS[idx];
-                OpenFileDialog d = new OpenFileDialog();
-                d.Filter = "*.psa|*.psa";
+                OpenFileDialog d = new OpenFileDialog {Filter = "*.psa|*.psa"};
                 if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     if(ans.ImportFromPSA(d.FileName))
@@ -242,7 +197,7 @@ namespace ME3Explorer.AnimationExplorer
             IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
                                                                             x.change != PackageChange.ImportAdd &&
                                                                             x.change != PackageChange.Names);
-            if (relevantUpdates.Count() > 0)
+            if (relevantUpdates.Any())
             {
                 reScan();
             }

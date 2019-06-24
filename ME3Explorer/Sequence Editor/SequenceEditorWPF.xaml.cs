@@ -105,7 +105,7 @@ namespace ME3Explorer.Sequence_Editor
 
         public SequenceEditorWPF(IExportEntry export) : this()
         {
-            FileQueuedForLoad = export.FileRef.FileName;
+            FileQueuedForLoad = export.FileRef.FilePath;
             ExportQueuedForFocusing = export;
         }
 
@@ -159,7 +159,7 @@ namespace ME3Explorer.Sequence_Editor
 
                 kismetLogParser.ExportFound = (filePath, uIndex) =>
                 {
-                    if (Pcc == null || Pcc.FileName != filePath) LoadFile(filePath);
+                    if (Pcc == null || Pcc.FilePath != filePath) LoadFile(filePath);
                     GoToExport(Pcc.getUExport(uIndex), false);
                 };
             }
@@ -207,7 +207,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private void SavePackageAs()
         {
-            string extension = Path.GetExtension(Pcc.FileName);
+            string extension = Path.GetExtension(Pcc.FilePath);
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
@@ -1356,7 +1356,7 @@ namespace ME3Explorer.Sequence_Editor
                 AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
-                p.LoadFile(obj.Export.FileRef.FileName, obj.UIndex);
+                p.LoadFile(obj.Export.FileRef.FilePath, obj.UIndex);
                 p.Activate(); //bring to front
             }
         }
@@ -1759,7 +1759,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 var p = new InterpEditor();
                 p.Show();
-                p.LoadPCC(Pcc.FileName);
+                p.LoadPCC(Pcc.FilePath);
                 IExportEntry exportEntry = obj.Export;
                 if (exportEntry.ObjectName == "InterpData")
                 {

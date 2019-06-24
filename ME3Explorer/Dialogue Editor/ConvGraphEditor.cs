@@ -94,40 +94,16 @@ namespace ME3Explorer.Dialogue_Editor
             PointF start = node1.GlobalBounds.Location;
             PointF end = node2.GlobalBounds.Location;
             float h1x, h1y, h2x, h2y;
-            if (edge is VarEdge)
-            {
-                start.X += node1.GlobalBounds.Width * 0.5f;
-                start.Y += node1.GlobalBounds.Height;
-                h1x = h2x = 0;
-                h1y = end.Y > start.Y ? 200 * (float)Math.Log10((end.Y - start.Y) / 200 + 1) : 200 * (float)Math.Log10((start.Y - end.Y) / 100 + 1);
-                if (h1y < 15)
-                {
-                    h1y = 15;
-                }
 
-                end.X += node2.GlobalBounds.Width / 2;
-                if (edge is EventEdge)
-                {
-                    h2y = h1y;
-                }
-                else
-                {
-                    h2y = 0;
-                    end.Y += node2.GlobalBounds.Height / 2;
-                }
-            }
-            else
+            start.X += node1.GlobalBounds.Width;
+            start.Y += node1.GlobalBounds.Height * 0.5f;
+            end.Y += node2.GlobalBounds.Height * 0.5f;
+            h1x = h2x = end.X > start.X ? 200 * (float)Math.Log10((end.X - start.X) / 200 + 1) : 200 * (float)Math.Log10((start.X - end.X) / 100 + 1);
+            if (h1x < 15)
             {
-                start.X += node1.GlobalBounds.Width;
-                start.Y += node1.GlobalBounds.Height * 0.5f;
-                end.Y += node2.GlobalBounds.Height * 0.5f;
-                h1x = h2x = end.X > start.X ? 200 * (float)Math.Log10((end.X - start.X) / 200 + 1) : 200 * (float)Math.Log10((start.X - end.X) / 100 + 1);
-                if (h1x < 15)
-                {
-                    h1x = h2x = 15;
-                }
-                h1y = h2y = 0;
+                h1x = h2x = 15;
             }
+            h1y = h2y = 0;
 
             edge.Reset();
             edge.AddBezier(start.X, start.Y, start.X + h1x, start.Y + h1y, end.X - h2x, end.Y - h2y, end.X, end.Y);

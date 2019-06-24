@@ -89,9 +89,6 @@ namespace ME3Explorer
             Tools.Initialize();
             MEPackageHandler.Initialize();
 
-            //load kismet font
-            SequenceObjects.SText.LoadFont();
-
 
             System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
 

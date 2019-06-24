@@ -39,7 +39,7 @@ namespace ME3Explorer.Packages
     {
         protected const int appendFlag = 0x00100000;
 
-        public string FileName { get; protected set; }
+        public string FilePath { get; protected set; }
 
         public bool IsModified
         {
@@ -320,16 +320,16 @@ namespace ME3Explorer.Packages
                     return lastSaved.Value;
                 }
 
-                if (File.Exists(FileName))
+                if (File.Exists(FilePath))
                 {
-                    return (new FileInfo(FileName)).LastWriteTime;
+                    return (new FileInfo(FilePath)).LastWriteTime;
                 }
 
                 return DateTime.MinValue;
             }
         }
 
-        public long FileSize => File.Exists(FileName) ? (new FileInfo(FileName)).Length : 0;
+        public long FileSize => File.Exists(FilePath) ? (new FileInfo(FilePath)).Length : 0;
 
         protected virtual void AfterSave()
         {

@@ -335,7 +335,7 @@ namespace ME3Explorer.Matinee
         {
             PackageEditorWPF p = new PackageEditorWPF();
             p.Show();
-            p.LoadFile(pcc.FileName, index + 1); //To UIndex
+            p.LoadFile(pcc.FilePath, index + 1); //To UIndex
         }
 
         public virtual void ToTree()

@@ -32,7 +32,7 @@ namespace ME3Explorer.Unreal
         {
             foreach (var prop in this)
             {
-                if (prop.Name != null && prop.Name.Name.ToLower() == name.ToLower())
+                if (prop.Name.Name != null && string.Equals(prop.Name.Name, name, StringComparison.CurrentCultureIgnoreCase))
                 {
                     return prop as T;
                 }
@@ -508,7 +508,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new ObjectProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<ObjectProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<ObjectProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.Name:
                     {
@@ -518,7 +518,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new NameProperty(stream, pcc) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<NameProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<NameProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.Enum:
                     {
@@ -549,7 +549,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new EnumProperty(stream, pcc, enumType) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<EnumProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<EnumProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.Struct:
                     {
@@ -603,7 +603,7 @@ namespace ME3Explorer.Unreal
                                 catch (Exception e)
                                 {
                                     Debug.WriteLine("ERROR READING ARRAY PROP");
-                                    return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
+                                    return new ArrayProperty<StructProperty>(arrayOffset, props, name);
                                 }
                             }
                         }
@@ -627,12 +627,12 @@ namespace ME3Explorer.Unreal
                                 }
                                 catch (Exception e)
                                 {
-                                    return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
+                                    return new ArrayProperty<StructProperty>(arrayOffset, props, name);
                                 }
 #endif
                             }
                         }
-                        return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<StructProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.Bool:
                     {
@@ -642,7 +642,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new BoolProperty(stream, pcc.Game, isArrayContained: true) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<BoolProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<BoolProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.String:
                     {
@@ -652,7 +652,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new StrProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<StrProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<StrProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.Float:
                     {
@@ -662,7 +662,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new FloatProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<FloatProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<FloatProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.Byte:
                     {
@@ -672,7 +672,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new ByteProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<ByteProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<ByteProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.Int:
                 default:
@@ -683,7 +683,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new IntProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<IntProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<IntProperty>(arrayOffset, props, name);
                     }
             }
         }
@@ -1443,7 +1443,7 @@ namespace ME3Explorer.Unreal
         /// Creates an enum property and sets the value to the first item in the values list.
         /// </summary>
         /// <param name="enumType">Name of enum</param>
-        /// <param name="pcc">PCC to lookup information from</param>
+        /// <param name="meGame">Which game this property is for</param>
         /// <param name="name">Optional name of EnumProperty</param>
         public EnumProperty(NameReference enumType, MEGame meGame, NameReference? name = null) : base(name)
         {
@@ -1492,33 +1492,29 @@ namespace ME3Explorer.Unreal
         public abstract void SwapElements(int i, int j);
     }
 
-    [DebuggerDisplay("ArrayProperty<{arrayType}> | {Name}, Length = {Values.Count}")]
+    [DebuggerDisplay("ArrayProperty<{typeof(T).Name,nq}> | {Name}, Length = {Values.Count}")]
     public class ArrayProperty<T> : ArrayPropertyBase, IList<T> where T : UProperty
     {
         public List<T> Values { get; set; }
         public override IReadOnlyList<UProperty> Properties => Values;
-        public readonly ArrayType arrayType;
 
-        public ArrayProperty(long startOffset, List<T> values, ArrayType type, NameReference name) : base(name)
+        public ArrayProperty(long startOffset, List<T> values, NameReference name) : this(values, name)
         {
             ValueOffset = startOffset;
-            PropType = PropertyType.ArrayProperty;
-            arrayType = type;
-            Values = values;
         }
 
-        public ArrayProperty(List<T> values, ArrayType type, NameReference name) : base(name)
+        public ArrayProperty(NameReference name) : this(new List<T>(), name)
         {
-            PropType = PropertyType.ArrayProperty;
-            arrayType = type;
-            Values = values;
         }
 
-        public ArrayProperty(ArrayType type, NameReference name) : base(name)
+        public ArrayProperty(IEnumerable<T> values, NameReference name) : this(values.ToList(), name)
+        {
+        }
+
+        public ArrayProperty(List<T> values, NameReference name) : base(name)
         {
             PropType = PropertyType.ArrayProperty;
-            arrayType = type;
-            Values = new List<T>();
+            Values = values;
         }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)

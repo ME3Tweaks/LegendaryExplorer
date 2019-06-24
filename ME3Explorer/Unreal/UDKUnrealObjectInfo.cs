@@ -456,13 +456,13 @@ namespace ME3Explorer.Unreal
                 baseClass = pcc.Exports[index].ClassParent,
                 exportIndex = index
             };
-            if (pcc.FileName.Contains("BIOGame"))
+            if (pcc.FilePath.Contains("BIOGame"))
             {
-                info.pccPath = new string(pcc.FileName.Skip(pcc.FileName.LastIndexOf("BIOGame") + 8).ToArray());
+                info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BIOGame") + 8).ToArray());
             }
             else
             {
-                info.pccPath = pcc.FileName; //used for dynamic resolution of files outside the game directory.
+                info.pccPath = pcc.FilePath; //used for dynamic resolution of files outside the game directory.
             }
 
             foreach (IExportEntry entry in pcc.Exports)

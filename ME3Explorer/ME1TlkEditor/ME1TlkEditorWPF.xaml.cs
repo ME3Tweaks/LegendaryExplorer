@@ -84,7 +84,7 @@ namespace ME3Explorer.ME1TlkEditor
             if (CurrentLoadedExport != null)
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditorWPF(), CurrentLoadedExport);
-                elhw.Title = $"TLK Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Title = $"TLK Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FilePath}";
                 elhw.Show();
             }
         }

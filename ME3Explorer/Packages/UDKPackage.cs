@@ -340,13 +340,13 @@ namespace ME3Explorer.Packages
         public UDKPackage(string UDKPackagePath)
         {
             string path = UDKPackagePath;
-            FileName = Path.GetFullPath(path);
+            FilePath = Path.GetFullPath(path);
             MemoryStream tempStream = new MemoryStream();
-            if (!File.Exists(FileName))
+            if (!File.Exists(FilePath))
                 throw new FileNotFoundException("UPK file not found");
-            using (FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+            using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
             {
-                FileInfo tempInfo = new FileInfo(FileName);
+                FileInfo tempInfo = new FileInfo(FilePath);
                 tempStream.WriteFromStream(fs, tempInfo.Length);
                 if (tempStream.Length != tempInfo.Length)
                 {

@@ -324,7 +324,7 @@ namespace ME3Explorer
 
         private void SaveFileAs()
         {
-            string extension = Path.GetExtension(Pcc.FileName);
+            string extension = Path.GetExtension(Pcc.FilePath);
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
@@ -443,7 +443,7 @@ namespace ME3Explorer
             if (!TryGetSelectedExport(out IExportEntry export)) return;
             Matinee.InterpEditor p = new Matinee.InterpEditor();
             p.Show();
-            p.LoadPCC(export.FileRef.FileName); //hmm...
+            p.LoadPCC(export.FileRef.FilePath); //hmm...
             p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(export.Index);
             p.loadInterpData(export.Index);
         }
@@ -454,7 +454,7 @@ namespace ME3Explorer
         {
             if (!TryGetSelectedExport(out IExportEntry export)) return;
             byte[] fileGUID = export.FileRef.getHeader().Skip(0x4E).Take(16).ToArray();
-            string fname = Path.GetFileNameWithoutExtension(export.FileRef.FileName);
+            string fname = Path.GetFileNameWithoutExtension(export.FileRef.FilePath);
 
             //Write GUID
             byte[] header = export.GetHeader();
@@ -612,7 +612,7 @@ namespace ME3Explorer
             {
 
             }
-            new ListDialog(items, Path.GetFileName(Pcc.FileName) + " header information", "Below is information about this package from the header.", this).Show();
+            new ListDialog(items, Path.GetFileName(Pcc.FilePath) + " header information", "Below is information about this package from the header.", this).Show();
         }
 
         private void TrashEntryAndChildren()
@@ -1018,7 +1018,7 @@ namespace ME3Explorer
                     if (streamingLevelsProp == null)
                     {
                         //couldn't find...
-                        streamingLevelsProp = new ArrayProperty<ObjectProperty>(ArrayType.Object, "StreamingLevels");
+                        streamingLevelsProp = new ArrayProperty<ObjectProperty>("StreamingLevels");
                     }
                     streamingLevelsProp.Clear();
                     foreach (IExportEntry exp in levelStreamingKismets)
@@ -1404,11 +1404,11 @@ namespace ME3Explorer
         {
             if (Pcc != null)
             {
-                string extension = Path.GetExtension(Pcc.FileName);
+                string extension = Path.GetExtension(Pcc.FilePath);
                 OpenFileDialog d = new OpenFileDialog { Filter = "*" + extension + "|*" + extension };
                 if (d.ShowDialog() == true)
                 {
-                    if (Pcc.FileName == d.FileName)
+                    if (Pcc.FilePath == d.FileName)
                     {
                         MessageBox.Show("You selected the same file as the one already open.");
                         return;
@@ -1601,7 +1601,7 @@ namespace ME3Explorer
             if (Thread.CurrentThread.Name == null)
                 Thread.CurrentThread.Name = "PackageEditorWPF TreeViewInitialization";
 
-            BusyText = "Loading " + Path.GetFileName(Pcc.FileName);
+            BusyText = "Loading " + Path.GetFileName(Pcc.FilePath);
             if (Pcc == null)
             {
                 return null;
@@ -1611,7 +1611,7 @@ namespace ME3Explorer
             IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             int importsOffset = Exports.Count;
 
-            var rootEntry = new TreeViewEntry(null, Pcc.FileName) { IsExpanded = true };
+            var rootEntry = new TreeViewEntry(null, Pcc.FilePath) { IsExpanded = true };
 
             var rootNodes = new List<TreeViewEntry> { rootEntry };
             rootNodes.AddRange(Exports.Select(t => new TreeViewEntry(t)));
@@ -1658,7 +1658,7 @@ namespace ME3Explorer
             AllEntriesList = new List<string>();
             int importsOffset = Exports.Count;
 
-            TreeViewEntry rootEntry = new TreeViewEntry(null, Pcc.FileName) { IsExpanded = true };
+            TreeViewEntry rootEntry = new TreeViewEntry(null, Pcc.FilePath) { IsExpanded = true };
             AllTreeViewNodesX.Add(rootEntry);
 
             foreach (IExportEntry exp in Exports)
@@ -2447,7 +2447,7 @@ namespace ME3Explorer
                     var sentry = crossPCCObjectMap.Keys.First();
                     if (sentry.FileRef != sourceItem.Entry.FileRef)
                     {
-                        var promptResult = MessageBox.Show($"The item dropped does not come from the same package file as other items in your multi-drop relinking session:\n{sourceItem.Entry.FileRef.FileName}\n\nContinuing will drop all items in your relinking session.", "Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
+                        var promptResult = MessageBox.Show($"The item dropped does not come from the same package file as other items in your multi-drop relinking session:\n{sourceItem.Entry.FileRef.FilePath}\n\nContinuing will drop all items in your relinking session.", "Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
                         if (promptResult == MessageBoxResult.Cancel)
                         {
                             return;
@@ -3274,26 +3274,26 @@ namespace ME3Explorer
             {
                 case "DialogueEditor":
                     var dialogueEditorWPF = new Dialogue_Editor.DialogueEditorWPF();
-                    dialogueEditorWPF.LoadFile(Pcc.FileName);
+                    dialogueEditorWPF.LoadFile(Pcc.FilePath);
                     dialogueEditorWPF.Show();
                     break;
                 case "FaceFXEditor":
                     var facefxEditor = new FaceFX.FaceFXEditor();
-                    facefxEditor.LoadFile(Pcc.FileName);
+                    facefxEditor.LoadFile(Pcc.FilePath);
                     facefxEditor.Show();
                     break;
                 case "PathfindingEditor":
-                    var pathEditor = new PathfindingEditorWPF(Pcc.FileName);
+                    var pathEditor = new PathfindingEditorWPF(Pcc.FilePath);
                     pathEditor.Show();
                     break;
                 case "SoundplorerWPF":
                     var soundplorerWPF = new Soundplorer.SoundplorerWPF();
-                    soundplorerWPF.LoadFile(Pcc.FileName);
+                    soundplorerWPF.LoadFile(Pcc.FilePath);
                     soundplorerWPF.Show();
                     break;
                 case "SequenceEditor":
                     var seqEditor = new Sequence_Editor.SequenceEditorWPF();
-                    seqEditor.LoadFile(Pcc.FileName);
+                    seqEditor.LoadFile(Pcc.FilePath);
                     seqEditor.Show();
                     break;
             }
@@ -3354,7 +3354,7 @@ namespace ME3Explorer
                 Debug.WriteLine("No source file selected");
                 return;
             }
-            if (d.FileName == Pcc.FileName)
+            if (d.FileName == Pcc.FilePath)
             {
                 Debug.WriteLine("Same input/target file");
                 return;

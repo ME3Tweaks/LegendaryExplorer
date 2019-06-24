@@ -39,7 +39,7 @@ namespace ME3Explorer.FaceFX
 
         public FaceFXEditor(IExportEntry export, string lineName = null) : this()
         {
-            FileQueuedForLoad = export.FileRef.FileName;
+            FileQueuedForLoad = export.FileRef.FilePath;
             ExportQueuedForFocusing = export;
             LineQueuedForFocusing = lineName;
         }
@@ -70,7 +70,7 @@ namespace ME3Explorer.FaceFX
 
         private void SavePackageAs()
         {
-            string extension = Path.GetExtension(Pcc.FileName);
+            string extension = Path.GetExtension(Pcc.FilePath);
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
@@ -94,7 +94,7 @@ namespace ME3Explorer.FaceFX
                 try
                 {
                     LoadFile(d.FileName);
-                    Title = $"FaceFXEditor - {Pcc.FileName}";
+                    Title = $"FaceFXEditor - {Pcc.FilePath}";
                 }
                 catch (Exception ex)
                 {

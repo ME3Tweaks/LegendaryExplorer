@@ -1649,41 +1649,41 @@ namespace ME3Explorer.SequenceObjects
 
         private readonly Brush black = new SolidBrush(Color.Black);
         public bool shadowRendering { get; set; }
-        private static PrivateFontCollection fontcollection;
-        private static Font kismetFont;
+        //Making fontcollection a local variable causes font to be unloaded
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private static readonly PrivateFontCollection fontcollection;
+        private static readonly Font kismetFont;
 
-        public SText(string s, bool shadows = true)
+        public SText(string s, bool shadows = true, float scale = 1)
             : base(s)
         {
             base.TextBrush = new SolidBrush(Color.FromArgb(255, 255, 255));
             base.Font = kismetFont;
-
+            base.GlobalScale = scale;
             shadowRendering = shadows;
         }
 
-        public SText(string s, Color c, bool shadows = true)
+        public SText(string s, Color c, bool shadows = true, float scale = 1)
             : base(s)
         {
             base.TextBrush = new SolidBrush(c);
             base.Font = kismetFont;
+            base.GlobalScale = scale;
             shadowRendering = shadows;
         }
 
-        //must be called once in the program before SText can be used
-        public static void LoadFont()
+        //Static constructor
+        static SText()
         {
-            if (fontcollection == null || fontcollection.Families.Length < 1)
-            {
-                fontcollection = new PrivateFontCollection();
-                byte[] fontData = Properties.Resources.KismetFont;
-                IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
-                Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
-                fontcollection.AddMemoryFont(fontPtr, fontData.Length);
-                uint tmp = 0;
-                AddFontMemResourceEx(fontPtr, (uint)(fontData.Length), IntPtr.Zero, ref tmp);
-                Marshal.FreeCoTaskMem(fontPtr);
-                kismetFont = new Font(fontcollection.Families[0], 6, GraphicsUnit.Pixel);
-            }
+            fontcollection = new PrivateFontCollection();
+            byte[] fontData = Properties.Resources.KismetFont;
+            IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
+            Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
+            fontcollection.AddMemoryFont(fontPtr, fontData.Length);
+            uint tmp = 0;
+            AddFontMemResourceEx(fontPtr, (uint)fontData.Length, IntPtr.Zero, ref tmp);
+            Marshal.FreeCoTaskMem(fontPtr);
+            kismetFont = new Font(fontcollection.Families[0], 6, GraphicsUnit.Pixel);
         }
 
         protected override void Paint(PPaintContext paintContext)

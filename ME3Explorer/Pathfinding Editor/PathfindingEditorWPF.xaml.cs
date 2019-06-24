@@ -960,7 +960,7 @@ namespace ME3Explorer.Pathfinding_Editor
             IExportEntry export = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
             ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export)
             {
-                Title = $"Interpreter - {export.UIndex} {export.GetIndexedFullPath} - {Pcc.FileName}"
+                Title = $"Interpreter - {export.UIndex} {export.GetIndexedFullPath} - {Pcc.FilePath}"
             };
             elhw.Show();
         }
@@ -1294,7 +1294,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void SavePackageAs()
         {
-            string extension = Path.GetExtension(Pcc.FileName);
+            string extension = Path.GetExtension(Pcc.FilePath);
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
@@ -2814,7 +2814,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
-                p.LoadFile(export.FileRef.FileName, export.UIndex);
+                p.LoadFile(export.FileRef.FilePath, export.UIndex);
                 p.Activate(); //bring to front
             }
         }
@@ -3163,7 +3163,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 var volumesList = nodeExport.GetProperty<ArrayProperty<StructProperty>>("Volumes");
                 if (e.IsSelected && volumesList == null)
                 {
-                    volumesList = new ArrayProperty<StructProperty>(ArrayType.Struct, "Volumes");
+                    volumesList = new ArrayProperty<StructProperty>("Volumes");
                 }
 
                 if (e.IsSelected)
@@ -3540,7 +3540,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         if (shouldbezero != 0 && package.Game != MEGame.ME1)
                         {
                             //INVALID!!!
-                            Debug.WriteLine("Error: should be zero, not zero in " + package.FileName);
+                            Debug.WriteLine("Error: should be zero, not zero in " + package.FilePath);
                             continue;
                         }
                         int itemcount = 1; //Skip bioworldinfo and Class
@@ -3571,7 +3571,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                     {
                                         if (!navsNotAccountedFor.TryGetValue(exportEntry.ClassName, out string _))
                                         {
-                                            Debug.WriteLine("Found new nav type: " + exportEntry.ClassName + " in " + exportEntry.FileRef.FileName);
+                                            Debug.WriteLine("Found new nav type: " + exportEntry.ClassName + " in " + exportEntry.FileRef.FilePath);
                                             navsNotAccountedFor.Add(exportEntry.GetFullPath);
                                         }
                                     }

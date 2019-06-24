@@ -41,7 +41,7 @@ namespace ME3Explorer.SharedUI
 
         private void SavePackageAs()
         {
-            string extension = Path.GetExtension(Pcc.FileName);
+            string extension = Path.GetExtension(Pcc.FilePath);
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
@@ -60,7 +60,7 @@ namespace ME3Explorer.SharedUI
             return Pcc != null;
         }
 
-        public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FileName) : "";
+        public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "";
         public override void handleUpdate(List<PackageUpdate> updates)
         {
             if (updates.Any(x => x.change == PackageChange.Names))
@@ -86,7 +86,7 @@ namespace ME3Explorer.SharedUI
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
             {
-                LoadMEPackage(LoadedExport.FileRef.FileName); //This will register the tool and assign a reference to it. Since this export is already in memory we will just reference the existing package instead.
+                LoadMEPackage(LoadedExport.FileRef.FilePath); //This will register the tool and assign a reference to it. Since this export is already in memory we will just reference the existing package instead.
                 hostedControl.LoadExport(LoadedExport);
                 OnPropertyChanged(nameof(CurrentFile));
             }));

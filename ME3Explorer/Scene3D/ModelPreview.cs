@@ -91,7 +91,7 @@ namespace ME3Explorer.Scene3D
             {
                 if (texparam.TexIndex != 0)
                 {
-                    Textures.Add(texparam.Desc, FindTexture(texcache, mat.pcc.getEntry(texparam.TexIndex).GetFullPath, mat.pcc.FileName));
+                    Textures.Add(texparam.Desc, FindTexture(texcache, mat.pcc.getEntry(texparam.TexIndex).GetFullPath, mat.pcc.FilePath));
                 }
             }
         }
