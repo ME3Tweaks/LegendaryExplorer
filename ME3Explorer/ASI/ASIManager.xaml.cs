@@ -39,7 +39,7 @@ namespace ME3Explorer.ASI
         #endregion
         public static readonly string ASIManagerDataFolder = Path.Combine(App.AppDataFolder, @"ASIManager\");
         public static readonly string ManifestLocation = Path.Combine(ASIManagerDataFolder, "manifest.xml");
-        private List<ASIModUpdateGroup> ASIModUpdateGroups;
+        private List<ASIModUpdateGroup> ASIModUpdateGroups = new List<ASIModUpdateGroup>();
         private bool DeselectingDueToOtherList;
         private string _selectedASIDescription = "Select an ASI";
 
@@ -184,6 +184,10 @@ namespace ME3Explorer.ASI
                                           DownloadLink = (string)z.Element("downloadlink")
                                       }).ToList()
                                   }).ToList();
+
+            var installedASIs = getInstalledASIMods();
+
+
             ME1DisplayedASIMods.ReplaceAll(ASIModUpdateGroups.Where(x => x.Game == 1).Select(x => x.ASIModVersions.MaxBy(y => y.Version)));
             ME2DisplayedASIMods.ReplaceAll(ASIModUpdateGroups.Where(x => x.Game == 2).Select(x => x.ASIModVersions.MaxBy(y => y.Version)));
             ME3DisplayedASIMods.ReplaceAll(ASIModUpdateGroups.Where(x => x.Game == 3).Select(x => x.ASIModVersions.MaxBy(y => y.Version)));
@@ -209,6 +213,9 @@ namespace ME3Explorer.ASI
             }
         }
 
+        /// <summary>
+        /// Object containing information about an ASI mod in the ASI mod manifest
+        /// </summary>
         public class ASIMod
         {
             public string DownloadLink { get; internal set; }
@@ -219,6 +226,24 @@ namespace ME3Explorer.ASI
             public string InstalledPrefix { get; internal set; }
             public string Name { get; internal set; }
             public string Description { get; internal set; }
+        }
+
+        /// <summary>
+        /// Object describing an installed ASI file. It is not a general ASI mod object but it can be mapped to one
+        /// </summary>
+        public class InstalledASIMod
+        {
+            public InstalledASIMod(string asiFile)
+            {
+                InstalledPath = asiFile;
+                Filename = Path.GetFileNameWithoutExtension(asiFile);
+                Hash = BitConverter.ToString(System.Security.Cryptography.MD5.Create()
+                    .ComputeHash(File.ReadAllBytes(asiFile))).Replace("-", "").ToLower();
+            }
+
+            public string InstalledPath { get; set; }
+            public string Hash { get; set; }
+            public string Filename { get; set; }
         }
 
         public class ASIModUpdateGroup
@@ -252,6 +277,64 @@ namespace ME3Explorer.ASI
             }
             DeselectingDueToOtherList = false;
 
+        }
+
+        public string ME1ASIDirectory => ME1Directory.gamePath != null ? Path.Combine(ME1Directory.gamePath, "Binaries", "asi") : null;
+        public string ME2ASIDirectory => ME2Directory.gamePath != null ? Path.Combine(ME2Directory.gamePath, "Binaries", "asi") : null;
+        public string ME3ASIDirectory => ME3Directory.gamePath != null ? Path.Combine(ME3Directory.gamePath, "Binaries", "win32", "asi") : null;
+
+        /// <summary>
+        /// Gets a list of installed ASI mods.
+        /// </summary>
+        /// <param name="game">Game to filter results by. Enter 1 2 or 3 for that game only, or anything else to get everything.</param>
+        /// <returns></returns>
+        private List<InstalledASIMod> getInstalledASIMods(int game = 0)
+        {
+            List<InstalledASIMod> results = new List<InstalledASIMod>();
+            string asiDirectory = null;
+
+            switch (game)
+            {
+                case 1:
+                    asiDirectory = ME1ASIDirectory;
+                    break;
+                case 2:
+                    asiDirectory = ME2ASIDirectory;
+                    break;
+                case 3:
+                    asiDirectory = ME3ASIDirectory;
+                    break;
+                default:
+                    results.AddRange(getInstalledASIMods(1));
+                    results.AddRange(getInstalledASIMods(2));
+                    results.AddRange(getInstalledASIMods(3));
+                    return results;
+            }
+            if (asiDirectory != null)
+            {
+                if (!Directory.Exists(asiDirectory))
+                {
+                    Directory.CreateDirectory(asiDirectory);
+                    return results; //It won't have anything in it if we are creating it
+                }
+                var asiFiles = Directory.GetFiles(asiDirectory, "*.asi");
+                foreach (var asiFile in asiFiles)
+                {
+                    results.Add(new InstalledASIMod(asiFile));
+                }
+            }
+
+            return results;
+        }
+
+        private ASIMod getManifestModByHash(string hash)
+        {
+            foreach (var updateGroup in ASIModUpdateGroups)
+            {
+                var asi = updateGroup.ASIModVersions.FirstOrDefault(x => x.Hash == hash);
+                if (asi != null) return asi;
+            }
+            return null;
         }
     }
 }
