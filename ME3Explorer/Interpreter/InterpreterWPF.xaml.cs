@@ -1062,7 +1062,7 @@ namespace ME3Explorer
             UPropertyTreeViewEntry newSelectedItem = (UPropertyTreeViewEntry)e.NewValue;
             //list of visible elements for editing
             var SupportedEditorSetElements = new List<FrameworkElement>();
-            if (newSelectedItem?.Property != null)
+            if (newSelectedItem.Property != null)
             {
                 switch (newSelectedItem.Property)
                 {
@@ -1096,7 +1096,7 @@ namespace ME3Explorer
                         break;
                     case ObjectProperty op:
                         Value_TextBox.Text = op.Value.ToString();
-                        UpdateParsedEditorValue();
+                        UpdateParsedEditorValue(newSelectedItem);
                         SupportedEditorSetElements.Add(Value_TextBox);
                         SupportedEditorSetElements.Add(ParsedValue_TextBlock);
                         break;
@@ -1136,7 +1136,7 @@ namespace ME3Explorer
                         Value_TextBox.Text = strrefp.Value.ToString();
                         SupportedEditorSetElements.Add(Value_TextBox);
                         SupportedEditorSetElements.Add(ParsedValue_TextBlock);
-                        UpdateParsedEditorValue();
+                        UpdateParsedEditorValue(newSelectedItem);
                         break;
                 }
 
@@ -1152,9 +1152,10 @@ namespace ME3Explorer
             }
         }
 
-        private void UpdateParsedEditorValue()
+        private void UpdateParsedEditorValue(UPropertyTreeViewEntry treeViewEntry = null)
         {
-            if (SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null)
+            UPropertyTreeViewEntry tvi = treeViewEntry ?? SelectedItem;
+            if (tvi?.Property != null)
             {
                 switch (tvi.Property)
                 {
