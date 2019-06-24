@@ -315,6 +315,7 @@
     <Compile Include="ASI\ASIManager.xaml.cs">
       <DependentUpon>ASIManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ASI\ASITemplateSelector.cs" />
     <Compile Include="AutoTOC\AutoTOCWPF.xaml.cs">
       <DependentUpon>AutoTOCWPF.xaml</DependentUpon>
     </Compile>
