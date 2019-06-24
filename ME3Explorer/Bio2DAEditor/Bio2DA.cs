@@ -30,6 +30,24 @@ namespace ME3Explorer
 
         public int ColumnCount => ColumnNames?.Count ?? 0;
 
+        public bool IsModified
+        {
+            get
+            {
+                if (Cells == null) return false;
+                for (int i = 0; i < RowCount; i++)
+                {
+                    for (int j = 0; j < ColumnCount; j++)
+                    {
+                        Bio2DACell c = Cells[i, j];
+                        if (c == null) continue;
+                        if (c.IsModified) return true;
+                    }
+                }
+                return false;
+            }
+        }
+
         IExportEntry export;
         public Bio2DA(IExportEntry export)
         {
@@ -70,7 +88,7 @@ namespace ME3Explorer
                 else
                 {
                     Debug.WriteLine("Unable to find row names property (m_lstRowNumbers)!");
-                    Debugger.Break();
+                    //Debugger.Break();
                     return;
                 }
             }
@@ -217,7 +235,7 @@ namespace ME3Explorer
                     if (Cells[rowindex, colindex] != null)
                     {
                         var cell = Cells[rowindex, colindex];
-                        worksheet.Cell(rowindex + 2, colindex + 2).Value = cell.GetDisplayableValue();
+                        worksheet.Cell(rowindex + 2, colindex + 2).Value = cell.DisplayableValue;
                         if (cell.Type == Bio2DACell.Bio2DADataType.TYPE_INT && cell.GetIntValue() > 0)
                         {
                             int stringId = cell.GetIntValue();

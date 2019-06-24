@@ -50,21 +50,25 @@
                                 <Setter Property="ContentTemplate">
                                     <Setter.Value>
                                         <DataTemplate>
-                                            <ComboBox FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}" ItemsSource="{Binding ParentNameList,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type global:Bio2DAEditorWPF}}}" SelectedIndex="{Binding ValueAsName}">
-                                                <ComboBox.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <VirtualizingStackPanel />
-                                                    </ItemsPanelTemplate>
-                                                </ComboBox.ItemsPanel>
-                                                <ComboBox.Resources>
-                                                    <DataTemplate DataType="{x:Type global:PackageEditorWPF+IndexedName}">
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
-                                                            <TextBlock Text="{Binding Path=Name.Name}" Foreground="Black" Margin="5,0,0,0"/>
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </ComboBox.Resources>
-                                            </ComboBox>
+                                            <DockPanel>
+                                                <TextBox Text="{Binding Path=NameIndex}" DockPanel.Dock="Right" MinWidth="25"/>
+
+                                                <ComboBox FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}" ItemsSource="{Binding ParentNameList,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type global:Bio2DAEditorWPF}}}" SelectedIndex="{Binding ValueAsName}">
+                                                    <ComboBox.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <VirtualizingStackPanel />
+                                                        </ItemsPanelTemplate>
+                                                    </ComboBox.ItemsPanel>
+                                                    <ComboBox.Resources>
+                                                        <DataTemplate DataType="{x:Type global:PackageEditorWPF+IndexedName}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
+                                                                <TextBlock Text="{Binding Path=Name.InstancedString}" Foreground="Black" Margin="5,0,0,0"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ComboBox.Resources>
+                                                </ComboBox>
+                                            </DockPanel>
                                         </DataTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -99,34 +103,50 @@
 
             <TextBlock FontWeight="Bold" Grid.Row="0"  Grid.Column="1" Text="Value as TLK reference:"/>
             <TextBlock Margin="5,0,0,0" Name="Bio2DAInfo_CellDataAsStrRef_TextBlock" Grid.Row="1"  Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" TextWrapping="Wrap" Text="Select a cell to preview TLK value"/>
-
         </Grid>
-        <Grid DockPanel.Dock="Top" VerticalAlignment="Center">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="60"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Button Name="Save_Button" Grid.Row="0" Grid.Column="0" Content="Save" Click="Save_Button_Click"/>
 
-            <TextBlock  VerticalAlignment="Center" Margin="3" FontWeight="Bold" Grid.Row="0" Grid.Column="1" Text="{Binding Path=CurrentLoadedExport.ObjectName}"/>
-            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" Margin="3,0">
-                <Button Margin="5,0,5,0" Name="ImportFromExcel_Button" Padding="5,0" Click="ImportToExcel_Click">
+        <Grid  DockPanel.Dock="Top">
+            <ToolBar ToolBarTray.IsLocked="True">
+                <Button Name="Save_Button" Content="Commit" Command="{Binding CommitCommand}" Padding="3">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="True">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Foreground" Value="Red"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="3" FontWeight="Bold" Text="{Binding Path=CurrentLoadedExport.ObjectName}"/>
+
+                </Grid>
+            </ToolBar>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="16,3">
+                <Button Margin="5,0,5,0" Grid.Column="2" Name="ImportFromExcel_Button" Padding="5,0" Click="ImportToExcel_Click" >
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
                         <TextBlock Text="Import from Excel"/>
                     </StackPanel>
                 </Button>
-                <Button Padding="5,0" Name="ExportToExcel_Button" Click="ExportToExcel_Click">
-                <StackPanel Orientation="Horizontal">
+                <Button Padding="5,0" Grid.Column="3" Name="ExportToExcel_Button" Click="ExportToExcel_Click" HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal">
                         <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
-                    <TextBlock Text="Export to Excel"/>
-                </StackPanel>
-            </Button>
-            
+                        <TextBlock Text="Export to Excel"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </Grid>
         <DataGrid Name="Bio2DA_DataGrid" Margin="0,3,3,3" SelectionUnit="Cell" 

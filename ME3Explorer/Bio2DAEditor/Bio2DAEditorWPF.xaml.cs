@@ -1,5 +1,6 @@
 ﻿using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.TlkManagerNS;
 using ME3Explorer.Unreal;
 using Microsoft.Win32;
 using System;
@@ -30,10 +31,6 @@ namespace ME3Explorer
     {
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
-        //private Bio2DA CachedME12DA_TalentsGUI;
-        private Bio2DA CachedME12DA_ClassTalents_Talents;
-        private Bio2DA CachedME12DA_TalentEffectLevels;
-
         private Bio2DA _table2da;
         public Bio2DA Table2DA
         {
@@ -41,14 +38,13 @@ namespace ME3Explorer
             private set => SetProperty(ref _table2da, value);
         }
 
+        public ICommand CommitCommand { get; set; }
+
         public Bio2DAEditorWPF()
         {
+            DataContext = this;
+            LoadCommands();
             InitializeComponent();
-        }
-
-        private void StartBio2DAScan()
-        {
-            Table2DA = new Bio2DA(CurrentLoadedExport);
         }
 
         public override bool CanParse(IExportEntry exportEntry)
@@ -59,7 +55,7 @@ namespace ME3Explorer
         public override void LoadExport(IExportEntry exportEntry)
         {
             CurrentLoadedExport = exportEntry;
-            StartBio2DAScan();
+            Table2DA = new Bio2DA(CurrentLoadedExport);
         }
 
         public override void UnloadExport()
@@ -79,15 +75,6 @@ namespace ME3Explorer
         }
         private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-            if (CachedME12DA_TalentEffectLevels == null && CurrentLoadedExport.FileRef.FileName.Contains("Engine.u"))
-            {
-                IExportEntry TalentEffectLevels = CurrentLoadedExport.FileRef.Exports.FirstOrDefault(x => x.ObjectName == "Talent_TalentEffectLevels" && x.ClassName == "Bio2DANumberedRows");
-                if (TalentEffectLevels != null)
-                {
-                    CachedME12DA_TalentEffectLevels = new Bio2DA(TalentEffectLevels);
-                }
-            }
-
             for (int counter = 0; counter < (Bio2DA_DataGrid.SelectedCells.Count); counter++)
             {
                 int columnIndex = Bio2DA_DataGrid.SelectedCells[0].Column.DisplayIndex;
@@ -98,31 +85,11 @@ namespace ME3Explorer
                 Bio2DAInfo_CellDataOffset_TextBlock.Text = "Selected cell data offset: ????";// + (rowIndex + 1) + "," + (columnIndex + 1);
                 if (item != null)
                 {
-                    Bio2DAInfo_CellDataType_TextBlock.Text = "Selected cell data type: " + item.Type.ToString() + "   " + item.GetDisplayableValue();
+                    Bio2DAInfo_CellDataType_TextBlock.Text = "Selected cell data type: " + item.Type.ToString() + "   " + item.DisplayableValue;
                     Bio2DAInfo_CellDataOffset_TextBlock.Text = "Selected cell data offset: 0x" + item.Offset.ToString("X6");
                     if (item.Type == Bio2DACell.Bio2DADataType.TYPE_INT)
                     {
-                        if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
-                        {
-                            if (columnName == "TalentID" && CachedME12DA_TalentEffectLevels != null)
-                            {
-                                //Get Talent ID name
-                                for (int i = 0; i < CachedME12DA_TalentEffectLevels.RowNames.Count; i++)
-                                {
-                                    if (CachedME12DA_TalentEffectLevels[i, 0].GetIntValue() == item.GetIntValue())
-                                    {
-                                        int labelColumn = CachedME12DA_TalentEffectLevels.GetColumnIndexByName("Talent_Label");
-                                        string label = CachedME12DA_TalentEffectLevels[i, labelColumn].GetDisplayableValue();
-                                        Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = label;
-                                        break;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = ME1Explorer.ME1TalkFiles.findDataById(item.GetIntValue(), null);
-                            }
-                        }
+                        Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = TLKManagerWPF.GlobalFindStrRefbyID(item.GetIntValue(), CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef as ME1Package);
                     }
                     else
                     {
@@ -151,11 +118,18 @@ namespace ME3Explorer
             e.Column.Header = header.Replace("_", "__");
         }
 
-        private void Save_Button_Click(object sender, RoutedEventArgs e)
+        private void LoadCommands()
+        {
+            CommitCommand = new GenericCommand(Commit2DA, CanCommit2DA);
+        }
+
+        private void Commit2DA()
         {
             Table2DA.Write2DAToExport();
             Table2DA.MarkAsUnmodified();
         }
+
+        private bool CanCommit2DA() => Table2DA != null ? Table2DA.IsModified : false;
 
         private void ExportToExcel_Click(object sender, RoutedEventArgs e)
         {
