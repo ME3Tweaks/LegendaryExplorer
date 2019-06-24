@@ -24,7 +24,6 @@ namespace ME3Explorer.Unreal
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.isImmutableStruct(structType);
                 case MEGame.ME3:
-                    return ME3UnrealObjectInfo.isImmutableStruct(structType);
                 case MEGame.UDK:
                     return ME3UnrealObjectInfo.isImmutableStruct(structType);
                 default:
@@ -214,6 +213,25 @@ namespace ME3Explorer.Unreal
                     return ME3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
             }
             return null;
+        }
+
+        public static ClassInfo GetClassOrStructInfo(MEGame game, string typeName)
+        {
+            ClassInfo result = null;
+            switch (game)
+            {
+                case MEGame.ME1:
+                    _ = ME1UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME1UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
+                    break;
+                case MEGame.ME2:
+                    _ = ME2UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME2UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
+                    break;
+                case MEGame.ME3:
+                    _ = ME3UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME3UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
+                    break;
+            }
+
+            return result;
         }
     }
 
@@ -458,15 +476,15 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static PropertyCollection getDefaultStructValue(string className, bool stripTransients)
+        public static PropertyCollection getDefaultStructValue(string structName, bool stripTransients)
         {
-            bool isImmutable = UnrealObjectInfo.isImmutable(className, MEGame.ME3);
-            if (Structs.ContainsKey(className))
+            bool isImmutable = UnrealObjectInfo.isImmutable(structName, MEGame.ME3);
+            if (Structs.ContainsKey(structName))
             {
                 try
                 {
                     PropertyCollection structProps = new PropertyCollection();
-                    ClassInfo info = Structs[className];
+                    ClassInfo info = Structs[structName];
                     while (info != null)
                     {
                         foreach ((string propName, PropertyInfo propInfo) in info.properties)
@@ -491,7 +509,7 @@ namespace ME3Explorer.Unreal
                             {
                                 var exportToRead = importPCC.getUExport(info.exportIndex);
                                 byte[] buff = exportToRead.Data.Skip(0x24).ToArray();
-                                PropertyCollection defaults = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
+                                PropertyCollection defaults = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), structName);
                                 foreach (var prop in defaults)
                                 {
                                     structProps.TryReplaceProp(prop);
@@ -513,7 +531,7 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        private static UProperty getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
+        public static UProperty getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
         {
             switch (propInfo.type)
             {
@@ -525,7 +543,7 @@ namespace ME3Explorer.Unreal
                 case PropertyType.DelegateProperty:
                     return new ObjectProperty(0, propName);
                 case PropertyType.NameProperty:
-                    return new NameProperty() { Value = "None", Name = propName };
+                    return new NameProperty("None", propName);
                 case PropertyType.BoolProperty:
                     return new BoolProperty(false, propName);
                 case PropertyType.ByteProperty when propInfo.IsEnumProp():

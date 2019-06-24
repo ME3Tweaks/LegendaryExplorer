@@ -19,10 +19,10 @@ namespace ME3Explorer.Unreal.Classes
 
         //Bool Properties
 
-        public bool bSkipTickWhenZeroWeight = false;
+        public bool bSkipTickWhenZeroWeight;
         //Name Properties
 
-        public int NodeName;
+        public string NodeName;
         //Float Properties
 
         public float NodeTotalWeight;
@@ -41,71 +41,29 @@ namespace ME3Explorer.Unreal.Classes
 
         #endregion
 
-        public int MyIndex;
-        public ME3Package pcc;
+        public IExportEntry Export;
+        public IMEPackage pcc;
         public byte[] data;
-        public List<PropertyReader.Property> Props;
 
-        public AnimNodeSlot(ME3Package Pcc, int Index)
+        public AnimNodeSlot(IExportEntry export)
         {
-            pcc = Pcc;
-            MyIndex = Index;
-            if (pcc.isExport(Index))
-                data = pcc.Exports[Index].Data;
-            Props = PropertyReader.getPropList(pcc.Exports[Index]);
-            
-            Children = new List<ChildrenEntry>();            
-            foreach (PropertyReader.Property p in Props)
-                switch (pcc.getNameEntry(p.Name))
-                {
+            pcc = export.FileRef;
+            Export = export;
+            data = export.Data;
 
-                    case "bSkipTickWhenZeroWeight":
-                        if (p.raw[p.raw.Length - 1] == 1)
-                            bSkipTickWhenZeroWeight = true;
-                        break;
-                    case "NodeName":
-                        NodeName = p.Value.IntValue;
-                        break;
-                    case "NodeTotalWeight":
-                        NodeTotalWeight = BitConverter.ToSingle(p.raw, p.raw.Length - 4);
-                        break;
-                    case "Children":
-                        ReadChildren(p.raw);
-                        break;
-                }
-        }
+            PropertyCollection props = export.GetProperties();
 
-        public void ReadChildren(byte[] raw)
-        {
-            int count = GetArrayCount(raw);
-            byte[] buff = GetArrayContent(raw);
-            int pos = 0;
-            for (int i = 0; i < count; i++)
+            NodeName = props.GetPropOrDefault<NameProperty>("NodeName").Value.InstancedString;
+            bSkipTickWhenZeroWeight = props.GetPropOrDefault<BoolProperty>("bSkipTickWhenZeroWeight").Value;
+            NodeTotalWeight = props.GetPropOrDefault<FloatProperty>("NodeTotalWeight").Value;
+            Children = props.GetPropOrDefault<ArrayProperty<StructProperty>>("Children").Select(prop => new ChildrenEntry
             {
-                List<PropertyReader.Property> pp = PropertyReader.ReadProp(pcc, buff, pos);
-                pos = pp[pp.Count - 1].offend;
-                ChildrenEntry e = new ChildrenEntry();
-                foreach (PropertyReader.Property p in pp)
-                    switch (pcc.getNameEntry(p.Name))
-                    {
-                        case "Name":
-                            e.Name = pcc.getNameEntry(p.Value.IntValue);
-                            break;
-                        case "Weight":
-                            e.Weight = BitConverter.ToSingle(p.raw, p.raw.Length - 4);
-                            break;
-                        case "Anim":
-                            e.Anim = p.Value.IntValue;
-                            break;
-                        case "bMirrorSkeleton":
-                            e.bMirrorSkeleton = (p.raw[p.raw.Length - 1] == 1);
-                            break;
-                        case "bIsAdditive":
-                            e.bIsAdditive = (p.raw[p.raw.Length - 1] == 1);
-                            break;
-                    }
-                Children.Add(e);
-            }
+                Name = prop.GetPropOrDefault<NameProperty>("Name").Value.InstancedString,
+                Weight = prop.GetPropOrDefault<FloatProperty>("Weight").Value,
+                Anim = prop.GetPropOrDefault<ObjectProperty>("Anim").Value,
+                bIsAdditive = prop.GetPropOrDefault<BoolProperty>("bIsAdditive").Value,
+                bMirrorSkeleton = prop.GetPropOrDefault<BoolProperty>("bMirrorSkeleton").Value
+            }).ToList();
         }
 
         public int GetArrayCount(byte[] raw)
@@ -123,9 +81,9 @@ namespace ME3Explorer.Unreal.Classes
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode(pcc.Exports[MyIndex].ObjectName + "(#" + MyIndex + ")");
+            TreeNode res = new TreeNode($"{Export.ObjectName}(#{Export.UIndex})");
             res.Nodes.Add("bSkipTickWhenZeroWeight : " + bSkipTickWhenZeroWeight);
-            res.Nodes.Add("NodeName : " + pcc.getNameEntry(NodeName));
+            res.Nodes.Add("NodeName : " + NodeName);
             res.Nodes.Add("NodeTotalWeight : " + NodeTotalWeight);
             res.Nodes.Add(ChildrenToTree());
             return res;
@@ -141,11 +99,11 @@ namespace ME3Explorer.Unreal.Classes
                 t.Nodes.Add("Name : " + Children[i].Name);
                 t.Nodes.Add("Weight : " + Children[i].Weight);
                 t.Nodes.Add("Anim : " + Children[i].Anim);
-                if (pcc.isExport(idx))
-                    switch (pcc.Exports[idx].ClassName)
+                if (pcc.isUExport(idx))
+                    switch (pcc.getUExport(idx).ClassName)
                     {
                         case "AnimNodeSlot":
-                            AnimNodeSlot ans = new AnimNodeSlot(pcc, idx);
+                            AnimNodeSlot ans = new AnimNodeSlot(pcc.getUExport(idx));
                             t.Nodes.Add(ans.ToTree());
                             break;
                     }

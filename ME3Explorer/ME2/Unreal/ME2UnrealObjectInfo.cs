@@ -331,7 +331,7 @@ namespace ME2Explorer.Unreal
                 case PropertyType.DelegateProperty:
                     return new ObjectProperty(0, propName);
                 case PropertyType.NameProperty:
-                    return new NameProperty() { Value = "None", Name = propName };
+                    return new NameProperty("None", propName);
                 case PropertyType.BoolProperty:
                     return new BoolProperty(false, propName);
                 case PropertyType.ByteProperty when propInfo.IsEnumProp():

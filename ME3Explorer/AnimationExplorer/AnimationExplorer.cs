@@ -49,16 +49,15 @@ namespace ME3Explorer.AnimationExplorer
         {
             AT = new List<AnimTree>();
             AS = new List<AnimSet>();
-            for (int i = 0; i < Pcc.Exports.Count; i++)
+            foreach (IExportEntry exportEntry in Pcc.Exports)
             {
-                IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
-                switch (Exports[i].ClassName)
+                switch (exportEntry.ClassName)
                 {
                     case "AnimTree":
-                        AT.Add(new AnimTree(Pcc as ME3Package, i));
+                        AT.Add(new AnimTree(exportEntry));
                         break;
                     case "AnimSet":
-                        AS.Add(new AnimSet(Pcc as ME3Package, i));
+                        AS.Add(new AnimSet(exportEntry));
                         break;
                 }
             }

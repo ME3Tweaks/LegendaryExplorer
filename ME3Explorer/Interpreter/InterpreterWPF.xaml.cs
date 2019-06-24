@@ -442,7 +442,7 @@ namespace ME3Explorer
                         newProperty = new ArrayProperty<IntProperty>(propName); //We can just set it to int as it will be reparsed and resolved.
                         break;
                     case PropertyType.NameProperty:
-                        newProperty = new NameProperty(propName) { Value = "None" };
+                        newProperty = new NameProperty("None", propName);
                         break;
                     case PropertyType.ByteProperty:
                         if (propInfo.IsEnumProp())
@@ -1062,7 +1062,7 @@ namespace ME3Explorer
             UPropertyTreeViewEntry newSelectedItem = (UPropertyTreeViewEntry)e.NewValue;
             //list of visible elements for editing
             var SupportedEditorSetElements = new List<FrameworkElement>();
-            if (newSelectedItem.Property != null)
+            if (newSelectedItem?.Property != null)
             {
                 switch (newSelectedItem.Property)
                 {
@@ -1659,7 +1659,7 @@ namespace ME3Explorer
                 switch (propertyToAddItemTo)
                 {
                     case ArrayProperty<NameProperty> anp:
-                        NameProperty np = new NameProperty { Value = new NameReference(Pcc.getNameEntry(0)) };
+                        NameProperty np = new NameProperty("None");
                         anp.Insert(insertIndex, np);
                         break;
                     case ArrayProperty<ObjectProperty> aop:
@@ -1879,16 +1879,16 @@ namespace ME3Explorer
             {
                 if (Property == null) return false;
 
-                switch (Property.PropType)
+                switch (Property)
                 {
-                    //case Unreal.PropertyType.BoolProperty:
-                    //case Unreal.PropertyType.ByteProperty:
-                    case Unreal.PropertyType.FloatProperty:
-                    case Unreal.PropertyType.IntProperty:
-                    //case Unreal.PropertyType.NameProperty:
-                    //case Unreal.PropertyType.StringRefProperty:
-                    case Unreal.PropertyType.StrProperty:
-                        //case Unreal.PropertyType.ObjectProperty:
+                    //case BoolProperty _:
+                    //case ByteProperty _:
+                    case FloatProperty _:
+                    case IntProperty _:
+                    //case NameProperty _:
+                    //case StringRefProperty _:
+                    case StrProperty _:
+                    //case ObjectProperty _:
                         return true;
                     default:
                         return false;
