@@ -2981,6 +2981,7 @@ namespace ME3Explorer
                     i++;
                     var boneRotCount = TrackOffsets[i].Value;
                     int l = 12; // 12 length of rotation by default
+                    var RotKeys = new BinInterpTreeItem();
                     switch(rotCompression)
                     {
                         case AnimationCompressionFormat.ACF_None:
@@ -2991,7 +2992,7 @@ namespace ME3Explorer
                                     l = 16;
 
                                 offset = animBinStart + boneRotOffset + r * l;
-                                var RotKeys = new BinInterpTreeItem
+                                RotKeys = new BinInterpTreeItem
                                 {
                                     Header = $"0x{offset:X5} RotKey {r}",
                                     Name = "_" + offset,
@@ -3042,7 +3043,7 @@ namespace ME3Explorer
                         case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
                         case AnimationCompressionFormat.ACF_Float32NoW:
                         case AnimationCompressionFormat.ACF_BioFixed48:
-                            var RotKeys = new BinInterpTreeItem
+                            RotKeys = new BinInterpTreeItem
                             {
                                 Header = $"0x{offset:X5} Rotationformat {rotCompression} cannot be parsed at this time.",
                                 Name = "_" + offset,
