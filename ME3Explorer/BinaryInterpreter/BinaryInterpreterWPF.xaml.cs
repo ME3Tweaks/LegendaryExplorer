@@ -3038,16 +3038,18 @@ namespace ME3Explorer
                             }
                             break;
                         case AnimationCompressionFormat.ACF_Fixed48NoW:
-                            break;
                         case AnimationCompressionFormat.ACF_Fixed32NoW:
-                            break;
                         case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
-                            break;
                         case AnimationCompressionFormat.ACF_Float32NoW:
-                            break;
                         case AnimationCompressionFormat.ACF_BioFixed48:
+                            var RotKeys = new BinInterpTreeItem
+                            {
+                                Header = $"0x{offset:X5} Rotationformat {rotCompression} cannot be parsed at this time.",
+                                Name = "_" + offset,
+                                Tag = NodeType.Unknown
+                            };
+                            BoneID.Items.Add(RotKeys);
                             break;
-
                     }
                     
                     bone++;
