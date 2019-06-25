@@ -450,6 +450,9 @@ namespace ME3Explorer
                     case "FaceFXAnimSet":
                         subNodes = StartFaceFXAnimSetScan(data, ref binarystart);
                         break;
+                    case "AnimSequence":
+                        subNodes = StartAnimSequenceScan(data, ref binarystart);
+                        break;
                     default:
                         if (CurrentLoadedExport.HasStack)
                         {
@@ -2887,6 +2890,140 @@ namespace ME3Explorer
                         });
                         offset += sndStrLgth;
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpTreeItem() { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
+
+        private List<object> StartAnimSequenceScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<object>();
+            var game = CurrentLoadedExport.FileRef.Game;
+
+            try
+            {
+                var TrackOffsets = CurrentLoadedExport.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets");
+                var animsetData = CurrentLoadedExport.GetProperty<ObjectProperty>("m_pBioAnimSetData");
+                var boneList = Pcc.getUExport(animsetData.Value).GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames").ToList();
+                int offset = binarystart;
+
+                int binLength = BitConverter.ToInt32(data, offset);
+                var LengthNode = new BinInterpTreeItem
+                {
+                    Header = $"0x{offset:X4} AnimBinary length: {binLength}",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafInt
+                };
+                offset += 4;
+                subnodes.Add(LengthNode);
+                var animBinStart = offset;
+                
+                int bone = 0;
+            
+                for (int i = 0; i < TrackOffsets.Count; i++)
+                {
+                    var bonePosOffset = TrackOffsets[i].Value;
+                    i++;
+                    var bonePosCount = TrackOffsets[i].Value;
+                    var BoneID = new BinInterpTreeItem
+                    {
+                        Header = $"0x{offset:X5} Bone: {bone} {boneList[bone].Value}",
+                        Name = "_" + offset,
+                        Tag = NodeType.Unknown
+                    };
+                    subnodes.Add(BoneID);
+
+                    for (int c = 0; c < bonePosCount; c++)
+                    {
+                        offset = animBinStart + bonePosOffset + c * 12;
+                        var PosKeys = new BinInterpTreeItem
+                        {
+                            Header = $"0x{offset:X5} PosKey {c}",
+                            Name = "_" + offset,
+                            Tag = NodeType.Unknown
+                        };
+                        BoneID.Items.Add(PosKeys);
+
+
+                        var posX = BitConverter.ToSingle(data, offset);
+                        PosKeys.Items.Add(new BinInterpTreeItem
+                        {
+                            Header = $"0x{offset:X5} X: {posX} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafFloat
+                        });
+                        offset += 4;
+                        var posY = BitConverter.ToSingle(data, offset);
+                        PosKeys.Items.Add(new BinInterpTreeItem
+                        {
+                            Header = $"0x{offset:X5} Y: {posY} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafFloat
+                        });
+                        offset += 4;
+                        var posZ = BitConverter.ToSingle(data, offset);
+                        PosKeys.Items.Add(new BinInterpTreeItem
+                        {
+                            Header = $"0x{offset:X5} Z: {posZ} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafFloat
+                        });
+                        offset += 4;
+                        //var posW = BitConverter.ToSingle(data, offset);
+                        //PosKeys.Items.Add(new BinInterpTreeItem
+                        //{
+                        //    Header = $"0x{offset:X5} PosW: {posW} ",
+                        //    Name = "_" + offset,
+                        //    Tag = NodeType.StructLeafFloat
+                        //});
+                    }
+                    i++;
+                    var boneRotOffset = TrackOffsets[i].Value;
+                    i++;
+                    var boneRotCount = TrackOffsets[i].Value;
+
+                    for (int r = 0; r < boneRotCount; r++)
+                    {
+                        offset = animBinStart + boneRotOffset + r * 12;
+                        var RotKeys = new BinInterpTreeItem
+                        {
+                            Header = $"0x{offset:X5} RotKey {r}",
+                            Name = "_" + offset,
+                            Tag = NodeType.Unknown
+                        };
+                        BoneID.Items.Add(RotKeys);
+
+
+                        var rotX = BitConverter.ToSingle(data, offset);
+                        RotKeys.Items.Add(new BinInterpTreeItem
+                        {
+                            Header = $"0x{offset:X5} RotX: {rotX} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafFloat
+                        });
+                        offset += 4;
+                        var rotY = BitConverter.ToSingle(data, offset);
+                        RotKeys.Items.Add(new BinInterpTreeItem
+                        {
+                            Header = $"0x{offset:X5} RotY: {rotY} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafFloat
+                        });
+                        offset += 4;
+                        var rotZ = BitConverter.ToSingle(data, offset);
+                        RotKeys.Items.Add(new BinInterpTreeItem
+                        {
+                            Header = $"0x{offset:X5} RotZ: {rotZ} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafFloat
+                        });
+                        offset += 4;
+                    }
+                    bone++;
                 }
             }
             catch (Exception ex)
