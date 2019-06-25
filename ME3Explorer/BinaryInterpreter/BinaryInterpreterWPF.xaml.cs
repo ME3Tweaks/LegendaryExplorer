@@ -2909,6 +2909,7 @@ namespace ME3Explorer
                 var TrackOffsets = CurrentLoadedExport.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets");
                 var animsetData = CurrentLoadedExport.GetProperty<ObjectProperty>("m_pBioAnimSetData");
                 var boneList = Pcc.getUExport(animsetData.Value).GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames").ToList();
+                Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("RotationCompressionFormat").Value.Name, out AnimationCompressionFormat rotCompression);
                 int offset = binarystart;
 
                 int binLength = BitConverter.ToInt32(data, offset);
@@ -2973,56 +2974,82 @@ namespace ME3Explorer
                             Tag = NodeType.StructLeafFloat
                         });
                         offset += 4;
-                        //var posW = BitConverter.ToSingle(data, offset);
-                        //PosKeys.Items.Add(new BinInterpTreeItem
-                        //{
-                        //    Header = $"0x{offset:X5} PosW: {posW} ",
-                        //    Name = "_" + offset,
-                        //    Tag = NodeType.StructLeafFloat
-                        //});
+
                     }
                     i++;
                     var boneRotOffset = TrackOffsets[i].Value;
                     i++;
                     var boneRotCount = TrackOffsets[i].Value;
-
-                    for (int r = 0; r < boneRotCount; r++)
+                    int l = 12; // 12 length of rotation by default
+                    switch(rotCompression)
                     {
-                        offset = animBinStart + boneRotOffset + r * 12;
-                        var RotKeys = new BinInterpTreeItem
-                        {
-                            Header = $"0x{offset:X5} RotKey {r}",
-                            Name = "_" + offset,
-                            Tag = NodeType.Unknown
-                        };
-                        BoneID.Items.Add(RotKeys);
+                        case AnimationCompressionFormat.ACF_None:
+                        case AnimationCompressionFormat.ACF_Float96NoW:
+                            for (int r = 0; r < boneRotCount; r++)
+                            {
+                                if (rotCompression == AnimationCompressionFormat.ACF_None)
+                                    l = 16;
+
+                                offset = animBinStart + boneRotOffset + r * l;
+                                var RotKeys = new BinInterpTreeItem
+                                {
+                                    Header = $"0x{offset:X5} RotKey {r}",
+                                    Name = "_" + offset,
+                                    Tag = NodeType.Unknown
+                                };
+                                BoneID.Items.Add(RotKeys);
 
 
-                        var rotX = BitConverter.ToSingle(data, offset);
-                        RotKeys.Items.Add(new BinInterpTreeItem
-                        {
-                            Header = $"0x{offset:X5} RotX: {rotX} ",
-                            Name = "_" + offset,
-                            Tag = NodeType.StructLeafFloat
-                        });
-                        offset += 4;
-                        var rotY = BitConverter.ToSingle(data, offset);
-                        RotKeys.Items.Add(new BinInterpTreeItem
-                        {
-                            Header = $"0x{offset:X5} RotY: {rotY} ",
-                            Name = "_" + offset,
-                            Tag = NodeType.StructLeafFloat
-                        });
-                        offset += 4;
-                        var rotZ = BitConverter.ToSingle(data, offset);
-                        RotKeys.Items.Add(new BinInterpTreeItem
-                        {
-                            Header = $"0x{offset:X5} RotZ: {rotZ} ",
-                            Name = "_" + offset,
-                            Tag = NodeType.StructLeafFloat
-                        });
-                        offset += 4;
+                                var rotX = BitConverter.ToSingle(data, offset);
+                                RotKeys.Items.Add(new BinInterpTreeItem
+                                {
+                                    Header = $"0x{offset:X5} RotX: {rotX} ",
+                                    Name = "_" + offset,
+                                    Tag = NodeType.StructLeafFloat
+                                });
+                                offset += 4;
+                                var rotY = BitConverter.ToSingle(data, offset);
+                                RotKeys.Items.Add(new BinInterpTreeItem
+                                {
+                                    Header = $"0x{offset:X5} RotY: {rotY} ",
+                                    Name = "_" + offset,
+                                    Tag = NodeType.StructLeafFloat
+                                });
+                                offset += 4;
+                                var rotZ = BitConverter.ToSingle(data, offset);
+                                RotKeys.Items.Add(new BinInterpTreeItem
+                                {
+                                    Header = $"0x{offset:X5} RotZ: {rotZ} ",
+                                    Name = "_" + offset,
+                                    Tag = NodeType.StructLeafFloat
+                                });
+                                offset += 4;
+                                if(rotCompression == AnimationCompressionFormat.ACF_None)
+                                {
+                                    var rotW = BitConverter.ToSingle(data, offset);
+                                    RotKeys.Items.Add(new BinInterpTreeItem
+                                    {
+                                        Header = $"0x{offset:X5} RotW: {rotW} ",
+                                        Name = "_" + offset,
+                                        Tag = NodeType.StructLeafFloat
+                                    });
+                                    offset += 4;
+                                }
+                            }
+                            break;
+                        case AnimationCompressionFormat.ACF_Fixed48NoW:
+                            break;
+                        case AnimationCompressionFormat.ACF_Fixed32NoW:
+                            break;
+                        case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
+                            break;
+                        case AnimationCompressionFormat.ACF_Float32NoW:
+                            break;
+                        case AnimationCompressionFormat.ACF_BioFixed48:
+                            break;
+
                     }
+                    
                     bone++;
                 }
             }
