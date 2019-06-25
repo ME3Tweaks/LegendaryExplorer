@@ -36,25 +36,25 @@ namespace ME3Explorer
             Read(m);
         }
 
-        public void PortToME1Export(IExportEntry destExport)
+        public void PortToME1Export(ExportEntry destExport)
         {
             MemoryStream m = GetSTMBinaryData(destExport);
             destExport.setBinaryData(m.ToArray());
         }
 
-        public void PortToME2Export(IExportEntry destExport)
+        public void PortToME2Export(ExportEntry destExport)
         {
             MemoryStream m = GetSTMBinaryData(destExport);
             destExport.setBinaryData(m.ToArray());
         }
 
-        public void PortToME3Export(IExportEntry destExport)
+        public void PortToME3Export(ExportEntry destExport)
         {
             MemoryStream m = GetSTMBinaryData(destExport);
             destExport.setBinaryData(m.ToArray());
         }
 
-        private MemoryStream GetSTMBinaryData(IExportEntry destExport)
+        private MemoryStream GetSTMBinaryData(ExportEntry destExport)
         {
             MemoryStream m = new MemoryStream();
             //Properties

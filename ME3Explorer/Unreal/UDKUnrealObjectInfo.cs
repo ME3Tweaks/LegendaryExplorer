@@ -130,7 +130,7 @@ namespace ME3Explorer.Unreal
             return null;
         }*/
 
-        public static ArrayType getArrayType(string className, string propName, IExportEntry export = null)
+        public static ArrayType getArrayType(string className, string propName, ExportEntry export = null)
         {
             if (!IsLoaded) loadfromJSON();
             PropertyInfo p = getPropertyInfo(className, propName, false, containingExport: export);
@@ -215,7 +215,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, IExportEntry containingExport = null)
+        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
             if (!IsLoaded) loadfromJSON();
             if (className.StartsWith("Default__"))
@@ -267,7 +267,7 @@ namespace ME3Explorer.Unreal
                     if (containingExport != null && containingExport.idxClassParent > 0)
                     {
                         //Class parent is in this file. Generate class parent info and attempt refetch
-                        IExportEntry parentExport = containingExport.FileRef.getUExport(containingExport.idxClassParent);
+                        ExportEntry parentExport = containingExport.FileRef.getUExport(containingExport.idxClassParent);
                         return getPropertyInfo(parentExport.ClassParent, propName, inStruct, generateClassInfo(parentExport), reSearch: true, parentExport);
                     }
                 }
@@ -317,10 +317,10 @@ namespace ME3Explorer.Unreal
                 {
                     using (ME3Package pcc = MEPackageHandler.OpenME3Package(files[i]))
                     {
-                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        IReadOnlyList<ExportEntry> Exports = pcc.Exports;
                         for (int j = 0; j < Exports.Count; j++)
                         {
-                            IExportEntry exportEntry = Exports[j];
+                            ExportEntry exportEntry = Exports[j];
                             if (exportEntry.ClassName == "Enum")
                             {
                                 generateEnumValues(j, pcc);
@@ -465,7 +465,7 @@ namespace ME3Explorer.Unreal
                 info.pccPath = pcc.FilePath; //used for dynamic resolution of files outside the game directory.
             }
 
-            foreach (IExportEntry entry in pcc.Exports)
+            foreach (ExportEntry entry in pcc.Exports)
             {
                 if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
@@ -508,7 +508,7 @@ namespace ME3Explorer.Unreal
             }
         }
         */
-        private static PropertyInfo getProperty(UDKPackage pcc, IExportEntry entry)
+        private static PropertyInfo getProperty(UDKPackage pcc, ExportEntry entry)
         {
             if (!IsLoaded) loadfromJSON();
             PropertyInfo p = new PropertyInfo();
@@ -603,7 +603,7 @@ namespace ME3Explorer.Unreal
             return p;
         }
         
-        internal static ClassInfo generateClassInfo(IExportEntry export)
+        internal static ClassInfo generateClassInfo(ExportEntry export)
         {
             if (!IsLoaded) loadfromJSON();
             return generateClassInfo(export.Index, export.FileRef as UDKPackage);

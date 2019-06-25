@@ -85,7 +85,7 @@ namespace MassEffect.NativesEditor.Views
             if (CodexMapControl != null)
             {
 
-                if (CodexMapView.TryFindCodexMap(Pcc, out IExportEntry export, out int _))
+                if (CodexMapView.TryFindCodexMap(Pcc, out ExportEntry export, out int _))
                 {
                     using (var stream = new MemoryStream())
                     {
@@ -102,7 +102,7 @@ namespace MassEffect.NativesEditor.Views
             if (QuestMapControl != null)
             {
 
-                if (QuestMapControl.TryFindQuestMap(Pcc, out IExportEntry export, out int _))
+                if (QuestMapControl.TryFindQuestMap(Pcc, out ExportEntry export, out int _))
                 {
                     using (var stream = new MemoryStream())
                     {
@@ -119,7 +119,7 @@ namespace MassEffect.NativesEditor.Views
             if (StateEventMapControl != null)
             {
 
-                if (StateEventMapView.TryFindStateEventMap(Pcc, out IExportEntry export))
+                if (StateEventMapView.TryFindStateEventMap(Pcc, out ExportEntry export))
                 {
                     using (var stream = new MemoryStream())
                     {

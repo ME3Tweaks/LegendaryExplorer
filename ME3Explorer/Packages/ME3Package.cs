@@ -171,7 +171,7 @@ namespace ME3Explorer.Packages
                 imp.PropertyChanged += importChanged;
                 imports.Add(imp);
             }
-            exports = new List<IExportEntry>();
+            exports = new List<ExportEntry>();
             inStream.Seek(ExportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ExportCount; i++)
             {
@@ -227,7 +227,7 @@ namespace ME3Explorer.Packages
                 //export table
                 ExportOffset = (int)m.Position;
                 ExportCount = exports.Count;
-                foreach (IExportEntry e in exports)
+                foreach (ExportEntry e in exports)
                 {
                     e.HeaderOffset = (uint)m.Position;
                     m.WriteFromBuffer(e.Header);
@@ -240,7 +240,7 @@ namespace ME3Explorer.Packages
                 Generations0ExportCount = ExportCount;
                 Generations0NameCount = NameCount;
                 //export data
-                foreach (IExportEntry e in exports)
+                foreach (ExportEntry e in exports)
                 {
                     UpdateOffsets(e, (int)m.Position);
 
@@ -277,7 +277,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        private static void UpdateOffsets(IExportEntry export, int newDataOffset)
+        private static void UpdateOffsets(ExportEntry export, int newDataOffset)
         {
             if (export.IsDefaultObject)
             {

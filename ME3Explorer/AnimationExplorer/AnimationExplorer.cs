@@ -49,7 +49,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             AT = new List<AnimTree>();
             AS = new List<AnimSet>();
-            foreach (IExportEntry exportEntry in Pcc.Exports)
+            foreach (ExportEntry exportEntry in Pcc.Exports)
             {
                 switch (exportEntry.ClassName)
                 {

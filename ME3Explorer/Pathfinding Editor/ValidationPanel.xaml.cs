@@ -35,7 +35,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private IMEPackage _pcc;
 
-        public IExportEntry PersistentLevel { get; private set; }
+        public ExportEntry PersistentLevel { get; private set; }
         public IMEPackage Pcc { get => _pcc; private set => SetProperty(ref _pcc, value); }
         BackgroundWorker fixAndValidateWorker;
         public ObservableCollectionExtended<ListBoxTask> ValidationTasks { get; } = new ObservableCollectionExtended<ListBoxTask>();
@@ -52,7 +52,7 @@ namespace ME3Explorer.Pathfinding_Editor
             BindingOperations.EnableCollectionSynchronization(ValidationTasks, _myCollectionLock);
         }
 
-        public void SetLevel(IExportEntry persistentLevel)
+        public void SetLevel(ExportEntry persistentLevel)
         {
             PersistentLevel = persistentLevel;
             Pcc = PersistentLevel.FileRef;
@@ -127,7 +127,7 @@ namespace ME3Explorer.Pathfinding_Editor
             int numRecalculated = 0;
             for (int i = 0; i < Pcc.ExportCount; i++)
             {
-                IExportEntry exp = Pcc.Exports[i];
+                ExportEntry exp = Pcc.Exports[i];
                 var pathList = exp.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
                 if (pathList != null)
                 {
@@ -139,7 +139,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         //reachSpecExportIndexes.Add(reachSpecObj.Value - 1);
                         bool isBad = false;
-                        IExportEntry spec = Pcc.getUExport(reachSpecObj.Value);
+                        ExportEntry spec = Pcc.getUExport(reachSpecObj.Value);
                         var specProps = spec.GetProperties();
                         ObjectProperty start = specProps.GetProp<ObjectProperty>("Start");
                         if (start.Value != exp.UIndex)
@@ -170,7 +170,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         }
                         /*if (endActorObj.Value > 0)
                         {
-                            IExportEntry expo = cc.Exports[endActorObj.Value - 1];
+                            ExportEntry expo = cc.Exports[endActorObj.Value - 1];
                             names.Add(expo.ClassName);
                         }*/
                         //
@@ -188,7 +188,7 @@ namespace ME3Explorer.Pathfinding_Editor
             task?.Complete($"{numRecalculated} ReachSpec{(numRecalculated == 1 ? "" : "s")} were recalculated");
         }
 
-        private bool calculateReachSpec(IExportEntry reachSpecExport, IExportEntry startNodeExport = null)
+        private bool calculateReachSpec(ExportEntry reachSpecExport, ExportEntry startNodeExport = null)
         {
 
             //Get start and end exports.
@@ -202,8 +202,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
             //We should capture GUID here
 
-            IExportEntry startNode = reachSpecExport.FileRef.getUExport(start.Value);
-            IExportEntry endNode = reachSpecExport.FileRef.getUExport(endActorObj.Value);
+            ExportEntry startNode = reachSpecExport.FileRef.getUExport(start.Value);
+            ExportEntry endNode = reachSpecExport.FileRef.getUExport(endActorObj.Value);
 
             if (startNodeExport != null && startNode.UIndex != startNodeExport.UIndex)
             {
@@ -320,7 +320,7 @@ namespace ME3Explorer.Pathfinding_Editor
             //This will update netindex'es for all items that start with TheWorld.PersistentLevel and are 3 items long.
 
             List<int> NetIndexesInUse = new List<int>();
-            foreach (IExportEntry exportEntry in Pcc.Exports)
+            foreach (ExportEntry exportEntry in Pcc.Exports)
             {
                 string path = exportEntry.GetFullPath;
                 string[] pieces = path.Split('.');
@@ -333,7 +333,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
 
             int nextNetIndex = 1;
-            foreach (IExportEntry exportEntry in Pcc.Exports)
+            foreach (ExportEntry exportEntry in Pcc.Exports)
             {
                 string path = exportEntry.GetFullPath;
                 string[] pieces = path.Split('.');
@@ -384,7 +384,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public void relinkPathfindingChain(ListBoxTask task = null)
         {
-            var pathfindingChain = new List<IExportEntry>();
+            var pathfindingChain = new List<ExportEntry>();
 
             byte[] data = PersistentLevel.getBinaryData();
             int start = 4;
@@ -401,7 +401,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 int itemexportid = BitConverter.ToInt32(data, start);
                 if (Pcc.isUExport(itemexportid))
                 {
-                    IExportEntry exportEntry = Pcc.getUExport(itemexportid);
+                    ExportEntry exportEntry = Pcc.getUExport(itemexportid);
                     StructProperty navGuid = exportEntry.GetProperty<StructProperty>("NavGuid");
                     if (navGuid != null)
                     {
@@ -419,8 +419,8 @@ namespace ME3Explorer.Pathfinding_Editor
             }
 
             //Filter so it only has nextNavigationPoint. This will drop the end node
-            var nextNavigationPointChain = new List<IExportEntry>();
-            foreach (IExportEntry exportEntry in pathfindingChain)
+            var nextNavigationPointChain = new List<ExportEntry>();
+            foreach (ExportEntry exportEntry in pathfindingChain)
             {
                 ObjectProperty nextNavigationPointProp = exportEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
 
@@ -435,7 +435,7 @@ namespace ME3Explorer.Pathfinding_Editor
             if (nextNavigationPointChain.Count > 0)
             {
                 //Follow chain to end to find end node
-                IExportEntry nodeEntry = nextNavigationPointChain[0];
+                ExportEntry nodeEntry = nextNavigationPointChain[0];
                 ObjectProperty nextNavPoint = nodeEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
 
                 while (nextNavPoint != null)
@@ -447,8 +447,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 //rebuild chain
                 for (int i = 0; i < nextNavigationPointChain.Count; i++)
                 {
-                    IExportEntry chainItem = nextNavigationPointChain[i];
-                    IExportEntry nextchainItem;
+                    ExportEntry chainItem = nextNavigationPointChain[i];
+                    ExportEntry nextchainItem;
                     if (i < nextNavigationPointChain.Count - 1)
                     {
                         nextchainItem = nextNavigationPointChain[i + 1];
@@ -496,7 +496,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 int itemexportid = BitConverter.ToInt32(data, start);
                 if (Pcc.isUExport(itemexportid) && itemexportid > 0)
                 {
-                    IExportEntry exportEntry = Pcc.getUExport(itemexportid);
+                    ExportEntry exportEntry = Pcc.getUExport(itemexportid);
                     StructProperty navguid = exportEntry.GetProperty<StructProperty>("NavGuid");
                     if (navguid != null)
                     {

@@ -125,7 +125,7 @@ namespace ME3Explorer.ME1TlkEditor
         }
 
         //SirC "efficiency is next to godliness" way of Checking export is ME1/TLK
-        public override bool CanParse(IExportEntry exportEntry) => exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "BioTlkFile";
+        public override bool CanParse(ExportEntry exportEntry) => exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "BioTlkFile";
 
         /// <summary>
         /// Memory cleanup when this control is unloaded
@@ -137,7 +137,7 @@ namespace ME3Explorer.ME1TlkEditor
             CleanedStrings?.ClearEx();
         }
 
-        public override void LoadExport(IExportEntry exportEntry)
+        public override void LoadExport(ExportEntry exportEntry)
         {
             var tlkFile = new ME1Explorer.Unreal.Classes.TalkFile(exportEntry); // Setup object as TalkFile
             LoadedStrings = tlkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine

@@ -103,7 +103,7 @@ namespace ME3Explorer.PackageEditorWPFControls
 
         private bool EntryTypesMatch()
         {
-            return (sourceEntry is IExportEntry && targetEntry is IExportEntry) || (sourceEntry is ImportEntry && targetEntry is ImportEntry);
+            return (sourceEntry is ExportEntry && targetEntry is ExportEntry) || (sourceEntry is ImportEntry && targetEntry is ImportEntry);
         }
 
         private void ReplaceData(object obj)
@@ -114,7 +114,7 @@ namespace ME3Explorer.PackageEditorWPFControls
 
         private bool CanReplaceData(object obj)
         {
-            return (sourceEntry is IExportEntry && targetEntry is IExportEntry && sourceEntry.ClassName == targetEntry.ClassName);
+            return (sourceEntry is ExportEntry && targetEntry is ExportEntry && sourceEntry.ClassName == targetEntry.ClassName);
         }
 
         public static PortingOption GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem)

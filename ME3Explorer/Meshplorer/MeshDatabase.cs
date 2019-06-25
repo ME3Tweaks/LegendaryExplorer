@@ -58,10 +58,10 @@ namespace ME3Explorer.Meshplorer
                         DBEntry ent = new DBEntry();
                         ent.filename = Path.GetFileName(file);
                         ent.Objects = new List<ObjInf>();
-                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        IReadOnlyList<ExportEntry> Exports = pcc.Exports;
                         for (int i = 0; i < Exports.Count; i++)
                         {
-                            IExportEntry ex = Exports[i];
+                            ExportEntry ex = Exports[i];
                             ObjInf obj;
                             switch (ex.ClassName)
                             {

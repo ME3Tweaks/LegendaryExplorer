@@ -28,7 +28,7 @@
             <ComboBox x:Name="FaceFXAnimSetComboBox" Margin="0" Width="463" ItemsSource="{Binding AnimSets}" SelectedItem="{Binding SelectedExport}"
                       Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}">
                 <ComboBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type packages:IExportEntry}">
+                    <DataTemplate DataType="{x:Type packages:ExportEntry}">
                         <TextBlock Text="{Binding GetFullPath}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>

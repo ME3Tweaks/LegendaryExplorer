@@ -45,7 +45,7 @@ namespace ME3Explorer.FaceFX
         public void ListRefresh()
         {
             Objects = new List<int>();
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
+            IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
             for (int i = 0; i < Exports.Count; i++)
                 if (Exports[i].ClassName == "FaceFXAnimSet")
                     Objects.Add(i);
@@ -70,7 +70,7 @@ namespace ME3Explorer.FaceFX
                 topNodeName = treeView2.TopNode.Name;
 
             }
-            IExportEntry exportEntry = Pcc.Exports[n];
+            ExportEntry exportEntry = Pcc.Exports[n];
             FaceFX = new ME3FaceFXAnimSet(Pcc, exportEntry);
             hb1.ByteProvider = new DynamicByteProvider(exportEntry.Data);
             treeView1.Nodes.Clear();

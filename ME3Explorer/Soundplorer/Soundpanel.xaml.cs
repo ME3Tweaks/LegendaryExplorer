@@ -65,7 +65,7 @@ namespace ME3Explorer
 
 
         //IMEPackage CurrentPackage; //used to tell when to update WwiseEvents list
-        //private Dictionary<IExportEntry, List<Tuple<string, int, double>>> WemIdsToWwwiseEventIdMapping = new Dictionary<IExportEntry, List<Tuple<string, int, double>>>();
+        //private Dictionary<ExportEntry, List<Tuple<string, int, double>>> WemIdsToWwwiseEventIdMapping = new Dictionary<ExportEntry, List<Tuple<string, int, double>>>();
 
         public override void PopOut()
         {
@@ -92,7 +92,7 @@ namespace ME3Explorer
             InitializeComponent();
         }
 
-        public override void LoadExport(IExportEntry exportEntry)
+        public override void LoadExport(ExportEntry exportEntry)
         {
             try
             {
@@ -105,8 +105,8 @@ namespace ME3Explorer
                 {
                     //update
                     WemIdsToWwwiseEventIdMapping.Clear();
-                    List<IExportEntry> wwiseEventExports = exportEntry.FileRef.Exports.Where(x => x.ClassName == "WwiseEvent").ToList();
-                    foreach (IExportEntry wwiseEvent in wwiseEventExports)
+                    List<ExportEntry> wwiseEventExports = exportEntry.FileRef.Exports.Where(x => x.ClassName == "WwiseEvent").ToList();
+                    foreach (ExportEntry wwiseEvent in wwiseEventExports)
                     {
                         StructProperty relationships = wwiseEvent.GetProperty<StructProperty>("Relationships");
                         IntProperty id = wwiseEvent.GetProperty<IntProperty>("Id");
@@ -379,7 +379,7 @@ namespace ME3Explorer
             _audioPlayer?.Dispose();
         }
 
-        public override bool CanParse(IExportEntry exportEntry)
+        public override bool CanParse(ExportEntry exportEntry)
         {
             //            return (/*(exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "SoundNodeWave") || */(exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
             return !exportEntry.IsDefaultObject && (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream");
@@ -390,7 +390,7 @@ namespace ME3Explorer
         /// </summary>
         /// <param name="forcedWemFile">WEM that we will force to get a stream for</param>
         /// <returns></returns>
-        public Stream getPCMStream(IExportEntry forcedWwiseStreamExport = null, EmbeddedWEMFile forcedWemFile = null)
+        public Stream getPCMStream(ExportEntry forcedWwiseStreamExport = null, EmbeddedWEMFile forcedWemFile = null)
         {
             if (CurrentLoadedISACTEntry != null)
             {
@@ -402,7 +402,7 @@ namespace ME3Explorer
             }
             else
             {
-                IExportEntry localCurrentExport = forcedWwiseStreamExport ?? CurrentLoadedExport;
+                ExportEntry localCurrentExport = forcedWwiseStreamExport ?? CurrentLoadedExport;
                 if (localCurrentExport != null || forcedWemFile != null)
                 {
                     if (localCurrentExport != null && localCurrentExport.ClassName == "WwiseStream")
@@ -884,7 +884,7 @@ namespace ME3Explorer
             MessageBox.Show("Done");
         }
 
-        public async Task ReplaceAudioFromWave(string sourceFile = null, IExportEntry forcedExport = null, WwiseConversionSettingsPackage conversionSettings = null)
+        public async Task ReplaceAudioFromWave(string sourceFile = null, ExportEntry forcedExport = null, WwiseConversionSettingsPackage conversionSettings = null)
         {
             string wwisePath = GetWwiseCLIPath(false);
             if (wwisePath == null) return;
@@ -1524,9 +1524,9 @@ namespace ME3Explorer
         /// Replaces the audio in the current loaded export, or the forced export. Will prompt user for a Wwise Encoded Ogg file.
         /// </summary>
         /// <param name="forcedExport">Export to update. If null, the currently loadedo ne is used instead.</param>
-        public void ReplaceAudioFromWwiseOgg(string oggPath = null, IExportEntry forcedExport = null)
+        public void ReplaceAudioFromWwiseOgg(string oggPath = null, ExportEntry forcedExport = null)
         {
-            IExportEntry exportToWorkOn = forcedExport ?? CurrentLoadedExport;
+            ExportEntry exportToWorkOn = forcedExport ?? CurrentLoadedExport;
             if (exportToWorkOn != null && exportToWorkOn.ClassName == "WwiseStream")
             {
                 WwiseStream w = new WwiseStream(exportToWorkOn);
@@ -1780,7 +1780,7 @@ namespace ME3Explorer
                             {
                                 s += $", Embedded WEM Object (by ID): {referencedWEMbyID.DisplayString}";
                             }
-                            //if (CurrentLoadedExport.FileRef.getEntry(val) is IExportEntry exp)
+                            //if (CurrentLoadedExport.FileRef.getEntry(val) is ExportEntry exp)
                             //{
                             //    s += $", Export: {exp.ObjectName}";
                             //}

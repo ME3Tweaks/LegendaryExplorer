@@ -1762,7 +1762,7 @@ namespace ME3Explorer.Unreal.Classes
                 selm.Objects = new List<int>();
                 for(int j =0;j<pcc.Exports.Count;j++)
                 {
-                    IExportEntry e =pcc.Exports[j];
+                    ExportEntry e =pcc.Exports[j];
                     if (e.ClassName == "Material" || e.ClassName == "MaterialInstanceConstant")
                     {
                         selm.listBox1.Items.Add(j + "\t" + e.ClassName + " : " + e.ObjectName);
@@ -2023,7 +2023,7 @@ namespace ME3Explorer.Unreal.Classes
                 selm.Objects = new List<int>();
                 for (int j = 0; j < pcc.Exports.Count; j++)
                 {
-                    IExportEntry e = pcc.Exports[j];
+                    ExportEntry e = pcc.Exports[j];
                     if (e.ClassName == "Material" || e.ClassName == "MaterialInstanceConstant")
                     {
                         selm.listBox1.Items.Add(j + "\t" + e.ClassName + " : " + e.ObjectName);

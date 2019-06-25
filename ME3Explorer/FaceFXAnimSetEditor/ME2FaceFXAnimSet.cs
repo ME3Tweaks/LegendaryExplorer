@@ -14,7 +14,7 @@ namespace ME3Explorer.FaceFX
     public class ME2FaceFXAnimSet : IFaceFXAnimSet
     {
         IMEPackage pcc;
-        public IExportEntry Export { get; }
+        public ExportEntry Export { get; }
         public ME2HeaderStruct header;
         public HeaderStruct Header => header;
 
@@ -25,7 +25,7 @@ namespace ME3Explorer.FaceFX
         {
         }
 
-        public ME2FaceFXAnimSet(IMEPackage Pcc, IExportEntry Entry)
+        public ME2FaceFXAnimSet(IMEPackage Pcc, ExportEntry Entry)
         {
             
             pcc = Pcc;

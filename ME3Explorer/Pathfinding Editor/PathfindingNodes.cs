@@ -25,7 +25,7 @@ namespace ME3Explorer.PathfindingNodes
         internal SText val;
 
         public List<Volume> Volumes = new List<Volume>();
-        public List<IExportEntry> ReachSpecs = new List<IExportEntry>();
+        public List<ExportEntry> ReachSpecs = new List<ExportEntry>();
 
         public abstract Color GetDefaultShapeColor();
         public abstract PPath GetDefaultShape();
@@ -111,7 +111,7 @@ namespace ME3Explorer.PathfindingNodes
         public override void CreateConnections(List<PathfindingNodeMaster> graphNodes)
         {
             ReachSpecs = (SharedPathfinding.GetReachspecExports(export));
-            foreach (IExportEntry spec in ReachSpecs)
+            foreach (ExportEntry spec in ReachSpecs)
             {
                 Pen penToUse = blackPen;
                 switch (spec.ObjectName)
@@ -137,7 +137,7 @@ namespace ME3Explorer.PathfindingNodes
                 }
                 //Get ending
                 PropertyCollection props = spec.GetProperties();
-                IExportEntry otherEndExport = SharedPathfinding.GetReachSpecEndExport(spec, props);
+                ExportEntry otherEndExport = SharedPathfinding.GetReachSpecEndExport(spec, props);
 
                 /*
                 if (props.GetProp<StructProperty>("End") is StructProperty endProperty &&

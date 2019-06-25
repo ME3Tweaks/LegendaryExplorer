@@ -90,7 +90,7 @@ namespace ME1Explorer
             PrepareHuffmanCoding();
         }
 
-        public void serializeTLKStrListToExport(IExportEntry export, bool savePackage = false)
+        public void serializeTLKStrListToExport(ExportEntry export, bool savePackage = false)
         {
             if (export.FileRef.Game != MEGame.ME1)
             {
@@ -99,7 +99,7 @@ namespace ME1Explorer
             serializeTalkfileToExport(export, savePackage);
         }
 
-        public void serializeTalkfileToExport(IExportEntry export, bool savePackage = false)
+        public void serializeTalkfileToExport(ExportEntry export, bool savePackage = false)
         {
             /* converts Huffmann Tree to binary form */
             byte[] treeBuffer = ConvertHuffmanTreeToBuffer();

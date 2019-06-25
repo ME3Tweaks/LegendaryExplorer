@@ -310,7 +310,7 @@ namespace MassEffect.NativesEditor.Views
             }
         }
 
-        public static bool TryFindStateEventMap(IMEPackage pcc, out IExportEntry export)
+        public static bool TryFindStateEventMap(IMEPackage pcc, out ExportEntry export)
         {
             export = pcc.Exports.FirstOrDefault(exp => exp.ClassName == "BioStateEventMap" && exp.ObjectName == "StateTransitionMap"); //ME1 has 2 BioStateEventMaps only want one named StateTransitionMap
 
@@ -319,7 +319,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void Open(IMEPackage pcc)
         {
-            if (!TryFindStateEventMap(pcc, out IExportEntry export))
+            if (!TryFindStateEventMap(pcc, out ExportEntry export))
             {
                 return;
             }

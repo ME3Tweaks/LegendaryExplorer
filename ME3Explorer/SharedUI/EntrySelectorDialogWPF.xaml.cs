@@ -45,7 +45,7 @@ namespace ME3Explorer.SharedUI
             }
             if (SupportedInputTypes.HasFlag(SupportedTypes.Exports))
             {
-                foreach (IExportEntry exp in Pcc.Exports)
+                foreach (ExportEntry exp in Pcc.Exports)
                 {
                     allEntriesBuilding.Add(exp);
                 }

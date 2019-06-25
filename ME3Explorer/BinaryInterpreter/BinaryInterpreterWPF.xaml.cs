@@ -178,7 +178,7 @@ namespace ME3Explorer
             "BioConsequenceMap"
         };
 
-        public override bool CanParse(IExportEntry exportEntry)
+        public override bool CanParse(ExportEntry exportEntry)
         {
             return exportEntry.HasStack || (ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.IsDefaultObject);
         }
@@ -198,7 +198,7 @@ namespace ME3Explorer
         private int PreviousLoadedUIndex = -1;
         private string PreviousSelectedTreeName = "";
 
-        public override void LoadExport(IExportEntry exportEntry)
+        public override void LoadExport(ExportEntry exportEntry)
         {
             LoadingNewData = true;
             ByteShift_UpDown.Value = 0;
@@ -3138,7 +3138,7 @@ namespace ME3Explorer
 
                 MemoryStream ms = new MemoryStream(data);
                 ms.Position = offset;
-                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true, entry: CurrentLoadedExport);
+                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport, ms, "ScriptStruct", includeNoneProperty: true, entry: CurrentLoadedExport);
 
                 UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
                 foreach (UProperty prop in scriptStructProperties)
@@ -3567,7 +3567,7 @@ namespace ME3Explorer
                         string name = val.ToString();
                         if (val > 0 && val <= CurrentLoadedExport.FileRef.Exports.Count)
                         {
-                            IExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
+                            ExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
                             nodeText += $"{i}: {name} {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
                         }
                         else if (val < 0 && val != int.MinValue && Math.Abs(val) <= CurrentLoadedExport.FileRef.Imports.Count)
@@ -3789,7 +3789,7 @@ namespace ME3Explorer
                                 subnodes.Add(parentnode);
                                 pos += 8;
                                 stream.Seek(pos, SeekOrigin.Begin);
-                                var props = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, stream, "BioStageCamera", includeNoneProperty: true);
+                                var props = PropertyCollection.ReadProps(CurrentLoadedExport, stream, "BioStageCamera", includeNoneProperty: true);
 
                                 UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
                                 foreach (UProperty prop in props)
@@ -4530,7 +4530,7 @@ namespace ME3Explorer
                     }
                     else if (itemexportid - 1 < CurrentLoadedExport.FileRef.Exports.Count)
                     {
-                        IExportEntry locexp = CurrentLoadedExport.FileRef.Exports[(int)itemexportid - 1];
+                        ExportEntry locexp = CurrentLoadedExport.FileRef.Exports[(int)itemexportid - 1];
                         //Console.WriteLine($"0x{start:X5} \t0x{itemexportid:X5} \t{locexp.PackageFullName}.{locexp.ObjectName}_{locexp.indexValue} [{itemexportid - 1}]");
                         levelSubnodes.Add(new BinInterpTreeItem
                         {
@@ -5546,7 +5546,7 @@ namespace ME3Explorer
 
                 if (val > 0 && val <= CurrentLoadedExport.FileRef.Exports.Count)
                 {
-                    IExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
+                    ExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
                     name += $" {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
                 }
                 else if (val < 0 && Math.Abs(val) <= CurrentLoadedExport.FileRef.Imports.Count)
@@ -7168,7 +7168,7 @@ namespace ME3Explorer
             try
             {
                 //get a list of staticmesh stuff from the props.
-                var smacitems = new List<IExportEntry>();
+                var smacitems = new List<ExportEntry>();
                 var props = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
 
                 foreach (var prop in props)
@@ -7206,7 +7206,7 @@ namespace ME3Explorer
                     {
                         Tag = NodeType.Unknown
                     };
-                    IExportEntry associatedData = smacitems[smcaindex];
+                    ExportEntry associatedData = smacitems[smcaindex];
                     string staticmesh = "";
                     string objtext = "Null - unused data";
                     if (associatedData != null)
@@ -7305,14 +7305,14 @@ namespace ME3Explorer
             try
             {
                 //get a list of lightcomponents from the props.
-                var slcaitems = new List<IExportEntry>();
+                var slcaitems = new List<ExportEntry>();
                 var props = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("LightComponents");
 
                 foreach (var prop in props)
                 {
                     if (prop.Value > 0)
                     {
-                        slcaitems.Add(CurrentLoadedExport.FileRef.getEntry(prop.Value) as IExportEntry);
+                        slcaitems.Add(CurrentLoadedExport.FileRef.getEntry(prop.Value) as ExportEntry);
                     }
                     else
                     {
@@ -7343,7 +7343,7 @@ namespace ME3Explorer
                     {
                         Tag = NodeType.Unknown
                     };
-                    IExportEntry assossiateddata = slcaitems[slcaindex];
+                    ExportEntry assossiateddata = slcaitems[slcaindex];
                     string objtext = "Null - unused data";
                     if (assossiateddata != null)
                     {
@@ -8111,7 +8111,7 @@ namespace ME3Explorer
                         {
                             s += $", Name: {CurrentLoadedExport.FileRef.getNameEntry(val)}";
                         }
-                        if (CurrentLoadedExport.FileRef.getEntry(val) is IExportEntry exp)
+                        if (CurrentLoadedExport.FileRef.getEntry(val) is ExportEntry exp)
                         {
                             s += $", Export: {exp.ObjectName}";
                         }
@@ -8458,7 +8458,7 @@ namespace ME3Explorer
             Tag = nodeType;
         }
 
-        public void PrintPretty(string indent, StringWriter str, bool last, IExportEntry associatedExport)
+        public void PrintPretty(string indent, StringWriter str, bool last, ExportEntry associatedExport)
         {
             bool supressNewLine = false;
             if (Header != null)

@@ -57,7 +57,7 @@ namespace ME3Explorer.SharedUI
             return PropertiesListView.SelectedItem != null;
         }
 
-        public static (string, PropertyInfo)? GetProperty(IExportEntry export, List<string> _existingProperties, MEGame game, Window callingWindow = null)
+        public static (string, PropertyInfo)? GetProperty(ExportEntry export, List<string> _existingProperties, MEGame game, Window callingWindow = null)
         {
             string origname = export.ClassName;
             string temp = export.ClassName;

@@ -20,7 +20,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 		    set => SetProperty(ref _stateEventsOffset, value);
 		}
 
-		public static BinaryBioStateEventMap Load(IExportEntry export)
+		public static BinaryBioStateEventMap Load(ExportEntry export)
 		{
 			if (export == null)
 			{

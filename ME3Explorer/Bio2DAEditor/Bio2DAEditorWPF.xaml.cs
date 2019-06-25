@@ -47,12 +47,12 @@ namespace ME3Explorer
             InitializeComponent();
         }
 
-        public override bool CanParse(IExportEntry exportEntry)
+        public override bool CanParse(ExportEntry exportEntry)
         {
             return !exportEntry.IsDefaultObject && exportEntry.ObjectName != "Default2DA" && (exportEntry.ClassName == "Bio2DA" || exportEntry.ClassName == "Bio2DANumberedRows");
         }
 
-        public override void LoadExport(IExportEntry exportEntry)
+        public override void LoadExport(ExportEntry exportEntry)
         {
             CurrentLoadedExport = exportEntry;
             Table2DA = new Bio2DA(CurrentLoadedExport);

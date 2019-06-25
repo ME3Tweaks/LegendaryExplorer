@@ -31,12 +31,12 @@ namespace ME3Explorer.Unreal.Classes
 
         #endregion
 
-        public IExportEntry Export;
+        public ExportEntry Export;
         public IMEPackage pcc;
         public byte[] data;
         public BioAnimSetData SetData;
 
-        public AnimSet(IExportEntry export)
+        public AnimSet(ExportEntry export)
         {
             pcc = export.FileRef;
             Export = export;

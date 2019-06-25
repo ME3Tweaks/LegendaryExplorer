@@ -17,16 +17,16 @@ namespace ME3Explorer
         /// </summary>
         /// <param name="exportEntry"></param>
         /// <returns></returns>
-        public abstract bool CanParse(IExportEntry exportEntry);
+        public abstract bool CanParse(ExportEntry exportEntry);
 
         /// <summary>
         /// The list of supported games that this loader control can handle. Typically used by CanParse().
         /// </summary>
-        private IExportEntry _currentLoadedExport;
+        private ExportEntry _currentLoadedExport;
         /// <summary>
         /// The currently loaded export, or null if none is currently loaded
         /// </summary>
-        public IExportEntry CurrentLoadedExport
+        public ExportEntry CurrentLoadedExport
         {
             get => _currentLoadedExport;
             protected set => SetProperty(ref _currentLoadedExport, value);
@@ -52,7 +52,7 @@ namespace ME3Explorer
         /// Loads an export into this control and initializes the control
         /// </summary>
         /// <param name="exportEntry"></param>
-        public abstract void LoadExport(IExportEntry exportEntry);
+        public abstract void LoadExport(ExportEntry exportEntry);
 
         /// <summary>
         /// Signals to the export loader control that the namelist has changed, and that

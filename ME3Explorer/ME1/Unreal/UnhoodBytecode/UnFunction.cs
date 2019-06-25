@@ -25,7 +25,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         public StatementList Statements { get; set; }
         public List<BytecodeSingularToken> Tokens;
 
-        internal UnFunction(IExportEntry export, string name, FlagValues flags, byte[] bytecode, int nativeIndex, int operatorPrecedence)
+        internal UnFunction(ExportEntry export, string name, FlagValues flags, byte[] bytecode, int nativeIndex, int operatorPrecedence)
             : base(export, bytecode)
         {
             _name = name;
@@ -92,15 +92,15 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             }
             result.Append(_self.ObjectName).Append("(");
             int paramCount = 0;
-            var locals = new List<IExportEntry>();
+            var locals = new List<ExportEntry>();
 
             Tokens = new List<BytecodeSingularToken>();
             Statements = ReadBytecode();
-            List<IExportEntry> childrenReversed = _self.FileRef.Exports.Where(x => x.idxLink == _self.UIndex).ToList();
+            List<ExportEntry> childrenReversed = _self.FileRef.Exports.Where(x => x.idxLink == _self.UIndex).ToList();
             childrenReversed.Reverse();
 
             //Get local children of this function
-            foreach (IExportEntry export in childrenReversed)
+            foreach (ExportEntry export in childrenReversed)
             {
                 //Reading parameters info...
                 if (export.ClassName.EndsWith("Property"))
@@ -200,7 +200,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             }
         }
 
-        public static string GetPropertyType(IExportEntry exp)
+        public static string GetPropertyType(ExportEntry exp)
         {
             switch (exp.ClassName)
             {

@@ -16,18 +16,18 @@ namespace ME3Explorer.FaceFX
     /// </summary>
     public partial class FaceFXEditor : WPFBase
     {
-        public ObservableCollectionExtended<IExportEntry> AnimSets { get; } = new ObservableCollectionExtended<IExportEntry>();
+        public ObservableCollectionExtended<ExportEntry> AnimSets { get; } = new ObservableCollectionExtended<ExportEntry>();
 
-        private IExportEntry _selectedExport;
+        private ExportEntry _selectedExport;
 
-        public IExportEntry SelectedExport
+        public ExportEntry SelectedExport
         {
             get => _selectedExport;
             set => SetProperty(ref _selectedExport, value);
         }
 
         private string FileQueuedForLoad;
-        private IExportEntry ExportQueuedForFocusing;
+        private ExportEntry ExportQueuedForFocusing;
         private string LineQueuedForFocusing;
 
         public FaceFXEditor()
@@ -37,7 +37,7 @@ namespace ME3Explorer.FaceFX
             DataContext = this;
         }
 
-        public FaceFXEditor(IExportEntry export, string lineName = null) : this()
+        public FaceFXEditor(ExportEntry export, string lineName = null) : this()
         {
             FileQueuedForLoad = export.FileRef.FilePath;
             ExportQueuedForFocusing = export;
@@ -126,7 +126,7 @@ namespace ME3Explorer.FaceFX
 
         private void RefreshComboBox()
         {
-            IExportEntry item = SelectedExport;
+            ExportEntry item = SelectedExport;
             AnimSets.ClearEx();
             AnimSets.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAnimSet"));
             if (AnimSets.Contains(item))

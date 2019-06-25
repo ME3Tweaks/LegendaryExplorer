@@ -633,7 +633,7 @@ namespace ME3Explorer.DialogueDumper
                     if (CheckConv)
                     {
 
-                        foreach (IExportEntry exp in pcc.Exports)
+                        foreach (ExportEntry exp in pcc.Exports)
                         {
                             if (DumpCanceled)
                             {
@@ -750,7 +750,7 @@ namespace ME3Explorer.DialogueDumper
                     //Build Table of conversation owner tags
                     if (CheckActor)
                     {
-                        foreach (IExportEntry exp in pcc.Exports)
+                        foreach (ExportEntry exp in pcc.Exports)
                         {
                             if (DumpCanceled)
                             {

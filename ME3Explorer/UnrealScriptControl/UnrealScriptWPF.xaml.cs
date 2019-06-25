@@ -62,12 +62,12 @@ namespace ME3Explorer
             InitializeComponent();
         }
 
-        public override bool CanParse(IExportEntry exportEntry)
+        public override bool CanParse(ExportEntry exportEntry)
         {
             return (exportEntry.ClassName == "Function" || exportEntry.ClassName == "State") && (exportEntry.FileRef.Game == MEGame.ME3 || exportEntry.FileRef.Game == MEGame.ME1);
         }
 
-        public override void LoadExport(IExportEntry exportEntry)
+        public override void LoadExport(ExportEntry exportEntry)
         {
             BytecodeStart = 0;
             CurrentLoadedExport = exportEntry;
@@ -284,7 +284,7 @@ namespace ME3Explorer
 
                             if (CurrentLoadedExport.FileRef.getEntry(val) is IEntry ent)
                             {
-                                string type = ent is IExportEntry ? "Export" : "Import";
+                                string type = ent is ExportEntry ? "Export" : "Import";
                                 if (ent.ObjectName == CurrentLoadedExport.ObjectName)
                                 {
                                     s += $", {type}: {ent.GetFullPath}";

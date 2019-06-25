@@ -9,7 +9,7 @@ namespace ME3Explorer.FaceFX
         ME3DataAnimSetStruct Data { get; }
         HeaderStruct Header { get; }
 
-        IExportEntry Export { get; }
+        ExportEntry Export { get; }
 
         void AddName(string s);
         void CloneEntry(int n);

@@ -10,7 +10,7 @@ using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
-    public abstract class ExportEntry : NotifyPropertyChangedBase, IExportEntry
+    public abstract class ExportEntry : NotifyPropertyChangedBase, IEntry
     {
         public IMEPackage FileRef { get; protected set; }
 
@@ -435,7 +435,7 @@ namespace ME3Explorer.Packages
                 parsingClass = FileRef.getEntry(idxClass); //class we are defaults of
             }
 
-            return PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
+            return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
             //  }
         }
 
@@ -573,7 +573,7 @@ namespace ME3Explorer.Packages
             this.Data = _data.Take(propsEnd()).Concat(binaryData).ToArray();
         }
 
-        public abstract IExportEntry Clone();
+        public abstract ExportEntry Clone();
     }
 
     [DebuggerDisplay("UDKExportEntry | {UIndex} = {GetFullPath}")]
@@ -608,7 +608,7 @@ namespace ME3Explorer.Packages
         {
         }
 
-        public override IExportEntry Clone()
+        public override ExportEntry Clone()
         {
             UDKExportEntry newExport = new UDKExportEntry(FileRef as UDKPackage)
             {
@@ -618,7 +618,7 @@ namespace ME3Explorer.Packages
             };
             int index = 0;
             string name = ObjectName;
-            foreach (IExportEntry ent in FileRef.Exports)
+            foreach (ExportEntry ent in FileRef.Exports)
             {
                 if (name == ent.ObjectName && ent.indexValue > index)
                 {
@@ -663,7 +663,7 @@ namespace ME3Explorer.Packages
         {
         }
 
-        public override IExportEntry Clone()
+        public override ExportEntry Clone()
         {
             ME3ExportEntry newExport = new ME3ExportEntry(FileRef as ME3Package)
             {
@@ -673,7 +673,7 @@ namespace ME3Explorer.Packages
             };
             int index = 0;
             string name = ObjectName;
-            foreach (IExportEntry ent in FileRef.Exports)
+            foreach (ExportEntry ent in FileRef.Exports)
             {
                 if (name == ent.ObjectName && ent.indexValue > index)
                 {
@@ -725,7 +725,7 @@ namespace ME3Explorer.Packages
         {
         }
 
-        public override IExportEntry Clone()
+        public override ExportEntry Clone()
         {
             ME2ExportEntry newExport = new ME2ExportEntry(FileRef as ME2Package)
             {
@@ -735,7 +735,7 @@ namespace ME3Explorer.Packages
             };
             int index = 0;
             string name = ObjectName;
-            foreach (IExportEntry ent in FileRef.Exports)
+            foreach (ExportEntry ent in FileRef.Exports)
             {
                 if (name == ent.ObjectName && ent.indexValue > index)
                 {
@@ -787,7 +787,7 @@ namespace ME3Explorer.Packages
         {
         }
 
-        public override IExportEntry Clone()
+        public override ExportEntry Clone()
         {
             ME1ExportEntry newExport = new ME1ExportEntry(FileRef as ME1Package)
             {
@@ -797,7 +797,7 @@ namespace ME3Explorer.Packages
             };
             int index = 0;
             string name = ObjectName;
-            foreach (IExportEntry ent in FileRef.Exports)
+            foreach (ExportEntry ent in FileRef.Exports)
             {
                 if (name == ent.ObjectName && ent.indexValue > index)
                 {

@@ -129,8 +129,8 @@ namespace ME3Explorer.Packages
         private void ReadLocalTLKs()
         {
             LocalTalkFiles.Clear();
-            List<IExportEntry> tlkFileSets = Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.ObjectName.StartsWith("Default__")).ToList();
-            var exportsToLoad = new List<IExportEntry>();
+            List<ExportEntry> tlkFileSets = Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.ObjectName.StartsWith("Default__")).ToList();
+            var exportsToLoad = new List<ExportEntry>();
             foreach(var tlkFileSet in tlkFileSets)
             {
                 MemoryStream r = new MemoryStream(tlkFileSet.Data);
@@ -206,7 +206,7 @@ namespace ME3Explorer.Packages
 
         private void ReadExports(MemoryStream fs)
         {
-            exports = new List<IExportEntry>();
+            exports = new List<ExportEntry>();
             fs.Seek(ExportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ExportCount; i++)
             {
@@ -279,7 +279,7 @@ namespace ME3Explorer.Packages
                 //export table
                 ExportOffset = (int)m.Position;
                 ExportCount = exports.Count;
-                foreach (IExportEntry e in exports)
+                foreach (ExportEntry e in exports)
                 {
                     e.HeaderOffset = (uint)m.Position;
                     m.WriteFromBuffer(e.Header);
@@ -290,7 +290,7 @@ namespace ME3Explorer.Packages
                 m.Write(new byte[FreeZoneSize], 0, FreeZoneSize);
                 expDataBegOffset = (int)m.Position;
                 //export data
-                foreach (IExportEntry e in exports)
+                foreach (ExportEntry e in exports)
                 {
                     e.DataOffset = (int)m.Position;
                     e.DataSize = e.Data.Length;

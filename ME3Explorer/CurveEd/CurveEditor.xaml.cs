@@ -43,7 +43,7 @@ namespace ME3Explorer.CurveEd
             }
         }
 
-        public static void OpenCurveEditorInWindow(IExportEntry export)
+        public static void OpenCurveEditorInWindow(ExportEntry export)
         {
             ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new CurveEditor(), export)
             {
@@ -52,7 +52,7 @@ namespace ME3Explorer.CurveEd
             elhw.Show();
         }
 
-        public override void LoadExport(IExportEntry exportEntry)
+        public override void LoadExport(ExportEntry exportEntry)
         {
             if (CurrentLoadedExport != exportEntry || !IsKeyboardFocusWithin)
             {
@@ -62,7 +62,7 @@ namespace ME3Explorer.CurveEd
             }
         }
 
-        public CurveEditor(IExportEntry exp)
+        public CurveEditor(ExportEntry exp)
         {
             InitializeComponent();
             LoadExport(exp);
@@ -201,7 +201,7 @@ namespace ME3Explorer.CurveEd
             CurrentLoadedExport = null;
         }
 
-        public override bool CanParse(IExportEntry exportEntry)
+        public override bool CanParse(ExportEntry exportEntry)
         {
                 var props = exportEntry.GetProperties();
                 foreach (var prop in props)

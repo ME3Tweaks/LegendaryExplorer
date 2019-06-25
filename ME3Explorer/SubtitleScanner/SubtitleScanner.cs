@@ -72,7 +72,7 @@ namespace ME3Explorer.SubtitleScanner
                 {
                     using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                     {
-                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        IReadOnlyList<ExportEntry> Exports = pcc.Exports;
                         for (int i = 0; i < Exports.Count; i++)
                             if (Exports[i].ClassName == "BioConversation")
                             {
@@ -153,7 +153,7 @@ namespace ME3Explorer.SubtitleScanner
                     {
                         using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                         {
-                            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                            IReadOnlyList<ExportEntry> Exports = pcc.Exports;
                             for (int i = 0; i < Exports.Count; i++)
                                 if (Exports[i].ClassName == "BioConversation")
                                 {
@@ -244,7 +244,7 @@ namespace ME3Explorer.SubtitleScanner
                                 File.WriteAllBytes("temp.pcc", mem.ToArray());
                                 using (ME3Package pcc = MEPackageHandler.OpenME3Package("temp.pcc"))
                                 {
-                                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                                    IReadOnlyList<ExportEntry> Exports = pcc.Exports;
                                     for (int i = 0; i < Exports.Count; i++)
                                         if (Exports[i].ClassName == "BioConversation")
                                         {

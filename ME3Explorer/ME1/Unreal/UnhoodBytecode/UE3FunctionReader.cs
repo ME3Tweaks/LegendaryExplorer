@@ -24,7 +24,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             "Delegate", "NetServer", "HasOutParms", "HasDefaults",
             "NetClient", "FuncInherit", "FuncOverrideMatch");
 
-        //public static string ReadFunction(IExportEntry export)
+        //public static string ReadFunction(ExportEntry export)
         //{
         //    UnFunction func = ReadInstance(export.FileRef, new BinaryReader(new MemoryStream(export.Data)), export);
         //    TextBuilder tb = new TextBuilder();
@@ -45,7 +45,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         /// </summary>
         /// <param name="export"></param>
         /// <returns></returns>
-        public static UnFunction ReadFunction(IExportEntry export)
+        public static UnFunction ReadFunction(ExportEntry export)
         {
             using (BinaryReader reader = new BinaryReader(new MemoryStream(export.Data)))
             {

@@ -63,10 +63,10 @@ namespace ME3Explorer.Dialogue_Editor
         protected string listname;
         public string ListName => listname;
         public int NodeUID;
-        public IExportEntry Export => export;
+        public ExportEntry Export => export;
         public virtual bool IsSelected { get; set; }
 
-        protected IExportEntry export;
+        protected ExportEntry export;
         protected Pen outlinePen;
         protected DText comment;
 

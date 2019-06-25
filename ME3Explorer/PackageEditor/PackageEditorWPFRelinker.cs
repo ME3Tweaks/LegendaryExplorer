@@ -31,9 +31,9 @@ namespace ME3Explorer
             for (int i = 0; i < crossPCCObjectMappingList.Count; i++)
             {
                 KeyValuePair<IEntry, IEntry> mapping = crossPCCObjectMappingList[i];
-                if (mapping.Key is IExportEntry sourceExportInOriginalFile)
+                if (mapping.Key is ExportEntry sourceExportInOriginalFile)
                 {
-                    IExportEntry Value = (IExportEntry) mapping.Value;
+                    ExportEntry Value = (ExportEntry) mapping.Value;
                     PropertyCollection transplantProps = sourceExportInOriginalFile.GetProperties();
                     Debug.WriteLine("Relinking items in destination export: " + sourceExportInOriginalFile.GetFullPath);
                     relinkResults.AddRange(relinkPropertiesRecursive(importpcc, Value, transplantProps, crossPCCObjectMappingList, ""));
@@ -44,7 +44,7 @@ namespace ME3Explorer
             return relinkResults;
         }
 
-        private List<string> relinkPropertiesRecursive(IMEPackage importingPCC, IExportEntry relinkingExport, PropertyCollection transplantProps, List<KeyValuePair<IEntry, IEntry>> crossPCCObjectMappingList, string debugPrefix)
+        private List<string> relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps, List<KeyValuePair<IEntry, IEntry>> crossPCCObjectMappingList, string debugPrefix)
         {
             List<string> relinkResults = new List<string>();
             foreach (UProperty prop in transplantProps)
@@ -85,7 +85,7 @@ namespace ME3Explorer
             return relinkResults;
         }
 
-        private string relinkObjectProperty(IMEPackage importingPCC, IExportEntry relinkingExport, ObjectProperty objProperty, List<KeyValuePair<IEntry, IEntry>> crossPCCObjectMappingList, string debugPrefix)
+        private string relinkObjectProperty(IMEPackage importingPCC, ExportEntry relinkingExport, ObjectProperty objProperty, List<KeyValuePair<IEntry, IEntry>> crossPCCObjectMappingList, string debugPrefix)
         {
             if (objProperty.Value == 0)
             {
@@ -222,9 +222,9 @@ namespace ME3Explorer
             List<string> relinkFailedReport = new List<string>();
             foreach (KeyValuePair<IEntry, IEntry> mapping in crossPCCObjectMap)
             {
-                if (mapping.Key is IExportEntry sourceexp)
+                if (mapping.Key is ExportEntry sourceexp)
                 {
-                    IExportEntry exp = (IExportEntry)mapping.Value;
+                    ExportEntry exp = (ExportEntry)mapping.Value;
                     byte[] binarydata = exp.getBinaryData();
                     if (binarydata.Length > 0)
                     {
@@ -266,7 +266,7 @@ namespace ME3Explorer
                                             //Cannot relink against a different game.
                                             continue;
                                         }
-                                        IExportEntry importingExp = (IExportEntry)mapping.Key;
+                                        ExportEntry importingExp = (ExportEntry)mapping.Key;
                                         if (importingExp.ClassName != "Class")
                                         {
                                             continue; //the class was not actually set, so this is not really class.
@@ -551,7 +551,7 @@ namespace ME3Explorer
             return sourceObjReference;
         }
 
-        private int ClassParser_RelinkComponentsTable(IMEPackage importpcc, IExportEntry exp, List<string> relinkFailedReport, ref byte[] data, int offset)
+        private int ClassParser_RelinkComponentsTable(IMEPackage importpcc, ExportEntry exp, List<string> relinkFailedReport, ref byte[] data, int offset)
         {
             if (importpcc.Game == MEGame.ME3)
             {
@@ -664,7 +664,7 @@ namespace ME3Explorer
             return sourceObjReference;
         }
 
-        private int ClassParser_ReadImplementsTable(IMEPackage importpcc, IExportEntry exp, List<string> relinkFailedReport, ref byte[] data, int offset)
+        private int ClassParser_ReadImplementsTable(IMEPackage importpcc, ExportEntry exp, List<string> relinkFailedReport, ref byte[] data, int offset)
         {
             if (importpcc.Game == MEGame.ME3)
             {
@@ -786,7 +786,7 @@ namespace ME3Explorer
                     upstreamCount++;
                 }
 
-                IExportEntry donorUpstreamExport = null;
+                ExportEntry donorUpstreamExport = null;
                 if (upstreamImport == null)
                 {
                     //We have to import the entire upstream chain
@@ -807,7 +807,7 @@ namespace ME3Explorer
                         //work with exports as parents for imports which will block it.
                         //Update: This has been partially implemented.
                         Debug.WriteLine("No upstream import was found in the source file. It's probably an export: " + importFullName);
-                        foreach (IExportEntry exp in destinationPCC.Exports) //importing side info we will move to our dest pcc
+                        foreach (ExportEntry exp in destinationPCC.Exports) //importing side info we will move to our dest pcc
                         {
                             //Console.WriteLine(exp.GetFullPath);
                             if (exp.GetFullPath == fullobjectname)

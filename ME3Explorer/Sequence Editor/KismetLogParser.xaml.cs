@@ -95,7 +95,7 @@ namespace ME3Explorer.Sequence_Editor
                     {
                         using (var package = MEPackageHandler.OpenME3Package(kvp.Value))
                         {
-                            foreach (IExportEntry exp in package.Exports)
+                            foreach (ExportEntry exp in package.Exports)
                             {
                                 if (exp.ClassName == info.className && exp.ObjectName == info.objectName && exp.indexValue == info.nameIndex &&
                                     exp.PackageName == info.sequenceName)

@@ -17,7 +17,7 @@ namespace ME3Explorer.SharedUI.Converters
                 {
                     return Visibility.Visible;
                 }
-                if (classType == "IExportEntry" && value is IExportEntry)
+                if (classType == "ExportEntry" && value is ExportEntry)
                 {
                     return Visibility.Visible;
                 }

@@ -87,7 +87,7 @@ namespace ME3Explorer.Meshplorer2
                                             DebugOutput.PrintLn("checking DLC: " + Path.GetFileName(DLCpath) + " File: " + filename + " Size: " + f.Length + " bytes", count % 3 == 0);
                                             using (ME3Package pcc = MEPackageHandler.OpenME3Package(loc + "temp\\" + filename))
                                             {
-                                                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                                                IReadOnlyList<ExportEntry> Exports = pcc.Exports;
                                                 for (int i = 0; i < Exports.Count; i++)
                                                     if (Exports[i].ClassName == "SkeletalMesh" ||
                                                         Exports[i].ClassName == "StaticMesh")
@@ -136,7 +136,7 @@ namespace ME3Explorer.Meshplorer2
                 {
                     using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                     {
-                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        IReadOnlyList<ExportEntry> Exports = pcc.Exports;
                         for (int i = 0; i < Exports.Count; i++)
                             if (Exports[i].ClassName == "SkeletalMesh" ||
                                 Exports[i].ClassName == "StaticMesh")

@@ -125,7 +125,7 @@ namespace ME3Explorer.FileHexViewer
                     inStream.Seek(pcc.ExportOffset, SeekOrigin.Begin);
                     for (int i = 0; i < pcc.ExportCount; i++)
                     {
-                        IExportEntry exp = pcc.Exports[i];
+                        ExportEntry exp = pcc.Exports[i];
                         usedExportsSpaces.Add(new UsedSpace
                         {
                             UsedFor = $"Export {exp.UIndex}",
@@ -204,7 +204,7 @@ namespace ME3Explorer.FileHexViewer
                                 s += $", Name: {pcc.getNameEntry(val)}";
                             }
 
-                            if (pcc.getEntry(val) is IExportEntry exp)
+                            if (pcc.getEntry(val) is ExportEntry exp)
                             {
                                 s += $", Export: {exp.ObjectName}";
                             }

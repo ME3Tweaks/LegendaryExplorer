@@ -10,17 +10,17 @@ using System.Windows.Data;
 
 namespace ME3Explorer.SharedUI.Converters
 {
-    [ValueConversion(typeof(IExportEntry), typeof(bool))]
+    [ValueConversion(typeof(ExportEntry), typeof(bool))]
     public class WwiseDataExchangeEnabledConverter : IValueConverter
     {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is IExportEntry))
+            if (!(value is ExportEntry))
             {
                 return false;
             }
-            return ((IExportEntry)value).ClassName == "WwiseStream";
+            return ((ExportEntry)value).ClassName == "WwiseStream";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

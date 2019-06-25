@@ -283,7 +283,7 @@ namespace MassEffect.NativesEditor.Views
             addCodexSection(dlg.ObjectId, new BioCodexSection(SelectedCodexSection.Value));
         }
 
-        public static bool TryFindCodexMap(IMEPackage pcc, out IExportEntry export, out int dataOffset)
+        public static bool TryFindCodexMap(IMEPackage pcc, out ExportEntry export, out int dataOffset)
         {
             export = null;
             dataOffset = -1;
@@ -304,7 +304,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void Open(IMEPackage pcc)
         {
-            if (!TryFindCodexMap(pcc, out IExportEntry export, out int dataOffset))
+            if (!TryFindCodexMap(pcc, out ExportEntry export, out int dataOffset))
             {
                 return;
             }
@@ -365,7 +365,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void SaveToPcc(IMEPackage pcc)
         {
-            IExportEntry export;
+            ExportEntry export;
             try
             {
                 export = pcc.Exports.First(exp => exp.ClassName == "BioCodexMap");

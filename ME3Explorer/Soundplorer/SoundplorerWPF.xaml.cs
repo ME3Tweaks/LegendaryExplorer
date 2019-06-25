@@ -755,8 +755,8 @@ namespace ME3Explorer.Soundplorer
                 BusyText = $"Finding all referenced audio ({i}/{pccFiles.Length})";
                 using (IMEPackage pack = MEPackageHandler.OpenMEPackage(pccPath))
                 {
-                    List<IExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
-                    foreach (IExportEntry exp in wwiseStreamExports)
+                    List<ExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
+                    foreach (ExportEntry exp in wwiseStreamExports)
                     {
                         var afcNameProp = exp.GetProperty<NameProperty>("Filename");
                         if (afcNameProp != null && afcFiles.Contains(afcNameProp.ToString().ToLower()))
@@ -816,8 +816,8 @@ namespace ME3Explorer.Soundplorer
                 using (IMEPackage pack = MEPackageHandler.OpenMEPackage(pccPath))
                 {
                     bool shouldSave = false;
-                    List<IExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
-                    foreach (IExportEntry exp in wwiseStreamExports)
+                    List<ExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
+                    foreach (ExportEntry exp in wwiseStreamExports)
                     {
                         var afcNameProp = exp.GetProperty<NameProperty>("Filename");
                         if (afcNameProp != null && afcFiles.Contains(afcNameProp.ToString().ToLower()))
@@ -1096,7 +1096,7 @@ namespace ME3Explorer.Soundplorer
                 SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
                 if (spExport != null && spExport.Export.ClassName == "WwiseStream")
                 {
-                    IExportEntry clone = spExport.Export.Clone();
+                    ExportEntry clone = spExport.Export.Clone();
                     clone.idxObjectName = clone.FileRef.FindNameOrAdd(result);
                     spExport.Export.FileRef.addExport(clone);
                     SoundplorerExport newExport = new SoundplorerExport(clone);
@@ -1535,7 +1535,7 @@ namespace ME3Explorer.Soundplorer
 
     public class SoundplorerExport : NotifyPropertyChangedBase
     {
-        public IExportEntry Export { get; set; }
+        public ExportEntry Export { get; set; }
 
         private bool _needsLoading;
         public bool NeedsLoading
@@ -1564,7 +1564,7 @@ namespace ME3Explorer.Soundplorer
             get => _displayString;
             set => SetProperty(ref _displayString, value);
         }
-        public SoundplorerExport(IExportEntry export)
+        public SoundplorerExport(ExportEntry export)
         {
             this.Export = export;
             if (Export.ClassName == "WwiseStream")

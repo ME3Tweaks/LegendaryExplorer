@@ -392,7 +392,7 @@ namespace MassEffect.NativesEditor.Views
             AddQuestTask(new BioQuestTask(SelectedQuestTask));
         }
 
-        public bool TryFindQuestMap(IMEPackage pcc, out IExportEntry export, out int dataOffset)
+        public bool TryFindQuestMap(IMEPackage pcc, out ExportEntry export, out int dataOffset)
         {
             export = null;
             dataOffset = -1;
@@ -413,7 +413,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void Open(IMEPackage pcc)
         {
-            if (!TryFindQuestMap(pcc, out IExportEntry export, out int dataOffset))
+            if (!TryFindQuestMap(pcc, out ExportEntry export, out int dataOffset))
             {
                 return;
             }

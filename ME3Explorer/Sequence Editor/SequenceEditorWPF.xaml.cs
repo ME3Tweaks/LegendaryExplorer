@@ -56,13 +56,13 @@ namespace ME3Explorer.Sequence_Editor
         private readonly GraphEditor graphEditor;
         public ObservableCollectionExtended<SObj> CurrentObjects { get; } = new ObservableCollectionExtended<SObj>();
         public ObservableCollectionExtended<SObj> SelectedObjects { get; } = new ObservableCollectionExtended<SObj>();
-        public ObservableCollectionExtended<IExportEntry> SequenceExports { get; } = new ObservableCollectionExtended<IExportEntry>();
+        public ObservableCollectionExtended<ExportEntry> SequenceExports { get; } = new ObservableCollectionExtended<ExportEntry>();
         public ObservableCollectionExtended<TreeViewEntry> TreeViewRootNodes { get; set; } = new ObservableCollectionExtended<TreeViewEntry>();
         public string CurrentFile;
         public string JSONpath;
 
         private List<SaveData> SavedPositions;
-        private IExportEntry SelectedSequence;
+        private ExportEntry SelectedSequence;
         public bool RefOrRefChild;
 
         public static readonly string SequenceEditorDataFolder = Path.Combine(App.AppDataFolder, @"SequenceEditor\");
@@ -103,7 +103,7 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        public SequenceEditorWPF(IExportEntry export) : this()
+        public SequenceEditorWPF(ExportEntry export) : this()
         {
             FileQueuedForLoad = export.FileRef.FilePath;
             ExportQueuedForFocusing = export;
@@ -171,7 +171,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private void GoTo()
         {
-            if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is IExportEntry export)
+            if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is ExportEntry export)
             {
                 GoToExport(export);
             }
@@ -200,7 +200,7 @@ namespace ME3Explorer.Sequence_Editor
                 if (SetProperty(ref _selectedItem, value) && value != null)
                 {
                     value.IsSelected = true;
-                    LoadSequence((IExportEntry)value.Entry);
+                    LoadSequence((ExportEntry)value.Entry);
                 }
             }
         }
@@ -330,7 +330,7 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        private TreeViewEntry FindSequences(IExportEntry rootSeq, bool wantFullName = false)
+        private TreeViewEntry FindSequences(ExportEntry rootSeq, bool wantFullName = false)
         {
             var root = new TreeViewEntry(rootSeq, $"#{rootSeq.UIndex}: {(wantFullName ? rootSeq.GetFullPath : rootSeq.ObjectName)}")
             {
@@ -343,7 +343,7 @@ namespace ME3Explorer.Sequence_Editor
                 foreach (ObjectProperty seqObj in seqObjs)
                 {
                     if (!pcc.isUExport(seqObj.Value)) continue;
-                    IExportEntry exportEntry = pcc.getUExport(seqObj.Value);
+                    ExportEntry exportEntry = pcc.getUExport(seqObj.Value);
                     if (exportEntry.ClassName == "Sequence" || exportEntry.ClassName.StartsWith("PrefabSequence"))
                     {
                         TreeViewEntry t = FindSequences(exportEntry);
@@ -366,7 +366,7 @@ namespace ME3Explorer.Sequence_Editor
             return root;
         }
 
-        private void LoadSequence(IExportEntry seqExport, bool fromFile = true)
+        private void LoadSequence(ExportEntry seqExport, bool fromFile = true)
         {
             if (seqExport == null)
             {
@@ -414,7 +414,7 @@ namespace ME3Explorer.Sequence_Editor
             graphEditor.UseWaitCursor = false;
         }
 
-        private void SetupJSON(IExportEntry export)
+        private void SetupJSON(ExportEntry export)
         {
             string objectName = System.Text.RegularExpressions.Regex.Replace(export.ObjectName, @"[<>:""/\\|?*]", "");
             bool isClonedSeqRef = false;
@@ -490,7 +490,7 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        public void GetObjects(IExportEntry export)
+        public void GetObjects(ExportEntry export)
         {
             CurrentObjects.ClearEx();
             var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
@@ -531,7 +531,7 @@ namespace ME3Explorer.Sequence_Editor
         public float StartPosActions;
         public float StartPosVars;
 
-        public SObj LoadObject(IExportEntry export)
+        public SObj LoadObject(ExportEntry export)
         {
             string s = export.ObjectName;
             int x = 0, y = 0;
@@ -1000,7 +1000,7 @@ namespace ME3Explorer.Sequence_Editor
         private readonly List<SaveData> customSaveData = new List<SaveData>();
         private bool panToSelection = true;
         private string FileQueuedForLoad;
-        private IExportEntry ExportQueuedForFocusing;
+        private ExportEntry ExportQueuedForFocusing;
         private bool AllowWindowRefocus = true;
 
         private void saveView(bool toFile = true)
@@ -1163,11 +1163,11 @@ namespace ME3Explorer.Sequence_Editor
 
         private void removeAllLinks(object sender, RoutedEventArgs args)
         {
-            IExportEntry export = (IExportEntry)((MenuItem)sender).Tag;
+            ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
             removeAllLinks(export);
         }
 
-        private static void removeAllLinks(IExportEntry export)
+        private static void removeAllLinks(ExportEntry export)
         {
             var props = export.GetProperties();
             var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
@@ -1365,7 +1365,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (CurrentObjects_ListBox.SelectedItem is SObj obj)
             {
-                IExportEntry clonedExport = cloneObject(obj.Export, SelectedSequence);
+                ExportEntry clonedExport = cloneObject(obj.Export, SelectedSequence);
                 customSaveData.Add(new SaveData
                 {
                     index = clonedExport.Index,
@@ -1375,10 +1375,10 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        static IExportEntry cloneObject(IExportEntry old, IExportEntry sequence, bool topLevel = true)
+        static ExportEntry cloneObject(ExportEntry old, ExportEntry sequence, bool topLevel = true)
         {
             IMEPackage pcc = sequence.FileRef;
-            IExportEntry exp = old.Clone();
+            ExportEntry exp = old.Clone();
             //needs to have the same index to work properly
             if (exp.ClassName == "SeqVar_External")
             {
@@ -1391,7 +1391,7 @@ namespace ME3Explorer.Sequence_Editor
             return exp;
         }
 
-        static void addObjectToSequence(IExportEntry newObject, bool removeLinks, IExportEntry sequenceExport)
+        static void addObjectToSequence(ExportEntry newObject, bool removeLinks, ExportEntry sequenceExport)
         {
             var seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
             if (seqObjs != null)
@@ -1427,7 +1427,7 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        static void cloneSequence(IExportEntry exp, IExportEntry parentSequence)
+        static void cloneSequence(ExportEntry exp, ExportEntry parentSequence)
         {
             IMEPackage pcc = exp.FileRef;
             if (exp.ClassName == "Sequence")
@@ -1455,7 +1455,7 @@ namespace ME3Explorer.Sequence_Editor
                 seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
                 foreach (var seqObj in seqObjs)
                 {
-                    IExportEntry obj = pcc.getUExport(seqObj.Value);
+                    ExportEntry obj = pcc.getUExport(seqObj.Value);
                     var props = obj.GetProperties();
                     var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
                     if (outLinksProp != null)
@@ -1567,7 +1567,7 @@ namespace ME3Explorer.Sequence_Editor
                 var inputIndices = new List<int>();
                 var outputIndices = new List<int>();
 
-                IExportEntry newSequence = pcc.getUExport(exp.UIndex + 1);
+                ExportEntry newSequence = pcc.getUExport(exp.UIndex + 1);
                 var props = newSequence.GetProperties();
                 var inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
                 if (inLinksProp != null)
@@ -1706,7 +1706,7 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        private void addObject(IExportEntry exportToAdd, bool removeLinks = true)
+        private void addObject(ExportEntry exportToAdd, bool removeLinks = true)
         {
             customSaveData.Add(new SaveData
             {
@@ -1719,7 +1719,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private void AddObject_Clicked(object sender, RoutedEventArgs e)
         {
-            if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is IExportEntry exportToAdd)
+            if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is ExportEntry exportToAdd)
             {
                 if (!exportToAdd.inheritsFrom("SequenceObject"))
                 {
@@ -1760,7 +1760,7 @@ namespace ME3Explorer.Sequence_Editor
                 var p = new InterpEditor();
                 p.Show();
                 p.LoadPCC(Pcc.FilePath);
-                IExportEntry exportEntry = obj.Export;
+                ExportEntry exportEntry = obj.Export;
                 if (exportEntry.ObjectName == "InterpData")
                 {
                     p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(exportEntry.Index);
@@ -1808,9 +1808,9 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        private void GoToExport(IExportEntry export, bool selectSequences = true)
+        private void GoToExport(ExportEntry export, bool selectSequences = true)
         {
-            foreach (IExportEntry exp in SequenceExports)
+            foreach (ExportEntry exp in SequenceExports)
             {
                 if (selectSequences && export == exp)
                 {
@@ -1831,7 +1831,7 @@ namespace ME3Explorer.Sequence_Editor
                     break;
                 }
 
-                IExportEntry sequence = exp;
+                ExportEntry sequence = exp;
                 if (sequence.ClassName == "SequenceReference")
                 {
                     var sequenceprop = sequence.GetProperty<ObjectProperty>("oSequenceReference");
@@ -1872,7 +1872,7 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(plotFile))
                     {
-                        if (StateEventMapView.TryFindStateEventMap(pcc, out IExportEntry export))
+                        if (StateEventMapView.TryFindStateEventMap(pcc, out ExportEntry export))
                         {
                             var stateEventMap = BinaryBioStateEventMap.Load(export);
                             if (stateEventMap.StateEvents.ContainsKey(m_nIndex))

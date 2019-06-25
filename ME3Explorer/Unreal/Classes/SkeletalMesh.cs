@@ -649,12 +649,12 @@ namespace ME3Explorer.Unreal.Classes
             Loaded = true;
         }
         
-        public SkeletalMesh(IExportEntry export)
+        public SkeletalMesh(ExportEntry export)
         {
             LoadSkeletalMesh(export);
         }
 
-        private void LoadSkeletalMesh(IExportEntry export)
+        private void LoadSkeletalMesh(ExportEntry export)
         {
             Loaded = true;
             MyIndex = export.Index;

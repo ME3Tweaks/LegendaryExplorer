@@ -29,40 +29,4 @@ namespace ME3Explorer.Packages
         bool HasParent { get; }
         IEntry Parent { get; set; }
     }
-
-    public interface IExportEntry : IEntry
-    {
-        bool DataChanged { get; set; }
-        /// <summary>
-        /// RETURNS A CLONE
-        /// </summary>
-        byte[] Data { get; set; }
-        int DataOffset { get; set; }
-        int DataSize { get; set; }
-        int idxArchtype { get; set; }
-        int idxClass { get; set; }
-        int idxClassParent { get; set; }
-        string ArchtypeName { get; }
-        string ClassParent { get; }
-        uint HeaderOffset { get; set; }
-        UnrealFlags.EObjectFlags ObjectFlags { get; set; }
-        int OriginalDataSize { get; }
-        bool ReadsFromConfig { get; }
-        bool HasStack { get; }
-        bool IsDefaultObject { get; }
-        int NetIndex { get; set; }
-
-        IExportEntry Clone();
-
-        int LinkerIndex { get; }
-        PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false);
-        void WriteProperties(PropertyCollection props);
-        int propsEnd();
-        int GetPropertyStart();
-        byte[] getBinaryData();
-        void setBinaryData(byte[] binaryData);
-        T GetProperty<T>(string name) where T : UProperty;
-        void WriteProperty(UProperty prop);
-        bool RemoveProperty(string propertyName);
-    }
 }

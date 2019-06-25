@@ -27,7 +27,7 @@ namespace ME3Explorer.Dialogue_Editor.BioConversationExtended
         private int _ExportUID;
         public int ExportUID { get => _ExportUID; set => SetProperty(ref _ExportUID, value); }
         public PropertyCollection BioConvo { get; set; }
-        public IExportEntry Export { get; set; }
+        public ExportEntry Export { get; set; }
         private string _ConvName;
         public string ConvName { get => _ConvName; set => SetProperty(ref _ConvName, value); }
         private bool _IsParsed;
@@ -40,11 +40,11 @@ namespace ME3Explorer.Dialogue_Editor.BioConversationExtended
         public ObservableCollectionExtended<DialogueNodeExtended> ReplyList { get; set; }
 
         public ObservableCollectionExtended<StageDirection> StageDirections { get; } = new ObservableCollectionExtended<StageDirection>();
-        private IExportEntry _WwiseBank;
+        private ExportEntry _WwiseBank;
         /// <summary>
         /// WwiseBank Reference Export
         /// </summary>
-        public IExportEntry WwiseBank { get => _WwiseBank; set => SetProperty(ref _WwiseBank, value); }
+        public ExportEntry WwiseBank { get => _WwiseBank; set => SetProperty(ref _WwiseBank, value); }
         private IEntry _Sequence;
         /// <summary>
         /// Sequence Reference UIndex
@@ -58,7 +58,7 @@ namespace ME3Explorer.Dialogue_Editor.BioConversationExtended
 
         public ObservableCollectionExtended<NameReference> ScriptList { get; } = new ObservableCollectionExtended<NameReference>();
 
-        public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, IExportEntry Export, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, IEnumerable<StageDirection> StageDirections)
+        public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, ExportEntry Export, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, IEnumerable<StageDirection> StageDirections)
         {
             this.ExportUID = ExportUID;
             this.ConvName = ConvName;
@@ -155,26 +155,26 @@ namespace ME3Explorer.Dialogue_Editor.BioConversationExtended
         /// Tag of speaker - generated.
         /// </summary>
         public SpeakerExtended SpeakerTag { get => _SpeakerTag; set => SetProperty(ref _SpeakerTag, value); }
-        private IExportEntry _Interpdata;
+        private ExportEntry _Interpdata;
         /// <summary>
         /// InterpData object reference UIndex
         /// </summary>
-        public IExportEntry Interpdata { get => _Interpdata; set => SetProperty(ref _Interpdata, value); }
+        public ExportEntry Interpdata { get => _Interpdata; set => SetProperty(ref _Interpdata, value); }
         private float _InterpLength = -1;
         /// <summary>
         /// Length of interpdata
         /// </summary>
         public float InterpLength { get => _InterpLength; set => SetProperty(ref _InterpLength, value); }
-        private IExportEntry _WwiseStream_Male;
+        private ExportEntry _WwiseStream_Male;
         /// <summary>
         /// WwiseStream object reference Male UIndex
         /// </summary>
-        public IExportEntry WwiseStream_Male { get => _WwiseStream_Male; set => SetProperty(ref _WwiseStream_Male, value); }
-        private IExportEntry _WwiseStream_Female;
+        public ExportEntry WwiseStream_Male { get => _WwiseStream_Male; set => SetProperty(ref _WwiseStream_Male, value); }
+        private ExportEntry _WwiseStream_Female;
         /// <summary>
         /// WwiseStream object reference Female UIndex
         /// </summary>
-        public IExportEntry WwiseStream_Female { get => _WwiseStream_Female; set => SetProperty(ref _WwiseStream_Female, value); }
+        public ExportEntry WwiseStream_Female { get => _WwiseStream_Female; set => SetProperty(ref _WwiseStream_Female, value); }
         private string _FaceFX_Male;
         /// <summary>
         /// FaceFX reference Male TBD

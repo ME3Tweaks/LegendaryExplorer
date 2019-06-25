@@ -237,7 +237,7 @@ namespace ME3Explorer.ActorNodes
             var annexZoneLocProp = export.GetProperty<ObjectProperty>("AnnexZoneLocation");
             if (annexZoneLocProp != null)
             {
-                //IExportEntry annexzonelocexp = pcc.Exports[annexZoneLocProp.Value - 1];
+                //ExportEntry annexzonelocexp = pcc.Exports[annexZoneLocProp.Value - 1];
 
                 PathfindingNodeMaster othernode = null;
                 int othernodeidx = annexZoneLocProp.Value;
@@ -435,12 +435,12 @@ namespace ME3Explorer.ActorNodes
             ObjectProperty smc = export.GetProperty<ObjectProperty>("StaticMeshComponent");
             if (smc != null)
             {
-                IExportEntry smce = pcc.Exports[smc.Value - 1];
+                ExportEntry smce = pcc.Exports[smc.Value - 1];
                 //smce.GetProperty<ObjectProperty>("St")
                 var meshObj = smce.GetProperty<ObjectProperty>("StaticMesh");
                 if (meshObj != null)
                 {
-                    IExportEntry sme = pcc.Exports[meshObj.Value - 1];
+                    ExportEntry sme = pcc.Exports[meshObj.Value - 1];
                     comment.Text = sme.ObjectName;
                 }
             }

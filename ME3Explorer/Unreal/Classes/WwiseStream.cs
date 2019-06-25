@@ -25,7 +25,7 @@ namespace ME3Explorer.Unreal.Classes
         public int ValueOffset;
         public int Id;
         public string FileName;
-        IExportEntry export;
+        ExportEntry export;
 
         public bool IsPCCStored { get { return FileName == null; } }
 
@@ -33,7 +33,7 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
 
-        public WwiseStream(IExportEntry export)
+        public WwiseStream(ExportEntry export)
         {
             this.export = export;
             Index = export.Index;

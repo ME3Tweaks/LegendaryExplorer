@@ -9,8 +9,8 @@ namespace ME3Explorer
 {
     public interface IUDKImportable
     {
-        void PortToME3Export(IExportEntry export);
-        void PortToME2Export(IExportEntry export);
-        void PortToME1Export(IExportEntry export);
+        void PortToME3Export(ExportEntry export);
+        void PortToME2Export(ExportEntry export);
+        void PortToME1Export(ExportEntry export);
     }
 }

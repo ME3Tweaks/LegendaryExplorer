@@ -123,7 +123,7 @@ namespace ME1Explorer.Unreal.Classes
             LoadTlkData();
         }
 
-        public TalkFile(IExportEntry export)
+        public TalkFile(ExportEntry export)
         {
             if (export.FileRef.Game != MEGame.ME1)
             {

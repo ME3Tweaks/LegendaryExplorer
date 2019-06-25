@@ -196,13 +196,13 @@ namespace ME3Explorer.Packages
         #endregion
 
         #region Exports
-        protected List<IExportEntry> exports;
-        public IReadOnlyList<IExportEntry> Exports => exports;
+        protected List<ExportEntry> exports;
+        public IReadOnlyList<ExportEntry> Exports => exports;
 
         public bool isExport(int index) => index >= 0 && index < exports.Count;
         public bool isUExport(int uindex) => uindex > 0 && uindex <= exports.Count;
 
-        public void addExport(IExportEntry exportEntry)
+        public void addExport(ExportEntry exportEntry)
         {
             if (exportEntry.FileRef != this)
                 throw new Exception("you cannot add a new export entry from another pcc file, it has invalid references!");
@@ -217,8 +217,8 @@ namespace ME3Explorer.Packages
             OnPropertyChanged(nameof(ExportCount));
         }
 
-        public IExportEntry getExport(int index) => exports[index];
-        public IExportEntry getUExport(int uindex) => exports[uindex - 1];
+        public ExportEntry getExport(int index) => exports[index];
+        public ExportEntry getUExport(int uindex) => exports[uindex - 1];
 
         #endregion
 
@@ -427,7 +427,7 @@ namespace ME3Explorer.Packages
 
         protected void exportChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (sender is IExportEntry exp)
+            if (sender is ExportEntry exp)
             {
                 switch (e.PropertyName)
                 {

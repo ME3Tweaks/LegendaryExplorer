@@ -105,7 +105,7 @@ namespace ME2Explorer.Unreal
             return null;
         }
 
-        public static ArrayType getArrayType(string className, string propName, bool inStruct = false, IExportEntry export = null)
+        public static ArrayType getArrayType(string className, string propName, bool inStruct = false, ExportEntry export = null)
         {
             PropertyInfo p = getPropertyInfo(className, propName, inStruct, containingExport: export) 
                           ?? getPropertyInfo(className, propName, !inStruct, containingExport: export);
@@ -176,7 +176,7 @@ namespace ME2Explorer.Unreal
             return ArrayType.Int;
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, IExportEntry containingExport = null)
+        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
             if (className.StartsWith("Default__"))
             {
@@ -224,7 +224,7 @@ namespace ME2Explorer.Unreal
                     if (containingExport != null && containingExport.idxClassParent > 0)
                     {
                         //Class parent is in this file. Generate class parent info and attempt refetch
-                        IExportEntry parentExport = containingExport.FileRef.getUExport(containingExport.idxClassParent);
+                        ExportEntry parentExport = containingExport.FileRef.getUExport(containingExport.idxClassParent);
                         return getPropertyInfo(parentExport.ClassParent, propName, inStruct, generateClassInfo(parentExport), reSearch: true, parentExport);
                     }
                 }
@@ -302,7 +302,7 @@ namespace ME2Explorer.Unreal
                         {
                             var exportToRead = importPCC.getUExport(info.exportIndex);
                             byte[] buff = exportToRead.Data.Skip(0x30).ToArray();
-                            PropertyCollection defaults = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
+                            PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), className);
                             foreach (var prop in defaults)
                             {
                                 structProps.TryReplaceProp(prop);
@@ -319,7 +319,7 @@ namespace ME2Explorer.Unreal
             return null;
         }
 
-        private static UProperty getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
+        public static UProperty getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
         {
             switch (propInfo.type)
             {
@@ -396,7 +396,7 @@ namespace ME2Explorer.Unreal
                     {
                         for (int j = 1; j <= pcc.ExportCount; j++)
                         {
-                            IExportEntry exportEntry = pcc.getUExport(j);
+                            ExportEntry exportEntry = pcc.getUExport(j);
                             if (exportEntry.ClassName == "Enum")
                             {
                                 generateEnumValues(exportEntry, NewEnums);
@@ -462,7 +462,7 @@ namespace ME2Explorer.Unreal
             MessageBox.Show("Done");
         }
 
-        public static ClassInfo generateClassInfo(IExportEntry export, bool isStruct = false)
+        public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
         {
             IMEPackage pcc = export.FileRef;
             ClassInfo info = new ClassInfo
@@ -500,7 +500,7 @@ namespace ME2Explorer.Unreal
             return info;
         }
 
-        private static void generateEnumValues(IExportEntry export, Dictionary<string, List<NameReference>> NewEnums = null)
+        private static void generateEnumValues(ExportEntry export, Dictionary<string, List<NameReference>> NewEnums = null)
         {
             var enumTable = NewEnums ?? Enums;
             string enumName = export.ObjectName;
@@ -519,7 +519,7 @@ namespace ME2Explorer.Unreal
             }
         }
 
-        private static PropertyInfo getProperty(IExportEntry entry)
+        private static PropertyInfo getProperty(ExportEntry entry)
         {
             IMEPackage pcc = entry.FileRef;
             PropertyInfo p = new PropertyInfo();

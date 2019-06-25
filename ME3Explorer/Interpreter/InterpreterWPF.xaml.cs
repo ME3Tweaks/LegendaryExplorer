@@ -242,7 +242,7 @@ namespace ME3Explorer
         {
             if (SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is ObjectProperty op && Pcc.isUExport(op.Value))
             {
-                IExportEntry export = Pcc.getUExport(op.Value);
+                ExportEntry export = Pcc.getUExport(op.Value);
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export)
                 {
                     Title = $"Interpreter - {export.UIndex} {export.GetInstancedFullPath} - {Pcc.FilePath}"
@@ -516,7 +516,7 @@ namespace ME3Explorer
         /// Load a new export for display and editing in this control
         /// </summary>
         /// <param name="export"></param>
-        public override void LoadExport(IExportEntry export)
+        public override void LoadExport(ExportEntry export)
         {
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
             Set_Button.Visibility = Visibility.Collapsed;
@@ -640,7 +640,7 @@ namespace ME3Explorer
 
 
         #region Static tree generating code (shared with BinaryInterpreterWPF)
-        public static void GenerateUPropertyTreeForProperty(UProperty prop, UPropertyTreeViewEntry parent, IExportEntry export, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
+        public static void GenerateUPropertyTreeForProperty(UProperty prop, UPropertyTreeViewEntry parent, ExportEntry export, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
         {
             var upropertyEntry = GenerateUPropertyTreeViewEntry(prop, parent, export, displayPrefix, PropertyChangedHandler);
             switch (prop)
@@ -685,7 +685,7 @@ namespace ME3Explorer
             ParentNameList = namesList;
         }
 
-        public static UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(UProperty prop, UPropertyTreeViewEntry parent, IExportEntry parsingExport, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
+        public static UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(UProperty prop, UPropertyTreeViewEntry parent, ExportEntry parsingExport, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
         {
             string displayName = displayPrefix;
             if (!(parent.Property is ArrayPropertyBase))
@@ -918,7 +918,7 @@ namespace ME3Explorer
         /// <param name="value">Value of the property to transform</param>
         /// <param name="export">export the property belongs to</param>
         /// <returns></returns>
-        private static string IntToString(NameReference name, int value, IExportEntry export)
+        private static string IntToString(NameReference name, int value, ExportEntry export)
         {
             switch (export.ClassName)
             {
@@ -938,7 +938,7 @@ namespace ME3Explorer
             return "";
         }
 
-        private static string ExportToString(IExportEntry exportEntry)
+        private static string ExportToString(ExportEntry exportEntry)
         {
             switch (exportEntry.ObjectName)
             {
@@ -1012,7 +1012,7 @@ namespace ME3Explorer
                         {
                             s += $", Name: {Pcc.getNameEntry(val)}";
                         }
-                        if (Pcc.getEntry(val) is IExportEntry exp)
+                        if (Pcc.getEntry(val) is ExportEntry exp)
                         {
                             s += $", Export: {exp.ObjectName}";
                         }
@@ -1478,7 +1478,7 @@ namespace ME3Explorer
             }
         }
 
-        public override bool CanParse(IExportEntry exportEntry)
+        public override bool CanParse(ExportEntry exportEntry)
         {
             return true;
         }
@@ -1704,24 +1704,12 @@ namespace ME3Explorer
                             if (p == null)
                             {
                                 //Attempt dynamic lookup
-                                ClassInfo classInfo = null;
-                                IExportEntry exportToBuildFor = CurrentLoadedExport;
+                                ExportEntry exportToBuildFor = CurrentLoadedExport;
                                 if (CurrentLoadedExport.ClassName != "Class" && CurrentLoadedExport.idxClass > 0)
                                 {
-                                    exportToBuildFor = Pcc.getEntry(CurrentLoadedExport.idxClass) as IExportEntry;
+                                    exportToBuildFor = Pcc.getEntry(CurrentLoadedExport.idxClass) as ExportEntry;
                                 }
-                                switch (Pcc.Game)
-                                {
-                                    case MEGame.ME1:
-                                        classInfo = ME1UnrealObjectInfo.generateClassInfo(exportToBuildFor);
-                                        break;
-                                    case MEGame.ME2:
-                                        classInfo = ME2UnrealObjectInfo.generateClassInfo(exportToBuildFor);
-                                        break;
-                                    case MEGame.ME3:
-                                        classInfo = ME3UnrealObjectInfo.generateClassInfo(exportToBuildFor);
-                                        break;
-                                }
+                                ClassInfo classInfo = UnrealObjectInfo.generateClassInfo(exportToBuildFor);
                                 p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, containingType, classInfo);
                             }
                             if (p != null)
@@ -1810,7 +1798,7 @@ namespace ME3Explorer
         static readonly string[] PropertyDumperSuppressedPropertyNames = { "CompressedTrackOffsets", "LookupTable" };
 
         public bool HasTooManyChildrenToDisplay { get; set; }
-        public IExportEntry AttachedExport;
+        public ExportEntry AttachedExport;
         private string _colorStructCode;
         /// <summary>
         /// This property is used as a databinding workaround for when colorpicker is used as we can't convert back with a reference to the struct.
@@ -2054,7 +2042,7 @@ namespace ME3Explorer
                 OnPropertyChanged(nameof(AdvancedModeText));
             }
         }
-        public void PrintPretty(string indent, StreamWriter str, bool last, IExportEntry associatedExport)
+        public void PrintPretty(string indent, StreamWriter str, bool last, ExportEntry associatedExport)
         {
             bool supressNewLine = false;
             if (Property != null)

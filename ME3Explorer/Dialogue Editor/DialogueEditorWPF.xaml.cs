@@ -54,7 +54,7 @@ namespace ME3Explorer.Dialogue_Editor
         private readonly ConvGraphEditor graphEditor;
         public ObservableCollectionExtended<IEntry> FFXAnimsets { get; } = new ObservableCollectionExtended<IEntry>();
         public ObservableCollectionExtended<ConversationExtended> Conversations { get; } = new ObservableCollectionExtended<ConversationExtended>();
-        public IExportEntry CurrentLoadedExport;
+        public ExportEntry CurrentLoadedExport;
         public ObservableCollectionExtended<SpeakerExtended> SelectedSpeakerList { get; } = new ObservableCollectionExtended<SpeakerExtended>();
         public ObservableCollectionExtended<SpeakerExtended> ListenersList { get; } = new ObservableCollectionExtended<SpeakerExtended>();
         private DialogueNodeExtended _SelectedDialogueNode;
@@ -110,7 +110,7 @@ namespace ME3Explorer.Dialogue_Editor
         private readonly List<SaveData> extraSaveData = new List<SaveData>();
         private bool panToSelection = true;
         private string FileQueuedForLoad;
-        private IExportEntry ExportQueuedForFocusing;
+        private ExportEntry ExportQueuedForFocusing;
         public string CurrentFile;
         public string JSONpath;
         private List<SaveData> SavedPositions;
@@ -343,7 +343,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
             UpdateLayoutDefaults("startup");
         }
-        public DialogueEditorWPF(IExportEntry export) : this()
+        public DialogueEditorWPF(ExportEntry export) : this()
         {
             FileQueuedForLoad = export.FileRef.FilePath;
             ExportQueuedForFocusing = export;
@@ -906,11 +906,11 @@ namespace ME3Explorer.Dialogue_Editor
             //Get sequence from convo
             //Get list of BioConvoStarts
             //Match to export id => SeqAct_Interp => Interpdata
-            if (conv.Sequence is IExportEntry sequence)
+            if (conv.Sequence is ExportEntry sequence)
             {
                 var seqobjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
 
-                var convStarts = new Dictionary<int, IExportEntry>();
+                var convStarts = new Dictionary<int, ExportEntry>();
                 foreach (var prop in seqobjs)
                 {
                     var seqobj = Pcc.getUExport(prop.Value);
@@ -1088,7 +1088,7 @@ namespace ME3Explorer.Dialogue_Editor
 
                 if (Pcc.Game != MEGame.ME1)
                 {
-                    Dictionary<string, IExportEntry> streams = Pcc.Exports.Where(x => x.ClassName == "WwiseStream").ToDictionary(x => $"{x.ObjectName.ToLower()}_{x.UIndex}");
+                    Dictionary<string, ExportEntry> streams = Pcc.Exports.Where(x => x.ClassName == "WwiseStream").ToDictionary(x => $"{x.ObjectName.ToLower()}_{x.UIndex}");
 
                     foreach (var node in conv.EntryList)
                     {
@@ -1303,7 +1303,7 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                     else
                     {
-                        IExportEntry ffxoExport = (IExportEntry)ffxo;
+                        ExportEntry ffxoExport = (ExportEntry)ffxo;
 
                         wwevents = ffxoExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull an owner wwiseevent array
                         if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
@@ -1311,7 +1311,7 @@ namespace ME3Explorer.Dialogue_Editor
                             IEntry ffxp = GetFaceFX(conv, -2, true); //find player as alternative
                             if (!Pcc.isUExport(ffxp.UIndex))
                                 return;
-                            IExportEntry ffxpExport = (IExportEntry)ffxp;
+                            ExportEntry ffxpExport = (ExportEntry)ffxp;
                             wwevents = ffxpExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
                         }
                         if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
@@ -1319,7 +1319,7 @@ namespace ME3Explorer.Dialogue_Editor
                             IEntry ffxS = GetFaceFX(conv, 0, true); //find speaker 1 as alternative
                             if (ffxS == null || !Pcc.isUExport(ffxS.UIndex))
                                 return;
-                            IExportEntry ffxSExport = (IExportEntry)ffxS;
+                            ExportEntry ffxSExport = (ExportEntry)ffxS;
                             wwevents = ffxSExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
                         }
                     }
@@ -1369,7 +1369,7 @@ namespace ME3Explorer.Dialogue_Editor
                 try
                 {
                     var actors = Pcc.Exports.Where(xp => xp.ClassName == "BioPawn");
-                    IExportEntry actor = actors.First(a => a.GetProperty<NameProperty>("Tag").ToString() == tag);
+                    ExportEntry actor = actors.First(a => a.GetProperty<NameProperty>("Tag").ToString() == tag);
                     var behav = actor.GetProperty<ObjectProperty>("m_oBehavior");
                     var set = Pcc.getUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
                     var strrefprop = Pcc.getUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
@@ -2569,7 +2569,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
             soundPanelTabControl.SelectedIndex = faceFXEditorTabControl.SelectedIndex = SelectedDialogueNode.WwiseStream_Female == null ? 1 : 0;
-            if (SelectedDialogueNode.SpeakerTag.FaceFX_Female is IExportEntry faceFX_f)
+            if (SelectedDialogueNode.SpeakerTag.FaceFX_Female is ExportEntry faceFX_f)
             {
                 FaceFXAnimSetEditorControl_F.LoadExport(faceFX_f);
                 FaceFXAnimSetEditorControl_F.SelectLineByName(SelectedDialogueNode.FaceFX_Female);
@@ -2579,7 +2579,7 @@ namespace ME3Explorer.Dialogue_Editor
                 FaceFXAnimSetEditorControl_F.UnloadExport();
             }
 
-            if (SelectedDialogueNode.SpeakerTag.FaceFX_Male is IExportEntry faceFX_m)
+            if (SelectedDialogueNode.SpeakerTag.FaceFX_Male is ExportEntry faceFX_m)
             {
                 FaceFXAnimSetEditorControl_M.LoadExport(faceFX_m);
                 FaceFXAnimSetEditorControl_M.SelectLineByName(SelectedDialogueNode.FaceFX_Male);
@@ -2715,7 +2715,7 @@ namespace ME3Explorer.Dialogue_Editor
                 PushConvoToFile(SelectedConv);
             }
         }
-        private void SetupConvJSON(IExportEntry export)
+        private void SetupConvJSON(ExportEntry export)
         {
             string objectName = Regex.Replace(export.ObjectName, @"[<>:""/\\|?*]", "");
             string viewsPath = ME3ViewsPath;
@@ -3862,7 +3862,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
 
         //TEMPORARY UNTIL NEW BUILD
-        private void OpenInInterpViewer_Clicked(IExportEntry exportEntry)
+        private void OpenInInterpViewer_Clicked(ExportEntry exportEntry)
         {
 
             var p = new InterpEditor();

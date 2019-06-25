@@ -94,9 +94,9 @@ namespace ME3Explorer.FaceFX
 
         #region ExportLoaderControl
 
-        public override bool CanParse(IExportEntry exportEntry) => exportEntry.ClassName == "FaceFXAnimSet";
+        public override bool CanParse(ExportEntry exportEntry) => exportEntry.ClassName == "FaceFXAnimSet";
 
-        public override void LoadExport(IExportEntry exportEntry)
+        public override void LoadExport(ExportEntry exportEntry)
         {
             if (CurrentLoadedExport != exportEntry || !IsKeyboardFocusWithin)
             {

@@ -93,7 +93,7 @@ namespace ME3Explorer.MetadataEditor
             CurrentLoadedEntry.Header = m.ToArray();
             switch (CurrentLoadedEntry)
             {
-                case IExportEntry exportEntry:
+                case ExportEntry exportEntry:
                     LoadExport(exportEntry);
                     break;
                 case ImportEntry importEntry:
@@ -102,7 +102,7 @@ namespace ME3Explorer.MetadataEditor
             }
         }
 
-        public override bool CanParse(IExportEntry exportEntry) => true;
+        public override bool CanParse(ExportEntry exportEntry) => true;
 
         public void RefreshAllEntriesList(IMEPackage pcc)
         {
@@ -112,7 +112,7 @@ namespace ME3Explorer.MetadataEditor
                 allEntriesNew.Add(pcc.Imports[i]);
             }
             allEntriesNew.Add(ZeroUIndexClassEntry.instance);
-            foreach (IExportEntry exp in pcc.Exports)
+            foreach (ExportEntry exp in pcc.Exports)
             {
                 allEntriesNew.Add(exp);
             }
@@ -121,7 +121,7 @@ namespace ME3Explorer.MetadataEditor
 
         public override void PopOut()
         {
-            if (CurrentLoadedEntry is IExportEntry export)
+            if (CurrentLoadedEntry is ExportEntry export)
             {
                 var mde = new MetadataEditorWPF();
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(mde, export)
@@ -135,7 +135,7 @@ namespace ME3Explorer.MetadataEditor
             }
         }
 
-        public override void LoadExport(IExportEntry exportEntry)
+        public override void LoadExport(ExportEntry exportEntry)
         {
             loadingNewData = true;
             try
@@ -238,7 +238,7 @@ namespace ME3Explorer.MetadataEditor
         /// <param name="entry"></param>
         private void LoadAllEntriesBindedItems(IEntry entry)
         {
-            if (entry is IExportEntry exportEntry)
+            if (entry is ExportEntry exportEntry)
             {
                 if (exportEntry.idxClass != 0)
                 {
@@ -356,7 +356,7 @@ namespace ME3Explorer.MetadataEditor
                         {
                             s += $", Name: {CurrentLoadedEntry.FileRef.getNameEntry(val)}";
                         }
-                        if (CurrentLoadedEntry.FileRef.getEntry(val) is IExportEntry exp)
+                        if (CurrentLoadedEntry.FileRef.getEntry(val) is ExportEntry exp)
                         {
                             s += $", Export: {exp.ObjectName}";
                         }

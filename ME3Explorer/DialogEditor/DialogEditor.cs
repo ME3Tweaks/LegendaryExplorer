@@ -17,7 +17,7 @@ namespace ME3Explorer.DialogEditor
     public partial class DialogEditor : WinFormsBase
     {
         public ME3BioConversation Dialog;
-        public List<IExportEntry> Objs;
+        public List<ExportEntry> Objs;
 
         public DialogEditor()
         {
@@ -49,8 +49,8 @@ namespace ME3Explorer.DialogEditor
 
         public void RefreshCombo()
         {
-            Objs = new List<IExportEntry>();
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
+            Objs = new List<ExportEntry>();
+            IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
             foreach (var exp in Exports)
             {
                 if (exp.ClassName == "BioConversation")

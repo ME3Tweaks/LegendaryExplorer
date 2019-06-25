@@ -17,10 +17,10 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public partial class ExportLoaderHostedWindow : WPFBase
     {
-        public IExportEntry LoadedExport { get; }
+        public ExportEntry LoadedExport { get; }
         private readonly ExportLoaderControl hostedControl;
         public ObservableCollectionExtended<IndexedName> NamesList { get; } = new ObservableCollectionExtended<IndexedName>();
-        public ExportLoaderHostedWindow(ExportLoaderControl hostedControl, IExportEntry exportToLoad)
+        public ExportLoaderHostedWindow(ExportLoaderControl hostedControl, ExportEntry exportToLoad)
         {
             DataContext = this;
             this.hostedControl = hostedControl;

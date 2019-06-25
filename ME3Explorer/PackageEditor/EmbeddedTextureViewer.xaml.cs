@@ -54,7 +54,7 @@ namespace ME3Explorer
             InitializeComponent();
         }
 
-        public override bool CanParse(IExportEntry exportEntry)
+        public override bool CanParse(ExportEntry exportEntry)
         {
             return exportEntry.ClassName == "Texture2D" ||
                    exportEntry.ClassName == "LightMapTexture2D" ||
@@ -74,7 +74,7 @@ namespace ME3Explorer
             }
         }
 
-        public override void LoadExport(IExportEntry exportEntry)
+        public override void LoadExport(ExportEntry exportEntry)
         {
             TextureImage.Source = null;
             try

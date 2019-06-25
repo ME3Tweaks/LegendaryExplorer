@@ -37,16 +37,16 @@ namespace ME3Explorer.SharedUI.Converters
         }
     }
 
-    [ValueConversion(typeof(IExportEntry), typeof(string))]
+    [ValueConversion(typeof(ExportEntry), typeof(string))]
     public class ObjectStructPropertyTypeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is IExportEntry))
+            if (!(value is ExportEntry))
             {
                 return "";
             }
-            IExportEntry export = (IExportEntry)value;
+            ExportEntry export = (ExportEntry)value;
             if (export.ClassName != "StructProperty" && export.ClassName != "ObjectProperty")
             {
                 return "";
@@ -89,7 +89,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is IExportEntry exp && PackageEditorWPF.ExportFileTypes.Contains(exp.ClassName))
+            if (value is ExportEntry exp && PackageEditorWPF.ExportFileTypes.Contains(exp.ClassName))
             {
                 switch (exp.ClassName)
                 {
@@ -119,7 +119,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is IExportEntry exp && PackageEditorWPF.ExportFileTypes.Contains(exp.ClassName))
+            if (value is ExportEntry exp && PackageEditorWPF.ExportFileTypes.Contains(exp.ClassName))
             {
                 return Visibility.Visible;
             }
@@ -138,7 +138,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is IExportEntry exp && parameter is string type)
+            if (value is ExportEntry exp && parameter is string type)
             {
                 return exp.ClassName == type ? Visibility.Visible : Visibility.Collapsed;
             }
@@ -157,7 +157,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is IExportEntry exp)
+            if (value is ExportEntry exp)
             {
                 switch (exp.ClassName)
                 {

@@ -4,8 +4,8 @@ namespace ME3Explorer
 {
     internal interface IExportLoader
     {
-        IExportEntry CurrentLoadedExport { get; set; }
-        void LoadExport(IExportEntry exportEntry);
+        ExportEntry CurrentLoadedExport { get; set; }
+        void LoadExport(ExportEntry exportEntry);
         void UnloadExport();
         void PopOut();
     }

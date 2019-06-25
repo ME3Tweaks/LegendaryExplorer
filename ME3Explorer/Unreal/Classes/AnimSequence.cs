@@ -59,12 +59,12 @@ namespace ME3Explorer.Unreal.Classes
         #endregion
 
         public IMEPackage pcc;
-        private readonly IExportEntry Export;
+        private readonly ExportEntry Export;
         private readonly PropertyCollection Props;
         public byte[] data;
         public byte[] CompressedBlob;
 
-        public AnimSequence(IExportEntry export)
+        public AnimSequence(ExportEntry export)
         {
             pcc = export.FileRef;
             Export = export;

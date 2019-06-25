@@ -163,7 +163,7 @@ namespace ME3Explorer.Propertydb
                 {
                     using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                     {
-                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        IReadOnlyList<ExportEntry> Exports = pcc.Exports;
                         pb2.Maximum = Exports.Count;
                         {
                             pb1.Value = i;

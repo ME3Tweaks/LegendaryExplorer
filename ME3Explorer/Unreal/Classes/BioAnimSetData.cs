@@ -35,7 +35,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             pcc = Pcc;
             MyIndex = Index;
-            IExportEntry export = pcc.getExport(Index);
+            ExportEntry export = pcc.getExport(Index);
             data = export.Data;
             PropertyCollection props = export.GetProperties();
             bAnimRotationOnly = props.GetPropOrDefault<BoolProperty>("bAnimRotationOnly").Value;

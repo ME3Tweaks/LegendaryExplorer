@@ -69,14 +69,14 @@ namespace ME3Explorer.SequenceObjects
         public int UIndex => export.UIndex;
         //public float Width { get { return shape.Width; } }
         //public float Height { get { return shape.Height; } }
-        public IExportEntry Export => export;
+        public ExportEntry Export => export;
         public virtual bool IsSelected { get; set; }
 
-        protected IExportEntry export;
+        protected ExportEntry export;
         protected Pen outlinePen;
         protected SText comment;
 
-        protected SObj(IExportEntry entry, GraphEditor grapheditor)
+        protected SObj(ExportEntry entry, GraphEditor grapheditor)
         {
             pcc = entry.FileRef;
             export = entry;
@@ -172,7 +172,7 @@ namespace ME3Explorer.SequenceObjects
             set => val.Text = value;
         }
 
-        public SVar(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+        public SVar(ExportEntry entry, float x, float y, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             string s = export.ObjectName;
@@ -290,7 +290,7 @@ namespace ME3Explorer.SequenceObjects
                                     {
                                         IEntry entry = pcc.getEntry(objProp.Value);
                                         if (entry == null) return "???";
-                                        if (entry is IExportEntry objValueExport && objValueExport.GetProperty<NameProperty>("Tag") is NameProperty tagProp && tagProp.Value != objValueExport.ObjectName)
+                                        if (entry is ExportEntry objValueExport && objValueExport.GetProperty<NameProperty>("Tag") is NameProperty tagProp && tagProp.Value != objValueExport.ObjectName)
                                         {
                                             return $"#{UIndex}\n{entry.ObjectName}\n{ tagProp.Value}";
                                         }
@@ -418,7 +418,7 @@ namespace ME3Explorer.SequenceObjects
     {
         protected PPath shape;
         protected PPath titleBox;
-        public SFrame(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+        public SFrame(ExportEntry entry, float x, float y, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             string s = $"{export.ObjectName}_{export.indexValue}";
@@ -535,7 +535,7 @@ namespace ME3Explorer.SequenceObjects
         protected PPath CreateActionLinkBox() => PPath.CreateRectangle(0, -4, 10, 8);
         protected PPath CreateVarLinkBox() => PPath.CreateRectangle(-4, 0, 8, 10);
 
-        protected SBox(IExportEntry entry, GraphEditor grapheditor)
+        protected SBox(ExportEntry entry, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             varDragHandler = new VarDragHandler(grapheditor, this);
@@ -957,7 +957,7 @@ namespace ME3Explorer.SequenceObjects
         {
             SBox start = (SBox)n1.Parent.Parent.Parent;
             SAction end = (SAction)n2.Parent.Parent.Parent;
-            IExportEntry startExport = start.export;
+            ExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (OutputLink l in start.Outlinks)
             {
@@ -1003,7 +1003,7 @@ namespace ME3Explorer.SequenceObjects
         public void CreateVarlink(PNode p1, SVar end)
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
-            IExportEntry startExport = start.export;
+            ExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (VarLink l in start.Varlinks)
             {
@@ -1034,7 +1034,7 @@ namespace ME3Explorer.SequenceObjects
         public void CreateEventlink(PNode p1, SEvent end)
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
-            IExportEntry startExport = start.export;
+            ExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (EventLink l in start.EventLinks)
             {
@@ -1192,7 +1192,7 @@ namespace ME3Explorer.SequenceObjects
         public List<EventEdge> connections = new List<EventEdge>();
         public override IEnumerable<SeqEdEdge> Edges => connections.Union(base.Edges);
 
-        public SEvent(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+        public SEvent(ExportEntry entry, float x, float y, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             outlinePen = new Pen(EventColor);
@@ -1346,7 +1346,7 @@ namespace ME3Explorer.SequenceObjects
 
         protected InputDragHandler inputDragHandler = new InputDragHandler();
 
-        public SAction(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+        public SAction(ExportEntry entry, float x, float y, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             GetVarLinks();

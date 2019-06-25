@@ -239,7 +239,7 @@ namespace ME3Explorer.TlkManagerNS
             {
                 using (ME1Package upk = MEPackageHandler.OpenME1Package(m.FileName))
                 {
-                    foreach (IExportEntry exp in upk.Exports)
+                    foreach (ExportEntry exp in upk.Exports)
                     {
                         if (exp.ClassName == "BioTlkFile")
                         {
@@ -421,7 +421,7 @@ namespace ME3Explorer.TlkManagerNS
                 {
                     //don't dispose the ME1Package, as this will prvent the talkfile from working
                     ME1Package upk = MEPackageHandler.OpenME1Package(tlk);
-                    foreach (IExportEntry exp in upk.Exports)
+                    foreach (ExportEntry exp in upk.Exports)
                     {
                         tlks.Add(new LoadedTLK(tlk, exp.UIndex, exp.ObjectName, false));
                     }

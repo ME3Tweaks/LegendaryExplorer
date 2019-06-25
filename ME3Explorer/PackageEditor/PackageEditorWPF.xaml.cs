@@ -412,7 +412,7 @@ namespace ME3Explorer
                 var found = Pcc.Names.Any(x => x.ToLower() == searchTerm);
                 if (found)
                 {
-                    foreach (IExportEntry exp in Pcc.Exports)
+                    foreach (ExportEntry exp in Pcc.Exports)
                     {
                         try
                         {
@@ -440,7 +440,7 @@ namespace ME3Explorer
 
         private void OpenInInterpViewer()
         {
-            if (!TryGetSelectedExport(out IExportEntry export)) return;
+            if (!TryGetSelectedExport(out ExportEntry export)) return;
             Matinee.InterpEditor p = new Matinee.InterpEditor();
             p.Show();
             p.LoadPCC(export.FileRef.FilePath); //hmm...
@@ -448,11 +448,11 @@ namespace ME3Explorer
             p.loadInterpData(export.Index);
         }
 
-        private bool CanOpenInInterpViewer() => TryGetSelectedExport(out IExportEntry export) && export.FileRef.Game == MEGame.ME3 && export.ClassName == "InterpData" && !export.IsDefaultObject;
+        private bool CanOpenInInterpViewer() => TryGetSelectedExport(out ExportEntry export) && export.FileRef.Game == MEGame.ME3 && export.ClassName == "InterpData" && !export.IsDefaultObject;
 
         private void SetSelectedAsFilenamePackage()
         {
-            if (!TryGetSelectedExport(out IExportEntry export)) return;
+            if (!TryGetSelectedExport(out ExportEntry export)) return;
             byte[] fileGUID = export.FileRef.getHeader().Skip(0x4E).Take(16).ToArray();
             string fname = Path.GetFileNameWithoutExtension(export.FileRef.FilePath);
 
@@ -469,7 +469,7 @@ namespace ME3Explorer
 
         private void GenerateNewGUIDForSelected()
         {
-            if (!TryGetSelectedExport(out IExportEntry export)) return;
+            if (!TryGetSelectedExport(out ExportEntry export)) return;
             Guid newGuid = Guid.NewGuid();
             byte[] header = export.GetHeader();
             int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
@@ -635,7 +635,7 @@ namespace ME3Explorer
                     return;
                 }
 
-                IExportEntry existingTrashTopLevel = Pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == "ME3ExplorerTrashPackage");
+                ExportEntry existingTrashTopLevel = Pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == "ME3ExplorerTrashPackage");
                 ImportEntry packageImport = Pcc.Imports.FirstOrDefault(x => x.GetFullPath == "Core.Package");
                 if (packageImport == null)
                 {
@@ -664,7 +664,7 @@ namespace ME3Explorer
                 }
                 foreach (TreeViewEntry entry in itemsToTrash)
                 {
-                    IExportEntry newTrash = TrashEntry(entry.Entry, existingTrashTopLevel, packageImport.UIndex);
+                    ExportEntry newTrash = TrashEntry(entry.Entry, existingTrashTopLevel, packageImport.UIndex);
                     if (existingTrashTopLevel == null) existingTrashTopLevel = newTrash;
                 }
             }
@@ -677,7 +677,7 @@ namespace ME3Explorer
         /// <param name="trashContainer">Container for trash. Pass null if you want to create the trash container from the passed in value.</param>
         /// <param name="packageClassIdx">Idx for package class. Prevents multiple calls to find it</param>
         /// <returns>New trash container, otherwise will be null</returns>
-        private IExportEntry TrashEntry(IEntry entry, IExportEntry trashContainer, int packageClassIdx)
+        private ExportEntry TrashEntry(IEntry entry, ExportEntry trashContainer, int packageClassIdx)
         {
             if (entry is ImportEntry imp)
             {
@@ -687,7 +687,7 @@ namespace ME3Explorer
                 imp.idxObjectName = Pcc.FindNameOrAdd("Trash");
                 imp.indexValue = 0;
             }
-            else if (entry is IExportEntry exp)
+            else if (entry is ExportEntry exp)
             {
                 MemoryStream trashData = new MemoryStream();
                 trashData.WriteInt32(-1);
@@ -752,7 +752,7 @@ namespace ME3Explorer
 
         private void ReindexObjectByName()
         {
-            if (!TryGetSelectedExport(out IExportEntry export)) return;
+            if (!TryGetSelectedExport(out ExportEntry export)) return;
             if (export.GetFullPath.StartsWith("ME3ExplorerTrashPackage"))
             {
                 MessageBox.Show("Cannot reindex exports that are part of ME3ExplorerTrashPackage. All items in this package should have an object index of 0.");
@@ -761,7 +761,7 @@ namespace ME3Explorer
             ReindexObjectsByName(export, true);
         }
 
-        private void ReindexObjectsByName(IExportEntry exp, bool showUI)
+        private void ReindexObjectsByName(ExportEntry exp, bool showUI)
         {
             if (exp != null)
             {
@@ -783,11 +783,11 @@ namespace ME3Explorer
                 if (!showUI || uiConfirm)
                 {
                     // Get list of all exports with that object name.
-                    //List<IExportEntry> exports = new List<IExportEntry>();
+                    //List<ExportEntry> exports = new List<ExportEntry>();
                     //Could use LINQ... meh.
 
                     int index = 1; //we'll start at 1.
-                    foreach (IExportEntry export in Pcc.Exports)
+                    foreach (ExportEntry export in Pcc.Exports)
                     {
                         //Check object name is the same, the package path count is the same, the package prefix is the same, and the item is not of type Class
                         if (objectname == export.ObjectName && export.PackageFullNameInstanced == prefixToReindex && export.PackageFullNameInstanced != "Class")
@@ -821,7 +821,7 @@ namespace ME3Explorer
 
         private bool DoesSelectedItemHaveEmbeddedFile()
         {
-            if (TryGetSelectedExport(out IExportEntry export))
+            if (TryGetSelectedExport(out ExportEntry export))
             {
                 switch (export.ClassName)
                 {
@@ -840,7 +840,7 @@ namespace ME3Explorer
         /// </summary>
         /// <param name="exp"></param>
         /// <param name="savePath"></param>
-        private void ExportEmbeddedFile(IExportEntry exp = null, string savePath = null)
+        private void ExportEmbeddedFile(ExportEntry exp = null, string savePath = null)
         {
             if (exp == null) TryGetSelectedExport(out exp);
             if (exp != null)
@@ -918,7 +918,7 @@ namespace ME3Explorer
 
         private void ImportEmbeddedFile()
         {
-            if (TryGetSelectedExport(out IExportEntry exp))
+            if (TryGetSelectedExport(out ExportEntry exp))
             {
                 switch (exp.ClassName)
                 {
@@ -997,9 +997,9 @@ namespace ME3Explorer
         {
             try
             {
-                var levelStreamingKismets = new List<IExportEntry>();
-                IExportEntry bioworldinfo = null;
-                foreach (IExportEntry exp in Pcc.Exports)
+                var levelStreamingKismets = new List<ExportEntry>();
+                ExportEntry bioworldinfo = null;
+                foreach (ExportEntry exp in Pcc.Exports)
                 {
                     switch (exp.ClassName)
                     {
@@ -1021,7 +1021,7 @@ namespace ME3Explorer
                         streamingLevelsProp = new ArrayProperty<ObjectProperty>("StreamingLevels");
                     }
                     streamingLevelsProp.Clear();
-                    foreach (IExportEntry exp in levelStreamingKismets)
+                    foreach (ExportEntry exp in levelStreamingKismets)
                     {
                         streamingLevelsProp.Add(new ObjectProperty(exp.UIndex));
                     }
@@ -1106,7 +1106,7 @@ namespace ME3Explorer
             }
             var duplicates = new List<string>();
             var duplicatesPackagePathIndexMapping = new Dictionary<string, List<int>>();
-            foreach (IExportEntry exp in Pcc.Exports)
+            foreach (ExportEntry exp in Pcc.Exports)
             {
                 string key = exp.GetInstancedFullPath;
                 if (key.StartsWith("ME3ExplorerTrashPackage")) continue; //Do not report these as requiring re-indexing.
@@ -1170,7 +1170,7 @@ namespace ME3Explorer
                     }
                     for (int i = 0; i < Pcc.ExportCount; i++)
                     {
-                        IExportEntry exp = Pcc.Exports[i];
+                        ExportEntry exp = Pcc.Exports[i];
                         //header
                         if (offsetDec >= exp.HeaderOffset && offsetDec < exp.HeaderOffset + exp.Header.Length)
                         {
@@ -1216,10 +1216,10 @@ namespace ME3Explorer
                 int nextIndex; //used to select the final node
                 crossPCCObjectMap.Clear();
                 TreeViewEntry newEntry;
-                if (entry is IExportEntry exp)
+                if (entry is ExportEntry exp)
                 {
 
-                    IExportEntry ent = exp.Clone();
+                    ExportEntry ent = exp.Clone();
                     Pcc.addExport(ent);
                     newEntry = new TreeViewEntry(ent);
                     crossPCCObjectMap[exp] = ent;
@@ -1252,10 +1252,10 @@ namespace ME3Explorer
             if (TryGetSelectedEntry(out IEntry entry))
             {
                 TreeViewEntry newEntry;
-                if (entry is IExportEntry export)
+                if (entry is ExportEntry export)
                 {
 
-                    IExportEntry ent = export.Clone();
+                    ExportEntry ent = export.Clone();
                     Pcc.addExport(ent);
                     newEntry = new TreeViewEntry(ent);
                 }
@@ -1292,7 +1292,7 @@ namespace ME3Explorer
                     TreeViewEntry newEntry = null;
                     if (node.UIndex > 0)
                     {
-                        IExportEntry ent = (node.Entry as IExportEntry).Clone();
+                        ExportEntry ent = (node.Entry as ExportEntry).Clone();
                         Pcc.addExport(ent);
                         newEntry = new TreeViewEntry(ent);
                         crossPCCObjectMap[node.Entry] = ent;
@@ -1310,7 +1310,7 @@ namespace ME3Explorer
                     /*if (node.UIndex > 0)
                     {
                         nextIndex = Pcc.ExportCount + 1;
-                        IExportEntry exp = (node.Entry as IExportEntry).Clone();
+                        ExportEntry exp = (node.Entry as ExportEntry).Clone();
                         exp.idxLink = link;
                         Pcc.addExport(exp);
                         crossPCCObjectMap[node.UIndex - 1] = Pcc.ExportCount - 1; //0 based. Just how the code was written.
@@ -1340,7 +1340,7 @@ namespace ME3Explorer
 
         private void ImportExpData(bool binaryOnly)
         {
-            if (!TryGetSelectedExport(out IExportEntry export))
+            if (!TryGetSelectedExport(out ExportEntry export))
             {
                 return;
             }
@@ -1370,7 +1370,7 @@ namespace ME3Explorer
 
         private void ExportExpData(bool binaryOnly)
         {
-            if (!TryGetSelectedExport(out IExportEntry export))
+            if (!TryGetSelectedExport(out ExportEntry export))
             {
                 return;
             }
@@ -1428,8 +1428,8 @@ namespace ME3Explorer
                         Stopwatch sw = Stopwatch.StartNew();
                         for (int i = 0; i < numExportsToEnumerate; i++)
                         {
-                            IExportEntry exp1 = Pcc.Exports[i];
-                            IExportEntry exp2 = compareFile.Exports[i];
+                            ExportEntry exp1 = Pcc.Exports[i];
+                            ExportEntry exp2 = compareFile.Exports[i];
 
                             //make data offset and data size the same, as the exports could be the same even if it was appended later.
                             //The datasize being different is a data difference not a true header difference so we won't list it here.
@@ -1608,7 +1608,7 @@ namespace ME3Explorer
             }
 
             IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
+            IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
             int importsOffset = Exports.Count;
 
             var rootEntry = new TreeViewEntry(null, Pcc.FilePath) { IsExpanded = true };
@@ -1654,14 +1654,14 @@ namespace ME3Explorer
                 return;
             }
             IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
+            IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
             AllEntriesList = new List<string>();
             int importsOffset = Exports.Count;
 
             TreeViewEntry rootEntry = new TreeViewEntry(null, Pcc.FilePath) { IsExpanded = true };
             AllTreeViewNodesX.Add(rootEntry);
 
-            foreach (IExportEntry exp in Exports)
+            foreach (ExportEntry exp in Exports)
             {
                 AllTreeViewNodesX.Add(new TreeViewEntry(exp));
             }
@@ -1941,7 +1941,7 @@ namespace ME3Explorer
             return false;
         }
 
-        private bool TryGetSelectedExport(out IExportEntry export)
+        private bool TryGetSelectedExport(out ExportEntry export)
         {
             if (GetSelected(out int uIndex) && Pcc.isUExport(uIndex))
             {
@@ -2188,8 +2188,8 @@ namespace ME3Explorer
 
             if (CurrentView == CurrentViewMode.Imports || CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree)
             {
-                Interpreter_Tab.IsEnabled = selectedEntry is IExportEntry;
-                if (selectedEntry is IExportEntry exportEntry)
+                Interpreter_Tab.IsEnabled = selectedEntry is ExportEntry;
+                if (selectedEntry is ExportEntry exportEntry)
                 {
                     foreach ((ExportLoaderControl exportLoader, TabItem tab) in ExportLoaders)
                     {
@@ -2323,7 +2323,7 @@ namespace ME3Explorer
                             {
                                 CurrentView = CurrentViewMode.Imports;
                             }
-                            else if (CurrentView == CurrentViewMode.Imports && entry is IExportEntry)
+                            else if (CurrentView == CurrentViewMode.Imports && entry is ExportEntry)
                             {
                                 CurrentView = CurrentViewMode.Exports;
                             }
@@ -2489,10 +2489,10 @@ namespace ME3Explorer
                 if (portingOption == TreeMergeDialog.PortingOption.ReplaceSingular)
                 {
                     //replace data only
-                    if (sourceEntry is IExportEntry entry)
+                    if (sourceEntry is ExportEntry entry)
                     {
                         crossPCCObjectMap.Add(entry, targetLinkEntry);
-                        ReplaceExportDataWithAnother(entry, targetLinkEntry as IExportEntry);
+                        ReplaceExportDataWithAnother(entry, targetLinkEntry as ExportEntry);
                         //if (successful)
                         //{
                         //    relinkObjects2(sourceEntry.FileRef);
@@ -2520,7 +2520,7 @@ namespace ME3Explorer
                     if (n >= 0)
                     {
                         //importing an export
-                        if (importExport(sourceEntry as IExportEntry, link, out IExportEntry newExport))
+                        if (importExport(sourceEntry as ExportEntry, link, out ExportEntry newExport))
                         {
                             newItem = new TreeViewEntry(newExport);
                             crossPCCObjectMap[sourceEntry] = newExport; //0 based. map old index to new index
@@ -2582,7 +2582,7 @@ namespace ME3Explorer
             }
         }
 
-        private bool ReplaceExportDataWithAnother(IExportEntry incomingExport, IExportEntry targetExport)
+        private bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport)
         {
             byte[] idata = incomingExport.Data;
             PropertyCollection props = incomingExport.GetProperties();
@@ -2667,7 +2667,7 @@ namespace ME3Explorer
                 if (index >= 0)
                 {
                     //index--; //This was definitely wrong... probably
-                    if (importExport(node.Entry as IExportEntry, newItemParent.UIndex, out IExportEntry importedEntry))
+                    if (importExport(node.Entry as ExportEntry, newItemParent.UIndex, out ExportEntry importedEntry))
                     {
                         newEntry = new TreeViewEntry(importedEntry);
                         crossPCCObjectMap[node.Entry] = importedEntry;
@@ -2706,7 +2706,7 @@ namespace ME3Explorer
         /// <param name="link">Local parent node UIndex</param>
         /// <param name="outputEntry">Newly generated export entry reference</param>
         /// <returns></returns>
-        private bool importExport(IExportEntry ex, int link, out IExportEntry outputEntry)
+        private bool importExport(ExportEntry ex, int link, out ExportEntry outputEntry)
         {
             outputEntry = null; //required assignemnt
             switch (Pcc.Game)
@@ -2850,8 +2850,8 @@ namespace ME3Explorer
             else if (ex.idxClass > 0)
             {
                 //Todo: Add cross mapping support as multi-mode will allow this to work now
-                IExportEntry portingInClass = ex.FileRef.getUExport(ex.idxClass);
-                IExportEntry matchingExport = Pcc.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
+                ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxClass);
+                ExportEntry matchingExport = Pcc.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
                 if (matchingExport != null)
                 {
                     classValue = matchingExport.UIndex;
@@ -2869,8 +2869,8 @@ namespace ME3Explorer
             else if (ex.idxClassParent > 0)
             {
                 //Todo: Add cross mapping support as multi-mode will allow this to work now
-                IExportEntry portingInClass = ex.FileRef.getUExport(ex.idxClassParent);
-                IExportEntry matchingExport = Pcc.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
+                ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxClassParent);
+                ExportEntry matchingExport = Pcc.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
                 if (matchingExport != null)
                 {
                     superclass = matchingExport.UIndex;
@@ -2886,8 +2886,8 @@ namespace ME3Explorer
             }
             else if (ex.idxArchtype > 0)
             {
-                IExportEntry portingInClass = ex.FileRef.getUExport(ex.idxArchtype);
-                IExportEntry matchingExport = Pcc.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
+                ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxArchtype);
+                ExportEntry matchingExport = Pcc.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
                 if (matchingExport != null)
                 {
                     archetype = matchingExport.UIndex;
@@ -2966,7 +2966,7 @@ namespace ME3Explorer
                     start = n + 1;
                 if (CurrentView == CurrentViewMode.Exports)
                 {
-                    IReadOnlyList<IExportEntry> pccObjectList = Pcc.Exports;
+                    IReadOnlyList<ExportEntry> pccObjectList = Pcc.Exports;
                     for (int i = start; i < pccObjectList.Count; i++)
                         if (pccObjectList[i].ClassName == searchClass)
                         {
@@ -3093,7 +3093,7 @@ namespace ME3Explorer
             }
             if (CurrentView == CurrentViewMode.Exports)
             {
-                IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
+                IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
                 for (int i = start, numSearched = 0; numSearched < Exports.Count; i++, numSearched++)
                 {
                     if (Exports[i].ObjectName.ToLower().Contains(searchTerm))
@@ -3148,12 +3148,12 @@ namespace ME3Explorer
                 int basePathLen = myBasePath.Length;
                 using (IMEPackage pack = MEPackageHandler.OpenMEPackage(f.FullName))
                 {
-                    List<IExportEntry> tlkExports = pack.Exports.Where(x => (x.ObjectName == "tlk" || x.ObjectName == "tlk_M") && x.ClassName == "BioTlkFile").ToList();
+                    List<ExportEntry> tlkExports = pack.Exports.Where(x => (x.ObjectName == "tlk" || x.ObjectName == "tlk_M") && x.ClassName == "BioTlkFile").ToList();
                     if (tlkExports.Count > 0)
                     {
                         string subPath = f.FullName.Substring(basePathLen);
                         Debug.WriteLine("Found exports in " + f.FullName.Substring(basePathLen));
-                        foreach (IExportEntry exp in tlkExports)
+                        foreach (ExportEntry exp in tlkExports)
                         {
                             ME1Explorer.Unreal.Classes.TalkFile talkFile = new ME1Explorer.Unreal.Classes.TalkFile(exp);
                             foreach (var sref in talkFile.StringRefs)
@@ -3360,7 +3360,7 @@ namespace ME3Explorer
                 return;
             }
 
-            IExportEntry targetPersistentLevel;
+            ExportEntry targetPersistentLevel;
             using (IMEPackage sourceFile = MEPackageHandler.OpenMEPackage(d.FileName))
             {
                 targetPersistentLevel = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
@@ -3387,19 +3387,19 @@ namespace ME3Explorer
 
                 crossPCCObjectMap.Clear();
 
-                var itemsToAddToLevel = new List<IExportEntry>();
-                foreach (IExportEntry export in sourceFile.Exports)
+                var itemsToAddToLevel = new List<ExportEntry>();
+                foreach (ExportEntry export in sourceFile.Exports)
                 {
                     if (export.ObjectName == "SFXOperation_ObjectiveSpawnPoint")
                     {
                         Debug.WriteLine("Porting " + export.GetFullPath + "_" + export.indexValue);
-                        importExport(export, targetPersistentLevel.UIndex, out IExportEntry portedObjective);
+                        importExport(export, targetPersistentLevel.UIndex, out ExportEntry portedObjective);
                         crossPCCObjectMap[export] = portedObjective;
                         itemsToAddToLevel.Add(portedObjective);
                         var child = export.GetProperty<ObjectProperty>("CollisionComponent");
-                        IExportEntry collCyl = sourceFile.Exports[child.Value - 1];
+                        ExportEntry collCyl = sourceFile.Exports[child.Value - 1];
                         Debug.WriteLine($"Porting {collCyl.GetFullPath}_{collCyl.indexValue}");
-                        importExport(collCyl, portedObjective.UIndex, out IExportEntry portedCollisionCylinder);
+                        importExport(collCyl, portedObjective.UIndex, out ExportEntry portedCollisionCylinder);
                         crossPCCObjectMap[collCyl] = portedCollisionCylinder;
                     }
                 }
@@ -3407,7 +3407,7 @@ namespace ME3Explorer
                 relinkObjects2(sourceFile);
 
                 xPos -= (itemsToAddToLevel.Count / 2) * 55.0f;
-                foreach (IExportEntry addingExport in itemsToAddToLevel)
+                foreach (ExportEntry addingExport in itemsToAddToLevel)
                 {
                     StructProperty locationProp = addingExport.GetProperty<StructProperty>("location");
                     if (locationProp != null)
@@ -3443,7 +3443,7 @@ namespace ME3Explorer
                 int offset = (int)(start + (numberofitems + 1) * 4); //will be at the very end of the list as it is now +1
 
                 List<byte> memList = leveldata.ToList();
-                foreach (IExportEntry addingExport in itemsToAddToLevel)
+                foreach (ExportEntry addingExport in itemsToAddToLevel)
                 {
                     memList.InsertRange(offset, BitConverter.GetBytes(addingExport.UIndex));
                     offset += 4;
@@ -3494,7 +3494,7 @@ namespace ME3Explorer
                         using (var package = MEPackageHandler.OpenMEPackage(file))
                         {
                             var filesToSkip = new[] { "BioD_Cit004_270ShuttleBay1", "BioD_Cit003_600MechEvent", "CAT6_Executioner", "SFXPawn_Demo", "SFXPawn_Sniper", "SFXPawn_Heavy", "GethAssassin", "BioD_OMG003_125LitExtra" };
-                            foreach (IExportEntry exp in package.Exports)
+                            foreach (ExportEntry exp in package.Exports)
                             {
                                 if (exp.ClassName == "Package" && exp.idxLink == 0 && !filesToSkip.Contains(exp.ObjectName))
                                 {
@@ -3581,8 +3581,8 @@ namespace ME3Explorer
                 {
                     string fname = Path.GetFileNameWithoutExtension(d.FileName);
                     newGuid = Guid.NewGuid();
-                    IExportEntry selfNamingExport = null;
-                    foreach (IExportEntry exp in sourceFile.Exports)
+                    ExportEntry selfNamingExport = null;
+                    foreach (ExportEntry exp in sourceFile.Exports)
                     {
                         if (exp.ClassName == "Package"
                          && exp.idxLink == 0
@@ -3647,7 +3647,7 @@ namespace ME3Explorer
                     using (var package = MEPackageHandler.OpenME1Package(fi.FullName))
                     {
                         Debug.WriteLine(fi.Name);
-                        foreach (IExportEntry export in package.Exports)
+                        foreach (ExportEntry export in package.Exports)
                         {
                             if (export.ClassName == "Function")
                             {
@@ -3708,7 +3708,7 @@ namespace ME3Explorer
                 {
                     using (var package = MEPackageHandler.OpenME1Package(fi.FullName))
                     {
-                        foreach (IExportEntry export in package.Exports)
+                        foreach (ExportEntry export in package.Exports)
                         {
                             if ((export.ClassName == "BioSWF"))
                             //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
@@ -3735,7 +3735,7 @@ namespace ME3Explorer
                 {
                     using (var package = MEPackageHandler.OpenME3Package(fi.FullName))
                     {
-                        foreach (IExportEntry export in package.Exports)
+                        foreach (ExportEntry export in package.Exports)
                         {
                             if (export.ClassParent == "SFXPowerCustomAction")
                             {
@@ -3931,7 +3931,7 @@ namespace ME3Explorer
         {
             List<string> strs = new List<String>();
             Debug.WriteLine((Pcc as ME3Package).Generations0NameCount);
-            foreach (IExportEntry exp in Pcc.Exports)
+            foreach (ExportEntry exp in Pcc.Exports)
             {
                 if (exp.GetFullPath.StartsWith("TheWorld.PersistentLevel") && exp.GetFullPath.Count(f => f == '.') == 2)
                 {
@@ -3946,7 +3946,7 @@ namespace ME3Explorer
         private void ListLinkerValues_Click(object sender, RoutedEventArgs e)
         {
             List<string> strs = new List<String>();
-            foreach (IExportEntry exp in Pcc.Exports.Where(x => x.LinkerIndex >= 0).OrderBy(x => x.LinkerIndex))
+            foreach (ExportEntry exp in Pcc.Exports.Where(x => x.LinkerIndex >= 0).OrderBy(x => x.LinkerIndex))
             {
                 strs.Add($"UI:{exp.UIndex} -> LI:{BitConverter.ToInt32(exp.Data, 0)} = {exp.GetIndexedFullPath}");
             }
@@ -3974,7 +3974,7 @@ namespace ME3Explorer
                 {
                     var materials = pcc.Exports.Where(exp => exp.ClassName == "Material");
 
-                    foreach (IExportEntry material in materials)
+                    foreach (ExportEntry material in materials)
                     {
                         try
                         {
@@ -4010,7 +4010,7 @@ namespace ME3Explorer
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
-                    IExportEntry shaderCache = pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache");
+                    ExportEntry shaderCache = pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache");
                     if (shaderCache == null) return;
                     int oldDataOffset = shaderCache.DataOffset;
 

@@ -110,8 +110,8 @@ namespace ME3Explorer.Meshplorer
             view.TextureCache.Dispose(); // Clear out the loaded textures from the previous pcc
             listBox1.Items.Clear();
             Objects.Clear();
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
-            IExportEntry exportEntry;
+            IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
+            ExportEntry exportEntry;
             for (int i = 0; i < Exports.Count(); i++)
             {
                 exportEntry = Exports[i];
@@ -132,8 +132,8 @@ namespace ME3Explorer.Meshplorer
         {
             Materials.Clear();
             MaterialBox.Items.Clear();
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
-            IExportEntry exportEntry;
+            IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
+            ExportEntry exportEntry;
             for (int i = 0; i < Exports.Count(); i++)
             {
                 exportEntry = Exports[i];
@@ -157,7 +157,7 @@ namespace ME3Explorer.Meshplorer
                     string desc = "";
                     if (skm.Materials[i] > 0)
                     { // Material is export
-                        IExportEntry export = Pcc.getExport(skm.Materials[i] - 1);
+                        ExportEntry export = Pcc.getExport(skm.Materials[i] - 1);
                         desc = " Export #" + skm.Materials[i] + " : " + export.ObjectName;
                     }
                     else if (skm.Materials[i] < 0)
@@ -375,7 +375,7 @@ namespace ME3Explorer.Meshplorer
                     stm.ImportPSK(d.FileName);
                     byte[] buff = stm.SerializeToBuffer();
                     int idx = n;
-                    IExportEntry en = Pcc.Exports[idx];
+                    ExportEntry en = Pcc.Exports[idx];
                     en.Data = buff;
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                     timer1.Enabled = true;
@@ -392,7 +392,7 @@ namespace ME3Explorer.Meshplorer
                     skmold.ImportFromPsk(d.FileName, getLOD());
                     byte[] buff = skmold.Serialize();
                     int idx = n;
-                    IExportEntry en = pcc.Exports[idx];
+                    ExportEntry en = pcc.Exports[idx];
                     en.Data = buff;
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                     rtb1.Visible = false;
@@ -624,7 +624,7 @@ namespace ME3Explorer.Meshplorer
                 return;
             }
 
-            IExportEntry export = Pcc.getExport(n);
+            ExportEntry export = Pcc.getExport(n);
             if (export.ClassName == "StaticMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
@@ -1080,7 +1080,7 @@ namespace ME3Explorer.Meshplorer
                 timer1.Enabled = false;
                 stm.ImportOBJ(dialog.FileName);
                 byte[] buff = stm.SerializeToBuffer();
-                IExportEntry en = Pcc.Exports[stm.index];
+                ExportEntry en = Pcc.Exports[stm.index];
                 en.Data = buff;
                 MessageBox.Show("OBJ import complete.");
                 timer1.Enabled = true;

@@ -423,7 +423,7 @@ namespace ME3Explorer.Packages
                 imports.Add(import);
             }
 
-            exports = new List<IExportEntry>();
+            exports = new List<ExportEntry>();
             listsStream.Seek(ExportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ExportCount; i++)
             {

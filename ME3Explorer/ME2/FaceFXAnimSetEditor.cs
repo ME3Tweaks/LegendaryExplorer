@@ -34,7 +34,7 @@ namespace ME2Explorer
                 {
                     LoadME2Package(d.FileName);
                     Objects = new List<int>();
-                    IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
+                    IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
                     for (int i = 0; i < Exports.Count; i++)
                     {
                         if (Exports[i].ClassName == "FaceFXAnimSet")

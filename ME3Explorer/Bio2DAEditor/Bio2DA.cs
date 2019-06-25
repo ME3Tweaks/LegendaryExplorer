@@ -48,8 +48,8 @@ namespace ME3Explorer
             }
         }
 
-        IExportEntry export;
-        public Bio2DA(IExportEntry export)
+        ExportEntry export;
+        public Bio2DA(ExportEntry export)
         {
             //Console.WriteLine("Loading " + export.ObjectName);
             this.export = export;
@@ -364,7 +364,7 @@ namespace ME3Explorer
             }
         }
 
-        public static Bio2DA ReadExcelTo2DA(IExportEntry export, string Filename)
+        public static Bio2DA ReadExcelTo2DA(ExportEntry export, string Filename)
         {
             var Workbook = new XLWorkbook(Filename);
             IXLWorksheet iWorksheet;

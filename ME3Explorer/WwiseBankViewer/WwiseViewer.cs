@@ -54,7 +54,7 @@ namespace ME3Explorer.WwiseBankEditor
         public void ListRefresh()
         {
             objects = new List<int>();
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
+            IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
             for (int i = 0; i < Exports.Count; i++)
                 if (Exports[i].ClassName == "WwiseBank")
                     objects.Add(i);
@@ -90,7 +90,7 @@ namespace ME3Explorer.WwiseBankEditor
                         {
                             s += $", Name: {Pcc.getNameEntry(val)}";
                         }
-                        if (Pcc.getEntry(val) is IExportEntry exp)
+                        if (Pcc.getEntry(val) is ExportEntry exp)
                         {
                             s += $", Export: {exp.ObjectName}";
                         }

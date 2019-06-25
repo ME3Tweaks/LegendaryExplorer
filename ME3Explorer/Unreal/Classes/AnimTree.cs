@@ -50,11 +50,11 @@ namespace ME3Explorer.Unreal.Classes
 
         #endregion
         
-        public IExportEntry Export;
+        public ExportEntry Export;
         public IMEPackage pcc;
         public byte[] data;
 
-        public AnimTree(IExportEntry export)
+        public AnimTree(ExportEntry export)
         {
             pcc = export.FileRef;
             Export = export;

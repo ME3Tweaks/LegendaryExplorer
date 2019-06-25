@@ -98,7 +98,7 @@ namespace ME3Explorer.Unreal
         BioMask4Property
     }
 
-    [Obsolete("Use IExportEntry's GetProperties() instead")]
+    [Obsolete("Use ExportEntry's GetProperties() instead")]
     public static class PropertyReader
     {
         public class Property
@@ -122,7 +122,7 @@ namespace ME3Explorer.Unreal
             public List<PropertyValue> Array;
         }
 
-        public static List<Property> getPropList(IExportEntry export)
+        public static List<Property> getPropList(ExportEntry export)
         {
             Application.DoEvents();
             byte[] data = export.Data;

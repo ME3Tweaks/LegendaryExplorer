@@ -564,7 +564,7 @@ namespace ME3Explorer.PackageDumper
                         int numTotal = pcc.Exports.Count;
                         //writeVerboseLine("Enumerating exports");
                         string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(File) + "\\";
-                        foreach (IExportEntry exp in pcc.Exports)
+                        foreach (ExportEntry exp in pcc.Exports)
                         {
                             if (DumpCanceled)
                             {

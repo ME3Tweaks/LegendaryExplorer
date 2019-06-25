@@ -50,7 +50,7 @@ namespace ME3Explorer.ScriptDB
                     using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
                     {
                         int count2 = 0;
-                        foreach (IExportEntry ent in pcc.Exports)
+                        foreach (ExportEntry ent in pcc.Exports)
                         {
                             if (ent.ClassName == "Function")
                             {

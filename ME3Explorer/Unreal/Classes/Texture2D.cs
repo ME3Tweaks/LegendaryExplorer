@@ -51,7 +51,7 @@ namespace ME3Explorer.Unreal.Classes
             // check if texIdx is an Export index and a Texture2D class
             if (pccObj.isExport(texIdx) && pccObj.getExport(texIdx).ClassName == className)
             {
-                IExportEntry expEntry = pccObj.getExport(texIdx);
+                ExportEntry expEntry = pccObj.getExport(texIdx);
                 pccOffset = (uint)expEntry.DataOffset;
                 texName = expEntry.ObjectName;
 
