@@ -175,7 +175,8 @@ namespace ME3Explorer
             "BioStateEventMap",
             "BioOutcomeMap",
             "FaceFXAnimSet",
-            "BioConsequenceMap"
+            "BioConsequenceMap",
+            "AnimSequence"
         };
 
         public override bool CanParse(ExportEntry exportEntry)
