@@ -24,10 +24,10 @@ namespace ME3Explorer.PackageEditor
     /// <summary>
     /// Interaction logic for ExternalToolLauncher.xaml
     /// </summary>
-    public partial class ExternalToolLauncher : ExportLoaderControl
+    public partial class JPEXExternalExportLoader : ExportLoaderControl
     {
         private static string[] parsableClasses = { "BioSWF", "GFxMovieInfo" };
-        public ExternalToolLauncher()
+        public JPEXExternalExportLoader()
         {
             InitializeComponent();
         }

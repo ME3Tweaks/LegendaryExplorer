@@ -495,7 +495,7 @@
                         <TabItem.Header>
                             <TextBlock Text="External tools" ToolTip="Launch embedded files in external tools"/>
                         </TabItem.Header>
-                        <packageEditor:ExternalToolLauncher x:Name="ExternalToolsTab_ExternalTools"/>
+                        <packageEditor:JPEXExternalExportLoader x:Name="ExternalToolsTab_ExternalTools"/>
                     </TabItem>
                 </TabControl>
             </Grid>
