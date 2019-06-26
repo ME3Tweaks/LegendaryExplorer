@@ -27,15 +27,14 @@ namespace ME3Explorer.Unreal.Classes
 
         #endregion
 
-        public int MyIndex;
-        public ME3Package pcc;
+        public ExportEntry Export;
+        public IMEPackage pcc;
         public byte[] data;
 
-        public BioAnimSetData(ME3Package Pcc, int Index)
+        public BioAnimSetData(ExportEntry export)
         {
-            pcc = Pcc;
-            MyIndex = Index;
-            ExportEntry export = pcc.getExport(Index);
+            pcc = export.FileRef;
+            Export = export;
             data = export.Data;
             PropertyCollection props = export.GetProperties();
             bAnimRotationOnly = props.GetPropOrDefault<BoolProperty>("bAnimRotationOnly").Value;
@@ -46,7 +45,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode($"{pcc.Exports[MyIndex].ObjectName}(#{MyIndex})");
+            TreeNode res = new TreeNode($"{Export.ObjectName}(#{Export.UIndex})");
             res.Nodes.Add($"bAnimRotationOnly : {bAnimRotationOnly}");
             res.Nodes.Add(TBNToTree());
             res.Nodes.Add(UTBNToTree());

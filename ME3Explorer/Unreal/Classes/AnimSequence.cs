@@ -58,6 +58,8 @@ namespace ME3Explorer.Unreal.Classes
 
         #endregion
 
+        public float Rate;
+
         public IMEPackage pcc;
         private readonly ExportEntry Export;
         private readonly PropertyCollection Props;
@@ -79,10 +81,11 @@ namespace ME3Explorer.Unreal.Classes
             SequenceName = Props.GetPropOrDefault<NameProperty>("SequenceName").Value.InstancedString;
             m_pBioAnimSetData = Props.GetPropOrDefault<ObjectProperty>("m_pBioAnimSetData").Value;
             SequenceLength = Props.GetPropOrDefault<FloatProperty>("SequenceLength").Value;
-            RateScale = Props.GetPropOrDefault<FloatProperty>("RateScale").Value;
+            RateScale = Props.GetProp<FloatProperty>("RateScale")?.Value ?? 1;
             NumFrames = Props.GetPropOrDefault<IntProperty>("NumFrames").Value;
             ReadTrackOffsets(Props.GetPropOrDefault<ArrayProperty<IntProperty>>("CompressedTrackOffsets").Select(p => p.Value).ToArray());
             ReadCompressedBlob();
+            Rate = NumFrames / SequenceLength * RateScale;
         }
 
         public void ReadTrackOffsets(int[] raw)

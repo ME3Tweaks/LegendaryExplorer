@@ -44,6 +44,10 @@ namespace ME3Explorer.Unreal.Classes
 
             PropertyCollection props = export.GetProperties();
             m_pBioAnimSetData = props.GetPropOrDefault<ObjectProperty>("m_pBioAnimSetData").Value;
+            if (pcc.isExport(m_pBioAnimSetData))
+            {
+                SetData = new BioAnimSetData(pcc.getUExport(m_pBioAnimSetData));
+            }
             PreviewSkelMeshName = props.GetPropOrDefault<NameProperty>("PreviewSkelMeshName").Value.InstancedString;
             Sequences = props.GetPropOrDefault<ArrayProperty<ObjectProperty>>("Sequences").Select(prop => prop.Value).ToList();
         }
@@ -87,9 +91,10 @@ namespace ME3Explorer.Unreal.Classes
             {
                 PSAFile.PSABone b = new PSAFile.PSABone();
                 b.name = s;
-                if (count++ == 0)
+                if (count == 0)
                     b.parent = -1;
                 d.Bones.Add(b);
+                count++;
             }
             d.Infos = new List<PSAFile.PSAAnimInfo>();              //Export Sequences
             d.Keys = new List<PSAFile.PSAAnimKeys>();

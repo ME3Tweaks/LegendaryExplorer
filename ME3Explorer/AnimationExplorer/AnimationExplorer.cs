@@ -34,15 +34,15 @@ namespace ME3Explorer.AnimationExplorer
 
         public void LoadPcc(string s)
         {
-            try
-            {
-                LoadME3Package(s);
-                reScan();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error:\n" + ex.Message);
-            }
+            //try
+            //{
+            LoadME3Package(s);
+            reScan();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("Error:\n" + ex.Message);
+            //}
         }
 
         private void reScan()

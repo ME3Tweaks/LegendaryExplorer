@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpDX;
+using StreamHelpers;
 
 namespace ME3Explorer.Unreal
 {
@@ -149,28 +150,28 @@ namespace ME3Explorer.Unreal
             
             FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read);
             do
-             {
-                 ChunkHeader h = ReadHeader(file);                 
-                 switch (h.name)
-                 {
+            {
+                ChunkHeader h = ReadHeader(file);                 
+                switch (h.name)
+                {
 
-                     case "ANIMHEAD":
-                         break;
-                     case "BONENAMES":
-                         ReadBones(file, h);
-                         break;
-                     case "ANIMINFO":
-                         ReadAnimInfo(file, h);
-                         break;
-                     case "ANIMKEYS":
-                         ReadAnimKeys(file, h);
-                         break;
-                     default:
-                         file.Seek(h.size * h.count, SeekOrigin.Current);
-                         break;
-                 }
+                    case "ANIMHEAD":
+                        break;
+                    case "BONENAMES":
+                        ReadBones(file, h);
+                        break;
+                    case "ANIMINFO":
+                        ReadAnimInfo(file, h);
+                        break;
+                    case "ANIMKEYS":
+                        ReadAnimKeys(file, h);
+                        break;
+                    default:
+                        file.Seek(h.size * h.count, SeekOrigin.Current);
+                        break;
+                }
 
-             } while (file.Position < file.Length);
+            } while (file.Position < file.Length);
         }
 
         public void ExportPSA(string path)
@@ -193,9 +194,9 @@ namespace ME3Explorer.Unreal
                     m.WriteByte((byte)name[i]);
                 else
                     m.WriteByte(0);
-            m.Write(BitConverter.GetBytes(0x1e83b9), 0, 4);
-            m.Write(BitConverter.GetBytes(size), 0, 4);
-            m.Write(BitConverter.GetBytes(count), 0, 4);
+            m.WriteInt32(0x1e83b9);
+            m.WriteInt32(size);
+            m.WriteInt32(count);
         }
 
         public void WriteAnimHead(MemoryStream m)
@@ -208,15 +209,18 @@ namespace ME3Explorer.Unreal
             WriteHeader(m, "BONENAMES", 0x78, data.Bones.Count);
             foreach (PSABone b in data.Bones)
             {
-                for (int i = 0; i < 64; i++)
-                    if (i < b.name.Length)
-                        m.WriteByte((byte)b.name[i]);
+                for (int j = 0; j < 64; j++)
+                {
+                    if (j < b.name.Length)
+                        m.WriteByte((byte) b.name[j]);
                     else
                         m.WriteByte(0);
-                m.Write(BitConverter.GetBytes(0), 0, 4);
-                m.Write(BitConverter.GetBytes(b.childs), 0, 4);
-                m.Write(BitConverter.GetBytes(b.parent), 0, 4);
-                for (int i = 0; i < 44; i++)
+                }
+
+                m.WriteInt32(b.flags);
+                m.WriteInt32(b.childs);
+                m.WriteInt32(b.parent);
+                for (int j = 0; j < 44; j++)
                     m.WriteByte(0);
             }
         }
@@ -236,16 +240,16 @@ namespace ME3Explorer.Unreal
                         m.WriteByte((byte)inf.group[i]);
                     else
                         m.WriteByte(0);
-                m.Write(BitConverter.GetBytes(inf.TotalBones), 0, 4);
-                m.Write(BitConverter.GetBytes(inf.RootInclude), 0, 4);
-                m.Write(BitConverter.GetBytes(inf.KeyCompressionStyle), 0, 4);
-                m.Write(BitConverter.GetBytes(inf.KeyQuotum), 0, 4);
-                m.Write(BitConverter.GetBytes(inf.KeyReduction), 0, 4);
-                m.Write(BitConverter.GetBytes(inf.TrackTime), 0, 4);
-                m.Write(BitConverter.GetBytes(inf.AnimRate), 0, 4);
-                m.Write(BitConverter.GetBytes(inf.StartBone), 0, 4);
-                m.Write(BitConverter.GetBytes(inf.FirstRawFrame), 0, 4);
-                m.Write(BitConverter.GetBytes(inf.NumRawFrames), 0, 4);
+                m.WriteInt32(inf.TotalBones);
+                m.WriteInt32(inf.RootInclude);
+                m.WriteInt32(inf.KeyCompressionStyle);
+                m.WriteInt32(inf.KeyQuotum);
+                m.WriteFloat(inf.KeyReduction);
+                m.WriteFloat(inf.TrackTime);
+                m.WriteFloat(inf.AnimRate);
+                m.WriteInt32(inf.StartBone);
+                m.WriteInt32(inf.FirstRawFrame);
+                m.WriteInt32(inf.NumRawFrames);
             }
         }
 
@@ -254,14 +258,14 @@ namespace ME3Explorer.Unreal
             WriteHeader(m, "ANIMKEYS", 0x20, data.Keys.Count);
             foreach (PSAAnimKeys k in data.Keys)
             {
-                m.Write(BitConverter.GetBytes(k.location.x), 0, 4);
-                m.Write(BitConverter.GetBytes(k.location.y), 0, 4);
-                m.Write(BitConverter.GetBytes(k.location.z), 0, 4);
-                m.Write(BitConverter.GetBytes(k.rotation.x), 0, 4);
-                m.Write(BitConverter.GetBytes(k.rotation.y), 0, 4);
-                m.Write(BitConverter.GetBytes(k.rotation.z), 0, 4);
-                m.Write(BitConverter.GetBytes(k.rotation.w), 0, 4);
-                m.Write(BitConverter.GetBytes(k.time), 0, 4);
+                m.WriteFloat(k.location.x);
+                m.WriteFloat(k.location.y);
+                m.WriteFloat(k.location.z);
+                m.WriteFloat(k.rotation.x);
+                m.WriteFloat(k.rotation.y);
+                m.WriteFloat(k.rotation.z);
+                m.WriteFloat(k.rotation.w);
+                m.WriteFloat(k.time);
             }
         }
 
