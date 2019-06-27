@@ -2908,7 +2908,7 @@ namespace ME3Explorer
             {
                 var TrackOffsets = CurrentLoadedExport.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets");
                 var animsetData = CurrentLoadedExport.GetProperty<ObjectProperty>("m_pBioAnimSetData");
-                var boneList = Pcc.getUExport(animsetData.Value).GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames").ToList();
+                var boneList = Pcc.getUExport(animsetData.Value).GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames");
                 Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("RotationCompressionFormat").Value.Name, out AnimationCompressionFormat rotCompression);
                 int offset = binarystart;
 
@@ -2938,12 +2938,12 @@ namespace ME3Explorer
                     };
                     subnodes.Add(BoneID);
 
-                    for (int c = 0; c < bonePosCount; c++)
+                    for (int j = 0; j < bonePosCount; j++)
                     {
-                        offset = animBinStart + bonePosOffset + c * 12;
+                        offset = animBinStart + bonePosOffset + j * 12;
                         var PosKeys = new BinInterpTreeItem
                         {
-                            Header = $"0x{offset:X5} PosKey {c}",
+                            Header = $"0x{offset:X5} PosKey {j}",
                             Name = "_" + offset,
                             Tag = NodeType.Unknown
                         };
@@ -2981,20 +2981,19 @@ namespace ME3Explorer
                     i++;
                     var boneRotCount = TrackOffsets[i].Value;
                     int l = 12; // 12 length of rotation by default
-                    var RotKeys = new BinInterpTreeItem();
                     switch(rotCompression)
                     {
                         case AnimationCompressionFormat.ACF_None:
                         case AnimationCompressionFormat.ACF_Float96NoW:
-                            for (int r = 0; r < boneRotCount; r++)
+                            for (int j = 0; j < boneRotCount; j++)
                             {
                                 if (rotCompression == AnimationCompressionFormat.ACF_None)
                                     l = 16;
 
-                                offset = animBinStart + boneRotOffset + r * l;
-                                RotKeys = new BinInterpTreeItem
+                                offset = animBinStart + boneRotOffset + j * l;
+                                var RotKeys = new BinInterpTreeItem
                                 {
-                                    Header = $"0x{offset:X5} RotKey {r}",
+                                    Header = $"0x{offset:X5} RotKey {j}",
                                     Name = "_" + offset,
                                     Tag = NodeType.Unknown
                                 };
@@ -3042,14 +3041,22 @@ namespace ME3Explorer
                         case AnimationCompressionFormat.ACF_Fixed32NoW:
                         case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
                         case AnimationCompressionFormat.ACF_Float32NoW:
-                        case AnimationCompressionFormat.ACF_BioFixed48:
-                            RotKeys = new BinInterpTreeItem
+                            BoneID.Items.Add(new BinInterpTreeItem
                             {
                                 Header = $"0x{offset:X5} Rotationformat {rotCompression} cannot be parsed at this time.",
                                 Name = "_" + offset,
                                 Tag = NodeType.Unknown
-                            };
-                            BoneID.Items.Add(RotKeys);
+                            });
+                            break;
+                        case AnimationCompressionFormat.ACF_BioFixed48:
+                            const float shift = 0.70710678118f;
+                            const float scale = 1.41421356237f;
+                            float x = (data[0] & 0x7FFF) / 32767.0f * scale - shift;
+                            float y = (data[1] & 0x7FFF) / 32767.0f * scale - shift;
+                            float z = (data[2] & 0x7FFF) / 32767.0f * scale - shift;
+                            float w = 1.0f - (x * x + y * y + z * z);
+                            w = w >= 0.0f ? (float)Math.Sqrt(w) : 0.0f;
+                            int s = ((data[0] >> 14) & 2) | ((data[1] >> 15) & 1);
                             break;
                     }
                     
@@ -3058,7 +3065,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpTreeItem() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }

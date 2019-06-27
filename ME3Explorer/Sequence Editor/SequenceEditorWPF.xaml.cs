@@ -332,7 +332,16 @@ namespace ME3Explorer.Sequence_Editor
 
         private TreeViewEntry FindSequences(ExportEntry rootSeq, bool wantFullName = false)
         {
-            var root = new TreeViewEntry(rootSeq, $"#{rootSeq.UIndex}: {(wantFullName ? rootSeq.GetFullPath : rootSeq.ObjectName)}")
+            string seqName = wantFullName ? rootSeq.GetFullPath : "";
+            if (rootSeq.GetProperty<StrProperty>("ObjName") is StrProperty objName)
+            {
+                seqName += objName;
+            }
+            else
+            {
+                seqName += rootSeq.ObjectName;
+            }
+            var root = new TreeViewEntry(rootSeq, $"#{rootSeq.UIndex}: {seqName}")
             {
                 IsExpanded = true
             };

@@ -44,7 +44,7 @@ namespace ME3Explorer.Unreal.Classes
 
             PropertyCollection props = export.GetProperties();
             m_pBioAnimSetData = props.GetPropOrDefault<ObjectProperty>("m_pBioAnimSetData").Value;
-            if (pcc.isExport(m_pBioAnimSetData))
+            if (pcc.isUExport(m_pBioAnimSetData))
             {
                 SetData = new BioAnimSetData(pcc.getUExport(m_pBioAnimSetData));
             }

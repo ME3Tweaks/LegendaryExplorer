@@ -11,10 +11,15 @@ namespace ME3Explorer
 {
     public static class ME2Directory
     {
-        private static string _gamePath = null;
+        private static string _gamePath;
         public static string gamePath
         {
-            get => _gamePath;
+            get
+            {
+                if (_gamePath == null)
+                    return null;
+                return Path.GetFullPath(_gamePath); //normalize
+            }
             set
             {
                 if (value != null)
