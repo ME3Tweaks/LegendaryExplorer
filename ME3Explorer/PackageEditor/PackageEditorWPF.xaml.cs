@@ -1507,7 +1507,7 @@ namespace ME3Explorer
             ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
             ExportLoaders[EmbeddedTextureViewerTab_EmbededTextureViewer] = EmbeddedTextureViewer_Tab;
             ExportLoaders[ME1TlkEditorWPFTab_ME1TlkEditor] = ME1TlkEditorWPF_Tab;
-            ExportLoaders[ExternalToolsTab_ExternalTools] = ExternalTools_Tab;
+            ExportLoaders[JPEXLauncherTab_JPEXLauncher] = JPEXLauncher_Tab;
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
             BinaryInterpreterTab_BinaryInterpreter.SetParentNameList(NamesList); //reference to this control for name editor set

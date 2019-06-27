@@ -491,11 +491,11 @@
                         </TabItem.Header>
                         <me1tlkeditor:ME1TlkEditorWPF x:Name="ME1TlkEditorWPFTab_ME1TlkEditor"/>
                     </TabItem>
-                    <TabItem Name="ExternalTools_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="JPEXLauncher_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
-                            <TextBlock Text="External tools" ToolTip="Launch embedded files in external tools"/>
+                            <TextBlock Text="Scaleform" ToolTip="Launch embedded files in external tools"/>
                         </TabItem.Header>
-                        <packageEditor:JPEXExternalExportLoader x:Name="ExternalToolsTab_ExternalTools"/>
+                        <packageEditor:JPEXExternalExportLoader x:Name="JPEXLauncherTab_JPEXLauncher"/>
                     </TabItem>
                 </TabControl>
             </Grid>
