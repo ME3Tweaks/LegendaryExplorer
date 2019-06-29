@@ -25,13 +25,6 @@ namespace ME3Explorer
             }
         }
 
-        public static void ReloadTLKData()
-        {
-            tlkList = new List<TalkFile>();
-            LoadSavedTlkList();
-        }
-
-
         public static string findDataById(int strRefID, bool withFileName = false)
         {
             string s = "No Data";
@@ -72,32 +65,9 @@ namespace ME3Explorer
             File.WriteAllText(LoadedTLKsPath, JsonConvert.SerializeObject(tlkList.Select(x => x.path)));
         }
 
-        public static void addTLK(string fileName)
+        internal static void ClearLoadedTlks()
         {
-            LoadTlkData(fileName);
-            SaveTLKList();
-        }
-
-        public static void removeTLK(int index)
-        {
-            tlkList.RemoveAt(index);
-            SaveTLKList();
-        }
-
-        public static void moveTLKUp(int index)
-        {
-            TalkFile tlk = tlkList[index];
-            tlkList.RemoveAt(index);
-            tlkList.Insert(index - 1, tlk);
-            SaveTLKList();
-        }
-
-        public static void moveTLKDown(int index)
-        {
-            TalkFile tlk = tlkList[index];
-            tlkList.RemoveAt(index);
-            tlkList.Insert(index + 1, tlk);
-            SaveTLKList();
+            tlkList.Clear();
         }
     }
 }

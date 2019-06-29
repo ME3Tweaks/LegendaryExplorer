@@ -300,6 +300,13 @@ namespace ME3Explorer.TlkManagerNS
 
         private void ME1ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
         {
+            //ME1 TLKs are held in Package Files
+            //For a proper full reload we have to reload the package from disk
+            ME1TalkFiles.ClearLoadedTlks();
+            foreach (LoadedTLK tlk in tlksToLoad)
+            {
+                
+            }
             foreach (LoadedTLK tlk in tlksToLoad)
             {
                 ME1TalkFiles.LoadTlkData(tlk.tlkPath, tlk.exportNumber);
@@ -310,6 +317,8 @@ namespace ME3Explorer.TlkManagerNS
 
         private void ME2ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
         {
+            ME2TalkFiles.ClearLoadedTlks();
+
             foreach (LoadedTLK tlk in tlksToLoad)
             {
                 ME2TalkFiles.LoadTlkData(tlk.tlkPath);
@@ -320,6 +329,8 @@ namespace ME3Explorer.TlkManagerNS
 
         private void ME3ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
         {
+            ME3TalkFiles.ClearLoadedTlks();
+
             foreach (LoadedTLK tlk in tlksToLoad)
             {
                 ME3TalkFiles.LoadTlkData(tlk.tlkPath);

@@ -15,6 +15,7 @@
             <BeginStoryboard>
                 <Storyboard>
                     <DoubleAnimation Duration="00:00:00.3" Storyboard.TargetProperty="Opacity" To="1" />
+                    <!-- Fade in of window -->
                 </Storyboard>
             </BeginStoryboard>
         </EventTrigger>
@@ -223,7 +224,29 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Name="LoadingPanel" Grid.Row="0" Grid.Column="0" Width="140" Grid.ColumnSpan="3" Grid.RowSpan="2" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                <fa:ImageAwesome Icon="Solid_CompactDisc" Height="32" Width="32" Foreground="LightGray" Spin="True" SpinDuration="1"/>
+                                <Image
+                                    Name="LoadingSpinnerImage"
+                                    Source="/Resources/loadingspinner.png"
+                                    Width="48"
+                                    Height="48"
+                                    Stretch="Fill"
+                                    RenderOptions.BitmapScalingMode="HighQuality"
+                                    RenderTransformOrigin="0.5, 0.5" >
+                                    <Image.RenderTransform>
+                                        <RotateTransform x:Name="noFreeze" />
+                                    </Image.RenderTransform>
+                                    <Image.Triggers>
+                                        <EventTrigger RoutedEvent="Loaded">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetProperty="(Image.RenderTransform).(RotateTransform.Angle)"
+                                                        To="360" Duration="0:0:0.75" RepeatBehavior="Forever" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </Image.Triggers>
+                                </Image>
                                 <TextBlock Width="100" TextWrapping="Wrap" Text="Loading in background" FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="14" TextAlignment="Center" Foreground="{DynamicResource LabelTextBrush}" VerticalAlignment="Center"/>
                             </StackPanel>
                             <Button Name="ME3TweaksLogoButton" Visibility="Collapsed" Opacity="0" Style="{StaticResource ImageButtonStyle}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" ToolTip="Join the ME3Tweaks Discord" Click="ME3TweaksDiscord_Clicked">
@@ -379,24 +402,26 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Style="{StaticResource styleGameTitle}" Text="Mass Effect"/>
                                 <fa:ImageAwesome Name="me1GamePathWarningIcon" Icon="Solid_ExclamationTriangle" Opacity=".7" Foreground="Yellow" Height="16" Width="16" Margin="2,1,0,0"/>
-                            </StackPanel>                            <Rectangle/>
+                            </StackPanel>
+                            <Rectangle/>
                             <Grid>
                                 <TextBlock Style="{StaticResource styleGameNotFound}"/>
                                 <TextBox x:Name="me1PathBox"  IsReadOnly="True"/>
                             </Grid>
-                                <Button x:Name="me1PathBrowseButton"/>
+                            <Button x:Name="me1PathBrowseButton"/>
                         </StackPanel>
                         <StackPanel Margin="15,20,0,0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Style="{StaticResource styleGameTitle}" Text="Mass Effect 2"/>
                                 <fa:ImageAwesome Name="me2GamePathWarningIcon" Icon="Solid_ExclamationTriangle" Opacity=".7" Foreground="Yellow" Height="16" Width="16" Margin="2,1,0,0"/>
-                            </StackPanel>                            <Rectangle/>
+                            </StackPanel>
+                            <Rectangle/>
                             <Grid>
                                 <TextBlock Style="{StaticResource styleGameNotFound}"/>
                                 <TextBox x:Name="me2PathBox"  IsReadOnly="True"/>
                             </Grid>
-                                <Button x:Name="me2PathBrowseButton"/>
-                            </StackPanel>         
+                            <Button x:Name="me2PathBrowseButton"/>
+                        </StackPanel>
                         <StackPanel Margin="15,20,0,0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Style="{StaticResource styleGameTitle}" Text="Mass Effect 3"/>
@@ -407,8 +432,8 @@
                                 <TextBlock Style="{StaticResource styleGameNotFound}"/>
                                 <TextBox x:Name="me3PathBox" IsReadOnly="True"/>
                             </Grid>
-                                <Button x:Name="me3PathBrowseButton"/>
-                        </StackPanel>                        
+                            <Button x:Name="me3PathBrowseButton"/>
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </Grid>

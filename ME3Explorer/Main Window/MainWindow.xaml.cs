@@ -161,6 +161,7 @@ namespace ME3Explorer
                 {
                     LoadingPanel.Visibility = Visibility.Collapsed;
                     ME3TweaksLogoButton.Visibility = Visibility.Visible;
+                    LoadingPanel.Children.Remove(LoadingSpinnerImage); //This will remove the storyboard
                     DoubleAnimation fadein = new DoubleAnimation
                     {
                         From = 0,

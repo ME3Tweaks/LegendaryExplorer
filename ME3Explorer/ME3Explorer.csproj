@@ -541,8 +541,8 @@
     <Compile Include="PackageEditor\EmbeddedTextureViewer.xaml.cs">
       <DependentUpon>EmbeddedTextureViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PackageEditor\ExternalToolLauncher.xaml.cs">
-      <DependentUpon>ExternalToolLauncher.xaml</DependentUpon>
+    <Compile Include="PackageEditor\JPEXSWFExportLoader.xaml.cs">
+      <DependentUpon>JPEXSWFExportLoader.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageEditor\PackageEditorWPFRelinker.cs" />
     <Compile Include="PackageEditor\PackageEditorWPF.xaml.cs">
@@ -971,7 +971,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PackageEditor\ExternalToolLauncher.xaml">
+    <Page Include="PackageEditor\JPEXSWFExportLoader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1460,6 +1460,8 @@
     <Resource Include="Resources\dialoguedumper_256x256.ico" />
     <Resource Include="PackageEditor\EntryIcons\icon_tlkfile.png" />
     <Resource Include="Resources\asimanager_256x256.ico" />
+    <Resource Include="PackageEditor\jpex.png" />
+    <Resource Include="Resources\loadingspinner.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

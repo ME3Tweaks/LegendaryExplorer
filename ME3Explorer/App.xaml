@@ -192,6 +192,8 @@
         <BitmapImage x:Key="iconTLKEditorME23" UriSource="Resources/me2me3tlkeditor_256x256.ico"/>
         <BitmapImage x:Key="iconTexplorer" UriSource="Resources/texplorer_256x256.ico"/>
         <BitmapImage x:Key="iconUDKExplorer" UriSource="Resources/udkexplorer_256x256.ico"/>
+
+        <BitmapImage x:Key="iconLoadingSpinner" UriSource="Resources/loadingspinner.png"/>
     </Application.Resources>
     <JumpList.JumpList>
         <JumpList >

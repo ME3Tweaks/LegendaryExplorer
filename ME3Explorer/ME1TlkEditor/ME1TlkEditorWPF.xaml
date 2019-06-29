@@ -51,7 +51,7 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="90" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding StringID}" Grid.Column="0" TextAlignment="Center"></TextBlock>
                         <TextBlock Text="{Binding Data}" Grid.Column="1" TextWrapping="Wrap" ></TextBlock>
