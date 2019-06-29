@@ -247,12 +247,11 @@ namespace ME3Explorer
                 {
 
                     string dir = m.FileName;
-                    string extension = Pcc.Game != MEGame.ME1 ? "gfx" : "swf";
                     Stopwatch stopwatch = Stopwatch.StartNew(); //creates and start the instance of Stopwatch
                                                                 //your sample code                    
                     foreach (var export in swfsInFile)
                     {
-                        string exportFilename = $"{export.GetFullPath}.{extension}";
+                        string exportFilename = $"{export.GetFullPath}.swf";
                         string outputPath = Path.Combine(dir, exportFilename);
                         ExportEmbeddedFile(export, outputPath);
                     }
@@ -271,7 +270,77 @@ namespace ME3Explorer
             var swfsInFile = Pcc.Exports.Where(x => x.ClassName == (Pcc.Game == MEGame.ME1 ? "BioSWF" : "GFxMovieInfo") && !x.ObjectName.StartsWith("Defaut__")).ToList();
             if (swfsInFile.Count > 0)
             {
+                CommonOpenFileDialog m = new CommonOpenFileDialog
+                {
+                    IsFolderPicker = true,
+                    EnsurePathExists = true,
+                    Title = "Select folder of GFX/SWF files to import"
+                };
+                if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
+                {
+                    BackgroundWorker bw = new BackgroundWorker();
+                    bw.RunWorkerAsync(m.FileName);
+                    bw.RunWorkerCompleted += (x, y) =>
+                    {
+                        IsBusy = false;
+                        ListDialog ld = new ListDialog((List<string>)y.Result, "Imported Files", "The following files were imported.", this);
+                        ld.Show();
+                    };
+                    bw.DoWork += (param, eventArgs) =>
+                    {
+                        BusyText = "Importing SWFs";
+                        IsBusy = true;
+                        string dir = (string)eventArgs.Argument;
+                        var allfiles = new List<string>();
+                        allfiles.AddRange(Directory.GetFiles(dir, "*.swf"));
+                        allfiles.AddRange(Directory.GetFiles(dir, "*.gfx"));
+                        List<string> importedFiles = new List<string>();
+                        foreach (var file in allfiles)
+                        {
+                            var fullpath = Path.GetFileNameWithoutExtension(file);
+                            var matchingExport = swfsInFile.FirstOrDefault(x => x.GetFullPath.Equals(fullpath, StringComparison.InvariantCultureIgnoreCase));
+                            if (matchingExport != null)
+                            {
+                                //Import and replace file
+                                BusyText = $"Importing {fullpath}";
 
+                                var bytes = File.ReadAllBytes(file);
+                                var props = matchingExport.GetProperties();
+
+                                string dataPropName = matchingExport.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
+                                var rawData = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName);
+                                //Write SWF data
+                                rawData.Values = bytes.Select(b => new ByteProperty(b)).ToList(); //Need to find way to optimize this
+
+                                //Write SWF metadata
+                                if (matchingExport.FileRef.Game == MEGame.ME1 || matchingExport.FileRef.Game == MEGame.ME2)
+                                {
+                                    string sourceFilePropName = matchingExport.FileRef.Game != MEGame.ME1 ? "SourceFile" : "SourceFilePath";
+                                    StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
+                                    if (sourceFilePath == null)
+                                    {
+                                        sourceFilePath = new StrProperty(file, sourceFilePropName);
+                                        props.Add(sourceFilePath);
+                                    }
+                                    sourceFilePath.Value = file;
+                                }
+
+                                if (matchingExport.FileRef.Game == MEGame.ME1)
+                                {
+                                    StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
+                                    sourceFileTimestamp = File.GetLastWriteTime(file).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                                }
+                                importedFiles.Add($"{matchingExport.UIndex} {fullpath}");
+                                matchingExport.WriteProperties(props);
+                            }
+                        }
+                        if (importedFiles.Count == 0)
+                        {
+                            importedFiles.Add("No matching filenames were found.");
+                        }
+                        eventArgs.Result = importedFiles;
+                    };
+                }
             }
             else
             {
@@ -871,12 +940,11 @@ namespace ME3Explorer
                                     //GFX is scaleform extensions for SWF
                                     //SWC is Shockwave Compressed
                                     //SWF is Shockwave Flash (uncompressed)
-                                    string extension = exp.FileRef.Game != MEGame.ME1 ? "gfx" : "swf";
                                     SaveFileDialog d = new SaveFileDialog
                                     {
-                                        Title = "Save " + extension.ToUpper(),
-                                        FileName = exp.GetFullPath + "." + extension,
-                                        Filter = $"*{extension}|*.{extension}"
+                                        Title = "Save SWF",
+                                        FileName = exp.GetFullPath + ".swf",
+                                        Filter = "*.swf|*.swf"
                                     };
                                     if (d.ShowDialog() == true)
                                     {
