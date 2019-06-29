@@ -30,11 +30,11 @@ namespace ME3Explorer.Packages
             ME3ConstructorDelegate = ME3Package.Initialize();
         }
 
-        public static IMEPackage OpenMEPackage(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
+        public static IMEPackage OpenMEPackage(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
         {
             IMEPackage package;
             pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT
-            if (!openPackages.ContainsKey(pathToFile))
+            if (forceLoadFromDisk || !openPackages.ContainsKey(pathToFile))
             {
                 ushort version;
                 ushort licenseVersion;
@@ -68,8 +68,12 @@ namespace ME3Explorer.Packages
                 {
                     throw new FormatException("Not an ME1, ME2, ME3, or UDK package file.");
                 }
-                package.noLongerUsed += Package_noLongerUsed;
-                openPackages.TryAdd(pathToFile, package);
+
+                if (!forceLoadFromDisk)
+                {
+                    package.noLongerUsed += Package_noLongerUsed;
+                    openPackages.TryAdd(pathToFile, package);
+                }
             }
             else
             {
@@ -119,9 +123,9 @@ namespace ME3Explorer.Packages
 
         }
 
-        public static ME3Package OpenME3Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
+        public static ME3Package OpenME3Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
         {
-            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm);
+            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
             if (pck is ME3Package pcc)
             {
                 return pcc;
@@ -131,9 +135,9 @@ namespace ME3Explorer.Packages
             throw new FormatException("Not an ME3 package file.");
         }
 
-        public static ME2Package OpenME2Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
+        public static ME2Package OpenME2Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
         {
-            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm);
+            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
             if (pck is ME2Package pcc)
             {
                 return pcc;
@@ -143,9 +147,9 @@ namespace ME3Explorer.Packages
             throw new FormatException("Not an ME2 package file.");
         }
 
-        public static ME1Package OpenME1Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
+        public static ME1Package OpenME1Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
         {
-            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm);
+            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
             if (pck is ME1Package pcc)
             {
                 return pcc;
@@ -154,6 +158,8 @@ namespace ME3Explorer.Packages
             pck.Release(wpfWindow, winForm);
             throw new FormatException("Not an ME1 package file.");
         }
+
+        public static bool IsPackageInUse(string pathToFile) => openPackages.ContainsKey(Path.GetFullPath(pathToFile));
 
         internal static void PrintOpenPackages()
         {

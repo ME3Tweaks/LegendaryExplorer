@@ -51,7 +51,7 @@ namespace ME1Explorer
         {
             if (File.Exists(fileName))
             {
-                ME1Package pcc = MEPackageHandler.OpenME1Package(fileName);
+                ME1Package pcc = MEPackageHandler.OpenME1Package(fileName, forceLoadFromDisk: true); //do not cache this in the packages list.
                 TalkFile tlk = new TalkFile(pcc, index);
                 tlk.LoadTlkData();
                 tlkList.Add(tlk);
@@ -85,6 +85,16 @@ namespace ME1Explorer
                 }
             }
             return s;
+        }
+
+        public static void ClearLoadedTlks()
+        {
+            foreach (var talkFile in tlkList)
+            {
+                talkFile.pcc?.Release();
+            }
+
+            tlkList.Clear();
         }
     }
 }
