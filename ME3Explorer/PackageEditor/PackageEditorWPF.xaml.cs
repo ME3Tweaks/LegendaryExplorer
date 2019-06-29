@@ -3837,6 +3837,53 @@ namespace ME3Explorer
             }
         }
 
+        //For Tajfun
+        private void FindAllME2PowerCustomAction_Click(object sender, RoutedEventArgs e)
+        {
+            if (ME2Directory.gamePath != null)
+            {
+                var newCachedInfo = new SortedDictionary<string, List<string>>();
+                var dir = new DirectoryInfo(ME2Directory.gamePath);
+                var filesToSearch = dir.GetFiles("*.pcc", SearchOption.AllDirectories).ToArray();
+                Debug.WriteLine("Number of files: " + filesToSearch.Length);
+                foreach (FileInfo fi in filesToSearch)
+                {
+                    using (var package = MEPackageHandler.OpenMEPackage(fi.FullName))
+                    {
+                        foreach (ExportEntry export in package.Exports)
+                        {
+                            if (export.ClassParent == "SFXPower")
+                            {
+                                Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
+                                if (newCachedInfo.TryGetValue(export.ObjectName, out List<string> instances))
+                                {
+                                    instances.Add($"{fi.Name} at export { export.UIndex}");
+                                }
+                                else
+                                {
+                                    newCachedInfo[export.ObjectName] = new List<string> { $"{fi.Name} at export {export.UIndex}" };
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                string outstr = "";
+                foreach (KeyValuePair<string, List<string>> instancelist in newCachedInfo)
+                {
+                    outstr += instancelist.Key;
+                    outstr += "\n";
+                    foreach (string str in instancelist.Value)
+                    {
+                        outstr += " - " + str + "\n";
+                    }
+                }
+                File.WriteAllText(@"C:\users\public\me2powers.txt", outstr);
+                Debug.WriteLine("Done");
+            }
+        }
+
         private void CreatePCCDumpME1_Click(object sender, RoutedEventArgs e)
         {
             new PackageDumper.PackageDumper(this).Show();

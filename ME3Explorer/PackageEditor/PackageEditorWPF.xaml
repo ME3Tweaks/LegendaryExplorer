@@ -215,6 +215,7 @@
                     <MenuItem Header="Build ME1 Native Functions Info" Click="BuildME1NativeFunctionsInfo_Click"/>
                     <MenuItem Header="Find ME1 2DA Tables" Click="FindME12DATables_Click"/>
                     <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
+                    <MenuItem Header="Find ME2 Powers" Click="FindAllME2PowerCustomAction_Click"/>
                     <MenuItem Header="List NetIndexes" Click="ListNetIndexes_Click"/>
                     <MenuItem Header="List Linker Indexes" Click="ListLinkerValues_Click"/>
                     <!--<MenuItem Header="Scan All ShaderCaches" Click="ScanAllShaderCaches_Click"/>-->

@@ -33,7 +33,7 @@ namespace ME3Explorer
                 KeyValuePair<IEntry, IEntry> mapping = crossPCCObjectMappingList[i];
                 if (mapping.Key is ExportEntry sourceExportInOriginalFile)
                 {
-                    ExportEntry Value = (ExportEntry) mapping.Value;
+                    ExportEntry Value = (ExportEntry)mapping.Value;
                     PropertyCollection transplantProps = sourceExportInOriginalFile.GetProperties();
                     Debug.WriteLine("Relinking items in destination export: " + sourceExportInOriginalFile.GetFullPath);
                     relinkResults.AddRange(relinkPropertiesRecursive(importpcc, Value, transplantProps, crossPCCObjectMappingList, ""));
@@ -236,27 +236,82 @@ namespace ME3Explorer
                             {
                                 case "WwiseEvent":
                                     {
-                                        int count = BitConverter.ToInt32(binarydata, 0);
-                                        for (int i = 0; i < count; i++)
+                                        if (exp.FileRef.Game == MEGame.ME3)
                                         {
-                                            int originalValue = BitConverter.ToInt32(binarydata, 4 + (i * 4));
+                                            int count = BitConverter.ToInt32(binarydata, 0);
+                                            for (int i = 0; i < count; i++)
+                                            {
+                                                int originalValue = BitConverter.ToInt32(binarydata, 4 + (i * 4));
 
-                                            //This might throw an exception if it was invalid in the original file...
-                                            bool isMapped = crossPCCObjectMap.TryGetValue(importpcc.getEntry(originalValue), out IEntry mappedValueInThisPackage);
-                                            if (isMapped)
-                                            {
-                                                Debug.WriteLine("Binary relink hit for WwiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue + " -> " + (mappedValueInThisPackage.UIndex));
-                                                WriteMem(4 + (i * 4), binarydata, BitConverter.GetBytes(mappedValueInThisPackage.UIndex));
-                                                int newValue = BitConverter.ToInt32(binarydata, 4 + (i * 4));
-                                                Debug.WriteLine(originalValue + " -> " + newValue);
+                                                //This might throw an exception if it was invalid in the original file...
+                                                bool isMapped = crossPCCObjectMap.TryGetValue(importpcc.getEntry(originalValue), out IEntry mappedValueInThisPackage);
+                                                if (isMapped)
+                                                {
+                                                    Debug.WriteLine("Binary relink hit for ME3 WwiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue + " -> " + (mappedValueInThisPackage.UIndex));
+                                                    WriteMem(4 + (i * 4), binarydata, BitConverter.GetBytes(mappedValueInThisPackage.UIndex));
+                                                    int newValue = BitConverter.ToInt32(binarydata, 4 + (i * 4));
+                                                    Debug.WriteLine(originalValue + " -> " + newValue);
+                                                }
+                                                else
+                                                {
+                                                    Debug.WriteLine("Binary relink missed ME3 WwiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue);
+                                                    relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: WwiseEvent referenced WwiseStream " + originalValue + " is not in the mapping tree and could not be relinked");
+                                                }
                                             }
-                                            else
-                                            {
-                                                Debug.WriteLine("Binary relink missed WwiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue);
-                                                relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: WwiseEvent referenced WwiseStream " + originalValue + " is not in the mapping tree and could not be relinked");
-                                            }
+
+                                            exp.setBinaryData(binarydata);
                                         }
-                                        exp.setBinaryData(binarydata);
+                                        else if (exp.FileRef.Game == MEGame.ME2)
+                                        {
+                                            int parsingPos = 4;
+                                            int linkCount = BitConverter.ToInt32(binarydata, parsingPos);
+                                            parsingPos += 4;
+                                            for (int i = 0; i < linkCount; i++)
+                                            {
+                                                int bankcount = BitConverter.ToInt32(binarydata, parsingPos);
+                                                parsingPos += 4;
+                                                for (int j = 0; j < bankcount; j++)
+                                                {
+                                                    int bankRef = BitConverter.ToInt32(binarydata, parsingPos);
+                                                    bool isMapped = crossPCCObjectMap.TryGetValue(importpcc.getEntry(bankRef), out IEntry mappedValueInThisPackage);
+                                                    if (isMapped)
+                                                    {
+                                                        Debug.WriteLine("Binary relink hit for ME2 WwiseEvent Bank Entry " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + bankRef + " -> " + (mappedValueInThisPackage.UIndex));
+                                                        WriteMem(parsingPos, binarydata, BitConverter.GetBytes(mappedValueInThisPackage.UIndex));
+                                                        int newValue = BitConverter.ToInt32(binarydata, 4 + (i * 4));
+                                                        Debug.WriteLine(bankRef + " -> " + newValue);
+                                                    }
+                                                    else
+                                                    {
+                                                        Debug.WriteLine("Binary relink missed ME2 WwiseEvent Bank Entry " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + bankRef);
+                                                        relinkFailedReport.Add(exp.UIndex + " " + exp.GetInstancedFullPath + " binary relink error: ME2 WwiseEvent referenced WwiseBank " + bankRef + " is not in the mapping tree and could not be relinked");
+                                                    }
+                                                    parsingPos += 4;
+                                                }
+
+                                                int wwisestreamcount = BitConverter.ToInt32(binarydata, parsingPos);
+                                                parsingPos += 4;
+                                                for (int j = 0; j < wwisestreamcount; j++)
+                                                {
+                                                    int wwiseStreamRef = BitConverter.ToInt32(binarydata, parsingPos);
+                                                    bool isMapped = crossPCCObjectMap.TryGetValue(importpcc.getEntry(wwiseStreamRef), out IEntry mappedValueInThisPackage);
+                                                    if (isMapped)
+                                                    {
+                                                        Debug.WriteLine("Binary relink hit for ME2 WwiseEvent WwiseStream Entry " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + wwiseStreamRef + " -> " + (mappedValueInThisPackage.UIndex));
+                                                        WriteMem(parsingPos, binarydata, BitConverter.GetBytes(mappedValueInThisPackage.UIndex));
+                                                        int newValue = BitConverter.ToInt32(binarydata, 4 + (i * 4));
+                                                        Debug.WriteLine(wwiseStreamRef + " -> " + newValue);
+                                                    }
+                                                    else
+                                                    {
+                                                        Debug.WriteLine("Binary relink missed ME2 WwiseEvent Bank Entry " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + wwiseStreamRef);
+                                                        relinkFailedReport.Add(exp.UIndex + " " + exp.GetInstancedFullPath + " binary relink error: ME2 WwiseEvent referenced WwiseStream " + wwiseStreamRef + " is not in the mapping tree and could not be relinked");
+                                                    }
+                                                    parsingPos += 4;
+                                                }
+                                            }
+                                            exp.setBinaryData(binarydata);
+                                        }
                                     }
                                     break;
                                 case "Class":

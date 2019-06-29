@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Be.Windows.Forms
 {
@@ -122,6 +123,11 @@ namespace Be.Windows.Forms
 		public void WriteBytes(long index, byte[] values)
         {
             int i = 0;
+            if (values.Length + index > _bytes.Count)
+            {
+                Debugger.Break(); //This will throw an exception
+                return; //Don't do anything.
+            }
             foreach (byte value in values)
             {
                 _bytes[(int)index + i] = value;

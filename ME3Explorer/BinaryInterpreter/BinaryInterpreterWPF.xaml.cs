@@ -2922,7 +2922,7 @@ namespace ME3Explorer
                 offset += 4;
                 subnodes.Add(LengthNode);
                 var animBinStart = offset;
-                
+
                 int bone = 0;
 
                 for (int i = 0; i < TrackOffsets.Count; i++)
@@ -3023,26 +3023,26 @@ namespace ME3Explorer
                                 offset += 4;
                                 break;
                             case AnimationCompressionFormat.ACF_Fixed48NoW: // normalized quaternion with 3 16-bit fixed point fields
-                                //FQuat r;
-                                //r.X = (X - 32767) / 32767.0f;
-                                //r.Y = (Y - 32767) / 32767.0f;
-                                //r.Z = (Z - 32767) / 32767.0f;
-                                //RESTORE_QUAT_W(r);
-                                //break;
+                                                                            //FQuat r;
+                                                                            //r.X = (X - 32767) / 32767.0f;
+                                                                            //r.Y = (Y - 32767) / 32767.0f;
+                                                                            //r.Z = (Z - 32767) / 32767.0f;
+                                                                            //RESTORE_QUAT_W(r);
+                                                                            //break;
                             case AnimationCompressionFormat.ACF_Fixed32NoW:// normalized quaternion with 11/11/10-bit fixed point fields
-                                //FQuat r;
-                                //r.X = X / 1023.0f - 1.0f;
-                                //r.Y = Y / 1023.0f - 1.0f;
-                                //r.Z = Z / 511.0f - 1.0f;
-                                //RESTORE_QUAT_W(r);
-                                //break;
+                                                                           //FQuat r;
+                                                                           //r.X = X / 1023.0f - 1.0f;
+                                                                           //r.Y = Y / 1023.0f - 1.0f;
+                                                                           //r.Z = Z / 511.0f - 1.0f;
+                                                                           //RESTORE_QUAT_W(r);
+                                                                           //break;
                             case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
-                                //FQuat r;
-                                //r.X = (X / 1023.0f - 1.0f) * Ranges.X + Mins.X;
-                                //r.Y = (Y / 1023.0f - 1.0f) * Ranges.Y + Mins.Y;
-                                //r.Z = (Z / 511.0f - 1.0f) * Ranges.Z + Mins.Z;
-                                //RESTORE_QUAT_W(r);
-                                //break;
+                            //FQuat r;
+                            //r.X = (X / 1023.0f - 1.0f) * Ranges.X + Mins.X;
+                            //r.Y = (Y / 1023.0f - 1.0f) * Ranges.Y + Mins.Y;
+                            //r.Z = (Z / 511.0f - 1.0f) * Ranges.Z + Mins.Z;
+                            //RESTORE_QUAT_W(r);
+                            //break;
                             case AnimationCompressionFormat.ACF_Float32NoW:
                                 //FQuat r;
 
@@ -3074,7 +3074,7 @@ namespace ME3Explorer
                                 break;
                         }
 
-                        if(rotCompression == AnimationCompressionFormat.ACF_BioFixed48 || rotCompression == AnimationCompressionFormat.ACF_Float96NoW || rotCompression == AnimationCompressionFormat.ACF_None)
+                        if (rotCompression == AnimationCompressionFormat.ACF_BioFixed48 || rotCompression == AnimationCompressionFormat.ACF_Float96NoW || rotCompression == AnimationCompressionFormat.ACF_None)
                         {
                             var RotKeys = new BinInterpTreeItem
                             {
@@ -3830,7 +3830,7 @@ namespace ME3Explorer
                         */
                     }
                 }
-                if (CurrentLoadedExport.FileRef.Game == MEGame.ME2)
+                else if (CurrentLoadedExport.FileRef.Game == MEGame.ME2)
                 {
                     var wwiseID = data.Skip(binarystart).Take(4).ToArray();
                     subnodes.Add(new BinInterpTreeItem
@@ -3849,7 +3849,7 @@ namespace ME3Explorer
                         Tag = NodeType.StructLeafInt
                     };
                     binarystart += 4;
-                    subnodes.Add(Streams);
+                    subnodes.Add(Streams); //Are these variables properly named?
 
                     for (int s = 0; s < count; s++)
                     {
@@ -3861,7 +3861,7 @@ namespace ME3Explorer
                             Name = "_" + binarystart
                         });
                         binarystart += 4;
-                        for (int b = 0; b < count; b++)
+                        for (int b = 0; b < bankcount; b++)
                         {
                             int bank = BitConverter.ToInt32(data, binarystart);
                             subnodes.Add(new BinInterpTreeItem
@@ -3881,7 +3881,7 @@ namespace ME3Explorer
                             Name = "_" + binarystart
                         });
                         binarystart += 4;
-                        for (int w = 0; w < count; w++)
+                        for (int w = 0; w < streamcount; w++)
                         {
                             int wwstream = BitConverter.ToInt32(data, binarystart);
                             subnodes.Add(new BinInterpTreeItem
