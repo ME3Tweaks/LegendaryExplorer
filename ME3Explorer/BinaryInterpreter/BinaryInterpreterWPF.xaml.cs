@@ -176,7 +176,8 @@ namespace ME3Explorer
             "BioOutcomeMap",
             "FaceFXAnimSet",
             "BioConsequenceMap",
-            "AnimSequence"
+            "AnimSequence",
+            "FaceFXAsset"
         };
 
         public override bool CanParse(ExportEntry exportEntry)
@@ -448,6 +449,9 @@ namespace ME3Explorer
                         subNodes = StartBioStateEventMapScan(data, ref binarystart);
                         break;
                     case "FaceFXAnimSet":
+                        subNodes = StartFaceFXAnimSetScan(data, ref binarystart);
+                        break;
+                    case "FaceFXAsset":
                         subNodes = StartFaceFXAnimSetScan(data, ref binarystart);
                         break;
                     case "AnimSequence":
@@ -3064,8 +3068,10 @@ namespace ME3Explorer
                                 const float scale = 1.41421356237f;
                                 offsetRotX = offset;
                                 rotX = (data[0] & 0x7FFF) / 32767.0f * scale - shift;
+                                offset += 4;
                                 offsetRotY = offset;
                                 rotY = (data[1] & 0x7FFF) / 32767.0f * scale - shift;
+                                offset += 4;
                                 offsetRotZ = offset;
                                 rotZ = (data[2] & 0x7FFF) / 32767.0f * scale - shift;
                                 //float w = 1.0f - (rotX * rotX + rotY * rotY + rotZ * rotZ);
@@ -3184,9 +3190,13 @@ namespace ME3Explorer
                             Items = hNodeNodes
                         });
                         hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
-                        hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
-                        hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Name: {bin.ReadStringASCII(bin.ReadInt32())}"));
-                        hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        var nNameCount = bin.ReadInt32();
+                        hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Name Count: {nNameCount}") { Length = 4 });
+                        for(int n = 0; n < nNameCount; n++)
+                        {
+                            hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Name: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                            hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        }
                     }
                 }
 
