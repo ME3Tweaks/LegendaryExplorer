@@ -192,7 +192,7 @@
                     <MenuItem Header="Find entry via Tag" ToolTip="Find entry with Tag NameProperty that matches the specified value." Command="{Binding FindEntryViaTagCommand}"/>
                     <MenuItem Header="Check for duplicate indexes" ToolTip="Tries to find duplicate indexes in this file" Command="{Binding CheckForDuplicateIndexesCommand}"/>
                 </MenuItem>
-                <MenuItem Header="Experiments" Padding="4" Visibility="{x:Static global:App.IsDebug}">
+                <MenuItem Header="Experiments" Padding="4" Visibility="{x:Static global:App.IsDebugVisibility}">
                     <MenuItem Header=" &gt;&gt; FOR TOOLSET DEVELOPERS ONLY &lt;&lt;" IsEnabled="False"/>
                     <MenuItem Header=" &gt;&gt; Text may not reflect exact functionality &lt;&lt;" IsEnabled="False"/>
                     <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>

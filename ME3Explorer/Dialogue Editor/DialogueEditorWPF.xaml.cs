@@ -397,7 +397,8 @@ namespace ME3Explorer.Dialogue_Editor
 
                     if (ExportQueuedForFocusing != null && ExportQueuedForFocusing.ClassName == "BioConversation")
                     {
-                        Conversations_ListBox.SelectedItem = Conversations.FirstOrDefault(x => x.Export == ExportQueuedForFocusing);
+                        Conversations_ListBox.SelectedItem = Conversations.FirstOrDefault(x => x.Export.UIndex == ExportQueuedForFocusing.UIndex);
+                        SetUIMode(0, true);
                         ExportQueuedForFocusing = null;
                     }
 

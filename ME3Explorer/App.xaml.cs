@@ -34,14 +34,13 @@ namespace ME3Explorer
 
         public static string Version => GetVersion();
 
-        public static Visibility IsDebug
-        {
+        public static Visibility IsDebugVisibility => IsDebug ? Visibility.Visible : Visibility.Collapsed;
+
 #if DEBUG
-            get { return Visibility.Visible; }
+        public static bool IsDebug => true;
 #else
-        get { return Visibility.Collapsed; }
+        public static bool IsDebug => false;
 #endif
-        }
 
         public static string RepositoryURL => "http://github.com/ME3Tweaks/ME3Explorer/";
         public static string BugReportURL => $"{RepositoryURL}issues/";

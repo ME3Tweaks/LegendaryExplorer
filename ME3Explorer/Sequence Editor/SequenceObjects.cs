@@ -1464,11 +1464,10 @@ namespace ME3Explorer.SequenceObjects
                 {
                     case ObjectProperty objProp when objProp.Name == "oSequenceReference":
                         {
-                            string seqName = pcc.getEntry(objProp.Value).ObjectName;
-                            if (pcc.Game == MEGame.ME1
-                                && objProp.Value > 0
+                            string seqName = pcc.getEntry(objProp.Value)?.ObjectName ?? "";
+                            if (pcc.isUExport(objProp.Value)
                                 && seqName == "Sequence"
-                                && pcc.getExport(objProp.Value - 1).GetProperty<StrProperty>("ObjName") is StrProperty objNameProp)
+                                && pcc.getUExport(objProp.Value).GetProperty<StrProperty>("ObjName") is StrProperty objNameProp)
                             {
                                 seqName = objNameProp;
                             }
@@ -1482,7 +1481,7 @@ namespace ME3Explorer.SequenceObjects
                         s += $"\n\"{strProp}\"";
                         break;
                     case ObjectProperty objProp when objProp.Name == "m_pEffect":
-                        s += $"\n\"{pcc.getEntry(objProp.Value).ObjectName}\"";
+                        s += $"\n\"{pcc.getEntry(objProp.Value)?.ObjectName ?? ""}\"";
                         break;
                 }
             }

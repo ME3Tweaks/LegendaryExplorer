@@ -165,7 +165,7 @@ namespace ME3Explorer.Sequence_Editor
             }
             else
             {
-                MessageBox.Show("No Kismet Log!");
+                MessageBox.Show(this, "No Kismet Log!");
             }
         }
 
@@ -212,7 +212,7 @@ namespace ME3Explorer.Sequence_Editor
             if (d.ShowDialog() == true)
             {
                 Pcc.save(d.FileName);
-                MessageBox.Show("Done.");
+                MessageBox.Show(this, "Done.");
             }
         }
 
@@ -232,7 +232,7 @@ namespace ME3Explorer.Sequence_Editor
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+                    MessageBox.Show(this, "Unable to open file:\n" + ex.Message);
                 }
             }
         }
@@ -256,7 +256,7 @@ namespace ME3Explorer.Sequence_Editor
                 if (TreeViewRootNodes.IsEmpty())
                 {
                     UnLoadMEPackage();
-                    MessageBox.Show("This file does not contain any Sequences!");
+                    MessageBox.Show(this, "This file does not contain any Sequences!");
                     StatusText = "Select a package file to load";
                     return;
                 }
@@ -273,7 +273,7 @@ namespace ME3Explorer.Sequence_Editor
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error:\n" + ex.Message);
+                MessageBox.Show(this, "Error:\n" + ex.Message);
                 Title = "Sequence Editor WPF";
                 CurrentFile = null;
                 UnLoadMEPackage();
@@ -402,23 +402,19 @@ namespace ME3Explorer.Sequence_Editor
                 customSaveData.Clear();
                 selectedExports.Clear();
             }
-#if !DEBUG
             try
             {
-#endif
-            GenerateGraph();
-            if (selectedExports.Count == 1 && CurrentObjects.FirstOrDefault(obj => obj.Export == selectedExports[0]) is SObj selectedObj)
+                GenerateGraph();
+                if (selectedExports.Count == 1 && CurrentObjects.FirstOrDefault(obj => obj.Export == selectedExports[0]) is SObj selectedObj)
+                {
+                    panToSelection = false;
+                    CurrentObjects_ListBox.SelectedItem = selectedObj;
+                }
+            }
+            catch (Exception e) when(!App.IsDebug)
             {
-                panToSelection = false;
-                CurrentObjects_ListBox.SelectedItem = selectedObj;
+                MessageBox.Show(this, $"Error loading sequences from file:\n{e.Message}");
             }
-#if !DEBUG
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show($"Error loading sequences from file:\n{e.Message}");
-            }
-#endif
             graphEditor.Enabled = true;
             graphEditor.UseWaitCursor = false;
         }
@@ -510,7 +506,7 @@ namespace ME3Explorer.Sequence_Editor
                                                .Select(prop => LoadObject(Pcc.getUExport(prop.Value))));
                 if (CurrentObjects.Count != seqObjs.Count)
                 {
-                    MessageBox.Show("Sequence contains invalid exports! Correct this by editing the SequenceObject array in the Interpreter");
+                    MessageBox.Show(this, "Sequence contains invalid exports! Correct this by editing the SequenceObject array in the Interpreter");
                 }
             }
         }
@@ -879,7 +875,7 @@ namespace ME3Explorer.Sequence_Editor
             }
             else
             {
-                MessageBox.Show("File does not exist: " + s);
+                MessageBox.Show(this, "File does not exist: " + s);
             }
         }
 
@@ -1162,6 +1158,21 @@ namespace ME3Explorer.Sequence_Editor
                     else
                     {
                         plotEditorMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (contextMenu.GetChild("dialogueEditorMenuItem") is MenuItem dialogueEditorMenuItem)
+                {
+
+                    if (obj is SAction sAction &&
+                        sAction.Export.ClassName.EndsWith("SeqAct_StartConversation") &&
+                        sAction.Export.GetProperty<ObjectProperty>("Conv") != null)
+                    {
+                        dialogueEditorMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        dialogueEditorMenuItem.Visibility = Visibility.Collapsed;
                     }
                 }
 
@@ -1711,7 +1722,7 @@ namespace ME3Explorer.Sequence_Editor
                 graphEditor.Camera.Visible = true;
                 image.Save(d.FileName, ImageFormat.Png);
                 graphEditor.backLayer.RemoveAllChildren();
-                MessageBox.Show("Done.");
+                MessageBox.Show(this, "Done.");
             }
         }
 
@@ -1732,13 +1743,13 @@ namespace ME3Explorer.Sequence_Editor
             {
                 if (!exportToAdd.inheritsFrom("SequenceObject"))
                 {
-                    MessageBox.Show($"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is not a sequence object.");
+                    MessageBox.Show(this, $"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is not a sequence object.");
                     return;
                 }
 
                 if (CurrentObjects.Any(obj => obj.Export == exportToAdd))
                 {
-                    MessageBox.Show($"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is already in the sequence.");
+                    MessageBox.Show(this, $"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is already in the sequence.");
                     return;
                 }
 
@@ -1760,32 +1771,72 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (Pcc.Game != MEGame.ME3)
             {
-                MessageBox.Show("InterpViewer does not support ME1 or ME2 yet.", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(this, "InterpViewer does not support ME1 or ME2 yet.", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (CurrentObjects_ListBox.SelectedItem is SObj obj)
             {
-                var p = new InterpEditor();
-                p.Show();
-                p.LoadPCC(Pcc.FilePath);
+                int index; //0-based index because Interp Viewer is old
                 ExportEntry exportEntry = obj.Export;
                 if (exportEntry.ObjectName == "InterpData")
                 {
-                    p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(exportEntry.Index);
-                    p.loadInterpData(exportEntry.Index);
+                    index = exportEntry.Index;
                 }
                 else if (obj is SAction sAction && sAction.Varlinks.Any() && sAction.Varlinks[0].Links.Any())
                 {
-                    int i = ((SAction)obj).Varlinks[0].Links[0] - 1; //0-based index because Interp Viewer is old
-                    p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(i);
-                    p.loadInterpData(i);
+                    index = sAction.Varlinks[0].Links[0] - 1;
                 }
                 else
                 {
-                    MessageBox.Show("No InterpData to open!", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, "No InterpData to open!", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                var p = new InterpEditor();
+                p.Show();
+                p.LoadPCC(Pcc.FilePath);
+                p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(index);
+                p.loadInterpData(index);
+            }
+        }
+
+        private void OpenInDialogueEditor_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SObj obj &&
+                obj.Export.ClassName.EndsWith("SeqAct_StartConversation") &&
+                obj.Export.GetProperty<ObjectProperty>("Conv") is ObjectProperty conv)
+            {
+                if (Pcc.isUExport(conv.Value))
+                {
+                    AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                    new Dialogue_Editor.DialogueEditorWPF(Pcc.getUExport(conv.Value)).Show();
+                    return;
+                }
+
+                if (Pcc.isUImport(conv.Value))
+                {
+                    ImportEntry convImport = Pcc.getUImport(conv.Value);
+                    string extension = Path.GetExtension(Pcc.FilePath);
+                    string noExtensionPath = Path.ChangeExtension(Pcc.FilePath, null);
+                    string loc_int = Pcc.Game == MEGame.ME1 ? "_LOC_int" : "_LOC_INT";
+                    string convFilePath = noExtensionPath + loc_int + extension;
+                    if (File.Exists(convFilePath))
+                    {
+                        using (var convFile = MEPackageHandler.OpenMEPackage(convFilePath))
+                        {
+                            var convExport = convFile.Exports.FirstOrDefault(x => x.ObjectName == convImport.ObjectName);
+                            if (convExport != null)
+                            {
+                                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                                new Dialogue_Editor.DialogueEditorWPF(convExport).Show();
+                                return;
+                            }
+                        }
+                    }
                 }
             }
+            MessageBox.Show(this, "Cannot find Conversation!", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void GlobalSeqRefViewSavesMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -1902,7 +1953,7 @@ namespace ME3Explorer.Sequence_Editor
                 }
                 else
                 {
-                    MessageBox.Show($"Could not find State Event {m_nIndex}");
+                    MessageBox.Show(this, $"Could not find State Event {m_nIndex}");
                 }
             }
         }
