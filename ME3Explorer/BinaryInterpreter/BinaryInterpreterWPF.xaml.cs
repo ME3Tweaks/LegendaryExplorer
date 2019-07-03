@@ -452,7 +452,7 @@ namespace ME3Explorer
                         subNodes = StartFaceFXAnimSetScan(data, ref binarystart);
                         break;
                     case "FaceFXAsset":
-                        subNodes = StartFaceFXAnimSetScan(data, ref binarystart);
+                        subNodes = StartFaceFXAssetScan(data, ref binarystart);
                         break;
                     case "AnimSequence":
                         subNodes = StartAnimSequenceScan(data, ref binarystart);
@@ -3203,8 +3203,8 @@ namespace ME3Explorer
                 int nameCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Names: {nameCount} items")
                 {
-                    //This does not work for ME1.
-                    Items = Enumerable.Range(0, nameCount).Select(i => (object)new BinInterpTreeItem(bin.Skip(Pcc.Game == MEGame.ME3 ? 0 : 4).Position, $"{bin.ReadStringASCII(bin.ReadInt32())}")).ToList()
+                    //ME2 different to ME3/1
+                    Items = Enumerable.Range(0, nameCount).Select(i => (object)new BinInterpTreeItem(bin.Skip(Pcc.Game != MEGame.ME2 ? 0 : 4).Position, $"{bin.ReadStringASCII(bin.ReadInt32())}")).ToList()
                 });
 
                 subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
@@ -3320,7 +3320,247 @@ namespace ME3Explorer
             }
             return subnodes;
         }
+        private List<object> StartFaceFXAssetScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<object>();
+            try
+            {
+                var bin = new MemoryStream(CurrentLoadedExport.Data);
+                bin.JumpTo(binarystart);
+                bin.Skip(4);
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
+                int versionID = bin.ReadInt32(); //1710 = ME1, 1610 = ME2, 1731 = ME3.
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Version: {versionID} {versionID:X8}") { Length = 4 });
+                if (versionID == 1731)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
+                }
 
+                if (versionID == 1610)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                }
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Licensee: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                if (versionID == 1610)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                }
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Project: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
+                if (versionID == 1610)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
+                }
+                else
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                }
+
+                if (versionID != 1610)
+                {
+                    int hNodeCount = bin.ReadInt32();
+                    var hNodes = new List<object>();
+                    subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Nodes: {hNodeCount} items")
+                    {
+                        Items = hNodes
+                    });
+                    for (int i = 0; i < hNodeCount; i++)
+                    {
+                        var hNodeNodes = new List<object>();
+                        hNodes.Add(new BinInterpTreeItem(bin.Position, $"{i}")
+                        {
+                            Items = hNodeNodes
+                        });
+                        hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                        var nNameCount = bin.ReadInt32();
+                        hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Name Count: {nNameCount}") { Length = 4 });
+                        for (int n = 0; n < nNameCount; n++)
+                        {
+                            hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Name: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                            hNodeNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        }
+                    }
+                }
+                var nameTable = new List<string>();
+                int nameCount = bin.ReadInt32();
+                var nametablePos = bin.Position - 4;
+                var nametabObj = new List<object>();
+                for(int m = 0; m < nameCount; m++)
+                {
+                    var pos = bin.Position;
+                    var mName = bin.ReadStringASCII(bin.ReadInt32());
+                    nameTable.Add(mName);
+                    nametabObj.Add(new BinInterpTreeItem(bin.Skip(versionID != 1610 ? 0 : 4).Position, $"{mName}"));
+                }
+
+                subnodes.Add(new BinInterpTreeItem(nametablePos, $"Names: {nameCount} items")
+                {
+                    //ME1 and ME3 same, ME2 different
+                    Items = nametabObj
+                }); 
+
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+
+                //FROM HERE ME3 ONLY 
+                //LIST A
+                var unkListA = new List<object>();
+                var countA = bin.ReadInt32() - 1; // count is not unreal (starts at 1)??
+                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown List A: {countA} items")
+                {
+                    Items = unkListA
+                });
+                unkListA.Add(new BinInterpTreeItem(bin.Position, $"Unknown int: {bin.ReadInt32()}") { Length = 4 });
+                for(int a = 0; a < countA; a++) //NOT EXACT??
+                {
+                    unkListA.Add(new BinInterpTreeItem(bin.Position, $"Unknown float x: {bin.ReadSingle()}") { Length = 4 });
+                    unkListA.Add(new BinInterpTreeItem(bin.Position, $"Unknown float y: {bin.ReadSingle()}") { Length = 4 });
+                    unkListA.Add(new BinInterpTreeItem(bin.Position, $"Unknown float z: {bin.ReadSingle()}") { Length = 4 });
+                }
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown float ? Maybe in above list?: {bin.ReadSingle()}") { Length = 4 });
+
+
+                //LIST B
+                var unkListB = new List<object>();
+                var countB = bin.ReadInt32();
+                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown List B: {countB} items")
+                {
+                    Items = unkListB
+                });
+                for (int b = 0; b < countB; b++)
+                {
+                    var bnameVal = bin.ReadInt32();
+                    var unkListBitems = new List<object>();
+                    unkListB.Add(new BinInterpTreeItem(bin.Position - 4, $"Name {b}: {bnameVal} {nameTable[bnameVal]}")
+                    {
+                        Items = unkListBitems
+                    });
+                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown int: {bin.ReadInt32()}") { Length = 4 });
+                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                }
+
+
+
+
+                if (versionID == 1610)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                }
+
+                int lineCount = bin.ReadInt32();
+                var lines = new List<object>();
+
+                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"FaceFXLines: {lineCount} items")
+                {
+                    Items = lines
+                });
+                for (int i = 0; i < lineCount; i++)
+                {
+                    var nodes = new List<object>();
+                    lines.Add(new BinInterpTreeItem(bin.Position, $"{i}")
+                    {
+                        Items = nodes
+                    });
+                    if (versionID == 1610)
+                    {
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                    }
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Name: {bin.ReadInt32()}") { Length = 4 });
+                    if (versionID == 1610)
+                    {
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    }
+                    int animationCount = bin.ReadInt32();
+                    var anims = new List<object>();
+                    nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Animations: {animationCount} items")
+                    {
+                        Items = anims
+                    });
+                    for (int j = 0; j < animationCount; j++)
+                    {
+                        var animNodes = new List<object>();
+                        anims.Add(new BinInterpTreeItem(bin.Position, $"{j}")
+                        {
+                            Items = animNodes
+                        });
+                        if (versionID == 1610)
+                        {
+
+                            animNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                            animNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        }
+                        animNodes.Add(new BinInterpTreeItem(bin.Position, $"Index: {bin.ReadInt32()}") { Length = 4 });
+                        animNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                        if (versionID == 1610)
+                        {
+                            animNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        }
+                    }
+
+                    int pointsCount = bin.ReadInt32();
+                    nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Points: {pointsCount} items")
+                    {
+                        Items = Enumerable.Range(0, pointsCount).Select(j => (object)new BinInterpTreeItem(bin.Position, $"{j}")
+                        {
+                            Items = new List<object>
+                            {
+                                new BinInterpTreeItem(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpTreeItem(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpTreeItem(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpTreeItem(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
+                            }
+                        }).ToList()
+                    });
+
+                    if (pointsCount > 0)
+                    {
+                        if (versionID == 1610)
+                        {
+                            nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        }
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
+                        {
+                            Items = Enumerable.Range(0, bin.Skip(-4).ReadInt32()).Select(j => (object)new BinInterpTreeItem(bin.Position, $"{bin.ReadInt32()} keys")).ToList()
+                        });
+                    }
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") { Length = 4 });
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    if (versionID == 1610)
+                    {
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                    }
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Path: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                    if (versionID == 1610)
+                    {
+                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                    }
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"ID: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"index: {bin.ReadInt32()}") { Length = 4 });
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
         private List<object> StartSoundCueScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
