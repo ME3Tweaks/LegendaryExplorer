@@ -3355,7 +3355,7 @@ namespace ME3Explorer
                 {
                     subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                 }
-
+                //Node Table
                 if (versionID != 1610)
                 {
                     int hNodeCount = bin.ReadInt32();
@@ -3381,6 +3381,8 @@ namespace ME3Explorer
                         }
                     }
                 }
+
+                //Name Table
                 var nameTable = new List<string>();
                 int nameCount = bin.ReadInt32();
                 var nametablePos = bin.Position - 4;
@@ -3400,54 +3402,144 @@ namespace ME3Explorer
                 }); 
 
                 subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
-
                 subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
 
-                //FROM HERE ME3 ONLY 
+
+                //FROM HERE ME3 ONLY WIP
                 //LIST A
                 var unkListA = new List<object>();
-                var countA = bin.ReadInt32() - 1; // count is not unreal (starts at 1)??
-                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown List A: {countA} items")
+                var countA = bin.ReadInt32();
+                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown Table A: {countA} items")
                 {
                     Items = unkListA
                 });
-                unkListA.Add(new BinInterpTreeItem(bin.Position, $"Unknown int: {bin.ReadInt32()}") { Length = 4 });
+
                 for(int a = 0; a < countA; a++) //NOT EXACT??
                 {
-                    unkListA.Add(new BinInterpTreeItem(bin.Position, $"Unknown float x: {bin.ReadSingle()}") { Length = 4 });
-                    unkListA.Add(new BinInterpTreeItem(bin.Position, $"Unknown float y: {bin.ReadSingle()}") { Length = 4 });
-                    unkListA.Add(new BinInterpTreeItem(bin.Position, $"Unknown float z: {bin.ReadSingle()}") { Length = 4 });
-                }
-                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown float ? Maybe in above list?: {bin.ReadSingle()}") { Length = 4 });
+                    var tableItems = new List<object>();
+                    unkListA.Add(new BinInterpTreeItem(bin.Position, $"Table Index: {bin.ReadInt32()}")
+                    {
+                        Items = tableItems
+                    });
+                    bool iscontinuing = true;
+                    while (iscontinuing)
+                    {
+                        var loc = bin.Position;
+                        var item = bin.ReadInt32();
+                        if (item == 2147483647)
+                        {
+                            tableItems.Add(new BinInterpTreeItem(bin.Position - 4, $"End Marker: FF FF FF 7F") { Length = 4 });
+                            tableItems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            iscontinuing = false;
+                            break;
+                        }
+                        else
+                        {
+                            bin.Position = loc;
+                            tableItems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                        }
 
+                    }
+                    //Name list to Bones and other facefx?
+                    var unkNameList1 = new List<object>();
+                    var countUk1 = bin.ReadInt32();
+                    tableItems.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown Name List: {countUk1} items")
+                    {
+                        Items = unkNameList1
+                    });
+                    for (int b = 0; b < countUk1; b++)
+                    {
+                        var unameVal = bin.ReadInt32();
+                        var unkNameList1items = new List<object>();
+                        unkNameList1.Add(new BinInterpTreeItem(bin.Position - 4, $"Name {b}: {unameVal} {nameTable[unameVal]}")
+                        {
+                            Items = unkNameList1items
+                        });
+                        unkNameList1items.Add(new BinInterpTreeItem(bin.Position, $"Table index: {bin.ReadInt32()}") { Length = 4 });
+                        unkNameList1items.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                        unkNameList1items.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                        unkNameList1items.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                        unkNameList1items.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                        unkNameList1items.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                        unkNameList1items.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                        unkNameList1items.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                        unkNameList1items.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                        unkNameList1items.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                        unkNameList1items.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    }
+                }
 
                 //LIST B
                 var unkListB = new List<object>();
                 var countB = bin.ReadInt32();
-                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown List B: {countB} items")
+                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown Table B: {countB} items")
                 {
                     Items = unkListB
                 });
-                for (int b = 0; b < countB; b++)
+
+                for(int b = 0; b < countB; b++)
                 {
-                    var bnameVal = bin.ReadInt32();
+                    var bLocation = bin.Position;
+                    var firstval = bin.ReadInt32();  //maybe version id?
+                    var bIdxVal = bin.ReadInt32();
                     var unkListBitems = new List<object>();
-                    unkListB.Add(new BinInterpTreeItem(bin.Position - 4, $"Name {b}: {bnameVal} {nameTable[bnameVal]}")
+                    unkListB.Add(new BinInterpTreeItem(bin.Position - 4, $"{b}: Table Index: {bIdxVal}")
                     {
                         Items = unkListBitems
                     });
-                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown int: {bin.ReadInt32()}") { Length = 4 });
-                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
-                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
-                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
-                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
-                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
-                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    switch(firstval)
+                    {
+                        case 2:
+                            unkListBitems.Add(new BinInterpTreeItem(bin.Position - 8, $"Version??: {firstval}"));
+                            unkListBitems.Add(new BinInterpTreeItem(bin.Position - 4, $"Table index: {bIdxVal}"));
+                            unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown int: {bin.ReadInt32()}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown int: {bin.ReadInt32()}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown int: {bin.ReadInt32()}") { Length = 4 });
+                            break;
+                        default:
+                            unkListBitems.Add(new BinInterpTreeItem(bin.Position - 8, $"Version??: {firstval}"));
+                            unkListBitems.Add(new BinInterpTreeItem(bin.Position - 4, $"Table index: {bIdxVal}"));
+                            unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                            var unkStringLength = bin.ReadInt32();
+                            unkListBitems.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown string: {bin.ReadStringASCII(unkStringLength)}"));
+                            if(unkStringLength == 0)
+                            {
+                                var unkNameList2 = new List<object>(); //Name list to Bones and other facefx phenomes?
+                                var countUk2 = bin.ReadInt32();
+                                unkListBitems.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown Name List: {countUk2} items")
+                                {
+                                    Items = unkNameList2
+                                });
+                                for (int n2 = 0; n2 < countUk2; n2++)
+                                {
+                                    var unameVal = bin.ReadInt32();
+                                    var unkNameList2items = new List<object>();
+                                    unkNameList2.Add(new BinInterpTreeItem(bin.Position - 4, $"Name: {unameVal} {nameTable[unameVal]}")
+                                    {
+                                        Items = unkNameList2items
+                                    });
+                                    unkNameList2items.Add(new BinInterpTreeItem(bin.Position, $"Unknown int: {bin.ReadInt32()}") { Length = 4 });
+                                    var n3count = bin.ReadInt32();
+                                    unkNameList2items.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown count: {n3count}"));
+                                    for (int n3 = 0; n3 < n3count; n3++)
+                                    {
+                                        unkNameList2items.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                                    }
+                                }
+                                if (firstval != 6)
+                                {
+                                    unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                                }
+                            }
+
+                            break;
+                    }
+
                 }
+
 
 
 
