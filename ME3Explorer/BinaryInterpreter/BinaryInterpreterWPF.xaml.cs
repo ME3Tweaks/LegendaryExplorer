@@ -3392,7 +3392,7 @@ namespace ME3Explorer
                     var pos = bin.Position;
                     var mName = bin.ReadStringASCII(bin.ReadInt32());
                     nameTable.Add(mName);
-                    nametabObj.Add(new BinInterpTreeItem(bin.Skip(versionID != 1610 ? 0 : 4).Position, $"{mName}"));
+                    nametabObj.Add(new BinInterpTreeItem(bin.Skip(versionID != 1610 ? 0 : 4).Position, $"{m}: {mName}"));
                 }
 
                 subnodes.Add(new BinInterpTreeItem(nametablePos, $"Names: {nameCount} items")
@@ -3477,13 +3477,13 @@ namespace ME3Explorer
                     Items = unkListB
                 });
 
-                for(int b = 0; b < countB; b++)
+                for(int b = 0, i = 0; i < countB; b++, i++)
                 {
                     var bLocation = bin.Position;
                     var firstval = bin.ReadInt32();  //maybe version id?
                     var bIdxVal = bin.ReadInt32();
                     var unkListBitems = new List<object>();
-                    unkListB.Add(new BinInterpTreeItem(bin.Position - 4, $"{b}: Table Index: {bIdxVal}")
+                    unkListB.Add(new BinInterpTreeItem(bin.Position - 4, $"{b}: Table Index: {bIdxVal} : {nameTable[bIdxVal]}")
                     {
                         Items = unkListBitems
                     });
@@ -3499,13 +3499,24 @@ namespace ME3Explorer
                         default:
                             unkListBitems.Add(new BinInterpTreeItem(bin.Position - 8, $"Version??: {firstval}"));
                             unkListBitems.Add(new BinInterpTreeItem(bin.Position - 4, $"Table index: {bIdxVal}"));
+                            int flagMaybe = bin.ReadInt32();
+                            unkListBitems.Add(new BinInterpTreeItem(bin.Position - 4, $"another version?: {flagMaybe}") { Length = 4 });
                             unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
                             unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
                             unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                            unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                            var unkStringLength = bin.ReadInt32();
-                            unkListBitems.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown string: {bin.ReadStringASCII(unkStringLength)}"));
-                            if(unkStringLength == 0)
+                            bool hasNameList;
+                            if (flagMaybe == 0)
+                            {
+                                unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown int: {bin.ReadInt32()}"));
+                                hasNameList = true;
+                            }
+                            else
+                            {
+                                var unkStringLength = bin.ReadInt32();
+                                unkListBitems.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown String: {bin.ReadStringASCII(unkStringLength)}"));
+                                hasNameList = unkStringLength == 0;
+                            }
+                            if(hasNameList)
                             {
                                 var unkNameList2 = new List<object>(); //Name list to Bones and other facefx phenomes?
                                 var countUk2 = bin.ReadInt32();
@@ -3534,13 +3545,42 @@ namespace ME3Explorer
                                     unkListBitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
                                 }
                             }
-
                             break;
                     }
 
+                    if (firstval == 6)
+                    {
+                        i -= 2;
+                    }
                 }
 
+                var unkListC = new List<object>();
+                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown Table C")
+                {
+                    Items = unkListC
+                });
 
+                for (int c = 0; c < countB; c++)
+                {
+                    var unkListCitems = new List<object>();
+                    unkListC.Add(new BinInterpTreeItem(bin.Position, $"{c}")
+                    {
+                        Items = unkListCitems
+                    });
+                    int name = bin.ReadInt32();
+                    unkListCitems.Add(new BinInterpTreeItem(bin.Position, $"Name?: {name} {nameTable[name]}") { Length = 4 });
+                    unkListCitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown int: {bin.ReadInt32()}") { Length = 4 });
+                    int stringCount = bin.ReadInt32();
+                    unkListCitems.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown int: {stringCount}") { Length = 4 });
+                    unkListCitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown String: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                    for (int i = 1; i < stringCount; i++)
+                    {
+                        c++;
+                        unkListCitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown int: {bin.ReadInt32()}") { Length = 4 });
+                        unkListCitems.Add(new BinInterpTreeItem(bin.Position, $"Unknown String: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                    }
+
+                }
 
 
 
@@ -3567,16 +3607,9 @@ namespace ME3Explorer
                     {
                         Items = nodes
                     });
-                    if (versionID == 1610)
-                    {
-                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
-                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                    }
-                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Name: {bin.ReadInt32()}") { Length = 4 });
-                    if (versionID == 1610)
-                    {
-                        nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
-                    }
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
+                    nodes.Add(new BinInterpTreeItem(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
                     int animationCount = bin.ReadInt32();
                     var anims = new List<object>();
                     nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Animations: {animationCount} items")
@@ -3590,13 +3623,7 @@ namespace ME3Explorer
                         {
                             Items = animNodes
                         });
-                        if (versionID == 1610)
-                        {
-
-                            animNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
-                            animNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                        }
-                        animNodes.Add(new BinInterpTreeItem(bin.Position, $"Index: {bin.ReadInt32()}") { Length = 4 });
+                        animNodes.Add(new BinInterpTreeItem(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
                         animNodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
                         if (versionID == 1610)
                         {
@@ -3604,31 +3631,34 @@ namespace ME3Explorer
                         }
                     }
 
-                    int pointsCount = bin.ReadInt32();
-                    nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Points: {pointsCount} items")
+                    if (animationCount > 0)
                     {
-                        Items = Enumerable.Range(0, pointsCount).Select(j => (object)new BinInterpTreeItem(bin.Position, $"{j}")
+                        int pointsCount = bin.ReadInt32();
+                        nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Points: {pointsCount} items")
                         {
-                            Items = new List<object>
+                            Items = Enumerable.Range(0, pointsCount).Select(j => (object)new BinInterpTreeItem(bin.Position, $"{j}")
                             {
-                                new BinInterpTreeItem(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
-                                new BinInterpTreeItem(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
-                                new BinInterpTreeItem(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
-                                new BinInterpTreeItem(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
-                            }
-                        }).ToList()
-                    });
-
-                    if (pointsCount > 0)
-                    {
-                        if (versionID == 1610)
-                        {
-                            nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                        }
-                        nodes.Add(new BinInterpTreeItem(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
-                        {
-                            Items = Enumerable.Range(0, bin.Skip(-4).ReadInt32()).Select(j => (object)new BinInterpTreeItem(bin.Position, $"{bin.ReadInt32()} keys")).ToList()
+                                Items = new List<object>
+                                {
+                                    new BinInterpTreeItem(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
+                                    new BinInterpTreeItem(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
+                                    new BinInterpTreeItem(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
+                                    new BinInterpTreeItem(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
+                                }
+                            }).ToList()
                         });
+
+                        if (pointsCount > 0)
+                        {
+                            if (versionID == 1610)
+                            {
+                                nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                            }
+                            nodes.Add(new BinInterpTreeItem(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
+                            {
+                                Items = Enumerable.Range(0, bin.Skip(-4).ReadInt32()).Select(j => (object)new BinInterpTreeItem(bin.Position, $"{bin.ReadInt32()} keys")).ToList()
+                            });
+                        }
                     }
                     nodes.Add(new BinInterpTreeItem(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
                     nodes.Add(new BinInterpTreeItem(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") { Length = 4 });
