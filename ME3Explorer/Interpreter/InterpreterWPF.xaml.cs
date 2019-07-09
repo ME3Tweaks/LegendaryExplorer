@@ -210,7 +210,7 @@ namespace ME3Explorer
 
         private void ClearArray()
         {
-            if (SelectedItem != null && SelectedItem.Property != null && !SelectedItem.HasTooManyChildrenToDisplay)
+            if (SelectedItem?.Property != null && !SelectedItem.HasTooManyChildrenToDisplay)
             {
                 var araryProperty = (ArrayPropertyBase)SelectedItem.Property;
                 araryProperty.Clear();
@@ -218,7 +218,7 @@ namespace ME3Explorer
             }
         }
 
-        private bool CanClearArray() => SelectedItem != null && SelectedItem.Property != null && SelectedItem.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)) && !SelectedItem.HasTooManyChildrenToDisplay;
+        private bool CanClearArray() => SelectedItem?.Property is ArrayPropertyBase && !SelectedItem.HasTooManyChildrenToDisplay;
 
         private bool ArrayPropertyIsSelected() => SelectedItem?.Property is ArrayPropertyBase;
 
@@ -231,7 +231,7 @@ namespace ME3Explorer
         private bool CanMoveArrayElementDown()
         {
             var entries = SelectedItem?.Parent?.ChildrenProperties;
-            return ArrayElementIsSelected() && entries.IndexOf(SelectedItem) < entries.Count - 1;
+            return entries != null && ArrayElementIsSelected() && entries.IndexOf(SelectedItem) < entries.Count - 1;
         }
 
         private void MoveArrayElementDown() => MoveArrayElement(false);
@@ -2091,7 +2091,7 @@ namespace ME3Explorer
                         }
                 }
 
-                bool isArrayPropertyTable = Property.GetType().IsOfGenericType(typeof(ArrayProperty<>));
+                bool isArrayPropertyTable = Property is ArrayPropertyBase;
                 if (ChildrenProperties.Count > 1000 && isArrayPropertyTable)
                 {
                     str.Write($" is very large array ({ChildrenProperties.Count} items) - skipping");

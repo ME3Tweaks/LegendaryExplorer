@@ -252,9 +252,9 @@ namespace ME3Explorer.Dialogue_Editor
                     links.Add($"{entry.NodeCount}: {entry.LineStrRef} {entry.Line}");
                 }
             }
-            var ldlg = InputComboBox.GetValue("Pick the next dialogue node to link to", links, links[l]);
+            string ldlg = InputComboBoxWPF.GetValue(this, "Pick the next dialogue node to link to", links, links[l]);
 
-            if (ldlg == "")
+            if (string.IsNullOrEmpty(ldlg))
                 return;
             editLink.Index = links.FindIndex(ldlg.Equals);
 
@@ -281,9 +281,9 @@ namespace ME3Explorer.Dialogue_Editor
                 ////Set GUI Reply style
                 var rc = editLink.RCategory; //Get current link
 
-                var rdlg = InputComboBox.GetValue("Pick the wheel position or interrupt:", Enums.GetNames<EReplyCategory>(), rc.ToString());
+                string rdlg = InputComboBoxWPF.GetValue(this, "Pick the wheel position or interrupt:", Enums.GetNames<EReplyCategory>(), rc.ToString());
 
-                if (rdlg == "")
+                if (string.IsNullOrEmpty(rdlg))
                     return;
                 rc = Enums.Parse<EReplyCategory>(rdlg);
                 editLink.RCategory = rc;

@@ -39,15 +39,6 @@ namespace ME3Explorer
         public static string BioWareDocPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"\BioWare\Mass Effect 2\");
         public static string GamerSettingsIniFile => BioWareDocPath + @"BIOGame\Config\GamerSettings.ini";
 
-        public static string DLCFilePath(string DLCName)
-        {
-            string fullPath = DLCPath + DLCName + @"\CookedPC";
-            if (File.Exists(fullPath))
-                return fullPath;
-            else
-                throw new FileNotFoundException("Invalid DLC path " + fullPath);
-        }
-
         static ME2Directory()
         {
             if (!string.IsNullOrEmpty(Properties.Settings.Default.ME2Directory))
@@ -83,5 +74,59 @@ namespace ME3Explorer
                 } 
             }
         }
+
+        public static Dictionary<string, string> OfficialDLCNames = new Dictionary<string, string>
+        {
+            ["DLC_CER_02"] = "Aegis Pack",
+            ["DLC_CER_Arc"] = "Arc Projector",
+            ["DLC_CON_Pack01"] = "Alternate Appearance Pack 1",
+            ["DLC_CON_Pack02"] = "Alternate Appearance Pack 2",
+            ["DLC_DHME1"] = "Genesis",
+            ["DLC_EXP_Part01"] = "Lair of the Shadow Broker",
+            ["DLC_EXP_Part02"] = "Arrival",
+            ["DLC_HEN_MT"] = "Kasumi - Stolen Memory",
+            ["DLC_HEN_VT"] = "Zaeed - The Price of Revenge",
+            ["DLC_MCR_01"] = "Firepower pack",
+            ["DLC_MCR_03 "] = "Equalizer pack",
+            ["DLC_PRE_Cerberus"] = "Cerberus Weapon and Armor",
+            ["DLC_PRE_Collectors"] = "Collectors' Weapon and Armor",
+            ["DLC_PRE_DA"] = "Blood Dragon Armor",
+            ["DLC_PRE_Gamestop"] = "Terminus Weapon and Armor",
+            ["DLC_PRE_General"] = "Inferno Armor",
+            ["DLC_PRE_Incisor"] = "M-29 Incisor",
+            ["DLC_PRO_Gulp01"] = "Sentry Interface",
+            ["DLC_PRO_Pepper01"] = "Umbra Visor",
+            ["DLC_PRO_Pepper02"] = "Recon Hood",
+            ["DLC_UNC_Hammer01"] = "Firewalker Pack",
+            ["DLC_UNC_Moment01"] = "Normandy Crash Site",
+            ["DLC_UNC_Pack01"] = "Overlord",
+        };
+
+        public static List<string> OfficialDLC = new List<string>
+        {
+            "DLC_UNC_Moment01", //95
+            "DLC_HEN_VT", //100
+            "DLC_PRE_Cerberus", //105
+            "DLC_PRE_Collectors", //106
+            "DLC_PRE_DA", //107
+            "DLC_PRE_Gamestop", //108
+            "DLC_PRE_General",
+            "DLC_PRE_Incisor",
+            "DLC_PRO_Gulp01", //111
+            "DLC_PRO_Pepper01", //112
+            "DLC_PRO_Pepper02", //113
+            "DLC_CER_Arc", //116
+            "DLC_UNC_Hammer01", //118
+            "DLC_HEN_MT", //119
+            "DLC_CON_Pack01", //125
+            "DLC_UNC_Pack01", //132
+            "DLC_CER_02",
+            "DLC_MCR_01", //136
+            "DLC_MCR_03 ",
+            "DLC_EXP_Part01", //300
+            "DLC_DHME1", //375
+            "DLC_CON_Pack02", //380
+            "DLC_EXP_Part02", //400
+        };
     }
 }

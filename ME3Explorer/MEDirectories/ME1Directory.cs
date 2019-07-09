@@ -39,15 +39,6 @@ namespace ME3Explorer
         public static string BioWareDocPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"\BioWare\Mass Effect\");
         public static string GamerSettingsIniFile => Path.Combine(BioWareDocPath, @"BIOGame\Config\GamerSettings.ini");
 
-        public static string DLCFilePath(string DLCName)
-        {
-            string fullPath = Path.Combine(DLCPath, DLCName, @"\CookedPC\");
-            if (File.Exists(fullPath))
-                return fullPath;
-            else
-                throw new FileNotFoundException($"Invalid DLC path {fullPath}");
-        }
-
         static ME1Directory()
         {
             if (!string.IsNullOrEmpty(Properties.Settings.Default.ME1Directory))
@@ -77,5 +68,17 @@ namespace ME3Explorer
                 } 
             }
         }
+
+        public static Dictionary<string, string> OfficialDLCNames = new Dictionary<string, string>
+        {
+            ["DLC_UNC"] = "Bring Down the Sky",
+            ["DLC_Vegas"] = "Pinnacle Station"
+        };
+
+        public static List<string> OfficialDLC = new List<string>
+        {
+            "DLC_UNC",
+            "DLC_Vegas"
+        };
     }
 }

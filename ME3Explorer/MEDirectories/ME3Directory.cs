@@ -39,15 +39,6 @@ namespace ME3Explorer
         public static string BioWareDocPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"\BioWare\Mass Effect 3\");
         public static string GamerSettingsIniFile => Path.Combine(BioWareDocPath, @"BIOGame\Config\GamerSettings.ini");
 
-        public static string DLCFilePath(string DLCName)
-        {
-            string fullPath = Path.Combine(DLCPath, DLCName, @"\CookedPCConsole\Default.sfar");
-            if (!File.Exists(fullPath))
-                throw new FileNotFoundException($"Invalid DLC path {fullPath}");
-
-            return fullPath;
-        }
-
         static ME3Directory()
         {
             if (!string.IsNullOrEmpty(Properties.Settings.Default.ME3Directory))
@@ -75,5 +66,49 @@ namespace ME3Explorer
                 gamePath = (string)Microsoft.Win32.Registry.GetValue(keyName, "Install Dir", null); 
             }
         }
+
+        public static Dictionary<string, string> OfficialDLCNames = new Dictionary<string, string>
+        {
+            ["DLC_HEN_PR"] = "From Ashes",
+            ["DLC_OnlinePassHidCE"] = "Collectors Edition Content",
+            ["DLC_CON_MP1"] = "Resurgence",
+            ["DLC_CON_MP2"] = "Rebellion",
+            ["DLC_CON_MP3"] = "Earth",
+            ["DLC_CON_END"] = "Extended Cut",
+            ["DLC_CON_GUN01"] = "Firefight Pack",
+            ["DLC_EXP_Pack001"] = "Leviathan",
+            ["DLC_UPD_Patch01"] = "Multiplayer Balance Changes Cache 1",
+            ["DLC_CON_MP4"] = "Retaliation",
+            ["DLC_CON_GUN02"] = "Groundside Resistance Pack",
+            ["DLC_EXP_Pack002"] = "Omega",
+            ["DLC_CON_APP01"] = "Alternate Appearance Pack 1",
+            ["DLC_UPD_Patch02"] = "Multiplayer Balance Changes Cache 2",
+            ["DLC_CON_MP5"] = "Reckoning",
+            ["DLC_EXP_Pack003_Base"] = "Citadel - Part I",
+            ["DLC_EXP_Pack003"] = "Citadel - Part II",
+            ["DLC_CON_DH1"] = "Genesis 2"
+        };
+
+        public static List<string> OfficialDLC = new List<string>
+        {
+            "DLC_HEN_PR",
+            "DLC_OnlinePassHidCE",
+            "DLC_CON_MP1",
+            "DLC_CON_MP2",
+            "DLC_CON_MP3",
+            "DLC_CON_END",
+            "DLC_CON_GUN01",
+            "DLC_EXP_Pack001",
+            "DLC_UPD_Patch01",
+            "DLC_CON_MP4",
+            "DLC_CON_GUN02",
+            "DLC_EXP_Pack002",
+            "DLC_CON_APP01",
+            "DLC_UPD_Patch02",
+            "DLC_CON_MP5",
+            "DLC_EXP_Pack003_Base",
+            "DLC_EXP_Pack003",
+            "DLC_CON_DH1"
+        };
     }
 }

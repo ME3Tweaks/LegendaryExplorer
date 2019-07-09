@@ -559,6 +559,9 @@
     </Compile>
     <Compile Include="SharedUI\AttachedProperties.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeBooleanConverter.cs" />
+    <Compile Include="SharedUI\InputComboBoxWPF.xaml.cs">
+      <DependentUpon>InputComboBoxWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\PeregrineTreeView\NodeTreeSelectionBehavior.cs" />
     <Compile Include="SharedUI\ListBoxTask.cs" />
     <Compile Include="SharedUI\TouchComfySettings.cs" />
@@ -1016,6 +1019,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SharedUI\ExceptionHandlerDialogWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\InputComboBoxWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

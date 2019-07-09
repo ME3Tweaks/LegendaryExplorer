@@ -152,6 +152,7 @@ namespace ME3Explorer
 
         #region Commands
         public ICommand ComparePackagesCommand { get; set; }
+        public ICommand CompareToUnmoddedCommand { get; set; }
         public ICommand ExportAllDataCommand { get; set; }
         public ICommand ExportBinaryDataCommand { get; set; }
         public ICommand ImportAllDataCommand { get; set; }
@@ -189,6 +190,7 @@ namespace ME3Explorer
 
         private void LoadCommands()
         {
+            CompareToUnmoddedCommand = new GenericCommand(CompareUnmodded, CanCompareToUnmodded);
             ComparePackagesCommand = new GenericCommand(ComparePackages, PackageIsLoaded);
             ExportAllDataCommand = new GenericCommand(ExportAllData, ExportIsSelected);
             ExportBinaryDataCommand = new GenericCommand(ExportBinaryData, ExportIsSelected);
@@ -1482,75 +1484,118 @@ namespace ME3Explorer
                         return;
                     }
 
-                    using (IMEPackage compareFile = MEPackageHandler.OpenMEPackage(d.FileName))
-                    {
-                        if (Pcc.Game != compareFile.Game)
-                        {
-                            MessageBox.Show("Files are for different games.");
-                            return;
-                        }
-
-                        int numExportsToEnumerate = Math.Min(Pcc.ExportCount, compareFile.ExportCount);
-
-                        var changedExports = new List<string>();
-                        Stopwatch sw = Stopwatch.StartNew();
-                        for (int i = 0; i < numExportsToEnumerate; i++)
-                        {
-                            ExportEntry exp1 = Pcc.Exports[i];
-                            ExportEntry exp2 = compareFile.Exports[i];
-
-                            //make data offset and data size the same, as the exports could be the same even if it was appended later.
-                            //The datasize being different is a data difference not a true header difference so we won't list it here.
-                            byte[] header1 = exp1.Header.TypedClone();
-                            byte[] header2 = exp2.Header.TypedClone();
-                            Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header1, 32, sizeof(long));
-                            Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header2, 32, sizeof(long));
-
-                            //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
-                            if (!header1.SequenceEqual(header2))
-
-                            {
-                                //foreach (byte b in header1)
-                                //{
-                                //    Debug.Write(" " + b.ToString("X2"));
-                                //}
-                                //Debug.WriteLine("");
-                                //foreach (byte b in header2)
-                                //{
-                                //    //Debug.Write(" " + b.ToString("X2"));
-                                //}
-                                //Debug.WriteLine("");
-                                changedExports.Add($"Export header has changed: {exp1.UIndex} {exp1.GetFullPath}");
-                            }
-                            if (!exp1.Data.SequenceEqual(exp2.Data))
-                            {
-                                changedExports.Add($"Export data has changed: {exp1.UIndex} {exp1.GetFullPath}");
-                            }
-                        }
-
-                        IMEPackage enumerateExtras = Pcc;
-                        string file = "this file";
-                        if (compareFile.ExportCount > numExportsToEnumerate)
-                        {
-                            file = "other file";
-                            enumerateExtras = compareFile;
-                        }
-
-                        for (int i = numExportsToEnumerate; i < enumerateExtras.ExportCount; i++)
-                        {
-                            Debug.WriteLine($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].GetFullPath}");
-                            changedExports.Add($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].GetFullPath}");
-                        }
-
-                        sw.Stop();
-                        Debug.WriteLine($"Time: {sw.ElapsedMilliseconds}ms");
-
-                        ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.", this);
-                        ld.Show();
-                    }
+                    ComparePackage(d.FileName);
                 }
             }
         }
+
+        private bool CanCompareToUnmodded() => PackageIsLoaded() && !(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC());
+
+        private void CompareUnmodded()
+        {
+            if (Pcc.Game != MEGame.ME1 && Pcc.Game != MEGame.ME2 && Pcc.Game != MEGame.ME3)
+            {
+                MessageBox.Show(this, "Not a trilogy file!");
+                return;
+            }
+
+            string filename = Path.GetFileName(Pcc.FilePath);
+            string dlcPath = MEDirectories.DLCPath(Pcc.Game);
+            List<string> candidates = MEDirectories.OfficialDLC(Pcc.Game)
+                                                   .Select(dlcName => Path.Combine(dlcPath, dlcName))
+                                                   .Prepend(MEDirectories.CookedPath(Pcc.Game))
+                                                   .Where(Directory.Exists)
+                                                   .Select(cookedPath =>
+                                                               Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
+                                                                        .FirstOrDefault(path => Path.GetFileName(path) == filename))
+                                                   .NonNull().ToList();
+            if (candidates.IsEmpty())
+            {
+                MessageBox.Show(this, "Cannot find original file!");
+                return;
+            }
+
+            string filePath = InputComboBoxWPF.GetValue(this, "Choose file to compare to:", candidates, candidates.Last());
+
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return;
+            }
+
+            ComparePackage(filePath);
+        }
+
+        private void ComparePackage(string packagePath)
+        {
+            using (IMEPackage compareFile = MEPackageHandler.OpenMEPackage(packagePath))
+            {
+                if (Pcc.Game != compareFile.Game)
+                {
+                    MessageBox.Show("Files are for different games.");
+                    return;
+                }
+
+                int numExportsToEnumerate = Math.Min(Pcc.ExportCount, compareFile.ExportCount);
+
+                var changedExports = new List<string>();
+                Stopwatch sw = Stopwatch.StartNew();
+                for (int i = 0; i < numExportsToEnumerate; i++)
+                {
+                    ExportEntry exp1 = Pcc.Exports[i];
+                    ExportEntry exp2 = compareFile.Exports[i];
+
+                    //make data offset and data size the same, as the exports could be the same even if it was appended later.
+                    //The datasize being different is a data difference not a true header difference so we won't list it here.
+                    byte[] header1 = exp1.Header.TypedClone();
+                    byte[] header2 = exp2.Header.TypedClone();
+                    Buffer.BlockCopy(BitConverter.GetBytes((long) 0), 0, header1, 32, sizeof(long));
+                    Buffer.BlockCopy(BitConverter.GetBytes((long) 0), 0, header2, 32, sizeof(long));
+
+                    //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
+                    if (!header1.SequenceEqual(header2))
+
+                    {
+                        //foreach (byte b in header1)
+                        //{
+                        //    Debug.Write(" " + b.ToString("X2"));
+                        //}
+                        //Debug.WriteLine("");
+                        //foreach (byte b in header2)
+                        //{
+                        //    //Debug.Write(" " + b.ToString("X2"));
+                        //}
+                        //Debug.WriteLine("");
+                        changedExports.Add($"Export header has changed: {exp1.UIndex} {exp1.GetFullPath}");
+                    }
+
+                    if (!exp1.Data.SequenceEqual(exp2.Data))
+                    {
+                        changedExports.Add($"Export data has changed: {exp1.UIndex} {exp1.GetFullPath}");
+                    }
+                }
+
+                IMEPackage enumerateExtras = Pcc;
+                string file = "this file";
+                if (compareFile.ExportCount > numExportsToEnumerate)
+                {
+                    file = "other file";
+                    enumerateExtras = compareFile;
+                }
+
+                for (int i = numExportsToEnumerate; i < enumerateExtras.ExportCount; i++)
+                {
+                    Debug.WriteLine($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].GetFullPath}");
+                    changedExports.Add($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].GetFullPath}");
+                }
+
+                sw.Stop();
+                Debug.WriteLine($"Time: {sw.ElapsedMilliseconds}ms");
+
+                ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.", this);
+                ld.Show();
+            }
+        }
+
         #endregion
 
         public PackageEditorWPF()

@@ -41,6 +41,52 @@ namespace ME3Explorer
             }
         }
 
+        public static string DLCPath(MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return ME1Directory.DLCPath;
+                case MEGame.ME2:
+                    return ME2Directory.DLCPath;
+                case MEGame.ME3:
+                    return ME3Directory.DLCPath;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
+            }
+        }
+
+        public static List<string> OfficialDLC(MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return ME1Directory.OfficialDLC;
+                case MEGame.ME2:
+                    return ME2Directory.OfficialDLC;
+                case MEGame.ME3:
+                    return ME3Directory.OfficialDLC;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
+            }
+        }
+
+        public static bool IsInBasegame(this IMEPackage pcc) => IsInBasegame(pcc.FilePath, pcc.Game);
+
+        public static bool IsInBasegame(string path, MEGame game) => path.StartsWith(CookedPath(game));
+
+        public static bool IsInOfficialDLC(this IMEPackage pcc) => IsInOfficialDLC(pcc.FilePath, pcc.Game);
+
+        public static bool IsInOfficialDLC(string path, MEGame game)
+        {
+            if (game == MEGame.UDK || game == MEGame.Unknown)
+            {
+                return false;
+            }
+            string dlcPath = DLCPath(game);
+
+            return OfficialDLC(game).Any(dlcFolder => path.StartsWith(Path.Combine(dlcPath, dlcFolder)));
+        }
 
         public static void SaveSettings(List<string> BIOGames)
         {

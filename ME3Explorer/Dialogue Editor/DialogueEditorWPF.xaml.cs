@@ -2960,7 +2960,7 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 links.Add($"{entry.NodeCount}: {entry.LineStrRef} {entry.Line}");
             }
-            var sdlg = InputComboBox.GetValue("Pick an entry node to link to", links, links[f], false);
+            var sdlg = InputComboBoxWPF.GetValue(this, "Pick an entry node to link to", links, links[f], false);
 
             if (sdlg == "")
                 return;

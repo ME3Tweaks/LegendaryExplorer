@@ -128,6 +128,7 @@
                 <MenuItem Header="Tools" Padding="4">
                     <MenuItem Header="Package file header info" ToolTip="View information stored in package header" Command="{Binding PackageHeaderViewerCommand}"/>
                     <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
+                    <MenuItem Header="Compare with unmodded" ToolTip="Compare with the (hopefully) unmodded version of this package to see what exports and imports have changed" Command="{Binding CompareToUnmoddedCommand}"/>
                     <MenuItem Header="Pop out current view into new window" ToolTip="Opens the panel on the right side in a new windowstored in package header" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL + P"/>
                     <Separator/>
                     <MenuItem Header="Multi-drop relinking mode" ToolTip="Enables the multi-drop relinking mode" IsChecked="{Binding MultiRelinkingModeActive}" Command="{Binding MultidropRelinkingCommand}"/>
