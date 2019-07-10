@@ -421,7 +421,7 @@ namespace ME3Explorer
                 UProperty newProperty = null;
                 (string propName, PropertyInfo propInfo) = prop.Value;
                 //Todo: Maybe lookup the default value?
-                switch (propInfo.type)
+                switch (propInfo.Type)
                 {
                     case PropertyType.IntProperty:
                         newProperty = new IntProperty(0, propName);
@@ -447,7 +447,7 @@ namespace ME3Explorer
                     case PropertyType.ByteProperty:
                         if (propInfo.IsEnumProp())
                         {
-                            newProperty = new EnumProperty(propInfo.reference, Pcc.Game, propName);
+                            newProperty = new EnumProperty(propInfo.Reference, Pcc.Game, propName);
                         }
                         else
                         {
@@ -459,8 +459,8 @@ namespace ME3Explorer
                         break;
                     case PropertyType.StructProperty:
 
-                        PropertyCollection structProps = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, propInfo.reference, true);
-                        newProperty = new StructProperty(propInfo.reference, structProps, propName, isImmutable: UnrealObjectInfo.isImmutable(propInfo.reference, Pcc.Game));
+                        PropertyCollection structProps = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, propInfo.Reference, true);
+                        newProperty = new StructProperty(propInfo.Reference, structProps, propName, isImmutable: UnrealObjectInfo.isImmutable(propInfo.Reference, Pcc.Game));
                         break;
                 }
 
@@ -1668,7 +1668,7 @@ namespace ME3Explorer
                     case ArrayProperty<EnumProperty> aep:
                         {
                             PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, aep.Name, containingType);
-                            string typeName = p.reference;
+                            string typeName = p.Reference;
                             EnumProperty ep = new EnumProperty(typeName, Pcc.Game);
                             aep.Insert(insertIndex, ep);
                         }
@@ -1714,7 +1714,7 @@ namespace ME3Explorer
                             }
                             if (p != null)
                             {
-                                string typeName = p.reference;
+                                string typeName = p.Reference;
                                 PropertyCollection props = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true);
                                 astructp.Insert(insertIndex, new StructProperty(typeName, props));
                             }

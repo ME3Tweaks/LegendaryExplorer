@@ -339,7 +339,7 @@ namespace ME3Explorer.Unreal
             {
                 p = getPropertyInfo(className, propName, true);
             }
-            return p?.reference;
+            return p?.Reference;
         }
 
         public static List<NameReference> getEnumValues(string enumName, bool includeNone = false)
@@ -391,42 +391,42 @@ namespace ME3Explorer.Unreal
         {
             if (p != null)
             {
-                if (p.reference == "NameProperty")
+                if (p.Reference == "NameProperty")
                 {
                     return ArrayType.Name;
                 }
 
-                if (Enums.ContainsKey(p.reference))
+                if (Enums.ContainsKey(p.Reference))
                 {
                     return ArrayType.Enum;
                 }
 
-                if (p.reference == "BoolProperty")
+                if (p.Reference == "BoolProperty")
                 {
                     return ArrayType.Bool;
                 }
 
-                if (p.reference == "ByteProperty")
+                if (p.Reference == "ByteProperty")
                 {
                     return ArrayType.Byte;
                 }
 
-                if (p.reference == "StrProperty")
+                if (p.Reference == "StrProperty")
                 {
                     return ArrayType.String;
                 }
 
-                if (p.reference == "FloatProperty")
+                if (p.Reference == "FloatProperty")
                 {
                     return ArrayType.Float;
                 }
 
-                if (p.reference == "IntProperty")
+                if (p.Reference == "IntProperty")
                 {
                     return ArrayType.Int;
                 }
 
-                if (Structs.ContainsKey(p.reference))
+                if (Structs.ContainsKey(p.Reference))
                 {
                     return ArrayType.Struct;
                 }
@@ -466,9 +466,9 @@ namespace ME3Explorer.Unreal
                 {
                     foreach (PropertyInfo p in info.properties.Values())
                     {
-                        if ((p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty) && reSearch)
+                        if ((p.Type == PropertyType.StructProperty || p.Type == PropertyType.ArrayProperty) && reSearch)
                         {
-                            PropertyInfo val = getPropertyInfo(p.reference, propName, true, nonVanillaClassInfo);
+                            PropertyInfo val = getPropertyInfo(p.Reference, propName, true, nonVanillaClassInfo);
                             if (val != null)
                             {
                                 return val;
@@ -518,7 +518,7 @@ namespace ME3Explorer.Unreal
                     {
                         foreach ((string propName, PropertyInfo propInfo) in info.properties)
                         {
-                            if (stripTransients && propInfo.transient)
+                            if (stripTransients && propInfo.Transient)
                             {
                                 continue;
                             }
@@ -562,7 +562,7 @@ namespace ME3Explorer.Unreal
 
         public static UProperty getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
         {
-            switch (propInfo.type)
+            switch (propInfo.Type)
             {
                 case PropertyType.IntProperty:
                     return new IntProperty(0, propName);
@@ -576,7 +576,7 @@ namespace ME3Explorer.Unreal
                 case PropertyType.BoolProperty:
                     return new BoolProperty(false, propName);
                 case PropertyType.ByteProperty when propInfo.IsEnumProp():
-                    return new EnumProperty(propInfo.reference, MEGame.ME3, propName);
+                    return new EnumProperty(propInfo.Reference, MEGame.ME3, propName);
                 case PropertyType.ByteProperty:
                     return new ByteProperty(0, propName);
                 case PropertyType.StrProperty:
@@ -610,7 +610,7 @@ namespace ME3Explorer.Unreal
                             return null;
                     }
                 case PropertyType.StructProperty:
-                    return new StructProperty(propInfo.reference, getDefaultStructValue(propInfo.reference, stripTransients), propName, isImmutable);
+                    return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients), propName, isImmutable);
                 case PropertyType.None:
                 case PropertyType.Unknown:
                 default:
@@ -700,26 +700,11 @@ namespace ME3Explorer.Unreal
                 exportIndex = 0,
                 properties =
                 {
-                    new KeyValuePair<string, PropertyInfo>("PSC2Component", new PropertyInfo
-                    {
-                        type = PropertyType.ObjectProperty, reference = "ParticleSystemComponent"
-                    }),
-                    new KeyValuePair<string, PropertyInfo>("PSC1Component", new PropertyInfo
-                    {
-                        type = PropertyType.ObjectProperty, reference = "ParticleSystemComponent"
-                    }),
-                    new KeyValuePair<string, PropertyInfo>("SkMeshComponent", new PropertyInfo
-                    {
-                        type = PropertyType.ObjectProperty, reference = "SkeletalMeshComponent"
-                    }),
-                    new KeyValuePair<string, PropertyInfo>("TargetPawn", new PropertyInfo
-                    {
-                        type = PropertyType.ObjectProperty, reference = "Actor"
-                    }),
-                    new KeyValuePair<string, PropertyInfo>("AttachSocketName", new PropertyInfo
-                    {
-                        type = PropertyType.NameProperty
-                    })
+                    new KeyValuePair<string, PropertyInfo>("PSC2Component", new PropertyInfo(PropertyType.ObjectProperty, "ParticleSystemComponent")),
+                    new KeyValuePair<string, PropertyInfo>("PSC1Component", new PropertyInfo(PropertyType.ObjectProperty, "ParticleSystemComponent")),
+                    new KeyValuePair<string, PropertyInfo>("SkMeshComponent", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMeshComponent")),
+                    new KeyValuePair<string, PropertyInfo>("TargetPawn", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
+                    new KeyValuePair<string, PropertyInfo>("AttachSocketName", new PropertyInfo(PropertyType.NameProperty, "ParticleSystemComponent"))
                 }
             };
 
@@ -732,14 +717,8 @@ namespace ME3Explorer.Unreal
                 exportIndex = 0,
                 properties =
                 {
-                    new KeyValuePair<string, PropertyInfo>("bFromMainMenu", new PropertyInfo
-                    {
-                        type = PropertyType.BoolProperty
-                    }),
-                    new KeyValuePair<string, PropertyInfo>("m_oGuiReferenced", new PropertyInfo
-                    {
-                        type = PropertyType.ObjectProperty, reference = "GFxMovieInfo"
-                    })
+                    new KeyValuePair<string, PropertyInfo>("bFromMainMenu", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("m_oGuiReferenced", new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo"))
                 }
             };
 
@@ -751,14 +730,8 @@ namespace ME3Explorer.Unreal
                 exportIndex = 0,
                 properties =
                 {
-                    new KeyValuePair<string, PropertyInfo>("m_aoTargets", new PropertyInfo
-                    {
-                        type = PropertyType.ArrayProperty, reference = "Actor"
-                    }),
-                    new KeyValuePair<string, PropertyInfo>("m_pDefaultFaceFXAsset", new PropertyInfo
-                    {
-                        type = PropertyType.ObjectProperty, reference = "FaceFXAsset"
-                    })
+                    new KeyValuePair<string, PropertyInfo>("m_aoTargets", new PropertyInfo(PropertyType.ArrayProperty, "Actor")),
+                    new KeyValuePair<string, PropertyInfo>("m_pDefaultFaceFXAsset", new PropertyInfo(PropertyType.ObjectProperty, "FaceFXAsset"))
                 }
             };
 
@@ -843,62 +816,64 @@ namespace ME3Explorer.Unreal
         private static PropertyInfo getProperty(ExportEntry entry)
         {
             IMEPackage pcc = entry.FileRef;
-            PropertyInfo p = new PropertyInfo();
+
+            string reference = null;
+            PropertyType type;
             switch (entry.ClassName)
             {
                 case "IntProperty":
-                    p.type = PropertyType.IntProperty;
+                    type = PropertyType.IntProperty;
                     break;
                 case "StringRefProperty":
-                    p.type = PropertyType.StringRefProperty;
+                    type = PropertyType.StringRefProperty;
                     break;
                 case "FloatProperty":
-                    p.type = PropertyType.FloatProperty;
+                    type = PropertyType.FloatProperty;
                     break;
                 case "BoolProperty":
-                    p.type = PropertyType.BoolProperty;
+                    type = PropertyType.BoolProperty;
                     break;
                 case "StrProperty":
-                    p.type = PropertyType.StrProperty;
+                    type = PropertyType.StrProperty;
                     break;
                 case "NameProperty":
-                    p.type = PropertyType.NameProperty;
+                    type = PropertyType.NameProperty;
                     break;
                 case "DelegateProperty":
-                    p.type = PropertyType.DelegateProperty;
+                    type = PropertyType.DelegateProperty;
                     break;
                 case "ObjectProperty":
                 case "ClassProperty":
                 case "ComponentProperty":
-                    p.type = PropertyType.ObjectProperty;
-                    p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    type = PropertyType.ObjectProperty;
+                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
                 case "StructProperty":
-                    p.type = PropertyType.StructProperty;
-                    p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    type = PropertyType.StructProperty;
+                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
                 case "BioMask4Property":
                 case "ByteProperty":
-                    p.type = PropertyType.ByteProperty;
-                    p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    type = PropertyType.ByteProperty;
+                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
                 case "ArrayProperty":
-                    p.type = PropertyType.ArrayProperty;
+                    type = PropertyType.ArrayProperty;
                     PropertyInfo arrayTypeProp = getProperty(pcc.getUExport(BitConverter.ToInt32(entry.Data, 44)));
                     if (arrayTypeProp != null)
                     {
-                        switch (arrayTypeProp.type)
+                        switch (arrayTypeProp.Type)
                         {
                             case PropertyType.ObjectProperty:
                             case PropertyType.StructProperty:
                             case PropertyType.ArrayProperty:
-                                p.reference = arrayTypeProp.reference;
+                                reference = arrayTypeProp.Reference;
                                 break;
                             case PropertyType.ByteProperty:
-                                if (arrayTypeProp.reference == "Class")
-                                    p.reference = arrayTypeProp.type.ToString();
+                                if (arrayTypeProp.Reference == "Class")
+                                    reference = arrayTypeProp.Type.ToString();
                                 else
-                                    p.reference = arrayTypeProp.reference;
+                                    reference = arrayTypeProp.Reference;
                                 break;
                             case PropertyType.IntProperty:
                             case PropertyType.FloatProperty:
@@ -907,32 +882,27 @@ namespace ME3Explorer.Unreal
                             case PropertyType.StrProperty:
                             case PropertyType.StringRefProperty:
                             case PropertyType.DelegateProperty:
-                                p.reference = arrayTypeProp.type.ToString();
+                                reference = arrayTypeProp.Type.ToString();
                                 break;
                             case PropertyType.None:
                             case PropertyType.Unknown:
                             default:
                                 Debugger.Break();
-                                p = null;
-                                break;
+                                return null;
                         }
                     }
                     else
                     {
-                        p = null;
+                        return null;
                     }
                     break;
                 case "InterfaceProperty":
                 default:
-                    p = null;
-                    break;
+                    return null;
             }
-            if (p != null && ((UnrealFlags.EPropertyFlags)BitConverter.ToUInt64(entry.Data, 24)).HasFlag(UnrealFlags.EPropertyFlags.Transient))
-            {
-                //Transient
-                p.transient = true;
-            }
-            return p;
+
+            bool transient = ((UnrealFlags.EPropertyFlags)BitConverter.ToUInt64(entry.Data, 24)).HasFlag(UnrealFlags.EPropertyFlags.Transient);
+            return new PropertyInfo(type, reference, transient);
         }
         #endregion
 
@@ -965,7 +935,7 @@ namespace ME3Explorer.Unreal
                         {
                             foreach ((string propName, PropertyInfo propInfo) in Enumerable.Reverse(info.properties))
                             {
-                                if (propInfo.transient || propInfo.type == PropertyType.None)
+                                if (propInfo.Transient || propInfo.Type == PropertyType.None)
                                 {
                                     continue;
                                 }
@@ -1001,7 +971,7 @@ namespace ME3Explorer.Unreal
                         {
                             foreach ((string propName, PropertyInfo propInfo) in Enumerable.Reverse(info.properties))
                             {
-                                if (propInfo.transient || propInfo.type == PropertyType.None)
+                                if (propInfo.Transient || propInfo.Type == PropertyType.None)
                                 {
                                     continue;
                                 }
@@ -1035,10 +1005,10 @@ namespace ME3Explorer.Unreal
         }
         static string CSharpTypeFromUnrealType(PropertyInfo propInfo)
         {
-            switch (propInfo.type)
+            switch (propInfo.Type)
             {
                 case PropertyType.StructProperty:
-                    return propInfo.reference;
+                    return propInfo.Reference;
                 case PropertyType.IntProperty:
                     return "int";
                 case PropertyType.FloatProperty:
@@ -1053,24 +1023,24 @@ namespace ME3Explorer.Unreal
                 case PropertyType.BioMask4Property:
                     return "byte";
                 case PropertyType.ByteProperty when propInfo.IsEnumProp():
-                    return propInfo.reference;
+                    return propInfo.Reference;
                 case PropertyType.ByteProperty:
                     return "byte";
                 case PropertyType.ArrayProperty:
                     {
                         string type;
-                        if (Enum.TryParse(propInfo.reference, out PropertyType arrayType))
+                        if (Enum.TryParse(propInfo.Reference, out PropertyType arrayType))
                         {
-                            type = CSharpTypeFromUnrealType(new PropertyInfo { type = arrayType });
+                            type = CSharpTypeFromUnrealType(new PropertyInfo(arrayType));
                         }
-                        else if (Classes.ContainsKey(propInfo.reference))
+                        else if (Classes.ContainsKey(propInfo.Reference))
                         {
                             //ObjectProperty
                             type = "int";
                         }
                         else
                         {
-                            type = propInfo.reference;
+                            type = propInfo.Reference;
                         }
 
                         return $"{type}[]";

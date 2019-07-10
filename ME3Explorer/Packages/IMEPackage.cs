@@ -28,14 +28,60 @@ namespace ME3Explorer.Packages
         Byte,
     }
 
-    [DebuggerDisplay("PropertyInfo | {type} , parent: {reference}, transient: {transient}")]
-    public class PropertyInfo
+    [DebuggerDisplay("PropertyInfo | {Type} , parent: {Reference}, transient: {Transient}")]
+    public class PropertyInfo : IEquatable<PropertyInfo>
     {
-        public Unreal.PropertyType type { get; set; }
-        public string reference;
-        public bool transient;
+        public Unreal.PropertyType Type { get; }
+        public string Reference { get; }
+        public bool Transient { get; }
 
-        public bool IsEnumProp() => type == PropertyType.ByteProperty && reference != null && reference != "Class" && reference != "Object";
+        public PropertyInfo(PropertyType type, string reference = null, bool transient = false)
+        {
+            Type = type;
+            Reference = reference;
+            Transient = transient;
+        }
+
+        public bool IsEnumProp() => Type == PropertyType.ByteProperty && Reference != null && Reference != "Class" && Reference != "Object";
+
+        #region IEquatable
+
+        public bool Equals(PropertyInfo other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Type == other.Type && string.Equals(Reference, other.Reference) && Transient == other.Transient;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == this.GetType() && Equals((PropertyInfo) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = (int) Type;
+                hashCode = (hashCode * 397) ^ (Reference != null ? Reference.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ Transient.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(PropertyInfo left, PropertyInfo right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(PropertyInfo left, PropertyInfo right)
+        {
+            return !Equals(left, right);
+        }
+
+        #endregion
     }
 
     public class ClassInfo

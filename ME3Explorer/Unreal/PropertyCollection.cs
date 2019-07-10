@@ -451,7 +451,7 @@ namespace ME3Explorer.Unreal
                     return arrayProperty;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.StructProperty:
                     long valuePos = stream.Position;
-                    PropertyCollection structProps = ReadImmutableStruct(export, stream, UnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType).reference, 0);
+                    PropertyCollection structProps = ReadImmutableStruct(export, stream, UnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType).Reference, 0);
                     var structProp = new StructProperty(nestedStructType ?? structType, structProps, template.Name, true)
                     {
                         StartOffset = startPos,
@@ -554,7 +554,7 @@ namespace ME3Explorer.Unreal
                             propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo);
                         }
 
-                        string arrayStructType = propertyInfo?.reference;
+                        string arrayStructType = propertyInfo?.Reference;
                         if (IsInImmutable || UnrealObjectInfo.isImmutable(arrayStructType, pcc.Game))
                         {
                             int arraySize = 0;
@@ -837,7 +837,7 @@ namespace ME3Explorer.Unreal
 
             Type getUPropertyType(PropertyInfo propInfo)
             {
-                switch (propInfo.type)
+                switch (propInfo.Type)
                 {
                     case PropertyType.StructProperty:
                         return typeof(StructProperty);
@@ -861,11 +861,11 @@ namespace ME3Explorer.Unreal
                         return typeof(ByteProperty);
                     case PropertyType.ArrayProperty:
                     {
-                        if (Enum.TryParse(propInfo.reference, out PropertyType arrayType))
+                        if (Enum.TryParse(propInfo.Reference, out PropertyType arrayType))
                         {
-                            return typeof(ArrayProperty<>).MakeGenericType(getUPropertyType(new PropertyInfo {type = arrayType }));
+                            return typeof(ArrayProperty<>).MakeGenericType(getUPropertyType(new PropertyInfo(arrayType)));
                         }
-                        if (ME3UnrealObjectInfo.Classes.ContainsKey(propInfo.reference))
+                        if (ME3UnrealObjectInfo.Classes.ContainsKey(propInfo.Reference))
                         {
                             return typeof(ArrayProperty<ObjectProperty>);
                         }
@@ -904,7 +904,7 @@ namespace ME3Explorer.Unreal
                     case DelegateProperty delegateProperty:
                         return delegateProperty.unk;
                     case EnumProperty enumProperty:
-                        var enumType = Type.GetType($"Unreal.ME3Enums.{propInfo.reference}");
+                        var enumType = Type.GetType($"Unreal.ME3Enums.{propInfo.Reference}");
                         return Enum.Parse(enumType, enumProperty.Value.InstancedString);
                     case FloatProperty floatProperty:
                         return floatProperty.Value;
@@ -920,7 +920,7 @@ namespace ME3Explorer.Unreal
                         return strProperty.Value;
                     case StructProperty structProperty:
                     {
-                        Type structType = Type.GetType($"Unreal.ME3Structs.{propInfo.reference}");
+                        Type structType = Type.GetType($"Unreal.ME3Structs.{propInfo.Reference}");
                         //return structProperty.GetStruct<structType>();
                         return typeof(StructProperty).InvokeGenericMethod(nameof(structProperty.GetStruct), structType, structProperty);
                     }
@@ -956,9 +956,9 @@ namespace ME3Explorer.Unreal
                     case ArrayProperty<NameProperty> _:
                         return typeof(NameReference);
                     case ArrayProperty<EnumProperty> _:
-                        return Type.GetType($"Unreal.ME3Enums.{propInfo.reference}");
+                        return Type.GetType($"Unreal.ME3Enums.{propInfo.Reference}");
                     case ArrayProperty<StructProperty> _:
-                        return Type.GetType($"Unreal.ME3Structs.{propInfo.reference}");
+                        return Type.GetType($"Unreal.ME3Structs.{propInfo.Reference}");
                     default:
                         throw new  NotImplementedException();
                 }

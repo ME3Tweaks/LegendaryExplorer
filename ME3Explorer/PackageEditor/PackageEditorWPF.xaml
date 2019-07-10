@@ -209,6 +209,7 @@
                         <Separator/>
                         <MenuItem Header="Build All 3 Object Info" Click="BuildAllObjectInfo_Clicked"/>
                         <!--<MenuItem Header="Generate ME3 Code" Click="GenerateME3Code_Click"/>-->
+                        <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
                     </MenuItem>
                     <MenuItem Header="Generate GUID cache binary for folder" Click="GenerateGUIDCacheForFolder_Clicked"/>
                     <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>

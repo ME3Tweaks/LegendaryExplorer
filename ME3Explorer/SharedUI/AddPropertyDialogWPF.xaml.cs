@@ -142,7 +142,7 @@ namespace ME3Explorer.SharedUI
         {
             string className = (string)ClassesListView.SelectedItem;
             SelectedClassName = className;
-            var props = classList[className].properties.Where(x => !x.Value.transient && !existingProperties.Contains(x.Key)).OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
+            var props = classList[className].properties.Where(x => !x.Value.Transient && !existingProperties.Contains(x.Key)).OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
             //props.Sort();
             PropertiesListView.ItemsSource = props;
         }

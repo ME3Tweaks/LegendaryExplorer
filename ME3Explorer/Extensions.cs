@@ -300,6 +300,11 @@ namespace ME3Explorer
             return en.Select(t => (obj: t, key: evaluate(t)))
                 .Aggregate((max, next) => next.key.CompareTo(max.key) < 0 ? next : max).obj;
         }
+
+        public static bool SubsetOf<T>(this IList<T> src, IList<T> compare)
+        {
+            return src.All(compare.Contains);
+        }
     }
 
     public static class DictionaryExtensions

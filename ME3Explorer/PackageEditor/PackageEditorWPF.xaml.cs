@@ -30,6 +30,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using ME2Explorer.Unreal;
 using ME3Explorer.CurveEd;
 using static ME3Explorer.Packages.MEPackage;
 using static ME3Explorer.Unreal.UnrealFlags;
@@ -4260,6 +4261,45 @@ namespace ME3Explorer
         {
             Properties.Settings.Default.InterpreterWPF_LimitArrayPropertySize = !Properties.Settings.Default.InterpreterWPF_LimitArrayPropertySize;
             Properties.Settings.Default.Save();
+        }
+
+        private void GenerateObjectInfoDiff_Click(object sender, RoutedEventArgs e)
+        {
+            var srcEnums = ME2UnrealObjectInfo.Enums;
+            var compareEnums = ME3UnrealObjectInfo.Enums;
+            var srcStructs = ME2UnrealObjectInfo.Structs;
+            var compareStructs = ME3UnrealObjectInfo.Structs;
+            var srcClasses = ME2UnrealObjectInfo.Classes;
+            var compareClasses = ME3UnrealObjectInfo.Classes;
+
+            var enumsDiff = new Dictionary<string, (List<NameReference>, List<NameReference>)>();
+            foreach ((string enumName, List<NameReference> values) in srcEnums)
+            {
+                if (!compareEnums.TryGetValue(enumName, out var values2) || !values.SubsetOf(values2))
+                {
+                    enumsDiff.Add(enumName, (values, values2));
+                }
+            }
+
+            var structsDiff = new Dictionary<string, (ClassInfo, ClassInfo)>();
+            foreach ((string className, ClassInfo classInfo) in srcStructs)
+            {
+                if (!compareStructs.TryGetValue(className, out var classInfo2) || !classInfo.properties.SubsetOf(classInfo2.properties) || classInfo.baseClass != classInfo2.baseClass)
+                {
+                    structsDiff.Add(className, (classInfo, classInfo2));
+                }
+            }
+
+            var classesDiff = new Dictionary<string, (ClassInfo, ClassInfo)>();
+            foreach ((string className, ClassInfo classInfo) in srcClasses)
+            {
+                if (!compareClasses.TryGetValue(className, out var classInfo2) || !classInfo.properties.SubsetOf(classInfo2.properties) || classInfo.baseClass != classInfo2.baseClass)
+                {
+                    classesDiff.Add(className, (classInfo, classInfo2));
+                }
+            }
+
+            File.WriteAllText(Path.Combine(App.ExecFolder, "Diff.json"), JsonConvert.SerializeObject(new {enumsDiff, structsDiff, classesDiff}, Formatting.Indented));
         }
     }
 }
