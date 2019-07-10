@@ -312,82 +312,74 @@ namespace ME3Explorer
             var subnodes = new List<object>();
             try
             {
-                //int levelIdx = BitConverter.ToInt32(data, binarystart);
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
 
-                //string name = "Persistent Level: " + CurrentLoadedExport.FileRef.GetEntryString(levelIdx);
-                //subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                //{
-                //    Header = $"0x{binarystart:X5} : {name}",
-                //    Name = "_" + binarystart,
-                //    Tag = NodeType.StructLeafObject
-                //});
+                int polysCount = bin.ReadInt32();
+                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Count: {polysCount}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Max: {bin.ReadInt32()}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Owner (self): {entryRefString(bin)}"));
+                if (polysCount > 0)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Elements ({polysCount})")
+                    {
+                        Items = ReadList(polysCount, i => new BinInterpTreeItem(bin.Position, $"{i}")
+                        {
+                            Items = new List<object>
+                            {
+                                new BinInterpTreeItem(bin.Position, $"Base: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                new BinInterpTreeItem(bin.Position, $"Normal: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                new BinInterpTreeItem(bin.Position, $"TextureU: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                new BinInterpTreeItem(bin.Position, $"TextureV: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                new BinInterpTreeItem(bin.Position, $"Vertices ({bin.ReadInt32()})")
+                                {
+                                    Items = ReadList(bin.Skip(-4).ReadInt32(), j =>
+                                                         new BinInterpTreeItem(bin.Position, $"{j}: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"))
+                                },
+                                new BinInterpTreeItem(bin.Position, $"PolyFlags: {bin.ReadInt32()}"),
+                                new BinInterpTreeItem(bin.Position, $"Actor: {entryRefString(bin)}"),
+                                new BinInterpTreeItem(bin.Position, $"ItemName: {bin.ReadNameReference(Pcc)}"),
+                                new BinInterpTreeItem(bin.Position, $"Material: {entryRefString(bin)}"),
+                                new BinInterpTreeItem(bin.Position, $"iLink: {bin.ReadInt32()}"),
+                                new BinInterpTreeItem(bin.Position, $"iBrushPoly: {bin.ReadInt32()}"),
+                                new BinInterpTreeItem(bin.Position, $"ShadowMapScale: {bin.ReadSingle()}"),
+                                new BinInterpTreeItem(bin.Position, $"LightingChannels: {bin.ReadInt32()}"),
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"LightmassSettings: {bin.ReadInt32()}")
+                                {
+                                    Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpTreeItem(bin.Position, $"{j}")
+                                    {
+                                        Items = new List<object>
+                                        {
+                                            new BinInterpTreeItem(bin.Position, $"bUseTwoSidedLighting: {bin.ReadBoolInt()}"),
+                                            new BinInterpTreeItem(bin.Position, $"bShadowIndirectOnly: {bin.ReadBoolInt()}"),
+                                            new BinInterpTreeItem(bin.Position, $"FullyOccludedSamplesFraction: {bin.ReadSingle()}"),
+                                            new BinInterpTreeItem(bin.Position, $"bUseEmissiveForStaticLighting: {bin.ReadBoolInt()}"),
+                                            new BinInterpTreeItem(bin.Position, $"EmissiveLightFalloffExponent: {bin.ReadSingle()}"),
+                                            new BinInterpTreeItem(bin.Position, $"EmissiveLightExplicitInfluenceRadius: {bin.ReadSingle()}"),
+                                            new BinInterpTreeItem(bin.Position, $"EmissiveBoost: {bin.ReadSingle()}"),
+                                            new BinInterpTreeItem(bin.Position, $"DiffuseBoost: {bin.ReadSingle()}"),
+                                            new BinInterpTreeItem(bin.Position, $"SpecularBoost: {bin.ReadSingle()}")
+                                        }
+                                    })
+                                } : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"RulesetVariation: {bin.ReadNameReference(Pcc)}") : null,
+                            }.NonNull().ToList()
+                        })
+                    });
+                }
 
-                //binarystart += 8;
 
-                //for (int i = 0; i < 3; i++)
-                //{
-                //    var count = BitConverter.ToSingle(data, binarystart);
-                //    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                //    {
-                //        Header = $"0x{binarystart:X5}: [{i}] {count}",
-                //        Name = "_" + binarystart,
-                //        Tag = NodeType.StructLeafFloat
-                //    });
-                //    binarystart += 4;
-
-                //    count = BitConverter.ToSingle(data, binarystart);
-                //    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                //    {
-                //        Header = $"0x{binarystart:X5}: [{i}] {count}",
-                //        Name = "_" + binarystart,
-                //        Tag = NodeType.StructLeafFloat
-                //    });
-                //    binarystart += 4;
-
-                //    count = BitConverter.ToSingle(data, binarystart);
-                //    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                //    {
-                //        Header = $"0x{binarystart:X5}: [{i}] {count}",
-                //        Name = "_" + binarystart,
-                //        Tag = NodeType.StructLeafFloat
-                //    });
-                //    binarystart += 4;
-
-                //    count = BitConverter.ToSingle(data, binarystart);
-                //    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                //    {
-                //        Header = $"0x{binarystart:X5}: Unknown[{i}] 1: {count}",
-                //        Name = "_" + binarystart,
-                //        Tag = NodeType.StructLeafFloat
-                //    });
-                //    binarystart += 4;
-
-                //    count = BitConverter.ToSingle(data, binarystart);
-                //    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                //    {
-                //        Header = $"0x{binarystart:X5}: Unknown[{i}] 2: {count}",
-                //        Name = "_" + binarystart,
-                //        Tag = NodeType.StructLeafFloat
-                //    });
-                //    binarystart += 4;
-
-                //    count = BitConverter.ToSingle(data, binarystart);
-                //    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                //    {
-                //        Header = $"0x{binarystart:X5}: Unknown[{i}] 3: {count}",
-                //        Name = "_" + binarystart,
-                //        Tag = NodeType.StructLeafFloat
-                //    });
-                //    binarystart += 4;
-                //}
+                binarystart = (int)bin.Position;
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpTreeItem() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
             }
 
             return subnodes;
         }
+
+        private string entryRefString(MemoryStream bin) { int n = bin.ReadInt32(); IEntry ent = Pcc.getEntry(n); return $"#{n} {ent?.GetInstancedFullPath ?? ""}"; }
 
         private List<object> StartModelScan(byte[] data, ref int binarystart)
         {
@@ -450,9 +442,7 @@ namespace ME3Explorer
                     })
                 });
 
-                string entryRefString() { int n = bin.ReadInt32(); IEntry ent = Pcc.getEntry(n); return $"#{n} {ent?.GetInstancedFullPath ?? ""}"; }
-
-                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Owner (self): {entryRefString()}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Owner (self): {entryRefString(bin)}"));
                 int surfsCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Surfaces ({surfsCount})")
                 {
@@ -460,14 +450,14 @@ namespace ME3Explorer
                     {
                         Items = new List<object>
                         {
-                            new BinInterpTreeItem(bin.Position, $"Material: {entryRefString()}"),
+                            new BinInterpTreeItem(bin.Position, $"Material: {entryRefString(bin)}"),
                             new BinInterpTreeItem(bin.Position, $"PolyFlags: {bin.ReadInt32()}"),
                             new BinInterpTreeItem(bin.Position, $"pBase: {bin.ReadInt32()}"),
                             new BinInterpTreeItem(bin.Position, $"vNormal: {bin.ReadInt32()}"),
                             new BinInterpTreeItem(bin.Position, $"vTextureU: {bin.ReadInt32()}"),
                             new BinInterpTreeItem(bin.Position, $"vTextureV: {bin.ReadInt32()}"),
                             new BinInterpTreeItem(bin.Position, $"iBrushPoly: {bin.ReadInt32()}"),
-                            new BinInterpTreeItem(bin.Position, $"Actor: {entryRefString()}"),
+                            new BinInterpTreeItem(bin.Position, $"Actor: {entryRefString(bin)}"),
                             new BinInterpTreeItem(bin.Position, $"Plane: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()}, W: {bin.ReadSingle()})"),
                             new BinInterpTreeItem(bin.Position, $"ShadowMapScale: {bin.ReadSingle()}"),
                             new BinInterpTreeItem(bin.Position, $"LightingChannels(Bitfield): {bin.ReadInt32()}"),
@@ -500,7 +490,7 @@ namespace ME3Explorer
                     {
                         Items = new List<object>
                         {
-                            new BinInterpTreeItem(bin.Position, $"ZoneActor: {entryRefString()}"),
+                            new BinInterpTreeItem(bin.Position, $"ZoneActor: {entryRefString(bin)}"),
                             new BinInterpTreeItem(bin.Position, $"LastRenderTime: {bin.ReadSingle()}"),
                             new BinInterpTreeItem(bin.Position, $"Connectivity: {Convert.ToString(bin.ReadInt64(), 2).PadLeft(64, '0')}"),
                             new BinInterpTreeItem(bin.Position, $"Visibility: {Convert.ToString(bin.ReadInt64(), 2).PadLeft(64, '0')}"),
@@ -508,7 +498,7 @@ namespace ME3Explorer
                     })
                 });
 
-                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Polys: {entryRefString()}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Polys: {entryRefString(bin)}"));
 
                 subnodes.Add(new BinInterpTreeItem(bin.Position, $"integer Size: {bin.ReadInt32()}"));
                 int leafHullsCount = bin.ReadInt32();

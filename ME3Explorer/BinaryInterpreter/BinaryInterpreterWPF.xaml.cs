@@ -372,7 +372,6 @@ namespace ME3Explorer
                         break;
                     case "Polys":
                         subNodes = StartPolysScan(data, ref binarystart);
-                        appendGenericScan = true;
                         break;
                     case "Level":
                         subNodes = StartLevelScan(data, ref binarystart);
