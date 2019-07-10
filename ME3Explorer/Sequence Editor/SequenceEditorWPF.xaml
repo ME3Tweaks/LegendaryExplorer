@@ -30,10 +30,10 @@
             <Separator />
             <MenuItem Header="Clone Object" Click="CloneObject_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
-                <MenuItem Header="Output Links" Name="outputLinksMenuItem"></MenuItem>
-                <MenuItem Header="Var Links" Name="varLinksMenuItem"></MenuItem>
-                <MenuItem Header="Event Links" Name="eventLinksMenuItem"></MenuItem>
-                <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Click="removeAllLinks"/>
+                <MenuItem Header="Output Links" Name="outputLinksMenuItem"/>
+                <MenuItem Header="Var Links" Name="varLinksMenuItem"/>
+                <MenuItem Header="Event Links" Name="eventLinksMenuItem"/>
+                <MenuItem Header="Break All" Name="breakAllLinksMenuItem" Click="removeAllLinks"/>
             </MenuItem>
             <MenuItem Header="Remove from sequence" Name="removeFromSequenceMenuItem" Click="RemoveFromSequence_Click"/>
         </ContextMenu>

@@ -1095,7 +1095,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> ReadList(int count, Func<int, BinInterpTreeItem> selector)
+        private static List<object> ReadList(int count, Func<int, BinInterpTreeItem> selector)
         {
             return Enumerable.Range(0, count).Select(selector).Cast<object>().ToList();
         }

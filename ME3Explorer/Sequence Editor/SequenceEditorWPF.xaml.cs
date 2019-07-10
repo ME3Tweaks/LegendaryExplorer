@@ -1068,6 +1068,13 @@ namespace ME3Explorer.Sequence_Editor
                                 outputLinksMenuItem.Items.Add(temp);
                             }
                         }
+
+                        if (outputLinksMenuItem.Items.Count > 0)
+                        {
+                            var temp = new MenuItem { Header = "Break All", Tag = obj.Export};
+                            temp.Click += removeAllOutputLinks;
+                            outputLinksMenuItem.Items.Add(temp);
+                        }
                     }
 
                     if (breakLinksMenuItem.GetChild("varLinksMenuItem") is MenuItem varLinksMenuItem)
@@ -1089,6 +1096,13 @@ namespace ME3Explorer.Sequence_Editor
                                 temp.Click += (o, args) => { sBox.RemoveVarlink(linkConnection, linkIndex); };
                                 varLinksMenuItem.Items.Add(temp);
                             }
+                        }
+
+                        if (varLinksMenuItem.Items.Count > 0)
+                        {
+                            var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
+                            temp.Click += removeAllVarLinks;
+                            varLinksMenuItem.Items.Add(temp);
                         }
                     }
                     if (breakLinksMenuItem.GetChild("eventLinksMenuItem") is MenuItem eventLinksMenuItem)
@@ -1113,6 +1127,13 @@ namespace ME3Explorer.Sequence_Editor
                                 };
                                 eventLinksMenuItem.Items.Add(temp);
                             }
+                        }
+
+                        if (eventLinksMenuItem.Items.Count > 0)
+                        {
+                            var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
+                            temp.Click += removeAllEventLinks;
+                            eventLinksMenuItem.Items.Add(temp);
                         }
                     }
                     if (breakLinksMenuItem.GetChild("breakAllLinksMenuItem") is MenuItem breakAllLinksMenuItem)
@@ -1185,6 +1206,48 @@ namespace ME3Explorer.Sequence_Editor
         {
             ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
             removeAllLinks(export);
+        }
+
+        private void removeAllOutputLinks(object sender, RoutedEventArgs args)
+        {
+            ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
+            var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outLinksProp != null)
+            {
+                foreach (var prop in outLinksProp)
+                {
+                    prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
+                }
+            }
+            export.WriteProperty(outLinksProp);
+        }
+
+        private void removeAllVarLinks(object sender, RoutedEventArgs args)
+        {
+            ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
+            var varLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+            if (varLinksProp != null)
+            {
+                foreach (var prop in varLinksProp)
+                {
+                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
+                }
+            }
+            export.WriteProperty(varLinksProp);
+        }
+
+        private void removeAllEventLinks(object sender, RoutedEventArgs args)
+        {
+            ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
+            var eventLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("EventLinks");
+            if (eventLinksProp != null)
+            {
+                foreach (var prop in eventLinksProp)
+                {
+                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Clear();
+                }
+            }
+            export.WriteProperty(eventLinksProp);
         }
 
         private static void removeAllLinks(ExportEntry export)
