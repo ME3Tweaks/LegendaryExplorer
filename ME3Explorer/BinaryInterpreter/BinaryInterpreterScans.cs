@@ -362,6 +362,14 @@ namespace ME3Explorer
                                         }
                                     })
                                 } : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
                                 Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"RulesetVariation: {bin.ReadNameReference(Pcc)}") : null,
                             }.NonNull().ToList()
                         })
