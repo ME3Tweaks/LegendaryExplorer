@@ -13,6 +13,7 @@ using MassEffect.NativesEditor.Dialogs;
 using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 
 namespace MassEffect.NativesEditor.Views
 {
@@ -21,6 +22,8 @@ namespace MassEffect.NativesEditor.Views
 	/// </summary>
 	public partial class CodexMapView : NotifyPropertyChangedControlBase
 	{
+        public static IMEPackage package;
+
 		/// <summary>
 		///   Initializes a new instance of the <see cref="CodexMapView" /> class.
 		/// </summary>
@@ -214,6 +217,7 @@ namespace MassEffect.NativesEditor.Views
             CodexPages.Remove(SelectedCodexPage);
 
             AddCodexPage(dlg.ObjectId, codexSection);
+
         }
 
         public void ChangeCodexSectionId()
@@ -317,6 +321,9 @@ namespace MassEffect.NativesEditor.Views
                 CodexPages = InitCollection(codexMap.Pages.OrderBy(pair => pair.Key));
                 CodexSections = InitCollection(codexMap.Sections.OrderBy(pair => pair.Key));
             }
+
+            package = pcc;
+
         }
 
         public void RemoveCodexPage()
@@ -488,6 +495,17 @@ namespace MassEffect.NativesEditor.Views
         private void AddCodexPage_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             AddCodexPage();
+        }
+
+        private void txt_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
+        {
+            if(package != null)
+            {
+                txt_cdxPgeDesc.Text = GlobalFindStrRefbyID(SelectedCodexPage.Value.Description, package);
+                txt_cdxPgeTitle.Text = GlobalFindStrRefbyID(SelectedCodexPage.Value.Title, package);
+                txt_cdxSecDesc.Text = GlobalFindStrRefbyID(SelectedCodexSection.Value.Description, package);
+                txt_cdxSecTitle.Text = GlobalFindStrRefbyID(SelectedCodexSection.Value.Title, package);
+            }
         }
     }
 }

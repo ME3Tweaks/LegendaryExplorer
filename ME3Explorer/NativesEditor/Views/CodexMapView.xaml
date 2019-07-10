@@ -83,16 +83,17 @@
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
 							<!--<RowDefinition Height="Auto" />-->
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="28" />
+                            <RowDefinition Height="28" />
+                            <RowDefinition Height="28" />
+                            <RowDefinition Height="28" />
+                            <RowDefinition Height="28" />
+                            <RowDefinition Height="28" />
+                            <RowDefinition Height="28" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
@@ -112,9 +113,10 @@
                         <!-- Description -->
 						<Label Content="Description:" Grid.Column="0" Grid.Row="2" />
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
-							Text="{Binding Path=SelectedCodexPage.Value.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" />
-
-						<!-- Priority -->
+							Text="{Binding Path=SelectedCodexPage.Value.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" ValueChanged="txt_ValueChanged"/>
+                        <TextBlock Name="txt_cdxPgeDesc" Grid.Column="2" Grid.Row="2" Text="Description String"  Grid.RowSpan="5" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                        
+                        <!-- Priority -->
 						<Label Content="Priority:" Grid.Column="0" Grid.Row="4" />
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="4"
 							Text="{Binding Path=SelectedCodexPage.Value.Priority, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" />
@@ -132,9 +134,10 @@
 						<!-- Title -->
 						<Label Content="Title:" Grid.Column="0" Grid.Row="1" />
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-							Text="{Binding Path=SelectedCodexPage.Value.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" />
+							Text="{Binding Path=SelectedCodexPage.Value.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" ValueChanged="txt_ValueChanged"/>
+                        <TextBlock Name="txt_cdxPgeTitle" Grid.Column="2" Grid.Row="1"  Text="Title String" VerticalAlignment="Center"/>
 
-						<!-- Instance Version -->
+                        <!-- Instance Version -->
 						<Label Content="Instance Version:" Grid.Column="0" Grid.Row="0" />
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
 							Text="{Binding Path=SelectedCodexPage.Value.InstanceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" />
@@ -195,7 +198,8 @@
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
@@ -219,7 +223,8 @@
                         <!-- Description -->
 						<Label Content="Description:" Grid.Column="0" Grid.Row="2" />
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
-							Text="{Binding Path=SelectedCodexSection.Value.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" />
+							Text="{Binding Path=SelectedCodexSection.Value.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" ValueChanged="txt_ValueChanged"/>
+                        <TextBlock Name="txt_cdxSecDesc" Grid.Column="2" Grid.Row="1"  Text="Title String" Padding="3" VerticalAlignment="Top"/>
 
 						<!-- Is Primary -->
 						<Label Content="Is Primary:" Grid.Column="0" Grid.Row="5" />
@@ -239,7 +244,8 @@
 						<!-- Title -->
 						<Label Content="Title:" Grid.Column="0" Grid.Row="1" />
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-							Text="{Binding Path=SelectedCodexSection.Value.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" />
+							Text="{Binding Path=SelectedCodexSection.Value.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" ValueChanged="txt_ValueChanged"/>
+                        <TextBlock Name="txt_cdxSecTitle" Grid.Column="2" Grid.Row="1"  Text="Title String" Padding="3" VerticalAlignment="Center"/>
 
 						<!-- Instance Version -->
 						<Label Content="Instance Version:" Grid.Column="0" Grid.Row="0" />

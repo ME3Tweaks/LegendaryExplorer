@@ -151,7 +151,8 @@
 									<Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="Auto" />
-											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
 										</Grid.ColumnDefinitions>
 										<Grid.RowDefinitions>
 											<RowDefinition Height="Auto" />
@@ -170,22 +171,26 @@
 											Width="100" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 										<!-- Quest Goal Description -->
-										<Label Grid.Column="0" Grid.Row="1" Content="Description"
-											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
-
-										<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-											Text="{Binding Path=SelectedQuestGoal.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-											Width="100" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
-
-										<!-- Quest Goal Name -->
-										<Label Grid.Column="0" Grid.Row="2" Content="Name"
+										<Label Grid.Column="0" Grid.Row="2" Content="Description"
 											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
 										<xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
-											Text="{Binding Path=SelectedQuestGoal.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-											Width="100" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
+											Text="{Binding Path=SelectedQuestGoal.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+											Width="100" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" ValueChanged="txt_ValueChanged"/>
+                                        <TextBlock Name="txt_goalDesc" Grid.Column="2" Grid.Row="2" Text="Description String"  Grid.RowSpan="5" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top"/>
 
-										<!-- Quest Goal State -->
+										<!-- Quest Goal Name -->
+										<Label Grid.Column="0" Grid.Row="1" Content="Name"
+											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+										<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
+											Text="{Binding Path=SelectedQuestGoal.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+											Width="100" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" ValueChanged="txt_ValueChanged"/>
+                                        <TextBlock Name="txt_goalName" Grid.Column="2" Grid.Row="1" Text="Name String" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center"/>
+
+
+
+                                        <!-- Quest Goal State -->
 										<Label Grid.Column="0" Grid.Row="3" Content="State"
 											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
@@ -366,7 +371,8 @@
 									<Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="Auto" />
-											<ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
 										</Grid.ColumnDefinitions>
 										<Grid.RowDefinitions>
 											<RowDefinition Height="Auto" />
@@ -392,7 +398,8 @@
 
 										<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
 											Text="{Binding Path=SelectedQuestTask.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-											Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
+											Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" ValueChanged="txt_ValueChanged"/>
+                                        <TextBlock Name="txt_taskName" Grid.Column="2" Grid.Row="1" Text="Name String" TextAlignment="Left" VerticalAlignment="Center"/>
 
 										<!-- Task Planet Name -->
 										<Label Grid.Column="0" Grid.Row="2" Content="Planet Name"
