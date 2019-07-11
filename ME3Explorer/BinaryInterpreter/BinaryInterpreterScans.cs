@@ -344,32 +344,15 @@ namespace ME3Explorer
                                 new BinInterpTreeItem(bin.Position, $"iBrushPoly: {bin.ReadInt32()}"),
                                 new BinInterpTreeItem(bin.Position, $"ShadowMapScale: {bin.ReadSingle()}"),
                                 new BinInterpTreeItem(bin.Position, $"LightingChannels: {bin.ReadInt32()}"),
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"LightmassSettings: {bin.ReadInt32()}")
-                                {
-                                    Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpTreeItem(bin.Position, $"{j}")
-                                    {
-                                        Items = new List<object>
-                                        {
-                                            new BinInterpTreeItem(bin.Position, $"bUseTwoSidedLighting: {bin.ReadBoolInt()}"),
-                                            new BinInterpTreeItem(bin.Position, $"bShadowIndirectOnly: {bin.ReadBoolInt()}"),
-                                            new BinInterpTreeItem(bin.Position, $"FullyOccludedSamplesFraction: {bin.ReadSingle()}"),
-                                            new BinInterpTreeItem(bin.Position, $"bUseEmissiveForStaticLighting: {bin.ReadBoolInt()}"),
-                                            new BinInterpTreeItem(bin.Position, $"EmissiveLightFalloffExponent: {bin.ReadSingle()}"),
-                                            new BinInterpTreeItem(bin.Position, $"EmissiveLightExplicitInfluenceRadius: {bin.ReadSingle()}"),
-                                            new BinInterpTreeItem(bin.Position, $"EmissiveBoost: {bin.ReadSingle()}"),
-                                            new BinInterpTreeItem(bin.Position, $"DiffuseBoost: {bin.ReadSingle()}"),
-                                            new BinInterpTreeItem(bin.Position, $"SpecularBoost: {bin.ReadSingle()}")
-                                        }
-                                    })
-                                } : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"bUseTwoSidedLighting: {bin.ReadBoolInt()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"bShadowIndirectOnly: {bin.ReadBoolInt()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"FullyOccludedSamplesFraction: {bin.ReadSingle()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"bUseEmissiveForStaticLighting: {bin.ReadBoolInt()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"EmissiveLightFalloffExponent: {bin.ReadSingle()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"EmissiveLightExplicitInfluenceRadius: {bin.ReadSingle()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"EmissiveBoost: {bin.ReadSingle()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"DiffuseBoost: {bin.ReadSingle()}") : null,
+                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"SpecularBoost: {bin.ReadSingle()}") : null,
                                 Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"RulesetVariation: {bin.ReadNameReference(Pcc)}") : null,
                             }.NonNull().ToList()
                         })
@@ -474,7 +457,8 @@ namespace ME3Explorer
                     })
                 });
 
-                subnodes.Add(new BinInterpTreeItem(bin.Position, $"FVert Size: {bin.ReadInt32()}"));
+                int fVertSize = bin.ReadInt32();
+                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"FVert Size: {fVertSize}"));
                 int vertsCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Verts ({vertsCount})")
                 {
@@ -485,8 +469,8 @@ namespace ME3Explorer
                             new BinInterpTreeItem(bin.Position, $"pVertex: {bin.ReadInt32()}"),
                             new BinInterpTreeItem(bin.Position, $"iSide: {bin.ReadInt32()}"),
                             new BinInterpTreeItem(bin.Position, $"ShadowTexCoord: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})"),
-                            new BinInterpTreeItem(bin.Position, $"BackfaceShadowTexCoord: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})")
-                        }
+                            fVertSize == 24 ? new BinInterpTreeItem(bin.Position, $"BackfaceShadowTexCoord: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})") : null
+                        }.NonNull().ToList()
                     })
                 });
 
