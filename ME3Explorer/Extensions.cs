@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using StreamHelpers;
@@ -839,6 +840,42 @@ namespace ME3Explorer
         public static object InvokeGenericMethod(this Type type, string methodName, Type genericType, object invokeOn, params object[] parameters)
         {
             return type.GetMethod(methodName).MakeGenericMethod(genericType).Invoke(invokeOn, parameters);
+        }
+    }
+
+    /// <summary>
+    /// For use with List initializers
+    /// Example:
+    /// var intList = new List&lt;int&gt;
+    /// {
+    ///     1,
+    ///     2,
+    ///     3,
+    ///     InitializerHelper.ConditionalAdd(shouldAdd465, () =&gt; new[]
+    ///     {
+    ///         4,
+    ///         5,
+    ///         6
+    ///     }),
+    ///     7,
+    ///     8
+    /// }
+    ///
+    /// intList would only contain 4,5, and 6 if shouldAdd456 was true 
+    /// </summary>
+    public static class InitializerHelper
+    {
+        public class InitializerCollection<T> : List<T>
+        {
+
+            public InitializerCollection(IEnumerable<T> collection) : base(collection) { }
+        }
+
+        public static InitializerCollection<T> ConditionalAdd<T>(bool condition, Func<IEnumerable<T>> elems) => condition ? new InitializerCollection<T>(elems()) : null;
+
+        public static void Add<T>(this List<T> list, InitializerCollection<T> range)
+        {
+            if(range != null) list.AddRange(range);
         }
     }
 }

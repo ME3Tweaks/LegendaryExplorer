@@ -1986,8 +1986,8 @@ namespace ME3Explorer.Sequence_Editor
                 sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
                 sAction.Export.GetProperty<IntProperty>("m_nIndex")?.Value is int m_nIndex)
             {
-                var plotFiles = ME3LoadedFiles.GetEnabledDLC().OrderByDescending(ME3LoadedFiles.GetMountPriority)
-                                              .Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{ME3LoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
+                var plotFiles = MELoadedFiles.GetEnabledDLC(MEGame.ME3).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, MEGame.ME3))
+                                              .Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
                                               .Append(Path.Combine(ME3Directory.cookedPath, "SFXGameInfoSP_SF.pcc"))
                                               .Where(File.Exists);
                 string filePath = null;

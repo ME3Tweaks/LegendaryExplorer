@@ -291,7 +291,7 @@ namespace ME3Explorer.Packages
                 export.setBinaryData(binData);
             }
             //update offsets for pcc-stored movies in texturemovies
-            if (export.ClassName == "TextureMovie" && export.GetProperty<NameProperty>("TextureFileCacheName") == null)
+            else if (export.ClassName == "TextureMovie" && export.GetProperty<NameProperty>("TextureFileCacheName") == null)
             {
                 byte[] binData = export.getBinaryData();
                 binData.OverwriteRange(12, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 16));
@@ -367,6 +367,60 @@ namespace ME3Explorer.Packages
                 }
 
                 export.Data = binData.ToArray();
+            }
+            else if (export.ClassName == "StaticMeshComponent")
+            {
+                int baseOffset = newDataOffset + export.propsEnd();
+                MemoryStream bin = new MemoryStream(export.Data);
+                bin.JumpTo(export.propsEnd());
+
+                int lodDataCount = bin.ReadInt32();
+                for (int i = 0; i < lodDataCount; i++)
+                {
+                    int shadowMapCount = bin.ReadInt32();
+                    bin.Skip(shadowMapCount * 4);
+                    int shadowVertCount = bin.ReadInt32();
+                    bin.Skip(shadowVertCount * 4);
+                    int lightMapType = bin.ReadInt32();
+                    if (lightMapType == 0) continue;
+                    int lightGUIDsCount = bin.ReadInt32();
+                    bin.Skip(lightGUIDsCount * 16);
+                    int bulkDataSize;
+                    switch (lightMapType)
+                    {
+                        case 1:
+                            bin.Skip(4 + 8);
+                            bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            bin.Skip(12 * 3 + 8);
+                            bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            break;
+                        case 2:
+                            bin.Skip((16) * 3 + 16);
+                            break;
+                        case 3:
+                            bin.Skip(8);
+                            bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            bin.Skip(24);
+                            break;
+                        case 4:
+                        case 6:
+                            bin.Skip(124);
+                            break;
+                        case 5:
+                            bin.Skip(4 + 8);
+                            bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            bin.Skip(12);
+                            break;
+                    }
+                }
             }
         }
     }

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 using Gammtek.Conduit.Extensions.IO;
 using Gibbed.IO;
 using ME3Explorer.Packages;
@@ -18,9 +19,9 @@ namespace ME3Explorer
 {
     public partial class BinaryInterpreterWPF
     {
-        private List<object> StartShaderCacheScanStream(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartShaderCacheScanStream(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int dataOffset = CurrentLoadedExport.DataOffset;
@@ -97,7 +98,7 @@ namespace ME3Explorer
                 subnodes.Add(materialShaderMaps);
                 for (int i = 0; i < materialShaderMapcount; i++)
                 {
-                    var nodes = new List<object>();
+                    var nodes = new List<ITreeItem>();
                     materialShaderMaps.Items.Add(new BinInterpTreeItem(bin.Position, $"Material Shader Map {i}") { Items = nodes });
                     nodes.AddRange(ReadFStaticParameterSetStream(bin));
 
@@ -111,7 +112,7 @@ namespace ME3Explorer
                     nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Material Shader Map end offset {shaderMapEndOffset}") { Length = 4 });
 
                     int unkCount = bin.ReadInt32();
-                    var unkNodes = new List<object>();
+                    var unkNodes = new List<ITreeItem>();
                     nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown Count {unkCount}") { Length = 4, Items = unkNodes });
                     for (int j = 0; j < unkCount; j++)
                     {
@@ -125,7 +126,7 @@ namespace ME3Explorer
                     nodes.Add(meshShaderMaps);
                     for (int j = 0; j < meshShaderMapsCount; j++)
                     {
-                        var nodes2 = new List<object>();
+                        var nodes2 = new List<ITreeItem>();
                         meshShaderMaps.Items.Add(new BinInterpTreeItem(bin.Position, $"Mesh Shader Map {j}") { Items = nodes2 });
 
                         int shaderCount = bin.ReadInt32();
@@ -133,7 +134,7 @@ namespace ME3Explorer
                         nodes2.Add(shaders);
                         for (int k = 0; k < shaderCount; k++)
                         {
-                            var nodes3 = new List<object>();
+                            var nodes3 = new List<ITreeItem>();
                             shaders.Items.Add(new BinInterpTreeItem(bin.Position, $"Shader {k}") { Items = nodes3 });
 
                             nodes3.Add(new BinInterpTreeItem(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
@@ -175,7 +176,7 @@ namespace ME3Explorer
                             int expressionCount = bin.ReadInt32();
                             nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"{uniformExpressionArrayName}, {expressionCount} expressions")
                             {
-                                Items = Enumerable.Range(0, expressionCount).Select(x => ReadMaterialUniformExpression(bin)).Cast<object>().ToList()
+                                Items = ReadList(expressionCount, x => ReadMaterialUniformExpression(bin))
                             });
                         }
                         nodes.Add(new BinInterpTreeItem(bin.Position, $"Platform: {(EShaderPlatform)bin.ReadInt32()}") { Length = 4 });
@@ -307,9 +308,200 @@ namespace ME3Explorer
             return node;
         }
 
-        private List<object> StartPolysScan(byte[] data, ref int binarystart)
+        enum ELightMapType
         {
-            var subnodes = new List<object>();
+            LMT_None,
+            LMT_1D,
+            LMT_2D,
+            LMT_3, //speculative name. No idea what the ones after LMT_2D are actually called 
+            LMT_4,
+            LMT_5,
+            LMT_6
+        }
+
+        private List<ITreeItem> StartStaticMeshComponentScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+
+                ELightMapType lightMapType;
+                bool bLoadVertexColorData;
+                uint numVertices;
+                int bulkSerializeElementCount;
+                int bulkSerializeDataSize;
+
+                int lodDataCount = bin.ReadInt32();
+                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"LODData count: {lodDataCount}"));
+                subnodes.AddRange(ReadList(lodDataCount, i => new BinInterpTreeItem(bin.Position, $"LODData {i}")
+                {
+                    Items =
+                    {
+                        new BinInterpTreeItem(bin.Position, $"ShadowMaps ({bin.ReadInt32()})")
+                        {
+                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpTreeItem(bin.Position, $"{j}: {entryRefString(bin)}"))
+                        },
+                        new BinInterpTreeItem(bin.Position, $"ShadowVertexBuffers ({bin.ReadInt32()})")
+                        {
+                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpTreeItem(bin.Position, $"{j}: {entryRefString(bin)}"))
+                        },
+                        new BinInterpTreeItem(bin.Position, "LightMap ")
+                        {
+                            Items =
+                            {
+                                new BinInterpTreeItem(bin.Position, $"LightMapType: {lightMapType = (ELightMapType)bin.ReadInt32()}"),
+                                InitializerHelper.ConditionalAdd(lightMapType != ELightMapType.LMT_None, () => new List<ITreeItem>
+                                {
+                                    new BinInterpTreeItem(bin.Position, $"LightGuids ({bin.ReadInt32()})")
+                                    {
+                                        Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpTreeItem(bin.Position, $"{j}: {bin.ReadGuid()}"))
+                                    },
+                                    InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_1D, () => new ITreeItem[]
+                                    {
+                                        new BinInterpTreeItem(bin.Position, $"Owner: {entryRefString(bin)}"),
+                                        new BinInterpTreeItem(bin.Position, $"BulkDataFlags: {bin.ReadUInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"BulkDataOffsetInFile: {bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"DirectionalSamples: ({bulkSerializeElementCount})")
+                                        {
+                                            Items = ReadList(bulkSerializeElementCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
+                                            {
+                                                Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpTreeItem(bin.Position,
+                                                                                            $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
+                                            })
+                                        },
+                                        new BinInterpTreeItem(bin.Position, $"ScaleVector 1: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                        new BinInterpTreeItem(bin.Position, $"ScaleVector 2: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                        new BinInterpTreeItem(bin.Position, $"ScaleVector 3: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                        Pcc.Game != MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"ScaleVector 4: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})") : null,
+                                        new BinInterpTreeItem(bin.Position, $"BulkDataFlags: {bin.ReadUInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"BulkDataOffsetInFile: {bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"SimpleSamples: ({bulkSerializeElementCount})")
+                                        {
+                                            Items = ReadList(bulkSerializeElementCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
+                                            {
+                                                Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpTreeItem(bin.Position,
+                                                                                           $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
+                                            })
+                                        },
+                                    }.NonNull()),
+                                    InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_2D, () => new List<ITreeItem>
+                                    {
+                                        new BinInterpTreeItem(bin.Position, $"Texture 1: {entryRefString(bin)}"),
+                                        new BinInterpTreeItem(bin.Position, $"ScaleVector 1: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                        new BinInterpTreeItem(bin.Position, $"Texture 2 {entryRefString(bin)}"),
+                                        new BinInterpTreeItem(bin.Position, $"ScaleVector 2: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                        new BinInterpTreeItem(bin.Position, $"Texture 3 {entryRefString(bin)}"),
+                                        new BinInterpTreeItem(bin.Position, $"ScaleVector 3: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                        InitializerHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
+                                        {
+                                            new BinInterpTreeItem(bin.Position, $"Texture 4 {entryRefString(bin)}"),
+                                            new BinInterpTreeItem(bin.Position, $"ScaleVector 4: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                        }),
+                                        new BinInterpTreeItem(bin.Position, $"CoordinateScale: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})"),
+                                        new BinInterpTreeItem(bin.Position, $"CoordinateBias: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})")
+                                    }),
+                                    InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_3, () => new ITreeItem[]
+                                    {
+                                        new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"BulkDataFlags: {bin.ReadUInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"BulkDataOffsetInFile: {bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"DirectionalSamples?: ({bulkSerializeElementCount})")
+                                        {
+                                            Items = ReadList(bulkSerializeElementCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
+                                            {
+                                                Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpTreeItem(bin.Position,
+                                                                                           $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
+                                            })
+                                        },
+                                        new BinInterpTreeItem(bin.Position, $"ScaleVector?: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                        new BinInterpTreeItem(bin.Position, $"ScaleVector?: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})")
+                                    }),
+                                    InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_4 || lightMapType == ELightMapType.LMT_6, () => new List<ITreeItem>
+                                    {
+                                        new BinInterpTreeItem(bin.Position, $"Texture 1: {entryRefString(bin)}"),
+                                        new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(8, j => new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}"))),
+                                        new BinInterpTreeItem(bin.Position, $"Texture 2: {entryRefString(bin)}"),
+                                        new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(8, j => new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}"))),
+                                        new BinInterpTreeItem(bin.Position, $"Texture 3: {entryRefString(bin)}"),
+                                        new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(8, j => new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}"))),
+                                        new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(4, j => new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}"))),
+                                    }),
+                                    InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_5, () => new ITreeItem[]
+                                    {
+                                        new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"BulkDataFlags: {bin.ReadUInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"BulkDataOffsetInFile: {bin.ReadInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"SimpleSamples?: ({bulkSerializeElementCount})")
+                                        {
+                                            Items = ReadList(bulkSerializeElementCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
+                                            {
+                                                Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpTreeItem(bin.Position,
+                                                                                           $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
+                                            })
+                                        },
+                                        new BinInterpTreeItem(bin.Position, $"ScaleVector?: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})")
+                                    }),
+                                })
+                            }
+                        },
+                        InitializerHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new List<ITreeItem>
+                        {
+                            new BinInterpTreeItem(bin.Position, $"bLoadVertexColorData ({bLoadVertexColorData = bin.ReadBoolByte()})"),
+                            InitializerHelper.ConditionalAdd(bLoadVertexColorData, () => new ITreeItem[]
+                            {
+                                new BinInterpTreeItem(bin.Position, "OverrideVertexColors ")
+                                {
+                                    Items =
+                                    {
+                                        new BinInterpTreeItem(bin.Position, $"Stride: {bin.ReadUInt32()}"),
+                                        new BinInterpTreeItem(bin.Position, $"NumVertices: {numVertices = bin.ReadUInt32()}"),
+                                        InitializerHelper.ConditionalAdd(numVertices > 0, () => new ITreeItem[]
+                                        {
+                                            new BinInterpTreeItem(bin.Position, $"FColor size: {bin.ReadInt32()}"),
+                                            new BinInterpTreeItem(bin.Position, $"VertexData ({bin.ReadInt32()})")
+                                            {
+                                                Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpTreeItem(bin.Position, $"{j}")
+                                                {
+                                                    Items =
+                                                    {
+                                                        new BinInterpTreeItem(bin.Position, $"B: {bin.ReadByte()}"),
+                                                        new BinInterpTreeItem(bin.Position, $"G: {bin.ReadByte()}"),
+                                                        new BinInterpTreeItem(bin.Position, $"R: {bin.ReadByte()}"),
+                                                        new BinInterpTreeItem(bin.Position, $"A: {bin.ReadByte()}"),
+                                                    }
+                                                })
+                                            },
+                                        }),
+                                    }
+                                }
+                            })
+                        })
+                    }
+                }));
+
+                binarystart = (int)bin.Position;
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
+        private List<ITreeItem> StartPolysScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
             try
             {
                 var bin = new MemoryStream(data);
@@ -325,7 +517,7 @@ namespace ME3Explorer
                     {
                         Items = ReadList(polysCount, i => new BinInterpTreeItem(bin.Position, $"{i}")
                         {
-                            Items = new List<object>
+                            Items = new List<ITreeItem>
                             {
                                 new BinInterpTreeItem(bin.Position, $"Base: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
                                 new BinInterpTreeItem(bin.Position, $"Normal: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
@@ -344,17 +536,20 @@ namespace ME3Explorer
                                 new BinInterpTreeItem(bin.Position, $"iBrushPoly: {bin.ReadInt32()}"),
                                 new BinInterpTreeItem(bin.Position, $"ShadowMapScale: {bin.ReadSingle()}"),
                                 new BinInterpTreeItem(bin.Position, $"LightingChannels: {bin.ReadInt32()}"),
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"bUseTwoSidedLighting: {bin.ReadBoolInt()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"bShadowIndirectOnly: {bin.ReadBoolInt()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"FullyOccludedSamplesFraction: {bin.ReadSingle()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"bUseEmissiveForStaticLighting: {bin.ReadBoolInt()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"EmissiveLightFalloffExponent: {bin.ReadSingle()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"EmissiveLightExplicitInfluenceRadius: {bin.ReadSingle()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"EmissiveBoost: {bin.ReadSingle()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"DiffuseBoost: {bin.ReadSingle()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"SpecularBoost: {bin.ReadSingle()}") : null,
-                                Pcc.Game == MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"RulesetVariation: {bin.ReadNameReference(Pcc)}") : null,
-                            }.NonNull().ToList()
+                                InitializerHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                                {
+                                    new BinInterpTreeItem(bin.Position, $"bUseTwoSidedLighting: {bin.ReadBoolInt()}"),
+                                    new BinInterpTreeItem(bin.Position, $"bShadowIndirectOnly: {bin.ReadBoolInt()}"),
+                                    new BinInterpTreeItem(bin.Position, $"FullyOccludedSamplesFraction: {bin.ReadSingle()}"),
+                                    new BinInterpTreeItem(bin.Position, $"bUseEmissiveForStaticLighting: {bin.ReadBoolInt()}"),
+                                    new BinInterpTreeItem(bin.Position, $"EmissiveLightFalloffExponent: {bin.ReadSingle()}"),
+                                    new BinInterpTreeItem(bin.Position, $"EmissiveLightExplicitInfluenceRadius: {bin.ReadSingle()}"),
+                                    new BinInterpTreeItem(bin.Position, $"EmissiveBoost: {bin.ReadSingle()}"),
+                                    new BinInterpTreeItem(bin.Position, $"DiffuseBoost: {bin.ReadSingle()}"),
+                                    new BinInterpTreeItem(bin.Position, $"SpecularBoost: {bin.ReadSingle()}"),
+                                    new BinInterpTreeItem(bin.Position, $"RulesetVariation: {bin.ReadNameReference(Pcc)}")
+                                }),
+                            }
                         })
                     });
                 }
@@ -372,9 +567,9 @@ namespace ME3Explorer
 
         private string entryRefString(MemoryStream bin) { int n = bin.ReadInt32(); IEntry ent = Pcc.getEntry(n); return $"#{n} {ent?.GetInstancedFullPath ?? ""}"; }
 
-        private List<object> StartModelScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartModelScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 var bin = new MemoryStream(data);
@@ -382,7 +577,7 @@ namespace ME3Explorer
 
                 subnodes.Add(new BinInterpTreeItem(bin.Position, "Bounds")
                 {
-                    Items = new List<object>
+                    Items = new List<ITreeItem>
                     {
                         new BinInterpTreeItem(bin.Position, $"Origin: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
                         new BinInterpTreeItem(bin.Position, $"BoxExtent: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
@@ -410,7 +605,7 @@ namespace ME3Explorer
                 {
                     Items = ReadList(nodesCount, i => new BinInterpTreeItem(bin.Position, $"{i}")
                     {
-                        Items = new List<object>
+                        Items = new List<ITreeItem>
                         {
                             new BinInterpTreeItem(bin.Position, $"Plane: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()}, W: {bin.ReadSingle()})"),
                             new BinInterpTreeItem(bin.Position, $"iVertPool: {bin.ReadInt32()}"),
@@ -439,7 +634,7 @@ namespace ME3Explorer
                 {
                     Items = ReadList(surfsCount, i => new BinInterpTreeItem(bin.Position, $"{i}")
                     {
-                        Items = new List<object>
+                        Items = new List<ITreeItem>
                         {
                             new BinInterpTreeItem(bin.Position, $"Material: {entryRefString(bin)}"),
                             new BinInterpTreeItem(bin.Position, $"PolyFlags: {bin.ReadInt32()}"),
@@ -464,7 +659,7 @@ namespace ME3Explorer
                 {
                     Items = ReadList(vertsCount, i => new BinInterpTreeItem(bin.Position, $"{i}")
                     {
-                        Items = new List<object>
+                        Items = new List<ITreeItem>
                         {
                             new BinInterpTreeItem(bin.Position, $"pVertex: {bin.ReadInt32()}"),
                             new BinInterpTreeItem(bin.Position, $"iSide: {bin.ReadInt32()}"),
@@ -480,7 +675,7 @@ namespace ME3Explorer
                 {
                     Items = ReadList(numZones, i => new BinInterpTreeItem(bin.Position, $"Zone {i}")
                     {
-                        Items = new List<object>
+                        Items = new List<ITreeItem>
                         {
                             new BinInterpTreeItem(bin.Position, $"ZoneActor: {entryRefString(bin)}"),
                             new BinInterpTreeItem(bin.Position, $"LastRenderTime: {bin.ReadSingle()}"),
@@ -523,7 +718,7 @@ namespace ME3Explorer
                 {
                     Items = ReadList(legacyedgesCount, i => new BinInterpTreeItem(bin.Position, $"MeshEdge {i}")
                     {
-                        Items = new List<object>
+                        Items = new List<ITreeItem>
                         {
                             new BinInterpTreeItem(bin.Position, $"Vertices[0]: {bin.ReadInt32()}"),
                             new BinInterpTreeItem(bin.Position, $"Vertices[1]: {bin.ReadInt32()}"),
@@ -541,7 +736,7 @@ namespace ME3Explorer
                 {
                     Items = ReadList(verticesCount, i => new BinInterpTreeItem(bin.Position, $"{i}")
                     {
-                        Items = new List<object>
+                        Items = new List<ITreeItem>
                         {
                             new BinInterpTreeItem(bin.Position, $"Position: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
                             new BinInterpTreeItem(bin.Position, $"TangentX: (X: {bin.ReadByte()}, Y: {bin.ReadByte()}, Z: {bin.ReadByte()}, W: {bin.ReadByte()})"),
@@ -561,7 +756,7 @@ namespace ME3Explorer
                     {
                         Items = ReadList(lightmassSettingsCount, i => new BinInterpTreeItem(bin.Position, $"{i}")
                         {
-                            Items = new List<object>
+                            Items = new List<ITreeItem>
                             {
                                 new BinInterpTreeItem(bin.Position, $"bUseTwoSidedLighting: {bin.ReadBoolInt()}"),
                                 new BinInterpTreeItem(bin.Position, $"bShadowIndirectOnly: {bin.ReadBoolInt()}"),
@@ -587,14 +782,14 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private static List<object> ReadList(int count, Func<int, BinInterpTreeItem> selector)
+        private static List<ITreeItem> ReadList(int count, Func<int, ITreeItem> selector)
         {
-            return Enumerable.Range(0, count).Select(selector).Cast<object>().ToList();
+            return Enumerable.Range(0, count).Select(selector).ToList();
         }
 
-        private List<object> StartWorldScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartWorldScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int levelIdx = BitConverter.ToInt32(data, binarystart);
@@ -674,9 +869,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartStackScan(byte[] data)
+        private List<ITreeItem> StartStackScan(byte[] data)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             int binarystart = 0;
             int importNum = BitConverter.ToInt32(data, binarystart);
             subnodes.Add(new BinInterpTreeItem
@@ -734,9 +929,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartMetaDataScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartMetaDataScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int offset = binarystart;
@@ -809,9 +1004,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartBioTlkFileSetScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartBioTlkFileSetScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int offset = binarystart;
@@ -864,9 +1059,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartSoundNodeWaveScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartSoundNodeWaveScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int offset = binarystart;
@@ -927,9 +1122,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartBioSoundNodeWaveStreamingDataScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartBioSoundNodeWaveStreamingDataScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int offset = binarystart;
@@ -990,9 +1185,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartBioStateEventMapScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartBioStateEventMapScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int offset = binarystart;
@@ -1521,9 +1716,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartBioQuestMapScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartBioQuestMapScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             var game = CurrentLoadedExport.FileRef.Game;
             try
             {
@@ -2160,9 +2355,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartBioCodexMapScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartBioCodexMapScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             var game = CurrentLoadedExport.FileRef.Game;
             try
             {
@@ -2399,9 +2594,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartAnimSequenceScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartAnimSequenceScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             var game = CurrentLoadedExport.FileRef.Game;
 
             try
@@ -2635,9 +2830,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartFaceFXAnimSetScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartFaceFXAnimSetScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 var bin = new MemoryStream(CurrentLoadedExport.Data);
@@ -2673,14 +2868,14 @@ namespace ME3Explorer
                 if (Pcc.Game != MEGame.ME2)
                 {
                     int hNodeCount = bin.ReadInt32();
-                    var hNodes = new List<object>();
+                    var hNodes = new List<ITreeItem>();
                     subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Nodes: {hNodeCount} items")
                     {
                         Items = hNodes
                     });
                     for (int i = 0; i < hNodeCount; i++)
                     {
-                        var hNodeNodes = new List<object>();
+                        var hNodeNodes = new List<ITreeItem>();
                         hNodes.Add(new BinInterpTreeItem(bin.Position, $"{i}")
                         {
                             Items = hNodeNodes
@@ -2700,7 +2895,7 @@ namespace ME3Explorer
                 subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Names: {nameCount} items")
                 {
                     //ME2 different to ME3/1
-                    Items = Enumerable.Range(0, nameCount).Select(i => (object)new BinInterpTreeItem(bin.Skip(Pcc.Game != MEGame.ME2 ? 0 : 4).Position, $"{bin.ReadStringASCII(bin.ReadInt32())}")).ToList()
+                    Items = ReadList(nameCount, i => new BinInterpTreeItem(bin.Skip(Pcc.Game != MEGame.ME2 ? 0 : 4).Position, $"{bin.ReadStringASCII(bin.ReadInt32())}"))
                 });
 
                 subnodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
@@ -2717,7 +2912,7 @@ namespace ME3Explorer
                 }
 
                 int lineCount = bin.ReadInt32();
-                var lines = new List<object>();
+                var lines = new List<ITreeItem>();
 
                 subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"FaceFXLines: {lineCount} items")
                 {
@@ -2725,7 +2920,7 @@ namespace ME3Explorer
                 });
                 for (int i = 0; i < lineCount; i++)
                 {
-                    var nodes = new List<object>();
+                    var nodes = new List<ITreeItem>();
                     lines.Add(new BinInterpTreeItem(bin.Position, $"{i}")
                     {
                         Items = nodes
@@ -2741,14 +2936,14 @@ namespace ME3Explorer
                         nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
                     }
                     int animationCount = bin.ReadInt32();
-                    var anims = new List<object>();
+                    var anims = new List<ITreeItem>();
                     nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Animations: {animationCount} items")
                     {
                         Items = anims
                     });
                     for (int j = 0; j < animationCount; j++)
                     {
-                        var animNodes = new List<object>();
+                        var animNodes = new List<ITreeItem>();
                         anims.Add(new BinInterpTreeItem(bin.Position, $"{j}")
                         {
                             Items = animNodes
@@ -2770,16 +2965,16 @@ namespace ME3Explorer
                     int pointsCount = bin.ReadInt32();
                     nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Points: {pointsCount} items")
                     {
-                        Items = Enumerable.Range(0, pointsCount).Select(j => (object)new BinInterpTreeItem(bin.Position, $"{j}")
+                        Items = ReadList(pointsCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
                         {
-                            Items = new List<object>
+                            Items = new List<ITreeItem>
                             {
                                 new BinInterpTreeItem(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
                                 new BinInterpTreeItem(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
                                 new BinInterpTreeItem(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
                                 new BinInterpTreeItem(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
                             }
-                        }).ToList()
+                        })
                     });
 
                     if (pointsCount > 0)
@@ -2790,7 +2985,7 @@ namespace ME3Explorer
                         }
                         nodes.Add(new BinInterpTreeItem(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
                         {
-                            Items = Enumerable.Range(0, bin.Skip(-4).ReadInt32()).Select(j => (object)new BinInterpTreeItem(bin.Position, $"{bin.ReadInt32()} keys")).ToList()
+                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpTreeItem(bin.Position, $"{bin.ReadInt32()} keys"))
                         });
                     }
                     nodes.Add(new BinInterpTreeItem(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
@@ -2816,9 +3011,9 @@ namespace ME3Explorer
             }
             return subnodes;
         }
-        private List<object> StartFaceFXAssetScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartFaceFXAssetScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 var bin = new MemoryStream(CurrentLoadedExport.Data);
@@ -2855,14 +3050,14 @@ namespace ME3Explorer
                 if (versionID != 1610)
                 {
                     int hNodeCount = bin.ReadInt32();
-                    var hNodes = new List<object>();
+                    var hNodes = new List<ITreeItem>();
                     subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Nodes: {hNodeCount} items")
                     {
                         Items = hNodes
                     });
                     for (int i = 0; i < hNodeCount; i++)
                     {
-                        var hNodeNodes = new List<object>();
+                        var hNodeNodes = new List<ITreeItem>();
                         hNodes.Add(new BinInterpTreeItem(bin.Position, $"{i}")
                         {
                             Items = hNodeNodes
@@ -2882,7 +3077,7 @@ namespace ME3Explorer
                 var nameTable = new List<string>();
                 int nameCount = bin.ReadInt32();
                 var nametablePos = bin.Position - 4;
-                var nametabObj = new List<object>();
+                var nametabObj = new List<ITreeItem>();
                 for (int m = 0; m < nameCount; m++)
                 {
                     var pos = bin.Position;
@@ -2903,7 +3098,7 @@ namespace ME3Explorer
 
                 //FROM HERE ME3 ONLY WIP
                 //LIST A
-                var unkListA = new List<object>();
+                var unkListA = new List<ITreeItem>();
                 var countA = bin.ReadInt32();
                 subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown Table A: {countA} items")
                 {
@@ -2912,7 +3107,7 @@ namespace ME3Explorer
 
                 for (int a = 0; a < countA; a++) //NOT EXACT??
                 {
-                    var tableItems = new List<object>();
+                    var tableItems = new List<ITreeItem>();
                     unkListA.Add(new BinInterpTreeItem(bin.Position, $"Table Index: {bin.ReadInt32()}")
                     {
                         Items = tableItems
@@ -2937,7 +3132,7 @@ namespace ME3Explorer
 
                     }
                     //Name list to Bones and other facefx?
-                    var unkNameList1 = new List<object>();
+                    var unkNameList1 = new List<ITreeItem>();
                     var countUk1 = bin.ReadInt32();
                     tableItems.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown Name List: {countUk1} items")
                     {
@@ -2946,7 +3141,7 @@ namespace ME3Explorer
                     for (int b = 0; b < countUk1; b++)
                     {
                         var unameVal = bin.ReadInt32();
-                        var unkNameList1items = new List<object>();
+                        var unkNameList1items = new List<ITreeItem>();
                         unkNameList1.Add(new BinInterpTreeItem(bin.Position - 4, $"Name {b}: {unameVal} {nameTable[unameVal]}")
                         {
                             Items = unkNameList1items
@@ -2966,7 +3161,7 @@ namespace ME3Explorer
                 }
 
                 //LIST B
-                var unkListB = new List<object>();
+                var unkListB = new List<ITreeItem>();
                 var countB = bin.ReadInt32();
                 subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown Table B: {countB} items")
                 {
@@ -2978,7 +3173,7 @@ namespace ME3Explorer
                     var bLocation = bin.Position;
                     var firstval = bin.ReadInt32();  //maybe version id?
                     var bIdxVal = bin.ReadInt32();
-                    var unkListBitems = new List<object>();
+                    var unkListBitems = new List<ITreeItem>();
                     unkListB.Add(new BinInterpTreeItem(bin.Position - 4, $"{b}: Table Index: {bIdxVal} : {nameTable[bIdxVal]}")
                     {
                         Items = unkListBitems
@@ -3014,7 +3209,7 @@ namespace ME3Explorer
                             }
                             if (hasNameList)
                             {
-                                var unkNameList2 = new List<object>(); //Name list to Bones and other facefx phenomes?
+                                var unkNameList2 = new List<ITreeItem>(); //Name list to Bones and other facefx phenomes?
                                 var countUk2 = bin.ReadInt32();
                                 unkListBitems.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown Name List: {countUk2} items")
                                 {
@@ -3023,7 +3218,7 @@ namespace ME3Explorer
                                 for (int n2 = 0; n2 < countUk2; n2++)
                                 {
                                     var unameVal = bin.ReadInt32();
-                                    var unkNameList2items = new List<object>();
+                                    var unkNameList2items = new List<ITreeItem>();
                                     unkNameList2.Add(new BinInterpTreeItem(bin.Position - 4, $"Name: {unameVal} {nameTable[unameVal]}")
                                     {
                                         Items = unkNameList2items
@@ -3050,7 +3245,7 @@ namespace ME3Explorer
                     }
                 }
 
-                var unkListC = new List<object>();
+                var unkListC = new List<ITreeItem>();
                 subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Unknown Table C")
                 {
                     Items = unkListC
@@ -3058,7 +3253,7 @@ namespace ME3Explorer
 
                 for (int c = 0; c < countB; c++)
                 {
-                    var unkListCitems = new List<object>();
+                    var unkListCitems = new List<ITreeItem>();
                     unkListC.Add(new BinInterpTreeItem(bin.Position, $"{c}")
                     {
                         Items = unkListCitems
@@ -3090,7 +3285,7 @@ namespace ME3Explorer
                 }
 
                 int lineCount = bin.ReadInt32();
-                var lines = new List<object>();
+                var lines = new List<ITreeItem>();
 
                 subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"FaceFXLines: {lineCount} items")
                 {
@@ -3098,7 +3293,7 @@ namespace ME3Explorer
                 });
                 for (int i = 0; i < lineCount; i++)
                 {
-                    var nodes = new List<object>();
+                    var nodes = new List<ITreeItem>();
                     lines.Add(new BinInterpTreeItem(bin.Position, $"{i}")
                     {
                         Items = nodes
@@ -3107,14 +3302,14 @@ namespace ME3Explorer
                     nodes.Add(new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}") { Length = 4 });
                     nodes.Add(new BinInterpTreeItem(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
                     int animationCount = bin.ReadInt32();
-                    var anims = new List<object>();
+                    var anims = new List<ITreeItem>();
                     nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Animations: {animationCount} items")
                     {
                         Items = anims
                     });
                     for (int j = 0; j < animationCount; j++)
                     {
-                        var animNodes = new List<object>();
+                        var animNodes = new List<ITreeItem>();
                         anims.Add(new BinInterpTreeItem(bin.Position, $"{j}")
                         {
                             Items = animNodes
@@ -3132,16 +3327,16 @@ namespace ME3Explorer
                         int pointsCount = bin.ReadInt32();
                         nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Points: {pointsCount} items")
                         {
-                            Items = Enumerable.Range(0, pointsCount).Select(j => (object)new BinInterpTreeItem(bin.Position, $"{j}")
+                            Items = ReadList(pointsCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
                             {
-                                Items = new List<object>
+                                Items = new List<ITreeItem>
                                 {
                                     new BinInterpTreeItem(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
                                     new BinInterpTreeItem(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
                                     new BinInterpTreeItem(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
                                     new BinInterpTreeItem(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
                                 }
-                            }).ToList()
+                            })
                         });
 
                         if (pointsCount > 0)
@@ -3152,7 +3347,7 @@ namespace ME3Explorer
                             }
                             nodes.Add(new BinInterpTreeItem(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
                             {
-                                Items = Enumerable.Range(0, bin.Skip(-4).ReadInt32()).Select(j => (object)new BinInterpTreeItem(bin.Position, $"{bin.ReadInt32()} keys")).ToList()
+                                Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpTreeItem(bin.Position, $"{bin.ReadInt32()} keys"))
                             });
                         }
                     }
@@ -3179,9 +3374,9 @@ namespace ME3Explorer
             }
             return subnodes;
         }
-        private List<object> StartSoundCueScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartSoundCueScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int offset = binarystart;
@@ -3215,9 +3410,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartScriptStructScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartScriptStructScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int offset = binarystart + 0x4;
@@ -3251,7 +3446,7 @@ namespace ME3Explorer
                 {
                     InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
                 }
-                subnodes.AddRange(topLevelTree.ChildrenProperties.Cast<object>().ToList());
+                subnodes.AddRange(topLevelTree.ChildrenProperties);
 
                 //subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 //{
@@ -3282,9 +3477,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartBioGestureRuntimeDataScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartBioGestureRuntimeDataScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int offset = binarystart;
@@ -3367,9 +3562,9 @@ namespace ME3Explorer
             }
             return subnodes;
         }
-        private List<object> StartObjectRedirectorScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartObjectRedirectorScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
 
             int redirnum = BitConverter.ToInt32(data, binarystart);
             subnodes.Add(new BinInterpTreeItem
@@ -3380,9 +3575,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartObjectScan(byte[] data)
+        private List<ITreeItem> StartObjectScan(byte[] data)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int offset = 0; //this property starts at 0 for parsing
@@ -3547,7 +3742,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> Scan_WwiseStreamBank(byte[] data)
+        private List<ITreeItem> Scan_WwiseStreamBank(byte[] data)
         {
             /*
              * int32 0?
@@ -3555,7 +3750,7 @@ namespace ME3Explorer
              * stream length in AFC +4 | (repeat) (bank size)
              * stream offset in AFC +4 | (bank offset in file)
              */
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int pos = 0;
@@ -3656,9 +3851,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> Scan_WwiseEvent(byte[] data, ref int binarystart)
+        private List<ITreeItem> Scan_WwiseEvent(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
@@ -3764,21 +3959,21 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    subnodes.Add("Only ME3 and ME2 are supported for this scan.");
+                    subnodes.Add(new BinInterpTreeItem("Only ME3 and ME2 are supported for this scan."));
                     return subnodes;
                 }
 
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpTreeItem() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
 
-        private List<object> StartBioDynamicAnimSetScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartBioDynamicAnimSetScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
 
             try
             {
@@ -3821,7 +4016,7 @@ namespace ME3Explorer
         }
 
         //TODO: unfinished. currently does not display the properties for the list of BioStageCamera objects at the end
-        private List<object> StartBioStageScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartBioStageScan(byte[] data, ref int binarystart)
         {
             /*
              * Length (int)
@@ -3830,7 +4025,7 @@ namespace ME3Explorer
                 Count + int unknown
                 [Camera name
                     unreal property data]*/
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             //if ((CurrentLoadedExport.Header[0x1f] & 0x2) != 0)
             {
 
@@ -3902,7 +4097,7 @@ namespace ME3Explorer
                                 {
                                     InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
                                 }
-                                subnodes.AddRange(topLevelTree.ChildrenProperties.Cast<object>().ToList());
+                                subnodes.AddRange(topLevelTree.ChildrenProperties);
 
                                 //finish writing function here
                                 pos = props.endOffset;
@@ -3919,10 +4114,10 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartClassScan(byte[] data)
+        private List<ITreeItem> StartClassScan(byte[] data)
         {
             //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int offset = 0;
@@ -4277,7 +4472,7 @@ namespace ME3Explorer
             return "";
         }
 
-        private int ClassParser_ReadComponentsTable(List<object> subnodes, byte[] data, int offset)
+        private int ClassParser_ReadComponentsTable(List<ITreeItem> subnodes, byte[] data, int offset)
         {
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
@@ -4350,7 +4545,7 @@ namespace ME3Explorer
             return offset;
         }
 
-        private int ClassParser_ReadImplementsTable(List<object> subnodes, byte[] data, int offset)
+        private int ClassParser_ReadImplementsTable(List<ITreeItem> subnodes, byte[] data, int offset)
         {
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
@@ -4434,9 +4629,9 @@ namespace ME3Explorer
             return offset;
         }
 
-        private List<object> StartEnumScan(byte[] data)
+        private List<ITreeItem> StartEnumScan(byte[] data)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
 
             try
             {
@@ -4547,7 +4742,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartGuidCacheScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartGuidCacheScan(byte[] data, ref int binarystart)
         {
             /*
              *  
@@ -4556,7 +4751,7 @@ namespace ME3Explorer
              *      guid +16
              *      
              */
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
 
             try
             {
@@ -4594,9 +4789,9 @@ namespace ME3Explorer
 
         static readonly byte[] nxsMeshBytes = { 0x4E, 0x58, 0x53, 0x01, 0x43, 0x56, 0x58, 0x4D };
 
-        private List<object> StartLevelScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartLevelScan(byte[] data, ref int binarystart)
         {
-            var subnodesTop = new List<object>();
+            var subnodesTop = new List<ITreeItem>();
             try
             {
                 int start = binarystart;
@@ -4617,7 +4812,7 @@ namespace ME3Explorer
                 start += 4;
                 int itemcount = 0;
 
-                var levelSubnodes = new List<object>();
+                var levelSubnodes = new List<ITreeItem>();
                 while (itemcount < numberofitems)
                 {
                     //get header.
@@ -5262,18 +5457,18 @@ namespace ME3Explorer
             }
         }
 
-        private List<object> StartMaterialScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartMaterialScan(byte[] data, ref int binarystart)
         {
-            var nodes = new List<object>();
+            var nodes = new List<ITreeItem>();
 
             if (binarystart >= data.Length)
             {
-                return new List<object> { new BinInterpTreeItem { Header = "No Binary Data" } };
+                return new List<ITreeItem> { new BinInterpTreeItem { Header = "No Binary Data" } };
             }
             try
             {
                 {
-                    var subnodes = new List<object>();
+                    var subnodes = new List<ITreeItem>();
 
                     nodes.Add(new BinInterpTreeItem
                     {
@@ -5285,7 +5480,7 @@ namespace ME3Explorer
                     binarystart = ReadMaterialResource(data, subnodes, binarystart);
                 }
                 {
-                    var subnodes = new List<object>();
+                    var subnodes = new List<ITreeItem>();
 
                     nodes.Add(new BinInterpTreeItem
                     {
@@ -5304,18 +5499,18 @@ namespace ME3Explorer
             return nodes;
         }
 
-        private List<object> StartMaterialInstanceConstantScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartMaterialInstanceConstantScan(byte[] data, ref int binarystart)
         {
-            var nodes = new List<object>();
+            var nodes = new List<ITreeItem>();
 
             if (binarystart >= data.Length)
             {
-                return new List<object> { new BinInterpTreeItem { Header = "No Binary Data" } };
+                return new List<ITreeItem> { new BinInterpTreeItem { Header = "No Binary Data" } };
             }
             try
             {
                 {
-                    var subnodes = new List<object>();
+                    var subnodes = new List<ITreeItem>();
 
                     nodes.Add(new BinInterpTreeItem
                     {
@@ -5329,7 +5524,7 @@ namespace ME3Explorer
                     binarystart = ReadFStaticParameterSet(data, subnodes, binarystart);
                 }
                 {
-                    var subnodes = new List<object>();
+                    var subnodes = new List<ITreeItem>();
 
                     nodes.Add(new BinInterpTreeItem
                     {
@@ -5354,9 +5549,9 @@ namespace ME3Explorer
             }
             return nodes;
         }
-        private List<object> ReadFStaticParameterSetStream(MemoryStream bin)
+        private List<ITreeItem> ReadFStaticParameterSetStream(MemoryStream bin)
         {
-            var nodes = new List<object>();
+            var nodes = new List<ITreeItem>();
 
             nodes.Add(new BinInterpTreeItem(bin.Position, $"Base Material GUID {bin.ReadValueGuid()}") { Length = 16 });
             int staticSwitchParameterCount = bin.ReadInt32();
@@ -5383,7 +5578,7 @@ namespace ME3Explorer
             nodes.Add(staticComponentMaskParametersNode);
             for (int i = 0; i < staticComponentMaskParameterCount; i++)
             {
-                var subnodes = new List<object>();
+                var subnodes = new List<ITreeItem>();
                 staticComponentMaskParametersNode.Items.Add(new BinInterpTreeItem(bin.Position, $"Parameter {i}")
                 {
                     Length = 44,
@@ -5408,7 +5603,7 @@ namespace ME3Explorer
                 nodes.Add(NormalParametersNode);
                 for (int i = 0; i < NormalParameterCount; i++)
                 {
-                    var subnodes = new List<object>();
+                    var subnodes = new List<ITreeItem>();
                     NormalParametersNode.Items.Add(new BinInterpTreeItem(bin.Position, $"Parameter {i}")
                     {
                         Length = 29,
@@ -5424,7 +5619,7 @@ namespace ME3Explorer
             return nodes;
         }
 
-        private int ReadFStaticParameterSet(byte[] data, List<object> nodes, int binarypos)
+        private int ReadFStaticParameterSet(byte[] data, List<ITreeItem> nodes, int binarypos)
         {
 
             nodes.Add(MakeGuidNode(data, ref binarypos, "Base Material GUID"));
@@ -5471,7 +5666,7 @@ namespace ME3Explorer
             nodes.Add(staticComponentMaskParametersNode);
             for (int i = 0; i < staticComponentMaskParameterCount; i++)
             {
-                var subnodes = new List<object>();
+                var subnodes = new List<ITreeItem>();
                 staticComponentMaskParametersNode.Items.Add(new BinInterpTreeItem
                 {
                     Header = $"0x{binarypos:X8} : Parameter {i}",
@@ -5543,7 +5738,7 @@ namespace ME3Explorer
             nodes.Add(NormalParametersNode);
             for (int i = 0; i < NormalParameterCount; i++)
             {
-                var subnodes = new List<object>();
+                var subnodes = new List<ITreeItem>();
                 NormalParametersNode.Items.Add(new BinInterpTreeItem
                 {
                     Header = $"0x{binarypos:X8} : Parameter {i}",
@@ -5588,7 +5783,7 @@ namespace ME3Explorer
             return new NameReference(Pcc.getNameEntry(BitConverter.ToInt32(data, binarypos)), BitConverter.ToInt32(data, binarypos + 4));
         }
 
-        private int ReadMaterialResource(byte[] data, List<object> subnodes, int binarypos)
+        private int ReadMaterialResource(byte[] data, List<ITreeItem> subnodes, int binarypos)
         {
             int compileErrorsCount = BitConverter.ToInt32(data, binarypos);
             subnodes.Add(new BinInterpTreeItem
@@ -5775,7 +5970,7 @@ namespace ME3Explorer
             UsedCoord_WorldPos = 1 << 3
         }
 
-        private List<object> StartPrefabInstanceScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartPrefabInstanceScan(byte[] data, ref int binarystart)
         {
             /*
              *  count: 4 bytes 
@@ -5784,7 +5979,7 @@ namespace ME3Explorer
              *  0: 4 bytes
              *  
              */
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             if ((CurrentLoadedExport.Header[0x1f] & 0x2) == 0)
             {
                 return subnodes;
@@ -5846,9 +6041,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartSkeletalMeshScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartSkeletalMeshScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             var game = CurrentLoadedExport.FileRef.Game;
             try
             {
@@ -7268,9 +7463,9 @@ namespace ME3Explorer
 
         }
 
-        private List<object> StartStaticMeshCollectionActorScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartStaticMeshCollectionActorScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 //get a list of staticmesh stuff from the props.
@@ -7405,9 +7600,9 @@ namespace ME3Explorer
 
         }
 
-        private List<object> StartStaticLightCollectionActorScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartStaticLightCollectionActorScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 //get a list of lightcomponents from the props.
@@ -7511,7 +7706,7 @@ namespace ME3Explorer
 
         }
 
-        private List<object> StartStaticMeshScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartStaticMeshScan(byte[] data, ref int binarystart)
         {
             /*
              *  
@@ -7534,7 +7729,7 @@ namespace ME3Explorer
              *          +13
              *      section[0].unk5 == 1 ? +12 : +4
              */
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int pos = binarystart;
@@ -7591,9 +7786,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartTextureBinaryScan(byte[] data)
+        private List<ITreeItem> StartTextureBinaryScan(byte[] data)
         {
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
 
             try
             {
@@ -7617,10 +7812,11 @@ namespace ME3Explorer
                 if (CurrentLoadedExport.FileRef.Game != MEGame.ME3)
                 {
                     textureData.Seek(12, SeekOrigin.Current); // 12 zeros
-                    textureData.Seek(4, SeekOrigin.Current); // position in the package
+                    subnodes.Add(new BinInterpTreeItem(textureData.Position, $"File Offset: {textureData.ReadInt32()}"));
                 }
 
                 int numMipMaps = textureData.ReadInt32();
+                subnodes.Add(new BinInterpTreeItem(textureData.Position - 4, $"Num MipMaps: {numMipMaps}"));
                 for (int l = 0; l < numMipMaps; l++)
                 {
                     var mipMapNode = new BinInterpTreeItem
@@ -7710,7 +7906,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartTextureMovieScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartTextureMovieScan(byte[] data, ref int binarystart)
         {
             /*
              *  
@@ -7720,7 +7916,7 @@ namespace ME3Explorer
              *      stream offset in TFC +4
              *  
              */
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
             try
             {
                 int pos = binarystart;
@@ -7782,14 +7978,14 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartStateScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartStateScan(byte[] data, ref int binarystart)
         {
             /*
              * Has UnrealScript Functions contained within, however 
              * the exact format of the data has yet to be determined.
              * Probably better in Script Editor
              */
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
 
             try
             {
@@ -7846,10 +8042,10 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartGenericScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartGenericScan(byte[] data, ref int binarystart)
         {
             binarystart = ByteShiftUpDownValue.Value + binarystart;
-            var subnodes = new List<object>();
+            var subnodes = new List<ITreeItem>();
 
             if (binarystart >= data.Length)
             {

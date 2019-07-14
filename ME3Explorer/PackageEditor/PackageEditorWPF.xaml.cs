@@ -4116,16 +4116,100 @@ namespace ME3Explorer
             d.Show();
         }
 
-        private void ScanAllShaderCaches_Click(object sender, RoutedEventArgs e)
+        private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
-            var filePaths = ME3LoadedFiles.GetEnabledDLC().SelectMany(dlcDir => Directory.EnumerateFiles(Path.Combine(dlcDir, "CookedPCConsole"), "*.pcc"));
+            var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values;
             var interestingExports = new List<string>();
             foreach (string filePath in filePaths)
             {
-                ScanShaderCache(filePath);
+                //ScanShaderCache(filePath);
                 //ScanMaterials(filePath);
-            }
+                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
+                {
+                    var exports = pcc.Exports.Where(exp => exp.ClassName == "StaticMeshComponent");
 
+                    foreach (ExportEntry exp in exports)
+                    {
+                        try
+                        {
+                            MemoryStream bin = new MemoryStream(exp.Data);
+                            bin.JumpTo(exp.propsEnd());
+
+                            int lodDataCount = bin.ReadInt32();
+                            for (int i = 0; i < lodDataCount; i++)
+                            {
+                                int shadowMapCount = bin.ReadInt32();
+                                bin.Skip(shadowMapCount * 4);
+                                int shadowVertCount = bin.ReadInt32();
+                                bin.Skip(shadowVertCount * 4);
+                                int lightMapType = bin.ReadInt32();
+                                if (lightMapType == 0) continue;
+                                int lightGUIDsCount = bin.ReadInt32();
+                                bin.Skip(lightGUIDsCount * 16);
+                                int bulkDataSize;
+                                switch (lightMapType)
+                                {
+                                    case 1:
+                                        bin.Skip(4);
+                                        if (bin.ReadUInt32() > 0)
+                                        {
+                                            interestingExports.Add($"{exp.UIndex}: {filePath}");
+                                        }
+                                        bin.Skip(4);
+                                        bulkDataSize = bin.ReadInt32();
+                                        bin.Skip(4);
+                                        bin.Skip(bulkDataSize);
+                                        bin.Skip(12 * 4);
+                                        if (bin.ReadUInt32() > 0)
+                                        {
+                                            interestingExports.Add($"{exp.UIndex}: {filePath}");
+                                        }
+                                        bin.Skip(4);
+                                        bulkDataSize = bin.ReadInt32();
+                                        bin.Skip(4);
+                                        bin.Skip(bulkDataSize);
+                                        break;
+                                    case 2:
+                                        bin.Skip((16) * 4 + 16);
+                                        break;
+                                    case 3:
+                                        if (bin.ReadUInt32() > 0)
+                                        {
+                                            interestingExports.Add($"{exp.UIndex}: {filePath}");
+                                        }
+                                        bin.Skip(4);
+                                        bulkDataSize = bin.ReadInt32();
+                                        bin.Skip(4);
+                                        bin.Skip(bulkDataSize);
+                                        bin.Skip(24);
+                                        break;
+                                    case 4:
+                                    case 6:
+                                        bin.Skip(124);
+                                        break;
+                                    case 5:
+                                        bin.Skip(4);
+                                        if (bin.ReadUInt32() > 0)
+                                        {
+                                            interestingExports.Add($"{exp.UIndex}: {filePath}");
+                                        }
+                                        bin.Skip(4);
+                                        bulkDataSize = bin.ReadInt32();
+                                        bin.Skip(4);
+                                        bin.Skip(bulkDataSize);
+                                        bin.Skip(12);
+                                        break;
+                                }
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine(exception);
+                            interestingExports.Add($"{exp.UIndex}: {filePath}\n{exception}");
+                        }
+                    }
+                }
+            }
             var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
             listDlg.Show();
 

@@ -449,7 +449,7 @@
     <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzer.xaml.cs">
       <DependentUpon>MemoryAnalyzer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ME3LoadedFiles.cs" />
+    <Compile Include="MELoadedFiles.cs" />
     <Compile Include="MEDirectories\ME1Directory.cs" />
     <Compile Include="MEDirectories\ME2Directory.cs" />
     <Compile Include="MEDirectories\ME3Directory.cs" />

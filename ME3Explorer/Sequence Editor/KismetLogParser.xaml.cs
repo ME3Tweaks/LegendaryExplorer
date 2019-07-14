@@ -89,18 +89,18 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (e.AddedItems.Count == 1 && e.AddedItems[0] is LoggerInfo info)
             {
-                foreach (var kvp in ME3LoadedFiles.GetFilesLoadedInGame())
+                foreach ((string fileName, string filePath) in MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3))
                 {
-                    if (Path.GetFileNameWithoutExtension(kvp.Key.ToLower()) == info.packageName)
+                    if (Path.GetFileNameWithoutExtension(fileName.ToLower()) == info.packageName)
                     {
-                        using (var package = MEPackageHandler.OpenME3Package(kvp.Value))
+                        using (var package = MEPackageHandler.OpenME3Package(filePath))
                         {
                             foreach (ExportEntry exp in package.Exports)
                             {
                                 if (exp.ClassName == info.className && exp.ObjectName == info.objectName && exp.indexValue == info.nameIndex &&
                                     exp.PackageName == info.sequenceName)
                                 {
-                                    ExportFound(kvp.Value, exp.UIndex);
+                                    ExportFound(filePath, exp.UIndex);
                                     return;
                                 }
                             }

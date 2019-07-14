@@ -7,7 +7,14 @@ using ME3Explorer.SharedUI.PeregrineTreeView;
 
 namespace ME3Explorer
 {
-    public class BinInterpTreeItem : NotifyPropertyChangedBase
+    public interface ITreeItem
+    {
+        bool IsSelected { get; set; }
+        bool IsExpanded { get; set; }
+        void PrintPretty(string indent, TextWriter str, bool last, ExportEntry associatedExport);
+    }
+
+    public class BinInterpTreeItem : NotifyPropertyChangedBase, ITreeItem
     {
         public enum ArrayPropertyChildAddAlgorithm
         {
@@ -26,16 +33,14 @@ namespace ME3Explorer
         /// <summary>
         /// Children nodes of this item. They can be of different types (like UPropertyTreeViewEntry).
         /// </summary>
-        public List<object> Items { get; set; }
+        public List<ITreeItem> Items { get; set; }
         public BinInterpTreeItem()
         {
-            Items = new List<object>();
+            Items = new List<ITreeItem>();
         }
 
-        public BinInterpTreeItem(string header, BinInterpTreeItem Parent)
+        public BinInterpTreeItem(string header) : this()
         {
-            this.Parent = Parent;
-            Items = new List<object>();
             Header = header;
         }
 
@@ -46,7 +51,7 @@ namespace ME3Explorer
             Tag = nodeType;
         }
 
-        public void PrintPretty(string indent, StringWriter str, bool last, ExportEntry associatedExport)
+        public void PrintPretty(string indent, TextWriter str, bool last, ExportEntry associatedExport)
         {
             bool supressNewLine = false;
             if (Header != null)

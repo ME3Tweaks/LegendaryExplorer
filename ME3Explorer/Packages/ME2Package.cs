@@ -330,6 +330,41 @@ namespace ME3Explorer.Packages
 
                 export.Data = binData.ToArray();
             }
+            else if (export.ClassName == "StaticMeshComponent")
+            {
+                int baseOffset = newDataOffset + export.propsEnd();
+                MemoryStream bin = new MemoryStream(export.Data);
+                bin.JumpTo(export.propsEnd());
+
+                int lodDataCount = bin.ReadInt32();
+                for (int i = 0; i < lodDataCount; i++)
+                {
+                    int shadowMapCount = bin.ReadInt32();
+                    bin.Skip(shadowMapCount * 4);
+                    int shadowVertCount = bin.ReadInt32();
+                    bin.Skip(shadowVertCount * 4);
+                    int lightMapType = bin.ReadInt32();
+                    if (lightMapType == 0) continue;
+                    int lightGUIDsCount = bin.ReadInt32();
+                    bin.Skip(lightGUIDsCount * 16);
+                    switch (lightMapType)
+                    {
+                        case 1:
+                            bin.Skip(4 + 8);
+                            int bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            bin.Skip(12 * 4 + 8);
+                            bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            break;
+                        case 2:
+                            bin.Skip((16) * 4 + 16);
+                            break;
+                    }
+                }
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using ME3Explorer.Unreal;
 using StreamHelpers;
 
 namespace ME3Explorer.Packages
@@ -292,6 +293,8 @@ namespace ME3Explorer.Packages
                 //export data
                 foreach (ExportEntry e in exports)
                 {
+                    UpdateOffsets(e, (int)m.Position);
+
                     e.DataOffset = (int)m.Position;
                     e.DataSize = e.Data.Length;
                     m.WriteFromBuffer(e.Data);
@@ -311,6 +314,71 @@ namespace ME3Explorer.Packages
             catch (Exception ex)
             {
                 MessageBox.Show("PCC Save error:\n" + ex.Message);
+            }
+        }
+
+        private static void UpdateOffsets(ExportEntry export, int newDataOffset)
+        {
+            if (export.IsDefaultObject)
+            {
+                return; //this is not actually instance of that class
+            }
+            if (export.ClassName == "Texture2D" || export.ClassName == "LightMapTexture2D" || export.ClassName == "TextureFlipBook")
+            {
+                int baseOffset = newDataOffset + export.propsEnd();
+                MemoryStream binData = new MemoryStream(export.getBinaryData());
+                binData.Skip(12);
+                binData.WriteInt32(baseOffset + (int)binData.Position + 4);
+                for (int i = binData.ReadInt32(); i > 0 && binData.Position < binData.Length; i--)
+                {
+                    if (binData.ReadInt32() == 0) //pcc-stored
+                    {
+                        int uncompressedSize = binData.ReadInt32();
+                        binData.Seek(4, SeekOrigin.Current); //skip compressed size
+                        binData.WriteInt32(baseOffset + (int)binData.Position + 4);//update offset
+                        binData.Seek(uncompressedSize + 8, SeekOrigin.Current); //skip texture and width + height values
+                    }
+                    else
+                    {
+                        binData.Seek(20, SeekOrigin.Current);//skip whole rest of mip definition
+                    }
+                }
+                export.setBinaryData(binData.ToArray());
+            }
+            else if (export.ClassName == "StaticMeshComponent")
+            {
+                int baseOffset = newDataOffset + export.propsEnd();
+                MemoryStream bin = new MemoryStream(export.Data);
+                bin.JumpTo(export.propsEnd());
+
+                int lodDataCount = bin.ReadInt32();
+                for (int i = 0; i < lodDataCount; i++)
+                {
+                    int shadowMapCount = bin.ReadInt32();
+                    bin.Skip(shadowMapCount * 4);
+                    int shadowVertCount = bin.ReadInt32();
+                    bin.Skip(shadowVertCount * 4);
+                    int lightMapType = bin.ReadInt32();
+                    if (lightMapType == 0) continue;
+                    int lightGUIDsCount = bin.ReadInt32();
+                    bin.Skip(lightGUIDsCount * 16);
+                    switch (lightMapType)
+                    {
+                        case 1:
+                            bin.Skip(4 + 8);
+                            int bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            bin.Skip(12 * 4 + 8);
+                            bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            break;
+                        case 2:
+                            bin.Skip((16) * 4 + 16);
+                            break;
+                    }
+                }
             }
         }
     }

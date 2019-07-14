@@ -1793,7 +1793,7 @@ namespace ME3Explorer
     }
 
     [DebuggerDisplay("UPropertyTreeViewEntry | {" + nameof(DisplayName) + "}")]
-    public class UPropertyTreeViewEntry : NotifyPropertyChangedBase
+    public class UPropertyTreeViewEntry : NotifyPropertyChangedBase, ITreeItem
     {
         static readonly string[] PropertyDumperSuppressedPropertyNames = { "CompressedTrackOffsets", "LookupTable" };
 
@@ -2042,7 +2042,7 @@ namespace ME3Explorer
                 OnPropertyChanged(nameof(AdvancedModeText));
             }
         }
-        public void PrintPretty(string indent, StreamWriter str, bool last, ExportEntry associatedExport)
+        public void PrintPretty(string indent, TextWriter str, bool last, ExportEntry associatedExport)
         {
             bool supressNewLine = false;
             if (Property != null)

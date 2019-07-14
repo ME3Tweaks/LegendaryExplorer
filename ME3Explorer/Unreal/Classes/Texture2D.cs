@@ -105,7 +105,7 @@ namespace ME3Explorer.Unreal.Classes
             if (!arcname.EndsWith(".tfc"))
                 arcname += ".tfc";
 
-            foreach (string s in ME3LoadedFiles.GetEnabledDLC().OrderBy(ME3LoadedFiles.GetMountPriority).Append(ME3Directory.BIOGamePath))
+            foreach (string s in MELoadedFiles.GetEnabledDLC(MEGame.ME3).OrderBy(dir => MELoadedFiles.GetMountPriority(dir, MEGame.ME3)).Append(ME3Directory.BIOGamePath))
             {
                 foreach (string file in Directory.EnumerateFiles(Path.Combine(s, "CookedPCConsole")))
                 {

@@ -151,6 +151,7 @@ namespace ME3Explorer
             "StrProperty",
             "World",
             "Texture2D",
+            "LightMapTexture2D",
             "TextureFlipBook",
             "State",
             "BioGestureRuntimeData",
@@ -309,7 +310,7 @@ namespace ME3Explorer
             if (CurrentLoadedExport == null) return topLevelTree; //Could happen due to multithread
             try
             {
-                var subNodes = new List<object>();
+                var subNodes = new List<ITreeItem>();
                 bool isGenericScan = false;
                 bool appendGenericScan = false;
                 switch (CurrentLoadedExport.ClassName)
@@ -395,10 +396,14 @@ namespace ME3Explorer
                     case "StaticMesh":
                         subNodes = StartStaticMeshScan(data, ref binarystart);
                         break;
+                    case "StaticMeshComponent":
+                        subNodes = StartStaticMeshComponentScan(data, ref binarystart);
+                        break;
                     case "StaticLightCollectionActor":
                         subNodes = StartStaticLightCollectionActorScan(data, ref binarystart);
                         break;
                     case "Texture2D":
+                    case "LightMapTexture2D":
                     case "TextureFlipBook":
                         subNodes = StartTextureBinaryScan(data);
                         break;
@@ -464,7 +469,7 @@ namespace ME3Explorer
                     subNodes.Add(genericContainer);
 
                     var genericItems = StartGenericScan(data, ref binarystart);
-                    foreach (object o in genericItems)
+                    foreach (ITreeItem o in genericItems)
                     {
                         if (o is BinInterpTreeItem b)
                         {
@@ -481,7 +486,7 @@ namespace ME3Explorer
 
                 GenericEditorSetVisibility = (appendGenericScan || isGenericScan) ? Visibility.Visible : Visibility.Collapsed;
                 topLevelTree.Items = subNodes;
-                foreach (object o in subNodes)
+                foreach (ITreeItem o in subNodes)
                 {
                     if (o is BinInterpTreeItem b)
                     {
@@ -491,14 +496,14 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add(ExceptionHandlerDialogWPF.FlattenException(ex));
+                topLevelTree.Items.Add(new BinInterpTreeItem(ExceptionHandlerDialogWPF.FlattenException(ex)));
             }
             return topLevelTree;
         }
 
-        private bool AttemptSelectPreviousEntry(List<object> subNodes)
+        private bool AttemptSelectPreviousEntry(IEnumerable<ITreeItem> subNodes)
         {
-            foreach (object o in subNodes)
+            foreach (ITreeItem o in subNodes)
             {
                 if (o is BinInterpTreeItem b)
                 {
@@ -909,7 +914,7 @@ namespace ME3Explorer
 
                                 if (ParentNameList == null)
                                 {
-                                    var indexedList = new List<object>();
+                                    var indexedList = new List<ITreeItem>();
                                     for (int i = 0; i < CurrentLoadedExport.FileRef.Names.Count; i++)
                                     {
                                         NameReference nr = CurrentLoadedExport.FileRef.Names[i];
