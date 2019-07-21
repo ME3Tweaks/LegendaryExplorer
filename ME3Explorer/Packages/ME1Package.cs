@@ -323,7 +323,7 @@ namespace ME3Explorer.Packages
             {
                 return; //this is not actually instance of that class
             }
-            if (export.ClassName == "Texture2D" || export.ClassName == "LightMapTexture2D" || export.ClassName == "TextureFlipBook")
+            if (export.ClassName == "Texture2D" || export.ClassName == "LightMapTexture2D" || export.ClassName == "ShadowMapTexture2D" || export.ClassName == "TextureFlipBook")
             {
                 int baseOffset = newDataOffset + export.propsEnd();
                 MemoryStream binData = new MemoryStream(export.getBinaryData());

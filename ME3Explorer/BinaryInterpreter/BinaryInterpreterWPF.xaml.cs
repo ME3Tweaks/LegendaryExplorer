@@ -152,6 +152,8 @@ namespace ME3Explorer
             "World",
             "Texture2D",
             "LightMapTexture2D",
+            "ShadowMapTexture2D",
+            "ShadowMap1D",
             "TextureFlipBook",
             "State",
             "BioGestureRuntimeData",
@@ -168,7 +170,15 @@ namespace ME3Explorer
             "FaceFXAnimSet",
             "BioConsequenceMap",
             "AnimSequence",
-            "FaceFXAsset"
+            "FaceFXAsset",
+            "DirectionalLightComponent",
+            "PointLightComponent",
+            "SkyLightComponent",
+            "SphericalHarmonicLightComponent",
+            "SpotLightComponent",
+            "DominantSpotLightComponent",
+            "DominantPointLightComponent",
+            "DominantDirectionalLightComponent",
         };
 
         public override bool CanParse(ExportEntry exportEntry)
@@ -313,6 +323,21 @@ namespace ME3Explorer
                 var subNodes = new List<ITreeItem>();
                 bool isGenericScan = false;
                 bool appendGenericScan = false;
+
+                if (CurrentLoadedExport.HasStack)
+                {
+                    subNodes.AddRange(StartStackScan(data));
+                }
+
+                //pre-property binary
+                switch (CurrentLoadedExport.ClassName)
+                {
+                    case "DominantSpotLightComponent":
+                    case "DominantDirectionalLightComponent":
+                        subNodes.AddRange(StartDominantLightScan(data));
+                        break;
+                }
+
                 switch (CurrentLoadedExport.ClassName)
                 {
                     case "IntProperty":
@@ -327,128 +352,142 @@ namespace ME3Explorer
                     case "StructProperty":
                     case "ComponentProperty":
                     case "ObjectProperty":
-                        subNodes = StartObjectScan(data);
+                        subNodes.AddRange(StartObjectScan(data));
                         break;
                     case "BioDynamicAnimSet":
-                        subNodes = StartBioDynamicAnimSetScan(data, ref binarystart);
+                        subNodes.AddRange(StartBioDynamicAnimSetScan(data, ref binarystart));
                         break;
                     case "ObjectRedirector":
-                        subNodes = StartObjectRedirectorScan(data, ref binarystart);
+                        subNodes.AddRange(StartObjectRedirectorScan(data, ref binarystart));
                         break;
                     case "MetaData":
-                        subNodes = StartMetaDataScan(data, ref binarystart);
+                        subNodes.AddRange(StartMetaDataScan(data, ref binarystart));
                         break;
                     case "WwiseStream":
                     case "WwiseBank":
-                        subNodes = Scan_WwiseStreamBank(data);
+                        subNodes.AddRange(Scan_WwiseStreamBank(data));
                         break;
                     case "WwiseEvent":
-                        subNodes = Scan_WwiseEvent(data, ref binarystart);
+                        subNodes.AddRange(Scan_WwiseEvent(data, ref binarystart));
                         break;
                     case "BioStage":
-                        subNodes = StartBioStageScan(data, ref binarystart);
+                        subNodes.AddRange(StartBioStageScan(data, ref binarystart));
                         break;
                     case "BioTlkFileSet":
-                        subNodes = StartBioTlkFileSetScan(data, ref binarystart);
+                        subNodes.AddRange(StartBioTlkFileSetScan(data, ref binarystart));
                         break;
                     case "Class":
-                        subNodes = StartClassScan(data);
+                        subNodes.AddRange(StartClassScan(data));
                         break;
                     case "Enum":
                     case "Const":
-                        subNodes = StartEnumScan(data);
+                        subNodes.AddRange(StartEnumScan(data));
                         break;
                     case "GuidCache":
-                        subNodes = StartGuidCacheScan(data, ref binarystart);
+                        subNodes.AddRange(StartGuidCacheScan(data, ref binarystart));
                         break;
                     case "World":
-                        subNodes = StartWorldScan(data, ref binarystart);
+                        subNodes.AddRange(StartWorldScan(data, ref binarystart));
                         appendGenericScan = true;
                         break;
                     case "ShaderCache":
-                        subNodes = StartShaderCacheScanStream(data, ref binarystart);
+                        subNodes.AddRange(StartShaderCacheScanStream(data, ref binarystart));
                         break;
                     case "Model":
-                        subNodes = StartModelScan(data, ref binarystart);
+                        subNodes.AddRange(StartModelScan(data, ref binarystart));
                         break;
                     case "Polys":
-                        subNodes = StartPolysScan(data, ref binarystart);
+                        subNodes.AddRange(StartPolysScan(data, ref binarystart));
                         break;
                     case "Level":
-                        subNodes = StartLevelScan(data, ref binarystart);
+                        subNodes.AddRange(StartLevelScan(data, ref binarystart));
                         appendGenericScan = true;
                         break;
                     case "Material":
-                        subNodes = StartMaterialScan(data, ref binarystart);
+                        subNodes.AddRange(StartMaterialScan(data, ref binarystart));
                         break;
                     case "MaterialInstanceConstant":
-                        subNodes = StartMaterialInstanceConstantScan(data, ref binarystart);
+                        subNodes.AddRange(StartMaterialInstanceConstantScan(data, ref binarystart));
                         break;
                     case "PrefabInstance":
-                        subNodes = StartPrefabInstanceScan(data, ref binarystart);
+                        subNodes.AddRange(StartPrefabInstanceScan(data, ref binarystart));
                         break;
                     case "SkeletalMesh":
-                        subNodes = StartSkeletalMeshScan(data, ref binarystart);
+                        subNodes.AddRange(StartSkeletalMeshScan(data, ref binarystart));
                         break;
                     case "StaticMeshCollectionActor":
-                        subNodes = StartStaticMeshCollectionActorScan(data, ref binarystart);
+                        subNodes.AddRange(StartStaticMeshCollectionActorScan(data, ref binarystart));
                         break;
                     case "StaticMesh":
-                        subNodes = StartStaticMeshScan(data, ref binarystart);
+                        subNodes.AddRange(StartStaticMeshScan(data, ref binarystart));
                         break;
                     case "StaticMeshComponent":
-                        subNodes = StartStaticMeshComponentScan(data, ref binarystart);
+                        subNodes.AddRange(StartStaticMeshComponentScan(data, ref binarystart));
                         break;
                     case "StaticLightCollectionActor":
-                        subNodes = StartStaticLightCollectionActorScan(data, ref binarystart);
+                        subNodes.AddRange(StartStaticLightCollectionActorScan(data, ref binarystart));
                         break;
                     case "Texture2D":
                     case "LightMapTexture2D":
+                    case "ShadowMapTexture2D":
                     case "TextureFlipBook":
-                        subNodes = StartTextureBinaryScan(data);
+                        subNodes.AddRange(StartTextureBinaryScan(data));
+                        break;
+                    case "ShadowMap1D":
+                        subNodes.AddRange(StartShadowMap1DScan(data, binarystart));
                         break;
                     case "State":
-                        subNodes = StartStateScan(data, ref binarystart);
+                        subNodes.AddRange(StartStateScan(data, ref binarystart));
                         appendGenericScan = true;
                         break;
                     case "TextureMovie":
-                        subNodes = StartTextureMovieScan(data, ref binarystart);
+                        subNodes.AddRange(StartTextureMovieScan(data, ref binarystart));
                         break;
                     case "BioGestureRuntimeData":
-                        subNodes = StartBioGestureRuntimeDataScan(data, ref binarystart);
+                        subNodes.AddRange(StartBioGestureRuntimeDataScan(data, ref binarystart));
                         break;
                     case "ScriptStruct":
-                        subNodes = StartScriptStructScan(data, ref binarystart);
+                        subNodes.AddRange(StartScriptStructScan(data, ref binarystart));
                         break;
                     case "SoundCue":
-                        subNodes = StartSoundCueScan(data, ref binarystart);
+                        subNodes.AddRange(StartSoundCueScan(data, ref binarystart));
                         break;
                     case "BioSoundNodeWaveStreamingData":
-                        subNodes = StartBioSoundNodeWaveStreamingDataScan(data, ref binarystart);
+                        subNodes.AddRange(StartBioSoundNodeWaveStreamingDataScan(data, ref binarystart));
                         break;
                     case "SoundNodeWave":
-                        subNodes = StartSoundNodeWaveScan(data, ref binarystart);
+                        subNodes.AddRange(StartSoundNodeWaveScan(data, ref binarystart));
                         break;
                     case "BioStateEventMap":
-                        subNodes = StartBioStateEventMapScan(data, ref binarystart);
+                        subNodes.AddRange(StartBioStateEventMapScan(data, ref binarystart));
                         break;
                     case "BioCodexMap":
-                        subNodes = StartBioCodexMapScan(data, ref binarystart);
+                        subNodes.AddRange(StartBioCodexMapScan(data, ref binarystart));
                         break;
                     case "BioQuestMap":
-                        subNodes = StartBioQuestMapScan(data, ref binarystart);
+                        subNodes.AddRange(StartBioQuestMapScan(data, ref binarystart));
                         break;
                     case "BioConsequenceMap":
-                        subNodes = StartBioStateEventMapScan(data, ref binarystart);
+                        subNodes.AddRange(StartBioStateEventMapScan(data, ref binarystart));
                         break;
                     case "FaceFXAnimSet":
-                        subNodes = StartFaceFXAnimSetScan(data, ref binarystart);
+                        subNodes.AddRange(StartFaceFXAnimSetScan(data, ref binarystart));
                         break;
                     case "FaceFXAsset":
-                        subNodes = StartFaceFXAssetScan(data, ref binarystart);
+                        subNodes.AddRange(StartFaceFXAssetScan(data, ref binarystart));
                         break;
                     case "AnimSequence":
-                        subNodes = StartAnimSequenceScan(data, ref binarystart);
+                        subNodes.AddRange(StartAnimSequenceScan(data, ref binarystart));
+                        break;
+                    case "DirectionalLightComponent":
+                    case "PointLightComponent":
+                    case "SkyLightComponent":
+                    case "SphericalHarmonicLightComponent":
+                    case "SpotLightComponent":
+                    case "DominantSpotLightComponent":
+                    case "DominantPointLightComponent":
+                    case "DominantDirectionalLightComponent":
+                        subNodes.AddRange(StartLightComponentScan(data, binarystart));
                         break;
                     default:
                         if (!CurrentLoadedExport.HasStack)
@@ -457,11 +496,6 @@ namespace ME3Explorer
                             subNodes = StartGenericScan(data, ref binarystart);
                         }
                         break;
-                }
-
-                if (CurrentLoadedExport.HasStack)
-                {
-                    subNodes = StartStackScan(data).Concat(subNodes).ToList();
                 }
                 if (appendGenericScan)
                 {

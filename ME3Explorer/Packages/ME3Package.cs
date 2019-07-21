@@ -298,7 +298,7 @@ namespace ME3Explorer.Packages
                 export.setBinaryData(binData);
             }
             //update offsets for pcc-stored mips in Textures
-            else if (export.ClassName == "Texture2D" || export.ClassName == "LightMapTexture2D" || export.ClassName == "TextureFlipBook")
+            else if (export.ClassName == "Texture2D" || export.ClassName == "LightMapTexture2D" || export.ClassName == "ShadowMapTexture2D" || export.ClassName == "TextureFlipBook")
             {
                 int baseOffset = newDataOffset + export.propsEnd();
                 MemoryStream binData = new MemoryStream(export.getBinaryData());

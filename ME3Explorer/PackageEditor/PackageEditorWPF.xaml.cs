@@ -4118,12 +4118,60 @@ namespace ME3Explorer
 
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
-            var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values;
+            var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
             var interestingExports = new List<string>();
             foreach (string filePath in filePaths)
             {
                 //ScanShaderCache(filePath);
                 //ScanMaterials(filePath);
+                //ScanStaticMeshComponents(filePath);
+                if (ScanLightComponents(filePath)) break;
+            }
+            var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
+            listDlg.Show();
+
+            bool ScanLightComponents(string filePath)
+            {
+                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
+                {
+                    var exports = pcc.Exports.Where(exp => exp.inheritsFrom("DominantSpotLightComponent"));
+                    foreach (ExportEntry exp in exports)
+                    {
+                        if (!exp.IsDefaultObject)
+                        {
+                            interestingExports.Add($"{exp.UIndex}: {filePath}");
+                            return false;
+                        }
+
+                        continue;
+                        try
+                        {
+                            MemoryStream bin = new MemoryStream(exp.Data);
+                            bin.JumpTo(exp.propsEnd());
+
+                            while (bin.Position < bin.Length)
+                            {
+                                if (bin.ReadByte() > 0)
+                                {
+                                    interestingExports.Add($"{exp.UIndex}: {filePath}");
+                                    return true;
+                                }
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine(exception);
+                            interestingExports.Add($"{exp.UIndex}: {filePath}\n{exception}");
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            void ScanStaticMeshComponents(string filePath)
+            {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
                     var exports = pcc.Exports.Where(exp => exp.ClassName == "StaticMeshComponent");
@@ -4210,8 +4258,6 @@ namespace ME3Explorer
                     }
                 }
             }
-            var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
-            listDlg.Show();
 
             void ScanMaterials(string filePath)
             {
@@ -4384,6 +4430,58 @@ namespace ME3Explorer
             }
 
             File.WriteAllText(Path.Combine(App.ExecFolder, "Diff.json"), JsonConvert.SerializeObject(new {enumsDiff, structsDiff, classesDiff}, Formatting.Indented));
+        }
+
+        private void CreateDynamicLighting(object sender, RoutedEventArgs e)
+        {
+            if (Pcc == null) return;
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.inheritsFrom("MeshComponent") || exp.inheritsFrom("BrushComponent")))
+            {
+                PropertyCollection props = exp.GetProperties();
+                if (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false || props.GetProp<BoolProperty>("CastShadow")?.Value == false)
+                {
+                    // shadows/lighting has been explicitly forbidden, don't mess with it.
+                    continue;
+                }
+                props.AddOrReplaceProp(new BoolProperty(false, "bUsePreComputedShadows"));
+                props.AddOrReplaceProp(new BoolProperty(false, "bBioForcePreComputedShadows"));
+                props.AddOrReplaceProp(new BoolProperty(true, "bCastDynamicShadow"));
+                props.AddOrReplaceProp(new BoolProperty(true, "CastShadow"));
+                props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicDominantLightShadows"));
+                props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsLights"));
+                props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicLights"));
+
+                var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
+                                       new StructProperty("LightingChannelContainer", false, new BoolProperty(true, "bIsInitialized"))
+                                       {
+                                           Name = "LightingChannels"
+                                       };
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
+                props.AddOrReplaceProp(lightingChannels);
+
+                exp.WriteProperties(props);
+            }
+
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.inheritsFrom("LightComponent")))
+            {
+                PropertyCollection props = exp.GetProperties();
+                props.AddOrReplaceProp(new BoolProperty(true, "bCanAffectDynamicPrimitivesOutsideDynamicChannel"));
+                props.AddOrReplaceProp(new BoolProperty(true, "bForceDynamicLight"));
+
+                var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
+                                       new StructProperty("LightingChannelContainer", false, new BoolProperty(true, "bIsInitialized"))
+                                       {
+                                           Name = "LightingChannels"
+                                       };
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
+                props.AddOrReplaceProp(lightingChannels);
+
+                exp.WriteProperties(props);
+            }
+
+            MessageBox.Show(this, "Done!");
         }
     }
 }

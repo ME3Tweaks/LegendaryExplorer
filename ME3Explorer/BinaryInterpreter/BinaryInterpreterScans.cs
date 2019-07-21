@@ -499,6 +499,101 @@ namespace ME3Explorer
             return subnodes;
         }
 
+        private List<ITreeItem> StartLightComponentScan(byte[] data, int binarystart)
+        {
+
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+
+                int count;
+                foreach (string propName in new[]{"InclusionConvexVolumes", "ExclusionConvexVolumes"})
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"{propName} ({count = bin.ReadInt32()})")
+                    {
+                        Items = ReadList(count, i => new BinInterpTreeItem(bin.Position, $"{i}")
+                        {
+                            Items =
+                            {
+                                new BinInterpTreeItem(bin.Position, $"Planes ({count = bin.ReadInt32()})")
+                                {
+                                    Items = ReadList(count, j =>
+                                                         new BinInterpTreeItem(bin.Position, $"{j}: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()}, W: {bin.ReadSingle()})"))
+                                },
+                                new BinInterpTreeItem(bin.Position, $"PermutedPlanes ({count = bin.ReadInt32()})")
+                                {
+                                    Items = ReadList(count, j =>
+                                                         new BinInterpTreeItem(bin.Position, $"{j}: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()}, W: {bin.ReadSingle()})"))
+                                }
+                            }
+                        })
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
+        private List<ITreeItem> StartDominantLightScan(byte[] data)
+        {
+
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new MemoryStream(data);
+
+
+                if (Pcc.Game == MEGame.ME3)
+                {
+                    int count;
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"DominantLightShadowMap ({count = bin.ReadInt32()})")
+                    {
+                        Items = ReadList(count, i => new BinInterpTreeItem(bin.Position, $"{i}: {bin.ReadUInt16()}"))
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
+        private List<ITreeItem> StartShadowMap1DScan(byte[] data, int binarystart)
+        {
+
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+                if (Pcc.Game == MEGame.ME3)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"float size ({bin.ReadInt32()})"));
+                }
+
+                int sampleCount = bin.ReadInt32();
+                subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Samples ({sampleCount})")
+                {
+                    Items = ReadList(sampleCount, i => new BinInterpTreeItem(bin.Position, $"{i}: {bin.ReadSingle()}"))
+                });
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"LightGuid ({bin.ReadGuid()})"));
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
         private List<ITreeItem> StartPolysScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
@@ -7892,8 +7987,8 @@ namespace ME3Explorer
                     byte[] textureGuid = Gibbed.IO.StreamHelpers.ReadBytes(textureData, 16);
                     var textureGuidNode = new BinInterpTreeItem
                     {
-                        Header = $"0x{textureData.Position:X4} Texture GUID: {new Guid(textureGuid)}",
-                        Name = "_" + (textureData.Position)
+                        Header = $"0x{textureData.Position - 16:X4} Texture GUID: {new Guid(textureGuid)}",
+                        Name = "_" + (textureData.Position - 16)
 
                     };
                     subnodes.Add(textureGuidNode);

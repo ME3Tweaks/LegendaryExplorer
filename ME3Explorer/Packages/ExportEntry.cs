@@ -162,15 +162,15 @@ namespace ME3Explorer.Packages
             set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 36, sizeof(int));
         }
 
-        //if me1 or me2: int unkcount1
-        byte[][] unkList1; //if me1 or me2: unkcount1 * 12 bytes
+        ////if me1 or me2: int unkcount1
+        //byte[][] unkList1; //if me1 or me2: unkcount1 * 12 bytes
 
-        int unk1; //int unk1 
+        //int unk1; //int unk1 
 
-        //int unkcount2 
-        int unk2; //int unk2 
-        public Guid PackageGUID { get; set; } //GUID
-        int[] unkList2; //unkcount2 * 4 bytes 
+        ////int unkcount2 
+        //int unk2; //int unk2 
+        //public Guid PackageGUID { get; set; } //GUID
+        //int[] unkList2; //unkcount2 * 4 bytes 
 
         public string ObjectName => FileRef.Names[idxObjectName];
 
@@ -485,7 +485,6 @@ namespace ME3Explorer.Packages
             return false;
         }
 
-
         public int GetPropertyStart()
         {
             IMEPackage pcc = FileRef;
@@ -497,6 +496,13 @@ namespace ME3Explorer.Packages
                 }
 
                 return 30;
+            }
+
+            //TODO: If there are more classes which have binary before the props, could be worth creating a more extensible system for this
+            if (pcc.Game == MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
+            {
+                int count = BitConverter.ToInt32(_data, 0);
+                return count * 2 + 12;
             }
 
             //if (!IsDefaultObject)

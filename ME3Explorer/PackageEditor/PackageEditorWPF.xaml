@@ -220,6 +220,7 @@
                     <MenuItem Header="Find ME2 Powers" Click="FindAllME2PowerCustomAction_Click"/>
                     <MenuItem Header="List NetIndexes" Click="ListNetIndexes_Click"/>
                     <MenuItem Header="List Linker Indexes" Click="ListLinkerValues_Click"/>
+                    <MenuItem Header="Enable Dynamic Lighting" Click="CreateDynamicLighting"/>
                     <MenuItem Header="Scan stuff" Click="ScanStuff_Click"/>
 
                 </MenuItem>
