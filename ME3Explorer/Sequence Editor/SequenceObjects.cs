@@ -750,13 +750,10 @@ namespace ME3Explorer.SequenceObjects
                             Edges = new List<ActionEdge>(),
                             Desc = props.GetProp<StrProperty>("LinkDesc")
                         };
-                        for (int i = 0; i < linksProp.Count; i++)
+                        foreach (StructProperty outputInputLink in linksProp)
                         {
-                            int linkedOp = linksProp[i].GetProp<ObjectProperty>("LinkedOp").Value;
-                            l.Links.Add(linkedOp);
-                            l.InputIndices.Add(linksProp[i].GetProp<IntProperty>("InputLinkIdx"));
-                            if (OutputNumbers)
-                                l.Desc = l.Desc + (i > 0 ? "," : ": ") + "#" + linkedOp;
+                            l.Links.Add(outputInputLink.GetProp<ObjectProperty>("LinkedOp").Value);
+                            l.InputIndices.Add(outputInputLink.GetProp<IntProperty>("InputLinkIdx"));
                         }
                         l.node = CreateActionLinkBox();
                         l.node.Brush = outputBrush;
@@ -971,7 +968,6 @@ namespace ME3Explorer.SequenceObjects
             }
             if (linkDesc == null)
                 return;
-            linkDesc = OutputNumbers ? linkDesc.Substring(0, linkDesc.LastIndexOf(":")) : linkDesc;
             int inputIndex = -1;
             foreach (InputLink l in end.InLinks)
             {
@@ -1081,7 +1077,6 @@ namespace ME3Explorer.SequenceObjects
         public void RemoveOutlink(int linkconnection, int linkIndex)
         {
             string linkDesc = Outlinks[linkconnection].Desc;
-            linkDesc = (OutputNumbers ? linkDesc.Substring(0, linkDesc.LastIndexOf(":")) : linkDesc);
             var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
             if (outLinksProp != null)
             {
@@ -1427,7 +1422,12 @@ namespace ME3Explorer.SequenceObjects
             float outW = 0;
             for (int i = 0; i < Outlinks.Count; i++)
             {
-                SText t2 = new SText(Outlinks[i].Desc);
+                string linkDesc = Outlinks[i].Desc;
+                if (OutputNumbers && Outlinks[i].Links.Any())
+                {
+                    linkDesc += $": {string.Join(",", Outlinks[i].Links.Select(l => $"#{l}"))}";
+                }
+                SText t2 = new SText(linkDesc);
                 if (t2.Width + 10 > outW) outW = t2.Width + 10;
                 t2.X = 0 - t2.Width;
                 t2.Y = starty;
