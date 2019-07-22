@@ -388,7 +388,6 @@ namespace ME3Explorer
                         break;
                     case "World":
                         subNodes.AddRange(StartWorldScan(data, ref binarystart));
-                        appendGenericScan = true;
                         break;
                     case "ShaderCache":
                         subNodes.AddRange(StartShaderCacheScanStream(data, ref binarystart));
