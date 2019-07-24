@@ -10,6 +10,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using Ini;
+using KFreonLib.MEDirectories;
 using FontAwesome5;
 using ME3Explorer.SharedUI;
 using Microsoft.Win32;
@@ -59,37 +61,152 @@ namespace ME3Explorer.AutoTOC
 
         private void GenerateME1FileList()
         {
-            CommonOpenFileDialog outputDlg = new CommonOpenFileDialog
+            // AUTO DLC MOUNTING
+
+            // 1. GET LIST OF DLC DIRECTORIES, SET MAIN VARIABLES
+            //IList() me1DLCs; // set list of directorys
+            string DLCDirectory = ME1Directory.DLCPath;
+
+            string[] dlcList = Directory.GetDirectories(DLCDirectory, "*.*", SearchOption.TopDirectoryOnly);
+
+            Dictionary<int, string> dlcTable = new Dictionary<int, string>();
+
+
+            // 2. READ AUTOLOAD.INI FROM EACH DLC.  BUILD TABLE OF DIRECTORIES & MOUNTS
+            foreach (string d in dlcList)
             {
-                IsFolderPicker = true,
-                EnsurePathExists = true,
-                Title = "Select DLC CookedPC folder to create Fileindex",
-                InitialDirectory = ME1Directory.DLCPath,
-            };
-            if (outputDlg.ShowDialog(this) == CommonFileDialogResult.Ok)
-            {
-                //Validate
-                if (Path.GetFileName(outputDlg.FileName).Equals("CookedPC", StringComparison.InvariantCultureIgnoreCase))
+                if (d.EndsWith("DLC_UNC",StringComparison.InvariantCultureIgnoreCase))
                 {
-                    TOCWorker = new BackgroundWorker();
-                    TOCWorker.DoWork += GenerateFileList_BackgroundThread;
-                    TOCWorker.RunWorkerCompleted += GenerateAllTOCs_Completed;
-                    TOCWorker.RunWorkerAsync(outputDlg.FileName);
+                    dlcTable.Add(1, "DLC_UNC");
+                }
+                else if (d.EndsWith("DLC_VEGAS", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    dlcTable.Add(2, "DLC_VEGAS");
                 }
                 else
                 {
-                    MessageBox.Show("Chosen directory be named CookedPC.");
+                    string dlcDir = Path.Combine(d, "autoload.ini");  //CHECK IF FILE EXISTS?
+                    IniFile dlcAutoload = new IniFile(dlcDir);
+                    string name = dlcAutoload.IniReadValue("ME1DLCMOUNT", "ModDirName");
+                    int mount = Convert.ToInt32(dlcAutoload.IniReadValue("ME1DLCMOUNT", "ModMount"));
+                    dlcTable.Add(mount, name);
                 }
             }
+            // ADD BASEGAME = 0
+            dlcTable.Add(0, "BioGame");
+
+
+            // 3. REMOVE ALL SEEKFREEPCPATHs/DLCMOVIEPATHS FROM $DOCUMENTS$\BIOWARE\MASS EFFECT\CONFIG\BIOENGINE.ini
+            string userDocs = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var bioEnginePath = Path.Combine(userDocs, "BioWare", "Mass Effect", "Config", "BIOEngine.ini");
+            try
+            {
+                File.SetAttributes(bioEnginePath, File.GetAttributes(bioEnginePath) & ~FileAttributes.ReadOnly);
+            }
+            catch (IOException e)
+            {
+                MessageBox.Show("BioEngine not found. Run config or game to set it up." + ExceptionHandlerDialogWPF.FlattenException((e)));
+                return;
+            }
+            
+            
+            var BioEngine = new IniFile(bioEnginePath);
+
+            //Clean out seekfreepaths and moviepaths
+            while (BioEngine.IniReadValue("Core.System", "SeekFreePCPaths") != "")
+            {
+                BioEngine.IniRemoveKey("Core.System", "SeekFreePCPaths");
+            }
+
+            while (BioEngine.IniReadValue("Core.System", "DLC_MoviePaths") != "")
+            {
+                BioEngine.IniRemoveKey("Core.System", "DLC_MoviePaths");
+            }
+
+            // 4. ADD SEEKFREE PATHS IN REVERSE ORDER (HIGHEST= BIOGAME, ETC).
+            //SORT INTO REVERSE ORDER 0 => HIGHEST FOR BIOENGINE
+            foreach (KeyValuePair<int, string> item in dlcTable.OrderBy(k => k.Key))
+            {
+                if (item.Key == 0)
+                {
+                    //The @"string\thing" allows you to use \ instead of \\. Very good if you are using paths. Though most times you should use Path.Combine() as it will prevent you missing one by accident
+                    BioEngine.IniWriteNewValue("Core.System", "SeekFreePCPaths", @"..\BioGame\CookedPC");
+                }
+                else
+                {
+                    BioEngine.IniWriteNewValue("Core.System", "SeekFreePCPaths", $@"..\DLC\{item.Value}\CookedPC");
+                    if(Directory.Exists(Path.Combine(ME1Directory.DLCPath, item.Value, "Movies")))
+                    {
+                        BioEngine.IniWriteNewValue("Core.System", "DLC_MoviePaths", $@"..\DLC\{item.Value}\Movies"); //Add MoviePath if present
+                    }
+                }
+            }
+
+            
+
+
+            // 5. BUILD FILEINDEX.TXT FILE FOR EACH DLC AND BASEGAME
+            // BACKUP BASEGAME Fileindex.txt => Fileindex.bak if not done already.
+            var fileIndexBackupFile = Path.Combine(ME1Directory.cookedPath, "FileIndex.bak");
+            if (!File.Exists(fileIndexBackupFile))
+            {
+                //This might fail as the game will be installed into a write-protected directory for most users by default
+                try
+                {
+                    File.Copy(Path.Combine(ME1Directory.cookedPath, "FileIndex.txt"), fileIndexBackupFile);
+                }
+                catch (IOException e)
+                {
+                    MessageBox.Show("Error backup up FileIndex.txt:\n" + ExceptionHandlerDialogWPF.FlattenException((e)));
+                    return;
+                }
+            }
+
+            // CALL FUNCTION TO BUILD EACH FILEINDEX.  START WITH HIGHEST DLC MOUNT -> ADD TO MASTER FILE LIST
+            // DO NOT ADD DUPLICATES
+            TOCTasks.ClearEx();
+
+            List<String> masterList = new List<string>(); 
+            foreach (KeyValuePair<int, string> fileListStem in dlcTable.OrderByDescending(k => k.Key))
+            {
+                if (fileListStem.Value == "BioGame")
+                {
+                    //Using a list is pass by reference so our copy and the function's copy will be the same.
+                    //Note this does not work with primitive types like int (unless using the ref keyword), or immutable types like string.
+                    //(Immutable in c# = they can't be changed. modifying a string will return a new string instead)
+                    GenerateFileList(Path.Combine(ME1Directory.BioGamePath, "CookedPC"), masterList);
+                }
+                else
+                {
+                    GenerateFileList(Path.Combine(ME1Directory.DLCPath, fileListStem.Value, "CookedPC"), masterList);
+                }
+            }
+
+
+
+
+            //7. FINAL MESSAGE ON TOC TASKS
+            TOCTasks.Add(new ListBoxTask
+            {
+                Header = "Done",
+                Icon = FontAwesomeIcon.Check,
+                Foreground = Brushes.Green,
+                Spinning = false
+            });
         }
 
-        private void GenerateFileList_BackgroundThread(object sender, DoWorkEventArgs e)
+        /// <summary>
+        /// Generates new items to the FileIndex.txt (ME1) removing duplicate references contained in masterList
+        /// </summary>
+        /// <param name="CookedPath"></param>
+        /// <param name="masterList"></param>
+        private void GenerateFileList(string CookedPath, List<string> masterList)
         {
-            TOCTasks.ClearEx();
+
             string[] extensions = { ".sfm", ".upk", ".bik", ".u", ".isb" };
 
             //remove trailing slash
-            string dlcCookedDir = Path.GetFullPath(e.Argument as string); //standardize 
+            string dlcCookedDir = Path.GetFullPath(CookedPath); //standardize  
             ListBoxTask task = new ListBoxTask($"Generating file index for {dlcCookedDir}");
             TOCTasks.Add(task);
             int rootLength = dlcCookedDir.Length + 1; //trailing slash path separator. This is used to strip off the absolute part of the path and leave only relative
@@ -99,18 +216,29 @@ namespace ME3Explorer.AutoTOC
                 .Where(s => extensions.Any(ext => ext == Path.GetExtension(s).ToLower()))
                 .Select(p => p.Remove(0, rootLength))).ToList();
 
+            var addressedFiles = new List<string>();  //sub list of files that actually are addressed by the game (not duplicated at higher levels)
+            for (int i = 0; i < files.Count; i++)
+            {
+                Debug.WriteLine(files[i]);
+                if (!masterList.Contains(files[i]))
+                {
+                    //Only add items that are not already done.
+                    masterList.Add(files[i]);
+                    addressedFiles.Add(files[i]);
+                }
+            }
+
             string fileName = Path.Combine(dlcCookedDir, "FileIndex.txt");
-            File.WriteAllLines(fileName, files);
+            File.WriteAllLines(fileName, addressedFiles);
             task.Complete($"Generated file index for {dlcCookedDir}");
             TOCTasks.Add(new ListBoxTask
             {
                 Header = "Done",
-                Icon = EFontAwesomeIcon.Solid_Check,
+                Icon = FontAwesomeIcon.Check,
                 Foreground = Brushes.Green,
                 Spinning = false
             });
         }
-
 
         private void GenerateSingleDLCTOC()
         {
