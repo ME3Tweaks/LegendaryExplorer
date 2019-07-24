@@ -4118,17 +4118,112 @@ namespace ME3Explorer
 
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
-            var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
+            MEGame game = MEGame.ME1;
+            var filePaths = MELoadedFiles.GetFilesLoadedInGame(game).Values;
             var interestingExports = new List<string>();
             foreach (string filePath in filePaths)
             {
                 //ScanShaderCache(filePath);
                 //ScanMaterials(filePath);
                 //ScanStaticMeshComponents(filePath);
-                if (ScanLightComponents(filePath)) break;
+                //ScanLightComponents(filePath);
+                ScanLevel(filePath);
             }
             var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
             listDlg.Show();
+
+            bool ScanLevel(string filePath)
+            {
+                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
+                {
+                    var exports = pcc.Exports.Where(exp => exp.ClassName == "Level" && !exp.IsDefaultObject);
+                    foreach (ExportEntry exp in exports)
+                    {
+                        try
+                        {
+                            MemoryStream bin = new MemoryStream(exp.Data);
+                            bin.JumpTo(exp.propsEnd());
+
+                            bin.SkipInt32();//self
+                            bin.Skip(bin.ReadInt32() * 4);//Actors
+                            bin.SkipString(game == MEGame.ME3);//URL
+                            bin.SkipString(game == MEGame.ME3);
+                            bin.SkipString(game == MEGame.ME3);
+                            bin.SkipString(game == MEGame.ME3);
+                            for (int i = bin.ReadInt32(); i > 0; i--)
+                            {
+                                bin.SkipString(game == MEGame.ME3);
+                            }
+
+                            bin.Skip(8);
+                            bin.SkipInt32();//Model
+                            bin.Skip(bin.ReadInt32() * 4);//ModelComponents
+                            bin.Skip(bin.ReadInt32() * 4);//GameSequences
+                            for (int i = bin.ReadInt32(); i > 0; i--)//TextureToInstancesMap
+                            {
+                                bin.SkipInt32();
+                                for (int j = bin.ReadInt32(); j > 0; j--)
+                                {
+                                    bin.Skip(20);
+                                }
+                            }
+                            if(game == MEGame.ME3) bin.Skip(bin.ReadInt32()); //APEX
+                            bin.SkipInt32();//CachedPhysBSPData
+                            bin.Skip(bin.ReadInt32());
+                            bin.Skip(bin.ReadInt32() * 20);//CachedPhysSMDataMap
+                            for (int i = bin.ReadInt32(); i > 0; i--)//CachedPhysSMDataStore
+                            {
+                                for (int j = bin.ReadInt32(); j > 0; j--)
+                                {
+                                    bin.SkipInt32();
+                                    bin.Skip(bin.ReadInt32());
+                                }
+                            }
+                            bin.Skip(bin.ReadInt32() * 20);//CachedPhysPerTriSMDataMap
+                            for (int i = bin.ReadInt32(); i > 0; i--)//CachedPhysPerTriSMDataStore
+                            {
+                                bin.SkipInt32();
+                                bin.Skip(bin.ReadInt32());
+                            }
+                            bin.SkipInt32(); //CachedPhysBSPDataVersion
+                            bin.SkipInt32(); //CachedPhysSMDataVersion
+                            bin.Skip(bin.ReadInt32() * 8);//ForceStreamTextures
+                            bin.SkipInt32(); //NavListStart
+                            bin.SkipInt32(); //NavListEnd
+                            bin.SkipInt32(); //CoverListStart
+                            bin.SkipInt32(); //CoverListEnd
+                            if (game == MEGame.ME3)
+                            {
+                                bin.SkipInt32(); //PylonListStart
+                                bin.SkipInt32(); //PylonListEnd
+                                bin.Skip(bin.ReadInt32() * 20);//guidToIntMap
+                                bin.Skip(bin.ReadInt32() * 4);//CoverLinks
+                                bin.Skip(bin.ReadInt32() * 5);//IntToByteMap
+                                bin.Skip(bin.ReadInt32() * 20);//guidToIntMap
+                                bin.Skip(bin.ReadInt32() * 4);//NavPoints
+                                bin.Skip(bin.ReadInt32() * 4);//Numbers
+                            }
+                            bin.Skip(bin.ReadInt32() * 4);//CrossLevelActors
+                            int bioInert1 = bin.ReadInt32();
+                            int bioInert2 = bin.ReadInt32();
+                            if (bioInert1 != 0 && !pcc.getUExport(bioInert1).inheritsFrom("BioArtPlaceable") || bioInert2 != 0 && !pcc.getUExport(bioInert2).inheritsFrom("BioArtPlaceable"))
+                            {
+                                interestingExports.Add($"{exp.UIndex}: {filePath}");
+                                return true;
+                            }
+
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine(exception);
+                            interestingExports.Add($"{exp.UIndex}: {filePath}\n{exception}");
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
 
             bool ScanLightComponents(string filePath)
             {
@@ -4137,13 +4232,6 @@ namespace ME3Explorer
                     var exports = pcc.Exports.Where(exp => exp.inheritsFrom("DominantSpotLightComponent"));
                     foreach (ExportEntry exp in exports)
                     {
-                        if (!exp.IsDefaultObject)
-                        {
-                            interestingExports.Add($"{exp.UIndex}: {filePath}");
-                            return false;
-                        }
-
-                        continue;
                         try
                         {
                             MemoryStream bin = new MemoryStream(exp.Data);

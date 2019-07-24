@@ -400,7 +400,6 @@ namespace ME3Explorer
                         break;
                     case "Level":
                         subNodes.AddRange(StartLevelScan(data, ref binarystart));
-                        appendGenericScan = true;
                         break;
                     case "Material":
                         subNodes.AddRange(StartMaterialScan(data, ref binarystart));

@@ -146,16 +146,7 @@ namespace ME3Explorer
 
                     nodes.Add(new BinInterpTreeItem(bin.Position, $"MaterialId: {bin.ReadValueGuid()}") { Length = 16 });
 
-                    int friendlyNameLen = bin.ReadInt32();
-                    if (Pcc.Game == MEGame.ME3)
-                    {
-                        friendlyNameLen *= -2;
-                        nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Friendly Name: {bin.ReadStringUnicodeNull(friendlyNameLen)}") { Length = friendlyNameLen + 4 });
-                    }
-                    else
-                    {
-                        nodes.Add(new BinInterpTreeItem(bin.Position - 4, $"Friendly Name: {bin.ReadStringASCIINull(friendlyNameLen)}") { Length = friendlyNameLen + 4 });
-                    }
+                    nodes.Add(MakeStringNode(bin, "Friendly Name"));
 
                     nodes.AddRange(ReadFStaticParameterSetStream(bin));
 
@@ -192,6 +183,24 @@ namespace ME3Explorer
 
             return subnodes;
         }
+
+        private BinInterpTreeItem MakeStringNode(MemoryStream bin, string nodeName)
+        {
+            long pos = bin.Position;
+            int friendlyNameLen = bin.ReadInt32();
+            string str;
+            if (Pcc.Game == MEGame.ME3)
+            {
+                friendlyNameLen *= -2;
+                str = bin.ReadStringUnicodeNull(friendlyNameLen);
+            }
+            else
+            {
+                str = bin.ReadStringASCIINull(friendlyNameLen);
+            }
+            return new BinInterpTreeItem(pos, $"{nodeName}: {str}") {Length = friendlyNameLen + 4};
+        }
+
         enum EShaderFrequency : byte
         {
             Vertex = 0,
@@ -373,10 +382,10 @@ namespace ME3Explorer
                                                                                             $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
                                             })
                                         },
-                                        new BinInterpTreeItem(bin.Position, $"ScaleVector 1: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
-                                        new BinInterpTreeItem(bin.Position, $"ScaleVector 2: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
-                                        new BinInterpTreeItem(bin.Position, $"ScaleVector 3: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
-                                        Pcc.Game != MEGame.ME3 ? new BinInterpTreeItem(bin.Position, $"ScaleVector 4: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})") : null,
+                                        MakeVectorNode(bin, "ScaleVector 1"),
+                                        MakeVectorNode(bin, "ScaleVector 2"),
+                                        MakeVectorNode(bin, "ScaleVector 3"),
+                                        Pcc.Game != MEGame.ME3 ? MakeVectorNode(bin, "ScaleVector 4") : null,
                                         new BinInterpTreeItem(bin.Position, $"BulkDataFlags: {bin.ReadUInt32()}"),
                                         new BinInterpTreeItem(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
                                         new BinInterpTreeItem(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
@@ -393,15 +402,15 @@ namespace ME3Explorer
                                     InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_2D, () => new List<ITreeItem>
                                     {
                                         new BinInterpTreeItem(bin.Position, $"Texture 1: {entryRefString(bin)}"),
-                                        new BinInterpTreeItem(bin.Position, $"ScaleVector 1: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                        MakeVectorNode(bin, "ScaleVector 1"),
                                         new BinInterpTreeItem(bin.Position, $"Texture 2 {entryRefString(bin)}"),
-                                        new BinInterpTreeItem(bin.Position, $"ScaleVector 2: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                        MakeVectorNode(bin, "ScaleVector 2"),
                                         new BinInterpTreeItem(bin.Position, $"Texture 3 {entryRefString(bin)}"),
-                                        new BinInterpTreeItem(bin.Position, $"ScaleVector 3: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                        MakeVectorNode(bin, "ScaleVector 3"),
                                         InitializerHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
                                         {
                                             new BinInterpTreeItem(bin.Position, $"Texture 4 {entryRefString(bin)}"),
-                                            new BinInterpTreeItem(bin.Position, $"ScaleVector 4: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                            MakeVectorNode(bin, "ScaleVector 4"),
                                         }),
                                         new BinInterpTreeItem(bin.Position, $"CoordinateScale: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})"),
                                         new BinInterpTreeItem(bin.Position, $"CoordinateBias: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})")
@@ -421,8 +430,8 @@ namespace ME3Explorer
                                                                                            $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
                                             })
                                         },
-                                        new BinInterpTreeItem(bin.Position, $"ScaleVector?: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
-                                        new BinInterpTreeItem(bin.Position, $"ScaleVector?: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})")
+                                        MakeVectorNode(bin, "ScaleVector?"),
+                                        MakeVectorNode(bin, "ScaleVector?")
                                     }),
                                     InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_4 || lightMapType == ELightMapType.LMT_6, () => new List<ITreeItem>
                                     {
@@ -449,7 +458,7 @@ namespace ME3Explorer
                                                                                            $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
                                             })
                                         },
-                                        new BinInterpTreeItem(bin.Position, $"ScaleVector?: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})")
+                                        MakeVectorNode(bin, "ScaleVector?")
                                     }),
                                 })
                             }
@@ -614,10 +623,10 @@ namespace ME3Explorer
                         {
                             Items = new List<ITreeItem>
                             {
-                                new BinInterpTreeItem(bin.Position, $"Base: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
-                                new BinInterpTreeItem(bin.Position, $"Normal: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
-                                new BinInterpTreeItem(bin.Position, $"TextureU: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
-                                new BinInterpTreeItem(bin.Position, $"TextureV: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                                MakeVectorNode(bin, "Base"),
+                                MakeVectorNode(bin, "Normal"),
+                                MakeVectorNode(bin, "TextureU"),
+                                MakeVectorNode(bin, "TextureV"),
                                 new BinInterpTreeItem(bin.Position, $"Vertices ({bin.ReadInt32()})")
                                 {
                                     Items = ReadList(bin.Skip(-4).ReadInt32(), j =>
@@ -674,8 +683,8 @@ namespace ME3Explorer
                 {
                     Items = new List<ITreeItem>
                     {
-                        new BinInterpTreeItem(bin.Position, $"Origin: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
-                        new BinInterpTreeItem(bin.Position, $"BoxExtent: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                        MakeVectorNode(bin, "Origin"),
+                        MakeVectorNode(bin, "BoxExtent"),
                         new BinInterpTreeItem(bin.Position, $"SphereRadius: {bin.ReadSingle()}")
                     }
                 });
@@ -833,7 +842,7 @@ namespace ME3Explorer
                     {
                         Items = new List<ITreeItem>
                         {
-                            new BinInterpTreeItem(bin.Position, $"Position: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                            MakeVectorNode(bin, "Position"),
                             new BinInterpTreeItem(bin.Position, $"TangentX: (X: {bin.ReadByte()}, Y: {bin.ReadByte()}, Z: {bin.ReadByte()}, W: {bin.ReadByte()})"),
                             new BinInterpTreeItem(bin.Position, $"TangentZ: (X: {bin.ReadByte()}, Y: {bin.ReadByte()}, Z: {bin.ReadByte()}, W: {bin.ReadByte()})"),
                             new BinInterpTreeItem(bin.Position, $"TexCoord: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})"),
@@ -899,7 +908,7 @@ namespace ME3Explorer
                 {
                     Items =
                     {
-                        new BinInterpTreeItem(bin.Position, $"CamPosition: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"),
+                        MakeVectorNode(bin, "CamPosition"),
                         new BinInterpTreeItem(bin.Position, $"CamRotation: (Pitch: {bin.ReadInt32()}, Yaw: {bin.ReadInt32()}, Roll: {bin.ReadInt32()})"),
                         new BinInterpTreeItem(bin.Position, $"CamOrthoZoom: {bin.ReadSingle()}")
                     }
@@ -4848,657 +4857,286 @@ namespace ME3Explorer
 
         private List<ITreeItem> StartLevelScan(byte[] data, ref int binarystart)
         {
-            var subnodesTop = new List<ITreeItem>();
+            var subnodes = new List<ITreeItem>();
             try
             {
-                int start = binarystart;
-                //uint exportid = BitConverter.ToUInt32(data, start);
-                start += 4;
-                uint numberofitems = BitConverter.ToUInt32(data, start);
-                //int countoffset = start;
-                BinInterpTreeItem countnode = new BinInterpTreeItem
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Self: {entryRefString(bin)}"));
+                int actorsCount;
+                BinInterpTreeItem levelActorsNode;
+                subnodes.Add(levelActorsNode = new BinInterpTreeItem(bin.Position, $"Level Actors: ({actorsCount = bin.ReadInt32()})", NodeType.StructLeafInt)
                 {
-                    Tag = NodeType.StructLeafInt, //change to listlength or something.
                     ArrayAddAlgoritm = BinInterpTreeItem.ArrayPropertyChildAddAlgorithm.LevelItem,
-                    Header = $"{start:X4} Level Items List Length: {numberofitems}",
-                    Name = "_" + start,
                     IsExpanded = true
-                };
-                subnodesTop.Add(countnode);
-
-                start += 4;
-                int itemcount = 0;
-
-                var levelSubnodes = new List<ITreeItem>();
-                while (itemcount < numberofitems)
+                });
+                levelActorsNode.Items = ReadList(actorsCount, i => new BinInterpTreeItem(bin.Position, $"{i}: {entryRefString(bin)}", NodeType.ArrayLeafObject)
                 {
-                    //get header.
-                    uint itemexportid = BitConverter.ToUInt32(data, start);
-                    if (itemexportid == 0)
+                    ArrayAddAlgoritm = BinInterpTreeItem.ArrayPropertyChildAddAlgorithm.LevelItem,
+                    Parent = levelActorsNode,
+                });
+
+                subnodes.Add(new BinInterpTreeItem(bin.Position, "URL")
+                {
+                    Items =
                     {
-                        levelSubnodes.Add(new BinInterpTreeItem
+                        MakeStringNode(bin, "Protocol"),
+                        MakeStringNode(bin, "Host"),
+                        MakeStringNode(bin, "Map"),
+                        MakeStringNode(bin, "Portal"),
+                        new BinInterpTreeItem(bin.Position, $"Op: ({bin.ReadInt32()} items)")
                         {
-                            Tag = NodeType.ArrayLeafObject,
-                            Header = $"{start:X4}|{itemcount}: {0.ToString().PadRight(8, ' ')} Null/Class",
-                            ArrayAddAlgoritm = BinInterpTreeItem.ArrayPropertyChildAddAlgorithm.LevelItem,
-                            Name = "_" + start
-                        });
-                        start += 4;
-                        itemcount++;
+                            Items = ReadList(bin.Skip(-4).ReadInt32(), i => MakeStringNode(bin, $"{i}"))
+                        },
+                        new BinInterpTreeItem(bin.Position, $"Port: {bin.ReadInt32()}"),
+                        new BinInterpTreeItem(bin.Position, $"Valid: {bin.ReadInt32()}")
                     }
-                    else if (itemexportid - 1 < CurrentLoadedExport.FileRef.Exports.Count)
+                });
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Model: {entryRefString(bin)}"));
+                int modelcomponentsCount;
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"ModelComponents: ({modelcomponentsCount = bin.ReadInt32()})")
+                {
+                    Items = ReadList(modelcomponentsCount, i => new BinInterpTreeItem(bin.Position, $"{i}: {entryRefString(bin)}"))
+                });
+                int sequencesCount;
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"GameSequences: ({sequencesCount = bin.ReadInt32()})")
+                {
+                    Items = ReadList(sequencesCount, i => new BinInterpTreeItem(bin.Position, $"{i}: {entryRefString(bin)}"))
+                });
+                int texToInstCount;
+                int streamableTexInstCount;
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"TextureToInstancesMap: ({texToInstCount = bin.ReadInt32()})")
+                {
+                    Items = ReadList(texToInstCount, i =>
+                                         new BinInterpTreeItem(bin.Position, $"{entryRefString(bin)}: ({streamableTexInstCount = bin.ReadInt32()} StreamableTextureInstances)")
                     {
-                        ExportEntry locexp = CurrentLoadedExport.FileRef.Exports[(int)itemexportid - 1];
-                        //Console.WriteLine($"0x{start:X5} \t0x{itemexportid:X5} \t{locexp.PackageFullName}.{locexp.ObjectName}_{locexp.indexValue} [{itemexportid - 1}]");
-                        levelSubnodes.Add(new BinInterpTreeItem
+                        Items = ReadList(streamableTexInstCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
                         {
-                            Tag = NodeType.ArrayLeafObject,
-                            Header = $"{start:X4}|{itemcount}: {locexp.UIndex.ToString().PadRight(8, ' ')} {CurrentLoadedExport.FileRef.GetEntryString(locexp.UIndex)}",
-                            ArrayAddAlgoritm = BinInterpTreeItem.ArrayPropertyChildAddAlgorithm.LevelItem,
-                            Name = "_" + start
-                        });
-                        start += 4;
-                        itemcount++;
-                    }
-                    else
-                    {
-                        //Console.WriteLine($"0x{start:X5} \t0x{itemexportid:X5} \tInvalid item. Ensure the list is the correct length. (Export {itemexportid})");
-                        levelSubnodes.Add(new BinInterpTreeItem
-                        {
-                            Tag = NodeType.ArrayLeafObject,
-                            Header = $"{start:X4} Invalid item. Ensure the list is the correct length. (Export {itemexportid})",
-                            Name = "_" + start
-                        });
-                        start += 4;
-                        itemcount++;
-                    }
-                }
-
-                foreach (object o in levelSubnodes)
-                {
-                    if (o is BinInterpTreeItem b)
-                    {
-                        b.Parent = countnode;
-                    }
-                }
-                countnode.Items = levelSubnodes;
-
-                //Unreal, persistent package
-                int unrealNameLen = BitConverter.ToInt32(data, start);
-                Encoding encodingToUse = Encoding.ASCII;
-                if (unrealNameLen < 0)
-                {
-                    unrealNameLen *= -2;
-                    encodingToUse = Encoding.Unicode;
-                }
-                int strStart = start;
-                start += 4;
-                MemoryStream ms = new MemoryStream(data);
-                ms.Position = start;
-                string unrealStr = Gibbed.IO.StreamHelpers.ReadString(ms, unrealNameLen, true, encodingToUse);
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.Unknown,
-                    Header = $"{strStart:X4}| Unreal header string: " + unrealStr,
-                    Name = "_" + strStart
-                });
-                start += unrealNameLen;
-
-                start += 4; //blank 0
-
-                int persistentLevelPackageLen = BitConverter.ToInt32(data, start);
-                start += 4;
-                encodingToUse = Encoding.ASCII;
-                if (persistentLevelPackageLen < 0)
-                {
-                    persistentLevelPackageLen *= -2;
-                    encodingToUse = Encoding.Unicode;
-                }
-                ms.Position = start;
-                string persistentLevelPackageStr = Gibbed.IO.StreamHelpers.ReadString(ms, persistentLevelPackageLen, true, encodingToUse);
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.Unknown,
-                    Header = $"{start:X4}| Persistent Level Package: " + persistentLevelPackageStr,
-                    Name = "_" + start
-                });
-                start += persistentLevelPackageLen;
-
-
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.Unknown,
-                    Header = $"{start:X4}| Zero: " + BitConverter.ToInt32(data, start),
-                    Name = "_" + start
-                });
-                start += 4;
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.Unknown,
-                    Header = $"{start:X4}| Zero: " + BitConverter.ToInt32(data, start),
-                    Name = "_" + start
-                });
-                start += 4;
-
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.Unknown,
-                    Header = $"{start:X4}| Constant 7777?: " + BitConverter.ToInt32(data, start),
-                    Name = "_" + start
-                });
-                start += 4;
-
-                int someKindOfCount1 = BitConverter.ToInt32(data, start);
-                var modelReferenceCountNode = new BinInterpTreeItem
-                {
-                    Tag = NodeType.Unknown,
-                    Header = $"{start:X4}| Model Reference Count?: " + someKindOfCount1,
-                    Name = "_" + start
-                };
-                subnodesTop.Add(modelReferenceCountNode);
-                start += 4;
-
-                for (int i = 0; i < someKindOfCount1; i++)
-                {
-
-                    int modelReference = BitConverter.ToInt32(data, start);
-                    modelReferenceCountNode.Items.Add(new BinInterpTreeItem
-                    {
-                        Tag = NodeType.Unknown,
-                        Header = $"{start:X4}| Model Reference: " + CurrentLoadedExport.FileRef.GetEntryString(modelReference),
-                        Name = "_" + start
-                    });
-                    start += 4;
-                }
-
-                int modelComponentCount = BitConverter.ToInt32(data, start);
-                var modelComponentCountNode = new BinInterpTreeItem
-                {
-                    Tag = NodeType.Unknown,
-                    Header = $"{start:X4}| Model Component Count?: " + modelComponentCount,
-                    Name = "_" + start
-                };
-                subnodesTop.Add(modelComponentCountNode);
-                start += 4;
-
-                for (int i = 0; i < modelComponentCount; i++)
-                {
-
-                    int componentReference = BitConverter.ToInt32(data, start);
-                    modelComponentCountNode.Items.Add(new BinInterpTreeItem
-                    {
-                        Tag = NodeType.Unknown,
-                        Header = $"{start:X4}| Model Component Reference: " + CurrentLoadedExport.FileRef.GetEntryString(componentReference),
-                        Name = "_" + start
-                    });
-                    start += 4;
-                }
-
-                //subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem
-                //{
-                //    Tag = NodeType.Unknown,
-                //    Header = $"{start:X4}| Zero: " + BitConverter.ToInt32(data, start),
-                //    Name = "_" + start
-                //});
-                //start += 4;
-
-                //Sequence Ref
-                int mainSequenceCount = BitConverter.ToInt32(data, start);
-                var mainSequencesCountNode = new BinInterpTreeItem
-                {
-                    Tag = NodeType.Unknown,
-                    Header = $"{start:X4}| Main Sequence Reference Count?: " + mainSequenceCount,
-                    Name = "_" + start
-                };
-                subnodesTop.Add(mainSequencesCountNode);
-                start += 4;
-
-                for (int i = 0; i < mainSequenceCount; i++)
-                {
-                    int seqReference = BitConverter.ToInt32(data, start);
-                    mainSequencesCountNode.Items.Add(new BinInterpTreeItem
-                    {
-                        Tag = NodeType.Unknown,
-                        Header = $"{start:X4}| Main Sequence Reference: " + CurrentLoadedExport.FileRef.GetEntryString(seqReference),
-                        Name = "_" + start
-                    });
-                    start += 4;
-                }
-
-                int someKindOfCount3 = BitConverter.ToInt32(data, start);
-                var floatingPointsList1 = new BinInterpTreeItem
-                {
-                    Tag = NodeType.Unknown,
-                    Header = $"{start:X4}| Floating Point list count: {someKindOfCount3}",
-                    Name = "_" + start
-                };
-                subnodesTop.Add(floatingPointsList1);
-                start += 4;
-
-                for (int i = 0; i < someKindOfCount3; i++)
-                {
-                    var listID = BitConverter.ToInt32(data, start);
-                    var bitWidthMaybe = BitConverter.ToInt32(data, start + 4);
-
-                    var subFloatingPointNode = new BinInterpTreeItem
-                    {
-                        Tag = NodeType.Unknown,
-                        Header = $"{start:X4}| Floating Point list {i} - ID?: {listID} Length of tris?: {bitWidthMaybe}",
-                        Name = "_" + start
-                    };
-                    start += 8;
-
-                    for (int j = 0; j < bitWidthMaybe; j++) //0x50 / 4
-                    {
-                        for (int k = 0; k < 5; k++)
-                        {
-                            subFloatingPointNode.Items.Add(new BinInterpTreeItem
+                            IsExpanded = true,
+                            Items =
                             {
-                                Tag = NodeType.Unknown,
-                                Header = $"{start:X4}| {BitConverter.ToSingle(data, start)}",
-                                Name = "_" + start
-                            });
-                            start += 4;
-                        }
-                    }
-                    floatingPointsList1.Items.Add(subFloatingPointNode);
-                }
-
-                int someKindOfCount4 = BitConverter.ToInt32(data, start);
-                var unkList2 = new BinInterpTreeItem
-                {
-                    Tag = NodeType.Unknown,
-                    Header = $"{start:X4}| ?? List count: {someKindOfCount4}",
-                    Name = "_" + start
-                };
-                subnodesTop.Add(unkList2);
-                start += 4;
-                for (int i = 0; i < someKindOfCount4; i++)
-                {
-                    //unkonwn atm
-                }
-                //subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem
-                //{
-                //    Tag = NodeType.Unknown,
-                //    Header = $"{start:X4}| Zero: " + BitConverter.ToInt32(data, start),
-                //    Name = "_" + start
-                //});
-
-
-
-                //start += 4;
-                //subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem
-                //{
-                //    Tag = NodeType.Unknown,
-                //    Header = $"{start:X4}| Zero: " + BitConverter.ToInt32(data, start),
-                //    Name = "_" + start
-                //});
-                //start += 4;
-
-                //NXS MESH
-                int someKindOfCount5 = BitConverter.ToInt32(data, start);
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.Unknown,
-                    Header = $"{start:X4}| NXS MESH (PhysX Collision) count?: " + someKindOfCount5,
-                    Name = "_" + start
+                                new BinInterpTreeItem(bin.Position, "BoundingSphere")
+                                {
+                                    IsExpanded = true,
+                                    Items =
+                                    {
+                                        MakeVectorNode(bin, "Center"),
+                                        new BinInterpTreeItem(bin.Position, $"Radius: {bin.ReadSingle()}")
+                                    }
+                                },
+                                new BinInterpTreeItem(bin.Position, $"TexelFactor: {bin.ReadSingle()}")
+                            }
+                        })
+                    })
                 });
-                start += 4;
 
-                if (someKindOfCount5 > 0)
+                if (Pcc.Game == MEGame.ME3)
                 {
-                    var nxsMeshOffsets = FindBytePatterns(data, nxsMeshBytes).ToList();
-                    if (nxsMeshOffsets.Count > 0)
+                    int apexSize;
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"APEX Size: {apexSize = bin.ReadInt32()}"));
+                    //should always be zero, but just in case...
+                    if (apexSize > 0)
                     {
-                        start = nxsMeshOffsets.Last() - 20;
-                        var lastSize = BitConverter.ToInt32(data, start);
-                        start += lastSize + 4;
+                        subnodes.Add(new BinInterpTreeItem(bin.Position, $"APEX mesh?: {apexSize} bytes") { Length = apexSize});
+                        bin.Skip(apexSize);
                     }
                 }
-                else
+
+                int cachedPhysBSPDataSize;
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"size of byte: {bin.ReadInt32()}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"CachedPhysBSPData Size: {cachedPhysBSPDataSize = bin.ReadInt32()}"));
+                if (cachedPhysBSPDataSize > 0)
                 {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"CachedPhysBSPData: {cachedPhysBSPDataSize} bytes") { Length = cachedPhysBSPDataSize });
+                    bin.Skip(cachedPhysBSPDataSize);
+                }
 
-
-                    int nxsLength = BitConverter.ToInt32(data, start);
-                    subnodesTop.Add(new BinInterpTreeItem
+                int cachedPhysSMDataMapCount;
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"CachedPhysSMDataMap: ({cachedPhysSMDataMapCount = bin.ReadInt32()})")
+                {
+                    Items = ReadList(cachedPhysSMDataMapCount, i => new BinInterpTreeItem(bin.Position, $"{entryRefString(bin)}")
                     {
-                        Tag = NodeType.Unknown,
-                        Header = $"{start:X4}| NXS MESH Length: {nxsLength} ({nxsLength:X4})",
-                        Name = "_" + start
-                    });
-                    start += 4;
-                    subnodesTop.Add(new BinInterpTreeItem
-                    {
-                        Tag = NodeType.Unknown,
-                        Header = $"{start:X4}| NXS MESH 0x{start:X4} - 0x{(start + nxsLength):X4}",
-                        Name = "_" + start
-                    });
-
-                    start += nxsLength;
-                    int yetAnotherCount1 = BitConverter.ToInt32(data, start);
-                    var yetAnotherNode = new BinInterpTreeItem
-                    {
-                        Tag = NodeType.Unknown,
-                        Header = $"{start:X4}| Unknown 4-Item Tuple List",
-                        Name = "_" + start
-                    };
-                    subnodesTop.Add(yetAnotherNode);
-                    start += 4;
-
-                    //yetAnotherNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                    //{
-                    //    Tag = NodeType.Unknown,
-                    //    Header = $"{(start):X4}| Int?: {BitConverter.ToInt32(data,start)}",
-                    //    Name = "_" + start
-                    //});
-                    //start += 4;
-                    //yetAnotherNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                    //{
-                    //    Tag = NodeType.Unknown,
-                    //    Header = $"{(start):X4}| Floating Point #?: {BitConverter.ToSingle(data, start)}",
-                    //    Name = "_" + start
-                    //});
-                    //start += 4;
-                    //yetAnotherNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                    //{
-                    //    Tag = NodeType.Unknown,
-                    //    Header = $"{(start):X4}| Floating Point #?: {BitConverter.ToSingle(data, start)}",
-                    //    Name = "_" + start
-                    //});
-                    //start += 4;
-                    //yetAnotherNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                    //{
-                    //    Tag = NodeType.Unknown,
-                    //    Header = $"{(start):X4}| Floating Point #?: {BitConverter.ToSingle(data, start)}",
-                    //    Name = "_" + start
-                    //});
-                    //start += 4;
-
-                    for (int i = 0; i < yetAnotherCount1; i++)
-                    {
-                        int ID = BitConverter.ToInt32(data, start);
-                        var subFloatingPointNode = new BinInterpTreeItem
+                        Items =
                         {
-                            Tag = NodeType.Unknown,
-                            Header = $"{start:X4}| Mapping? ID: {ID}",
-                            Name = "_" + start
+                            MakeVectorNode(bin, "Scale3D"),
+                            new BinInterpTreeItem(bin.Position, $"CachedDataIndex: {bin.ReadInt32()}")
+                        }
+                    })
+                });
+
+                int cachedPhysSMDataStoreCount;
+                int cachedConvexElementsCount;
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"CachedPhysSMDataStore: ({cachedPhysSMDataStoreCount = bin.ReadInt32()})")
+                {
+                    Items = ReadList(cachedPhysSMDataStoreCount, i => new BinInterpTreeItem(bin.Position, $"{i}: CachedConvexElements ({cachedConvexElementsCount = bin.ReadInt32()})")
+                    {
+                        Items = ReadList(cachedConvexElementsCount, j =>
+                        {
+                            int size;
+                            var item = new BinInterpTreeItem(bin.Position, $"{j}: ConvexElementData (size of byte: {bin.ReadInt32()}) (number of bytes: {size = bin.ReadInt32()})")
+                            {
+                                Length = size + 8
+                            };
+                            bin.Skip(size);
+                            return item;
+                        })
+                    })
+                });
+
+                int cachedPhysPerTriSMDataMapCount;
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"CachedPhysPerTriSMDataMap: ({cachedPhysPerTriSMDataMapCount = bin.ReadInt32()})")
+                {
+                    Items = ReadList(cachedPhysPerTriSMDataMapCount, i => new BinInterpTreeItem(bin.Position, $"{entryRefString(bin)}")
+                    {
+                        Items =
+                        {
+                            MakeVectorNode(bin, "Scale3D"),
+                            new BinInterpTreeItem(bin.Position, $"CachedDataIndex: {bin.ReadInt32()}")
+                        }
+                    })
+                });
+
+                int cachedPhysPerTriSMDataStoreCount;
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"CachedPhysPerTriSMDataStore: ({cachedPhysPerTriSMDataStoreCount = bin.ReadInt32()})")
+                {
+                    Items = ReadList(cachedPhysPerTriSMDataStoreCount, j =>
+                    {
+                        int size;
+                        var item = new BinInterpTreeItem(bin.Position, $"{j}: CachedPerTriData (size of byte: {bin.ReadInt32()}) (number of bytes: {size = bin.ReadInt32()})")
+                        {
+                            Length = size + 8
                         };
-                        start += 4;
-                        yetAnotherNode.Items.Add(subFloatingPointNode);
-                        for (int k = 0; k < 4; k++)
-                        {
-                            subFloatingPointNode.Items.Add(new BinInterpTreeItem
-                            {
-                                Tag = NodeType.Unknown,
-                                Header = $"{start:X4}| {(k == 3 ? BitConverter.ToInt32(data, start) : BitConverter.ToSingle(data, start))}",
-                                Name = "_" + start
-                            });
-                            start += 4;
-                        }
-                    }
+                        bin.Skip(size);
+                        return item;
+                    })
+                });
 
-                    int cvxmCount = BitConverter.ToInt32(data, start);
-                    var nvscxvmItems = new BinInterpTreeItem
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"CachedPhysBSPDataVersion: {bin.ReadInt32()}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"CachedPhysBSPDataVersion: {bin.ReadInt32()}"));
+
+                int forceStreamTexturesCount;
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"ForceStreamTextures: ({forceStreamTexturesCount = bin.ReadInt32()})")
+                {
+                    Items = ReadList(forceStreamTexturesCount, i => new BinInterpTreeItem(bin.Position, $"Texture: {entryRefString(bin)} | ForceStream: {bin.ReadBoolInt()}"))
+                });
+
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"NavListStart: {entryRefString(bin)}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"NavListEnd: {entryRefString(bin)}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"CoverListStart: {entryRefString(bin)}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"CoverListEnd: {entryRefString(bin)}"));
+                if (Pcc.Game == MEGame.ME3)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"PylonListStart: {entryRefString(bin)}"));
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"PylonListEnd: {entryRefString(bin)}"));
+
+                    int guidToIntMapCount;
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"guidToIntMap?: ({guidToIntMapCount = bin.ReadInt32()})")
                     {
-                        Tag = NodeType.Unknown,
-                        Header = $"{start:X4}| NXS CVXM items: {cvxmCount}",
-                        Name = "_" + start
-                    };
-                    subnodesTop.Add(nvscxvmItems);
-                    start += 4;
-
-                    for (int i = 0; i < cvxmCount; i++)
-                    {
-                        var nvscxvmItem = new BinInterpTreeItem
-                        {
-                            Tag = NodeType.Unknown,
-                            Header = $"{start:X4}| NXS CVXM Item",
-                            Name = "_" + start
-                        };
-                        nvscxvmItems.Items.Add(nvscxvmItem);
-
-                        nvscxvmItem.Items.Add(new BinInterpTreeItem
-                        {
-                            Tag = NodeType.Unknown,
-                            Header = $"{start:X4}| Const 1?: {BitConverter.ToInt32(data, start)}",
-                            Name = "_" + start
-                        });
-
-                        start += 4;
-                        nvscxvmItem.Items.Add(new BinInterpTreeItem
-                        {
-                            Tag = NodeType.Unknown,
-                            Header = $"{start:X4}| Const 1?: {BitConverter.ToInt32(data, start)}",
-                            Name = "_" + start
-                        });
-                        start += 4;
-
-                        int size = BitConverter.ToInt32(data, start);
-                        nvscxvmItem.Items.Add(new BinInterpTreeItem
-                        {
-                            Tag = NodeType.Unknown,
-                            Header = $"{start:X4}| CVXM Size: {size} ({size:X5}",
-                            Name = "_" + start
-                        });
-                        start += 4;
-
-
-                        nvscxvmItem.Items.Add(new BinInterpTreeItem
-                        {
-                            Tag = NodeType.Unknown,
-                            Header =
-                                $"{start:X4}| CVXM TheWorld?: {CurrentLoadedExport.FileRef.getNameEntry(BitConverter.ToInt32(data, start))}",
-                            Name = "_" + start
-                        });
-                        start += 8;
-
-                        nvscxvmItem.Items.Add(new BinInterpTreeItem
-                        {
-                            Tag = NodeType.Unknown,
-                            Header = $"{start:X4}| CVXM Unknown: {BitConverter.ToInt32(data, start)}",
-                            Name = "_" + start
-                        });
-                        start += 8; //Skip a blank
-
-                        nvscxvmItem.Items.Add(new BinInterpTreeItem
-                        {
-                            Tag = NodeType.Unknown,
-                            Header = $"{start:X4}| NXS CVXM 0x{start:X4} - 0x{(start + size):X4}",
-                            Name = "_" + start
-                        });
-                        start += size - 16;
-                    }
-                }
-
-
-                //Navigation start, end
-                //CoverLink Start,End
-                //For some reason Navigation Chain and CoverLink Chain are separate chains.
-                //These values indicate the entry point and exit point for probing the chain.
-                //The end object will not have a nextNavigationPoint/nextCoverLink object.
-
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.Unknown,
-                    Header = $"{start:X4}| Unknown data 0x{start:X4} - 0x{(start + 20):X4}",
-                    Name = "_" + start
-                });
-                start += 20; //5*4
-
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.ObjectProperty,
-                    Header = $"{start:X4}| Navigation Chain Start: " + CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
-                    Name = "_" + start
-                });
-                start += 4;
-
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.ObjectProperty,
-                    Header = $"{start:X4}| Navigation Chain End: " + CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
-                    Name = "_" + start
-                });
-                start += 4;
-
-
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.ObjectProperty,
-                    Header = $"{start:X4}| CoverLink Chain Start: " + CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
-                    Name = "_" + start
-                });
-                start += 4;
-
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.ObjectProperty,
-                    Header = $"{start:X4}| CoverLink Chain End: " + CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
-                    Name = "_" + start
-                });
-                start += 4;
-
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.ObjectProperty,
-                    Header = $"{start:X4}| Zero: " + BitConverter.ToInt32(data, start),
-                    Name = "_" + start
-                });
-                start += 4;
-
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.ObjectProperty,
-                    Header = $"{start:X4}| Zero: " + BitConverter.ToInt32(data, start),
-                    Name = "_" + start
-                });
-                start += 4;
-
-                //Unsure if this is always zero. It seems there is some sort of list of 3 things there, maybe he last one is unused
-                //From udk site this may be pylons? No idea what those are but they seem to be a third type of level object.
-                subnodesTop.Add(new BinInterpTreeItem
-                {
-                    Tag = NodeType.ObjectProperty,
-                    Header = $"{start:X4}| Zero: " + BitConverter.ToInt32(data, start),
-                    Name = "_" + start
-                });
-                start += 4;
-
-                int count = BitConverter.ToInt32(data, start);
-                var coverLinks = new BinInterpTreeItem
-                {
-                    Tag = NodeType.ObjectProperty,
-                    Header = $"{start:X4}| CoverLinkCount?: " + count,
-                    Name = "_" + start
-                };
-                subnodesTop.Add(coverLinks);
-                start += 4;
-                for (int i = 0; i < count; i++)
-                {
-                    coverLinks.Items.Add(new BinInterpTreeItem
-                    {
-                        Tag = NodeType.ObjectProperty,
-                        Header = $"{start:X4}| " +
-                                 CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
-                        Name = "_" + start
+                        Items = ReadList(guidToIntMapCount, i => new BinInterpTreeItem(bin.Position, $"{bin.ReadValueGuid()}: {bin.ReadInt32()}"))
                     });
-                    start += 4;
-                }
 
-                count = BitConverter.ToInt32(data, start);
-                var nodeTuples = new BinInterpTreeItem
-                {
-                    Tag = NodeType.ObjectProperty,
-                    Header = $"{start:X4}| Node Tuples? Precomputed Visibility Table?: " + count,
-                    Name = "_" + start
-                };
-                subnodesTop.Add(nodeTuples);
-                start += 4;
-                start += 4; //Skip 0?
-
-                //Values in this table seem to be kind of like the packed values we see in coverlinks.
-                //Maybe this is precomputed visibility values, but idk how any of this works.
-                //I'm not sure why it is divided by 4. Maybe the count is the number of bytes? All I know is that it somehow works out
-                for (int i = 0; i < count / 4; i++)
-                {
-                    var tupleItem = new BinInterpTreeItem
+                    int coverListCount;
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Coverlinks: ({coverListCount = bin.ReadInt32()})")
                     {
-                        Tag = NodeType.IntProperty,
-                        Header = $"{start:X4}| Tuple Item " + i,
-                        Name = "_" + start
-                    };
-                    nodeTuples.Items.Add(tupleItem);
-
-                    for (int j = 0; j < 5; j++)
-                    {
-                        if (j > 0 && j < 4)
-                        {
-                            tupleItem.Items.Add(new BinInterpTreeItem
-                            {
-                                Tag = NodeType.IntProperty,
-                                Header =
-                                    $"{start:X4}| {BitConverter.ToInt32(data, start)}",
-                                Name = "_" + start
-                            });
-                        }
-                        else
-                        {
-                            tupleItem.Items.Add(new BinInterpTreeItem
-                            {
-                                Tag = NodeType.ObjectProperty,
-                                Header =
-                                    $"{start:X4}| {BitConverter.ToInt32(data, start)} {CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start))}",
-                                Name = "_" + start
-                            });
-                        }
-
-                        start += 4;
-                    }
-
-                    //nodeTuples.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                    //{
-                    //    Tag = NodeType.IntProperty,
-                    //    Header = $"{start:X4}| " + BitConverter.ToInt32(data, start),
-                    //    Name = "_" + start
-                    //});
-                    //start += 4;
-
-                    //nodeTuples.Items.Add(new BinaryInterpreterWPFTreeViewItem
-                    //{
-                    //    Tag = NodeType.ObjectProperty,
-                    //    Header = $"{start:X4}| " + CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
-                    //    Name = "_" + start
-                    //});
-                    //start += 4;
-                }
-
-                start += 1; //Skip a 1 value. Byte alignment maybe?
-                var navigationNodes = new BinInterpTreeItem
-                {
-                    Tag = NodeType.ObjectProperty,
-                    Header = $"{start:X4}| Navigation Nodes?",
-                    Name = "_" + start
-                };
-                subnodesTop.Add(navigationNodes);
-                while (start < data.Length - 8)
-                {
-                    navigationNodes.Items.Add(new BinInterpTreeItem
-                    {
-                        Tag = NodeType.ObjectProperty,
-                        Header = $"{start:X4}| " +
-                                 CurrentLoadedExport.FileRef.GetEntryString(BitConverter.ToInt32(data, start)),
-                        Name = "_" + start
+                        Items = ReadList(coverListCount, i => new BinInterpTreeItem(bin.Position, $"{i}: {entryRefString(bin)}"))
                     });
-                    start += 4;
+
+                    int intToByteMapCount;
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"IntToByteMap?: ({intToByteMapCount = bin.ReadInt32()})")
+                    {
+                        Items = ReadList(intToByteMapCount, i => new BinInterpTreeItem(bin.Position, $"{bin.ReadInt32()}: {bin.ReadByte()}"))
+                    });
+
+                    int guidToIntMap2Count;
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"2nd guidToIntMap?: ({guidToIntMap2Count = bin.ReadInt32()})")
+                    {
+                        Items = ReadList(guidToIntMap2Count, i => new BinInterpTreeItem(bin.Position, $"{bin.ReadValueGuid()}: {bin.ReadInt32()}"))
+                    });
+
+                    int navListCount;
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"NavPoints?: ({navListCount = bin.ReadInt32()})")
+                    {
+                        Items = ReadList(navListCount, i => new BinInterpTreeItem(bin.Position, $"{i}: {entryRefString(bin)}"))
+                    });
+
+                    int numbersCount;
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"Ints?: ({numbersCount = bin.ReadInt32()})")
+                    {
+                        Items = ReadList(numbersCount, i => new BinInterpTreeItem(bin.Position, $"{i}: {bin.ReadInt32()}"))
+                    });
                 }
 
-                binarystart = start;
+                int crossLevelActorsCount;
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"CrossLevelActors?: ({crossLevelActorsCount = bin.ReadInt32()})")
+                {
+                    Items = ReadList(crossLevelActorsCount, i => new BinInterpTreeItem(bin.Position, $"{i}: {entryRefString(bin)}"))
+                });
+
+                if (Pcc.Game == MEGame.ME1)
+                {
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"BioArtPlaceable 1?: {entryRefString(bin)}"));
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, $"BioArtPlaceable 2?: {entryRefString(bin)}"));
+                }
+
+                if (Pcc.Game == MEGame.ME3)
+                {
+                    bool bInitialized;
+                    int samplesCount;
+                    subnodes.Add(new BinInterpTreeItem(bin.Position, "PrecomputedLightVolume")
+                    {
+                        Items =
+                        {
+                            new BinInterpTreeItem(bin.Position, $"bInitialized: ({bInitialized = bin.ReadBoolInt()})"),
+                            InitializerHelper.ConditionalAdd(bInitialized, () => new ITreeItem[]
+                            {
+                                new BinInterpTreeItem(bin.Position, "Bounds")
+                                {
+                                    IsExpanded = true,
+                                    Items =
+                                    {
+                                        MakeVectorNode(bin, "Min"),
+                                        MakeVectorNode(bin, "Max"),
+                                        new BinInterpTreeItem(bin.Position, $"IsValid: {bin.ReadBoolByte()}")
+                                    }
+                                },
+                                new BinInterpTreeItem(bin.Position, $"SampleSpacing: {bin.ReadSingle()}"),
+                                new BinInterpTreeItem(bin.Position, $"Samples ({samplesCount = bin.ReadInt32()})")
+                                {
+                                    Items = ReadList(samplesCount, i => new BinInterpTreeItem(bin.Position, $"{i}")
+                                    {
+                                        Items =
+                                        {
+                                            MakeVectorNode(bin, "Position"),
+                                            new BinInterpTreeItem(bin.Position, $"Radius: {bin.ReadSingle()}"),
+                                            //SirCxyrtyx: This is a color, but is serialized as an FQuantizedSHVectorRGB, a vector of colored, quantized spherical harmonic coefficients.
+                                            //Conversion to ARGB is possible, but devilishly tricky. Let me know if this is something that's actually needed
+                                            new BinInterpTreeItem(bin.Position, $"Ambient Radiance? : {bin.ReadToBuffer(39)}"){ Length = 39}
+                                        }
+                                    })
+                                }
+
+                            })
+                        }
+                    });
+                }
+
+                binarystart = (int) bin.Position;
             }
             catch (Exception ex)
             {
-                subnodesTop.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
             }
-            return subnodesTop;
+
+            return subnodes;
+        }
+
+        private static BinInterpTreeItem MakeVectorNode(MemoryStream bin, string name)
+        {
+            return new BinInterpTreeItem(bin.Position, $"{name}: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})")
+            {
+                Length = 12
+            };
         }
 
         //This can probably be moved to an extension, but I'm not sure where (or how)...

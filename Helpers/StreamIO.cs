@@ -336,5 +336,22 @@ namespace StreamHelpers
             stream.Seek(8, SeekOrigin.Current);
             return stream;
         }
+
+        public static Stream SkipString(this Stream stream, bool unicode)
+        {
+            return unicode ? stream.SkipStringUnicode() : stream.SkipStringASCII();
+        }
+
+        public static Stream SkipStringUnicode(this Stream stream)
+        {
+            stream.Skip(stream.ReadInt32() * -2);
+            return stream;
+        }
+
+        public static Stream SkipStringASCII(this Stream stream)
+        {
+            stream.Skip(stream.ReadInt32());
+            return stream;
+        }
     }
 }

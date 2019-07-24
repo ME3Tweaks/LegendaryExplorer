@@ -845,7 +845,9 @@ namespace ME3Explorer
 
     /// <summary>
     /// For use with List initializers
-    /// Example:
+    /// </summary>
+    /// <example>
+    /// <code>
     /// var intList = new List&lt;int&gt;
     /// {
     ///     1,
@@ -860,9 +862,9 @@ namespace ME3Explorer
     ///     7,
     ///     8
     /// }
-    ///
-    /// intList would only contain 4,5, and 6 if shouldAdd456 was true 
-    /// </summary>
+    /// //intList would only contain 4,5, and 6 if shouldAdd456 was true 
+    /// </code>
+    /// </example>
     public static class InitializerHelper
     {
         public class InitializerCollection<T> : List<T>
@@ -873,6 +875,8 @@ namespace ME3Explorer
 
         public static InitializerCollection<T> ConditionalAdd<T>(bool condition, Func<IEnumerable<T>> elems) => condition ? new InitializerCollection<T>(elems()) : null;
 
+        //this may appear to have no references, but it is implicitly called whenever ConditionalAdd is used in a List initializer
+        //VS's "Find All References" can't figure this out, but Resharper's "Find Usages" can 
         public static void Add<T>(this List<T> list, InitializerCollection<T> range)
         {
             if(range != null) list.AddRange(range);
