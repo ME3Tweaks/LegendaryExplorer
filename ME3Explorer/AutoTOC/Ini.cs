@@ -37,9 +37,9 @@ namespace Ini
         /// Key Name
         /// <PARAM name="Value"></PARAM>
         /// Value Name
-        public void IniWriteValue(string Section, string Key, string Value)
+        public void WriteValue(string Section, string Key, string Value)
         {
-            WritePrivateProfileString(Section, Key, Value, this.path);
+            WritePrivateProfileString(Section, Key, Value, path);
         }
 
         /// <summary>
@@ -49,11 +49,10 @@ namespace Ini
         /// <PARAM name="Key"></PARAM>
         /// <PARAM name="Path"></PARAM>
         /// <returns></returns>
-        public string IniReadValue(string Section, string Key)
+        public string ReadValue(string Section, string Key)
         {
             StringBuilder temp = new StringBuilder(255);
-            int i = GetPrivateProfileString(Section, Key, "", temp,
-                                            255, this.path);
+            GetPrivateProfileString(Section, Key, "", temp, 255, path);
             return temp.ToString();
 
         }
@@ -64,9 +63,9 @@ namespace Ini
         /// Section name
         /// <PARAM name="Key"></PARAM>
         /// Key Name
-        public void IniRemoveKey(string Section, string Key)
+        public void RemoveKey(string Section, string Key)
         {
-            WritePrivateProfileString(Section, Key, null, this.path);
+            WriteValue(Section, Key, null);
         }
         /// <summary>
         /// Write Data to the INI File adding a new key value if duplicated
@@ -77,18 +76,18 @@ namespace Ini
         /// Key Name
         /// <PARAM name="Value"></PARAM>
         /// Value Name
-        public void IniWriteNewValue(string Section, string Key, string Value)
+        public void WriteNewValue(string Section, string Key, string Value)
         {
-            if (this.IniReadValue(Section, Key) == "")
+            if (ReadValue(Section, Key) == "")
             {
-                WritePrivateProfileString(Section, Key, Value, this.path);
+                WriteValue(Section, Key, Value);
             }
             else
             {
-                WritePrivateProfileString(Section, Key +"af78da8fy", Value, this.path);
-                string str = File.ReadAllText(this.path);
+                WriteValue(Section, Key +"af78da8fy", Value);
+                string str = File.ReadAllText(path);
                 str = str.Replace(Key + "af78da8fy", Key);
-                File.WriteAllText(this.path, str);
+                File.WriteAllText(path, str);
             }
         }
     }

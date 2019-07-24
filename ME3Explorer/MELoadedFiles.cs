@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ini;
 using ME3Explorer.Packages;
 
 namespace ME3Explorer
@@ -64,7 +65,10 @@ namespace ME3Explorer
                 {
                     return idx;
                 }
-                throw new NotImplementedException();
+                //is mod
+                string autoLoadPath = Path.Combine(dlcDirectory, "AutoLoad.ini");
+                IniFile dlcAutoload = new IniFile(autoLoadPath);
+                return Convert.ToInt32(dlcAutoload.ReadValue("ME1DLCMOUNT", "ModMount"));
             }
             return MountFile.GetMountPriority(GetMountDLCFromDLCDir(dlcDirectory, game));
         }

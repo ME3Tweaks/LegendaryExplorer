@@ -317,17 +317,6 @@ namespace ME3Explorer
             return node;
         }
 
-        enum ELightMapType
-        {
-            LMT_None,
-            LMT_1D,
-            LMT_2D,
-            LMT_3, //speculative name. No idea what the ones after LMT_2D are actually called 
-            LMT_4,
-            LMT_5,
-            LMT_6
-        }
-
         private List<ITreeItem> StartStaticMeshComponentScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
@@ -336,11 +325,8 @@ namespace ME3Explorer
                 var bin = new MemoryStream(data);
                 bin.JumpTo(binarystart);
 
-                ELightMapType lightMapType;
                 bool bLoadVertexColorData;
                 uint numVertices;
-                int bulkSerializeElementCount;
-                int bulkSerializeDataSize;
 
                 int lodDataCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpTreeItem(bin.Position - 4, $"LODData count: {lodDataCount}"));
@@ -356,113 +342,7 @@ namespace ME3Explorer
                         {
                             Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpTreeItem(bin.Position, $"{j}: {entryRefString(bin)}"))
                         },
-                        new BinInterpTreeItem(bin.Position, "LightMap ")
-                        {
-                            Items =
-                            {
-                                new BinInterpTreeItem(bin.Position, $"LightMapType: {lightMapType = (ELightMapType)bin.ReadInt32()}"),
-                                InitializerHelper.ConditionalAdd(lightMapType != ELightMapType.LMT_None, () => new List<ITreeItem>
-                                {
-                                    new BinInterpTreeItem(bin.Position, $"LightGuids ({bin.ReadInt32()})")
-                                    {
-                                        Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpTreeItem(bin.Position, $"{j}: {bin.ReadGuid()}"))
-                                    },
-                                    InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_1D, () => new ITreeItem[]
-                                    {
-                                        new BinInterpTreeItem(bin.Position, $"Owner: {entryRefString(bin)}"),
-                                        new BinInterpTreeItem(bin.Position, $"BulkDataFlags: {bin.ReadUInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"BulkDataOffsetInFile: {bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"DirectionalSamples: ({bulkSerializeElementCount})")
-                                        {
-                                            Items = ReadList(bulkSerializeElementCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
-                                            {
-                                                Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpTreeItem(bin.Position,
-                                                                                            $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
-                                            })
-                                        },
-                                        MakeVectorNode(bin, "ScaleVector 1"),
-                                        MakeVectorNode(bin, "ScaleVector 2"),
-                                        MakeVectorNode(bin, "ScaleVector 3"),
-                                        Pcc.Game != MEGame.ME3 ? MakeVectorNode(bin, "ScaleVector 4") : null,
-                                        new BinInterpTreeItem(bin.Position, $"BulkDataFlags: {bin.ReadUInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"BulkDataOffsetInFile: {bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"SimpleSamples: ({bulkSerializeElementCount})")
-                                        {
-                                            Items = ReadList(bulkSerializeElementCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
-                                            {
-                                                Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpTreeItem(bin.Position,
-                                                                                           $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
-                                            })
-                                        },
-                                    }.NonNull()),
-                                    InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_2D, () => new List<ITreeItem>
-                                    {
-                                        new BinInterpTreeItem(bin.Position, $"Texture 1: {entryRefString(bin)}"),
-                                        MakeVectorNode(bin, "ScaleVector 1"),
-                                        new BinInterpTreeItem(bin.Position, $"Texture 2 {entryRefString(bin)}"),
-                                        MakeVectorNode(bin, "ScaleVector 2"),
-                                        new BinInterpTreeItem(bin.Position, $"Texture 3 {entryRefString(bin)}"),
-                                        MakeVectorNode(bin, "ScaleVector 3"),
-                                        InitializerHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
-                                        {
-                                            new BinInterpTreeItem(bin.Position, $"Texture 4 {entryRefString(bin)}"),
-                                            MakeVectorNode(bin, "ScaleVector 4"),
-                                        }),
-                                        new BinInterpTreeItem(bin.Position, $"CoordinateScale: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})"),
-                                        new BinInterpTreeItem(bin.Position, $"CoordinateBias: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})")
-                                    }),
-                                    InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_3, () => new ITreeItem[]
-                                    {
-                                        new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"BulkDataFlags: {bin.ReadUInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"BulkDataOffsetInFile: {bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"DirectionalSamples?: ({bulkSerializeElementCount})")
-                                        {
-                                            Items = ReadList(bulkSerializeElementCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
-                                            {
-                                                Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpTreeItem(bin.Position,
-                                                                                           $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
-                                            })
-                                        },
-                                        MakeVectorNode(bin, "ScaleVector?"),
-                                        MakeVectorNode(bin, "ScaleVector?")
-                                    }),
-                                    InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_4 || lightMapType == ELightMapType.LMT_6, () => new List<ITreeItem>
-                                    {
-                                        new BinInterpTreeItem(bin.Position, $"Texture 1: {entryRefString(bin)}"),
-                                        new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(8, j => new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}"))),
-                                        new BinInterpTreeItem(bin.Position, $"Texture 2: {entryRefString(bin)}"),
-                                        new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(8, j => new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}"))),
-                                        new BinInterpTreeItem(bin.Position, $"Texture 3: {entryRefString(bin)}"),
-                                        new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(8, j => new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}"))),
-                                        new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(4, j => new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}"))),
-                                    }),
-                                    InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_5, () => new ITreeItem[]
-                                    {
-                                        new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"BulkDataFlags: {bin.ReadUInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"BulkDataOffsetInFile: {bin.ReadInt32()}"),
-                                        new BinInterpTreeItem(bin.Position, $"SimpleSamples?: ({bulkSerializeElementCount})")
-                                        {
-                                            Items = ReadList(bulkSerializeElementCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
-                                            {
-                                                Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpTreeItem(bin.Position,
-                                                                                           $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
-                                            })
-                                        },
-                                        MakeVectorNode(bin, "ScaleVector?")
-                                    }),
-                                })
-                            }
-                        },
+                        MakeLightMapNode(bin),
                         InitializerHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new List<ITreeItem>
                         {
                             new BinInterpTreeItem(bin.Position, $"bLoadVertexColorData ({bLoadVertexColorData = bin.ReadBoolByte()})"),
@@ -497,6 +377,222 @@ namespace ME3Explorer
                         })
                     }
                 }));
+
+                binarystart = (int)bin.Position;
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
+        enum ELightMapType
+        {
+            LMT_None,
+            LMT_1D,
+            LMT_2D,
+            LMT_3, //speculative name. No idea what the ones after LMT_2D are actually called 
+            LMT_4,
+            LMT_5,
+            LMT_6
+        }
+
+        private BinInterpTreeItem MakeLightMapNode(MemoryStream bin)
+        {
+            ELightMapType lightMapType;
+            int bulkSerializeElementCount;
+            int bulkSerializeDataSize;
+            return new BinInterpTreeItem(bin.Position, "LightMap ")
+            {
+                Items =
+                {
+                    new BinInterpTreeItem(bin.Position, $"LightMapType: {lightMapType = (ELightMapType)bin.ReadInt32()}"),
+                    InitializerHelper.ConditionalAdd(lightMapType != ELightMapType.LMT_None, () => new List<ITreeItem>
+                    {
+                        new BinInterpTreeItem(bin.Position, $"LightGuids ({bin.ReadInt32()})")
+                        {
+                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpTreeItem(bin.Position, $"{j}: {bin.ReadGuid()}"))
+                        },
+                        InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_1D, () => new ITreeItem[]
+                        {
+                            new BinInterpTreeItem(bin.Position, $"Owner: {entryRefString(bin)}"),
+                            new BinInterpTreeItem(bin.Position, $"BulkDataFlags: {bin.ReadUInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"BulkDataOffsetInFile: {bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"DirectionalSamples: ({bulkSerializeElementCount})")
+                            {
+                                Items = ReadList(bulkSerializeElementCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
+                                {
+                                    Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpTreeItem(bin.Position,
+                                                                                                                                       $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
+                                })
+                            },
+                            MakeVectorNode(bin, "ScaleVector 1"),
+                            MakeVectorNode(bin, "ScaleVector 2"),
+                            MakeVectorNode(bin, "ScaleVector 3"),
+                            Pcc.Game != MEGame.ME3 ? MakeVectorNode(bin, "ScaleVector 4") : null,
+                            new BinInterpTreeItem(bin.Position, $"BulkDataFlags: {bin.ReadUInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"BulkDataOffsetInFile: {bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"SimpleSamples: ({bulkSerializeElementCount})")
+                            {
+                                Items = ReadList(bulkSerializeElementCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
+                                {
+                                    Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpTreeItem(bin.Position,
+                                                                                                                                       $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
+                                })
+                            },
+                        }.NonNull()),
+                        InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_2D, () => new List<ITreeItem>
+                        {
+                            new BinInterpTreeItem(bin.Position, $"Texture 1: {entryRefString(bin)}"),
+                            MakeVectorNode(bin, "ScaleVector 1"),
+                            new BinInterpTreeItem(bin.Position, $"Texture 2 {entryRefString(bin)}"),
+                            MakeVectorNode(bin, "ScaleVector 2"),
+                            new BinInterpTreeItem(bin.Position, $"Texture 3 {entryRefString(bin)}"),
+                            MakeVectorNode(bin, "ScaleVector 3"),
+                            InitializerHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
+                            {
+                                new BinInterpTreeItem(bin.Position, $"Texture 4 {entryRefString(bin)}"),
+                                MakeVectorNode(bin, "ScaleVector 4"),
+                            }),
+                            new BinInterpTreeItem(bin.Position, $"CoordinateScale: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})"),
+                            new BinInterpTreeItem(bin.Position, $"CoordinateBias: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})")
+                        }),
+                        InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_3, () => new ITreeItem[]
+                        {
+                            new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"BulkDataFlags: {bin.ReadUInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"BulkDataOffsetInFile: {bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"DirectionalSamples?: ({bulkSerializeElementCount})")
+                            {
+                                Items = ReadList(bulkSerializeElementCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
+                                {
+                                    Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpTreeItem(bin.Position,
+                                                                                                                                       $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
+                                })
+                            },
+                            MakeVectorNode(bin, "ScaleVector?"),
+                            MakeVectorNode(bin, "ScaleVector?")
+                        }),
+                        InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_4 || lightMapType == ELightMapType.LMT_6, () => new List<ITreeItem>
+                        {
+                            new BinInterpTreeItem(bin.Position, $"Texture 1: {entryRefString(bin)}"),
+                            new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(8, j => new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}"))),
+                            new BinInterpTreeItem(bin.Position, $"Texture 2: {entryRefString(bin)}"),
+                            new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(8, j => new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}"))),
+                            new BinInterpTreeItem(bin.Position, $"Texture 3: {entryRefString(bin)}"),
+                            new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(8, j => new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}"))),
+                            new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(4, j => new BinInterpTreeItem(bin.Position, $"Unknown float: {bin.ReadSingle()}"))),
+                        }),
+                        InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_5, () => new ITreeItem[]
+                        {
+                            new BinInterpTreeItem(bin.Position, $"Unknown: {bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"BulkDataFlags: {bin.ReadUInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"BulkDataOffsetInFile: {bin.ReadInt32()}"),
+                            new BinInterpTreeItem(bin.Position, $"SimpleSamples?: ({bulkSerializeElementCount})")
+                            {
+                                Items = ReadList(bulkSerializeElementCount, j => new BinInterpTreeItem(bin.Position, $"{j}")
+                                {
+                                    Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpTreeItem(bin.Position,
+                                                                                                                                       $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
+                                })
+                            },
+                            MakeVectorNode(bin, "ScaleVector?")
+                        }),
+                    })
+                }
+            };
+        }
+
+        private static List<ITreeItem> StartBrushComponentScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+
+                int cachedConvexElementsCount;
+                subnodes.Add(new BinInterpTreeItem(bin.Position, "CachedPhysBrushData")
+                {
+                    IsExpanded = true,
+                    Items =
+                    {
+                        new BinInterpTreeItem(bin.Position, $"CachedConvexElements ({cachedConvexElementsCount = bin.ReadInt32()})")
+                        {
+                            Items = ReadList(cachedConvexElementsCount, j =>
+                            {
+                                int size;
+                                var item = new BinInterpTreeItem(bin.Position, $"{j}: ConvexElementData (size of byte: {bin.ReadInt32()}) (number of bytes: {size = bin.ReadInt32()})")
+                                {
+                                    Length = size + 8
+                                };
+                                bin.Skip(size);
+                                return item;
+                            })
+                        }
+                    }
+                });
+
+                binarystart = (int)bin.Position;
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
+        private List<ITreeItem> StartModelComponentScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                int count;
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Model: {entryRefString(bin)}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"ZoneIndex: {bin.ReadInt32()}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Elements ({count = bin.ReadInt32()})")
+                {
+                    Items = ReadList(count, i => new BinInterpTreeItem(bin.Position, $"{i}: FModelElement")
+                    {
+                        Items =
+                        {
+                            MakeLightMapNode(bin),
+                            new BinInterpTreeItem(bin.Position, $"Component: {entryRefString(bin)}"),
+                            new BinInterpTreeItem(bin.Position, $"Material: {entryRefString(bin)}"),
+                            new BinInterpTreeItem(bin.Position, $"Nodes ({count = bin.ReadInt32()})")
+                            {
+                                Items = ReadList(count, j => new BinInterpTreeItem(bin.Position, $"{j}: {bin.ReadUInt16()}"))
+                            },
+                            new BinInterpTreeItem(bin.Position, $"ShadowMaps ({count = bin.ReadInt32()})")
+                            {
+                                Items = ReadList(count, j => new BinInterpTreeItem(bin.Position, $"{j}: {entryRefString(bin)}"))
+                            },
+                            new BinInterpTreeItem(bin.Position, $"IrrelevantLights ({count = bin.ReadInt32()})")
+                            {
+                                Items = ReadList(count, j => new BinInterpTreeItem(bin.Position, $"{j}: {bin.ReadGuid()}"))
+                            }
+                        }
+                    })
+                });
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"ComponentIndex: {bin.ReadUInt16()}"));
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"Nodes ({count = bin.ReadInt32()})")
+                {
+                    Items = ReadList(count, i => new BinInterpTreeItem(bin.Position, $"{i}: {bin.ReadUInt16()}"))
+                });
 
                 binarystart = (int)bin.Position;
             }
@@ -4853,8 +4949,6 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        static readonly byte[] nxsMeshBytes = { 0x4E, 0x58, 0x53, 0x01, 0x43, 0x56, 0x58, 0x4D };
-
         private List<ITreeItem> StartLevelScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
@@ -5137,19 +5231,6 @@ namespace ME3Explorer
             {
                 Length = 12
             };
-        }
-
-        //This can probably be moved to an extension, but I'm not sure where (or how)...
-        //Note: This is not very efficient.
-        public static IEnumerable<int> FindBytePatterns(byte[] source, byte[] pattern)
-        {
-            for (int i = 0; i < source.Length; i++)
-            {
-                if (source.Skip(i).Take(pattern.Length).SequenceEqual(pattern))
-                {
-                    yield return i;
-                }
-            }
         }
 
         private List<ITreeItem> StartMaterialScan(byte[] data, ref int binarystart)

@@ -179,6 +179,8 @@ namespace ME3Explorer
             "DominantSpotLightComponent",
             "DominantPointLightComponent",
             "DominantDirectionalLightComponent",
+            "BrushComponent",
+            "ModelComponent",
         };
 
         public override bool CanParse(ExportEntry exportEntry)
@@ -486,6 +488,12 @@ namespace ME3Explorer
                     case "DominantPointLightComponent":
                     case "DominantDirectionalLightComponent":
                         subNodes.AddRange(StartLightComponentScan(data, binarystart));
+                        break;
+                    case "BrushComponent":
+                        subNodes.AddRange(StartBrushComponentScan(data, ref binarystart));
+                        break;
+                    case "ModelComponent":
+                        subNodes.AddRange(StartModelComponentScan(data, ref binarystart));
                         break;
                     default:
                         if (!CurrentLoadedExport.HasStack)

@@ -24,7 +24,7 @@ namespace ME3Explorer.AutoTOC
     /// </summary>
     public partial class AutoTOCWPF : NotifyPropertyChangedWindowBase
     {
-        private object _myCollectionLock = new object();
+        private readonly object _myCollectionLock = new object();
 
         public ObservableCollectionExtended<ListBoxTask> TOCTasks { get; } = new ObservableCollectionExtended<ListBoxTask>();
 
@@ -50,7 +50,7 @@ namespace ME3Explorer.AutoTOC
         /// <summary>
         /// Used to determine if this window will automatically close when an ME3 autotoc completes
         /// </summary>
-        private bool Automated;
+        private readonly bool Automated;
 
         private void LoadCommands()
         {
@@ -69,7 +69,7 @@ namespace ME3Explorer.AutoTOC
 
             string[] dlcList = Directory.GetDirectories(DLCDirectory, "*.*", SearchOption.TopDirectoryOnly);
 
-            Dictionary<int, string> dlcTable = new Dictionary<int, string>();
+            var dlcTable = new Dictionary<int, string>();
 
 
             // 2. READ AUTOLOAD.INI FROM EACH DLC.  BUILD TABLE OF DIRECTORIES & MOUNTS
@@ -90,7 +90,7 @@ namespace ME3Explorer.AutoTOC
                     {
                         IniFile dlcAutoload = new IniFile(autoLoadPath);
                         string name = Path.GetFileName(dlcDir);
-                        int mount = Convert.ToInt32(dlcAutoload.IniReadValue("ME1DLCMOUNT", "ModMount"));
+                        int mount = Convert.ToInt32(dlcAutoload.ReadValue("ME1DLCMOUNT", "ModMount"));
                         dlcTable.Add(mount, name);
                     }
                 }
@@ -116,14 +116,14 @@ namespace ME3Explorer.AutoTOC
             var BioEngine = new IniFile(bioEnginePath);
 
             //Clean out seekfreepaths and moviepaths
-            while (BioEngine.IniReadValue("Core.System", "SeekFreePCPaths") != "")
+            while (BioEngine.ReadValue("Core.System", "SeekFreePCPaths") != "")
             {
-                BioEngine.IniRemoveKey("Core.System", "SeekFreePCPaths");
+                BioEngine.RemoveKey("Core.System", "SeekFreePCPaths");
             }
 
-            while (BioEngine.IniReadValue("Core.System", "DLC_MoviePaths") != "")
+            while (BioEngine.ReadValue("Core.System", "DLC_MoviePaths") != "")
             {
-                BioEngine.IniRemoveKey("Core.System", "DLC_MoviePaths");
+                BioEngine.RemoveKey("Core.System", "DLC_MoviePaths");
             }
 
             // 4. ADD SEEKFREE PATHS IN REVERSE ORDER (HIGHEST= BIOGAME, ETC).
@@ -133,14 +133,14 @@ namespace ME3Explorer.AutoTOC
                 if (item.Key == 0)
                 {
                     //The @"string\thing" allows you to use \ instead of \\. Very good if you are using paths. Though most times you should use Path.Combine() as it will prevent you missing one by accident
-                    BioEngine.IniWriteNewValue("Core.System", "SeekFreePCPaths", @"..\BioGame\CookedPC");
+                    BioEngine.WriteNewValue("Core.System", "SeekFreePCPaths", @"..\BioGame\CookedPC");
                 }
                 else
                 {
-                    BioEngine.IniWriteNewValue("Core.System", "SeekFreePCPaths", $@"..\DLC\{item.Value}\CookedPC");
+                    BioEngine.WriteNewValue("Core.System", "SeekFreePCPaths", $@"..\DLC\{item.Value}\CookedPC");
                     if(Directory.Exists(Path.Combine(ME1Directory.DLCPath, item.Value, "Movies")))
                     {
-                        BioEngine.IniWriteNewValue("Core.System", "DLC_MoviePaths", $@"..\DLC\{item.Value}\Movies"); //Add MoviePath if present
+                        BioEngine.WriteNewValue("Core.System", "DLC_MoviePaths", $@"..\DLC\{item.Value}\Movies"); //Add MoviePath if present
                     }
                 }
             }

@@ -4118,7 +4118,7 @@ namespace ME3Explorer
 
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
-            MEGame game = MEGame.ME1;
+            MEGame game = MEGame.ME3;
             var filePaths = MELoadedFiles.GetFilesLoadedInGame(game).Values;
             var interestingExports = new List<string>();
             foreach (string filePath in filePaths)
@@ -4127,10 +4127,35 @@ namespace ME3Explorer
                 //ScanMaterials(filePath);
                 //ScanStaticMeshComponents(filePath);
                 //ScanLightComponents(filePath);
-                ScanLevel(filePath);
+                //ScanLevel(filePath);
+                if(findClass(filePath, "ModelComponent")) break;
             }
             var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
             listDlg.Show();
+
+            bool findClass(string filePath, string className)
+            {
+                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
+                {
+                    var exports = pcc.Exports.Where(exp => exp.ClassName == className && !exp.IsDefaultObject);
+                    foreach (ExportEntry exp in exports)
+                    {
+                        try
+                        {
+                            interestingExports.Add($"{exp.UIndex}: {filePath}");
+                            return true;
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine(exception);
+                            interestingExports.Add($"{exp.UIndex}: {filePath}\n{exception}");
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
 
             bool ScanLevel(string filePath)
             {
