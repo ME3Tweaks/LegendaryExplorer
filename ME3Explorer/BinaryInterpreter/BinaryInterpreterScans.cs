@@ -671,6 +671,32 @@ namespace ME3Explorer
             return subnodes;
         }
 
+        private List<ITreeItem> StartBioPawnScan(byte[] data, ref int binarystart)
+        {
+
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+
+
+                int count;
+                subnodes.Add(new BinInterpTreeItem(bin.Position, $"AnimationMap? ({count = bin.ReadInt32()})")
+                {
+                    Items = ReadList(count, i => new BinInterpTreeItem(bin.Position, $"{bin.ReadNameReference(Pcc)}: {entryRefString(bin)}"))
+                });
+
+                binarystart = (int)bin.Position;
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpTreeItem { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
         private List<ITreeItem> StartShadowMap1DScan(byte[] data, int binarystart)
         {
 

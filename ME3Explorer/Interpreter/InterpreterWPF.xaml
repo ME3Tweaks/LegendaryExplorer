@@ -194,6 +194,14 @@
                             </MultiDataTrigger>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="BioMask4Property" />
+                                    <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#474647"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88afaeaf"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="NameProperty" />
                                     <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
                                 </MultiDataTrigger.Conditions>

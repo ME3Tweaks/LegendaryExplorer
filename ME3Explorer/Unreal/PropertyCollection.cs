@@ -1374,7 +1374,7 @@ namespace ME3Explorer.Unreal
 
     public class BioMask4Property : UProperty
     {
-        public override PropertyType PropType => PropertyType.NameProperty;
+        public override PropertyType PropType => PropertyType.BioMask4Property;
 
         byte _value;
         public byte Value

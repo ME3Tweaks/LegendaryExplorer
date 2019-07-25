@@ -454,6 +454,9 @@ namespace ME3Explorer
                             newProperty = new ByteProperty(0, propName);
                         }
                         break;
+                    case PropertyType.BioMask4Property:
+                        newProperty = new BioMask4Property(0, propName);
+                        break;
                     case PropertyType.ObjectProperty:
                         newProperty = new ObjectProperty(0, propName);
                         break;
@@ -758,6 +761,9 @@ namespace ME3Explorer
                     break;
                 case ByteProperty bp:
                     editableValue = parsedValue = bp.Value.ToString();
+                    break;
+                case BioMask4Property b4p:
+                    editableValue = parsedValue = b4p.Value.ToString();
                     break;
                 case EnumProperty ep:
                     editableValue = ep.Value.InstancedString;
@@ -1132,6 +1138,10 @@ namespace ME3Explorer
                         Value_TextBox.Text = bp.Value.ToString();
                         SupportedEditorSetElements.Add(Value_TextBox);
                         break;
+                    case BioMask4Property b4p:
+                        Value_TextBox.Text = b4p.Value.ToString();
+                        SupportedEditorSetElements.Add(Value_TextBox);
+                        break;
                     case StringRefProperty strrefp:
                         Value_TextBox.Text = strrefp.Value.ToString();
                         SupportedEditorSetElements.Add(Value_TextBox);
@@ -1334,6 +1344,16 @@ namespace ME3Explorer
                                     || newSelectedItem.Parent.Property is ArrayProperty<ByteProperty>)
                                 {
                                     Interpreter_Hexbox.Highlight(bp.ValueOffset, 1);
+                                    return;
+                                }
+                                break;
+                            }
+                        case BioMask4Property b4p:
+                            {
+                                if ((newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
+                                 || newSelectedItem.Parent.Property is ArrayProperty<BioMask4Property>)
+                                {
+                                    Interpreter_Hexbox.Highlight(b4p.ValueOffset, 1);
                                     return;
                                 }
                                 break;
@@ -1568,6 +1588,13 @@ namespace ME3Explorer
                             updated = true;
                         }
                         break;
+                    case BioMask4Property b4p:
+                        if (byte.TryParse(Value_TextBox.Text, out byte b4) && b4 != b4p.Value)
+                        {
+                            b4p.Value = b4;
+                            updated = true;
+                        }
+                        break;
                     case NameProperty namep:
                         //get string
                         string input = Value_ComboBox.Text;
@@ -1691,6 +1718,9 @@ namespace ME3Explorer
                         break;
                     case ArrayProperty<ByteProperty> abyte:
                         abyte.Insert(insertIndex, new ByteProperty(0));
+                        break;
+                    case ArrayProperty<BioMask4Property> ab4:
+                        ab4.Insert(insertIndex, new BioMask4Property(0));
                         break;
                     case ArrayProperty<StructProperty> astructp:
                         {

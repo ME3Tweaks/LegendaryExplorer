@@ -4119,8 +4119,9 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME3;
-            var filePaths = MELoadedFiles.GetFilesLoadedInGame(game).Values;
+            var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
             var interestingExports = new List<string>();
+            var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             foreach (string filePath in filePaths)
             {
                 //ScanShaderCache(filePath);
@@ -4128,22 +4129,60 @@ namespace ME3Explorer
                 //ScanStaticMeshComponents(filePath);
                 //ScanLightComponents(filePath);
                 //ScanLevel(filePath);
-                if(findClass(filePath, "ModelComponent")) break;
+                if(findClass(filePath, "BioPawn", true)) break;
+                //findClassesWithBinary(filePath);
             }
             var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
             listDlg.Show();
 
-            bool findClass(string filePath, string className)
+            void findClassesWithBinary(string filePath)
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
-                    var exports = pcc.Exports.Where(exp => exp.ClassName == className && !exp.IsDefaultObject);
+                    foreach (ExportEntry exp in pcc.Exports.Where(exp => !exp.IsDefaultObject))
+                    {
+                        try
+                        {
+                            if (!foundClasses.Contains(exp.ClassName) && exp.propsEnd() < exp.DataSize)
+                            {
+                                foundClasses.Add(exp.ClassName);
+                                interestingExports.Add($"{exp.ClassName.PadRight(30)} #{exp.UIndex}: {filePath}");
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine(exception);
+                            interestingExports.Add($"{exp.UIndex}: {filePath}\n{exception}");
+                        }
+                    }
+                }
+            }
+
+            bool findClass(string filePath, string className, bool withBinary = false)
+            {
+                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
+                {
+                    var exports = pcc.Exports.Where(exp => exp.inheritsFrom(className) && !exp.IsDefaultObject);
                     foreach (ExportEntry exp in exports)
                     {
                         try
                         {
-                            interestingExports.Add($"{exp.UIndex}: {filePath}");
-                            return true;
+
+                            MemoryStream bin = new MemoryStream(exp.Data);
+                            bin.JumpTo(exp.propsEnd());
+                            bin.Skip(bin.ReadInt32() * 12);
+                            if (bin.Position < bin.Length)
+                            {
+                                interestingExports.Add($"{exp.UIndex}: {filePath}");
+                                return true;
+                            }
+
+                            continue;
+                            if (!withBinary || exp.propsEnd() < exp.DataSize)
+                            {
+                                interestingExports.Add($"{exp.UIndex}: {filePath}");
+                                return true;
+                            }
                         }
                         catch (Exception exception)
                         {

@@ -22,7 +22,7 @@ namespace ME3Explorer
         public static Dictionary<string, string> GetFilesLoadedInGame(MEGame game)
         {
             //make dictionary from basegame files
-            Dictionary<string, string> loadedFiles = new Dictionary<string, string>();
+            var loadedFiles = new Dictionary<string, string>();
 
             foreach (string directory in GetEnabledDLC(game).OrderBy(dir => GetMountPriority(dir, game)).Prepend(MEDirectories.BioGamePath(game)))
             {

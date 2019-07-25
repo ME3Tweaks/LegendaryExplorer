@@ -108,84 +108,84 @@ namespace ME3Explorer
         }
         #endregion
 
-        static readonly string[] ParsableBinaryClasses =
+        public static readonly HashSet<string> ParsableBinaryClasses = new HashSet<string>
         {
-            "Level",
-            "StaticMeshCollectionActor",
-            "StaticLightCollectionActor",
-            "ShaderCache",
-            "Class",
-            "StringRefProperty",
-            "BioStage",
-            "ObjectProperty",
-            "Const",
-            "Enum",
+            "AnimSequence",
             "ArrayProperty",
-            "FloatProperty",
-            "StructProperty",
-            "ComponentProperty",
-            "IntProperty",
-            "NameProperty",
-            "BoolProperty",
-            "ClassProperty",
-            "ByteProperty",
-            "Enum",
-            "ObjectRedirector",
-            "WwiseEvent",
-            "Material",
-            "StaticMesh",
-            "MaterialInstanceConstant",
+            "BioCodexMap",
+            "BioConsequenceMap",
             "BioDynamicAnimSet",
-            "StaticMeshComponent",
-            "SkeletalMeshComponent",
-            "SkeletalMesh",
-            "PrefabInstance",
-            "MetaData",
-            "MaterialInstanceConstants",
-            "Model",
-            "Polys",
-            "WwiseStream",
-            "WwiseBank",
-            "TextureMovie",
-            "GuidCache",
-            "StrProperty",
-            "World",
-            "Texture2D",
-            "LightMapTexture2D",
-            "ShadowMapTexture2D",
-            "ShadowMap1D",
-            "TextureFlipBook",
-            "State",
             "BioGestureRuntimeData",
+            "BioOutcomeMap",
+            "BioPawn",
+            "BioQuestMap",
+            "BioSoundNodeWaveStreamingData",
+            "BioStage",
+            "BioStateEventMap",
             "BioTlkFileSet",
+            "BoolProperty",
+            "BrushComponent",
+            "ByteProperty",
+            "Class",
+            "ClassProperty",
+            "ComponentProperty",
+            "Const",
+            "DirectionalLightComponent",
+            "DominantDirectionalLightComponent",
+            "DominantPointLightComponent",
+            "DominantSpotLightComponent",
+            "Enum",
+            "Enum",
+            "FaceFXAnimSet",
+            "FaceFXAsset",
+            "FloatProperty",
+            "GuidCache",
+            "IntProperty",
+            "Level",
+            "LightMapTexture2D",
+            "Material",
+            "MaterialInstanceConstant",
+            "MaterialInstanceConstants",
+            "MetaData",
+            "Model",
+            "ModelComponent",
+            "NameProperty",
+            "ObjectProperty",
+            "ObjectRedirector",
+            "PointLightComponent",
+            "Polys",
+            "PrefabInstance",
+            "SFXNav_LargeMantleNode",
             "ScriptStruct",
+            "ShaderCache",
+            "ShadowMap1D",
+            "ShadowMapTexture2D",
+            "SkeletalMesh",
+            "SkyLightComponent",
             "SoundCue",
             "SoundNodeWave",
-            "BioSoundNodeWaveStreamingData",
-            "SFXNav_LargeMantleNode",
-            "BioCodexMap",
-            "BioQuestMap",
-            "BioStateEventMap",
-            "BioOutcomeMap",
-            "FaceFXAnimSet",
-            "BioConsequenceMap",
-            "AnimSequence",
-            "FaceFXAsset",
-            "DirectionalLightComponent",
-            "PointLightComponent",
-            "SkyLightComponent",
             "SphericalHarmonicLightComponent",
             "SpotLightComponent",
-            "DominantSpotLightComponent",
-            "DominantPointLightComponent",
-            "DominantDirectionalLightComponent",
-            "BrushComponent",
-            "ModelComponent",
+            "State",
+            "StaticLightCollectionActor",
+            "StaticMesh",
+            "StaticMeshCollectionActor",
+            "StaticMeshComponent",
+            "StrProperty",
+            "StringRefProperty",
+            "StructProperty",
+            "Texture2D",
+            "TextureFlipBook",
+            "TextureMovie",
+            "World",
+            "WwiseBank",
+            "WwiseEvent",
+            "WwiseStream",
         };
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return exportEntry.HasStack || (ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.IsDefaultObject);
+            return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.inheritsFrom("BioPawn")) && !exportEntry.IsDefaultObject);
         }
 
         public override void PopOut()
@@ -340,7 +340,12 @@ namespace ME3Explorer
                         break;
                 }
 
-                switch (CurrentLoadedExport.ClassName)
+                string className = CurrentLoadedExport.ClassName;
+                if (CurrentLoadedExport.inheritsFrom("BioPawn"))
+                {
+                    className = "BioPawn";
+                }
+                switch (className)
                 {
                     case "IntProperty":
                     case "BoolProperty":
@@ -494,6 +499,9 @@ namespace ME3Explorer
                         break;
                     case "ModelComponent":
                         subNodes.AddRange(StartModelComponentScan(data, ref binarystart));
+                        break;
+                    case "BioPawn":
+                        subNodes.AddRange(StartBioPawnScan(data, ref binarystart));
                         break;
                     default:
                         if (!CurrentLoadedExport.HasStack)
