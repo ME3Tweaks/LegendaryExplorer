@@ -14,7 +14,7 @@ namespace ME3Explorer
         void PrintPretty(string indent, TextWriter str, bool last, ExportEntry associatedExport);
     }
 
-    public class BinInterpTreeItem : NotifyPropertyChangedBase, ITreeItem
+    public class BinInterpNode : NotifyPropertyChangedBase, ITreeItem
     {
         public enum ArrayPropertyChildAddAlgorithm
         {
@@ -25,7 +25,7 @@ namespace ME3Explorer
         public string Header { get; set; }
         public string Name { get; set; }
         public object Tag { get; set; }
-        public BinInterpTreeItem Parent;
+        public BinInterpNode Parent;
         public ArrayPropertyChildAddAlgorithm ArrayAddAlgoritm;
 
         public bool IsExpanded { get; set; }
@@ -34,17 +34,17 @@ namespace ME3Explorer
         /// Children nodes of this item. They can be of different types (like UPropertyTreeViewEntry).
         /// </summary>
         public List<ITreeItem> Items { get; set; }
-        public BinInterpTreeItem()
+        public BinInterpNode()
         {
             Items = new List<ITreeItem>();
         }
 
-        public BinInterpTreeItem(string header) : this()
+        public BinInterpNode(string header) : this()
         {
             Header = header;
         }
 
-        public BinInterpTreeItem(long pos, string text, BinaryInterpreterWPF.NodeType nodeType = BinaryInterpreterWPF.NodeType.Unknown) : this()
+        public BinInterpNode(long pos, string text, BinaryInterpreterWPF.NodeType nodeType = BinaryInterpreterWPF.NodeType.Unknown) : this()
         {
             Header = $"0x{pos:X8}: {text}";
             Name = $"_{pos}";
@@ -85,7 +85,7 @@ namespace ME3Explorer
                 {
                     supressNewLine = false;
                 }
-                (Items[i] as BinInterpTreeItem)?.PrintPretty(indent, str, i == Items.Count - 1, associatedExport);
+                (Items[i] as BinInterpNode)?.PrintPretty(indent, str, i == Items.Count - 1, associatedExport);
             }
         }
 
@@ -114,7 +114,7 @@ namespace ME3Explorer
                 // operations will be added to the queue after all of the parent expansions.
                 if (value)
                 {
-                    var ancestorsToExpand = new Stack<BinInterpTreeItem>();
+                    var ancestorsToExpand = new Stack<BinInterpNode>();
 
                     var parent = Parent;
                     while (parent != null)

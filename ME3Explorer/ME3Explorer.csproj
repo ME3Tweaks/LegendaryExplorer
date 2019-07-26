@@ -326,7 +326,7 @@
     <Compile Include="BinaryInterpreter\BinaryInterpreterWPF.xaml.cs">
       <DependentUpon>BinaryInterpreterWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BinaryInterpreter\BinInterpTreeItem.cs" />
+    <Compile Include="BinaryInterpreter\BinInterpNode.cs" />
     <Compile Include="Bio2DAEditor\Bio2DA.cs" />
     <Compile Include="Bio2DAEditor\Bio2DACell.cs" />
     <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">

@@ -54,7 +54,7 @@ namespace ME3Explorer
             set => SetProperty(ref _genericEditorSetVisibility, value);
         }
         private readonly List<FrameworkElement> EditorSetElements = new List<FrameworkElement>();
-        public ObservableCollectionExtended<BinInterpTreeItem> TreeViewItems { get; } = new ObservableCollectionExtended<BinInterpTreeItem>();
+        public ObservableCollectionExtended<BinInterpNode> TreeViewItems { get; } = new ObservableCollectionExtended<BinInterpNode>();
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
         public enum InterpreterMode
         {
@@ -130,6 +130,8 @@ namespace ME3Explorer
             "ClassProperty",
             "ComponentProperty",
             "Const",
+            "CookedBulkDataInfoContainer",
+            "DecalComponent",
             "DirectionalLightComponent",
             "DominantDirectionalLightComponent",
             "DominantPointLightComponent",
@@ -152,9 +154,11 @@ namespace ME3Explorer
             "NameProperty",
             "ObjectProperty",
             "ObjectRedirector",
+            "PhysicsAssetInstance",
             "PointLightComponent",
             "Polys",
             "PrefabInstance",
+            "RB_BodySetup",
             "SFXNav_LargeMantleNode",
             "ScriptStruct",
             "ShaderCache",
@@ -210,7 +214,7 @@ namespace ME3Explorer
             if (CurrentLoadedExport != null)
             {
                 PreviousLoadedUIndex = CurrentLoadedExport.UIndex;
-                if (BinaryInterpreter_TreeView.SelectedItem is BinInterpTreeItem b)
+                if (BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b)
                 {
                     PreviousSelectedTreeName = b.Name;
                 }
@@ -298,7 +302,7 @@ namespace ME3Explorer
             }
 
             //top node will always be of this element type.
-            BinInterpTreeItem topLevelTree = new BinInterpTreeItem
+            BinInterpNode topLevelTree = new BinInterpNode
             {
                 Header = $"{binarystart:X4} : {CurrentLoadedExport.GetIndexedFullPath} - Binary start",
                 Tag = NodeType.Root,
@@ -317,7 +321,7 @@ namespace ME3Explorer
                 });
         }
 
-        private BinInterpTreeItem PerformScanBackground(BinInterpTreeItem topLevelTree, byte[] data, int binarystart)
+        private BinInterpNode PerformScanBackground(BinInterpNode topLevelTree, byte[] data, int binarystart)
         {
             if (CurrentLoadedExport == null) return topLevelTree; //Could happen due to multithread
             try
@@ -494,6 +498,9 @@ namespace ME3Explorer
                     case "DominantDirectionalLightComponent":
                         subNodes.AddRange(StartLightComponentScan(data, binarystart));
                         break;
+                    case "RB_BodySetup":
+                        subNodes.AddRange(StartRB_BodySetupScan(data, ref binarystart));
+                        break;
                     case "BrushComponent":
                         subNodes.AddRange(StartBrushComponentScan(data, ref binarystart));
                         break;
@@ -502,6 +509,15 @@ namespace ME3Explorer
                         break;
                     case "BioPawn":
                         subNodes.AddRange(StartBioPawnScan(data, ref binarystart));
+                        break;
+                    case "PhysicsAssetInstance":
+                        subNodes.AddRange(StartPhysicsAssetInstanceScan(data, ref binarystart));
+                        break;
+                    case "CookedBulkDataInfoContainer":
+                        subNodes.AddRange(StartCookedBulkDataInfoContainerScan(data, ref binarystart));
+                        break;
+                    case "DecalComponent":
+                        subNodes.AddRange(StartDecalComponentScan(data, ref binarystart));
                         break;
                     default:
                         if (!CurrentLoadedExport.HasStack)
@@ -513,13 +529,13 @@ namespace ME3Explorer
                 }
                 if (appendGenericScan)
                 {
-                    BinInterpTreeItem genericContainer = new BinInterpTreeItem { Header = "Generic scan data", IsExpanded = true };
+                    BinInterpNode genericContainer = new BinInterpNode { Header = "Generic scan data", IsExpanded = true };
                     subNodes.Add(genericContainer);
 
                     var genericItems = StartGenericScan(data, ref binarystart);
                     foreach (ITreeItem o in genericItems)
                     {
-                        if (o is BinInterpTreeItem b)
+                        if (o is BinInterpNode b)
                         {
                             b.Parent = genericContainer;
                         }
@@ -536,7 +552,7 @@ namespace ME3Explorer
                 topLevelTree.Items = subNodes;
                 foreach (ITreeItem o in subNodes)
                 {
-                    if (o is BinInterpTreeItem b)
+                    if (o is BinInterpNode b)
                     {
                         b.Parent = topLevelTree;
                     }
@@ -544,7 +560,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add(new BinInterpTreeItem(ExceptionHandlerDialogWPF.FlattenException(ex)));
+                topLevelTree.Items.Add(new BinInterpNode(ExceptionHandlerDialogWPF.FlattenException(ex)));
             }
             return topLevelTree;
         }
@@ -553,7 +569,7 @@ namespace ME3Explorer
         {
             foreach (ITreeItem o in subNodes)
             {
-                if (o is BinInterpTreeItem b)
+                if (o is BinInterpNode b)
                 {
                     if (b.Name == PreviousSelectedTreeName)
                     {
@@ -635,7 +651,7 @@ namespace ME3Explorer
             List<FrameworkElement> SupportedEditorSetElements = new List<FrameworkElement>();
             switch (BinaryInterpreter_TreeView.SelectedItem)
             {
-                case BinInterpTreeItem bitve:
+                case BinInterpNode bitve:
                     int dataOffset = 0;
                     if (bitve.Name is string offsetStr && offsetStr.StartsWith("_"))
                     {
@@ -707,7 +723,7 @@ namespace ME3Explorer
                             SupportedEditorSetElements.Add(Value_TextBox);
                             break;
                     }
-                    if (bitve.ArrayAddAlgoritm != BinInterpTreeItem.ArrayPropertyChildAddAlgorithm.None)
+                    if (bitve.ArrayAddAlgoritm != BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
                     {
                         SupportedEditorSetElements.Add(AddArrayElement_Button);
                         SupportedEditorSetElements.Add(EditorSet_Separator_LeftsideArray);
@@ -878,7 +894,7 @@ namespace ME3Explorer
         {
             switch (BinaryInterpreter_TreeView.SelectedItem)
             {
-                case BinInterpTreeItem bitve:
+                case BinInterpNode bitve:
                     int dataOffset = 0;
                     if (bitve.Name is string offsetStr && offsetStr.StartsWith("_"))
                     {
@@ -1064,12 +1080,12 @@ namespace ME3Explorer
 
         private void AddArrayElement_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (BinaryInterpreter_TreeView.SelectedItem is BinInterpTreeItem bitvi)
+            if (BinaryInterpreter_TreeView.SelectedItem is BinInterpNode bitvi)
             {
                 switch (bitvi.ArrayAddAlgoritm)
                 {
-                    case BinInterpTreeItem.ArrayPropertyChildAddAlgorithm.LevelItem:
-                        BinInterpTreeItem container = bitvi;
+                    case BinInterpNode.ArrayPropertyChildAddAlgorithm.LevelItem:
+                        BinInterpNode container = bitvi;
                         if ((NodeType)container.Tag == NodeType.ArrayLeafObject)
                         {
                             container = bitvi.Parent; //container

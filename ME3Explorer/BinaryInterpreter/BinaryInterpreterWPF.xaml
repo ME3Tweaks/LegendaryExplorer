@@ -114,7 +114,7 @@
                       Panel.ZIndex="60"/>
                     <TreeView Name="BinaryInterpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="BinaryInterpreter_TreeViewSelectedItemChanged" PreviewMouseRightButtonDown="BinaryInterpreter_TreeView_PreviewMouseRightButtonDown" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True" ItemsSource="{Binding TreeViewItems}">
                         <TreeView.Resources>
-                            <HierarchicalDataTemplate DataType="{x:Type global:BinInterpTreeItem}" ItemsSource="{Binding Items}">
+                            <HierarchicalDataTemplate DataType="{x:Type global:BinInterpNode}" ItemsSource="{Binding Items}">
                                 <TextBlock Text="{Binding Path=Header}" />
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate DataType="{x:Type global:UPropertyTreeViewEntry}" ItemsSource="{Binding ChildrenProperties}">
