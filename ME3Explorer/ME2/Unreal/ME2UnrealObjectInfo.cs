@@ -238,7 +238,7 @@ namespace ME2Explorer.Unreal
             return null;
         }
 
-        public static bool inheritsFrom(IEntry entry, string baseClass)
+        public static bool InheritsFrom(IEntry entry, string baseClass)
         {
             string className = entry.ClassName;
             while (Classes.ContainsKey(className))
@@ -256,14 +256,14 @@ namespace ME2Explorer.Unreal
             "Quat", "Matrix", "IntPoint", "ActorReference", "PolyReference", "AimTransform", "NavReference", "FontCharacter", "CovPosInfo",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
 
-        public static bool isImmutableStruct(string structName)
+        public static bool IsImmutableStruct(string structName)
         {
             return ImmutableStructs.Contains(structName);
         }
 
         public static PropertyCollection getDefaultStructValue(string className, bool stripTransients)
         {
-            bool isImmutable = UnrealObjectInfo.isImmutable(className, MEGame.ME2);
+            bool isImmutable = UnrealObjectInfo.IsImmutable(className, MEGame.ME2);
             if (Structs.ContainsKey(className))
             {
                 ClassInfo info = Structs[className];
@@ -369,6 +369,7 @@ namespace ME2Explorer.Unreal
                             return null;
                     }
                 case PropertyType.StructProperty:
+                    isImmutable = isImmutable || UnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.ME2);
                     return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients), propName, isImmutable);
                 case PropertyType.None:
                 case PropertyType.Unknown:

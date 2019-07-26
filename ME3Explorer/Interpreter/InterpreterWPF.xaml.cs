@@ -164,6 +164,7 @@ namespace ME3Explorer
         #region Commands
         public ICommand RemovePropertyCommand { get; set; }
         public ICommand AddPropertyCommand { get; set; }
+        public ICommand AddPropertiesToStructCommand { get; set; }
         public ICommand CollapseChildrenCommand { get; set; }
         public ICommand ExpandChildrenCommand { get; set; }
         public ICommand SortChildrenCommand { get; set; }
@@ -181,6 +182,7 @@ namespace ME3Explorer
         public ICommand ClearArrayCommand { get; set; }
         private void LoadCommands()
         {
+            AddPropertiesToStructCommand = new GenericCommand(AddPropertiesToStruct, CanAddPropertiesToStruct);
             RemovePropertyCommand = new GenericCommand(RemoveProperty, CanRemoveProperty);
             AddPropertyCommand = new GenericCommand(AddProperty, CanAddProperty);
             CollapseChildrenCommand = new GenericCommand(CollapseChildren, CanExpandOrCollapseChildren);
@@ -463,7 +465,7 @@ namespace ME3Explorer
                     case PropertyType.StructProperty:
 
                         PropertyCollection structProps = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, propInfo.Reference, true);
-                        newProperty = new StructProperty(propInfo.Reference, structProps, propName, isImmutable: UnrealObjectInfo.isImmutable(propInfo.Reference, Pcc.Game));
+                        newProperty = new StructProperty(propInfo.Reference, structProps, propName, isImmutable: UnrealObjectInfo.IsImmutable(propInfo.Reference, Pcc.Game));
                         break;
                 }
 
@@ -481,11 +483,17 @@ namespace ME3Explorer
 
         private void RemoveProperty()
         {
-            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null)
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Parent != null && tvi.Property != null)
             {
-                CurrentLoadedProperties.Remove(tvi.Property);
+                if (tvi.Parent.Parent == null)
+                {
+                    CurrentLoadedProperties.Remove(tvi.Property);
+                }
+                else if (tvi.Parent.Property is StructProperty sp) //inside struct
+                {
+                    sp.Properties.Remove(tvi.Property);
+                }
                 CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
-                //StartScan();
             }
         }
 
@@ -493,7 +501,44 @@ namespace ME3Explorer
         {
             if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi)
             {
-                return tvi.Parent != null && tvi.Parent.Parent == null && !(tvi.Property is NoneProperty); //only items with a single parent (root nodes)
+                return tvi.Parent != null && !(tvi.Property is NoneProperty) &&
+                       (tvi.Parent.Parent == null //items with a single parent (root nodes)
+                     || tvi.Parent.Property is StructProperty sp && !sp.IsImmutable); //properties that are part of a non-immutable StructProperty
+            }
+            return false;
+        }
+
+        private void AddPropertiesToStruct()
+        {
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is StructProperty sp)
+            {
+                PropertyCollection defaultProps = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, sp.StructType, true);
+                foreach (UProperty prop in sp.Properties)
+                {
+                    defaultProps.AddOrReplaceProp(prop);
+                }
+
+                sp.Properties = defaultProps;
+                CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
+            }
+        }
+
+        private bool CanAddPropertiesToStruct()
+        {
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is StructProperty sp && !sp.IsImmutable)
+            {
+                ClassInfo info = UnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, sp.StructType);
+                var allPropNames = new List<string>();
+                while (info != null)
+                {
+                    allPropNames.AddRange(info.properties.Select(kvp => kvp.Key));
+                    info = UnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.baseClass);
+                }
+                HashSet<string> existingPropNames = tvi.ChildrenProperties.Select(t => t.Property.Name.Name).ToHashSet();
+                if (!allPropNames.All(existingPropNames.Contains))
+                {
+                    return true;
+                }
             }
             return false;
         }

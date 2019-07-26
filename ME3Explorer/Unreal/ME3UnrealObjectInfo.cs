@@ -14,33 +14,33 @@ namespace ME3Explorer.Unreal
 {
     public static class UnrealObjectInfo
     {
-        public static bool isImmutable(string structType, MEGame game)
+        public static bool IsImmutable(string structType, MEGame game)
         {
             switch (game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.isImmutableStruct(structType);
+                    return ME1UnrealObjectInfo.IsImmutableStruct(structType);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.isImmutableStruct(structType);
+                    return ME2UnrealObjectInfo.IsImmutableStruct(structType);
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.isImmutableStruct(structType);
+                    return ME3UnrealObjectInfo.IsImmutableStruct(structType);
                 default:
                     return false;
             }
         }
 
-        public static bool inheritsFrom(this IEntry entry, string baseClass)
+        public static bool InheritsFrom(this IEntry entry, string baseClass)
         {
             switch (entry.FileRef.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.inheritsFrom(entry, baseClass);
+                    return ME1UnrealObjectInfo.InheritsFrom(entry, baseClass);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.inheritsFrom(entry, baseClass);
+                    return ME2UnrealObjectInfo.InheritsFrom(entry, baseClass);
                 case MEGame.ME3:
                 case MEGame.UDK: //use me3?
-                    return ME3UnrealObjectInfo.inheritsFrom(entry, baseClass);
+                    return ME3UnrealObjectInfo.InheritsFrom(entry, baseClass);
                 default:
                     return false;
             }
@@ -289,7 +289,7 @@ namespace ME3Explorer.Unreal
 
         private static readonly string jsonPath = Path.Combine(App.ExecFolder, "ME3ObjectInfo.json");
 
-        public static bool isImmutableStruct(string structName)
+        public static bool IsImmutableStruct(string structName)
         {
             return ImmutableStructs.Contains(structName);
         }
@@ -507,7 +507,7 @@ namespace ME3Explorer.Unreal
 
         public static PropertyCollection getDefaultStructValue(string structName, bool stripTransients)
         {
-            bool isImmutable = UnrealObjectInfo.isImmutable(structName, MEGame.ME3);
+            bool isImmutable = UnrealObjectInfo.IsImmutable(structName, MEGame.ME3);
             if (Structs.ContainsKey(structName))
             {
                 try
@@ -610,6 +610,7 @@ namespace ME3Explorer.Unreal
                             return null;
                     }
                 case PropertyType.StructProperty:
+                    isImmutable = isImmutable || UnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.ME3);
                     return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients), propName, isImmutable);
                 case PropertyType.None:
                 case PropertyType.Unknown:
@@ -618,7 +619,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static bool inheritsFrom(IEntry entry, string baseClass)
+        public static bool InheritsFrom(IEntry entry, string baseClass)
         {
             string className = entry.ClassName;
             while (Classes.ContainsKey(className))

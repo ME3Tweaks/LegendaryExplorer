@@ -1804,7 +1804,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is ExportEntry exportToAdd)
             {
-                if (!exportToAdd.inheritsFrom("SequenceObject"))
+                if (!exportToAdd.InheritsFrom("SequenceObject"))
                 {
                     MessageBox.Show(this, $"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is not a sequence object.");
                     return;
@@ -2024,6 +2024,6 @@ namespace ME3Explorer.Sequence_Editor
 
     static class SequenceEditorExtensions
     {
-        public static bool IsSequence(this IEntry entry) => entry.inheritsFrom("Sequence");
+        public static bool IsSequence(this IEntry entry) => entry.InheritsFrom("Sequence");
     }
 }

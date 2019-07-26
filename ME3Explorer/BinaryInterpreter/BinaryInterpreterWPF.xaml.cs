@@ -189,7 +189,7 @@ namespace ME3Explorer
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.inheritsFrom("BioPawn")) && !exportEntry.IsDefaultObject);
+            return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.InheritsFrom("BioPawn")) && !exportEntry.IsDefaultObject);
         }
 
         public override void PopOut()
@@ -345,7 +345,7 @@ namespace ME3Explorer
                 }
 
                 string className = CurrentLoadedExport.ClassName;
-                if (CurrentLoadedExport.inheritsFrom("BioPawn"))
+                if (CurrentLoadedExport.InheritsFrom("BioPawn"))
                 {
                     className = "BioPawn";
                 }

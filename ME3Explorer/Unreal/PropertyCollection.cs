@@ -186,7 +186,7 @@ namespace ME3Explorer.Unreal
                             string structType = pcc.getNameEntry(stream.ReadInt32());
                             stream.Seek(4, SeekOrigin.Current);
                             long valOffset = stream.Position;
-                            if (UnrealObjectInfo.isImmutable(structType, pcc.Game))
+                            if (UnrealObjectInfo.IsImmutable(structType, pcc.Game))
                             {
                                 PropertyCollection structProps = ReadImmutableStruct(export, stream, structType, size, entry);
                                 props.Add(new StructProperty(structType, structProps, nameRef, true) { StartOffset = propertyStartPosition, ValueOffset = valOffset });
@@ -555,7 +555,7 @@ namespace ME3Explorer.Unreal
                         }
 
                         string arrayStructType = propertyInfo?.Reference;
-                        if (IsInImmutable || UnrealObjectInfo.isImmutable(arrayStructType, pcc.Game))
+                        if (IsInImmutable || UnrealObjectInfo.IsImmutable(arrayStructType, pcc.Game))
                         {
                             int arraySize = 0;
                             if (!IsInImmutable)

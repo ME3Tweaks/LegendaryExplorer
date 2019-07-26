@@ -4162,7 +4162,7 @@ namespace ME3Explorer
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
-                    var exports = pcc.Exports.Where(exp => exp.inheritsFrom(className) && !exp.IsDefaultObject);
+                    var exports = pcc.Exports.Where(exp => exp.InheritsFrom(className) && !exp.IsDefaultObject);
                     foreach (ExportEntry exp in exports)
                     {
                         try
@@ -4270,7 +4270,7 @@ namespace ME3Explorer
                             bin.Skip(bin.ReadInt32() * 4);//CrossLevelActors
                             int bioInert1 = bin.ReadInt32();
                             int bioInert2 = bin.ReadInt32();
-                            if (bioInert1 != 0 && !pcc.getUExport(bioInert1).inheritsFrom("BioArtPlaceable") || bioInert2 != 0 && !pcc.getUExport(bioInert2).inheritsFrom("BioArtPlaceable"))
+                            if (bioInert1 != 0 && !pcc.getUExport(bioInert1).InheritsFrom("BioArtPlaceable") || bioInert2 != 0 && !pcc.getUExport(bioInert2).InheritsFrom("BioArtPlaceable"))
                             {
                                 interestingExports.Add($"{exp.UIndex}: {filePath}");
                                 return true;
@@ -4293,7 +4293,7 @@ namespace ME3Explorer
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
-                    var exports = pcc.Exports.Where(exp => exp.inheritsFrom("DominantSpotLightComponent"));
+                    var exports = pcc.Exports.Where(exp => exp.InheritsFrom("DominantSpotLightComponent"));
                     foreach (ExportEntry exp in exports)
                     {
                         try
@@ -4587,7 +4587,7 @@ namespace ME3Explorer
         private void CreateDynamicLighting(object sender, RoutedEventArgs e)
         {
             if (Pcc == null) return;
-            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.inheritsFrom("MeshComponent") || exp.inheritsFrom("BrushComponent")))
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.InheritsFrom("MeshComponent") || exp.InheritsFrom("BrushComponent")))
             {
                 PropertyCollection props = exp.GetProperties();
                 if (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false || props.GetProp<BoolProperty>("CastShadow")?.Value == false)
@@ -4615,7 +4615,7 @@ namespace ME3Explorer
                 exp.WriteProperties(props);
             }
 
-            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.inheritsFrom("LightComponent")))
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.InheritsFrom("LightComponent")))
             {
                 PropertyCollection props = exp.GetProperties();
                 props.AddOrReplaceProp(new BoolProperty(true, "bCanAffectDynamicPrimitivesOutsideDynamicChannel"));
