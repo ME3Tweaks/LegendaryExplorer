@@ -327,8 +327,9 @@ namespace ME2Explorer.Unreal
                     return new IntProperty(0, propName);
                 case PropertyType.FloatProperty:
                     return new FloatProperty(0f, propName);
-                case PropertyType.ObjectProperty:
                 case PropertyType.DelegateProperty:
+                    return new DelegateProperty(0, "None");
+                case PropertyType.ObjectProperty:
                     return new ObjectProperty(0, propName);
                 case PropertyType.NameProperty:
                     return new NameProperty("None", propName);

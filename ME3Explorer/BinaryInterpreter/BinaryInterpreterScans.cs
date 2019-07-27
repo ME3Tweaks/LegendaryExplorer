@@ -3840,7 +3840,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -3926,7 +3926,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -3948,64 +3948,22 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
+
+                var bin = new MemoryStream(data);
                 int offset = 0; //this property starts at 0 for parsing
-                int unrealExportIndex = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} Unreal Unique Index: {unrealExportIndex}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 4;
 
-                int noneUnrealProperty = BitConverter.ToInt32(data, offset);
-                //int noneUnrealPropertyIndex = BitConverter.ToInt32(data, offset + 4);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} Unreal property None Name: {CurrentLoadedExport.FileRef.getNameEntry(noneUnrealProperty)}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafName
-                });
-                offset += 8;
+                subnodes.Add(MakeInt32Node(bin, "Unreal Unique Index"));
+                subnodes.Add(MakeNameNode(bin, "Unreal None property"));
+                subnodes.Add(MakeEntryNode(bin, "Superclass"));
+                subnodes.Add(MakeEntryNode(bin, "Next item in compiling chain"));
+                subnodes.Add(MakeInt32Node(bin, "Unknown1"));
 
-                int superclassIndex = BitConverter.ToInt32(data, offset);
-                string superclassStr = CurrentLoadedExport.FileRef.GetEntryString(superclassIndex);
-                subnodes.Add(new BinInterpNode
+                UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)bin.ReadUInt64();
+                BinInterpNode objectFlagsNode;
+                subnodes.Add(objectFlagsNode = new BinInterpNode(bin.Position - 8, $"ObjectFlags: 0x{(ulong)ObjectFlagsMask:X16}")
                 {
-                    Header = $"0x{offset:X5} Superclass: {superclassIndex}({superclassStr})",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
-
-                int classObjTree = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} Next item in compiling chain UIndex: {classObjTree} {CurrentLoadedExport.FileRef.GetEntryString(classObjTree)}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
-
-                int unk1 = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} Unknown 1: {unk1}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 4;
-
-                UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)BitConverter.ToUInt64(data, offset);
-                BinInterpNode objectFlagsNode = new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} ObjectFlags: 0x{(ulong)ObjectFlagsMask:X16}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafInt,
                     IsExpanded = true
-                };
-
-                subnodes.Add(objectFlagsNode);
+                });
 
                 //Create objectflags tree
                 foreach (UnrealFlags.EPropertyFlags flag in Enums.GetValues<UnrealFlags.EPropertyFlags>())
@@ -4016,32 +3974,13 @@ namespace ME3Explorer
                         objectFlagsNode.Items.Add(new BinInterpNode
                         {
                             Header = $"{(ulong)flag:X16} {flag} {reason}",
-                            Name = "_" + offset
+                            Name = "_" + bin.Position
                         });
                     }
                 }
-                offset += 8;
 
-
-
-                //has listed outerclass
-                int none = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} None: {CurrentLoadedExport.FileRef.getNameEntry(none)}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 8;
-
-                int unk2 = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} Unknown2: {unk2}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 4; //
+                subnodes.Add(MakeNameNode(bin, "Unreal None property"));
+                subnodes.Add(MakeInt32Node(bin, "Unknown1"));
 
                 switch (CurrentLoadedExport.ClassName)
                 {
@@ -4052,53 +3991,25 @@ namespace ME3Explorer
                         {
                             if ((ObjectFlagsMask & UnrealFlags.EPropertyFlags.RepRetry) != 0)
                             {
-                                offset += 2;
+                                bin.Skip(2);
                             }
-                            //has listed outerclass
-                            int outer = BitConverter.ToInt32(data, offset);
-                            subnodes.Add(new BinInterpNode
-                            {
-                                Header = $"0x{offset:X5} OuterClass: {outer} {CurrentLoadedExport.FileRef.GetEntryString(outer)}",
-                                Name = "_" + offset,
-                                Tag = NodeType.StructLeafInt
-                            });
-                            offset += 4;
+                            subnodes.Add(MakeEntryNode(bin, "Holds objects of type"));
                         }
+                        break;
+                    case "DelegateProperty":
+                        subnodes.Add(MakeEntryNode(bin, "Holds objects of type"));
+                        subnodes.Add(MakeEntryNode(bin, "Same as above but only if this in a function"));
                         break;
                     case "ArrayProperty":
                         {
-                            int outer = BitConverter.ToInt32(data, offset);
-                            subnodes.Add(new BinInterpNode
-                            {
-                                Header = $"0x{offset:X5} Array can hold objects of type: {outer} {CurrentLoadedExport.FileRef.GetEntryString(outer)}",
-                                Name = "_" + offset,
-                                Tag = NodeType.StructLeafInt
-                            });
-                            offset += 4;
+                            subnodes.Add(MakeEntryNode(bin, "Holds objects of type"));
                         }
                         break;
                     case "ClassProperty":
                         {
 
-                            //has listed outerclass
-                            int outer = BitConverter.ToInt32(data, offset);
-                            subnodes.Add(new BinInterpNode
-                            {
-                                Header = $"0x{offset:X5} Outer class: {outer} {CurrentLoadedExport.FileRef.GetEntryString(outer)}",
-                                Name = "_" + offset,
-                                Tag = NodeType.StructLeafInt
-                            });
-                            offset += 4;
-
-                            //type of class
-                            int classtype = BitConverter.ToInt32(data, offset);
-                            subnodes.Add(new BinInterpNode
-                            {
-                                Header = $"0x{offset:X5} Class type: {classtype} {CurrentLoadedExport.FileRef.GetEntryString(classtype)}",
-                                Name = "_" + offset,
-                                Tag = NodeType.StructLeafObject
-                            });
-                            offset += 4;
+                            subnodes.Add(MakeEntryNode(bin, "Outer class"));
+                            subnodes.Add(MakeEntryNode(bin, "Class type"));
                         }
                         break;
                 }
@@ -5433,13 +5344,15 @@ namespace ME3Explorer
 
         private static BinInterpNode MakeBoolIntNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolInt()}") {Length = 4};
 
-        private static BinInterpNode MakeFloatNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}") {Length = 4};
+        private static BinInterpNode MakeFloatNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) {Length = 4};
 
         private static BinInterpNode MakeUInt32Node(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32()}") { Length = 4 };
 
-        private static BinInterpNode MakeInt32Node(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}") {Length = 4};
+        private static BinInterpNode MakeInt32Node(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}", NodeType.StructLeafInt) {Length = 4};
 
-        private BinInterpNode MakeEntryNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}") {Length = 4};
+        private BinInterpNode MakeNameNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName) { Length = 8 };
+
+        private BinInterpNode MakeEntryNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}", NodeType.StructLeafObject) {Length = 4};
 
         private static BinInterpNode MakePackedNormalNode(MemoryStream bin, string name) => 
             new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadByte()}, Y: {bin.ReadByte()}, Z: {bin.ReadByte()}, W: {bin.ReadByte()})") {Length = 4};

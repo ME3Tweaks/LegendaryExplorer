@@ -12,7 +12,7 @@ using StreamHelpers;
 
 namespace ME3Explorer.Unreal
 {
-    public struct NameReference
+    public struct NameReference : IEquatable<NameReference>
     {
         public string Name { get; }
         public int Number { get; }
@@ -42,16 +42,6 @@ namespace ME3Explorer.Unreal
             return Name ?? string.Empty;
         }
 
-        public static bool operator ==(NameReference n1, NameReference n2)
-        {
-            return n1.Equals(n2);
-        }
-
-        public static bool operator !=(NameReference n1, NameReference n2)
-        {
-            return !n1.Equals(n2);
-        }
-
         public static bool operator ==(NameReference r, string s)
         {
             return s == r.Name;
@@ -60,6 +50,17 @@ namespace ME3Explorer.Unreal
         public static bool operator !=(NameReference r, string s)
         {
             return s != r.Name;
+        }
+
+        #region IEquatable
+        public static bool operator ==(NameReference n1, NameReference n2)
+        {
+            return n1.Equals(n2);
+        }
+
+        public static bool operator !=(NameReference n1, NameReference n2)
+        {
+            return !n1.Equals(n2);
         }
         public bool Equals(NameReference other)
         {
@@ -78,8 +79,53 @@ namespace ME3Explorer.Unreal
                 return (Name.GetHashCode() * 397) ^ Number;
             }
         }
+        #endregion
     }
 
+
+    public struct ScriptDelegate : IEquatable<ScriptDelegate>
+    {
+        public int Object { get; }
+        public NameReference FunctionName { get; }
+
+        public ScriptDelegate(int _object, NameReference functionName)
+        {
+            Object = _object;
+            FunctionName = functionName;
+        }
+
+        #region IEquatable
+
+        public bool Equals(ScriptDelegate other)
+        {
+            return Object == other.Object && FunctionName.Equals(other.FunctionName);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ScriptDelegate other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Object * 397) ^ FunctionName.GetHashCode();
+            }
+        }
+
+        public static bool operator ==(ScriptDelegate left, ScriptDelegate right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ScriptDelegate left, ScriptDelegate right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+    }
     public enum PropertyType
     {
         Unknown = -1,
@@ -581,12 +627,12 @@ namespace ME3Explorer.Unreal
             stream.WriteInt32(value);
         }
 
-        public static void WriteDelegateProperty(this Stream stream, IMEPackage pcc, string propName, int unk, NameReference value)
+        public static void WriteDelegateProperty(this Stream stream, IMEPackage pcc, string propName, ScriptDelegate value)
         {
             stream.WritePropHeader(pcc, propName, PropertyType.DelegateProperty, 12);
-            stream.WriteInt32(unk);
-            stream.WriteInt32(pcc.FindNameOrAdd(value.Name));
-            stream.WriteInt32(value.Number);
+            stream.WriteInt32(value.Object);
+            stream.WriteInt32(pcc.FindNameOrAdd(value.FunctionName.Name));
+            stream.WriteInt32(value.FunctionName.Number);
         }
     }
 }

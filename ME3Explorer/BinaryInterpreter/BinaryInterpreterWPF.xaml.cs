@@ -132,6 +132,8 @@ namespace ME3Explorer
             "Const",
             "CookedBulkDataInfoContainer",
             "DecalComponent",
+            "DecalMaterial",
+            "DelegateProperty",
             "DirectionalLightComponent",
             "DominantDirectionalLightComponent",
             "DominantPointLightComponent",
@@ -363,6 +365,7 @@ namespace ME3Explorer
                     case "StructProperty":
                     case "ComponentProperty":
                     case "ObjectProperty":
+                    case "DelegateProperty":
                         subNodes.AddRange(StartObjectScan(data));
                         break;
                     case "BioDynamicAnimSet":
@@ -412,6 +415,7 @@ namespace ME3Explorer
                     case "Level":
                         subNodes.AddRange(StartLevelScan(data, ref binarystart));
                         break;
+                    case "DecalMaterial":
                     case "Material":
                         subNodes.AddRange(StartMaterialScan(data, ref binarystart));
                         break;

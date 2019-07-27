@@ -461,11 +461,11 @@ namespace ME3Explorer.Unreal
                 case PropertyType.None:
                     return new NoneProperty { StartOffset = startPos };
                 case PropertyType.DelegateProperty:
-                    throw new NotImplementedException("cannot read Delegate property of Immutable struct");
+                    return new DelegateProperty(stream, pcc, template.Name) { StartOffset = startPos };
                 case PropertyType.Unknown:
+                default:
                     throw new NotImplementedException("cannot read Unknown property of Immutable struct");
             }
-            throw new NotImplementedException("cannot read Unknown property of Immutable struct");
         }
 
         public static UProperty ReadArrayProperty(MemoryStream stream, ExportEntry export, string enclosingType, NameReference name, bool IsInImmutable = false, bool IncludeNoneProperties = false, IEntry parsingEntry = null)
@@ -902,7 +902,7 @@ namespace ME3Explorer.Unreal
                     case ByteProperty byteProperty:
                         return byteProperty.Value;
                     case DelegateProperty delegateProperty:
-                        return delegateProperty.unk;
+                        return delegateProperty.Value;
                     case EnumProperty enumProperty:
                         var enumType = Type.GetType($"Unreal.ME3Enums.{propInfo.Reference}");
                         return Enum.Parse(enumType, enumProperty.Value.InstancedString);
@@ -942,7 +942,7 @@ namespace ME3Explorer.Unreal
                     case ArrayProperty<ObjectProperty> _:
                         return typeof(int);
                     case ArrayProperty<DelegateProperty> _:
-                        return typeof(int);
+                        return typeof(ScriptDelegate);
                     case ArrayProperty<FloatProperty> _:
                         return typeof(float);
                     case ArrayProperty<BoolProperty> _:
@@ -1751,26 +1751,36 @@ namespace ME3Explorer.Unreal
     {
         public override PropertyType PropType => PropertyType.DelegateProperty;
 
-        public int unk;
-        public NameReference Value;
+        private ScriptDelegate _value;
+
+        public ScriptDelegate Value
+        {
+            get => _value;
+            set => SetProperty(ref _value, value);
+        }
 
         public DelegateProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
         {
-            unk = stream.ReadInt32();
-            Value = new NameReference(pcc.getNameEntry(stream.ReadInt32()), stream.ReadInt32());
+            ValueOffset = stream.Position;
+            Value = new ScriptDelegate(stream.ReadInt32(), new NameReference(pcc.getNameEntry(stream.ReadInt32()), stream.ReadInt32()));
+        }
+
+        public DelegateProperty(int _object, NameReference functionName, NameReference? name = null) : base(name)
+        {
+            Value = new ScriptDelegate(_object, functionName);
         }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
-                stream.WriteDelegateProperty(pcc, Name, unk, Value);
+                stream.WriteDelegateProperty(pcc, Name, Value);
             }
             else
             {
-                stream.WriteInt32(unk);
-                stream.WriteInt32(pcc.FindNameOrAdd(Value.Name));
-                stream.WriteInt32(Value.Number);
+                stream.WriteInt32(Value.Object);
+                stream.WriteInt32(pcc.FindNameOrAdd(Value.FunctionName.Name));
+                stream.WriteInt32(Value.FunctionName.Number);
             }
         }
     }

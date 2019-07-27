@@ -462,8 +462,10 @@ namespace ME3Explorer
                     case PropertyType.ObjectProperty:
                         newProperty = new ObjectProperty(0, propName);
                         break;
+                    case PropertyType.DelegateProperty:
+                        newProperty = new DelegateProperty(0, "None", propName);
+                        break;
                     case PropertyType.StructProperty:
-
                         PropertyCollection structProps = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, propInfo.Reference, true);
                         newProperty = new StructProperty(propInfo.Reference, structProps, propName, isImmutable: UnrealObjectInfo.IsImmutable(propInfo.Reference, Pcc.Game));
                         break;
@@ -748,9 +750,9 @@ namespace ME3Explorer
                     {
                         int index = op.Value;
                         var entry = parsingExport.FileRef.getEntry(index);
+                        editableValue = index.ToString();
                         if (entry != null)
                         {
-                            editableValue = index.ToString();
                             parsedValue = entry.GetInstancedFullPath;
                             if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
                             {
@@ -759,13 +761,31 @@ namespace ME3Explorer
                         }
                         else if (index == 0)
                         {
-                            editableValue = index.ToString();
                             parsedValue = "Null";
 
                         }
                         else
                         {
-                            editableValue = index.ToString();
+                            parsedValue = $"Index out of bounds of {(index < 0 ? "Import" : "Export")} list";
+                        }
+                    }
+                    break;
+                case DelegateProperty dp:
+                    {
+                        int index = dp.Value.Object;
+                        var entry = parsingExport.FileRef.getEntry(index);
+                        editableValue = index.ToString();
+                        if (entry != null)
+                        {
+                            parsedValue = $"{entry.GetFullPath}.{dp.Value.FunctionName}";
+                        }
+                        else if (index == 0)
+                        {
+                            parsedValue = "Null";
+
+                        }
+                        else
+                        {
                             parsedValue = $"Index out of bounds of {(index < 0 ? "Import" : "Export")} list";
                         }
                     }
@@ -1151,6 +1171,28 @@ namespace ME3Explorer
                         SupportedEditorSetElements.Add(Value_TextBox);
                         SupportedEditorSetElements.Add(ParsedValue_TextBlock);
                         break;
+                    case DelegateProperty dp:
+                        TextSearch.SetTextPath(Value_ComboBox, "Name");
+                        Value_ComboBox.IsEditable = true;
+                        if (ParentNameList == null)
+                        {
+                            Value_ComboBox.ItemsSource = Pcc.Names.Select((nr, i) => new IndexedName(i, nr)).ToList();
+                        }
+                        else
+                        {
+                            Value_ComboBox.ItemsSource = ParentNameList;
+                        }
+                        Value_ComboBox.SelectedIndex = Pcc.findName(dp.Value.FunctionName.Name);
+                        NameIndex_TextBox.Text = dp.Value.FunctionName.Number.ToString();
+
+                        Value_TextBox.Text = dp.Value.Object.ToString();
+                        UpdateParsedEditorValue(newSelectedItem);
+                        SupportedEditorSetElements.Add(Value_TextBox);
+                        SupportedEditorSetElements.Add(ParsedValue_TextBlock);
+                        SupportedEditorSetElements.Add(Value_ComboBox);
+                        SupportedEditorSetElements.Add(NameIndexPrefix_TextBlock);
+                        SupportedEditorSetElements.Add(NameIndex_TextBox);
+                        break;
                     case NameProperty np:
                         TextSearch.SetTextPath(Value_ComboBox, "Name");
                         Value_ComboBox.IsEditable = true;
@@ -1228,6 +1270,7 @@ namespace ME3Explorer
                             }
                         }
                         break;
+                    case DelegateProperty _:
                     case ObjectProperty _:
                         {
                             if (int.TryParse(Value_TextBox.Text, out int index))
@@ -1355,8 +1398,6 @@ namespace ME3Explorer
                                 switch (newSelectedItem.Parent.Property)
                                 {
                                     case StructProperty p when p.IsImmutable:
-                                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
-                                        return;
                                     case ArrayProperty<IntProperty> _:
                                     case ArrayProperty<FloatProperty> _:
                                     case ArrayProperty<ObjectProperty> _:
@@ -1433,6 +1474,17 @@ namespace ME3Explorer
                                     return;
                                 }
                                 Interpreter_Hexbox.Highlight(np.StartOffset, np.ValueOffset + 8 - np.StartOffset);
+                                break;
+                            }
+                        case DelegateProperty dp:
+                            {
+                                if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable
+                                 || newSelectedItem.Parent.Property is ArrayProperty<DelegateProperty>)
+                                {
+                                    Interpreter_Hexbox.Highlight(dp.ValueOffset, 12);
+                                    return;
+                                }
+                                Interpreter_Hexbox.Highlight(dp.StartOffset, dp.ValueOffset + 12 - dp.StartOffset);
                                 break;
                             }
                         case StringRefProperty srefp:
@@ -1641,6 +1693,7 @@ namespace ME3Explorer
                         }
                         break;
                     case NameProperty namep:
+                    {
                         //get string
                         string input = Value_ComboBox.Text;
                         var index = Pcc.findName(input);
@@ -1665,6 +1718,37 @@ namespace ME3Explorer
                         {
                             namep.Value = new NameReference(input, nameIndex);
                             updated = true;
+                        }
+                        break;
+                    }
+                    case DelegateProperty delp:
+                        if (int.TryParse(Value_TextBox.Text, out int _o) && (Pcc.isEntry(_o) || _o == 0))
+                        {
+                            //get string
+                            string input = Value_ComboBox.Text;
+                            var index = Pcc.findName(input);
+                            if (index == -1)
+                            {
+                                //couldn't find name
+                                if (MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(Pcc.FilePath)} does not contain the Name: {input}\nWould you like to add it to the Name list?", "Name not found", MessageBoxButton.YesNo))
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    index = Pcc.FindNameOrAdd(input);
+                                    //Wait for namelist to update. we may need to set a timer here.
+                                    Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+                                }
+                            }
+
+                            bool nameindexok = int.TryParse(NameIndex_TextBox.Text, out int nameIndex);
+                            nameindexok &= nameIndex >= 0;
+                            if (index >= 0 && nameindexok)
+                            {
+                                delp.Value = new ScriptDelegate(_o, new NameReference(input, nameIndex));
+                                updated = true;
+                            }
                         }
                         break;
                     default:
@@ -1736,6 +1820,9 @@ namespace ME3Explorer
                         break;
                     case ArrayProperty<ObjectProperty> aop:
                         aop.Insert(insertIndex, new ObjectProperty(0));
+                        break;
+                    case ArrayProperty<DelegateProperty> aop:
+                        aop.Insert(insertIndex, new DelegateProperty(0, "None"));
                         break;
                     case ArrayProperty<EnumProperty> aep:
                         {
@@ -2138,6 +2225,9 @@ namespace ME3Explorer
 
                 switch (Property)
                 {
+                    case DelegateProperty dp:
+                        str.Write($" {ParsedValue}");
+                        break;
                     case ObjectProperty op:
                         {
                             //Resolve
