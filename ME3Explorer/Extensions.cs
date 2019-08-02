@@ -865,19 +865,21 @@ namespace ME3Explorer
     /// //intList would only contain 4,5, and 6 if shouldAdd456 was true 
     /// </code>
     /// </example>
-    public static class InitializerHelper
+    public static class ListInitHelper
     {
-        public class InitializerCollection<T> : List<T>
+        public class InitCollection<T> : List<T>
         {
-
-            public InitializerCollection(IEnumerable<T> collection) : base(collection) { }
+            public InitCollection(IEnumerable<T> collection) : base(collection) { }
         }
 
-        public static InitializerCollection<T> ConditionalAdd<T>(bool condition, Func<IEnumerable<T>> elems) => condition ? new InitializerCollection<T>(elems()) : null;
+        public static InitCollection<T> ConditionalAdd<T>(bool condition, Func<IEnumerable<T>> elems) => condition ? new InitCollection<T>(elems()) : null;
+
+        public static InitCollection<T> ConditionalAdd<T>(bool condition, Func<IEnumerable<T>> ifTrue, Func<IEnumerable<T>> ifFalse) =>
+            new InitCollection<T>(condition ? ifTrue() : ifFalse());
 
         //this may appear to have no references, but it is implicitly called whenever ConditionalAdd is used in a List initializer
         //VS's "Find All References" can't figure this out, but Resharper's "Find Usages" can 
-        public static void Add<T>(this List<T> list, InitializerCollection<T> range)
+        public static void Add<T>(this List<T> list, InitCollection<T> range)
         {
             if(range != null) list.AddRange(range);
         }

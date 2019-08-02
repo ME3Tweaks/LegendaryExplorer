@@ -100,7 +100,7 @@ namespace ME3Explorer
                 {
                     var nodes = new List<ITreeItem>();
                     materialShaderMaps.Items.Add(new BinInterpNode(bin.Position, $"Material Shader Map {i}") { Items = nodes });
-                    nodes.AddRange(ReadFStaticParameterSetStream(bin));
+                    nodes.AddRange(ReadFStaticParameterSet(bin));
 
                     if (Pcc.Game == MEGame.ME3)
                     {
@@ -148,7 +148,7 @@ namespace ME3Explorer
 
                     nodes.Add(MakeStringNode(bin, "Friendly Name"));
 
-                    nodes.AddRange(ReadFStaticParameterSetStream(bin));
+                    nodes.AddRange(ReadFStaticParameterSet(bin));
 
                     if (Pcc.Game == MEGame.ME3)
                     {
@@ -187,18 +187,18 @@ namespace ME3Explorer
         private BinInterpNode MakeStringNode(MemoryStream bin, string nodeName)
         {
             long pos = bin.Position;
-            int friendlyNameLen = bin.ReadInt32();
+            int strLen = bin.ReadInt32();
             string str;
             if (Pcc.Game == MEGame.ME3)
             {
-                friendlyNameLen *= -2;
-                str = bin.ReadStringUnicodeNull(friendlyNameLen);
+                strLen *= -2;
+                str = bin.ReadStringUnicodeNull(strLen);
             }
             else
             {
-                str = bin.ReadStringASCIINull(friendlyNameLen);
+                str = bin.ReadStringASCIINull(strLen);
             }
-            return new BinInterpNode(pos, $"{nodeName}: {str}") {Length = friendlyNameLen + 4};
+            return new BinInterpNode(pos, $"{nodeName}: {str}") {Length = strLen + 4};
         }
 
         enum EShaderFrequency : byte
@@ -270,11 +270,11 @@ namespace ME3Explorer
                     break;
                 case "FMaterialUniformExpressionTexture":
                 case "FMaterialUniformExpressionFlipBookTextureParameter":
-                    node.Items.Add(MakeUInt32Node(bin, "TextureIndex:"));
+                    node.Items.Add(MakeInt32Node(bin, "TextureIndex:"));
                     break;
                 case "FMaterialUniformExpressionTextureParameter":
                     node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).InstancedString}"));
-                    node.Items.Add(MakeUInt32Node(bin, "TextureIndex:"));
+                    node.Items.Add(MakeInt32Node(bin, "TextureIndex:"));
                     break;
                 case "FMaterialUniformExpressionTime":
                     //intentionally left blank. outputs current scene time, has no parameters
@@ -343,10 +343,10 @@ namespace ME3Explorer
                             Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, "{j}"))
                         },
                         MakeLightMapNode(bin),
-                        InitializerHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new List<ITreeItem>
+                        ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new List<ITreeItem>
                         {
                             new BinInterpNode(bin.Position, $"bLoadVertexColorData ({bLoadVertexColorData = bin.ReadBoolByte()})"),
-                            InitializerHelper.ConditionalAdd(bLoadVertexColorData, () => new ITreeItem[]
+                            ListInitHelper.ConditionalAdd(bLoadVertexColorData, () => new ITreeItem[]
                             {
                                 new BinInterpNode(bin.Position, "OverrideVertexColors ")
                                 {
@@ -354,7 +354,7 @@ namespace ME3Explorer
                                     {
                                         MakeUInt32Node(bin, "Stride:"),
                                         new BinInterpNode(bin.Position, $"NumVertices: {numVertices = bin.ReadUInt32()}"),
-                                        InitializerHelper.ConditionalAdd(numVertices > 0, () => new ITreeItem[]
+                                        ListInitHelper.ConditionalAdd(numVertices > 0, () => new ITreeItem[]
                                         {
                                             MakeInt32Node(bin, "FColor size"),
                                             new BinInterpNode(bin.Position, $"VertexData ({bin.ReadInt32()})")
@@ -409,13 +409,13 @@ namespace ME3Explorer
                 Items =
                 {
                     new BinInterpNode(bin.Position, $"LightMapType: {lightMapType = (ELightMapType)bin.ReadInt32()}"),
-                    InitializerHelper.ConditionalAdd(lightMapType != ELightMapType.LMT_None, () => new List<ITreeItem>
+                    ListInitHelper.ConditionalAdd(lightMapType != ELightMapType.LMT_None, () => new List<ITreeItem>
                     {
                         new BinInterpNode(bin.Position, $"LightGuids ({bin.ReadInt32()})")
                         {
                             Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpNode(bin.Position, $"{j}: {bin.ReadGuid()}"))
                         },
-                        InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_1D, () => new ITreeItem[]
+                        ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_1D, () => new ITreeItem[]
                         {
                             MakeEntryNode(bin, "Owner"),
                             MakeUInt32Node(bin, "BulkDataFlags:"),
@@ -447,7 +447,7 @@ namespace ME3Explorer
                                 })
                             },
                         }.NonNull()),
-                        InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_2D, () => new List<ITreeItem>
+                        ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_2D, () => new List<ITreeItem>
                         {
                             MakeEntryNode(bin, "Texture 1"),
                             MakeVectorNode(bin, "ScaleVector 1"),
@@ -455,7 +455,7 @@ namespace ME3Explorer
                             MakeVectorNode(bin, "ScaleVector 2"),
                             MakeEntryNode(bin, "Texture 3"),
                             MakeVectorNode(bin, "ScaleVector 3"),
-                            InitializerHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
+                            ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
                             {
                                 MakeEntryNode(bin, "Texture 4"),
                                 MakeVectorNode(bin, "ScaleVector 4"),
@@ -463,7 +463,7 @@ namespace ME3Explorer
                             MakeVector2DNode(bin, "CoordinateScale"),
                             MakeVector2DNode(bin, "CoordinateBias")
                         }),
-                        InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_3, () => new ITreeItem[]
+                        ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_3, () => new ITreeItem[]
                         {
                             MakeInt32Node(bin, "Unknown"),
                             MakeUInt32Node(bin, "BulkDataFlags:"),
@@ -481,17 +481,17 @@ namespace ME3Explorer
                             MakeVectorNode(bin, "ScaleVector?"),
                             MakeVectorNode(bin, "ScaleVector?")
                         }),
-                        InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_4 || lightMapType == ELightMapType.LMT_6, () => new List<ITreeItem>
+                        ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_4 || lightMapType == ELightMapType.LMT_6, () => new List<ITreeItem>
                         {
                             MakeEntryNode(bin, "Texture 1"),
-                            new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
+                            new ListInitHelper.InitCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
                             MakeEntryNode(bin, "Texture 2"),
-                            new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
+                            new ListInitHelper.InitCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
                             MakeEntryNode(bin, "Texture 3"),
-                            new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
-                            new InitializerHelper.InitializerCollection<ITreeItem>(ReadList(4, j => MakeFloatNode(bin, "Unknown float"))),
+                            new ListInitHelper.InitCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
+                            new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, j => MakeFloatNode(bin, "Unknown float"))),
                         }),
-                        InitializerHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_5, () => new ITreeItem[]
+                        ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_5, () => new ITreeItem[]
                         {
                             MakeInt32Node(bin, "Unknown"),
                             MakeUInt32Node(bin, "BulkDataFlags:"),
@@ -866,7 +866,7 @@ namespace ME3Explorer
                                 MakeInt32Node(bin, "iBrushPoly"),
                                 MakeFloatNode(bin, "ShadowMapScale"),
                                 MakeInt32Node(bin, "LightingChannels"),
-                                InitializerHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                                ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
                                 {
                                     MakeBoolIntNode(bin, "bUseTwoSidedLighting"),
                                     MakeBoolIntNode(bin, "bShadowIndirectOnly"),
@@ -1143,12 +1143,12 @@ namespace ME3Explorer
                                         MakeVectorNode(bin, "Position"),
                                         MakePackedNormalNode(bin, "TangentX"),
                                         MakePackedNormalNode(bin, "TangentY"),
-                                        InitializerHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
+                                        ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
                                         {
                                             MakeVector2DNode(bin, "LegacyProjectedUVs")
                                         }),
                                         MakeVector2DNode(bin, "LightMapCoordinate"),
-                                        InitializerHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
+                                        ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
                                         {
                                             MakeVector2DNode(bin, "LegacyNormalTransform[0]"),
                                             MakeVector2DNode(bin, "LegacyNormalTransform[1]")
@@ -1164,7 +1164,7 @@ namespace ME3Explorer
                             },
                             MakeUInt32Node(bin, "NumTriangles"),
                             MakeLightMapNode(bin),
-                            InitializerHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                            ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
                             {
                                 new BinInterpNode(bin.Position, $"ShadowMap1D ({count = bin.ReadInt32()})")
                                 {
@@ -4125,7 +4125,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -5299,7 +5299,7 @@ namespace ME3Explorer
                         Items =
                         {
                             new BinInterpNode(bin.Position, $"bInitialized: ({bInitialized = bin.ReadBoolInt()})"),
-                            InitializerHelper.ConditionalAdd(bInitialized, () => new ITreeItem[]
+                            ListInitHelper.ConditionalAdd(bInitialized, () => new ITreeItem[]
                             {
                                 new BinInterpNode(bin.Position, "Bounds")
                                 {
@@ -5363,6 +5363,17 @@ namespace ME3Explorer
         private static BinInterpNode MakeVector2DNode(MemoryStream bin, string name) =>
             new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})") {Length = 8};
 
+        private static BinInterpNode MakeGuidNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadGuid()}") {Length = 16};
+
+        private static BinInterpNode MakeArrayNode(MemoryStream bin, string name, Func<int, BinInterpNode> selector)
+        {
+            int count;
+            return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadInt32()})")
+            {
+                Items = ReadList(count, selector)
+            };
+        }
+
         private List<ITreeItem> StartMaterialScan(byte[] data, ref int binarystart)
         {
             var nodes = new List<ITreeItem>();
@@ -5373,30 +5384,11 @@ namespace ME3Explorer
             }
             try
             {
-                {
-                    var subnodes = new List<ITreeItem>();
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
 
-                    nodes.Add(new BinInterpNode
-                    {
-                        Header = $"0x{binarystart:X4} Material Resource",
-                        Name = "_" + binarystart,
-                        Items = subnodes
-                    });
-
-                    binarystart = ReadMaterialResource(data, subnodes, binarystart);
-                }
-                {
-                    var subnodes = new List<ITreeItem>();
-
-                    nodes.Add(new BinInterpNode
-                    {
-                        Header = $"0x{binarystart:X4} Legacy ShaderMap2 Resource",
-                        Name = "_" + binarystart,
-                        Items = subnodes
-                    });
-
-                    binarystart = ReadMaterialResource(data, subnodes, binarystart);
-                }
+                nodes.Add(MakeMaterialResourceNode(bin, "Material Resource"));
+                nodes.Add(MakeMaterialResourceNode(bin, "2nd Material Resource"));
             }
             catch (Exception ex)
             {
@@ -5415,39 +5407,13 @@ namespace ME3Explorer
             }
             try
             {
-                {
-                    var subnodes = new List<ITreeItem>();
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
 
-                    nodes.Add(new BinInterpNode
-                    {
-                        Header = $"0x{binarystart:X4} Static Permutation Resource",
-                        Name = "_" + binarystart,
-                        Items = subnodes
-                    });
-
-                    binarystart = ReadMaterialResource(data, subnodes, binarystart);
-
-                    binarystart = ReadFStaticParameterSet(data, subnodes, binarystart);
-                }
-                {
-                    var subnodes = new List<ITreeItem>();
-
-                    nodes.Add(new BinInterpNode
-                    {
-                        Header = $"0x{binarystart:X4} Legacy ShaderMap2 Resource",
-                        Name = "_" + binarystart,
-                        Items = subnodes
-                    });
-
-                    binarystart = ReadMaterialResource(data, subnodes, binarystart);
-
-                    binarystart = ReadFStaticParameterSet(data, subnodes, binarystart);
-                }
-
-                if (binarystart != data.Length)
-                {
-                    //Debugger.Break();
-                }
+                nodes.Add(MakeMaterialResourceNode(bin, "Material Resource"));
+                nodes.AddRange(ReadFStaticParameterSet(bin));
+                nodes.Add(MakeMaterialResourceNode(bin, "2nd Material Resource"));
+                nodes.AddRange(ReadFStaticParameterSet(bin));
             }
             catch (Exception ex)
             {
@@ -5455,7 +5421,7 @@ namespace ME3Explorer
             }
             return nodes;
         }
-        private List<ITreeItem> ReadFStaticParameterSetStream(MemoryStream bin)
+        private List<ITreeItem> ReadFStaticParameterSet(MemoryStream bin)
         {
             var nodes = new List<ITreeItem>();
 
@@ -5525,340 +5491,62 @@ namespace ME3Explorer
             return nodes;
         }
 
-        private int ReadFStaticParameterSet(byte[] data, List<ITreeItem> nodes, int binarypos)
+        private BinInterpNode MakeMaterialResourceNode(MemoryStream bin, string name)
         {
-
-            nodes.Add(MakeGuidNode(data, ref binarypos, "Base Material GUID"));
-            int staticSwitchParameterCount = BitConverter.ToInt32(data, binarypos);
-            var staticSwitchParametersNode = new BinInterpNode
+            return new BinInterpNode(bin.Position, name)
             {
-                Header = $"0x{binarypos:X8} : Static Switch Parameters, {staticSwitchParameterCount} items",
-                Name = "_" + binarypos,
-                Tag = NodeType.Unknown,
-                Length = 4
-            };
-            binarypos += 4;
-            nodes.Add(staticSwitchParametersNode);
-            for (int j = 0; j < staticSwitchParameterCount; j++)
-            {
-                var parameterName = ReadNameReference(data, binarypos);
-                binarypos += 8;
-                var paramVal = BitConverter.ToBoolean(data, binarypos);
-                binarypos += 4;
-                var paramOverride = BitConverter.ToBoolean(data, binarypos);
-                binarypos += 4;
-                var expressionGUID = new byte[16];
-                Buffer.BlockCopy(data, binarypos, expressionGUID, 0, 16);
-                Guid g = new Guid(expressionGUID);
-                binarypos += 16;
-                staticSwitchParametersNode.Items.Add(new BinInterpNode
+                IsExpanded = true,
+                Items =
                 {
-                    Header = $"0x{binarypos - 32:X8} : {j}: Name: {parameterName.InstancedString}, Value: {paramVal}, Override: {paramOverride}\nGUID:{g}",
-                    Name = $"_{binarypos - 32}",
-                    Tag = NodeType.Unknown,
-                    Length = 32
-                });
-            }
-
-            int staticComponentMaskParameterCount = BitConverter.ToInt32(data, binarypos);
-            var staticComponentMaskParametersNode = new BinInterpNode
-            {
-                Header = $"0x{binarypos:X8} : Static Component Mask Parameters, {staticComponentMaskParameterCount} items",
-                Name = "_" + binarypos,
-                Tag = NodeType.Unknown,
-                Length = 4
-            };
-            binarypos += 4;
-            nodes.Add(staticComponentMaskParametersNode);
-            for (int i = 0; i < staticComponentMaskParameterCount; i++)
-            {
-                var subnodes = new List<ITreeItem>();
-                staticComponentMaskParametersNode.Items.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X8} : Parameter {i}",
-                    Name = "_" + binarypos,
-                    Tag = NodeType.Unknown,
-                    Length = 44,
-                    Items = subnodes
-                });
-                var parameterName = ReadNameReference(data, binarypos);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X8} : ParameterName: {parameterName.InstancedString}",
-                    Name = "_" + binarypos,
-                    Tag = NodeType.StructLeafName,
-                    Length = 8
-                });
-                binarypos += 8;
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X8} : R: {BitConverter.ToBoolean(data, binarypos)}",
-                    Name = "_" + binarypos,
-                    Tag = NodeType.StructLeafBool,
-                    Length = 4,
-                });
-                binarypos += 4;
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X8} : G: {BitConverter.ToBoolean(data, binarypos)}",
-                    Name = "_" + binarypos,
-                    Tag = NodeType.StructLeafBool,
-                    Length = 4,
-                });
-                binarypos += 4;
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X8} : B: {BitConverter.ToBoolean(data, binarypos)}",
-                    Name = "_" + binarypos,
-                    Tag = NodeType.StructLeafBool,
-                    Length = 4,
-                });
-                binarypos += 4;
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X8} : A: {BitConverter.ToBoolean(data, binarypos)}",
-                    Name = "_" + binarypos,
-                    Tag = NodeType.StructLeafBool,
-                    Length = 4,
-                });
-                binarypos += 4;
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X8} : bOverride: {BitConverter.ToBoolean(data, binarypos)}",
-                    Name = "_" + binarypos,
-                    Tag = NodeType.StructLeafBool,
-                    Length = 4,
-                });
-                binarypos += 4;
-                subnodes.Add(MakeGuidNode(data, ref binarypos, "ExpressionGUID"));
-            }
-            int NormalParameterCount = BitConverter.ToInt32(data, binarypos);
-            var NormalParametersNode = new BinInterpNode
-            {
-                Header = $"0x{binarypos:X8} : Normal Parameters, {NormalParameterCount} items",
-                Name = "_" + binarypos,
-                Tag = NodeType.Unknown,
-                Length = 4
-            };
-            binarypos += 4;
-            nodes.Add(NormalParametersNode);
-            for (int i = 0; i < NormalParameterCount; i++)
-            {
-                var subnodes = new List<ITreeItem>();
-                NormalParametersNode.Items.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X8} : Parameter {i}",
-                    Name = "_" + binarypos,
-                    Tag = NodeType.Unknown,
-                    Length = 29,
-                    Items = subnodes
-                });
-                var parameterName = ReadNameReference(data, binarypos);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X8} : ParameterName: {parameterName.InstancedString}",
-                    Name = "_" + binarypos,
-                    Tag = NodeType.StructLeafName,
-                    Length = 8
-                });
-                binarypos += 8;
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X8} : CompressionSettings: {(Unreal.ME3Enums.TextureCompressionSettings)data[binarypos]}",
-                    Name = "_" + binarypos,
-                    Tag = NodeType.StructLeafByte,
-                    Length = 1
-                });
-                binarypos += 1;
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X8} : bOverride: {BitConverter.ToBoolean(data, binarypos)}",
-                    Name = "_" + binarypos,
-                    Tag = NodeType.StructLeafBool,
-                    Length = 4
-                });
-                binarypos += 4;
-                subnodes.Add(MakeGuidNode(data, ref binarypos, "ExpressionGUID"));
-            }
-
-            return binarypos;
-        }
-
-        private NameReference ReadNameReference(byte[] data, int binarypos)
-        {
-            return new NameReference(Pcc.getNameEntry(BitConverter.ToInt32(data, binarypos)), BitConverter.ToInt32(data, binarypos + 4));
-        }
-
-        private int ReadMaterialResource(byte[] data, List<ITreeItem> subnodes, int binarypos)
-        {
-            int compileErrorsCount = BitConverter.ToInt32(data, binarypos);
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"0x{binarypos:X4} Compile Error Count: {BitConverter.ToInt32(data, binarypos)}",
-                Name = "_" + binarypos
-            });
-            binarypos += 4;
-            for (int i = 0; i < compileErrorsCount; i++)
-            {
-                int strLen = -2 * BitConverter.ToInt32(data, binarypos);
-                binarypos += 4;
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X4} Compile Error {i}: {Encoding.Unicode.GetString(data, binarypos, strLen)}",
-                    Name = "_" + binarypos,
-                    Length = strLen
-                });
-                binarypos += strLen;
-            }
-
-            if (CurrentLoadedExport.FileRef.Game != MEGame.ME2)
-            {
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X4} Zero: {BitConverter.ToInt32(data, binarypos)}",
-                    Name = "_" + binarypos
-                });
-                binarypos += 4;
-            }
-
-            int maxTextureDependencyLength = BitConverter.ToInt32(data, binarypos);
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"0x{binarypos:X4} Max Texture Dependency Length: {maxTextureDependencyLength} (Unused?)",
-                Name = "_" + binarypos
-            });
-            binarypos += 4;
-
-            subnodes.Add(MakeGuidNode(data, ref binarypos, "GUID"));
-
-            uint numUserTexCoords = BitConverter.ToUInt32(data, binarypos);
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"0x{binarypos:X4} Number of User Texture Coordinates: {numUserTexCoords}",
-                Name = "_" + binarypos
-            });
-            binarypos += 4;
-            int textureCount = BitConverter.ToInt32(data, binarypos);
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"0x{binarypos:X4} Uniform Expression Texture Count: {textureCount}",
-                Name = "_" + binarypos
-            });
-            binarypos += 4;
-
-            while (binarypos <= data.Length - 4 && textureCount > 0)
-            {
-                int val = BitConverter.ToInt32(data, binarypos);
-                string name = val.ToString();
-
-                if (val > 0 && val <= CurrentLoadedExport.FileRef.Exports.Count)
-                {
-                    ExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
-                    name += $" {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
+                    MakeArrayNode(bin, "Compile Errors", i => MakeStringNode(bin, $"{i}")),
+                    MakeArrayNode(bin, "TextureDependencyLengthMap", i => new BinInterpNode(bin.Position, $"{entryRefString(bin)}: {bin.ReadInt32()}")),
+                    MakeInt32Node(bin, "MaxTextureDependencyLength"),
+                    MakeGuidNode(bin, "ID"),
+                    MakeUInt32Node(bin, "NumUserTexCoords"),
+                    ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, ifTrue: () => new ITreeItem[]
+                    {
+                        MakeArrayNode(bin, "UniformExpressionTextures", i => MakeEntryNode(bin, $"{i}"))
+                    }, ifFalse: () => new ITreeItem[]
+                    {
+                        MakeArrayNode(bin, "UniformPixelVectorExpressions", i => ReadMaterialUniformExpression(bin, $"{i}")),
+                        MakeArrayNode(bin, "UniformPixelScalarExpressions", i => ReadMaterialUniformExpression(bin, $"{i}")),
+                        MakeArrayNode(bin, "Uniform2DTextureExpressions", i => ReadMaterialUniformExpression(bin, $"{i}")),
+                        MakeArrayNode(bin, "UniformCubeTextureExpressions", i => ReadMaterialUniformExpression(bin, $"{i}")),
+                    }),
+                    MakeBoolIntNode(bin, "bUsesSceneColor"),
+                    MakeBoolIntNode(bin, "bUsesSceneDepth"),
+                    ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                    {
+                        MakeBoolIntNode(bin, "bUsesDynamicParameter"),
+                        MakeBoolIntNode(bin, "bUsesLightmapUVs"),
+                        MakeBoolIntNode(bin, "bUsesMaterialVertexPositionOffset"),
+                        MakeBoolIntNode(bin, "unknown bool?")
+                    }),
+                    new BinInterpNode(bin.Position, $"UsingTransforms: {(ECoordTransformUsage)bin.ReadUInt32()}"),
+                    MakeArrayNode(bin, "TextureLookups", i => new BinInterpNode(bin.Position, $"{i}")
+                    {
+                        Items =
+                        {
+                            MakeInt32Node(bin, "TexCoordIndex"),
+                            MakeInt32Node(bin, "TextureIndex"),
+                            ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME1, ifTrue: () => new ITreeItem[]
+                            {
+                                MakeFloatNode(bin, "TilingScale")
+                            }, ifFalse: () => new ITreeItem[]
+                            {
+                                MakeFloatNode(bin, "TilingUScale"),
+                                MakeFloatNode(bin, "TilingVScale")
+                            }),
+                        }
+                    }),
+                    MakeInt32Node(bin, "Zero?"),
+                    ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME1, () => new ITreeItem[]
+                    {
+                        MakeInt32Node(bin, "Unknown?"),
+                        MakeInt32Node(bin, "Unknown?")
+                    }),
                 }
-                else if (val < 0 && Math.Abs(val) <= CurrentLoadedExport.FileRef.Imports.Count)
-                {
-                    int csImportVal = Math.Abs(val) - 1;
-                    ImportEntry imp = CurrentLoadedExport.FileRef.Imports[csImportVal];
-                    name += $" {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
-                }
-
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X4} {name}",
-                    Tag = NodeType.StructLeafObject,
-                    Name = "_" + binarypos
-                });
-                binarypos += 4;
-                textureCount--;
-            }
-
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"0x{binarypos:X4} bUsesSceneColor: {BitConverter.ToBoolean(data, binarypos)}",
-                Name = "_" + binarypos
-            });
-            binarypos += 4;
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"0x{binarypos:X4} bUsesSceneDepth: {BitConverter.ToBoolean(data, binarypos)}",
-                Name = "_" + binarypos
-            });
-            binarypos += 4;
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"0x{binarypos:X4} bUsesDynamicParameter: {BitConverter.ToBoolean(data, binarypos)}",
-                Name = "_" + binarypos
-            });
-            binarypos += 4;
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"0x{binarypos:X4} bUsesLightmapUVs: {BitConverter.ToBoolean(data, binarypos)}",
-                Name = "_" + binarypos
-            });
-            binarypos += 4;
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"0x{binarypos:X4} bUsesMaterialVertexPositionOffset: {BitConverter.ToBoolean(data, binarypos)}",
-                Name = "_" + binarypos
-            });
-            binarypos += 4;
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"0x{binarypos:X4} Unknown: {BitConverter.ToInt32(data, binarypos)}",
-                Name = "_" + binarypos
-            });
-            binarypos += 4;
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"0x{binarypos:X4} UsingTransforms: {(ECoordTransformUsage)BitConverter.ToUInt32(data, binarypos)}",
-                Name = "_" + binarypos
-            });
-            binarypos += 4;
-
-            int textureLookupCount = BitConverter.ToInt32(data, binarypos);
-            var textureLookups = new BinInterpNode
-            {
-                Header = $"0x{binarypos:X4} Texture Lookup Count: {textureLookupCount}",
-                Name = "_" + binarypos,
             };
-            subnodes.Add(textureLookups);
-            binarypos += 4;
-            for (int j = 0; j < textureLookupCount; j++)
-            {
-                textureLookups.Items.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X4} Texture Coordinate Index: {BitConverter.ToInt32(data, binarypos)}",
-                    Name = "_" + binarypos
-                });
-                binarypos += 4;
-                textureLookups.Items.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X4} Texture Index: {BitConverter.ToInt32(data, binarypos)} (index into Uniform Expression Texture array)",
-                    Name = "_" + binarypos
-                });
-                binarypos += 4;
-                textureLookups.Items.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X4} UScale: {BitConverter.ToSingle(data, binarypos)}",
-                    Name = "_" + binarypos
-                });
-                binarypos += 4;
-                textureLookups.Items.Add(new BinInterpNode
-                {
-                    Header = $"0x{binarypos:X4} VScale: {BitConverter.ToSingle(data, binarypos)}",
-                    Name = "_" + binarypos
-                });
-                binarypos += 4;
-            }
-
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"0x{binarypos:X4} Zero: {BitConverter.ToInt32(data, binarypos)}",
-                Name = "_" + binarypos
-            });
-            binarypos += 4;
-            return binarypos;
         }
 
         [Flags]
@@ -7692,124 +7380,122 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<ITreeItem> StartTextureBinaryScan(byte[] data)
+        private List<ITreeItem> StartTextureBinaryScan(byte[] data, int binarystart)
         {
             var subnodes = new List<ITreeItem>();
 
             try
             {
-                var textureData = new MemoryStream(data);
+                var bin = new MemoryStream(data);
 
-                int unrealExportIndex = textureData.ReadInt32();
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{textureData.Position - 4:X4} Unreal Unique Index: {unrealExportIndex}",
-                    Name = "_" + (textureData.Position - 4),
+                subnodes.Add(MakeInt32Node(bin, "Unreal Unique Index"));
 
-                    Tag = NodeType.StructLeafInt
-                });
-
-                PropertyCollection properties = CurrentLoadedExport.GetProperties();
-                if (textureData.Length == properties.endOffset)
+                if (bin.Length == binarystart)
                     return subnodes; // no binary data
 
 
-                textureData.Position = properties.endOffset;
-                if (CurrentLoadedExport.FileRef.Game != MEGame.ME3)
+                bin.JumpTo(binarystart);
+                if (Pcc.Game != MEGame.ME3)
                 {
-                    textureData.Seek(12, SeekOrigin.Current); // 12 zeros
-                    subnodes.Add(new BinInterpNode(textureData.Position, $"File Offset: {textureData.ReadInt32()}"));
+                    bin.Skip(12); // 12 zeros
+                    subnodes.Add(MakeInt32Node(bin, "File Offset"));
                 }
 
-                int numMipMaps = textureData.ReadInt32();
-                subnodes.Add(new BinInterpNode(textureData.Position - 4, $"Num MipMaps: {numMipMaps}"));
+                int numMipMaps = bin.ReadInt32();
+                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Num MipMaps: {numMipMaps}"));
                 for (int l = 0; l < numMipMaps; l++)
                 {
                     var mipMapNode = new BinInterpNode
                     {
-                        Header = $"0x{textureData.Position:X4} MipMap #{l}",
-                        Name = "_" + (textureData.Position)
+                        Header = $"0x{bin.Position:X4} MipMap #{l}",
+                        Name = "_" + (bin.Position)
 
                     };
                     subnodes.Add(mipMapNode);
 
-                    StorageTypes storageType = (StorageTypes)textureData.ReadInt32();
+                    StorageTypes storageType = (StorageTypes)bin.ReadInt32();
                     mipMapNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{textureData.Position - 4:X4} Storage Type: {storageType}",
-                        Name = "_" + (textureData.Position - 4)
+                        Header = $"0x{bin.Position - 4:X4} Storage Type: {storageType}",
+                        Name = "_" + (bin.Position - 4)
 
                     });
 
-                    var uncompressedSize = textureData.ReadInt32();
+                    var uncompressedSize = bin.ReadInt32();
                     mipMapNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{textureData.Position - 4:X4} Uncompressed Size: {uncompressedSize}",
-                        Name = "_" + (textureData.Position - 4)
+                        Header = $"0x{bin.Position - 4:X4} Uncompressed Size: {uncompressedSize}",
+                        Name = "_" + (bin.Position - 4)
 
                     });
 
-                    var compressedSize = textureData.ReadInt32();
+                    var compressedSize = bin.ReadInt32();
                     mipMapNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{textureData.Position - 4:X4} Compressed Size: {compressedSize}",
-                        Name = "_" + (textureData.Position - 4)
+                        Header = $"0x{bin.Position - 4:X4} Compressed Size: {compressedSize}",
+                        Name = "_" + (bin.Position - 4)
 
                     });
 
-                    var dataOffset = textureData.ReadInt32();
+                    var dataOffset = bin.ReadInt32();
                     mipMapNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{textureData.Position - 4:X4} Data Offset: 0x{dataOffset:X8}",
-                        Name = "_" + (textureData.Position - 4)
+                        Header = $"0x{bin.Position - 4:X4} Data Offset: 0x{dataOffset:X8}",
+                        Name = "_" + (bin.Position - 4)
 
                     });
 
                     switch (storageType)
                     {
                         case StorageTypes.pccUnc:
-                            textureData.Seek(uncompressedSize, SeekOrigin.Current);
+                            bin.Skip(uncompressedSize);
                             break;
                         case StorageTypes.pccLZO:
                         case StorageTypes.pccZlib:
-                            textureData.Seek(compressedSize, SeekOrigin.Current);
+                            bin.Skip(compressedSize);
                             break;
                     }
 
-                    var mipWidth = textureData.ReadInt32();
+                    var mipWidth = bin.ReadInt32();
                     mipMapNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{textureData.Position - 4:X4} Mip Width: {mipWidth}",
-                        Name = "_" + (textureData.Position - 4),
+                        Header = $"0x{bin.Position - 4:X4} Mip Width: {mipWidth}",
+                        Name = "_" + (bin.Position - 4),
                         Tag = NodeType.StructLeafInt
                     });
 
-                    var mipHeight = textureData.ReadInt32();
+                    var mipHeight = bin.ReadInt32();
                     mipMapNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{textureData.Position - 4:X4} Mip Height: {mipHeight}",
-                        Name = "_" + (textureData.Position - 4),
+                        Header = $"0x{bin.Position - 4:X4} Mip Height: {mipHeight}",
+                        Name = "_" + (bin.Position - 4),
                         Tag = NodeType.StructLeafInt
                     });
                 }
-                textureData.ReadInt32(); //skip
+                bin.Skip(4);
                 if (CurrentLoadedExport.FileRef.Game != MEGame.ME1)
                 {
-                    byte[] textureGuid = Gibbed.IO.StreamHelpers.ReadBytes(textureData, 16);
-                    var textureGuidNode = new BinInterpNode
-                    {
-                        Header = $"0x{textureData.Position - 16:X4} Texture GUID: {new Guid(textureGuid)}",
-                        Name = "_" + (textureData.Position - 16)
+                    subnodes.Add(MakeGuidNode(bin, "Texture GUID"));
+                }
 
-                    };
-                    subnodes.Add(textureGuidNode);
+                if (Pcc.Game == MEGame.ME3 && CurrentLoadedExport.ClassName == "LightMapTexture2D")
+                {
+                    bin.Skip(4);
+                    subnodes.Add(new BinInterpNode(bin.Position, $"LightMapFlags: {(ELightMapFlags)bin.ReadInt32()}"));
                 }
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
+        }
+
+        enum ELightMapFlags
+        {
+            LMF_None,
+            LMF_Streamed,
+            LMF_SimpleLightmap
         }
 
         private List<ITreeItem> StartTextureMovieScan(byte[] data, ref int binarystart)

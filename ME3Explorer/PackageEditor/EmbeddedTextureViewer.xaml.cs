@@ -54,13 +54,7 @@ namespace ME3Explorer
             InitializeComponent();
         }
 
-        public override bool CanParse(ExportEntry exportEntry)
-        {
-            return exportEntry.ClassName == "Texture2D" ||
-                   exportEntry.ClassName == "LightMapTexture2D" ||
-                   exportEntry.ClassName == "ShadowMapTexture2D" ||
-                   exportEntry.ClassName == "TextureFlipBook";
-        }
+        public override bool CanParse(ExportEntry exportEntry) => exportEntry.IsTexture();
 
         public override void PopOut()
         {
