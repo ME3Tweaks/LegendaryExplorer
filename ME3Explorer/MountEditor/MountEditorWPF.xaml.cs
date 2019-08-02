@@ -100,9 +100,12 @@ namespace ME3Explorer.MountEditor
             if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 MountFile mf = new MountFile(m.FileName);
-                ME2CheckBox.IsChecked = mf.IsME2;
-                DLCFolder_TextBox.Text = mf.IsME2 ? mf.ME2Only_DLCFolderName : "Not used in ME3";
-                HumanReadable_TextBox.Text = mf.IsME2 ? mf.ME2Only_DLCHumanName : "Not used in ME3";
+                IsME2 = mf.IsME2;
+                ME2CheckBox.IsChecked = IsME2;
+                DLCFolder_TextBox.Text = IsME2 ? mf.ME2Only_DLCFolderName : "Not used in ME3";
+                HumanReadable_TextBox.Text = IsME2 ? mf.ME2Only_DLCHumanName : "Not used in ME3";
+                MountIDValues.ClearEx();
+                MountIDValues.AddRange(IsME2 ? ME2MountFlags : ME3MountFlags);
                 var flag = (IsME2 ? ME2MountFlags : ME3MountFlags).First(x => x.Flag == mf.MountFlag);
                 MountComboBox.SelectedItem = flag;
                 TLKID_TextBox.Text = mf.TLKID.ToString();
