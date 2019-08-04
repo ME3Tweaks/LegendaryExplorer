@@ -180,6 +180,7 @@ namespace ME3Explorer
             "StrProperty",
             "StringRefProperty",
             "StructProperty",
+            "TerrainWeightMapTexture",
             "Texture2D",
             "TextureFlipBook",
             "TextureMovie",
@@ -444,7 +445,8 @@ namespace ME3Explorer
                     case "LightMapTexture2D":
                     case "ShadowMapTexture2D":
                     case "TextureFlipBook":
-                        subNodes.AddRange(StartTextureBinaryScan(data));
+                    case "TerrainWeightMapTexture":
+                        subNodes.AddRange(StartTextureBinaryScan(data, binarystart));
                         break;
                     case "ShadowMap1D":
                         subNodes.AddRange(StartShadowMap1DScan(data, binarystart));

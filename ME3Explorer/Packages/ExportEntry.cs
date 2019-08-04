@@ -582,6 +582,19 @@ namespace ME3Explorer.Packages
         public abstract ExportEntry Clone();
     }
 
+    public static class ExportEntryExtensions
+    {
+        public static bool IsTexture(this ExportEntry exportEntry)
+        {
+            return exportEntry.ClassName == "Texture2D" ||
+                   exportEntry.ClassName == "LightMapTexture2D" ||
+                   exportEntry.ClassName == "ShadowMapTexture2D" ||
+                   exportEntry.ClassName == "TerrainWeightMapTexture" ||
+                   exportEntry.ClassName == "TextureFlipBook";
+        }
+    }
+
+
     [DebuggerDisplay("UDKExportEntry | {UIndex} = {GetFullPath}")]
     public class UDKExportEntry : ExportEntry
     {

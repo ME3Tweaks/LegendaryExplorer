@@ -4129,7 +4129,7 @@ namespace ME3Explorer
                 //ScanStaticMeshComponents(filePath);
                 //ScanLightComponents(filePath);
                 //ScanLevel(filePath);
-                if(findClass(filePath, "BioPawn", true)) break;
+                if(findClass(filePath, "SeqAct_Interp", true)) break;
                 //findClassesWithBinary(filePath);
             }
             var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
@@ -4170,8 +4170,7 @@ namespace ME3Explorer
 
                             MemoryStream bin = new MemoryStream(exp.Data);
                             bin.JumpTo(exp.propsEnd());
-                            bin.Skip(bin.ReadInt32() * 12);
-                            if (bin.Position < bin.Length)
+                            if (bin.ReadInt32() != 0)
                             {
                                 interestingExports.Add($"{exp.UIndex}: {filePath}");
                                 return true;
