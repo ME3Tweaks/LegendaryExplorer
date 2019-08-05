@@ -890,6 +890,17 @@ namespace ME3Explorer
                         if (inChunkName != null && inChunkName.Value.Name != "None")
                         {
                             editableValue += $" InChunkName: {inChunkName.Value.Name}";
+
+                        }
+                    }
+                    else if (sp.StructType == "TextureParameterValue")
+                    {
+                        var parmName = sp.GetProp<NameProperty>("ParameterName");
+                        var parmValue = sp.GetProp<ObjectProperty>("ParameterValue");
+
+                        if (parmName != null && parmValue != null && parmValue.Value != 0)
+                        {
+                            parsedValue += $" {parmName}: {parsingExport.FileRef.getEntry(parmValue.Value).ObjectName}";
                         }
                     }
                     else if (sp.StructType == "ScalarParameterValue")

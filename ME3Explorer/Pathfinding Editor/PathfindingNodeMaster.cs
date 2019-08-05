@@ -31,6 +31,7 @@ namespace ME3Explorer.Pathfinding_Editor
         protected static Brush splineNodeBrush = new SolidBrush(Color.FromArgb(255, 60, 200));
         public static Brush pathfindingNodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static Brush dynamicPathfindingNodeBrush = new SolidBrush(Color.FromArgb(46, 184, 25));
+        protected static Brush biopawnPathfindingNodeBrush = new SolidBrush(Color.FromArgb(255, 70, 70));
         protected static Brush medkitBrush = new SolidBrush(Color.FromArgb(200, 15, 15));
         protected static Brush dynamicPathnodefindingNodeBrush = new SolidBrush(Color.FromArgb(80, 184, 25));
 
