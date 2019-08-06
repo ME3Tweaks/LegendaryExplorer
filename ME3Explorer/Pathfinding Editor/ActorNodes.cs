@@ -32,25 +32,27 @@ namespace ME3Explorer.ActorNodes
             };
             comment.Y = 52 + comment.Height;
             comment.Pickable = false;
-            
+
             if (drawRotationLine)
             {
+                float theta = 0;
                 if (export.GetProperty<StructProperty>("Rotation") is StructProperty rotation)
                 {
-                    var theta = rotation.GetProp<IntProperty>("Yaw").Value.ToDegrees();
-                    float circleX1 = (float)(25 + 20 * Math.Cos((theta + 5) * Math.PI / 180));
-                    float circleY1 = (float)(25 + 20 * Math.Sin((theta + 5) * Math.PI / 180));
-                    float circleX2 = (float)(25 + 20 * Math.Cos((theta - 5) * Math.PI / 180));
-                    float circleY2 = (float)(25 + 20 * Math.Sin((theta - 5) * Math.PI / 180));
-
-                    float circleTipX = (float)(25 + 25 * Math.Cos(theta * Math.PI / 180));
-                    float circleTipY = (float)(25 + 25 * Math.Sin(theta * Math.PI / 180));
-                    PPath directionShape = PPath.CreatePolygon(new[] { new PointF(25, 25), new PointF(circleX1, circleY1), new PointF(circleTipX, circleTipY), new PointF(circleX2, circleY2) });
-                    directionShape.Pen = Pens.BlanchedAlmond;
-                    directionShape.Brush = directionBrush;
-                    directionShape.Pickable = false;
-                    AddChild(directionShape);
+                    theta = rotation.GetProp<IntProperty>("Yaw").Value.ToDegrees();
                 }
+
+                float circleX1 = (float)(25 + 20 * Math.Cos((theta + 5) * Math.PI / 180));
+                float circleY1 = (float)(25 + 20 * Math.Sin((theta + 5) * Math.PI / 180));
+                float circleX2 = (float)(25 + 20 * Math.Cos((theta - 5) * Math.PI / 180));
+                float circleY2 = (float)(25 + 20 * Math.Sin((theta - 5) * Math.PI / 180));
+
+                float circleTipX = (float)(25 + 25 * Math.Cos(theta * Math.PI / 180));
+                float circleTipY = (float)(25 + 25 * Math.Sin(theta * Math.PI / 180));
+                PPath directionShape = PPath.CreatePolygon(new[] { new PointF(25, 25), new PointF(circleX1, circleY1), new PointF(circleTipX, circleTipY), new PointF(circleX2, circleY2) });
+                directionShape.Pen = Pens.BlanchedAlmond;
+                directionShape.Brush = directionBrush;
+                directionShape.Pickable = false;
+                AddChild(directionShape);
             }
             this.AddChild(comment);
             this.Pickable = true;
@@ -393,7 +395,7 @@ namespace ME3Explorer.ActorNodes
         private static readonly PointF[] outlineShape = { new PointF(0, 50), new PointF(25, 0), new PointF(50, 50), new PointF(25, 30) };
 
         public PendingActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
         {
         }
 
@@ -413,7 +415,7 @@ namespace ME3Explorer.ActorNodes
         protected Brush backgroundBrush = new SolidBrush(Color.FromArgb(160, 120, 0));
 
         public EverythingElseNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
         {
             shape.Brush = backgroundBrush;
             comment.Text = export.ObjectName + comment.Text;

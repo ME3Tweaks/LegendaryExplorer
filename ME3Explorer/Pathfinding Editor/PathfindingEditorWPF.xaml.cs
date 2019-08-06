@@ -1642,7 +1642,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     //Don't parse SMCA or combat zones from overlays.
                     if (overlayPersistentLevel == null)
                     {
-                        if (exportEntry.ClassName == "StaticMeshCollectionActor")
+                        if (exportEntry.ClassName == "StaticMeshCollectionActor" || exportEntry.ClassName == "StaticLightCollectionActor")
                         {
                             StaticMeshCollections.Add(new StaticMeshCollection(exportEntry));
                         }
@@ -2912,7 +2912,7 @@ namespace ME3Explorer.Pathfinding_Editor
             return null;
         }
 
-        [DebuggerDisplay("{export.UIndex} Static Mesh Collection")]
+        [DebuggerDisplay("{export.UIndex} Static Mesh Collection Actor")]
         public class StaticMeshCollection : NotifyPropertyChangedBase
         {
             private bool _active;
@@ -2925,7 +2925,7 @@ namespace ME3Explorer.Pathfinding_Editor
             public StaticMeshCollection(ExportEntry smac)
             {
                 export = smac;
-                var smacItems = smac.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
+                var smacItems = smac.GetProperty<ArrayProperty<ObjectProperty>>(export.ClassName == "StaticMeshActorCollection" ? "StaticMeshComponents" : "LightComponents");
                 if (smacItems != null)
                 {
                     //Read exports...
