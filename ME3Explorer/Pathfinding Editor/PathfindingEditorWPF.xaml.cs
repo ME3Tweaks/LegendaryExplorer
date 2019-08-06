@@ -65,7 +65,8 @@ namespace ME3Explorer.Pathfinding_Editor
             "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator",
             "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer_Simulator", "SFXAmmoContainer",
             "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor",
-            "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume", "SFXOperation_ObjectiveSpawnPoint"
+            "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume", "SFXOperation_ObjectiveSpawnPoint",
+            "BioPawn"
         };
 
         public static string[] splineNodeClasses = { "SplineActor" };
@@ -1979,6 +1980,9 @@ namespace ME3Explorer.Pathfinding_Editor
                         break;
                     case "SFXStuntActor":
                         actorNode = new SFXStuntActor(uindex, x, y, exportToLoad.FileRef, graphEditor);
+                        break;
+                    case "BioPawn":
+                        actorNode = new BioPawn(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SkeletalMeshActor":
                         actorNode = new SkeletalMeshActor(uindex, x, y, exportToLoad.FileRef, graphEditor);

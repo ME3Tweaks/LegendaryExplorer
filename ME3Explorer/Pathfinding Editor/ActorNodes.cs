@@ -195,6 +195,22 @@ namespace ME3Explorer.ActorNodes
         public override PointF[] GetDefaultShapePoints() => outlineShape;
     }
 
+    public class BioPawn : ActorNode
+    {
+        private static readonly Color outlinePenColor = Color.FromArgb(255, 100, 100);
+        private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(50, 0), new PointF(25, 50) };
+
+        public BioPawn(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, x, y, p, grapheditor)
+        {
+            shape.Brush = biopawnPathfindingNodeBrush;
+        }
+
+        public override Color GetDefaultShapeColor() => outlinePenColor;
+
+        public override PointF[] GetDefaultShapePoints() => outlineShape;
+    }
+
 
     //This is technically not a pathnode...
     public class SFXObjectiveSpawnPoint : ActorNode
