@@ -4129,7 +4129,7 @@ namespace ME3Explorer
                 //ScanStaticMeshComponents(filePath);
                 //ScanLightComponents(filePath);
                 //ScanLevel(filePath);
-                if(findClass(filePath, "SeqAct_Interp", true)) break;
+                findClass(filePath, "Terrain", true);
                 //findClassesWithBinary(filePath);
             }
             var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
@@ -4167,16 +4167,6 @@ namespace ME3Explorer
                     {
                         try
                         {
-
-                            MemoryStream bin = new MemoryStream(exp.Data);
-                            bin.JumpTo(exp.propsEnd());
-                            if (bin.ReadInt32() != 0)
-                            {
-                                interestingExports.Add($"{exp.UIndex}: {filePath}");
-                                return true;
-                            }
-
-                            continue;
                             if (!withBinary || exp.propsEnd() < exp.DataSize)
                             {
                                 interestingExports.Add($"{exp.UIndex}: {filePath}");
