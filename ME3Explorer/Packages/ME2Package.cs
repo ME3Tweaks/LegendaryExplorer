@@ -259,10 +259,17 @@ namespace ME3Explorer.Packages
                 return; //this is not actually instance of that class
             }
             //update offsets for pcc-stored audio in wwisestreams
-            if ((export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null) || export.ClassName == "WwiseBank")
+            if (export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null)
             {
                 byte[] binData = export.getBinaryData();
-                binData.OverwriteRange(44, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 16));
+                binData.OverwriteRange(44, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 48));
+                export.setBinaryData(binData);
+            }
+            //update offsets for pcc-stored mips in Textures
+            else if(export.ClassName == "WwiseBank")
+            {
+                byte[] binData = export.getBinaryData();
+                binData.OverwriteRange(20, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 24));
                 export.setBinaryData(binData);
             }
             //update offsets for pcc-stored mips in Textures

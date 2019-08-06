@@ -4032,15 +4032,10 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                int pos = 0;
-                switch (CurrentLoadedExport.FileRef.Game)
+                int pos = CurrentLoadedExport.propsEnd();
+                if (Pcc.Game == MEGame.ME2)
                 {
-                    case MEGame.ME3:
-                        pos = CurrentLoadedExport.propsEnd();
-                        break;
-                    case MEGame.ME2:
-                        pos = CurrentLoadedExport.propsEnd() + 0x20;
-                        break;
+                    pos += CurrentLoadedExport.ClassName == "WwiseBank" ? 8 : 32;
                 }
 
                 int unk1 = BitConverter.ToInt32(data, pos);
@@ -4057,7 +4052,7 @@ namespace ME3Explorer
                 string dataset1type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream length" : "Bank size";
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"{DataSize:X4} : {dataset1type} {DataSize} (0x{DataSize:X})",
+                    Header = $"{pos:X4} : {dataset1type} {DataSize} (0x{DataSize:X})",
                     Name = "_" + pos,
                     Tag = NodeType.StructLeafInt
                 });
@@ -4076,6 +4071,7 @@ namespace ME3Explorer
                     Name = "_" + pos,
                     Tag = NodeType.StructLeafInt
                 });
+                pos += 4;
 
                 if (CurrentLoadedExport.ClassName == "WwiseBank")
                 {
@@ -4084,13 +4080,12 @@ namespace ME3Explorer
                     subnodes.Add(new BinInterpNode
                     {
                         Header = "Click here to jump to the calculated end offset of wwisebank in this export",
-                        Name = "_" + (DataSize2 + CurrentLoadedExport.propsEnd() + 16),
+                        Name = "_" + (DataSize2 + pos),
                         Tag = NodeType.Unknown
                     });
                     //}
                 }
 
-                pos += 4;
                 switch (CurrentLoadedExport.ClassName)
                 {
                     case "WwiseStream" when pos < data.Length && CurrentLoadedExport.GetProperty<NameProperty>("Filename") == null:
