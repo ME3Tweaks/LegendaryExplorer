@@ -180,6 +180,8 @@ namespace ME3Explorer
             "StrProperty",
             "StringRefProperty",
             "StructProperty",
+            "Terrain",
+            "TerrainComponent",
             "TerrainWeightMapTexture",
             "Texture2D",
             "TextureFlipBook",
@@ -524,6 +526,12 @@ namespace ME3Explorer
                         break;
                     case "DecalComponent":
                         subNodes.AddRange(StartDecalComponentScan(data, ref binarystart));
+                        break;
+                    case "Terrain":
+                        subNodes.AddRange(StartTerrainScan(data, ref binarystart));
+                        break;
+                    case "TerrainComponent":
+                        subNodes.AddRange(StartTerrainComponentScan(data, ref binarystart));
                         break;
                     default:
                         if (!CurrentLoadedExport.HasStack)

@@ -292,6 +292,7 @@ namespace ME3Explorer
 
             return node;
         }
+
         enum EFoldedMathOperation : byte
         {
             Add,
@@ -299,22 +300,6 @@ namespace ME3Explorer
             Mul,
             Div,
             Dot
-        }
-
-        private static BinInterpNode MakeGuidNode(byte[] data, ref int binarystart, string nodeName)
-        {
-            byte[] shaderStartGUIDOrSomething = new byte[16];
-            Buffer.BlockCopy(data, binarystart, shaderStartGUIDOrSomething, 0, 16);
-            Guid g = new Guid(shaderStartGUIDOrSomething);
-            var node = new BinInterpNode
-            {
-                Header = $"0x{binarystart:X8} {nodeName}: {g}",
-                Name = "_" + binarystart,
-                Tag = NodeType.Unknown,
-                Length = 16
-            };
-            binarystart += 16;
-            return node;
         }
 
         private List<ITreeItem> StartStaticMeshComponentScan(byte[] data, ref int binarystart)
@@ -397,6 +382,127 @@ namespace ME3Explorer
             LMT_4,
             LMT_5,
             LMT_6
+        }
+
+        private List<ITreeItem> StartTerrainComponentScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+                bool bIsLeaf;
+                subnodes.Add(MakeArrayNode(bin, "CollisionVertices", i => MakeVectorNode(bin, $"{i}")));
+                subnodes.Add(new BinInterpNode(bin.Position, "BVTree")
+                {
+                    IsExpanded = true,
+                    Items =
+                    {
+                        MakeArrayNode(bin, "Nodes", i => new BinInterpNode(bin.Position, $"{i}")
+                        {
+                            Items =
+                            {
+                                MakeBoxNode(bin, "BoundingVolume"),
+                                new BinInterpNode(bin.Position, $"bIsLeaf: {bIsLeaf = bin.ReadBoolInt()}"),
+                                ListInitHelper.ConditionalAdd(bIsLeaf, () => new ITreeItem[]
+                                {
+                                    MakeUInt16Node(bin, "XPos"),
+                                    MakeUInt16Node(bin, "YPos"),
+                                    MakeUInt16Node(bin, "XSize"),
+                                    MakeUInt16Node(bin, "YSize"),
+                                }, () => new ITreeItem[]
+                                {
+                                    MakeUInt16Node(bin, "NodeIndex[0]"),
+                                    MakeUInt16Node(bin, "NodeIndex[1]"),
+                                    MakeUInt16Node(bin, "NodeIndex[2]"),
+                                    MakeUInt16Node(bin, "NodeIndex[3]"),
+                                }),
+                                MakeInt32Node(bin, "Unknown"),
+                            }
+                        })
+                    }
+                });
+                subnodes.Add(MakeArrayNode(bin, "PatchBounds", i => new BinInterpNode(bin.Position, $"{i}")
+                {
+                    Items =
+                    {
+                        MakeFloatNode(bin, "MinHeight"),
+                        MakeFloatNode(bin, "MaxHeight"),
+                        MakeFloatNode(bin, "MaxDisplacement"),
+                    }
+                }));
+                subnodes.Add(MakeLightMapNode(bin));
+
+                binarystart = (int)bin.Position;
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
+        private List<ITreeItem> StartTerrainScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+
+                subnodes.Add(MakeArrayNode(bin, "Heights", i => MakeUInt16Node(bin, $"{i}")));
+                subnodes.Add(MakeArrayNode(bin, "InfoData", i => new BinInterpNode(bin.Position, $"{i}: {(EInfoFlags)bin.ReadByte()}")));
+                subnodes.Add(MakeArrayNode(bin, "AlphaMaps", i => MakeArrayNode(bin, $"{i}: Data", j => new BinInterpNode(bin.Position, $"{j}: {bin.ReadByte()}"))));
+                subnodes.Add(MakeArrayNode(bin, "WeightedTextureMaps", i => MakeEntryNode(bin, $"{i}")));
+                for (int k = Pcc.Game == MEGame.ME1 ? 1 : 2; k > 0; k--)
+                {
+                    subnodes.Add(MakeArrayNode(bin, "CachedTerrainMaterials", i =>
+                    {
+                        var node = MakeMaterialResourceNode(bin, $"{i}");
+
+                        node.Items.Add(MakeEntryNode(bin, "Terrain"));
+                        node.Items.Add(new BinInterpNode(bin.Position, "Mask")
+                        {
+                            IsExpanded = true,
+                            Items =
+                            {
+                                MakeInt32Node(bin, "NumBits"),
+                                new BinInterpNode(bin.Position, $"BitMask: {Convert.ToString(bin.ReadInt64(), 2).PadLeft(64, '0')}")
+                            }
+                        });
+                        node.Items.Add(MakeArrayNode(bin, "MaterialIds", j => MakeGuidNode(bin, $"{j}")));
+                        if (Pcc.Game == MEGame.ME3)
+                        {
+                            node.Items.Add(MakeGuidNode(bin, "LightingGuid"));
+                        }
+
+                        return node;
+                    }));
+                }
+                if (Pcc.Game != MEGame.ME1)
+                {
+                    subnodes.Add(MakeArrayNode(bin, "CachedDisplacements", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadByte()}")));
+                    subnodes.Add(MakeFloatNode(bin, "MaxCollisionDisplacement"));
+                }
+
+                binarystart = (int)bin.Position;
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
+        [Flags]
+        enum EInfoFlags : byte
+        {
+            TID_Visibility_Off = 1,
+            TID_OrientationFlip = 2,
+            TID_Unreachable = 4,
+            TID_Locked = 8,
         }
 
         private BinInterpNode MakeLightMapNode(MemoryStream bin)
@@ -4023,12 +4129,6 @@ namespace ME3Explorer
 
         private List<ITreeItem> Scan_WwiseStreamBank(byte[] data)
         {
-            /*
-             * int32 0?
-             * stream length in AFC +4 | (bank size)
-             * stream length in AFC +4 | (repeat) (bank size)
-             * stream offset in AFC +4 | (bank offset in file)
-             */
             var subnodes = new List<ITreeItem>();
             try
             {
@@ -5296,16 +5396,7 @@ namespace ME3Explorer
                             new BinInterpNode(bin.Position, $"bInitialized: ({bInitialized = bin.ReadBoolInt()})"),
                             ListInitHelper.ConditionalAdd(bInitialized, () => new ITreeItem[]
                             {
-                                new BinInterpNode(bin.Position, "Bounds")
-                                {
-                                    IsExpanded = true,
-                                    Items =
-                                    {
-                                        MakeVectorNode(bin, "Min"),
-                                        MakeVectorNode(bin, "Max"),
-                                        new BinInterpNode(bin.Position, $"IsValid: {bin.ReadBoolByte()}")
-                                    }
-                                },
+                                MakeBoxNode(bin, "Bounds"),
                                 MakeFloatNode(bin, "SampleSpacing"),
                                 new BinInterpNode(bin.Position, $"Samples ({samplesCount = bin.ReadInt32()})")
                                 {
@@ -5345,6 +5436,8 @@ namespace ME3Explorer
 
         private static BinInterpNode MakeInt32Node(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}", NodeType.StructLeafInt) {Length = 4};
 
+        private static BinInterpNode MakeUInt16Node(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt16()}") { Length = 2 };
+
         private BinInterpNode MakeNameNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName) { Length = 8 };
 
         private BinInterpNode MakeEntryNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}", NodeType.StructLeafObject) {Length = 4};
@@ -5354,6 +5447,19 @@ namespace ME3Explorer
 
         private static BinInterpNode MakeVectorNode(MemoryStream bin, string name) =>
             new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})") {Length = 12};
+
+        private static BinInterpNode MakeBoxNode(MemoryStream bin, string name) =>
+            new BinInterpNode(bin.Position, name)
+            {
+                IsExpanded = true,
+                Items =
+                {
+                    MakeVectorNode(bin, "Min"),
+                    MakeVectorNode(bin, "Max"),
+                    new BinInterpNode(bin.Position, $"IsValid: {bin.ReadBoolByte()}")
+                },
+                Length = 25
+            };
 
         private static BinInterpNode MakeVector2DNode(MemoryStream bin, string name) =>
             new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()})") {Length = 8};

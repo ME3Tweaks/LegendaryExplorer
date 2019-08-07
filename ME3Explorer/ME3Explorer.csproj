@@ -256,6 +256,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="AudioLocalizer\AudioLocalizer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AutoTOC\AutoTOCWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -316,6 +320,9 @@
       <DependentUpon>ASIManager.xaml</DependentUpon>
     </Compile>
     <Compile Include="ASI\ASITemplateSelector.cs" />
+    <Compile Include="AudioLocalizer\AudioLocalizer.xaml.cs">
+      <DependentUpon>AudioLocalizer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AutoTOC\AutoTOCWPF.xaml.cs">
       <DependentUpon>AutoTOCWPF.xaml</DependentUpon>
     </Compile>

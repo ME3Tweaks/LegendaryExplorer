@@ -797,7 +797,7 @@ namespace ME3Explorer
                         {
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
-                        if (ip.Name == "m_nStrRefID" || ip.Name == "nLineStrRef")
+                        if (ip.Name == "m_nStrRefID" || ip.Name == "nLineStrRef" || ip.Name == "nStrRefID")
                         {
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
@@ -1022,7 +1022,7 @@ namespace ME3Explorer
                     break;
             }
 
-            if (name == "m_nStrRefID" || name == "nLineStrRef")
+            if (name == "m_nStrRefID" || name == "nLineStrRef" || name == "nStrRefID")
             {
                 return TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef as ME1Package);
             }

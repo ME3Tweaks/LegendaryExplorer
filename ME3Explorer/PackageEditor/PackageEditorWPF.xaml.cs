@@ -4129,7 +4129,7 @@ namespace ME3Explorer
                 //ScanStaticMeshComponents(filePath);
                 //ScanLightComponents(filePath);
                 //ScanLevel(filePath);
-                if(findClass(filePath, "SeqAct_Interp", true)) break;
+                findClass(filePath, "Terrain", true);
                 //findClassesWithBinary(filePath);
             }
             var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
@@ -4167,16 +4167,6 @@ namespace ME3Explorer
                     {
                         try
                         {
-
-                            MemoryStream bin = new MemoryStream(exp.Data);
-                            bin.JumpTo(exp.propsEnd());
-                            if (bin.ReadInt32() != 0)
-                            {
-                                interestingExports.Add($"{exp.UIndex}: {filePath}");
-                                return true;
-                            }
-
-                            continue;
                             if (!withBinary || exp.propsEnd() < exp.DataSize)
                             {
                                 interestingExports.Add($"{exp.UIndex}: {filePath}");
@@ -4633,6 +4623,22 @@ namespace ME3Explorer
             }
 
             MessageBox.Show(this, "Done!");
+        }
+
+        private void RandomizeTerrain_Click(object sender, RoutedEventArgs e)
+        {
+            ExportEntry terrain = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
+            if (terrain != null)
+            {
+                byte[] binarydata = terrain.getBinaryData();
+                uint numheights = BitConverter.ToUInt32(binarydata, 0);
+                Random r = new Random();
+                for (uint i = 0; i < numheights; i++)
+                {
+                    SharedPathfinding.WriteMem(binarydata, (int) (4 + (i * 2)), BitConverter.GetBytes((short)(r.Next(2000) + 13000)));
+                }
+                terrain.setBinaryData(binarydata);
+            }
         }
     }
 }
