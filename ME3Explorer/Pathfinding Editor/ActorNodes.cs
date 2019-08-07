@@ -200,8 +200,8 @@ namespace ME3Explorer.ActorNodes
         private static readonly Color outlinePenColor = Color.FromArgb(255, 100, 100);
         private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(50, 0), new PointF(25, 50) };
 
-        public BioPawn(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+        public BioPawn(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool showRotation = false)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
         {
             shape.Brush = biopawnPathfindingNodeBrush;
         }

@@ -893,6 +893,15 @@ namespace ME3Explorer
 
                         }
                     }
+                    else if (sp.StructType == "SeqVarLink")
+                    {
+                        editableValue = "";
+                        var linkName = sp.Properties.GetProp<StrProperty>("LinkDesc");
+                        if (linkName != null)
+                        {
+                            editableValue = $"SeqVarLink {linkName.Value}";
+                        }
+                    }
                     else if (sp.StructType == "TextureParameterValue")
                     {
                         var parmName = sp.GetProp<NameProperty>("ParameterName");

@@ -1982,7 +1982,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         actorNode = new SFXStuntActor(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "BioPawn":
-                        actorNode = new BioPawn(uindex, x, y, exportToLoad.FileRef, graphEditor);
+                        actorNode = new BioPawn(uindex, x, y, exportToLoad.FileRef, graphEditor, showRotation: true);
                         break;
                     case "SkeletalMeshActor":
                         actorNode = new SkeletalMeshActor(uindex, x, y, exportToLoad.FileRef, graphEditor);
