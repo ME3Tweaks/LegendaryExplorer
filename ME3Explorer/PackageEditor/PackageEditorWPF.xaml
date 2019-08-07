@@ -215,6 +215,7 @@
                     <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>
                     <MenuItem Header="Make all ammo/grenades in file respawn on proper timers" Click="MakeAllGrenadesAmmoRespawn_Click"/>
                     <MenuItem Header="Build ME1 Native Functions Info" Click="BuildME1NativeFunctionsInfo_Click"/>
+                    <MenuItem Header="Randomize Terrain Heightmap (SELECT TERRAIN EXPORT FIRST)" Click="RandomizeTerrain_Click"/>
                     <MenuItem Header="Find ME1 2DA Tables" Click="FindME12DATables_Click"/>
                     <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
                     <MenuItem Header="Find ME2 Powers" Click="FindAllME2PowerCustomAction_Click"/>

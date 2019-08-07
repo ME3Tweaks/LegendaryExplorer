@@ -4624,5 +4624,21 @@ namespace ME3Explorer
 
             MessageBox.Show(this, "Done!");
         }
+
+        private void RandomizeTerrain_Click(object sender, RoutedEventArgs e)
+        {
+            ExportEntry terrain = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
+            if (terrain != null)
+            {
+                byte[] binarydata = terrain.getBinaryData();
+                uint numheights = BitConverter.ToUInt32(binarydata, 0);
+                Random r = new Random();
+                for (uint i = 0; i < numheights; i++)
+                {
+                    SharedPathfinding.WriteMem(binarydata, (int) (4 + (i * 2)), BitConverter.GetBytes((short)(r.Next(2000) + 13000)));
+                }
+                terrain.setBinaryData(binarydata);
+            }
+        }
     }
 }
