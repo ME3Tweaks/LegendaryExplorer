@@ -128,6 +128,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Audio Localizer",
+                type = typeof(AudioLocalizer),
+                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                open = () =>
+                {
+                    (new AudioLocalizer()).Show();
+                },
+                tags = new List<string> { "utility", "localization", "LOC_INT", "translation" },
+                subCategory = "Utilities",
+                description = "Audio Localizer allows you to copy the afc offsets and filenames from localized files to your mods LOC_INT files."
+            });
+            set.Add(new Tool
+            {
                 name = "Bik Movie Extractor",
                 type = typeof(BIKExtract),
                 icon = Application.Current.FindResource("iconBikExtractor") as ImageSource,

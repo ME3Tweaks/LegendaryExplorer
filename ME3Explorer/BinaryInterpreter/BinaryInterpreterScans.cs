@@ -4129,12 +4129,6 @@ namespace ME3Explorer
 
         private List<ITreeItem> Scan_WwiseStreamBank(byte[] data)
         {
-            /*
-             * int32 0?
-             * stream length in AFC +4 | (bank size)
-             * stream length in AFC +4 | (repeat) (bank size)
-             * stream offset in AFC +4 | (bank offset in file)
-             */
             var subnodes = new List<ITreeItem>();
             try
             {

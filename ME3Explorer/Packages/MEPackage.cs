@@ -333,7 +333,7 @@ namespace ME3Explorer.Packages
 
         protected virtual void AfterSave()
         {
-            //We do if checks here to prevent firing tons of extra events as we can't prevent firing chanage notifications if 
+            //We do if checks here to prevent firing tons of extra events as we can't prevent firing change notifications if 
             //it's not really a change due to the side effects of suppressing that.
             foreach (var export in exports)
             {
