@@ -26,16 +26,22 @@ namespace ME3Explorer
 
             foreach (string directory in GetEnabledDLC(game).OrderBy(dir => GetMountPriority(dir, game)).Prepend(MEDirectories.BioGamePath(game)))
             {
-                IEnumerable<string> dlcFiles = game == MEGame.ME1
-                    ? ME1FilePatterns.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, "CookedPC"), pattern, SearchOption.AllDirectories))
-                    : Directory.EnumerateFiles(Path.Combine(directory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC"), ME2and3FilePattern);
-                foreach (string filePath in dlcFiles)
+                foreach (string filePath in GetCookedFiles(game, directory))
                 {
                     string fileName = Path.GetFileName(filePath);
                     if (fileName != null) loadedFiles[fileName] = filePath;
                 }
             }
             return loadedFiles;
+        }
+
+        public static IEnumerable<string> GetAllFiles(MEGame game) => GetEnabledDLC(game).Prepend(MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory));
+
+        private static IEnumerable<string> GetCookedFiles(MEGame game, string directory)
+        {
+            if (game == MEGame.ME1)
+                return ME1FilePatterns.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, "CookedPC"), pattern, SearchOption.AllDirectories));
+            return Directory.EnumerateFiles(Path.Combine(directory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC"), ME2and3FilePattern);
         }
 
         /// <summary>

@@ -211,6 +211,13 @@ namespace ME3Explorer
             }
         }
 
+        public static byte[] Slice(this byte[] src, int start, int length)
+        {
+            var slice = new byte[length];
+            Buffer.BlockCopy(src, start, slice, 0, length);
+            return slice;
+        }
+
         public static T[] TypedClone<T>(this T[] src)
         {
             return (T[])src.Clone();

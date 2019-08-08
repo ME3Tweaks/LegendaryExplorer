@@ -150,9 +150,9 @@ namespace ME3Explorer.MetadataEditor
                 Row_ExportDataSize.Height = new GridLength(24);
                 Row_ExportDataOffsetDec.Height = new GridLength(24);
                 Row_ExportDataOffsetHex.Height = new GridLength(24);
-                Row_ExportUnknown1.Height = new GridLength(24);
-                Row_ExportUnknown2.Height = new GridLength(24);
-                Row_ExportPreGUIDCount.Height = new GridLength(24);
+                Row_ExportExportFlags.Height = new GridLength(24);
+                Row_ExportPackageFlags.Height = new GridLength(24);
+                Row_ExportGenerationNetObjectCount.Height = new GridLength(24);
                 Row_ExportGUID.Height = new GridLength(24);
                 InfoTab_Link_TextBlock.Text = "0x08 Link:";
                 InfoTab_ObjectName_TextBlock.Text = "0x0C Object name:";
@@ -162,7 +162,7 @@ namespace ME3Explorer.MetadataEditor
                 LoadAllEntriesBindedItems(exportEntry);
 
                 InfoTab_Headersize_TextBox.Text = $"{exportEntry.Header.Length} bytes";
-                InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(exportEntry.Header, HEADER_OFFSET_EXP_IDXOBJECTNAME + 4).ToString();
+                InfoTab_ObjectnameIndex_TextBox.Text = exportEntry.indexValue.ToString();
 
                 var flagsList = Enums.GetValues<EObjectFlags>().Distinct().ToList();
                 //Don't even get me started on how dumb it is that SelectedItems is read only...
@@ -175,48 +175,35 @@ namespace ME3Explorer.MetadataEditor
                 InfoTab_ExportOffsetHex_TextBox.Text = $"0x{exportEntry.DataOffset:X8}";
                 InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
 
-                //not parsed by package handling, must do it manually here
-                byte[] header = exportEntry.Header;
-                int offset = 0x2C;
-
-                if (exportEntry.FileRef.Game != MEGame.ME3)
+                if (exportEntry.HasComponentMap)
                 {
-                    int componentsCount = BitConverter.ToInt32(header, 0x28);
-                    InfoTab_ExportUnknown1_TextBox.Text = componentsCount.ToString();
-
-                    string components = "";
-                    for (int i = 0; i < componentsCount; i++)
+                    List<KeyValuePair<NameReference, int>> componentMap = exportEntry.ComponentMap;
+                    string components = $"ComponentMap: 0x{40:X2} {componentMap.Count} items\n";
+                    int pairOffset = 44;
+                    foreach ((NameReference name, int uIndex) in componentMap)
                     {
-                        int startoffset = offset;
-                        int nameTableIndex = BitConverter.ToInt32(header, offset);
-                        offset += 4;
-                        int nameRefValue = BitConverter.ToInt32(header, offset);
-                        offset += 4;
-                        int exportRef = BitConverter.ToInt32(header, offset);
-                        offset += 4;
-                        string component =
-                            $"0x{startoffset:X2} {exportEntry.FileRef.getNameEntry(nameTableIndex)}_{nameRefValue} {exportEntry.FileRef.GetEntryString(exportRef)}";
-                        components += $"{component}\n";
+                        components += $"0x{pairOffset:X2} {name.InstancedString} {exportEntry.FileRef.GetEntryString(uIndex)}\n";
+                        pairOffset += 12;
                     }
 
                     Header_Hexbox_ComponentsLabel.Text = components;
                 }
-
-                int preguidcountoffset = exportEntry.FileRef.Game == MEGame.ME3 ? 0x2C : offset;
-                InfoTab_PreGUID_TextBlock.Text = $"0x{preguidcountoffset:X2} Pre GUID count:";
-                int preguidcount = BitConverter.ToInt32(header, preguidcountoffset);
-                InfoTab_ExportPreGuidCount_TextBox.Text = preguidcount.ToString();
-
-                int guidOffset = (preguidcountoffset + 4) + (preguidcount * 4);
-                InfoTab_GUID_TextBlock.Text = $"0x{guidOffset:X2} GUID:";
-                byte[] guidbytes = header.Skip(guidOffset).Take(16).ToArray();
-                Guid guid = new Guid(guidbytes);
-                InfoTab_ExportGUID_TextBox.Text = guid.ToString();
-                InfoTab_Unknown2_TextBlock.Text = $"0x{(guidOffset + 16):X2} Unknown 2:";
-                if (guidOffset + 16 <= header.Length - 4)
+                else
                 {
-                    InfoTab_ExportUnknown2_TextBox.Text = BitConverter.ToInt32(header, guidOffset + 16).ToString();
+                    Header_Hexbox_ComponentsLabel.Text = "";
                 }
+
+                InfoTab_ExportFlags_TextBlock.Text = $"0x{exportEntry.ExportFlagsOffset:X2} ExportFlags:";
+                InfoTab_ExportFlags_TextBox.Text = Enums.GetValues<EExportFlags>().Distinct().ToList().Where(flag => exportEntry.ExportFlags.HasFlag(flag)).StringJoin(" ");
+
+                InfoTab_GenerationNetObjectCount_TextBlock.Text = $"0x{exportEntry.ExportFlagsOffset + 4:X2} GenerationNetObjs:";
+                int[] generationNetObjectCount = exportEntry.GenerationNetObjectCount;
+                InfoTab_GenerationNetObjectCount_TextBox.Text = $"{generationNetObjectCount.Length} counts: {{{string.Join(", ", generationNetObjectCount)}}}";
+
+                InfoTab_GUID_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset:X2} GUID:";
+                InfoTab_ExportGUID_TextBox.Text = exportEntry.PackageGUID.ToString();
+                InfoTab_PackageFlags_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset + 16:X2} PackageFlags:";
+                InfoTab_PackageFlags_TextBox.Text = Enums.GetValues<EPackageFlags>().Distinct().ToList().Where(flag => exportEntry.PackageFlags.HasFlag(flag)).StringJoin(" ");
             }
             catch (Exception e)
             {
@@ -302,22 +289,23 @@ namespace ME3Explorer.MetadataEditor
             Row_ExportDataSize.Height = new GridLength(0);
             Row_ExportDataOffsetDec.Height = new GridLength(0);
             Row_ExportDataOffsetHex.Height = new GridLength(0);
-            Row_ExportUnknown1.Height = new GridLength(0);
-            Row_ExportUnknown2.Height = new GridLength(0);
-            Row_ExportPreGUIDCount.Height = new GridLength(0);
+            Row_ExportExportFlags.Height = new GridLength(0);
+            Row_ExportPackageFlags.Height = new GridLength(0);
+            Row_ExportGenerationNetObjectCount.Height = new GridLength(0);
             Row_ExportGUID.Height = new GridLength(0);
             Row_Superclass.Height = new GridLength(0);
             Row_ObjectFlags.Height = new GridLength(0);
             Row_Packagefile.Height = new GridLength(24);
             InfoTab_Link_TextBlock.Text = "0x10 Link:";
             InfoTab_ObjectName_TextBlock.Text = "0x14 Object name:";
+            Header_Hexbox_ComponentsLabel.Text = "";
 
             InfoTab_Objectname_ComboBox.SelectedIndex = importEntry.FileRef.findName(importEntry.ObjectName);
             InfoTab_ImpClass_ComboBox.SelectedIndex = importEntry.FileRef.findName(importEntry.ClassName);
             LoadAllEntriesBindedItems(importEntry);
 
-            InfoTab_PackageFile_ComboBox.SelectedIndex = importEntry.FileRef.findName(System.IO.Path.GetFileNameWithoutExtension(importEntry.PackageFile));
-            InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(importEntry.Header, HEADER_OFFSET_IMP_IDXOBJECTNAME + 4).ToString();
+            InfoTab_PackageFile_ComboBox.SelectedIndex = importEntry.FileRef.findName(importEntry.PackageFile);
+            InfoTab_ObjectnameIndex_TextBox.Text = importEntry.indexValue.ToString();
             CurrentLoadedEntry = importEntry;
             OriginalHeader = CurrentLoadedEntry.Header;
             headerByteProvider.ReplaceBytes(CurrentLoadedEntry.Header);
@@ -481,7 +469,7 @@ namespace ME3Explorer.MetadataEditor
             {
                 if (int.TryParse(InfoTab_ObjectnameIndex_TextBox.Text, out int x))
                 {
-                    headerByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXOBJECTNAME + 4 : HEADER_OFFSET_IMP_IDXOBJECTNAME + 4, BitConverter.GetBytes(x));
+                    headerByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_INDEXVALUE : HEADER_OFFSET_IMP_IDXOBJECTNAME + 4, BitConverter.GetBytes(x));
                     Header_Hexbox.Refresh();
                 }
             }

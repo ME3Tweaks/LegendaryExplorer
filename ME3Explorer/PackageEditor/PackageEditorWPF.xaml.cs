@@ -525,30 +525,16 @@ namespace ME3Explorer
         private void SetSelectedAsFilenamePackage()
         {
             if (!TryGetSelectedExport(out ExportEntry export)) return;
-            byte[] fileGUID = export.FileRef.getHeader().Skip(0x4E).Take(16).ToArray();
-            string fname = Path.GetFileNameWithoutExtension(export.FileRef.FilePath);
 
-            //Write GUID
-            byte[] header = export.GetHeader();
-            int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
-            int count = BitConverter.ToInt32(header, preguidcountoffset);
-            int headerguidoffset = preguidcountoffset + 4 + (count * 4);
-            header.OverwriteRange(headerguidoffset, fileGUID);
-            export.Header = header;
+            export.PackageGUID = new Guid(export.FileRef.getHeader().Slice(0x4E, 16));
 
-            export.idxObjectName = export.FileRef.FindNameOrAdd(fname);
+            export.idxObjectName = export.FileRef.FindNameOrAdd(Path.GetFileNameWithoutExtension(export.FileRef.FilePath));
         }
 
         private void GenerateNewGUIDForSelected()
         {
             if (!TryGetSelectedExport(out ExportEntry export)) return;
-            Guid newGuid = Guid.NewGuid();
-            byte[] header = export.GetHeader();
-            int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
-            int count = BitConverter.ToInt32(header, preguidcountoffset);
-            int headerguidoffset = preguidcountoffset + 4 + (count * 4);
-            header.OverwriteRange(headerguidoffset, newGuid.ToByteArray());
-            export.Header = header;
+            export.PackageGUID = Guid.NewGuid();
         }
 
         private void ViewPackageInfo()
@@ -770,6 +756,7 @@ namespace ME3Explorer
                 exp.idxClassParent = 0;
                 exp.indexValue = 0;
                 exp.idxClass = packageClassIdx;
+                exp.ObjectFlags &= ~EObjectFlags.HasStack;
                 if (trashContainer == null)
                 {
                     exp.idxObjectName = Pcc.FindNameOrAdd("ME3ExplorerTrashPackage");
@@ -778,15 +765,7 @@ namespace ME3Explorer
                     {
                         Debugger.Break();
                     }
-                    //Write trash GUID
-                    exp.ObjectFlags &= ~EObjectFlags.HasStack;
-                    Guid trashGuid = ToGuid("ME3ExpTrashPackage"); //DO NOT EDIT THIS!!
-                    byte[] header = exp.GetHeader();
-                    int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
-                    int count = BitConverter.ToInt32(header, preguidcountoffset);
-                    int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
-                    header.OverwriteRange(headerguidoffset, trashGuid.ToByteArray());
-                    exp.Header = header;
+                    exp.PackageGUID = ToGuid("ME3ExpTrashPackage"); //DO NOT EDIT THIS!!
                     return exp;
                 }
                 else
@@ -798,15 +777,7 @@ namespace ME3Explorer
                         Debugger.Break();
                     }
                     exp.idxObjectName = Pcc.FindNameOrAdd("Trash");
-                    exp.ObjectFlags &= ~EObjectFlags.HasStack;
-
-                    byte[] header = exp.GetHeader();
-                    int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
-                    int count = BitConverter.ToInt32(header, preguidcountoffset);
-                    int headerguidoffset = header.Length - 20;// + 4) + (count * 4);
-
-                    header.OverwriteRange(headerguidoffset, new byte[16]); //erase guid
-                    exp.Header = header;
+                    exp.PackageGUID = Guid.Empty;
                 }
             }
             return null;
@@ -3617,12 +3588,9 @@ namespace ME3Explorer
                                         hasPackageNamingItself = true;
                                     }
 
-                                    int preguidcountoffset = package.Game == MEGame.ME3 ? 0x2C : 0x30;
-                                    int count = BitConverter.ToInt32(exp.Header, preguidcountoffset);
-                                    byte[] guidbytes = exp.Header.Skip(preguidcountoffset + 4 + (count * 4)).Take(16).ToArray();
-                                    if (guidbytes.Any(singleByte => singleByte != 0))
+                                    Guid guid = exp.PackageGUID;
+                                    if (guid != Guid.Empty)
                                     {
-                                        Guid guid = new Guid(guidbytes);
                                         GuidPackageMap.TryGetValue(guid, out string packagename);
                                         if (packagename != null && packagename != exp.ObjectName)
                                         {
@@ -3712,13 +3680,7 @@ namespace ME3Explorer
                         MessageBox.Show("Selected package does not contain a self-naming package export.\nCannot regenerate package file-level GUID if it doesn't contain self-named export.");
                         return;
                     }
-                    byte[] header = selfNamingExport.GetHeader();
-                    int preguidcountoffset = selfNamingExport.FileRef.Game == MEGame.ME3 ? 0x2C : 0x30;
-                    int count = BitConverter.ToInt32(header, preguidcountoffset);
-                    int headerguidoffset = preguidcountoffset + 4 + (count * 4);
-
-                    header.OverwriteRange(headerguidoffset, newGuid.ToByteArray());
-                    selfNamingExport.Header = header;
+                    selfNamingExport.PackageGUID = newGuid;
                     sourceFile.save();
                 }
 
@@ -4638,6 +4600,52 @@ namespace ME3Explorer
                     SharedPathfinding.WriteMem(binarydata, (int) (4 + (i * 2)), BitConverter.GetBytes((short)(r.Next(2000) + 13000)));
                 }
                 terrain.setBinaryData(binarydata);
+            }
+        }
+
+        private void ConvertAllDialogueToSkippable_Click(object sender, RoutedEventArgs e)
+        {
+            var gameString = InputComboBoxWPF.GetValue(this, "Select which game's files you want converted to having skippable dialogue",
+                                                       new[] {"ME1", "ME2", "ME3"}, "ME1");
+            if (Enum.TryParse(gameString, out MEGame game) && MessageBoxResult.Yes ==
+                MessageBox.Show(this, $"WARNING! This will edit every dialogue-containing file in {gameString}, including in DLCs and installed mods. Do you want to begin?",
+                                "", MessageBoxButton.YesNo))
+            {
+                IsBusy = true;
+                BusyText = $"Making all {gameString} dialogue skippable";
+                Task.Run(() =>
+                {
+                    foreach (string file in MELoadedFiles.GetAllFiles(game))
+                    {
+                        using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(file))
+                        {
+                            foreach (ExportEntry conv in pcc.Exports.Where(exp => exp.ClassName == "BioConversation"))
+                            {
+                                PropertyCollection props = conv.GetProperties();
+                                if (props.GetProp<ArrayProperty<StructProperty>>("m_EntryList") is ArrayProperty<StructProperty> entryList)
+                                {
+                                    foreach (StructProperty entryNode in entryList)
+                                    {
+                                        entryNode.Properties.AddOrReplaceProp(new BoolProperty(true, "bSkippable"));
+                                    }
+                                }
+                                if (props.GetProp<ArrayProperty<StructProperty>>("m_ReplyList") is ArrayProperty<StructProperty> replyList)
+                                {
+                                    foreach (StructProperty entryNode in replyList)
+                                    {
+                                        entryNode.Properties.AddOrReplaceProp(new BoolProperty(false, "bUnskippable"));
+                                    }
+                                }
+                                conv.WriteProperties(props);
+                            }
+                            pcc.save();
+                        }
+                    }
+                }).ContinueWithOnUIThread(prevTask =>
+                {
+                    IsBusy = false;
+                    MessageBox.Show(this, "Done!");
+                });
             }
         }
     }
