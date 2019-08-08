@@ -411,7 +411,7 @@ namespace ME3Explorer.Sequence_Editor
                     CurrentObjects_ListBox.SelectedItem = selectedObj;
                 }
             }
-            catch (Exception e) when(!App.IsDebug)
+            catch (Exception e) when (!App.IsDebug)
             {
                 MessageBox.Show(this, $"Error loading sequences from file:\n{e.Message}");
             }
@@ -1071,7 +1071,7 @@ namespace ME3Explorer.Sequence_Editor
 
                         if (outputLinksMenuItem.Items.Count > 0)
                         {
-                            var temp = new MenuItem { Header = "Break All", Tag = obj.Export};
+                            var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
                             temp.Click += removeAllOutputLinks;
                             outputLinksMenuItem.Items.Add(temp);
                         }
@@ -2020,8 +2020,56 @@ namespace ME3Explorer.Sequence_Editor
                 }
             }
         }
-    }
 
+        private void RepointIncomingReferences_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SVar sVar)
+            {
+                if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is ExportEntry export)
+                {
+                    if (CurrentObjects.All(x => x.Export != export))
+                    {
+                        MessageBox.Show($"{export.ObjectName} ({export.UIndex} is not part of this sequence, and can't be repointed to.");
+                        return;
+                    }
+                    var sequence = sVar.Export.FileRef.getUExport(sVar.Export.GetProperty<ObjectProperty>("ParentSequence").Value);
+                    var sequenceObjects = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                    foreach (var seqObjRef in sequenceObjects)
+                    {
+                        var saveProps = false;
+                        var seqObj = sVar.Export.FileRef.getUExport(seqObjRef.Value);
+                        var props = seqObj.GetProperties();
+                        var variableLinks = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+                        if (variableLinks != null)
+                        {
+                            foreach (var variableLink in variableLinks)
+                            {
+                                var linkedVars = variableLink.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                                if (linkedVars != null)
+                                {
+                                    foreach (var linkedVar in linkedVars)
+                                    {
+                                        if (linkedVar.Value == sVar.Export.UIndex)
+                                        {
+                                            linkedVar.Value = export.UIndex; //repoint
+                                            saveProps = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (saveProps)
+                        {
+                            seqObj.WriteProperties(props);
+                        }
+                    }
+                    RefreshView();
+                }
+            }
+
+        }
+    }
     static class SequenceEditorExtensions
     {
         public static bool IsSequence(this IEntry entry) => entry.InheritsFrom("Sequence");
