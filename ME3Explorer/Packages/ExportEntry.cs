@@ -69,52 +69,52 @@ namespace ME3Explorer.Packages
 
         public int idxClass
         {
-            get => BitConverter.ToInt32(Header, 0);
+            get => BitConverter.ToInt32(_header, 0);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int));
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 0, sizeof(int));
                 HeaderChanged = true;
             }
         }
 
         public int idxClassParent
         {
-            get => BitConverter.ToInt32(Header, 4);
+            get => BitConverter.ToInt32(_header, 4);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 4, sizeof(int));
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 4, sizeof(int));
                 HeaderChanged = true;
             }
         }
 
         public int idxLink
         {
-            get => BitConverter.ToInt32(Header, 8);
+            get => BitConverter.ToInt32(_header, 8);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 8, sizeof(int));
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 8, sizeof(int));
                 HeaderChanged = true;
             }
         }
 
         public int idxObjectName
         {
-            get => BitConverter.ToInt32(Header, 12);
+            get => BitConverter.ToInt32(_header, 12);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 12, sizeof(int));
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 12, sizeof(int));
                 HeaderChanged = true;
             }
         }
 
         public int indexValue
         {
-            get => BitConverter.ToInt32(Header, 16);
+            get => BitConverter.ToInt32(_header, 16);
             set
             {
                 if (indexValue != value)
                 {
-                    Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 16, sizeof(int));
+                    Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 16, sizeof(int));
                     HeaderChanged = true;
                 }
             }
@@ -122,55 +122,125 @@ namespace ME3Explorer.Packages
 
         public int idxArchtype
         {
-            get => BitConverter.ToInt32(Header, 20);
+            get => BitConverter.ToInt32(_header, 20);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 20, sizeof(int));
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 20, sizeof(int));
                 HeaderChanged = true;
             }
         }
 
-        public int LinkerIndex
-        {
-            get => BitConverter.ToInt32(_data, 0);
-            //set
-            //{
-            //    Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 20, sizeof(int));
-            //    HeaderChanged = true;
-            //}
-        }
-
         public EObjectFlags ObjectFlags
         {
-            get => (EObjectFlags)BitConverter.ToUInt64(Header, 24);
+            get => (EObjectFlags)BitConverter.ToUInt64(_header, 24);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes((ulong)value), 0, Header, 24, sizeof(ulong));
+                Buffer.BlockCopy(BitConverter.GetBytes((ulong)value), 0, _header, 24, sizeof(ulong));
                 HeaderChanged = true;
             }
         }
 
         public int DataSize
         {
-            get => BitConverter.ToInt32(Header, 32);
-            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 32, sizeof(int));
+            get => BitConverter.ToInt32(_header, 32);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 32, sizeof(int));
         }
 
         public int DataOffset
         {
-            get => BitConverter.ToInt32(Header, 36);
-            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 36, sizeof(int));
+            get => BitConverter.ToInt32(_header, 36);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 36, sizeof(int));
         }
 
-        ////if me1 or me2: int unkcount1
-        //byte[][] unkList1; //if me1 or me2: unkcount1 * 12 bytes
+        public bool HasComponentMap => FileRef.Game == MEGame.ME1 || FileRef.Game == MEGame.ME2;
 
-        //int unk1; //int unk1 
+        //me1 and me2 only
+        public List<KeyValuePair<NameReference, int>> ComponentMap
+        {
+            get
+            {
+                var componentMap = new List<KeyValuePair<NameReference, int>>();
+                if (!HasComponentMap) return componentMap;
+                int count = BitConverter.ToInt32(_header, 40);
+                for (int i = 0; i < count; i++)
+                {
+                    int pairIndex = 44 + i * 12;
+                    string name = FileRef.getNameEntry(BitConverter.ToInt32(_header, pairIndex));
+                    componentMap.Add(new KeyValuePair<NameReference, int>(new NameReference(name, BitConverter.ToInt32(_header, pairIndex + 4)),
+                                                                          BitConverter.ToInt32(_header, pairIndex + 8)));
+                }
+                return componentMap;
+            }
+            set
+            {
+                if (!HasComponentMap) return;
+                Buffer.BlockCopy(BitConverter.GetBytes(value.Count), 0, _header, 40, sizeof(int));
+                int pairIndex = 44;
+                foreach ((NameReference name, int uIndex) in value)
+                {
+                    Buffer.BlockCopy(BitConverter.GetBytes(FileRef.FindNameOrAdd(name.Name)), 0, _header, pairIndex, sizeof(int));
+                    Buffer.BlockCopy(BitConverter.GetBytes(name.Number), 0, _header, pairIndex + 4, sizeof(int));
+                    Buffer.BlockCopy(BitConverter.GetBytes(uIndex), 0, _header, pairIndex + 8, sizeof(int));
+                    pairIndex += 12;
+                }
+            }
+        }
 
-        ////int unkcount2 
-        //int unk2; //int unk2 
-        //public Guid PackageGUID { get; set; } //GUID
-        //int[] unkList2; //unkcount2 * 4 bytes 
+        public int ExportFlagsOffset => HasComponentMap ? 44 + BitConverter.ToInt32(_header, 40) * 12 : 40;
+
+        public EExportFlags ExportFlags
+        {
+            get => (EExportFlags)BitConverter.ToUInt32(_header, ExportFlagsOffset);
+            set
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes((uint)value), 0, _header, ExportFlagsOffset, sizeof(uint));
+                HeaderChanged = true;
+            }
+        }
+
+        public int[] GenerationNetObjectCount
+        {
+            get
+            {
+                int count = BitConverter.ToInt32(_header, ExportFlagsOffset + 4);
+                var result = new int[count];
+                for (int i = 0; i < count; i++)
+                {
+                    result[i] = BitConverter.ToInt32(_header, ExportFlagsOffset + 8 + i * 4);
+                }
+                return result;
+            }
+            set
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes(value.Length), 0, _header, ExportFlagsOffset + 4, sizeof(int));
+                for (int i = 0; i < value.Length; i++)
+                {
+                    Buffer.BlockCopy(BitConverter.GetBytes(value[i]), 0, _header, ExportFlagsOffset + 8 + i * 4, sizeof(int));
+                }
+            }
+        }
+
+        public int PackageGuidOffset => ExportFlagsOffset + 8 + BitConverter.ToInt32(_header, ExportFlagsOffset + 4) * 4;
+
+        public Guid PackageGUID
+        {
+            get => new Guid(_header.Slice(PackageGuidOffset, 16));
+            set
+            {
+                Buffer.BlockCopy(value.ToByteArray(), 0, _header, PackageGuidOffset, 16);
+                HeaderChanged = true;
+            }
+        }
+
+        public EPackageFlags PackageFlags
+        {
+            get => (EPackageFlags)BitConverter.ToUInt32(_header, PackageGuidOffset + 16);
+            set
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes((uint)value), 0, _header, PackageGuidOffset + 16, sizeof(uint));
+                HeaderChanged = true;
+            }
+        }
 
         public string ObjectName => FileRef.Names[idxObjectName];
 
@@ -338,6 +408,8 @@ namespace ME3Explorer.Packages
                 EntryHasPendingChanges = true;
             }
         }
+
+        public int LinkerIndex => BitConverter.ToInt32(_data, 0);
 
         public int OriginalDataSize { get; protected set; }
         public bool ReadsFromConfig { get; protected set; }
@@ -593,7 +665,6 @@ namespace ME3Explorer.Packages
                    exportEntry.ClassName == "TextureFlipBook";
         }
     }
-
 
     [DebuggerDisplay("UDKExportEntry | {UIndex} = {GetFullPath}")]
     public class UDKExportEntry : ExportEntry

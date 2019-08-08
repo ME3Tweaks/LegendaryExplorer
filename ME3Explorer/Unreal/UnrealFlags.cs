@@ -92,6 +92,8 @@ namespace ME3Explorer.Unreal
             /// </summary>
             Map = 0x00020000U,
 
+            DisallowLazyLoading = 0x00080000,
+
             /// <summary>
             /// Package has ME3Explorer appended name table. This is an unused flag by the engine and is present only due to ME3Explorer modified files
             /// </summary>
@@ -107,7 +109,7 @@ namespace ME3Explorer.Unreal
             /// The package was build with -Debug
             /// </summary>
             Debug = 0x00400000U,
-            Imports = 0x00800000U,
+            RequireImportsAlreadyLoaded = 0x00800000U,
 
             SelfContainedLighting = 0x01000000U,
             Compressed = 0x02000000U,
@@ -302,40 +304,49 @@ namespace ME3Explorer.Unreal
 
         public static string[] flagdesc =
         {
-    "Transactional , 0000000100000000,    Object is transactional.",
-    "Unreachable , 0000000200000000,	 Object is not reachable on the object graph.",
-    "Public , 0000000400000000,	 Object is visible outside its package.",
-    "TagImp , 0000000800000000,	 Temporary import tag in loadsave.",
-    "TagExp , 0000001000000000,	 Temporary export tag in loadsave.",
-    "Obsolete , 0000002000000000,    Object marked as obsolete and should be replaced.",
-    "TagGarbage , 0000004000000000,	 Check during garbage collection.",
-    "Final , 0000008000000000,	 Object is not visible outside of class.",
-    "PerObjectLocalized , 0000010000000000,	 Object is localized by instance name00000000, not by class.",
-    "NeedLoad , 0000020000000000,    During load00000000, indicates object needs loading.",
-    "HighlightedName , 0000040000000000,	 A hardcoded name which should be syntax-highlighted.",
-    "EliminateObject , 0000040000000000,    NULL out references to this during garbage collecion.",
-    "RemappedName , 0000080000000000,    Name is remapped.",
-    "Suppress , 0000100000000000,	warning: Mirrored in UnName.h. Suppressed log name.",
-    "StateChanged , 0000100000000000,    Object did a state change.",
-    "InEndState , 0000200000000000,    Within an EndState call.",
-    "Transient , 0000400000000000,	 Don't save object.",
-    "Preloading , 0000800000000000,    Data is being preloaded from file.",
-    "LoadForClient , 0001000000000000,	 In-file load for client.",
-    "LoadForServer , 0002000000000000,	 In-file load for client.",
-    "LoadForEdit , 0004000000000000,	 In-file load for client.",
-    "Standalone , 0008000000000000,    Keep object around for editing even if unreferenced.",
-    "NotForClient , 0010000000000000,	 Don't load this object for the game client.",
-    "NotForServer , 0020000000000000,	 Don't load this object for the game server.",
-    "NotForEdit , 0040000000000000,	 Don't load this object for the editor.",
-    "Destroyed , 0080000000000000,	 Object Destroy has already been called.",
-    "NeedPostLoad , 0100000000000000,    Object needs to be postloaded.",
-    "HasStack , 0200000000000000,	 Has execution stack.",
-    "Native , 0400000000000000,    Native (UClass only).",
-    "Marked , 0800000000000000,    Marked (for debugging).",
-    "ErrorShutdown , 1000000000000000,	 ShutdownAfterError called.",
-    "DebugPostLoad , 2000000000000000,    For debugging Serialize calls.",
-    "DebugSerialize , 4000000000000000,    For debugging Serialize calls.",
-    "DebugDestroy , 8000000000000000,    For debugging Destroy calls."
-};
+            "Transactional , 0000000100000000,    Object is transactional.",
+            "Unreachable , 0000000200000000,	 Object is not reachable on the object graph.",
+            "Public , 0000000400000000,	 Object is visible outside its package.",
+            "TagImp , 0000000800000000,	 Temporary import tag in loadsave.",
+            "TagExp , 0000001000000000,	 Temporary export tag in loadsave.",
+            "Obsolete , 0000002000000000,    Object marked as obsolete and should be replaced.",
+            "TagGarbage , 0000004000000000,	 Check during garbage collection.",
+            "Final , 0000008000000000,	 Object is not visible outside of class.",
+            "PerObjectLocalized , 0000010000000000,	 Object is localized by instance name00000000, not by class.",
+            "NeedLoad , 0000020000000000,    During load00000000, indicates object needs loading.",
+            "HighlightedName , 0000040000000000,	 A hardcoded name which should be syntax-highlighted.",
+            "EliminateObject , 0000040000000000,    NULL out references to this during garbage collecion.",
+            "RemappedName , 0000080000000000,    Name is remapped.",
+            "Suppress , 0000100000000000,	warning: Mirrored in UnName.h. Suppressed log name.",
+            "StateChanged , 0000100000000000,    Object did a state change.",
+            "InEndState , 0000200000000000,    Within an EndState call.",
+            "Transient , 0000400000000000,	 Don't save object.",
+            "Preloading , 0000800000000000,    Data is being preloaded from file.",
+            "LoadForClient , 0001000000000000,	 In-file load for client.",
+            "LoadForServer , 0002000000000000,	 In-file load for client.",
+            "LoadForEdit , 0004000000000000,	 In-file load for client.",
+            "Standalone , 0008000000000000,    Keep object around for editing even if unreferenced.",
+            "NotForClient , 0010000000000000,	 Don't load this object for the game client.",
+            "NotForServer , 0020000000000000,	 Don't load this object for the game server.",
+            "NotForEdit , 0040000000000000,	 Don't load this object for the editor.",
+            "Destroyed , 0080000000000000,	 Object Destroy has already been called.",
+            "NeedPostLoad , 0100000000000000,    Object needs to be postloaded.",
+            "HasStack , 0200000000000000,	 Has execution stack.",
+            "Native , 0400000000000000,    Native (UClass only).",
+            "Marked , 0800000000000000,    Marked (for debugging).",
+            "ErrorShutdown , 1000000000000000,	 ShutdownAfterError called.",
+            "DebugPostLoad , 2000000000000000,    For debugging Serialize calls.",
+            "DebugSerialize , 4000000000000000,    For debugging Serialize calls.",
+            "DebugDestroy , 8000000000000000,    For debugging Destroy calls."
+        };
+
+        [Flags]
+        public enum EExportFlags : uint
+        {
+            ForcedExport = 1,
+            ScriptPatcherExport = 2,
+            MemberFieldPatchPending = 4,
+            AllFlags = uint.MaxValue, 
+        }
     }
 }

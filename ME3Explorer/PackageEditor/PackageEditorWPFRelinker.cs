@@ -888,7 +888,7 @@ namespace ME3Explorer
                     if (donorUpstreamExport == null)
                     {
                         //Create new toplevel import and set that as the most downstream one. (top = bottom at this point)
-                        int downstreamPackageFile = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorTopLevelImport.PackageFile));
+                        int downstreamPackageFile = destinationPCC.FindNameOrAdd(donorTopLevelImport.PackageFile);
                         int downstreamClassName = destinationPCC.FindNameOrAdd(donorTopLevelImport.ClassName);
                         int downstreamName = destinationPCC.FindNameOrAdd(fullobjectname);
 
@@ -926,7 +926,7 @@ namespace ME3Explorer
                         throw new Exception("No suitable upstream import was found for porting - this may be an export in the source file that is referenced as a parent or dependency. You should import this object and its parents first. " + fullobjectname + "(as part of " + importFullName + ")");
                     }
 
-                    int downstreamPackageFile = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorImport.PackageFile));
+                    int downstreamPackageFile = destinationPCC.FindNameOrAdd(donorImport.PackageFile);
                     int downstreamClassName = destinationPCC.FindNameOrAdd(donorImport.ClassName);
 
                     mostdownstreamimport = new ImportEntry(destinationPCC);
@@ -946,7 +946,7 @@ namespace ME3Explorer
                 mostdownstreamimport.idxLink = forcedLinkIdx.Value;
                 mostdownstreamimport.idxClassName = destinationPCC.FindNameOrAdd(importingImport.ClassName);
                 mostdownstreamimport.idxObjectName = destinationPCC.FindNameOrAdd(importingImport.ObjectName);
-                mostdownstreamimport.idxPackageFile = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(importingImport.PackageFile));
+                mostdownstreamimport.idxPackageFile = destinationPCC.FindNameOrAdd(importingImport.PackageFile);
                 destinationPCC.addImport(mostdownstreamimport);
             }
             return mostdownstreamimport;

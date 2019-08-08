@@ -321,11 +321,11 @@ namespace ME3Explorer
                     {
                         new BinInterpNode(bin.Position, $"ShadowMaps ({bin.ReadInt32()})")
                         {
-                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, "{j}"))
+                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, $"{j}"))
                         },
                         new BinInterpNode(bin.Position, $"ShadowVertexBuffers ({bin.ReadInt32()})")
                         {
-                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, "{j}"))
+                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, $"{j}"))
                         },
                         MakeLightMapNode(bin),
                         ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new List<ITreeItem>
@@ -722,7 +722,7 @@ namespace ME3Explorer
                             },
                             new BinInterpNode(bin.Position, $"ShadowMaps ({count = bin.ReadInt32()})")
                             {
-                                Items = ReadList(count, j => MakeEntryNode(bin, "{j}"))
+                                Items = ReadList(count, j => MakeEntryNode(bin, $"{j}"))
                             },
                             new BinInterpNode(bin.Position, $"IrrelevantLights ({count = bin.ReadInt32()})")
                             {
@@ -827,7 +827,7 @@ namespace ME3Explorer
                 int count;
                 subnodes.Add(new BinInterpNode(bin.Position, $"AnimationMap? ({count = bin.ReadInt32()})")
                 {
-                    Items = ReadList(count, i => MakeEntryNode(bin, "{bin.ReadNameReference(Pcc)}"))
+                    Items = ReadList(count, i => MakeEntryNode(bin, $"{bin.ReadNameReference(Pcc)}"))
                 });
 
                 binarystart = (int)bin.Position;
@@ -923,7 +923,7 @@ namespace ME3Explorer
                 int sampleCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"Samples ({sampleCount})")
                 {
-                    Items = ReadList(sampleCount, i => MakeFloatNode(bin, "{i}"))
+                    Items = ReadList(sampleCount, i => MakeFloatNode(bin, $"{i}"))
                 });
                 subnodes.Add(new BinInterpNode(bin.Position, $"LightGuid ({bin.ReadGuid()})"));
             }
@@ -1127,14 +1127,14 @@ namespace ME3Explorer
                 int leafHullsCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"LeafHulls ({leafHullsCount})")
                 {
-                    Items = ReadList(leafHullsCount, i => MakeInt32Node(bin, "{i}"))
+                    Items = ReadList(leafHullsCount, i => MakeInt32Node(bin, $"{i}"))
                 });
 
                 subnodes.Add(MakeInt32Node(bin, "FLeaf Size"));
                 int leavesCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"Leaves ({leavesCount})")
                 {
-                    Items = ReadList(leavesCount, i => MakeInt32Node(bin, "{i}: iZone"))
+                    Items = ReadList(leavesCount, i => MakeInt32Node(bin, $"{i}: iZone"))
                 });
 
 
@@ -1145,7 +1145,7 @@ namespace ME3Explorer
                 int portalNodesCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"PortalNodes ({portalNodesCount})")
                 {
-                    Items = ReadList(portalNodesCount, i => MakeInt32Node(bin, "{i}"))
+                    Items = ReadList(portalNodesCount, i => MakeInt32Node(bin, $"{i}"))
                 });
 
                 subnodes.Add(MakeInt32Node(bin, "FMeshEdge Size"));
@@ -5203,12 +5203,12 @@ namespace ME3Explorer
                 int modelcomponentsCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"ModelComponents: ({modelcomponentsCount = bin.ReadInt32()})")
                 {
-                    Items = ReadList(modelcomponentsCount, i => MakeEntryNode(bin, "{i}"))
+                    Items = ReadList(modelcomponentsCount, i => MakeEntryNode(bin, $"{i}"))
                 });
                 int sequencesCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"GameSequences: ({sequencesCount = bin.ReadInt32()})")
                 {
-                    Items = ReadList(sequencesCount, i => MakeEntryNode(bin, "{i}"))
+                    Items = ReadList(sequencesCount, i => MakeEntryNode(bin, $"{i}"))
                 });
                 int texToInstCount;
                 int streamableTexInstCount;
@@ -5339,13 +5339,13 @@ namespace ME3Explorer
                     int guidToIntMapCount;
                     subnodes.Add(new BinInterpNode(bin.Position, $"guidToIntMap?: ({guidToIntMapCount = bin.ReadInt32()})")
                     {
-                        Items = ReadList(guidToIntMapCount, i => MakeInt32Node(bin, "{bin.ReadValueGuid()}"))
+                        Items = ReadList(guidToIntMapCount, i => MakeInt32Node(bin, $"{bin.ReadValueGuid()}"))
                     });
 
                     int coverListCount;
                     subnodes.Add(new BinInterpNode(bin.Position, $"Coverlinks: ({coverListCount = bin.ReadInt32()})")
                     {
-                        Items = ReadList(coverListCount, i => MakeEntryNode(bin, "{i}"))
+                        Items = ReadList(coverListCount, i => MakeEntryNode(bin, $"{i}"))
                     });
 
                     int intToByteMapCount;
@@ -5357,26 +5357,26 @@ namespace ME3Explorer
                     int guidToIntMap2Count;
                     subnodes.Add(new BinInterpNode(bin.Position, $"2nd guidToIntMap?: ({guidToIntMap2Count = bin.ReadInt32()})")
                     {
-                        Items = ReadList(guidToIntMap2Count, i => MakeInt32Node(bin, "{bin.ReadValueGuid()}"))
+                        Items = ReadList(guidToIntMap2Count, i => MakeInt32Node(bin, $"{bin.ReadValueGuid()}"))
                     });
 
                     int navListCount;
                     subnodes.Add(new BinInterpNode(bin.Position, $"NavPoints?: ({navListCount = bin.ReadInt32()})")
                     {
-                        Items = ReadList(navListCount, i => MakeEntryNode(bin, "{i}"))
+                        Items = ReadList(navListCount, i => MakeEntryNode(bin, $"{i}"))
                     });
 
                     int numbersCount;
                     subnodes.Add(new BinInterpNode(bin.Position, $"Ints?: ({numbersCount = bin.ReadInt32()})")
                     {
-                        Items = ReadList(numbersCount, i => MakeInt32Node(bin, "{i}"))
+                        Items = ReadList(numbersCount, i => MakeInt32Node(bin, $"{i}"))
                     });
                 }
 
                 int crossLevelActorsCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"CrossLevelActors?: ({crossLevelActorsCount = bin.ReadInt32()})")
                 {
-                    Items = ReadList(crossLevelActorsCount, i => MakeEntryNode(bin, "{i}"))
+                    Items = ReadList(crossLevelActorsCount, i => MakeEntryNode(bin, $"{i}"))
                 });
 
                 if (Pcc.Game == MEGame.ME1)
@@ -5675,7 +5675,7 @@ namespace ME3Explorer
              *  
              */
             var subnodes = new List<ITreeItem>();
-            if ((CurrentLoadedExport.Header[0x1f] & 0x2) == 0)
+            if (!CurrentLoadedExport.HasStack)
             {
                 return subnodes;
             }
