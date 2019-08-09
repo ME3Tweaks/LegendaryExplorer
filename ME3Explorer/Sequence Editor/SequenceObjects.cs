@@ -1521,7 +1521,7 @@ namespace ME3Explorer.SequenceObjects
                 var oSequenceReference = export.GetProperty<ObjectProperty>("oSequenceReference");
                 if (oSequenceReference != null)
                 {
-                    inputLinksProp = pcc.getExport(oSequenceReference.Value - 1).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+                    inputLinksProp = pcc.getUExport(oSequenceReference.Value).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
                 }
             }
 

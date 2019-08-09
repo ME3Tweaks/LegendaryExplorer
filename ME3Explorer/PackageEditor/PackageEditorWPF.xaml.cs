@@ -30,6 +30,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Gammtek.Conduit.Extensions.IO;
 using ME2Explorer.Unreal;
 using ME3Explorer.CurveEd;
 using static ME3Explorer.Packages.MEPackage;
@@ -526,7 +527,7 @@ namespace ME3Explorer
         {
             if (!TryGetSelectedExport(out ExportEntry export)) return;
 
-            export.PackageGUID = new Guid(export.FileRef.getHeader().Slice(0x4E, 16));
+            export.PackageGUID = export.FileRef.PackageGuid;
 
             export.idxObjectName = export.FileRef.FindNameOrAdd(Path.GetFileNameWithoutExtension(export.FileRef.FilePath));
         }
@@ -577,7 +578,7 @@ namespace ME3Explorer
                 }
                 items.Add(flagsStr);
 
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game == MEGame.ME3 && Pcc.Flags.HasFlag(EPackageFlags.Cooked))
                 {
                     uint unknown1 = ms.ReadUInt32();
                     items.Add($"0x{ms.Position - 4:X2} Unknown 1: {unknown1} (0x{unknown1:X8})");
@@ -601,21 +602,21 @@ namespace ME3Explorer
                 uint importOffset = ms.ReadUInt32();
                 items.Add($"0x{ms.Position - 4:X2} Import Metadata Table Offset: 0x{importOffset:X8}");
 
-                uint dependencyTableCount = ms.ReadUInt32();
-                items.Add($"0x{ms.Position - 4:X2} Dependency Table Start Offset: 0x{dependencyTableCount:X8} (Not used in Mass Effect games)");
+                uint dependencyTableOffset = ms.ReadUInt32();
+                items.Add($"0x{ms.Position - 4:X2} Dependency Table Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
 
                 if (Pcc.Game == MEGame.ME3)
                 {
-                    uint dependencyTableOffset = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} Dependency Table End Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
+                    uint importExportGuidsOffset = ms.ReadUInt32();
+                    items.Add($"0x{ms.Position - 4:X2} ImportExportGuidsOffset: 0x{importExportGuidsOffset:X8} (Not used in Mass Effect games)");
 
                     uint unknown2 = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} Unknown 2: {unknown2} (0x{unknown2:X8})");
+                    items.Add($"0x{ms.Position - 4:X2} ImportGuidsCount: {unknown2} (0x{unknown2:X8}) (Not used in Mass Effect games)");
 
                     uint unknown3 = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} Unknown 3: {unknown3} (0x{unknown3:X8})");
+                    items.Add($"0x{ms.Position - 4:X2} ExportGuidsCount: {unknown3} (0x{unknown3:X8}) (Not used in Mass Effect games)");
                     uint unknown4 = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} Unknown 4: {unknown4} (0x{unknown4:X8})");
+                    items.Add($"0x{ms.Position - 4:X2} ThumbnailTableOffset: {unknown4} (0x{unknown4:X8}) (Not used in Mass Effect games)");
                 }
 
                 var guidBytes = new byte[16];
@@ -638,33 +639,40 @@ namespace ME3Explorer
                 }
 
                 uint engineVersion = ms.ReadUInt32();
-                items.Add($"0x{ms.Position - 4:X2} Engine Version: {generationsTableCount}");
+                items.Add($"0x{ms.Position - 4:X2} Engine Version: {engineVersion}");
 
                 uint cookerVersion = ms.ReadUInt32();
-                items.Add($"0x{ms.Position - 4:X2} Cooker Version: {generationsTableCount}");
+                items.Add($"0x{ms.Position - 4:X2} CookedContent Version: {cookerVersion}");
 
                 if (Pcc.Game == MEGame.ME2)
                 {
-                    uint dependencyTableOffset = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} Dependency Table Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
+                    uint dependencyTableOffset2 = ms.ReadUInt32();
+                    items.Add($"0x{ms.Position - 4:X2} Dependency Table Offset: 0x{dependencyTableOffset2:X8} (Not used in Mass Effect games)");
 
-                    uint unknown2 = ms.ReadUInt32();
+                    int unknown2 = ms.ReadInt32();
                     items.Add($"0x{ms.Position - 4:X2} Unknown 2: {unknown2} (0x{unknown2:X8})");
 
-                    uint unknown3 = ms.ReadUInt32();
+                    int unknown3 = ms.ReadInt32();
                     items.Add($"0x{ms.Position - 4:X2} Unknown 3: {unknown3} (0x{unknown3:X8})");
-                    uint unknown4 = ms.ReadUInt32();
+                    int unknown4 = ms.ReadInt32();
                     items.Add($"0x{ms.Position - 4:X2} Unknown 4: {unknown4} (0x{unknown4:X8})");
                 }
 
-                uint unknown5 = ms.ReadUInt32();
+                int unknown5 = ms.ReadInt32();
                 items.Add($"0x{ms.Position - 4:X2} Unknown 5: {unknown5} (0x{unknown5:X8})");
 
-                uint unknown6 = ms.ReadUInt32();
+                int unknown6 = ms.ReadInt32();
                 items.Add($"0x{ms.Position - 4:X2} Unknown 6: {unknown6} (0x{unknown6:X8})");
+
+                if (Pcc.Game == MEGame.ME1)
+                {
+                    int unknown7 = ms.ReadInt32();
+                    items.Add($"0x{ms.Position - 4:X2} Unknown 7: {unknown7} (0x{unknown7:X8})");
+                }
 
                 CompressionType compressionType = (CompressionType)ms.ReadUInt32();
                 items.Add($"0x{ms.Position - 4:X2} Package Compression Type: {compressionType.ToString()}");
+
             }
             catch (Exception e)
             {
@@ -2765,7 +2773,7 @@ namespace ME3Explorer
                 else
                 {
                     //todo: ensure relink works with this
-                    ImportEntry newImport = getOrAddCrossImport(importpcc.getImport(Math.Abs(index) - 1).GetFullPath, importpcc, Pcc);
+                    ImportEntry newImport = getOrAddCrossImport(importpcc.getUImport(index).GetFullPath, importpcc, Pcc);
 
                     newEntry = new TreeViewEntry(newImport);
                     crossPCCObjectMap[node.Entry] = newImport;
@@ -2965,7 +2973,7 @@ namespace ME3Explorer
             //Check archetype.
             if (ex.idxArchtype < 0)
             {
-                ImportEntry portingFromClassImport = ex.FileRef.getImport(Math.Abs(ex.idxArchtype) - 1);
+                ImportEntry portingFromClassImport = ex.FileRef.getUImport(ex.idxArchtype);
                 ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, ex.FileRef, Pcc);
                 archetype = newClassImport.UIndex;
             }
@@ -3681,12 +3689,10 @@ namespace ME3Explorer
                         return;
                     }
                     selfNamingExport.PackageGUID = newGuid;
+                    sourceFile.PackageGuid = newGuid;
                     sourceFile.save();
                 }
 
-                var fileAsBytes = File.ReadAllBytes(d.FileName);
-                fileAsBytes.OverwriteRange(0x4E, newGuid.ToByteArray());
-                File.WriteAllBytes(d.FileName, fileAsBytes);
                 MessageBox.Show("Generated a new GUID for package.");
             }
         }
@@ -4052,8 +4058,7 @@ namespace ME3Explorer
 
         private void ListNetIndexes_Click(object sender, RoutedEventArgs e)
         {
-            List<string> strs = new List<String>();
-            Debug.WriteLine((Pcc as ME3Package).Generations0NameCount);
+            var strs = new List<string>();
             foreach (ExportEntry exp in Pcc.Exports)
             {
                 if (exp.GetFullPath.StartsWith("TheWorld.PersistentLevel") && exp.GetFullPath.Count(f => f == '.') == 2)
@@ -4068,7 +4073,7 @@ namespace ME3Explorer
 
         private void ListLinkerValues_Click(object sender, RoutedEventArgs e)
         {
-            List<string> strs = new List<String>();
+            var strs = new List<string>();
             foreach (ExportEntry exp in Pcc.Exports.Where(x => x.LinkerIndex >= 0).OrderBy(x => x.LinkerIndex))
             {
                 strs.Add($"UI:{exp.UIndex} -> LI:{BitConverter.ToInt32(exp.Data, 0)} = {exp.GetIndexedFullPath}");
@@ -4080,22 +4085,158 @@ namespace ME3Explorer
 
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
-            MEGame game = MEGame.ME3;
+            MEGame game = MEGame.ME1;
             var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
+            //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
-            foreach (string filePath in filePaths)
+            IsBusy = true;
+            BusyText = "Scanning";
+            Task.Run(() =>
             {
-                //ScanShaderCache(filePath);
-                //ScanMaterials(filePath);
-                //ScanStaticMeshComponents(filePath);
-                //ScanLightComponents(filePath);
-                //ScanLevel(filePath);
-                findClass(filePath, "Terrain", true);
-                //findClassesWithBinary(filePath);
-            }
-            var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
-            listDlg.Show();
+                foreach (string filePath in filePaths)
+                {
+                    //ScanShaderCache(filePath);
+                    //ScanMaterials(filePath);
+                    //ScanStaticMeshComponents(filePath);
+                    //ScanLightComponents(filePath);
+                    //ScanLevel(filePath);
+                    //findClass(filePath, "Terrain", true);
+                    //findClassesWithBinary(filePath);
+
+                    try
+                    {
+                        using (var fs = File.OpenRead(filePath))
+                        {
+                            int magic = fs.ReadInt32();
+                            ushort unrealVersion = fs.ReadUInt16();
+                            MEGame meGame = unrealVersion == 491 ? MEGame.ME1 : unrealVersion == 512 ? MEGame.ME2 : MEGame.ME3;
+                            ushort licenseeVersion = fs.ReadUInt16();
+                            uint fullheadersize = fs.ReadUInt32();
+                            int foldernameStrLen = fs.ReadInt32();
+                            if (foldernameStrLen > 0)
+                            {
+                                string str = fs.ReadStringASCIINull(foldernameStrLen);
+                            }
+                            else
+                            {
+                                string str = fs.ReadStringUnicodeNull(foldernameStrLen * -2);
+                            }
+                            EPackageFlags flags = (EPackageFlags)fs.ReadUInt32();
+
+                            if (meGame == MEGame.ME3 && flags.HasFlag(EPackageFlags.Cooked))
+                            {
+                                uint unknown1 = fs.ReadUInt32();
+                            }
+
+                            uint nameCount = fs.ReadUInt32();
+                            uint nameOffset = fs.ReadUInt32();
+                            uint exportCount = fs.ReadUInt32();
+                            uint exportOffset = fs.ReadUInt32();
+                            uint importCount = fs.ReadUInt32();
+                            uint importOffset = fs.ReadUInt32();
+                            uint dependencyTableOffset = fs.ReadUInt32();
+
+                            if (meGame == MEGame.ME3)
+                            {
+                                uint importExportGuidsOffset = fs.ReadUInt32();
+                                uint importGuidsCount = fs.ReadUInt32();
+                                uint exportGuidsCount = fs.ReadUInt32();
+                                uint thumbnailTableOffset = fs.ReadUInt32();
+                            }
+
+                            Guid packageGuid = fs.ReadGuid();
+                            uint generationsTableCount = fs.ReadUInt32();
+
+                            for (int i = 0; i < generationsTableCount; i++)
+                            {
+                                uint generationExportcount = fs.ReadUInt32();
+                                uint generationImportcount = fs.ReadUInt32();
+                                uint generationNetcount = fs.ReadUInt32();
+                            }
+
+                            uint engineVersion = fs.ReadUInt32();
+                            uint cookedContentVersion = fs.ReadUInt32();
+
+                            if (meGame == MEGame.ME2 || meGame == MEGame.ME1)
+                            {
+                                uint dependencyTableOffset2 = fs.ReadUInt32();
+                                int unknown2 = fs.ReadInt32();
+                                int unknown3 = fs.ReadInt32();
+                                int unknown4 = fs.ReadInt32();
+                            }
+
+                            int unknown5 = fs.ReadInt32();
+                            int unknown6 = fs.ReadInt32();
+
+                            if (meGame == MEGame.ME1)
+                            {
+                                int unknown7 = fs.ReadInt32();
+                            }
+
+                            CompressionType compressionType = (CompressionType)fs.ReadUInt32();
+                            int numChunks = fs.ReadInt32();
+                            var compressedOffsets = new int[numChunks];
+                            for (int i = 0; i < numChunks; i++)
+                            {
+                                int uncompressedOffset = fs.ReadInt32();
+                                int uncompressedSize = fs.ReadInt32();
+                                compressedOffsets[i] = fs.ReadInt32();
+                                int compressedSize = fs.ReadInt32();
+                            }
+
+                            uint packageSource = fs.ReadUInt32();
+
+                            if (meGame == MEGame.ME2 || meGame == MEGame.ME1)
+                            {
+                                int unknown8 = fs.ReadInt32();
+                            }
+
+                            if (meGame == MEGame.ME2 || meGame == MEGame.ME3)
+                            {
+                                int additionalPackagesToCookCount = fs.ReadInt32();
+                                var additionalPackagesToCook = new string[additionalPackagesToCookCount];
+                                for (int i = 0; i < additionalPackagesToCookCount; i++)
+                                {
+                                    int strLen = fs.ReadInt32();
+                                    if (strLen > 0)
+                                    {
+                                        additionalPackagesToCook[i] = fs.ReadStringASCIINull(strLen);
+                                    }
+                                    else
+                                    {
+                                        additionalPackagesToCook[i] = fs.ReadStringUnicodeNull(strLen * -2);
+                                    }
+                                }
+                            }
+                            if (numChunks == 0)
+                            {
+                                if (nameOffset != fs.Position)
+                                {
+                                    interestingExports.Add($"{filePath}");
+                                    break;
+                                }
+                            }
+                            else if(numChunks > 0 && compressedOffsets[0] != fs.Position)
+                            {
+                                interestingExports.Add($"{filePath}");
+                                break;
+                            }
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        interestingExports.Add($"{filePath}\n{exception}");
+                        break;
+                    }
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                IsBusy = false;
+                var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
+                listDlg.Show();
+            });
+            
 
             void findClassesWithBinary(string filePath)
             {
@@ -4619,8 +4760,10 @@ namespace ME3Explorer
                     {
                         using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(file))
                         {
+                            bool hasConv = false;
                             foreach (ExportEntry conv in pcc.Exports.Where(exp => exp.ClassName == "BioConversation"))
                             {
+                                hasConv = true;
                                 PropertyCollection props = conv.GetProperties();
                                 if (props.GetProp<ArrayProperty<StructProperty>>("m_EntryList") is ArrayProperty<StructProperty> entryList)
                                 {
@@ -4638,7 +4781,9 @@ namespace ME3Explorer
                                 }
                                 conv.WriteProperties(props);
                             }
-                            pcc.save();
+
+                            if (hasConv)
+                                pcc.save();
                         }
                     }
                 }).ContinueWithOnUIThread(prevTask =>

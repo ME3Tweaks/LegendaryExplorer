@@ -6,15 +6,15 @@ using System.Text;
 using ME3Explorer.Unreal;
 using System.Windows;
 using System.Diagnostics;
+using ME3Explorer.SharedUI;
 using StreamHelpers;
+using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
     [DebuggerDisplay("ME3Package | {" + nameof(FilePath) + "}")]
     public sealed class ME3Package : MEPackage, IMEPackage
     {
-        const uint packageTag = 0x9E2A83C1;
-
         public MEGame Game => MEGame.ME3;
 
         private const int headerSize = 0x8E;
@@ -23,7 +23,7 @@ namespace ME3Explorer.Packages
         {
             get
             {
-                if ((flags & 8) != 0) return 24 + nameSize;
+                if (Flags.HasFlag(EPackageFlags.Cooked)) return 24 + nameSize;
                 return 20 + nameSize;
             }
         } // usually = 34
@@ -70,33 +70,52 @@ namespace ME3Explorer.Packages
             get => BitConverter.ToInt32(header, idxOffsets + 20);
             private set => SetHeaderValue(value, 20);
         }
-        public int DependsOffset
+        public override int DependencyTableOffset
         {
             get => BitConverter.ToInt32(header, idxOffsets + 24);
-            private set => SetHeaderValue(value, 24);
-        }
-        int DependencyTableStart
-        {
-            get => BitConverter.ToInt32(header, idxOffsets + 24);
-            set => SetHeaderValue(value, 24);
+            protected set => SetHeaderValue(value, 24);
         }
         int DependencyTableEnd
         {
             get => BitConverter.ToInt32(header, idxOffsets + 28);
             set => SetHeaderValue(value, 28);
         }
-
+        public int ImportGuidsCount
+        {
+            get => BitConverter.ToInt32(header, idxOffsets + 32);
+            set => SetHeaderValue(value, 32);
+        }
+        public int ExportGuidsCount
+        {
+            get => BitConverter.ToInt32(header, idxOffsets + 36);
+            set => SetHeaderValue(value, 36);
+        }
+        public int ThumbnailTableOffset
+        {
+            get => BitConverter.ToInt32(header, idxOffsets + 40);
+            set => SetHeaderValue(value, 40);
+        }
+        public override Guid PackageGuid
+        {
+            get => new Guid(header.Slice(idxOffsets + 44, 16));
+            set => Buffer.BlockCopy(value.ToByteArray(), 0, header, idxOffsets + 44, 16);
+        }
+        public int GenerationsCount
+        {
+            get => BitConverter.ToInt32(header, idxOffsets + 60);
+            set => SetHeaderValue(value, 64);
+        }
 
         int Generations0ExportCount
         {
-            get => BitConverter.ToInt32(header, idxOffsets + 0x40);
-            set => SetHeaderValue(value, 0x40);
+            get => BitConverter.ToInt32(header, idxOffsets + 64);
+            set => SetHeaderValue(value, 64);
         }
 
-        public int Generations0NameCount
+        int Generations0NameCount
         {
-            get => BitConverter.ToInt32(header, idxOffsets+0x44 );
-            set => SetHeaderValue(value, 0x44);
+            get => BitConverter.ToInt32(header, idxOffsets+68 );
+            set => SetHeaderValue(value, 68);
         }
 
         void SetHeaderValue(int val, int offset)
@@ -131,12 +150,12 @@ namespace ME3Explorer.Packages
             using (FileStream pccStream = File.OpenRead(FilePath))
             {
                 header = pccStream.ReadToBuffer(headerSize);
-                if (magic != packageTag)
+                if (Magic != packageTag)
                 {
                     throw new FormatException("Not an Unreal package!");
                 }
 
-                if (lowVers != 684 && highVers != 194)
+                if (UnrealVersion != 684 && LicenseeVersion != 194)
                 {
                     throw new FormatException("Not an ME3 Package!");
                 }
@@ -233,10 +252,10 @@ namespace ME3Explorer.Packages
                     m.WriteFromBuffer(e.Header);
                 }
                 //freezone
-                int DependencyTableSize = DependencyTableEnd - DependencyTableStart; //Should be ExportsCount * 4, technically.
-                DependencyTableStart = (int)m.Position;
+                int DependencyTableSize = DependencyTableEnd - DependencyTableOffset; //Should be ExportsCount * 4, technically.
+                DependencyTableOffset = (int)m.Position;
                 m.WriteFromBuffer(new byte[DependencyTableSize]);
-                DependencyTableEnd = expDataBegOffset = (int)m.Position;
+                DependencyTableEnd = FullHeaderSize = (int)m.Position;
                 Generations0ExportCount = ExportCount;
                 Generations0NameCount = NameCount;
                 //export data
@@ -273,7 +292,7 @@ namespace ME3Explorer.Packages
             }
             catch (Exception ex)
             {
-                MessageBox.Show("PCC Save error:\n" + ex.Message);
+                MessageBox.Show($"Error saving {FilePath}:\n{ExceptionHandlerDialogWPF.FlattenException(ex)}");
             }
         }
 

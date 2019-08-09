@@ -82,49 +82,7 @@ namespace ME3Explorer
                 }
                 var neverStream = properties.GetProp<BoolProperty>("NeverStream") ?? false;
 
-                MemoryStream ms = new MemoryStream(exportEntry.Data);
-                ms.Seek(properties.endOffset, SeekOrigin.Begin);
-                if (exportEntry.FileRef.Game != MEGame.ME3)
-                {
-                    ms.Seek(12, SeekOrigin.Current); // 12 zeros
-                    ms.Seek(4, SeekOrigin.Current); // position in the package
-                }
-                var mips = new List<Texture2DMipInfo>();
-                int numMipMaps = ms.ReadInt32();
-                for (int l = 0; l < numMipMaps; l++)
-                {
-                    Texture2DMipInfo mip = new Texture2DMipInfo
-                    {
-                        index = l,
-                        storageType = (StorageTypes)ms.ReadInt32(),
-                        uncompressedSize = ms.ReadInt32(),
-                        compressedSize = ms.ReadInt32(),
-                        externalOffset = ms.ReadInt32(),
-                        packageOffset = (int)ms.Position,
-                        cacheFile = CurrentLoadedCacheName
-                    };
-                    switch (mip.storageType)
-                    {
-                        case StorageTypes.pccUnc:
-                            ms.Seek(mip.uncompressedSize, SeekOrigin.Current);
-                            break;
-                        case StorageTypes.pccLZO:
-                        case StorageTypes.pccZlib:
-                            ms.Seek(mip.compressedSize, SeekOrigin.Current);
-                            break;
-                    }
-                    mip.width = ms.ReadInt32();
-                    mip.height = ms.ReadInt32();
-                    if (mip.width == 4 && mips.Exists(m => m.width == mip.width))
-                        mip.width = mips.Last().width / 2;
-                    if (mip.height == 4 && mips.Exists(m => m.height == mip.height))
-                        mip.height = mips.Last().height / 2;
-                    if (mip.width == 0)
-                        mip.width = 1;
-                    if (mip.height == 0)
-                        mip.height = 1;
-                    mips.Add(mip);
-                }
+                List<Texture2DMipInfo> mips = GetTexture2DMipInfos(exportEntry, CurrentLoadedCacheName);
 
                 var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
 
@@ -164,6 +122,57 @@ namespace ME3Explorer
             {
                 //Error loading texture
             }
+        }
+
+        public static List<Texture2DMipInfo> GetTexture2DMipInfos(ExportEntry exportEntry, string cacheName)
+        {
+            MemoryStream ms = new MemoryStream(exportEntry.Data);
+            ms.Seek(exportEntry.propsEnd(), SeekOrigin.Begin);
+            if (exportEntry.FileRef.Game != MEGame.ME3)
+            {
+                ms.Seek(12, SeekOrigin.Current); // 12 zeros
+                ms.Seek(4, SeekOrigin.Current); // position in the package
+            }
+
+            var mips = new List<Texture2DMipInfo>();
+            int numMipMaps = ms.ReadInt32();
+            for (int l = 0; l < numMipMaps; l++)
+            {
+                Texture2DMipInfo mip = new Texture2DMipInfo
+                {
+                    index = l,
+                    storageType = (StorageTypes) ms.ReadInt32(),
+                    uncompressedSize = ms.ReadInt32(),
+                    compressedSize = ms.ReadInt32(),
+                    externalOffset = ms.ReadInt32(),
+                    packageOffset = (int) ms.Position,
+                    cacheFile = cacheName
+                };
+                switch (mip.storageType)
+                {
+                    case StorageTypes.pccUnc:
+                        ms.Seek(mip.uncompressedSize, SeekOrigin.Current);
+                        break;
+                    case StorageTypes.pccLZO:
+                    case StorageTypes.pccZlib:
+                        ms.Seek(mip.compressedSize, SeekOrigin.Current);
+                        break;
+                }
+
+                mip.width = ms.ReadInt32();
+                mip.height = ms.ReadInt32();
+                if (mip.width == 4 && mips.Exists(m => m.width == mip.width))
+                    mip.width = mips.Last().width / 2;
+                if (mip.height == 4 && mips.Exists(m => m.height == mip.height))
+                    mip.height = mips.Last().height / 2;
+                if (mip.width == 0)
+                    mip.width = 1;
+                if (mip.height == 0)
+                    mip.height = 1;
+                mips.Add(mip);
+            }
+
+            return mips;
         }
 
         private void LoadMip(Texture2DMipInfo mipToLoad)

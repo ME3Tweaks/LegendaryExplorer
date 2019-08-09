@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ME3Explorer.Unreal;
+using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
@@ -99,6 +100,7 @@ namespace ME3Explorer.Packages
 
     public interface IMEPackage : IDisposable
     {
+        EPackageFlags Flags { get; }
         bool IsCompressed { get; }
         bool CanReconstruct { get; }
         bool IsModified { get; }
@@ -108,6 +110,7 @@ namespace ME3Explorer.Packages
         int ImportOffset { get; }
         int ExportOffset { get; }
         int NameOffset { get; }
+        Guid PackageGuid { get; set; }
         IReadOnlyList<ExportEntry> Exports { get; }
         IReadOnlyList<ImportEntry> Imports { get; }
         IReadOnlyList<string> Names { get; }
@@ -117,7 +120,6 @@ namespace ME3Explorer.Packages
         long FileSize { get; }
 
         //reading
-        bool isExport(int index);
         bool isUExport(int index);
         bool isName(int index);
         bool isUImport(int index);
@@ -139,13 +141,6 @@ namespace ME3Explorer.Packages
         /// </summary>
         /// <param name="uIndex">unreal-based index in the export list</param>
         ExportEntry getUExport(int uIndex);
-
-        /// <summary>
-        /// Gets an import based on it's 0 based index in the import list. (Not unreal indexing)
-        /// </summary>
-        /// <param name="index">0-based index in the import list</param>
-        /// <returns></returns>
-        ImportEntry getImport(int index);
 
         /// <summary>
         /// Gets an import based on it's unreal based index.
@@ -178,8 +173,6 @@ namespace ME3Explorer.Packages
         /// </summary>
         void setNames(List<string> list);
 
-        string FollowLink(int Link);
-
         //saving
         void save();
         void save(string path);
@@ -190,6 +183,5 @@ namespace ME3Explorer.Packages
         event MEPackage.MEPackageEventHandler noLongerOpenInTools;
         void RegisterUse();
         event MEPackage.MEPackageEventHandler noLongerUsed;
-        string GetEntryString(int index);
     }
 }

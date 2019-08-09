@@ -72,7 +72,7 @@ namespace ME3Explorer.FileHexViewer
                     {
                         UsedFor = "Package Header",
                         UsedSpaceStart = 0,
-                        UsedSpaceEnd = pcc.getHeader().Length
+                        UsedSpaceEnd = pcc.NameOffset
                     });
 
                     inStream.Seek(pcc.NameOffset, SeekOrigin.Begin);
@@ -117,8 +117,8 @@ namespace ME3Explorer.FileHexViewer
                     used.Add(new UsedSpace
                     {
                         UsedFor = "Dependency Table (Unused)",
-                        UsedSpaceStart = BitConverter.ToInt32(pcc.getHeader(), 0x3A),
-                        UsedSpaceEnd = BitConverter.ToInt32(pcc.getHeader(), 0x3E)
+                        UsedSpaceStart = ((MEPackage)pcc).DependencyTableOffset,
+                        UsedSpaceEnd = ((MEPackage)pcc).FullHeaderSize
                     });
 
                     List<UsedSpace> usedExportsSpaces = new List<UsedSpace>();

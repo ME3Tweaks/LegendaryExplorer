@@ -4,15 +4,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using StreamHelpers;
+using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
     public sealed class ME2Package : MEPackage, IMEPackage
     {
-        const uint packageTag = 0x9E2A83C1;
-
         public MEGame Game => MEGame.ME2;
 
         public override int NameCount
@@ -45,12 +45,17 @@ namespace ME3Explorer.Packages
             get => BitConverter.ToInt32(header, nameSize + 40);
             private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 40, sizeof(int));
         }
-        private int FreeZoneStart
+        public override int DependencyTableOffset
         {
             get => BitConverter.ToInt32(header, nameSize + 44);
-            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 44, sizeof(int));
+            protected set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 44, sizeof(int));
         }
-        private int Generations => BitConverter.ToInt32(header, nameSize + 64);
+        public override Guid PackageGuid
+        {
+            get => new Guid(header.Slice(nameSize + 48, 16));
+            set => Buffer.BlockCopy(value.ToByteArray(), 0, header, nameSize + 48, 16);
+        }
+        public int Generations => BitConverter.ToInt32(header, nameSize + 64);
         private int Compression
         {
             get => BitConverter.ToInt32(header, header.Length - 4);
@@ -96,7 +101,7 @@ namespace ME3Explorer.Packages
             header = tempStream.ReadToBuffer(tempPos);
             tempStream.Seek(0, SeekOrigin.Begin);
 
-            if (magic != packageTag)
+            if (Magic != packageTag)
             {
                 throw new FormatException("This is not a pcc file. The magic number is incorrect.");
             }
@@ -221,10 +226,10 @@ namespace ME3Explorer.Packages
                     m.WriteFromBuffer(e.Header);
                 }
                 //freezone
-                int FreeZoneSize = expDataBegOffset - FreeZoneStart;
-                FreeZoneStart = (int)m.Position;
+                int FreeZoneSize = FullHeaderSize - DependencyTableOffset;
+                DependencyTableOffset = (int)m.Position;
                 m.Write(new byte[FreeZoneSize], 0, FreeZoneSize);
-                expDataBegOffset = (int)m.Position;
+                FullHeaderSize = (int)m.Position;
                 //export data
                 foreach (ExportEntry e in exports)
                 {
@@ -248,7 +253,7 @@ namespace ME3Explorer.Packages
             }
             catch (Exception ex)
             {
-                MessageBox.Show("PCC Save error:\n" + ex.Message);
+                MessageBox.Show($"Error saving {FilePath}:\n{ExceptionHandlerDialogWPF.FlattenException(ex)}");
             }
         }
 
@@ -281,12 +286,13 @@ namespace ME3Explorer.Packages
                 binData.WriteInt32(baseOffset + (int)binData.Position + 4);
                 for (int i = binData.ReadInt32(); i > 0 && binData.Position < binData.Length; i--)
                 {
-                    if (binData.ReadInt32() == 0) //pcc-stored
+                    var storageFlags = (StorageFlags)binData.ReadInt32();
+                    if (!storageFlags.HasFlag(StorageFlags.externalFile)) //pcc-stored
                     {
                         int uncompressedSize = binData.ReadInt32();
-                        binData.Seek(4, SeekOrigin.Current); //skip compressed size
+                        int compressedSize = binData.ReadInt32();
                         binData.WriteInt32(baseOffset + (int)binData.Position + 4);//update offset
-                        binData.Seek(uncompressedSize + 8, SeekOrigin.Current); //skip texture and width + height values
+                        binData.Seek((storageFlags == StorageFlags.noFlags ? uncompressedSize : compressedSize) + 8, SeekOrigin.Current); //skip texture and width + height values
                     }
                     else
                     {

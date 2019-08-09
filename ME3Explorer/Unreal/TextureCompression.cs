@@ -42,6 +42,7 @@ namespace ME3Explorer
     /// <summary>
     /// Storage type flags for Texture2D
     /// </summary>
+    [Flags]
     public enum StorageFlags
     {
         noFlags = 0,

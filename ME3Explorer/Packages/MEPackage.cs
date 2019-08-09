@@ -8,7 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using UsefulThings.WPF;
+using ME3Explorer.Unreal;
+using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
@@ -37,7 +38,7 @@ namespace ME3Explorer.Packages
 
     public abstract class MEPackage : NotifyPropertyChangedBase, IDisposable
     {
-        protected const int appendFlag = 0x00100000;
+        protected const uint packageTag = 0x9E2A83C1;
 
         public string FilePath { get; protected set; }
 
@@ -49,54 +50,43 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public string GetEntryString(int index)
-        {
-            if (index == 0)
-            {
-                return "Null";
-            }
-            string retStr = "Entry not found";
-            IEntry coreRefEntry = getEntry(index);
-            if (coreRefEntry != null)
-            {
-                retStr = coreRefEntry is ImportEntry ? "[I] " : "[E] ";
-                retStr += coreRefEntry.GetIndexedFullPath;
-            }
-            return retStr;
-        }
-        public bool CanReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
+        public virtual bool CanReconstruct => true;
 
         protected byte[] header;
-        protected uint magic => BitConverter.ToUInt32(header, 0);
-        protected ushort lowVers => BitConverter.ToUInt16(header, 4);
-        protected ushort highVers => BitConverter.ToUInt16(header, 6);
-        protected int expDataBegOffset
+        protected uint Magic => BitConverter.ToUInt32(header, 0);
+        protected ushort UnrealVersion => BitConverter.ToUInt16(header, 4);
+        protected ushort LicenseeVersion => BitConverter.ToUInt16(header, 6);
+        public int FullHeaderSize
         {
             get => BitConverter.ToInt32(header, 8);
-            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int));
+            protected set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int));
         }
-        protected int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } } //this may be able to be optimized. It is used a lot during package load
-        protected uint flags => BitConverter.ToUInt32(header, 16 + nameSize);
+        public int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } } //this may be able to be optimized. It is used a lot during package load
+        public EPackageFlags Flags => (EPackageFlags)BitConverter.ToUInt32(header, 16 + nameSize);
 
         public abstract int NameCount { get; protected set; }
         public abstract int ImportCount { get; protected set; }
         public abstract int ExportCount { get; protected set; }
 
+        public abstract int DependencyTableOffset { get; protected set; }
+
+        public abstract Guid PackageGuid { get; set; }
+
         public byte[] getHeader() { return header; }
 
         public bool IsCompressed
         {
-            get => (flags & 0x02000000) != 0;
+            get => Flags.HasFlag(EPackageFlags.Compressed);
             protected set
             {
                 if (value) // sets the compressed flag if bCompressed set equal to true
                 {
                     //Toolkit never should never set this flag as we do not support compressing files.
-                    Buffer.BlockCopy(BitConverter.GetBytes(flags | 0x02000000), 0, header, 16 + nameSize, sizeof(int));
+                    Buffer.BlockCopy(BitConverter.GetBytes((uint)(Flags | EPackageFlags.Compressed)), 0, header, 16 + nameSize, sizeof(int));
                 }
                 else // else set to false
                 {
-                    Buffer.BlockCopy(BitConverter.GetBytes(flags & ~0x02000000), 0, header, 16 + nameSize, sizeof(int));
+                    Buffer.BlockCopy(BitConverter.GetBytes((uint)(Flags & ~EPackageFlags.Compressed)), 0, header, 16 + nameSize, sizeof(int));
                     PackageCompressionType = CompressionType.None;
                 }
             }
@@ -115,18 +105,7 @@ namespace ME3Explorer.Packages
             set => header?.OverwriteRange(-4, BitConverter.GetBytes((int)value));
         }
 
-        //has been saved with the revised Append method
-        public bool IsAppend
-        {
-            get => (flags & appendFlag) != 0;
-            protected set
-            {
-                if (value) // sets the append flag if IsAppend set equal to true
-                    Buffer.BlockCopy(BitConverter.GetBytes(flags | appendFlag), 0, header, 16 + nameSize, sizeof(int));
-                else // else set to false
-                    Buffer.BlockCopy(BitConverter.GetBytes(flags & ~appendFlag), 0, header, 16 + nameSize, sizeof(int));
-            }
-        }
+
 
         #region Names
         protected uint namesAdded;
@@ -199,7 +178,6 @@ namespace ME3Explorer.Packages
         protected List<ExportEntry> exports;
         public IReadOnlyList<ExportEntry> Exports => exports;
 
-        public bool isExport(int index) => index >= 0 && index < exports.Count;
         public bool isUExport(int uindex) => uindex > 0 && uindex <= exports.Count;
 
         public void addExport(ExportEntry exportEntry)
@@ -226,7 +204,6 @@ namespace ME3Explorer.Packages
         protected List<ImportEntry> imports;
         public IReadOnlyList<ImportEntry> Imports => imports;
 
-        public bool isImport(int index) => (index >= 0 && index < ImportCount);
         public bool isUImport(int uindex) => (uindex < 0 && Math.Abs(uindex) <= ImportCount);
 
         public void addImport(ImportEntry importEntry)
@@ -244,7 +221,6 @@ namespace ME3Explorer.Packages
             OnPropertyChanged(nameof(ImportCount));
         }
 
-        public ImportEntry getImport(int index) => imports[index];
         public ImportEntry getUImport(int uindex) => imports[Math.Abs(uindex) - 1];
 
         #endregion
@@ -253,14 +229,12 @@ namespace ME3Explorer.Packages
         /// <summary>
         ///     gets Export or Import name
         /// </summary>
-        /// <param name="index">unreal index</param>
-        public string getObjectName(int index)
+        /// <param name="uIndex">unreal index</param>
+        public string getObjectName(int uIndex)
         {
-            if (index > 0 && index <= ExportCount)
-                return exports[index - 1].ObjectName;
-            if (-index > 0 && -index <= ImportCount)
-                return imports[-index - 1].ObjectName;
-            if (index == 0)
+            if (isEntry(uIndex))
+                return getEntry(uIndex).ObjectName;
+            if (uIndex == 0)
                 return "Class";
             return "";
         }
@@ -268,13 +242,11 @@ namespace ME3Explorer.Packages
         /// <summary>
         ///     gets Export or Import class
         /// </summary>
-        /// <param name="index">unreal index</param>
-        public string getObjectClass(int index)
+        /// <param name="uIndex">unreal index</param>
+        public string getObjectClass(int uIndex)
         {
-            if (index > 0 && index <= ExportCount)
-                return exports[index - 1].ClassName;
-            if (-index > 0 && -index <= ImportCount)
-                return imports[-index - 1].ClassName;
+            if (isEntry(uIndex))
+                return getEntry(uIndex).ClassName;
             return "";
         }
 
@@ -284,31 +256,15 @@ namespace ME3Explorer.Packages
         /// <param name="uindex">unreal index</param>
         public IEntry getEntry(int uindex)
         {
-            if (uindex > 0 && uindex <= ExportCount)
+            if (isUExport(uindex))
                 return exports[uindex - 1];
-            if (-uindex > 0 && -uindex <= ImportCount)
+            if (isUImport(uindex))
                 return imports[-uindex - 1];
             return null;
         }
-        public bool isEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (uindex != int.MinValue && Math.Abs(uindex) > 0 && Math.Abs(uindex) <= ImportCount);
+        public bool isEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (uindex < 0 && -uindex <= ImportCount);
 
         #endregion
-
-        public string FollowLink(int Link)
-        {
-            string s = "";
-            if (Link > 0 && isExport(Link - 1))
-            {
-                s = Exports[Link - 1].ObjectName + ".";
-                s = FollowLink(Exports[Link - 1].idxLink) + s;
-            }
-            if (Link < 0 && isImport(Link * -1 - 1))
-            {
-                s = Imports[Link * -1 - 1].ObjectName + ".";
-                s = FollowLink(Imports[Link * -1 - 1].idxLink) + s;
-            }
-            return s;
-        }
 
         private DateTime? lastSaved;
         public DateTime LastSaved

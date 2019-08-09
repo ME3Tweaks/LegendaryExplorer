@@ -135,12 +135,11 @@ namespace ME3Explorer
                 //objProperty is currently pointing to importingPCC as that is where we read the properties from
                 int n = objProperty.Value;
                 int origvalue = n;
-                int importZeroIndex = Math.Abs(n) - 1;
                 //Debug.WriteLine("Relink miss, attempting JIT relink on " + n + " " + rootNode.Text);
-                if (n < 0 && importZeroIndex < importingPCC.ImportCount)
+                if (importingPCC.isUImport(n))
                 {
                     //Get the original import
-                    ImportEntry origImport = importingPCC.getImport(importZeroIndex);
+                    ImportEntry origImport = importingPCC.getUImport(n);
                     string origImportFullName = origImport.GetFullPath;
                     //Debug.WriteLine("We should import " + origImport.GetFullPath);
 

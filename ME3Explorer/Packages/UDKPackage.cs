@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using ME3Explorer.Unreal;
+using static ME3Explorer.Unreal.UnrealFlags;
 using StreamHelpers;
 
 namespace ME3Explorer.Packages
@@ -21,7 +22,7 @@ namespace ME3Explorer.Packages
         public bool bExtraNamesList => extraNamesList != null;
         public bool Loaded = false;
 
-        int idxOffsets { get { if ((flags & 8) != 0) return 24 + nameSize; else return 20 + nameSize; } } // usually = 34
+        int idxOffsets { get { if (Flags.HasFlag(EPackageFlags.Cooked)) return 24 + nameSize; else return 20 + nameSize; } } // usually = 34
 
         static bool isInitialized;
         internal static Func<string, UDKPackage> Initialize()
@@ -73,24 +74,18 @@ namespace ME3Explorer.Packages
         public int ImportOffset { get => BitConverter.ToInt32(header, idxOffsets + 20);
             private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 20, sizeof(int));
         }
-        uint FreeZoneStart { get => BitConverter.ToUInt32(header, idxOffsets + 24);
-            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(uint));
+        public override int DependencyTableOffset
+        { get => BitConverter.ToInt32(header, idxOffsets + 24);
+            protected set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(int));
         }
-        uint FreeZoneEnd { get => BitConverter.ToUInt32(header, idxOffsets + 28);
-            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(uint));
+        int FreeZoneEnd { get => BitConverter.ToInt32(header, idxOffsets + 28);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(int));
         }
 
-        int expInfoEndOffset { get => BitConverter.ToInt32(header, idxOffsets + 24);
-            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(int));
-        }
-        new int expDataBegOffset
+        public override Guid PackageGuid
         {
-            get => BitConverter.ToInt32(header, idxOffsets + 28);
-            set
-            {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(int));
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int));
-            }
+            get => new Guid(header.Slice(idxOffsets + 44, 16));
+            set => Buffer.BlockCopy(value.ToByteArray(), 0, header, idxOffsets + 44, 16);
         }
 
         public struct NameEntry

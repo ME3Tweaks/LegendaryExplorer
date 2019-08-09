@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.Unreal;
 using StreamHelpers;
 using static ME3Explorer.Unreal.UnrealFlags;
@@ -28,9 +29,9 @@ namespace ME3Explorer.Packages
         public bool IsDefaultObject => ObjectFlags.HasFlag(EObjectFlags.ClassDefaultObject);
 
         /// <summary>
-        /// NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
+        /// NEVER DIRECTLY SET THIS OUTSIDE OF Header setter!
         /// </summary>
-        protected byte[] _header;
+        private byte[] _header;
 
         /// <summary>
         /// The underlying header is directly returned by this getter. If you want to write a new header back, use the copy provided by getHeader()!
@@ -63,6 +64,41 @@ namespace ME3Explorer.Packages
         public byte[] GetHeader()
         {
             return _header.TypedClone();
+        }
+
+        private void RegenerateHeader(List<KeyValuePair<NameReference, int>> componentMap, int[] generationNetObjectCount)
+        {
+            var bin = new MemoryStream();
+            bin.WriteInt32(idxClass);
+            bin.WriteInt32(idxClassParent);
+            bin.WriteInt32(idxLink);
+            bin.WriteInt32(idxObjectName);
+            bin.WriteInt32(idxArchtype);
+            bin.WriteInt32(idxClass);
+            bin.WriteUInt64((ulong)ObjectFlags);
+            bin.WriteInt32(DataSize);
+            bin.WriteInt32(DataOffset);
+            if (HasComponentMap)
+            {
+                List<KeyValuePair<NameReference, int>> cmpMap = componentMap ?? ComponentMap;
+                bin.WriteInt32(cmpMap.Count);
+                foreach ((NameReference name, int uIndex) in cmpMap)
+                {
+                    bin.WriteInt32(FileRef.FindNameOrAdd(name.Name));
+                    bin.WriteInt32(name.Number);
+                    bin.WriteInt32(uIndex);
+                }
+            }
+            bin.WriteUInt32((uint)ExportFlags);
+            int[] genobjCounts = generationNetObjectCount ?? GenerationNetObjectCount;
+            bin.WriteInt32(genobjCounts.Length);
+            foreach (int count in genobjCounts)
+            {
+                bin.WriteInt32(count);
+            }
+            bin.WriteGuid(PackageGUID);
+            bin.WriteUInt32((uint)PackageFlags);
+            Header = bin.ToArray();
         }
 
         public uint HeaderOffset { get; set; }
@@ -174,15 +210,7 @@ namespace ME3Explorer.Packages
             set
             {
                 if (!HasComponentMap) return;
-                Buffer.BlockCopy(BitConverter.GetBytes(value.Count), 0, _header, 40, sizeof(int));
-                int pairIndex = 44;
-                foreach ((NameReference name, int uIndex) in value)
-                {
-                    Buffer.BlockCopy(BitConverter.GetBytes(FileRef.FindNameOrAdd(name.Name)), 0, _header, pairIndex, sizeof(int));
-                    Buffer.BlockCopy(BitConverter.GetBytes(name.Number), 0, _header, pairIndex + 4, sizeof(int));
-                    Buffer.BlockCopy(BitConverter.GetBytes(uIndex), 0, _header, pairIndex + 8, sizeof(int));
-                    pairIndex += 12;
-                }
+                RegenerateHeader(value, null);
             }
         }
 
@@ -210,14 +238,7 @@ namespace ME3Explorer.Packages
                 }
                 return result;
             }
-            set
-            {
-                Buffer.BlockCopy(BitConverter.GetBytes(value.Length), 0, _header, ExportFlagsOffset + 4, sizeof(int));
-                for (int i = 0; i < value.Length; i++)
-                {
-                    Buffer.BlockCopy(BitConverter.GetBytes(value[i]), 0, _header, ExportFlagsOffset + 8 + i * 4, sizeof(int));
-                }
-            }
+            set => RegenerateHeader(null, value);
         }
 
         public int PackageGuidOffset => ExportFlagsOffset + 8 + BitConverter.ToInt32(_header, ExportFlagsOffset + 4) * 4;
@@ -511,11 +532,6 @@ namespace ME3Explorer.Packages
             //  }
         }
 
-        public T GetProperty<T>(string name) where T : UProperty
-        {
-            return GetProperties().GetProp<T>(name);
-        }
-
         public void WriteProperties(PropertyCollection props)
         {
             MemoryStream m = new MemoryStream();
@@ -523,38 +539,7 @@ namespace ME3Explorer.Packages
             int propStart = GetPropertyStart();
             int propEnd = propsEnd();
             byte[] propData = m.ToArray();
-            this.Data = _data.Take(propStart).Concat(propData).Concat(_data.Skip(propEnd)).ToArray();
-        }
-
-        public void WriteProperty(UProperty prop)
-        {
-            var props = GetProperties();
-            props.AddOrReplaceProp(prop);
-            WriteProperties(props);
-        }
-
-        public bool RemoveProperty(string propname)
-        {
-            var props = GetProperties();
-            UProperty propToRemove = null;
-            foreach (UProperty prop in props)
-            {
-                if (prop.Name.Name == propname)
-                {
-                    propToRemove = prop;
-                    break;
-                }
-            }
-
-            //outside for concurrent collection modification
-            if (propToRemove != null)
-            {
-                props.Remove(propToRemove);
-                WriteProperties(props);
-                return true;
-            }
-
-            return false;
+            Data = _data.Take(propStart).Concat(propData).Concat(_data.Skip(propEnd)).ToArray();
         }
 
         public int GetPropertyStart()
@@ -648,22 +633,10 @@ namespace ME3Explorer.Packages
 
         public void setBinaryData(byte[] binaryData)
         {
-            this.Data = _data.Take(propsEnd()).Concat(binaryData).ToArray();
+            Data = _data.Take(propsEnd()).Concat(binaryData).ToArray();
         }
 
         public abstract ExportEntry Clone();
-    }
-
-    public static class ExportEntryExtensions
-    {
-        public static bool IsTexture(this ExportEntry exportEntry)
-        {
-            return exportEntry.ClassName == "Texture2D" ||
-                   exportEntry.ClassName == "LightMapTexture2D" ||
-                   exportEntry.ClassName == "ShadowMapTexture2D" ||
-                   exportEntry.ClassName == "TerrainWeightMapTexture" ||
-                   exportEntry.ClassName == "TextureFlipBook";
-        }
     }
 
     [DebuggerDisplay("UDKExportEntry | {UIndex} = {GetFullPath}")]

@@ -217,7 +217,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     return null;
                 }
-                ExportEntry brush = export.FileRef.getExport(brushComponent.Value - 1);
+                ExportEntry brush = export.FileRef.getUExport(brushComponent.Value);
                 var graphVertices = new List<PointF>();
                 var brushVertices = new List<Vector3>();
                 PropertyCollection brushProps = brush.GetProperties();

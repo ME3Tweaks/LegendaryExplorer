@@ -827,7 +827,7 @@ namespace ME3Explorer
                 int count;
                 subnodes.Add(new BinInterpNode(bin.Position, $"AnimationMap? ({count = bin.ReadInt32()})")
                 {
-                    Items = ReadList(count, i => MakeEntryNode(bin, $"{bin.ReadNameReference(Pcc)}"))
+                    Items = ReadList(count, i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)}: {entryRefString(bin)}", NodeType.StructLeafObject) { Length = 4 })
                 });
 
                 binarystart = (int)bin.Position;
@@ -1346,59 +1346,46 @@ namespace ME3Explorer
         private List<ITreeItem> StartStackScan(byte[] data)
         {
             var subnodes = new List<ITreeItem>();
-            int binarystart = 0;
-            int importNum = BitConverter.ToInt32(data, binarystart);
-            subnodes.Add(new BinInterpNode
+            try
             {
-                Header = $"{binarystart:X4} Class: {importNum} ({CurrentLoadedExport.FileRef.GetEntryString(importNum)})",
-                Name = "_" + binarystart,
-                Tag = NodeType.StructLeafObject
-            });
-            binarystart += 4;
-            importNum = BitConverter.ToInt32(data, binarystart);
-            subnodes.Add(new BinInterpNode
+                var bin = new MemoryStream(data);
+
+                string nodeString;
+                subnodes.Add(new BinInterpNode(bin.Position, "Stack")
+                {
+                    IsExpanded = true,
+                    Items =
+                    {
+                        new BinInterpNode(bin.Position, $"Node: {nodeString = entryRefString(bin)}", NodeType.StructLeafObject) {Length = 4},
+                        MakeEntryNode(bin, "StateNode"),
+                        new BinInterpNode(bin.Position, $"ProbeMask: {bin.ReadUInt64():X16}"),
+                        ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                        {
+                            MakeUInt16Node(bin, "LatentAction")
+                        }, () => new ITreeItem[]
+                        {
+                            MakeUInt32Node(bin, "LatentAction")
+                        }),
+                        MakeArrayNode(bin, "StateStack", i => new BinInterpNode(bin.Position, $"{i}")
+                        {
+                            Items =
+                            {
+                                MakeEntryNode(bin, "State"),
+                                MakeEntryNode(bin, "Node"),
+                                MakeInt32Node(bin, "Offset")
+                            }
+                        }),
+                        ListInitHelper.ConditionalAdd(nodeString != "Null", () => new ITreeItem[]
+                        {
+                            MakeInt32Node(bin, "Offset")
+                        })
+                    }
+                });
+            }
+            catch (Exception ex)
             {
-                Header = $"{binarystart:X4} Class: {importNum} ({CurrentLoadedExport.FileRef.GetEntryString(importNum)})",
-                Name = "_" + binarystart,
-                Tag = NodeType.StructLeafObject
-            });
-            binarystart += 4;
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"{binarystart:X4} Null: {BitConverter.ToInt32(data, binarystart)}",
-                Name = "_" + binarystart
-            });
-            binarystart += 4;
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"{binarystart:X4} Null: {BitConverter.ToInt32(data, binarystart)}",
-                Name = "_" + binarystart
-            });
-            binarystart += 4;
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"{binarystart:X4} ????: {BitConverter.ToInt32(data, binarystart)}",
-                Name = "_" + binarystart
-            });
-            binarystart += 4;
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"{binarystart:X4} ????: {BitConverter.ToInt16(data, binarystart)}",
-                Name = "_" + binarystart
-            });
-            binarystart += 2;
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"{binarystart:X4} Null: {BitConverter.ToInt32(data, binarystart)}",
-                Name = "_" + binarystart
-            });
-            binarystart += 4;
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"{binarystart:X4} NetIndex: {BitConverter.ToInt32(data, binarystart)}",
-                Name = "_" + binarystart,
-                Tag = NodeType.StructLeafInt
-            });
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
 
             return subnodes;
         }
