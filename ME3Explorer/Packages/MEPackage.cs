@@ -312,7 +312,15 @@ namespace ME3Explorer.Packages
             {
                 IsCompressed = false;
             }
-            saveByReconstructing(path);
+
+            if (CanReconstruct)
+            {
+                saveByReconstructing(path);
+            }
+            else
+            {
+                throw new Exception($"Cannot save ME1 packages with compressed textures. Please make an issue on github: {App.BugReportURL}");
+            }
         }
 
 
