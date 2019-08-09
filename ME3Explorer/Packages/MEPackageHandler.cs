@@ -126,7 +126,7 @@ namespace ME3Explorer.Packages
         public static ME3Package OpenME3Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
-            if (pck is ME3Package pcc)
+            if (pck.Game == MEGame.ME3 && pck is ME3Package pcc)
             {
                 return pcc;
             }
@@ -138,7 +138,7 @@ namespace ME3Explorer.Packages
         public static ME2Package OpenME2Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
-            if (pck is ME2Package pcc)
+            if (pck.Game == MEGame.ME2 && pck is ME2Package pcc)
             {
                 return pcc;
             }
@@ -150,7 +150,7 @@ namespace ME3Explorer.Packages
         public static ME1Package OpenME1Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
-            if (pck is ME1Package pcc)
+            if (pck.Game == MEGame.ME1 && pck is ME1Package pcc)
             {
                 return pcc;
             }

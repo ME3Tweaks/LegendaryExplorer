@@ -11,17 +11,72 @@ using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
-    public abstract class ExportEntry : NotifyPropertyChangedBase, IEntry
+    public class ExportEntry : NotifyPropertyChangedBase, IEntry
     {
         public IMEPackage FileRef { get; protected set; }
+
+        public MEGame Game => FileRef.Game;
 
         public int Index { get; set; }
         public int UIndex => Index + 1;
 
-        protected ExportEntry(IMEPackage file)
+        public ExportEntry(IMEPackage file)
         {
             FileRef = file;
             OriginalDataSize = 0;
+        }
+
+        public ExportEntry(IMEPackage file, Stream stream) : this(file)
+        {
+            HeaderOffset = (uint)stream.Position;
+            switch (file.Game)
+            {
+                case MEGame.ME1:
+                case MEGame.ME2:
+                {
+
+                    long start = stream.Position;
+                    stream.Seek(40, SeekOrigin.Current);
+                    int count = stream.ReadInt32();
+                    stream.Seek(4 + count * 12, SeekOrigin.Current);
+                    count = stream.ReadInt32();
+                    stream.Seek(16, SeekOrigin.Current);
+                    stream.Seek(4 + count * 4, SeekOrigin.Current);
+                    long end = stream.Position;
+                    stream.Seek(start, SeekOrigin.Begin);
+
+                    //read header
+                    Header = stream.ReadToBuffer((int)(end - start));
+                        break;
+                }
+                case MEGame.ME3:
+                case MEGame.UDK:
+                {
+                    stream.Seek(44, SeekOrigin.Current);
+                    int count = stream.ReadInt32();
+                    stream.Seek(-48, SeekOrigin.Current);
+
+                    int expInfoSize = 68 + (count * 4);
+                    Header = stream.ReadToBuffer(expInfoSize);
+                    break;
+                }
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            OriginalDataSize = DataSize;
+            long headerEnd = stream.Position;
+
+            stream.Seek(DataOffset, SeekOrigin.Begin);
+            _data = stream.ReadToBuffer(DataSize);
+            stream.Seek(headerEnd, SeekOrigin.Begin);
+            if (file.Game == MEGame.ME1 && ClassName.Contains("Property") || file.Game != MEGame.ME1 && HasStack)
+            {
+                ReadsFromConfig = _data.Length > 25 && (_data[25] & 64) != 0;
+            }
+            else
+            {
+                ReadsFromConfig = false;
+            }
         }
 
         public bool HasStack => ObjectFlags.HasFlag(EObjectFlags.HasStack);
@@ -636,49 +691,8 @@ namespace ME3Explorer.Packages
             Data = _data.Take(propsEnd()).Concat(binaryData).ToArray();
         }
 
-        public abstract ExportEntry Clone();
-    }
-
-    [DebuggerDisplay("UDKExportEntry | {UIndex} = {GetFullPath}")]
-    public class UDKExportEntry : ExportEntry
-    {
-        public UDKExportEntry(UDKPackage udkFile, Stream stream) : base(udkFile)
+        public ExportEntry Clone()
         {
-            HeaderOffset = (uint)stream.Position;
-            stream.Seek(44, SeekOrigin.Current);
-            int count = stream.ReadInt32();
-            stream.Seek(-48, SeekOrigin.Current);
-
-            int expInfoSize = 68 + (count * 4);
-            Header = stream.ReadToBuffer(expInfoSize);
-            OriginalDataSize = DataSize;
-            long headerEnd = stream.Position;
-
-            stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadToBuffer(DataSize);
-            stream.Seek(headerEnd, SeekOrigin.Begin);
-            if (HasStack)
-            {
-                ReadsFromConfig = (_data[25] & 64) != 0;
-            }
-            else
-            {
-                ReadsFromConfig = false;
-            }
-        }
-
-        public UDKExportEntry(UDKPackage pccFile) : base(pccFile)
-        {
-        }
-
-        public override ExportEntry Clone()
-        {
-            UDKExportEntry newExport = new UDKExportEntry(FileRef as UDKPackage)
-            {
-                Header = this.Header.TypedClone(),
-                HeaderOffset = 0,
-                Data = this.Data
-            };
             int index = 0;
             string name = ObjectName;
             foreach (ExportEntry ent in FileRef.Exports)
@@ -689,187 +703,13 @@ namespace ME3Explorer.Packages
                 }
             }
             index++;
-            newExport.indexValue = index;
-            return newExport;
-        }
-    }
-
-    [DebuggerDisplay("ME3ExportEntry | {UIndex} = {GetFullPath}")]
-    public class ME3ExportEntry : ExportEntry
-    {
-        public ME3ExportEntry(ME3Package pccFile, Stream stream) : base(pccFile)
-        {
-            HeaderOffset = (uint)stream.Position;
-            stream.Seek(44, SeekOrigin.Current);
-            int count = stream.ReadInt32();
-            stream.Seek(-48, SeekOrigin.Current);
-
-            int expInfoSize = 68 + (count * 4);
-            Header = stream.ReadToBuffer(expInfoSize);
-            OriginalDataSize = DataSize;
-            long headerEnd = stream.Position;
-
-            stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadToBuffer(DataSize);
-            stream.Seek(headerEnd, SeekOrigin.Begin);
-            if (HasStack)
-            {
-                ReadsFromConfig = (_data[25] & 64) != 0;
-            }
-            else
-            {
-                ReadsFromConfig = false;
-            }
-        }
-
-        public ME3ExportEntry(ME3Package pccFile) : base(pccFile)
-        {
-        }
-
-        public override ExportEntry Clone()
-        {
-            ME3ExportEntry newExport = new ME3ExportEntry(FileRef as ME3Package)
+            return new ExportEntry(FileRef)
             {
                 Header = this.Header.TypedClone(),
                 HeaderOffset = 0,
-                Data = this.Data
+                Data = this.Data,
+                indexValue = index
             };
-            int index = 0;
-            string name = ObjectName;
-            foreach (ExportEntry ent in FileRef.Exports)
-            {
-                if (name == ent.ObjectName && ent.indexValue > index)
-                {
-                    index = ent.indexValue;
-                }
-            }
-            index++;
-            newExport.indexValue = index;
-            return newExport;
-        }
-    }
-
-    [DebuggerDisplay("ME2ExportEntry | {UIndex} = {GetFullPath}")]
-    public class ME2ExportEntry : ExportEntry
-    {
-        public ME2ExportEntry(ME2Package pccFile, Stream stream) : base(pccFile)
-        {
-            //determine header length
-            long start = stream.Position;
-            stream.Seek(40, SeekOrigin.Current);
-            int count = stream.ReadInt32();
-            stream.Seek(4 + count * 12, SeekOrigin.Current);
-            count = stream.ReadInt32();
-            stream.Seek(16, SeekOrigin.Current);
-            stream.Seek(4 + count * 4, SeekOrigin.Current);
-            long end = stream.Position;
-            stream.Seek(start, SeekOrigin.Begin);
-
-            //read header
-            Header = stream.ReadToBuffer((int)(end - start));
-            HeaderOffset = (uint)start;
-            OriginalDataSize = DataSize;
-
-            //read data
-            stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadToBuffer(DataSize);
-            stream.Seek(end, SeekOrigin.Begin);
-            if (HasStack)
-            {
-                ReadsFromConfig = (_data[25] & 64) != 0;
-            }
-            else
-            {
-                ReadsFromConfig = false;
-            }
-        }
-
-        public ME2ExportEntry(ME2Package pccFile) : base(pccFile)
-        {
-        }
-
-        public override ExportEntry Clone()
-        {
-            ME2ExportEntry newExport = new ME2ExportEntry(FileRef as ME2Package)
-            {
-                Header = this.Header.TypedClone(),
-                HeaderOffset = 0,
-                Data = this.Data
-            };
-            int index = 0;
-            string name = ObjectName;
-            foreach (ExportEntry ent in FileRef.Exports)
-            {
-                if (name == ent.ObjectName && ent.indexValue > index)
-                {
-                    index = ent.indexValue;
-                }
-            }
-            index++;
-            newExport.indexValue = index;
-            return newExport;
-        }
-    }
-
-    [DebuggerDisplay("ME1ExportEntry | {UIndex} = {GetFullPath}")]
-    public class ME1ExportEntry : ExportEntry
-    {
-        public ME1ExportEntry(ME1Package pccFile, Stream stream) : base(pccFile)
-        {
-            //determine header length
-            long start = stream.Position;
-            stream.Seek(40, SeekOrigin.Current);
-            int count = stream.ReadInt32();
-            stream.Seek(4 + count * 12, SeekOrigin.Current);
-            count = stream.ReadInt32();
-            stream.Seek(16, SeekOrigin.Current);
-            stream.Seek(4 + count * 4, SeekOrigin.Current);
-            long end = stream.Position;
-            stream.Seek(start, SeekOrigin.Begin);
-
-            //read header
-            Header = stream.ReadToBuffer((int)(end - start));
-            HeaderOffset = (uint)start;
-            OriginalDataSize = DataSize;
-
-            //read data
-            stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadToBuffer(DataSize);
-            stream.Seek(end, SeekOrigin.Begin);
-            if (ClassName.Contains("Property"))
-            {
-                ReadsFromConfig = _data.Length > 25 && (_data[25] & 64) != 0;
-            }
-            else
-            {
-                ReadsFromConfig = false;
-            }
-        }
-
-        public ME1ExportEntry(ME1Package file) : base(file)
-        {
-        }
-
-        public override ExportEntry Clone()
-        {
-            ME1ExportEntry newExport = new ME1ExportEntry(FileRef as ME1Package)
-            {
-                Header = this.Header.TypedClone(),
-                HeaderOffset = 0,
-                Data = this.Data
-            };
-            int index = 0;
-            string name = ObjectName;
-            foreach (ExportEntry ent in FileRef.Exports)
-            {
-                if (name == ent.ObjectName && ent.indexValue > index)
-                {
-                    index = ent.indexValue;
-                }
-            }
-            index++;
-            newExport.indexValue = index;
-            return newExport;
         }
     }
 }

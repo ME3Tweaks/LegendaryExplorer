@@ -221,7 +221,7 @@ namespace ME3Explorer.Packages
             fs.Seek(ExportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ExportCount; i++)
             {
-                ME1ExportEntry exp = new ME1ExportEntry(this, fs);
+                ExportEntry exp = new ExportEntry(this, fs);
                 exp.Index = i;
                 exp.PropertyChanged += exportChanged;
                 exports.Add(exp);

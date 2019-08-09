@@ -158,7 +158,7 @@ namespace ME3Explorer.Packages
             listsStream.Seek(ExportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ExportCount; i++)
             {
-                ME2ExportEntry exp = new ME2ExportEntry(this, listsStream);
+                ExportEntry exp = new ExportEntry(this, listsStream);
                 exp.Index = i;
                 exp.PropertyChanged += exportChanged;
                 exports.Add(exp);

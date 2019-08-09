@@ -2801,22 +2801,7 @@ namespace ME3Explorer
         /// <returns></returns>
         private bool importExport(ExportEntry ex, int link, out ExportEntry outputEntry)
         {
-            outputEntry = null; //required assignemnt
-            switch (Pcc.Game)
-            {
-                case MEGame.ME1:
-                    outputEntry = new ME1ExportEntry(Pcc as ME1Package);
-                    break;
-                case MEGame.ME2:
-                    outputEntry = new ME2ExportEntry(Pcc as ME2Package);
-                    break;
-                case MEGame.ME3:
-                    outputEntry = new ME3ExportEntry(Pcc as ME3Package);
-                    break;
-                case MEGame.UDK:
-                    outputEntry = new UDKExportEntry(Pcc as UDKPackage);
-                    break;
-            }
+            outputEntry = new ExportEntry(Pcc);
             byte[] idata = ex.Data;
             PropertyCollection props = ex.GetProperties();
             int start = ex.GetPropertyStart();

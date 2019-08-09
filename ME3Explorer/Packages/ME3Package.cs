@@ -194,7 +194,7 @@ namespace ME3Explorer.Packages
             inStream.Seek(ExportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ExportCount; i++)
             {
-                ME3ExportEntry e = new ME3ExportEntry(this, inStream) { Index = i };
+                ExportEntry e = new ExportEntry(this, inStream) { Index = i };
                 e.PropertyChanged += exportChanged;
                 exports.Add(e);
             }

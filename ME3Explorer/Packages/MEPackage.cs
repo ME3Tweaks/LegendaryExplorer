@@ -106,7 +106,6 @@ namespace ME3Explorer.Packages
         }
 
 
-
         #region Names
         protected uint namesAdded;
         protected List<string> names;

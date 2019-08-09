@@ -13,7 +13,7 @@ namespace ME3Explorer.Unreal.Classes
     public class ME3BioConversation
     {
         readonly ME3Package pcc;
-        public ME3ExportEntry export;
+        public ExportEntry export;
         int Unk1;
         List<PropertyReader.Property> Props;
 
@@ -174,7 +174,7 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        public ME3BioConversation(ME3ExportEntry exp)
+        public ME3BioConversation(ExportEntry exp)
         {
             pcc = exp.FileRef as ME3Package;
             export = exp;

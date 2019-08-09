@@ -70,7 +70,7 @@ namespace ME3Explorer.DialogEditor
             int n = bioConversationComboBox.SelectedIndex;
             if (n == -1)
                 return;
-            Dialog = new ME3BioConversation(Objs[n] as ME3ExportEntry);
+            Dialog = new ME3BioConversation(Objs[n]);
             RefreshTabs();
             RefreshVisualizer();
         }

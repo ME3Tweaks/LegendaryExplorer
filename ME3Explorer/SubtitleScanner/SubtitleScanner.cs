@@ -77,7 +77,7 @@ namespace ME3Explorer.SubtitleScanner
                             if (Exports[i].ClassName == "BioConversation")
                             {
                                 DebugOutput.PrintLn("Found dialog \"" + Exports[i].ObjectName + "\"", false);
-                                ME3BioConversation Dialog = new ME3BioConversation(Exports[i] as ME3ExportEntry);
+                                ME3BioConversation Dialog = new ME3BioConversation(Exports[i]);
                                 foreach (ME3BioConversation.EntryListStuct e in Dialog.EntryList)
                                 {
                                     string text = ME3TalkFiles.findDataById(e.refText);
@@ -158,7 +158,7 @@ namespace ME3Explorer.SubtitleScanner
                                 if (Exports[i].ClassName == "BioConversation")
                                 {
                                     DebugOutput.PrintLn("Found dialog \"" + Exports[i].ObjectName + "\"", false);
-                                    ME3BioConversation Dialog = new ME3BioConversation(Exports[i] as ME3ExportEntry);
+                                    ME3BioConversation Dialog = new ME3BioConversation(Exports[i]);
                                     foreach (ME3BioConversation.EntryListStuct e in Dialog.EntryList)
                                     {
                                         string text = ME3TalkFiles.findDataById(e.refText);
@@ -249,7 +249,7 @@ namespace ME3Explorer.SubtitleScanner
                                         if (Exports[i].ClassName == "BioConversation")
                                         {
                                             DebugOutput.PrintLn("Found dialog \"" + Exports[i].ObjectName + "\"", false);
-                                            ME3BioConversation Dialog = new ME3BioConversation(Exports[i] as ME3ExportEntry);
+                                            ME3BioConversation Dialog = new ME3BioConversation(Exports[i]);
                                             foreach (ME3BioConversation.EntryListStuct e in Dialog.EntryList)
                                             {
                                                 string text = ME3TalkFiles.findDataById(e.refText);
