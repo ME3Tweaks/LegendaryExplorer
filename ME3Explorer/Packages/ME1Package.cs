@@ -170,7 +170,7 @@ namespace ME3Explorer.Packages
 
             foreach(var exp in exportsToLoad)
             {
-                Debug.WriteLine("Loading local TLK: " + exp.GetIndexedFullPath);
+                //Debug.WriteLine("Loading local TLK: " + exp.GetIndexedFullPath);
                 LocalTalkFiles.Add(new ME1Explorer.Unreal.Classes.TalkFile(exp));
             }
         }

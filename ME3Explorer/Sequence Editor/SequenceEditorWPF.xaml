@@ -35,6 +35,7 @@
                 <MenuItem Header="Event Links" Name="eventLinksMenuItem"/>
                 <MenuItem Header="Break All" Name="breakAllLinksMenuItem" Click="removeAllLinks"/>
             </MenuItem>
+            <MenuItem Header="Repoint incoming references" Name="repointIncomingReferences" Click="RepointIncomingReferences_Click"/>
             <MenuItem Header="Remove from sequence" Name="removeFromSequenceMenuItem" Click="RemoveFromSequence_Click"/>
         </ContextMenu>
         <ContextMenu x:Key="backContextMenu">
