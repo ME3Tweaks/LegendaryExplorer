@@ -534,7 +534,7 @@ namespace ME3Explorer.Unreal
                         }
                         if (File.Exists(filepath))
                         {
-                            using (ME3Package importPCC = MEPackageHandler.OpenME3Package(filepath))
+                            using (IMEPackage importPCC = MEPackageHandler.OpenME3Package(filepath))
                             {
                                 var exportToRead = importPCC.getUExport(info.exportIndex);
                                 byte[] buff = exportToRead.Data.Skip(0x24).ToArray();
@@ -652,7 +652,7 @@ namespace ME3Explorer.Unreal
             {
                 if (files[i].ToLower().EndsWith(".pcc"))
                 {
-                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(files[i]))
+                    using (IMEPackage pcc = MEPackageHandler.OpenME3Package(files[i]))
                     {
                         for (int j = 1; j <= pcc.ExportCount; j++)
                         {
@@ -744,7 +744,7 @@ namespace ME3Explorer.Unreal
             MessageBox.Show("Done");
         }
 
-        private static SequenceObjectInfo generateSequenceObjectInfo(int i, ME3Package pcc)
+        private static SequenceObjectInfo generateSequenceObjectInfo(int i, IMEPackage pcc)
         {
             SequenceObjectInfo info = new SequenceObjectInfo();
             //+1 to get the Default__ instance

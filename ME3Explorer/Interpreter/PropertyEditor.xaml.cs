@@ -82,7 +82,7 @@ namespace ME3Explorer
                 switch (pcc.Game)
                 {
                     case MEGame.ME1:
-                        return $"\"{(new ME1Explorer.Unreal.Classes.BioTlkFileSet(pcc as ME1Package)).findDataById(strRef)}\"";
+                        return $"\"{(new ME1Explorer.Unreal.Classes.BioTlkFileSet(pcc)).findDataById(strRef)}\"";
                     case MEGame.ME2:
                         return $"\"{ME2Explorer.ME2TalkFiles.findDataById(strRef)}\"";
                     case MEGame.ME3:

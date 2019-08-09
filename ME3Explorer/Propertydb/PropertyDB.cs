@@ -161,7 +161,7 @@ namespace ME3Explorer.Propertydb
                                     + "\"");
                 try
                 {
-                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
+                    using (IMEPackage pcc = MEPackageHandler.OpenME3Package(file))
                     {
                         IReadOnlyList<ExportEntry> Exports = pcc.Exports;
                         pb2.Maximum = Exports.Count;

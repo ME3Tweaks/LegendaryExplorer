@@ -53,7 +53,7 @@ namespace ME3Explorer.Meshplorer
                 pb1.Value = count++;
                 try
                 {
-                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
+                    using (IMEPackage pcc = MEPackageHandler.OpenME3Package(file))
                     {
                         DBEntry ent = new DBEntry();
                         ent.filename = Path.GetFileName(file);

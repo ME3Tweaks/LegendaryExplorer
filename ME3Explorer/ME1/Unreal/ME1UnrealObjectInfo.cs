@@ -286,7 +286,7 @@ namespace ME1Explorer.Unreal
                     }
                     if (File.Exists(filepath))
                     {
-                        using (ME1Package importPCC = MEPackageHandler.OpenME1Package(filepath))
+                        using (IMEPackage importPCC = MEPackageHandler.OpenME1Package(filepath))
                         {
                             var exportToRead = importPCC.getUExport(info.exportIndex);
                             byte[] buff = exportToRead.Data.Skip(0x30).ToArray();
@@ -397,7 +397,7 @@ namespace ME1Explorer.Unreal
                 if (Path.GetExtension(file) == ".upk" || Path.GetExtension(file) == ".sfm" || Path.GetExtension(file) == ".u")
                 {
                     Debug.WriteLine("File: " + file);
-                    using (ME1Package pcc = MEPackageHandler.OpenME1Package(file))
+                    using (IMEPackage pcc = MEPackageHandler.OpenME1Package(file))
                     {
                         for (int j = 1; j <= pcc.ExportCount; j++)
                         {

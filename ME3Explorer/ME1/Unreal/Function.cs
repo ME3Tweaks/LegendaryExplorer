@@ -9,7 +9,7 @@ namespace ME1Explorer.Unreal.Classes
 {
     public class Function
     {
-        public ME1Package pcc;
+        public IMEPackage pcc;
         public byte[] memory;
         public byte[] script;
         public int memsize;
@@ -33,7 +33,7 @@ namespace ME1Explorer.Unreal.Classes
         {
         }
 
-        public Function(byte[] raw, ME1Package Pcc)
+        public Function(byte[] raw, IMEPackage Pcc)
         {
             pcc = Pcc;
             memory = raw;

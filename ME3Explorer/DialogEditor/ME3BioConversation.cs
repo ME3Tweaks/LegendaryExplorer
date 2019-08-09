@@ -12,7 +12,7 @@ namespace ME3Explorer.Unreal.Classes
 {
     public class ME3BioConversation
     {
-        readonly ME3Package pcc;
+        readonly IMEPackage pcc;
         public ExportEntry export;
         int Unk1;
         List<PropertyReader.Property> Props;
@@ -63,7 +63,7 @@ namespace ME3Explorer.Unreal.Classes
             public bool AlwaysHideSubtitle;
             public int GUIStyleType;
             public int GUIStyleValue;
-            public TreeNode ToTree(int MyIndex, ME3Package pcc)
+            public TreeNode ToTree(int MyIndex, IMEPackage pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
@@ -140,7 +140,7 @@ namespace ME3Explorer.Unreal.Classes
             public int GUIStyleType;
             public int GUIStyleValue;
 
-            public TreeNode ToTree(int MyIndex, ME3Package pcc)
+            public TreeNode ToTree(int MyIndex, IMEPackage pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
@@ -176,7 +176,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public ME3BioConversation(ExportEntry exp)
         {
-            pcc = exp.FileRef as ME3Package;
+            pcc = exp.FileRef;
             export = exp;
             ReadData();
         }

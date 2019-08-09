@@ -100,7 +100,7 @@ namespace ME3Explorer.Scene3D
                     return e;
                 }
             }
-            using (ME3Package texpcc = MEPackageHandler.OpenME3Package(pcc))
+            using (IMEPackage texpcc = MEPackageHandler.OpenME3Package(pcc))
             {
                 PreviewTextureEntry entry = new PreviewTextureEntry(pcc, exportid);
                 Unreal.Classes.Texture2D metex = new Unreal.Classes.Texture2D(texpcc, exportid);

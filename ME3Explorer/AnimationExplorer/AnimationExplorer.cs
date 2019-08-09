@@ -82,7 +82,7 @@ namespace ME3Explorer.AnimationExplorer
             {
                 try
                 {
-                    using (ME3Package _pcc = MEPackageHandler.OpenME3Package(file))
+                    using (IMEPackage _pcc = MEPackageHandler.OpenME3Package(file))
                     {
                         bool found = _pcc.Exports.Any(ex => ex.ClassName == "AnimTree" || ex.ClassName == "AnimSet");
 

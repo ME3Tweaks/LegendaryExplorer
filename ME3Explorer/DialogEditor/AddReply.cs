@@ -16,7 +16,7 @@ namespace ME3Explorer.DialogEditor
     public partial class AddReply : Form
     {
         public ME3BioConversation.EntryListReplyListStruct res;
-        public ME3Package pcc;
+        public IMEPackage pcc;
         public int state = 0;
 
         public AddReply()

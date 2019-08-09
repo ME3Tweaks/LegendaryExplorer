@@ -8,12 +8,12 @@ namespace ME1Explorer.Unreal.Classes
     public class BioTlkFileSet : ITalkFile
     {
         public List<TalkFile> talkFiles;
-        public ME1Package pcc;
+        public IMEPackage pcc;
         public int index;
         public int selectedTLK;
-        public string Name { get { return index != -1 ? (pcc.Exports[index].ObjectName  + "."): null; } }
+        public string Name => index != -1 ? (pcc.Exports[index].ObjectName  + "."): null;
 
-        public BioTlkFileSet(ME1Package _pcc)
+        public BioTlkFileSet(IMEPackage _pcc)
         {
             pcc = _pcc;
             index = -1;
@@ -35,7 +35,7 @@ namespace ME1Explorer.Unreal.Classes
             }
         }
 
-        public BioTlkFileSet(ME1Package _pcc, int _index)
+        public BioTlkFileSet(IMEPackage _pcc, int _index)
         {
             pcc = _pcc;
             index = _index;

@@ -636,6 +636,12 @@ namespace ME3Explorer
 
     public static class IOExtensions
     {
+        public static string ReadUnrealString(this Stream stream)
+        {
+            int length = stream.ReadInt32();
+            return length < 0 ? stream.ReadStringUnicodeNull(length * -2) : stream.ReadStringASCIINull(length);
+        }
+
         public static void WriteUnrealStringASCII(this Stream stream, string value)
         {
             stream.WriteInt32(value.Length + 1);

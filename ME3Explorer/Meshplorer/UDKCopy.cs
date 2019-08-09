@@ -17,11 +17,11 @@ namespace ME3Explorer.Meshplorer
     {
         public UDKPackage udk;
         public List<int> Objects;
-        ME3Package pcc;
+        IMEPackage pcc;
         int SelectedObject;
         int SelectedLOD;
 
-        public UDKCopy(ME3Package _pcc, int obj, int lod)
+        public UDKCopy(IMEPackage _pcc, int obj, int lod)
         {
             pcc = _pcc;
             SelectedObject = obj;
@@ -215,7 +215,7 @@ namespace ME3Explorer.Meshplorer
             newMesh.Bones = new List<SkeletalMesh.BoneStruct>();
             foreach (UDKExplorer.UDK.Classes.SkeletalMesh.BoneStruct bone in sourceMesh.Bones)
             {
-                newMesh.Bones.Add(SkeletalMesh.BoneStruct.ImportFromUDK(bone, udk, pcc));
+                newMesh.Bones.Add(SkeletalMesh.BoneStruct.ImportFromUDK(bone, udk, pcc as MEPackage));
             }
             newMesh.SkeletonDepth = sourceMesh.SkeletonDepth;
 

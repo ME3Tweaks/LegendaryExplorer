@@ -341,6 +341,7 @@
     </Compile>
     <Compile Include="Dialogue Editor\DialogueObjects.cs" />
     <Compile Include="Packages\PackageExtensions.cs" />
+    <Compile Include="Packages\UnrealPackageFile.cs" />
     <Compile Include="SharedUI\Converters\BoolToIndexConverter.cs" />
     <Compile Include="CodeWriter.cs" />
     <Compile Include="Dialogue Editor\BioConversation.cs" />
@@ -656,8 +657,6 @@
     <Compile Include="Packages\IEntry.cs" />
     <Compile Include="Packages\IMEPackage.cs" />
     <Compile Include="Packages\ImportEntry.cs" />
-    <Compile Include="Packages\ME1Package.cs" />
-    <Compile Include="Packages\ME2Package.cs" />
     <Compile Include="CurveEd\Anchor.cs" />
     <Compile Include="CurveEd\BezierSegment.cs" />
     <Compile Include="CurveEd\Curve.cs" />
@@ -803,7 +802,6 @@
     <Compile Include="Unreal\Helper3DS.cs" />
     <Compile Include="Unreal\HuffmanCompression.cs" />
     <Compile Include="Packages\MEPackageHandler.cs" />
-    <Compile Include="Packages\ME3Package.cs" />
     <Compile Include="Unreal\ME3Classes.cs" />
     <Compile Include="Unreal\ME3Enums.cs" />
     <Compile Include="Unreal\ME3Structs.cs" />

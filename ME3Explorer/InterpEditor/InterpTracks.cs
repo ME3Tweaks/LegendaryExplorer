@@ -36,7 +36,7 @@ namespace ME3Explorer.Matinee
             type = BitConverter.ToInt32(raw, 24);
             val = BitConverter.ToInt32(raw, 32);
         }
-        public string ToString(ME3Package p)
+        public string ToString(IMEPackage p)
         {
             if (val == -1)
                 return enumName + ", " + values[0];
@@ -85,7 +85,7 @@ namespace ME3Explorer.Matinee
         public Vector LeaveTangent;
         public byteprop InterpMode;
 
-        public TreeNode ToTree(int index, ME3Package pcc)
+        public TreeNode ToTree(int index, IMEPackage pcc)
         {
             TreeNode root = new TreeNode(index + " : " + InVal);
             root.Nodes.Add("InVal : " + InVal);
@@ -105,7 +105,7 @@ namespace ME3Explorer.Matinee
         public float LeaveTangent;
         public byteprop InterpMode;
 
-        public TreeNode ToTree(int index, ME3Package pcc)
+        public TreeNode ToTree(int index, IMEPackage pcc)
         {
             TreeNode root = new TreeNode(index + " : " + InVal);
             root.Nodes.Add("InVal : " + InVal);
@@ -121,7 +121,7 @@ namespace ME3Explorer.Matinee
     {
         public List<InterpCurvePointVector> Points;
 
-        public TreeNode ToTree(string name, ME3Package pcc)
+        public TreeNode ToTree(string name, IMEPackage pcc)
         {
             TreeNode root = new TreeNode(name);
             TreeNode t = new TreeNode("Points");
@@ -141,7 +141,7 @@ namespace ME3Explorer.Matinee
     {
         public List<InterpCurvePointFloat> Points;
 
-        public TreeNode ToTree(string name, ME3Package pcc)
+        public TreeNode ToTree(string name, IMEPackage pcc)
         {
             TreeNode root = new TreeNode(name);
             TreeNode t = new TreeNode("Points");
@@ -164,7 +164,7 @@ namespace ME3Explorer.Matinee
 
         public TreeView propView;
         public TreeView keyPropView;
-        public ME3Package pcc;
+        public IMEPackage pcc;
         public int index;
 
         private SText title;
@@ -209,7 +209,7 @@ namespace ME3Explorer.Matinee
         public bool bImportedTrack;
         public bool bDisableTrack;
 
-        public InterpTrack(int idx, ME3Package pccobj)
+        public InterpTrack(int idx, IMEPackage pccobj)
         {
             index = idx;
             pcc = pccobj;
@@ -363,7 +363,7 @@ namespace ME3Explorer.Matinee
             propView.Nodes.Add(t);
         }
 
-        public static InterpCurveVector GetCurveVector(PropertyReader.Property p, ME3Package pcc)
+        public static InterpCurveVector GetCurveVector(PropertyReader.Property p, IMEPackage pcc)
         {
             InterpCurveVector vec = new InterpCurveVector();
             vec.Points = new List<InterpCurvePointVector>();
@@ -404,7 +404,7 @@ namespace ME3Explorer.Matinee
             return vec;
         }
 
-        public static InterpCurveFloat GetCurveFloat(PropertyReader.Property p, ME3Package pcc)
+        public static InterpCurveFloat GetCurveFloat(PropertyReader.Property p, IMEPackage pcc)
         {
             InterpCurveFloat CurveFloat = new InterpCurveFloat();
             CurveFloat.Points = new List<InterpCurvePointFloat>();
@@ -449,7 +449,7 @@ namespace ME3Explorer.Matinee
             public NameReference KeyName;
             public float fTime;
 
-            public TreeNode ToTree(int index, ME3Package pcc)
+            public TreeNode ToTree(int index, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + " : " + fTime);
                 root.Nodes.Add("KeyName : " + KeyName.Name);
@@ -460,7 +460,7 @@ namespace ME3Explorer.Matinee
 
         public List<TrackKey> m_aTrackKeys;
 
-        public BioInterpTrack(int idx, ME3Package pccobj)
+        public BioInterpTrack(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -519,7 +519,7 @@ namespace ME3Explorer.Matinee
     {
         public NameReference m_nmFindActor;
 
-        public SFXGameActorInterpTrack(int idx, ME3Package pccobj)
+        public SFXGameActorInterpTrack(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -553,7 +553,7 @@ namespace ME3Explorer.Matinee
             public int PlaceHolder;
             public byteprop m_eState;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + " : " + time);
                 root.Nodes.Add("PlaceHolder : " + PlaceHolder);
@@ -564,7 +564,7 @@ namespace ME3Explorer.Matinee
 
         public List<MovieKey> m_aMovieKeyData;
 
-        public SFXInterpTrackMovieBase(int idx, ME3Package pccobj)
+        public SFXInterpTrackMovieBase(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -631,7 +631,7 @@ namespace ME3Explorer.Matinee
         public List<int> m_aTarget;
         public int m_TargetActor;  
 
-        public SFXInterpTrackToggleBase(int idx, ME3Package pccobj)
+        public SFXInterpTrackToggleBase(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -701,7 +701,7 @@ namespace ME3Explorer.Matinee
         public InterpCurveFloat FloatTrack;
         public float CurveTension;
 
-        public InterpTrackFloatBase(int idx, ME3Package pccobj)
+        public InterpTrackFloatBase(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -741,7 +741,7 @@ namespace ME3Explorer.Matinee
     {
         public InterpCurveVector VectorTrack;
 
-        public InterpTrackVectorBase(int idx, ME3Package pccobj)
+        public InterpTrackVectorBase(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -778,7 +778,7 @@ namespace ME3Explorer.Matinee
     {
         public NameReference FacingController;
 
-        public BioInterpTrackMove(int idx, ME3Package pccobj)
+        public BioInterpTrackMove(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -813,7 +813,7 @@ namespace ME3Explorer.Matinee
         public int PropertyName;
         public int m_pParentEffect; //unused?
 
-        public BioScalarParameterTrack(int idx, ME3Package pccobj)
+        public BioScalarParameterTrack(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -866,7 +866,7 @@ namespace ME3Explorer.Matinee
 
         public List<InterruptKey> m_aInterruptData;
 
-        public BioEvtSysTrackInterrupt(int idx, ME3Package pccobj)
+        public BioEvtSysTrackInterrupt(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -922,7 +922,7 @@ namespace ME3Explorer.Matinee
             public bool bShowAtTop;
             public bool bUseOnlyAsReplyWheelHint;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("nStrRefID : " + ME3TalkFiles.findDataById(nStrRefID) + " (" + nStrRefID + ")");
@@ -935,7 +935,7 @@ namespace ME3Explorer.Matinee
 
         public List<SubtitleKey> m_aSubtitleData;
 
-        public BioEvtSysTrackSubtitles(int idx, ME3Package pccobj)
+        public BioEvtSysTrackSubtitles(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -997,7 +997,7 @@ namespace ME3Explorer.Matinee
             public bool bForceCrossingLineOfAction;
             public bool bUseForNextCamera;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add(new TreeNode("nmStageSpecificCam : " + nmStageSpecificCam.Name));
@@ -1009,7 +1009,7 @@ namespace ME3Explorer.Matinee
 
         public List<CameraSwitchKey> m_aCameras;
 
-        public BioEvtSysTrackSwitchCamera(int idx, ME3Package pccobj)
+        public BioEvtSysTrackSwitchCamera(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1065,7 +1065,7 @@ namespace ME3Explorer.Matinee
         public int m_nStrRefID;
         public float m_fJCutOffset;
 
-        public BioEvtSysTrackVOElements(int idx, ME3Package pccobj)
+        public BioEvtSysTrackVOElements(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1105,7 +1105,7 @@ namespace ME3Explorer.Matinee
             public NameReference FindActorTag; //name
             public float InterpTime;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add(new TreeNode("nmStageSpecificCam : " + FindActorTag.Name));
@@ -1116,7 +1116,7 @@ namespace ME3Explorer.Matinee
 
         public List<RotationModeKey> EventTrack;
 
-        public BioInterpTrackRotationMode(int idx, ME3Package pccobj)
+        public BioInterpTrackRotationMode(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1195,7 +1195,7 @@ namespace ME3Explorer.Matinee
             public byteprop eGestureFilter;
             public byteprop eGesture;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 TreeNode t = new TreeNode("aChainedGestures");
@@ -1242,7 +1242,7 @@ namespace ME3Explorer.Matinee
         public byteprop ePoseFilter = new byteprop("EBioTrackAllPoseGroups", new string[] { "None" });
         public byteprop eStartingPose = new byteprop("EBioGestureAllPoses", new string[] { "None" });
 
-        public BioEvtSysTrackGesture(int idx, ME3Package pccobj)
+        public BioEvtSysTrackGesture(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1400,7 +1400,7 @@ namespace ME3Explorer.Matinee
             public byteprop RimLightControl;
             public byteprop LightingType;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("TargetBoneName : " + TargetBoneName.Name);
@@ -1434,7 +1434,7 @@ namespace ME3Explorer.Matinee
 
         public List<LightingKey> m_aLightingKeys;
 
-        public BioEvtSysTrackLighting(int idx, ME3Package pccobj)
+        public BioEvtSysTrackLighting(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1530,7 +1530,7 @@ namespace ME3Explorer.Matinee
             public bool bLockedToTarget;
             public byteprop eFindActorMode;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("nmFindActor : " + nmFindActor.Name);
@@ -1544,7 +1544,7 @@ namespace ME3Explorer.Matinee
 
         public List<LookAtKey> m_aLookAtKeys;
 
-        public BioEvtSysTrackLookAt(int idx, ME3Package pccobj)
+        public BioEvtSysTrackLookAt(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1614,7 +1614,7 @@ namespace ME3Explorer.Matinee
             public bool bEquip;
             public bool bForceGenericWeapon;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("pWeaponClass : " + pWeaponClass);
@@ -1631,7 +1631,7 @@ namespace ME3Explorer.Matinee
 
         public List<PropKey> m_aPropKeys;
 
-        public BioEvtSysTrackProp(int idx, ME3Package pccobj)
+        public BioEvtSysTrackProp(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1703,7 +1703,7 @@ namespace ME3Explorer.Matinee
             public bool bApplyOrientation;
             public byteprop eCurrentStageNode;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("nmStageNode : " + nmStageNode.Name);
@@ -1716,7 +1716,7 @@ namespace ME3Explorer.Matinee
 
         public List<FacingKey> m_aFacingKeys;
 
-        public BioEvtSysTrackSetFacing(int idx, ME3Package pccobj)
+        public BioEvtSysTrackSetFacing(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1777,7 +1777,7 @@ namespace ME3Explorer.Matinee
             public float m_fSmoothingFactor;
             public bool m_bStart;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("m_fMaxThreshold : " + m_fMaxThreshold);
@@ -1790,7 +1790,7 @@ namespace ME3Explorer.Matinee
         public List<ProcFoleyStartStopKey> m_aProcFoleyStartStopKeys;
         public int m_TrackFoleySound; //unused?
 
-        public SFXGameInterpTrackProcFoley(int idx, ME3Package pccobj)
+        public SFXGameInterpTrackProcFoley(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1875,7 +1875,7 @@ namespace ME3Explorer.Matinee
 
         public List<FOVOKey> m_aFOVOKeys;
 
-        public SFXInterpTrackPlayFaceOnlyVO(int idx, ME3Package pccobj)
+        public SFXInterpTrackPlayFaceOnlyVO(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -1956,7 +1956,7 @@ namespace ME3Explorer.Matinee
         public List<int> m_aTarget;
         public int oEffect;
 
-        public SFXInterpTrackAttachCrustEffect(int idx, ME3Package pccobj)
+        public SFXInterpTrackAttachCrustEffect(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2036,7 +2036,7 @@ namespace ME3Explorer.Matinee
         public bool bUseRelativeOffset;
         public bool bUseRelativeRotation;
 
-        public SFXInterpTrackAttachToActor(int idx, ME3Package pccobj)
+        public SFXInterpTrackAttachToActor(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2114,7 +2114,7 @@ namespace ME3Explorer.Matinee
         public int m_nmSocketOrBone;
         public int m_oEffect;
 
-        public SFXInterpTrackAttachVFXToObject(int idx, ME3Package pccobj)
+        public SFXInterpTrackAttachVFXToObject(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2181,7 +2181,7 @@ namespace ME3Explorer.Matinee
             public int PlaceHolder;
             public byteprop BlackScreenState;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("PlaceHolder : " + PlaceHolder);
@@ -2193,7 +2193,7 @@ namespace ME3Explorer.Matinee
         public List<BlackScreenKey> m_aBlackScreenKeyData;
         public int m_BlackScreenSeq;
 
-        public SFXInterpTrackBlackScreen(int idx, ME3Package pccobj)
+        public SFXInterpTrackBlackScreen(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2250,7 +2250,7 @@ namespace ME3Explorer.Matinee
     {
         public List<int> m_aTarget;
 
-        public SFXInterpTrackDestroy(int idx, ME3Package pccobj)
+        public SFXInterpTrackDestroy(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2295,7 +2295,7 @@ namespace ME3Explorer.Matinee
     {
         public int m_SeqForceUpdateLight;
 
-        public SFXInterpTrackForceLightEnvUpdate(int idx, ME3Package pccobj)
+        public SFXInterpTrackForceLightEnvUpdate(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2331,7 +2331,7 @@ namespace ME3Explorer.Matinee
             public int PlaceHolder;
             public byteprop Quality;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("PlaceHolder : " + PlaceHolder);
@@ -2343,7 +2343,7 @@ namespace ME3Explorer.Matinee
         public List<LightEnvKey> m_aLightEnvKeyData;
         public int m_LightEnvSeq;
 
-        public SFXInterpTrackLightEnvQuality(int idx, ME3Package pccobj)
+        public SFXInterpTrackLightEnvQuality(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2406,7 +2406,7 @@ namespace ME3Explorer.Matinee
         public bool m_bIgnoreShrinking;
         public bool m_bIgnoreGrowing;
 
-        public SFXInterpTrackMovieBink(int idx, ME3Package pccobj)
+        public SFXInterpTrackMovieBink(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2448,7 +2448,7 @@ namespace ME3Explorer.Matinee
     {
         public int m_oTextureMovie;
 
-        public SFXInterpTrackMovieTexture(int idx, ME3Package pccobj)
+        public SFXInterpTrackMovieTexture(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2495,7 +2495,7 @@ namespace ME3Explorer.Matinee
 
         public List<NearClipKey> m_aNearClipKeyData;
 
-        public SFXInterpTrackSetPlayerNearClipPlane(int idx, ME3Package pccobj)
+        public SFXInterpTrackSetPlayerNearClipPlane(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2562,7 +2562,7 @@ namespace ME3Explorer.Matinee
         public int m_PawnRefTag;
         public int m_Pawn;
 
-        public SFXInterpTrackSetWeaponInstant(int idx, ME3Package pccobj)
+        public SFXInterpTrackSetWeaponInstant(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2619,7 +2619,7 @@ namespace ME3Explorer.Matinee
 
     public class SFXInterpTrackToggleAffectedByHitEffects : SFXInterpTrackToggleBase
     {
-        public SFXInterpTrackToggleAffectedByHitEffects(int idx, ME3Package pccobj)
+        public SFXInterpTrackToggleAffectedByHitEffects(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             if (TrackTitle == "")
@@ -2629,7 +2629,7 @@ namespace ME3Explorer.Matinee
 
     public class SFXInterpTrackToggleHidden : SFXInterpTrackToggleBase
     {
-        public SFXInterpTrackToggleHidden(int idx, ME3Package pccobj)
+        public SFXInterpTrackToggleHidden(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             if (TrackTitle == "")
@@ -2641,7 +2641,7 @@ namespace ME3Explorer.Matinee
     {
         public int m_LightEnvSeq;
 
-        public SFXInterpTrackToggleLightEnvironment(int idx, ME3Package pccobj)
+        public SFXInterpTrackToggleLightEnvironment(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2678,7 +2678,7 @@ namespace ME3Explorer.Matinee
             public bool m_bLock;
             public byteprop m_eFindActorMode;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("m_nmFindActor : " + m_nmFindActor.Name);
@@ -2691,7 +2691,7 @@ namespace ME3Explorer.Matinee
         public List<MicLockKey> m_aMicLockKeys;
         public bool m_bUnlockAtEnd;
 
-        public SFXGameInterpTrackWwiseMicLock(int idx, ME3Package pccobj)
+        public SFXGameInterpTrackWwiseMicLock(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2750,7 +2750,7 @@ namespace ME3Explorer.Matinee
             public NameReference EventName; //name
             public float Time;
 
-            public TreeNode ToTree(int index, ME3Package pcc)
+            public TreeNode ToTree(int index, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + Time);
                 root.Nodes.Add("EventName : " + EventName.Name);
@@ -2764,7 +2764,7 @@ namespace ME3Explorer.Matinee
         public bool bFireEventsWhenBackwards = true;
         public bool bFireEventsWhenJumpingForwards;
 
-        public InterpTrackEvent(int idx, ME3Package pccobj)
+        public InterpTrackEvent(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -2852,7 +2852,7 @@ namespace ME3Explorer.Matinee
         {
             public int FaceFXSoundCue; //object
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add("FaceFXSoundCue : " + FaceFXSoundCue);
@@ -2881,7 +2881,7 @@ namespace ME3Explorer.Matinee
             public int fxaAnimSet;//unused?
             public byteprop eAnimSequence;
 
-            public TreeNode ToTree(ME3Package pcc)
+            public TreeNode ToTree(IMEPackage pcc)
             {
                 TreeNode root = new TreeNode("OverrideAnimSet");
                 TreeNode t = new TreeNode("aBioMaleSets");
@@ -2913,7 +2913,7 @@ namespace ME3Explorer.Matinee
         public byteprop m_eSFXFindActorMode;
         public bool m_bSFXEnableClipToClipBlending;
 
-        public InterpTrackFaceFX(int idx, ME3Package pccobj)
+        public InterpTrackFaceFX(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3094,7 +3094,7 @@ namespace ME3Explorer.Matinee
             public bool bLooping;
             public bool bReverse;
 
-            public TreeNode ToTree(int index, ME3Package pcc)
+            public TreeNode ToTree(int index, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + StartTime + " : AnimControlTrackKey");
                 root.Nodes.Add("AnimSeqName : " + AnimSeqName.Name);
@@ -3110,7 +3110,7 @@ namespace ME3Explorer.Matinee
 
         public List<AnimControlTrackKey> AnimSeqs;
 
-        public InterpTrackAnimControl(int idx, ME3Package pccobj)
+        public InterpTrackAnimControl(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3186,7 +3186,7 @@ namespace ME3Explorer.Matinee
                 public NameReference GroupName; //name
                 public float Time;
 
-                public TreeNode ToTree(int index, ME3Package pcc)
+                public TreeNode ToTree(int index, IMEPackage pcc)
                 {
                     TreeNode root = new TreeNode(index + ": " + Time);
                     root.Nodes.Add("GroupName : " + GroupName.Name);
@@ -3197,7 +3197,7 @@ namespace ME3Explorer.Matinee
 
             public List<Point> Points;
 
-            public TreeNode ToTree(ME3Package pcc)
+            public TreeNode ToTree(IMEPackage pcc)
             {
                 TreeNode root = new TreeNode("LookupTrack");
                 TreeNode t = new TreeNode("Points");
@@ -3218,7 +3218,7 @@ namespace ME3Explorer.Matinee
         public int LookAtGroupName = -1;
         public float AngCurveTension = 0f;
 
-        public InterpTrackMove(int idx, ME3Package pccobj)
+        public InterpTrackMove(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3314,7 +3314,7 @@ namespace ME3Explorer.Matinee
             public byteprop Action;
             public byteprop ActiveCondition;
 
-            public TreeNode ToTree(int index, ME3Package pcc)
+            public TreeNode ToTree(int index, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + Time);
                 root.Nodes.Add("Time : " + Time);
@@ -3329,7 +3329,7 @@ namespace ME3Explorer.Matinee
         public bool bFireEventsWhenBackwards = true;//unused?
         public bool bFireEventsWhenJumpingForwards = true;//unused?
 
-        public InterpTrackVisibility(int idx, ME3Package pccobj)
+        public InterpTrackVisibility(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3404,7 +3404,7 @@ namespace ME3Explorer.Matinee
             public float Time;
             public byteprop ToggleAction;
 
-            public TreeNode ToTree(int index, ME3Package pcc)
+            public TreeNode ToTree(int index, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + Time);
                 root.Nodes.Add("Time : " + Time);
@@ -3419,7 +3419,7 @@ namespace ME3Explorer.Matinee
         public bool bFireEventsWhenJumpingForwards = true;
         public bool bActivateSystemEachUpdate;
 
-        public InterpTrackToggle(int idx, ME3Package pccobj)
+        public InterpTrackToggle(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3506,7 +3506,7 @@ namespace ME3Explorer.Matinee
 
         public List<WwiseEvent> WwiseEvents = new List<WwiseEvent>();
 
-        public InterpTrackWwiseEvent(int idx, ME3Package pccobj)
+        public InterpTrackWwiseEvent(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3564,7 +3564,7 @@ namespace ME3Explorer.Matinee
 
     public class InterpTrackWwiseSoundEffect : InterpTrackWwiseEvent
     {
-        public InterpTrackWwiseSoundEffect(int idx, ME3Package pccobj)
+        public InterpTrackWwiseSoundEffect(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             if (TrackTitle == "" || TrackTitle == "WwiseEvent")
@@ -3577,7 +3577,7 @@ namespace ME3Explorer.Matinee
     {
         public string Param;
 
-        public InterpTrackWwiseRTPC(int idx, ME3Package pccobj)
+        public InterpTrackWwiseRTPC(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3608,7 +3608,7 @@ namespace ME3Explorer.Matinee
     {
         public int PropertyName; //name
 
-        public InterpTrackVectorProp(int idx, ME3Package pccobj)
+        public InterpTrackVectorProp(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3654,7 +3654,7 @@ namespace ME3Explorer.Matinee
         public List<MeshMaterialRef> AffectedMaterialRefs = new List<MeshMaterialRef>(); //unused?
         public int ParamName = -1; //name
 
-        public InterpTrackVectorMaterialParam(int idx, ME3Package pccobj)
+        public InterpTrackVectorMaterialParam(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3714,7 +3714,7 @@ namespace ME3Explorer.Matinee
     {
         public int PropertyName = -1; //name
 
-        public InterpTrackColorProp(int idx, ME3Package pccobj)
+        public InterpTrackColorProp(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3746,7 +3746,7 @@ namespace ME3Explorer.Matinee
     {
         public int PropertyName; //name
 
-        public InterpTrackFloatProp(int idx, ME3Package pccobj)
+        public InterpTrackFloatProp(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3779,7 +3779,7 @@ namespace ME3Explorer.Matinee
     {
         public int ParamName; //name
 
-        public InterpTrackFloatMaterialParam(int idx, ME3Package pccobj)
+        public InterpTrackFloatMaterialParam(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3810,7 +3810,7 @@ namespace ME3Explorer.Matinee
     {
         public int ParamName; //name
 
-        public InterpTrackFloatParticleParam(int idx, ME3Package pccobj)
+        public InterpTrackFloatParticleParam(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             if (TrackTitle == "" || TrackTitle == "Generic Float Track")
@@ -3843,7 +3843,7 @@ namespace ME3Explorer.Matinee
         public bool m_bStopAllMatchingEffects = true;
         public bool m_bAllowCooldown = true;
 
-        public SFXInterpTrackClientEffect(int idx, ME3Package pccobj)
+        public SFXInterpTrackClientEffect(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3893,7 +3893,7 @@ namespace ME3Explorer.Matinee
             public float Pitch;
             public int Sound; //object
 
-            public TreeNode ToTree(int index, ME3Package pcc)
+            public TreeNode ToTree(int index, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + Time);
                 root.Nodes.Add("Time : " + Time);
@@ -3909,7 +3909,7 @@ namespace ME3Explorer.Matinee
         public bool bContinueSoundOnMatineeEnd;
         public bool bSuppressSubtitles;
 
-        public InterpTrackSound(int idx, ME3Package pccobj)
+        public InterpTrackSound(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -3981,7 +3981,7 @@ namespace ME3Explorer.Matinee
             public float fInterpolateSeconds;
             public bool bEnableDOF;
 
-            public TreeNode ToTree(int index, float time, ME3Package pcc)
+            public TreeNode ToTree(int index, float time, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + time);
                 root.Nodes.Add(vFocusPosition.ToTree("vFocusPosition"));
@@ -4005,7 +4005,7 @@ namespace ME3Explorer.Matinee
 
         public List<BioDOFTrackData> m_aDOFData;
 
-        public BioEvtSysTrackDOF(int idx, ME3Package pccobj)
+        public BioEvtSysTrackDOF(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -4084,7 +4084,7 @@ namespace ME3Explorer.Matinee
             public float TransitionTime;
             public bool bSkipCameraReset;
 
-            public TreeNode ToTree(int index, ME3Package pcc)
+            public TreeNode ToTree(int index, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + Time);
                 root.Nodes.Add("TargetCamGroup : " + TargetCamGroup.Name);
@@ -4097,7 +4097,7 @@ namespace ME3Explorer.Matinee
 
         public List<DirectorTrackCut> CutTrack;
 
-        public InterpTrackDirector(int idx, ME3Package pccobj)
+        public InterpTrackDirector(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -4162,7 +4162,7 @@ namespace ME3Explorer.Matinee
     {
         public bool bPersistFade;
 
-        public InterpTrackFade(int idx, ME3Package pccobj)
+        public InterpTrackFade(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();
@@ -4191,7 +4191,7 @@ namespace ME3Explorer.Matinee
     public class InterpTrackColorScale : InterpTrackVectorBase
     {
 
-        public InterpTrackColorScale(int idx, ME3Package pccobj)
+        public InterpTrackColorScale(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             if (TrackTitle == "" || TrackTitle == "Generic Vector Track")

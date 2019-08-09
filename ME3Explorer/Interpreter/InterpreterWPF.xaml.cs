@@ -835,7 +835,7 @@ namespace ME3Explorer
                     break;
                 case StringRefProperty strrefp:
                     editableValue = strrefp.Value.ToString();
-                    parsedValue = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strrefp.Value, parsingExport.FileRef.Game, parsingExport.FileRef as ME1Package);
+                    parsedValue = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strrefp.Value, parsingExport.FileRef.Game, parsingExport.FileRef);
                     break;
                 case StrProperty strp:
                     editableValue = strp.Value;
@@ -1024,7 +1024,7 @@ namespace ME3Explorer
 
             if (name == "m_nStrRefID" || name == "nLineStrRef" || name == "nStrRefID")
             {
-                return TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef as ME1Package);
+                return TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef);
             }
             return "";
         }
@@ -1323,7 +1323,7 @@ namespace ME3Explorer
                             if (int.TryParse(Value_TextBox.Text, out int index))
                             {
 
-                                string str = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(index, CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef as ME1Package);
+                                string str = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(index, CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef);
                                 str = str.Replace("\n", "[\\n]");
                                 if (str.Length > 82)
                                 {

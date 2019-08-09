@@ -195,7 +195,7 @@ namespace ME3Explorer.Meshplorer
         {
             DisableLODs();
             UnCheckLODs();
-            skm = new SkeletalMesh(Pcc as ME3Package, index);
+            skm = new SkeletalMesh(Pcc, index);
 
             // Load preview model
             preview?.Dispose();
@@ -671,7 +671,7 @@ namespace ME3Explorer.Meshplorer
             {
                 return;
             }
-            UDKCopy u = new UDKCopy(Pcc as ME3Package, n, getLOD());
+            UDKCopy u = new UDKCopy(Pcc, n, getLOD());
             u.Show();
         }
 

@@ -8,7 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using Gammtek.Conduit.Extensions.IO;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using StreamHelpers;
 using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
@@ -36,57 +40,48 @@ namespace ME3Explorer.Packages
         public int index;
     }
 
-    public abstract class MEPackage : NotifyPropertyChangedBase, IDisposable
+    public sealed class MEPackage : UnrealPackageFile, IMEPackage, IDisposable
     {
-        protected const uint packageTag = 0x9E2A83C1;
+        public MEGame Game { get; } //can only be ME1, ME2, or ME3. UDK is a seperate class
 
-        public string FilePath { get; protected set; }
+        public bool CanReconstruct =>
+            Game == MEGame.ME3 ||
+            Game == MEGame.ME2 ||
+            Game == MEGame.ME1 && !exports.Any(x => x.IsTexture() && EmbeddedTextureViewer.GetTexture2DMipInfos(x,null).Any(mip => mip.storageType == StorageTypes.pccLZO || 
+                                                                                                                                            mip.storageType == StorageTypes.pccZlib));
 
-        public bool IsModified
+        public int FullHeaderSize { get; private set; }
+        public EPackageFlags Flags { get; private set; }
+
+        public override int NameCount { get; protected set; }
+        public int NameOffset { get; private set; }
+        public override int ExportCount { get; protected set; }
+        public int ExportOffset { get; private set; }
+        public override int ImportCount { get; protected set; }
+        public int ImportOffset { get; private set; }
+        public int DependencyTableOffset { get; private set; }
+        public Guid PackageGuid { get; set; }
+
+        public byte[] getHeader()
         {
-            get
-            {
-                return exports.Any(entry => entry.DataChanged || entry.HeaderChanged) || imports.Any(entry => entry.HeaderChanged) || namesAdded > 0;
-            }
+            var ms = new MemoryStream();
+            WriteHeader(ms);
+            return ms.ToArray();
         }
-
-        public virtual bool CanReconstruct => true;
-
-        protected byte[] header;
-        protected uint Magic => BitConverter.ToUInt32(header, 0);
-        protected ushort UnrealVersion => BitConverter.ToUInt16(header, 4);
-        protected ushort LicenseeVersion => BitConverter.ToUInt16(header, 6);
-        public int FullHeaderSize
-        {
-            get => BitConverter.ToInt32(header, 8);
-            protected set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int));
-        }
-        public int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } } //this may be able to be optimized. It is used a lot during package load
-        public EPackageFlags Flags => (EPackageFlags)BitConverter.ToUInt32(header, 16 + nameSize);
-
-        public abstract int NameCount { get; protected set; }
-        public abstract int ImportCount { get; protected set; }
-        public abstract int ExportCount { get; protected set; }
-
-        public abstract int DependencyTableOffset { get; protected set; }
-
-        public abstract Guid PackageGuid { get; set; }
-
-        public byte[] getHeader() { return header; }
 
         public bool IsCompressed
         {
             get => Flags.HasFlag(EPackageFlags.Compressed);
-            protected set
+            private set
             {
-                if (value) // sets the compressed flag if bCompressed set equal to true
+                if (value)
                 {
-                    //Toolkit never should never set this flag as we do not support compressing files.
-                    Buffer.BlockCopy(BitConverter.GetBytes((uint)(Flags | EPackageFlags.Compressed)), 0, header, 16 + nameSize, sizeof(int));
+                    //Toolkit should never set this flag as we do not support compressing files.
+                    Flags |= EPackageFlags.Compressed;
                 }
                 else // else set to false
                 {
-                    Buffer.BlockCopy(BitConverter.GetBytes((uint)(Flags & ~EPackageFlags.Compressed)), 0, header, 16 + nameSize, sizeof(int));
+                    Flags &= ~EPackageFlags.Compressed;
                     PackageCompressionType = CompressionType.None;
                 }
             }
@@ -99,361 +94,793 @@ namespace ME3Explorer.Packages
             LZO
         }
 
-        public CompressionType PackageCompressionType
-        {
-            get => (CompressionType)BitConverter.ToInt32(header, header.Length - 4);
-            set => header?.OverwriteRange(-4, BitConverter.GetBytes((int)value));
-        }
+        public CompressionType PackageCompressionType { get; private set; }
 
-
-        #region Names
-        protected uint namesAdded;
-        protected List<string> names;
-        public IReadOnlyList<string> Names => names;
-
-        public bool isName(int index) => index >= 0 && index < names.Count;
-
-        public string getNameEntry(int index) => isName(index) ? names[index] : "";
-
-        public int FindNameOrAdd(string name)
-        {
-            for (int i = 0; i < names.Count; i++)
-            {
-                if (names[i] == name)
-                    return i;
-            }
-
-            addName(name);
-            return names.Count - 1;
-        }
-
-        public void addName(string name)
-        {
-            if (name == null)
-            {
-                throw new Exception("Cannot add a null name to the list of names for a package file.\nThis is a bug in ME3Explorer.");
-            }
-            if (!names.Contains(name))
-            {
-                names.Add(name);
-                namesAdded++;
-                NameCount = names.Count;
-
-                updateTools(PackageChange.Names, NameCount - 1);
-                OnPropertyChanged(nameof(NameCount));
-            }
-        }
-
-        public void replaceName(int idx, string newName)
-        {
-            if (isName(idx))
-            {
-                names[idx] = newName;
-                updateTools(PackageChange.Names, idx);
-            }
-        }
-
-        /// <summary>
-        /// Checks whether a name exists in the PCC and returns its index
-        /// If it doesn't exist returns -1
-        /// </summary>
-        /// <param name="nameToFind">The name of the string to find</param>
-        /// <returns></returns>
-        public int findName(string nameToFind)
-        {
-            for (int i = 0; i < names.Count; i++)
-            {
-                if (string.Compare(nameToFind, getNameEntry(i)) == 0)
-                    return i;
-            }
-            return -1;
-        }
-
-        public void setNames(List<string> list) => names = list;
-
+        #region HeaderMisc
+        private int Gen0ExportCount;
+        private int Gen0NameCount;
+        private int Gen0NetworkedObjectCount;
+        private int ImportExportGuidsOffset;
+        private int ImportGuidsCount;
+        private int ExportGuidsCount;
+        private int ThumbnailTableOffset;
+        private int engineVersion;
+        private int cookedContentVersion;
+        private uint packageSource;
+        private int unknown1;
+        private int unknown2;
+        private int unknown3;
+        private int unknown4;
+        private int unknown5;
+        private int unknown6;
+        private int unknown7;
+        private int unknown8;
+        private int unknown9;
         #endregion
 
-        #region Exports
-        protected List<ExportEntry> exports;
-        public IReadOnlyList<ExportEntry> Exports => exports;
-
-        public bool isUExport(int uindex) => uindex > 0 && uindex <= exports.Count;
-
-        public void addExport(ExportEntry exportEntry)
+        static bool isInitialized;
+        public static Func<string, MEPackage> Initialize()
         {
-            if (exportEntry.FileRef != this)
-                throw new Exception("you cannot add a new export entry from another pcc file, it has invalid references!");
-
-            exportEntry.DataChanged = true;
-            exportEntry.Index = exports.Count;
-            exportEntry.PropertyChanged += exportChanged;
-            exports.Add(exportEntry);
-            ExportCount = exports.Count;
-
-            updateTools(PackageChange.ExportAdd, ExportCount - 1);
-            OnPropertyChanged(nameof(ExportCount));
-        }
-
-        public ExportEntry getExport(int index) => exports[index];
-        public ExportEntry getUExport(int uindex) => exports[uindex - 1];
-
-        #endregion
-
-        #region Imports
-        protected List<ImportEntry> imports;
-        public IReadOnlyList<ImportEntry> Imports => imports;
-
-        public bool isUImport(int uindex) => (uindex < 0 && Math.Abs(uindex) <= ImportCount);
-
-        public void addImport(ImportEntry importEntry)
-        {
-            if (importEntry.FileRef != this)
-                throw new Exception("you cannot add a new import entry from another pcc file, it has invalid references!");
-
-            importEntry.Index = imports.Count;
-            importEntry.PropertyChanged += importChanged;
-            imports.Add(importEntry);
-            importEntry.EntryHasPendingChanges = true;
-            ImportCount = imports.Count;
-
-            updateTools(PackageChange.ImportAdd, ImportCount - 1);
-            OnPropertyChanged(nameof(ImportCount));
-        }
-
-        public ImportEntry getUImport(int uindex) => imports[Math.Abs(uindex) - 1];
-
-        #endregion
-
-        #region IEntry
-        /// <summary>
-        ///     gets Export or Import name
-        /// </summary>
-        /// <param name="uIndex">unreal index</param>
-        public string getObjectName(int uIndex)
-        {
-            if (isEntry(uIndex))
-                return getEntry(uIndex).ObjectName;
-            if (uIndex == 0)
-                return "Class";
-            return "";
-        }
-
-        /// <summary>
-        ///     gets Export or Import class
-        /// </summary>
-        /// <param name="uIndex">unreal index</param>
-        public string getObjectClass(int uIndex)
-        {
-            if (isEntry(uIndex))
-                return getEntry(uIndex).ClassName;
-            return "";
-        }
-
-        /// <summary>
-        ///     gets Export or Import entry
-        /// </summary>
-        /// <param name="uindex">unreal index</param>
-        public IEntry getEntry(int uindex)
-        {
-            if (isUExport(uindex))
-                return exports[uindex - 1];
-            if (isUImport(uindex))
-                return imports[-uindex - 1];
-            return null;
-        }
-        public bool isEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (uindex < 0 && -uindex <= ImportCount);
-
-        #endregion
-
-        private DateTime? lastSaved;
-        public DateTime LastSaved
-        {
-            get
+            if (isInitialized)
             {
-                if (lastSaved.HasValue)
-                {
-                    return lastSaved.Value;
-                }
-
-                if (File.Exists(FilePath))
-                {
-                    return (new FileInfo(FilePath)).LastWriteTime;
-                }
-
-                return DateTime.MinValue;
+                throw new Exception(nameof(MEPackage) + " can only be initialized once");
             }
+
+            isInitialized = true;
+            return f => new MEPackage(f);
         }
 
-        public long FileSize => File.Exists(FilePath) ? (new FileInfo(FilePath)).Length : 0;
-
-        protected virtual void AfterSave()
+        private MEPackage(string filePath)
         {
-            //We do if checks here to prevent firing tons of extra events as we can't prevent firing change notifications if 
-            //it's not really a change due to the side effects of suppressing that.
-            foreach (var export in exports)
-            {
-                if (export.DataChanged)
-                {
-                    export.DataChanged = false;
-                }
-                if (export.HeaderChanged)
-                {
-                    export.HeaderChanged = false;
-                }
-                if (export.EntryHasPendingChanges)
-                {
-                    export.EntryHasPendingChanges = false;
-                }
-            }
-            foreach (var import in imports)
-            {
-                if (import.HeaderChanged)
-                {
-                    import.HeaderChanged = false;
-                }
-                if (import.EntryHasPendingChanges)
-                {
-                    import.EntryHasPendingChanges = false;
-                }
-            }
-            namesAdded = 0;
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(this));
 
-            lastSaved = DateTime.Now;
-            OnPropertyChanged(nameof(LastSaved));
-            OnPropertyChanged(nameof(FileSize));
-            OnPropertyChanged(nameof(IsModified));
-        }
+            FilePath = Path.GetFullPath(filePath);
 
-        #region packageHandler stuff
-        public ObservableCollection<GenericWindow> Tools { get; } = new ObservableCollection<GenericWindow>();
-
-        public void RegisterTool(GenericWindow gen)
-        {
-            RefCount++;
-            Tools.Add(gen);
-            gen.RegisterClosed(() =>
+            using (var fs = File.OpenRead(filePath))
             {
-                ReleaseGenericWindow(gen);
-                Dispose();
-            });
-        }
+                #region Header
 
-        public void Release(System.Windows.Window wpfWindow = null, System.Windows.Forms.Form winForm = null)
-        {
-            if (wpfWindow != null)
-            {
-                GenericWindow gen = Tools.FirstOrDefault(x => x == wpfWindow);
-                if (gen is GenericWindow) //can't use != due to ambiguity apparently
+                uint magic = fs.ReadUInt32();
+                if (magic != packageTag)
                 {
-                    ReleaseGenericWindow(gen);
+                    throw new FormatException("Not an Unreal package!");
                 }
-                else
+                ushort unrealVersion = fs.ReadUInt16();
+                ushort licenseeVersion = fs.ReadUInt16();
+                switch (unrealVersion)
                 {
-                    Debug.WriteLine("Releasing pcc that isn't in use by any window");
-                }
-            }
-            else if (winForm != null)
-            {
-                GenericWindow gen = Tools.FirstOrDefault(x => x == winForm);
-                if (gen is GenericWindow) //can't use != due to ambiguity apparently
-                {
-                    ReleaseGenericWindow(gen);
-                }
-                else
-                {
-                    Debug.WriteLine("Releasing pcc that isn't in use by any window");
-                }
-            }
-            Dispose();
-        }
-
-        private void ReleaseGenericWindow(GenericWindow gen)
-        {
-            Tools.Remove(gen);
-            if (Tools.Count == 0)
-            {
-                noLongerOpenInTools?.Invoke(this);
-            }
-            gen.Dispose();
-        }
-
-        public delegate void MEPackageEventHandler(MEPackage sender);
-        public event MEPackageEventHandler noLongerOpenInTools;
-
-        protected void exportChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (sender is ExportEntry exp)
-            {
-                switch (e.PropertyName)
-                {
-                    case nameof(ExportEntry.DataChanged):
-                        updateTools(PackageChange.ExportData, exp.Index);
+                    case 491 when licenseeVersion == 1008:
+                        Game = MEGame.ME1;
                         break;
-                    case nameof(ExportEntry.HeaderChanged):
-                        updateTools(PackageChange.ExportHeader, exp.Index);
+                    case 512 when licenseeVersion == 130:
+                        Game = MEGame.ME2;
                         break;
+                    case 684 when licenseeVersion == 194:
+                        Game = MEGame.ME3;
+                        break;
+                    default:
+                        throw new FormatException("Not a Mass Effect Package!");
                 }
-            }
-        }
+                FullHeaderSize = fs.ReadInt32();
+                int foldernameStrLen = fs.ReadInt32();
+                //always "None", so don't bother saving result
+                if (foldernameStrLen > 0)
+                    fs.ReadStringASCIINull(foldernameStrLen);
+                else
+                    fs.ReadStringUnicodeNull(foldernameStrLen * -2);
 
-        protected void importChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (sender is ImportEntry imp
-             && e.PropertyName == nameof(ImportEntry.HeaderChanged))
-            {
-                updateTools(PackageChange.Import, imp.Index);
-            }
-        }
+                Flags = (EPackageFlags)fs.ReadUInt32();
 
-        readonly HashSet<PackageUpdate> pendingUpdates = new HashSet<PackageUpdate>();
-        readonly List<Task> tasks = new List<Task>();
-        readonly Dictionary<int, bool> taskCompletion = new Dictionary<int, bool>();
-        const int queuingDelay = 50;
-        protected void updateTools(PackageChange change, int index)
-        {
-            PackageUpdate update = new PackageUpdate { change = change, index = index };
-            if (!pendingUpdates.Contains(update))
-            {
-                pendingUpdates.Add(update);
-                Task task = Task.Delay(queuingDelay);
-                taskCompletion[task.Id] = false;
-                tasks.Add(task);
-                task.ContinueWithOnUIThread(x =>
+                if (Game == MEGame.ME3 && Flags.HasFlag(EPackageFlags.Cooked))
                 {
-                    taskCompletion[x.Id] = true;
-                    if (tasks.TrueForAll(t => taskCompletion[t.Id]))
+                    unknown1 = fs.ReadInt32();
+                }
+
+                NameCount = fs.ReadInt32();
+                NameOffset = fs.ReadInt32();
+                ExportCount = fs.ReadInt32();
+                ExportOffset = fs.ReadInt32();
+                ImportCount = fs.ReadInt32();
+                ImportOffset = fs.ReadInt32();
+                DependencyTableOffset = fs.ReadInt32();
+
+                if (Game == MEGame.ME3)
+                {
+                    ImportExportGuidsOffset = fs.ReadInt32();
+                    ImportGuidsCount = fs.ReadInt32();
+                    ExportGuidsCount = fs.ReadInt32();
+                    ThumbnailTableOffset = fs.ReadInt32();
+                }
+
+                PackageGuid = fs.ReadGuid();
+                uint generationsTableCount = fs.ReadUInt32();
+                if (generationsTableCount > 0)
+                {
+                    generationsTableCount--;
+                    Gen0ExportCount = fs.ReadInt32();
+                    Gen0NameCount = fs.ReadInt32();
+                    Gen0NetworkedObjectCount = fs.ReadInt32();
+                }
+                //should never be more than 1 generation, but just in case
+                fs.Skip(generationsTableCount * 12);
+
+                engineVersion = fs.ReadInt32();
+                cookedContentVersion = fs.ReadInt32();
+
+                if (Game == MEGame.ME2 || Game == MEGame.ME1)
+                {
+                    unknown2 = fs.ReadInt32();
+                    unknown3 = fs.ReadInt32();
+                    unknown4 = fs.ReadInt32();
+                    unknown5 = fs.ReadInt32();
+                }
+
+                unknown6 = fs.ReadInt32();
+                unknown7 = fs.ReadInt32();
+
+                if (Game == MEGame.ME1)
+                {
+                    unknown8 = fs.ReadInt32();
+                }
+
+                PackageCompressionType = (CompressionType)fs.ReadUInt32();
+                //skip chunks. Decompressor will handle that
+                int numChunks = fs.ReadInt32();
+                fs.Skip(numChunks * 16);
+
+                packageSource = fs.ReadUInt32();
+
+                if (Game == MEGame.ME2 || Game == MEGame.ME1)
+                {
+                    unknown9 = fs.ReadInt32();
+                }
+
+                //Doesn't need to be written out, so it doesn't need to be read in
+                //keep this here in case one day we learn that this has a purpose
+                /*if (Game == MEGame.ME2 || Game == MEGame.ME3)
+                {
+                    int additionalPackagesToCookCount = fs.ReadInt32();
+                    var additionalPackagesToCook = new string[additionalPackagesToCookCount];
+                    for (int i = 0; i < additionalPackagesToCookCount; i++)
                     {
-                        tasks.Clear();
-                        taskCompletion.Clear();
-                        foreach (var item in Tools)
+                        int strLen = fs.ReadInt32();
+                        if (strLen > 0)
                         {
-                            item.handleUpdate(pendingUpdates.ToList());
+                            additionalPackagesToCook[i] = fs.ReadStringASCIINull(strLen);
                         }
-                        pendingUpdates.Clear();
-                        OnPropertyChanged(nameof(IsModified));
+                        else
+                        {
+                            additionalPackagesToCook[i] = fs.ReadStringUnicodeNull(strLen * -2);
+                        }
                     }
-                });
+                }*/
+                #endregion
+
+                Stream inStream = fs;
+                if (PackageCompressionType != CompressionType.None && numChunks > 0)
+                {
+                    inStream = Game == MEGame.ME3 ? CompressionHelper.DecompressME3(fs) : CompressionHelper.DecompressME1orME2(fs);
+                }
+
+                //read namelist
+                names = new List<string>();
+                inStream.JumpTo(NameOffset);
+                for (int i = 0; i < NameCount; i++)
+                {
+                    names.Add(inStream.ReadUnrealString());
+                    if (Game == MEGame.ME1)
+                        inStream.Skip(8);
+                    else if (Game == MEGame.ME2)
+                        inStream.Skip(4);
+                }
+
+                //read importTable
+                imports = new List<ImportEntry>();
+                inStream.Seek(ImportOffset, SeekOrigin.Begin);
+                for (int i = 0; i < ImportCount; i++)
+                {
+                    ImportEntry imp = new ImportEntry(this, inStream) { Index = i };
+                    imp.PropertyChanged += importChanged;
+                    imports.Add(imp);
+                }
+
+                //read exportTable (ExportEntry constructor reads export data)
+                exports = new List<ExportEntry>();
+                inStream.Seek(ExportOffset, SeekOrigin.Begin);
+                for (int i = 0; i < ExportCount; i++)
+                {
+                    ExportEntry e = new ExportEntry(this, inStream) { Index = i };
+                    e.PropertyChanged += exportChanged;
+                    exports.Add(e);
+                }
+
+                if (Game == MEGame.ME1)
+                {
+                    ReadLocalTLKs();
+                }
             }
         }
-
-        public event MEPackageEventHandler noLongerUsed;
-        private int RefCount;
-
-        public void RegisterUse() => RefCount++;
-
-        /// <summary>
-        /// Doesn't neccesarily dispose the object.
-        /// Will only do so once this has been called by every place that uses it.
-        /// HIGHLY Recommend using the using block instead of calling this directly.
-        /// </summary>
-        public void Dispose()
+        public void save()
         {
-            RefCount--;
-            if (RefCount == 0)
+            save(FilePath);
+        }
+
+        public void save(string path)
+        {
+            //If we're doing save as, IsCompressed should not be changed since we're saving a copy of the file
+            if (path == FilePath)
             {
-                noLongerUsed?.Invoke(this);
+                IsCompressed = false;
+            }
+            saveByReconstructing(path);
+        }
+
+
+        private void saveByReconstructing(string path)
+        {
+            try
+            {
+                var ms = new MemoryStream();
+            
+                //just for positioning. We write over this later when the header values have been updated
+                WriteHeader(ms);
+
+                //name table
+                NameOffset = (int)ms.Position;
+                NameCount = Gen0NameCount = names.Count;
+                foreach (string name in names)
+                {
+                    switch (Game)
+                    {
+                        case MEGame.ME1:
+                            ms.WriteUnrealStringASCII(name);
+                            ms.WriteInt32(0);
+                            ms.WriteInt32(458768);
+                            break;
+                        case MEGame.ME2:
+                            ms.WriteUnrealStringASCII(name);
+                            ms.WriteInt32(-14);
+                            break;
+                        case MEGame.ME3:
+                            ms.WriteUnrealStringUnicode(name);
+                            break;
+                    }
+                }
+
+                //import table
+                ImportOffset = (int)ms.Position;
+                ImportCount = imports.Count;
+                foreach (ImportEntry e in imports)
+                {
+                    ms.WriteFromBuffer(e.Header);
+                }
+
+                //export table
+                ExportOffset = (int)ms.Position;
+                ExportCount = Gen0ExportCount = exports.Count;
+                foreach (ExportEntry e in exports)
+                {
+                    e.HeaderOffset = (uint)ms.Position;
+                    ms.WriteFromBuffer(e.Header);
+                }
+
+                DependencyTableOffset = (int) ms.Position;
+                ms.WriteInt32(0);//zero-count DependencyTable
+                FullHeaderSize = ImportExportGuidsOffset = (int) ms.Position;
+
+                //export data
+                foreach (ExportEntry e in exports)
+                {
+                    switch (Game)
+                    {
+                        case MEGame.ME1:
+                            UpdateME1Offsets(e, (int)ms.Position);
+                            break;
+                        case MEGame.ME2:
+                            UpdateME2Offsets(e, (int)ms.Position);
+                            break;
+                        case MEGame.ME3:
+                            UpdateME3Offsets(e, (int)ms.Position);
+                            break;
+                    }
+
+                    e.DataOffset = (int)ms.Position;
+
+
+                    ms.WriteFromBuffer(e.Data);
+                    //update size and offset in already-written header
+                    long pos = ms.Position;
+                    ms.JumpTo(e.HeaderOffset + 32);
+                    ms.WriteInt32(e.DataSize); //DataSize might have been changed by UpdateOffsets
+                    ms.WriteInt32(e.DataOffset);
+                    ms.JumpTo(pos);
+                }
+
+                //re-write header with updated values
+                ms.JumpTo(0);
+                WriteHeader(ms);
+
+
+                File.WriteAllBytes(path, ms.ToArray());
+                AfterSave();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving {FilePath}:\n{ExceptionHandlerDialogWPF.FlattenException(ex)}");
             }
         }
-        #endregion
+
+        private void WriteHeader(Stream ms)
+        {
+            ms.WriteUInt32(packageTag);
+            switch (Game)
+            {
+                case MEGame.ME1:
+                    ms.WriteUInt16(491);
+                    ms.WriteUInt16(1008);
+                    break;
+                case MEGame.ME2:
+                    ms.WriteUInt16(512);
+                    ms.WriteUInt16(130);
+                    break;
+                case MEGame.ME3:
+                    ms.WriteUInt16(684);
+                    ms.WriteUInt16(194);
+                    break;
+            }
+            ms.WriteInt32(FullHeaderSize);
+            if (Game == MEGame.ME3)
+            {
+                ms.WriteUnrealStringUnicode("None");
+            }
+            else
+            {
+                ms.WriteUnrealStringASCII("None");
+            }
+            ms.WriteUInt32((uint)Flags);
+
+            if (Game == MEGame.ME3 && Flags.HasFlag(EPackageFlags.Cooked))
+            {
+                ms.WriteInt32(unknown1);
+            }
+
+            ms.WriteInt32(NameCount);
+            ms.WriteInt32(NameOffset);
+            ms.WriteInt32(ExportCount);
+            ms.WriteInt32(ExportOffset);
+            ms.WriteInt32(ImportCount);
+            ms.WriteInt32(ImportOffset);
+            ms.WriteInt32(DependencyTableOffset);
+
+            if (Game == MEGame.ME3)
+            {
+                ms.WriteInt32(ImportExportGuidsOffset);
+                ms.WriteInt32(ImportGuidsCount);
+                ms.WriteInt32(ExportGuidsCount);
+                ms.WriteInt32(ThumbnailTableOffset);
+            }
+            ms.WriteGuid(PackageGuid);
+
+            //Write 1 generation
+            ms.WriteInt32(1);
+            ms.WriteInt32(Gen0ExportCount);
+            ms.WriteInt32(Gen0NameCount);
+            ms.WriteInt32(Gen0NetworkedObjectCount);
+
+            ms.WriteInt32(engineVersion);
+            ms.WriteInt32(cookedContentVersion);
+
+
+            if (Game == MEGame.ME2 || Game == MEGame.ME1)
+            {
+                ms.WriteInt32(unknown2);
+                ms.WriteInt32(unknown3);
+                ms.WriteInt32(unknown4);
+                ms.WriteInt32(unknown5);
+            }
+
+            ms.WriteInt32(unknown6);
+            ms.WriteInt32(unknown7);
+
+            if (Game == MEGame.ME1)
+            {
+                ms.WriteInt32(unknown8);
+            }
+
+            ms.WriteUInt32((uint)CompressionType.None);
+            ms.WriteInt32(0);//numChunks
+
+            ms.WriteUInt32(packageSource);
+
+            if (Game == MEGame.ME2 || Game == MEGame.ME1)
+            {
+                ms.WriteInt32(unknown9);
+            }
+
+            if (Game == MEGame.ME3 || Game == MEGame.ME2)
+            {
+                ms.WriteInt32(0);//empty additionalPackagesToCook array
+            }
+        }
+
+        public List<ME1Explorer.Unreal.Classes.TalkFile> LocalTalkFiles { get; } = new List<ME1Explorer.Unreal.Classes.TalkFile>();
+        private void ReadLocalTLKs()
+        {
+            LocalTalkFiles.Clear();
+            List<ExportEntry> tlkFileSets = Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.ObjectName.StartsWith("Default__")).ToList();
+            var exportsToLoad = new List<ExportEntry>();
+            foreach (var tlkFileSet in tlkFileSets)
+            {
+                MemoryStream r = new MemoryStream(tlkFileSet.Data);
+                r.Position = tlkFileSet.propsEnd();
+                int count = r.ReadInt32();
+                for (int i = 0; i < count; i++)
+                {
+                    int langRef = r.ReadInt32();
+                    r.ReadInt32(); //second half of name
+                    string lang = getNameEntry(langRef);
+                    int numTlksForLang = r.ReadInt32(); //I believe this is always 2. Hopefully I am not wrong.
+                    int maleTlk = r.ReadInt32();
+                    int femaleTlk = r.ReadInt32();
+
+                    if (Properties.Settings.Default.TLKLanguage.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        exportsToLoad.Add(getUExport(Properties.Settings.Default.TLKGender_IsMale ? maleTlk : femaleTlk));
+                        break;
+                    }
+
+                    //r.ReadInt64();
+                    //talkFiles.Add(new TalkFile(pcc, r.ReadInt32(), true, langRef, index));
+                    //talkFiles.Add(new TalkFile(pcc, r.ReadInt32(), false, langRef, index));
+                }
+            }
+
+            foreach (var exp in exportsToLoad)
+            {
+                //Debug.WriteLine("Loading local TLK: " + exp.GetIndexedFullPath);
+                LocalTalkFiles.Add(new ME1Explorer.Unreal.Classes.TalkFile(exp));
+            }
+        }
+
+        private static void UpdateME1Offsets(ExportEntry export, int newDataOffset)
+        {
+            if (export.IsDefaultObject)
+            {
+                return; //this is not actually instance of that class
+            }
+            if (export.IsTexture())
+            {
+                int baseOffset = newDataOffset + export.propsEnd();
+                MemoryStream binData = new MemoryStream(export.getBinaryData());
+                binData.Skip(12);
+                binData.WriteInt32(baseOffset + (int)binData.Position + 4);
+                for (int i = binData.ReadInt32(); i > 0 && binData.Position < binData.Length; i--)
+                {
+                    var storageFlags = (StorageFlags)binData.ReadInt32();
+                    if (!storageFlags.HasFlag(StorageFlags.externalFile)) //pcc-stored
+                    {
+                        int uncompressedSize = binData.ReadInt32();
+                        int compressedSize = binData.ReadInt32();
+                        binData.WriteInt32(baseOffset + (int)binData.Position + 4);//update offset
+                        binData.Seek((storageFlags == StorageFlags.noFlags ? uncompressedSize : compressedSize) + 8, SeekOrigin.Current); //skip texture and width + height values
+                    }
+                    else
+                    {
+                        binData.Seek(20, SeekOrigin.Current);//skip whole rest of mip definition
+                    }
+                }
+                export.setBinaryData(binData.ToArray());
+            }
+            else if (export.ClassName == "StaticMeshComponent")
+            {
+                int baseOffset = newDataOffset + export.propsEnd();
+                MemoryStream bin = new MemoryStream(export.Data);
+                bin.JumpTo(export.propsEnd());
+
+                int lodDataCount = bin.ReadInt32();
+                for (int i = 0; i < lodDataCount; i++)
+                {
+                    int shadowMapCount = bin.ReadInt32();
+                    bin.Skip(shadowMapCount * 4);
+                    int shadowVertCount = bin.ReadInt32();
+                    bin.Skip(shadowVertCount * 4);
+                    int lightMapType = bin.ReadInt32();
+                    if (lightMapType == 0) continue;
+                    int lightGUIDsCount = bin.ReadInt32();
+                    bin.Skip(lightGUIDsCount * 16);
+                    switch (lightMapType)
+                    {
+                        case 1:
+                            bin.Skip(4 + 8);
+                            int bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            bin.Skip(12 * 4 + 8);
+                            bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            break;
+                        case 2:
+                            bin.Skip((16) * 4 + 16);
+                            break;
+                    }
+                }
+            }
+        }
+
+        private static void UpdateME2Offsets(ExportEntry export, int newDataOffset)
+        {
+            if (export.IsDefaultObject)
+            {
+                return; //this is not actually instance of that class
+            }
+            //update offsets for pcc-stored audio in wwisestreams
+            if (export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null)
+            {
+                byte[] binData = export.getBinaryData();
+                if (binData.Length < 44)
+                {
+                    return; //¯\_(ツ)_ /¯
+                }
+                binData.OverwriteRange(44, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 48));
+                export.setBinaryData(binData);
+            }
+            //update offsets for pcc-stored mips in Textures
+            else if (export.ClassName == "WwiseBank")
+            {
+                byte[] binData = export.getBinaryData();
+                binData.OverwriteRange(20, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 24));
+                export.setBinaryData(binData);
+            }
+            //update offsets for pcc-stored mips in Textures
+            else if (export.IsTexture())
+            {
+                int baseOffset = newDataOffset + export.propsEnd();
+                MemoryStream binData = new MemoryStream(export.getBinaryData());
+                binData.Skip(12);
+                binData.WriteInt32(baseOffset + (int)binData.Position + 4);
+                for (int i = binData.ReadInt32(); i > 0 && binData.Position < binData.Length; i--)
+                {
+                    var storageFlags = (StorageFlags)binData.ReadInt32();
+                    if (!storageFlags.HasFlag(StorageFlags.externalFile)) //pcc-stored
+                    {
+                        int uncompressedSize = binData.ReadInt32();
+                        int compressedSize = binData.ReadInt32();
+                        binData.WriteInt32(baseOffset + (int)binData.Position + 4);//update offset
+                        binData.Seek((storageFlags == StorageFlags.noFlags ? uncompressedSize : compressedSize) + 8, SeekOrigin.Current); //skip texture and width + height values
+                    }
+                    else
+                    {
+                        binData.Seek(20, SeekOrigin.Current);//skip whole rest of mip definition
+                    }
+                }
+                export.setBinaryData(binData.ToArray());
+            }
+            else if (export.ClassName == "ShaderCache")
+            {
+                int oldDataOffset = export.DataOffset;
+
+                MemoryStream binData = new MemoryStream(export.Data);
+                binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
+
+                int nameList1Count = binData.ReadInt32();
+                binData.Seek(nameList1Count * 12, SeekOrigin.Current);
+
+                int shaderCount = binData.ReadInt32();
+                for (int i = 0; i < shaderCount; i++)
+                {
+                    binData.Seek(24, SeekOrigin.Current);
+                    int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
+                    binData.Seek(-4, SeekOrigin.Current);
+                    binData.WriteInt32(nextShaderOffset + newDataOffset);
+                    binData.Seek(nextShaderOffset, SeekOrigin.Begin);
+                }
+
+                int vertexFactoryMapCount = binData.ReadInt32();
+                binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
+
+                int materialShaderMapCount = binData.ReadInt32();
+                for (int i = 0; i < materialShaderMapCount; i++)
+                {
+                    binData.Seek(16, SeekOrigin.Current);
+
+                    int switchParamCount = binData.ReadInt32();
+                    binData.Seek(switchParamCount * 32, SeekOrigin.Current);
+
+                    int componentMaskParamCount = binData.ReadInt32();
+                    binData.Seek(componentMaskParamCount * 44, SeekOrigin.Current);
+
+                    int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
+                    binData.Seek(-4, SeekOrigin.Current);
+                    binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
+                    binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
+                }
+
+                export.Data = binData.ToArray();
+            }
+            else if (export.ClassName == "StaticMeshComponent")
+            {
+                int baseOffset = newDataOffset + export.propsEnd();
+                MemoryStream bin = new MemoryStream(export.Data);
+                bin.JumpTo(export.propsEnd());
+
+                int lodDataCount = bin.ReadInt32();
+                for (int i = 0; i < lodDataCount; i++)
+                {
+                    int shadowMapCount = bin.ReadInt32();
+                    bin.Skip(shadowMapCount * 4);
+                    int shadowVertCount = bin.ReadInt32();
+                    bin.Skip(shadowVertCount * 4);
+                    int lightMapType = bin.ReadInt32();
+                    if (lightMapType == 0) continue;
+                    int lightGUIDsCount = bin.ReadInt32();
+                    bin.Skip(lightGUIDsCount * 16);
+                    switch (lightMapType)
+                    {
+                        case 1:
+                            bin.Skip(4 + 8);
+                            int bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            bin.Skip(12 * 4 + 8);
+                            bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            break;
+                        case 2:
+                            bin.Skip((16) * 4 + 16);
+                            break;
+                    }
+                }
+            }
+        }
+
+        private static void UpdateME3Offsets(ExportEntry export, int newDataOffset)
+        {
+            if (export.IsDefaultObject)
+            {
+                return; //this is not actually instance of that class
+            }
+            //update offsets for pcc-stored audio in wwisestreams
+            if ((export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null) || export.ClassName == "WwiseBank")
+            {
+                byte[] binData = export.getBinaryData();
+                binData.OverwriteRange(12, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 16));
+                export.setBinaryData(binData);
+            }
+            //update offsets for pcc-stored movies in texturemovies
+            else if (export.ClassName == "TextureMovie" && export.GetProperty<NameProperty>("TextureFileCacheName") == null)
+            {
+                byte[] binData = export.getBinaryData();
+                binData.OverwriteRange(12, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 16));
+                export.setBinaryData(binData);
+            }
+            //update offsets for pcc-stored mips in Textures
+            else if (export.IsTexture())
+            {
+                int baseOffset = newDataOffset + export.propsEnd();
+                MemoryStream binData = new MemoryStream(export.getBinaryData());
+                for (int i = binData.ReadInt32(); i > 0 && binData.Position < binData.Length; i--)
+                {
+                    if (binData.ReadInt32() == 0) //pcc-stored
+                    {
+                        int uncompressedSize = binData.ReadInt32();
+                        binData.Seek(4, SeekOrigin.Current); //skip compressed size
+                        binData.WriteInt32(baseOffset + (int)binData.Position + 4);//update offset
+                        binData.Seek(uncompressedSize + 8, SeekOrigin.Current); //skip texture and width + height values
+                    }
+                    else
+                    {
+                        binData.Seek(20, SeekOrigin.Current);//skip whole rest of mip definition
+                    }
+                }
+                export.setBinaryData(binData.ToArray());
+            }
+            else if (export.ClassName == "ShaderCache")
+            {
+                int oldDataOffset = export.DataOffset;
+
+                MemoryStream binData = new MemoryStream(export.Data);
+                binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
+
+                int nameList1Count = binData.ReadInt32();
+                binData.Seek(nameList1Count * 12, SeekOrigin.Current);
+
+                int namelist2Count = binData.ReadInt32();//namelist2
+                binData.Seek(namelist2Count * 12, SeekOrigin.Current);
+
+                int shaderCount = binData.ReadInt32();
+                for (int i = 0; i < shaderCount; i++)
+                {
+                    binData.Seek(24, SeekOrigin.Current);
+                    int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
+                    binData.Seek(-4, SeekOrigin.Current);
+                    binData.WriteInt32(nextShaderOffset + newDataOffset);
+                    binData.Seek(nextShaderOffset, SeekOrigin.Begin);
+                }
+
+                int vertexFactoryMapCount = binData.ReadInt32();
+                binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
+
+                int materialShaderMapCount = binData.ReadInt32();
+                for (int i = 0; i < materialShaderMapCount; i++)
+                {
+                    binData.Seek(16, SeekOrigin.Current);
+
+                    int switchParamCount = binData.ReadInt32();
+                    binData.Seek(switchParamCount * 32, SeekOrigin.Current);
+
+                    int componentMaskParamCount = binData.ReadInt32();
+                    binData.Seek(componentMaskParamCount * 44, SeekOrigin.Current);
+
+                    int normalParams = binData.ReadInt32();
+                    binData.Seek(normalParams * 29, SeekOrigin.Current);
+
+                    binData.Seek(8, SeekOrigin.Current);
+
+                    int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
+                    binData.Seek(-4, SeekOrigin.Current);
+                    binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
+                    binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
+                }
+
+                export.Data = binData.ToArray();
+            }
+            else if (export.ClassName == "StaticMeshComponent")
+            {
+                int baseOffset = newDataOffset + export.propsEnd();
+                MemoryStream bin = new MemoryStream(export.Data);
+                bin.JumpTo(export.propsEnd());
+
+                int lodDataCount = bin.ReadInt32();
+                for (int i = 0; i < lodDataCount; i++)
+                {
+                    int shadowMapCount = bin.ReadInt32();
+                    bin.Skip(shadowMapCount * 4);
+                    int shadowVertCount = bin.ReadInt32();
+                    bin.Skip(shadowVertCount * 4);
+                    int lightMapType = bin.ReadInt32();
+                    if (lightMapType == 0) continue;
+                    int lightGUIDsCount = bin.ReadInt32();
+                    bin.Skip(lightGUIDsCount * 16);
+                    int bulkDataSize;
+                    switch (lightMapType)
+                    {
+                        case 1:
+                            bin.Skip(4 + 8);
+                            bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            bin.Skip(12 * 3 + 8);
+                            bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            break;
+                        case 2:
+                            bin.Skip((16) * 3 + 16);
+                            break;
+                        case 3:
+                            bin.Skip(8);
+                            bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            bin.Skip(24);
+                            break;
+                        case 4:
+                        case 6:
+                            bin.Skip(124);
+                            break;
+                        case 5:
+                            bin.Skip(4 + 8);
+                            bulkDataSize = bin.ReadInt32();
+                            bin.WriteInt32(baseOffset + (int)bin.Position + 4);
+                            bin.Skip(bulkDataSize);
+                            bin.Skip(12);
+                            break;
+                    }
+                }
+            }
+        }
+
     }
 }

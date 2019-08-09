@@ -10,18 +10,41 @@ using StreamHelpers;
 
 namespace ME3Explorer.Packages
 {
-    public sealed class UDKPackage : MEPackage, IMEPackage
+    public sealed class UDKPackage : UnrealPackageFile, IMEPackage
     {
         public MEGame Game => MEGame.UDK;
 
         static int headerSize = 0x8E;
-        byte[] extraNamesList = null;
 
-        //public bool isModified { get { return Exports.Any(entry => entry.hasChanged == true); } }
-        public bool bDLCStored = false;
-        public bool bExtraNamesList => extraNamesList != null;
         public bool Loaded = false;
 
+        private byte[] header;
+
+        public byte[] getHeader()
+        {
+            return header;
+        }
+
+        public List<ME1Explorer.Unreal.Classes.TalkFile> LocalTalkFiles { get; } = new List<ME1Explorer.Unreal.Classes.TalkFile>();
+        public int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } } //this may be able to be optimized. It is used a lot during package load
+
+        public EPackageFlags Flags => (EPackageFlags)BitConverter.ToUInt32(header, 16 + nameSize);
+        public bool IsCompressed
+        {
+            get => (Flags & EPackageFlags.Compressed) != 0;
+            protected set
+            {
+                if (value) // sets the compressed flag if bCompressed set equal to true
+                {
+                    //Toolkit never should never set this flag as we do not support compressing files.
+                    Buffer.BlockCopy(BitConverter.GetBytes((uint)(Flags | EPackageFlags.Compressed)), 0, header, 16 + nameSize, sizeof(int));
+                }
+                else // else set to false
+                {
+                    Buffer.BlockCopy(BitConverter.GetBytes((uint)(Flags & ~EPackageFlags.Compressed)), 0, header, 16 + nameSize, sizeof(int));
+                }
+            }
+        }
         int idxOffsets { get { if (Flags.HasFlag(EPackageFlags.Cooked)) return 24 + nameSize; else return 20 + nameSize; } } // usually = 34
 
         static bool isInitialized;
@@ -74,7 +97,7 @@ namespace ME3Explorer.Packages
         public int ImportOffset { get => BitConverter.ToInt32(header, idxOffsets + 20);
             private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 20, sizeof(int));
         }
-        public override int DependencyTableOffset
+        public int DependencyTableOffset
         { get => BitConverter.ToInt32(header, idxOffsets + 24);
             protected set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 24, sizeof(int));
         }
@@ -82,11 +105,13 @@ namespace ME3Explorer.Packages
             set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, idxOffsets + 28, sizeof(int));
         }
 
-        public override Guid PackageGuid
+        public Guid PackageGuid
         {
             get => new Guid(header.Slice(idxOffsets + 44, 16));
             set => Buffer.BlockCopy(value.ToByteArray(), 0, header, idxOffsets + 44, 16);
         }
+
+        public bool CanReconstruct => false;
 
         /// <summary>
         ///     UDKPackage class constructor. It also load namelist, importlist and exportinfo (not exportdata) from udk file
@@ -139,7 +164,7 @@ namespace ME3Explorer.Packages
                     listsStream.WriteValueS32(0);
                     listsStream.WriteValueS32(0);
                 }*/
-                throw new FileLoadException("Compressed UPK packages are not supported.");
+                throw new FileLoadException("Compressed UDK packages are not supported.");
             }
             else
             {
@@ -194,8 +219,7 @@ namespace ME3Explorer.Packages
         /// </summary>
         public void save()
         {
-            //Saving is not supported for UPK files.
-            return;
+            //Saving is not supported for UDK files.
         }
 
         /// <summary>
@@ -204,8 +228,7 @@ namespace ME3Explorer.Packages
         /// <param name="path">full path + file name.</param>
         public void save(string path)
         {
-            //Saving is not supported for UPK files.
-            return; 
+            //Saving is not supported for UDK files.
         }
     }
 }

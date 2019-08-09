@@ -237,7 +237,7 @@ namespace ME3Explorer.TlkManagerNS
             m.Filters.Add(new CommonFileDialogFilter("Unreal Package File (ME1)", "*.upk;*.sfm")); //Maybe include SFM, though IDK if anyone would load an SFM. Maybe if they want to export ME1 TLKs for dialogue? Are the local ones even used?
             if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
-                using (ME1Package upk = MEPackageHandler.OpenME1Package(m.FileName))
+                using (IMEPackage upk = MEPackageHandler.OpenME1Package(m.FileName))
                 {
                     foreach (ExportEntry exp in upk.Exports)
                     {
@@ -431,7 +431,7 @@ namespace ME3Explorer.TlkManagerNS
                 foreach (string tlk in tlkfiles)
                 {
                     //don't dispose the ME1Package, as this will prvent the talkfile from working
-                    ME1Package upk = MEPackageHandler.OpenME1Package(tlk);
+                    IMEPackage upk = MEPackageHandler.OpenME1Package(tlk);
                     foreach (ExportEntry exp in upk.Exports)
                     {
                         tlks.Add(new LoadedTLK(tlk, exp.UIndex, exp.ObjectName, false));
@@ -666,7 +666,7 @@ namespace ME3Explorer.TlkManagerNS
         /// <param name="game">Which game to look up TLK data for</param>
         /// <param name="me1Package">ME1 package to parse. You can pass in null if you're not using a ME1 Pacakge, or don't have a reference to one you need</param>
         /// <returns></returns>
-        public static string GlobalFindStrRefbyID(int stringRefID, MEGame game, ME1Package me1Package)
+        public static string GlobalFindStrRefbyID(int stringRefID, MEGame game, IMEPackage me1Package)
         {
             if (stringRefID <= 0)
             {
@@ -703,7 +703,7 @@ namespace ME3Explorer.TlkManagerNS
             switch (package.Game)
             {
                 case MEGame.ME1:
-                    return ME1TalkFiles.findDataById(stringRefID, package as ME1Package);
+                    return ME1TalkFiles.findDataById(stringRefID, package);
                 case MEGame.ME2:
                     return ME2TalkFiles.findDataById(stringRefID);
                 case MEGame.ME3:

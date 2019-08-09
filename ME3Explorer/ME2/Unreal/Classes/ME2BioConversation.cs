@@ -10,7 +10,7 @@ namespace ME2Explorer.Unreal.Classes
 {
     public class ME2BioConversation
     {
-        public ME2Package pcc;
+        public IMEPackage pcc;
         public int MyIndex;
         public int Unk1;
         public byte[] Memory;
@@ -62,7 +62,7 @@ namespace ME2Explorer.Unreal.Classes
             public bool NonTextline;
             public bool IgnoreBodyGestures;
             public int GUIStyleValue;
-            public TreeNode ToTree(int MyIndex, ME2Package pcc)
+            public TreeNode ToTree(int MyIndex, IMEPackage pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
@@ -133,7 +133,7 @@ namespace ME2Explorer.Unreal.Classes
             public bool IgnoreBodyGestures;
             public int GUIStyleValue;
 
-            public TreeNode ToTree(int MyIndex, ME2Package pcc)
+            public TreeNode ToTree(int MyIndex, IMEPackage pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
@@ -164,7 +164,7 @@ namespace ME2Explorer.Unreal.Classes
             }
         }
 
-        public ME2BioConversation(ME2Package Pcc, int Index)
+        public ME2BioConversation(IMEPackage Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;

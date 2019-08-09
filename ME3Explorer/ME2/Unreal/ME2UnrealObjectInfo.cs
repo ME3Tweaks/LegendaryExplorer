@@ -298,7 +298,7 @@ namespace ME2Explorer.Unreal
                     }
                     if (File.Exists(filepath))
                     {
-                        using (ME2Package importPCC = MEPackageHandler.OpenME2Package(filepath))
+                        using (IMEPackage importPCC = MEPackageHandler.OpenME2Package(filepath))
                         {
                             var exportToRead = importPCC.getUExport(info.exportIndex);
                             byte[] buff = exportToRead.Data.Skip(0x30).ToArray();
@@ -394,7 +394,7 @@ namespace ME2Explorer.Unreal
             {
                 if (file.ToLower().EndsWith(".pcc")/* && file.Contains("Engine")*/)
                 {
-                    using (ME2Package pcc = MEPackageHandler.OpenME2Package(file))
+                    using (IMEPackage pcc = MEPackageHandler.OpenME2Package(file))
                     {
                         for (int j = 1; j <= pcc.ExportCount; j++)
                         {

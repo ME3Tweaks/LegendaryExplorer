@@ -63,7 +63,7 @@ namespace ME3Explorer.Matinee
 
         public void loadInterpData(int index)
         {
-            timeline.GroupList.LoadInterpData(index, Pcc as ME3Package);
+            timeline.GroupList.LoadInterpData(index, Pcc);
             timeline.GroupList.OnCameraChanged(timeline.Camera);
         }
 
@@ -107,7 +107,7 @@ namespace ME3Explorer.Matinee
                 }
                 else
                 {
-                    timeline.GroupList.LoadInterpData(timeline.GroupList.index, Pcc as ME3Package);
+                    timeline.GroupList.LoadInterpData(timeline.GroupList.index, Pcc);
                 }
                 updatedExports.Remove(timeline.GroupList.index);
             }

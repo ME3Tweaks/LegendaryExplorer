@@ -96,7 +96,7 @@ namespace ME1Explorer.Unreal.Classes
         private readonly int tlkSetIndex;
 
         public TLKStringRef[] StringRefs;
-        public ME1Package pcc;
+        public IMEPackage pcc;
         //public int index;
         public int uindex;
 
@@ -114,7 +114,7 @@ namespace ME1Explorer.Unreal.Classes
 
 
         #region Constructors
-        public TalkFile(ME1Package _pcc, int uindex)
+        public TalkFile(IMEPackage _pcc, int uindex)
         {
             pcc = _pcc;
             //index = _index;
@@ -129,13 +129,13 @@ namespace ME1Explorer.Unreal.Classes
             {
                 throw new Exception("ME1 Unreal TalkFile cannot be initialized with a non-ME1 file");
             }
-            pcc = export.FileRef as ME1Package;
+            pcc = export.FileRef;
             uindex = export.UIndex;
             tlkSetIndex = -1;
             LoadTlkData();
         }
         
-        public TalkFile(ME1Package _pcc, int uindex, bool _male, int _langRef, int _tlkSetIndex)
+        public TalkFile(IMEPackage _pcc, int uindex, bool _male, int _langRef, int _tlkSetIndex)
         {
             pcc = _pcc;
             //index = _index;

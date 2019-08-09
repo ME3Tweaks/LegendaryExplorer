@@ -128,7 +128,7 @@ namespace ME3Explorer.Scene3D
             int id = 0;
 
             // First, check the pcc that contains the material
-            using (ME3Package pcc = MEPackageHandler.OpenME3Package(ImportPCC))
+            using (IMEPackage pcc = MEPackageHandler.OpenME3Package(ImportPCC))
             {
                 foreach (ExportEntry exp in pcc.Exports)
                 {
@@ -149,7 +149,7 @@ namespace ME3Explorer.Scene3D
                     string filename = importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc";
                     if (System.IO.File.Exists(filename))
                     {
-                        using (ME3Package pcc = MEPackageHandler.OpenME3Package(filename))
+                        using (IMEPackage pcc = MEPackageHandler.OpenME3Package(filename))
                         {
                             foreach (ExportEntry exp in pcc.Exports)
                             {
@@ -169,7 +169,7 @@ namespace ME3Explorer.Scene3D
                     string filename = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
                     if (System.IO.File.Exists(filename))
                     {
-                        using (ME3Package pcc = MEPackageHandler.OpenME3Package(filename))
+                        using (IMEPackage pcc = MEPackageHandler.OpenME3Package(filename))
                         {
                             foreach (ExportEntry exp in pcc.Exports)
                             {

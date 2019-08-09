@@ -15,7 +15,7 @@ namespace ME1Explorer.Unreal
             public bool stop;
         }
 
-        public static ME1Package pcc;
+        public static IMEPackage pcc;
         public static byte[] memory;
         public static int memsize;
         #region NormalToken
@@ -79,7 +79,7 @@ namespace ME1Explorer.Unreal
         private const int EX_EqualEqual_DelDel = 0x3B;
         private const int EX_NotEqual_DelDel = 0x3C;
 
-        public static string ToRawText(byte[] raw, ME1Package Pcc, bool debug)
+        public static string ToRawText(byte[] raw, IMEPackage Pcc, bool debug)
         {
             string s = "";
             pcc = Pcc;

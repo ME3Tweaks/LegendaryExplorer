@@ -69,7 +69,7 @@ namespace ME2Explorer
             int n = toolStripComboBox1.SelectedIndex;
             if (n == -1)
                 return;
-            Dialog = new ME2BioConversation(Pcc as ME2Package, Objs[n]);
+            Dialog = new ME2BioConversation(Pcc, Objs[n]);
             RefreshTabs();
         }
 
@@ -89,10 +89,10 @@ namespace ME2Explorer
                 listBox1.Items.Add((count++) + " : " + i);
             count = 0;
             foreach (ME2BioConversation.EntryListStuct e in Dialog.EntryList)
-                treeView1.Nodes.Add(e.ToTree(count++, Pcc as ME2Package));
+                treeView1.Nodes.Add(e.ToTree(count++, Pcc));
             count = 0;
             foreach (ME2BioConversation.ReplyListStruct r in Dialog.ReplyList)
-                treeView2.Nodes.Add(r.ToTree(count++, Pcc as ME2Package));
+                treeView2.Nodes.Add(r.ToTree(count++, Pcc));
             count = 0;
             foreach (ME2BioConversation.SpeakerListStruct sp in Dialog.SpeakerList)
                 listBox2.Items.Add((count++) + " : " + sp.SpeakerTag.InstancedString);
@@ -814,7 +814,7 @@ namespace ME2Explorer
             }
             ME2BioConversation.EntryListStuct el = Dialog.EntryList[Index];
             AddReply ar = new AddReply();
-            ar.pcc = Pcc as ME2Package;
+            ar.pcc = Pcc;
             if (SubIndx != -1)
             {
                 ME2BioConversation.EntryListReplyListStruct tr = el.ReplyList[SubIndx];
@@ -881,7 +881,7 @@ namespace ME2Explorer
                 }
                 else
                 {
-                    Dialog = new ME2BioConversation(Pcc as ME2Package, Dialog.MyIndex);
+                    Dialog = new ME2BioConversation(Pcc, Dialog.MyIndex);
                     RefreshTabs();
                 }
                 updatedExports.Remove(Dialog.MyIndex);

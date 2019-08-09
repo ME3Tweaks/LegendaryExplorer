@@ -484,12 +484,12 @@ namespace ME3Explorer.Unreal.Classes
                 {
                     if (package.IsCompressed)
                     {
-                        embeddedStream = new MemoryStream(CompressionHelper.Decompress(afcPath));
+                        embeddedStream = CompressionHelper.Decompress(afcPath);
                     }
                 }
             }
 
-            using (Stream fs = embeddedStream != null ? embeddedStream : new FileStream(afcPath, FileMode.Open, FileAccess.Read))
+            using (Stream fs = embeddedStream ?? new FileStream(afcPath, FileMode.Open, FileAccess.Read))
             {
                 if (DataOffset + DataSize > fs.Length)
                     return false;

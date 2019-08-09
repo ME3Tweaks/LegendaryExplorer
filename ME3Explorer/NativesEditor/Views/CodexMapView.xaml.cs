@@ -316,7 +316,7 @@ namespace MassEffect.NativesEditor.Views
             using (var stream = new MemoryStream(export.Data))
             {
                 stream.Seek(dataOffset, SeekOrigin.Begin);
-                var codexMap = BinaryBioCodexMap.Load(stream, pcc is ME3Package ? Encoding.UTF8 : Encoding.ASCII);
+                var codexMap = BinaryBioCodexMap.Load(stream, pcc.Game == MEGame.ME3 ? Encoding.UTF8 : Encoding.ASCII);
 
                 CodexPages = InitCollection(codexMap.Pages.OrderBy(pair => pair.Key));
                 CodexSections = InitCollection(codexMap.Sections.OrderBy(pair => pair.Key));

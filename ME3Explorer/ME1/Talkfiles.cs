@@ -32,7 +32,7 @@ namespace ME1Explorer
                 string path = ME1Directory.cookedPath + @"Packages\Dialog\GlobalTlk.upk";
                 try
                 {
-                    ME1Package pcc = MEPackageHandler.OpenME1Package(path);
+                    IMEPackage pcc = MEPackageHandler.OpenME1Package(path);
                     tlkList.Add(new TalkFile(pcc, 1));
                 }
                 catch (Exception)
@@ -51,14 +51,14 @@ namespace ME1Explorer
         {
             if (File.Exists(fileName))
             {
-                ME1Package pcc = MEPackageHandler.OpenME1Package(fileName, forceLoadFromDisk: true); //do not cache this in the packages list.
+                IMEPackage pcc = MEPackageHandler.OpenME1Package(fileName, forceLoadFromDisk: true); //do not cache this in the packages list.
                 TalkFile tlk = new TalkFile(pcc, index);
                 tlk.LoadTlkData();
                 tlkList.Add(tlk);
             }
         }
 
-        public static string findDataById(int strRefID, ME1Package package, bool withFileName = false)
+        public static string findDataById(int strRefID, IMEPackage package, bool withFileName = false)
         {
             string s = "No Data";
 

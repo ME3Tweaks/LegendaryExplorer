@@ -705,7 +705,7 @@ namespace ME3Explorer.DialogueDumper
                                         if (lineStrRef > 0)
                                         {
                                             //Get StringRef Text
-                                            string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped, exp.FileRef as ME1Package);
+                                            string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped, exp.FileRef);
 
                                             if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" && lineTLKstring != "\" \"")
                                             {
@@ -732,7 +732,7 @@ namespace ME3Explorer.DialogueDumper
                                             {
 
                                                 //Get StringRef Text
-                                                string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped, exp.FileRef as ME1Package);
+                                                string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped, exp.FileRef);
                                                 if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" && lineTLKstring != "\" \"")
                                                 {
                                                     //Write to Background thread (must be 8 strings)
@@ -890,7 +890,7 @@ namespace ME3Explorer.DialogueDumper
 
                                 if (tag != null && strref >= 0)
                                 {
-                                    string actorname = GlobalFindStrRefbyID(strref, GameBeingDumped, exp.FileRef as ME1Package);
+                                    string actorname = GlobalFindStrRefbyID(strref, GameBeingDumped, exp.FileRef);
                                     dumper._xlqueue.Add(new List<string> { "Tags", tag, strref.ToString(), actorname });
                                 }
 

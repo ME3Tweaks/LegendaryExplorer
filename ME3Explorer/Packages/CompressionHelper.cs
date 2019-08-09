@@ -47,6 +47,38 @@ namespace ME3Explorer.Packages
             public int uncompressedsize;
         }
 
+        #region Decompression
+
+        /// <summary>
+        ///     decompress an entire ME3, 2, or 1 package file.
+        /// </summary>
+        /// <param name="pccFileName">pcc file's name to open.</param>
+        /// <returns>a decompressed array of bytes.</returns>
+        public static Stream Decompress(string pccFileName)
+        {
+            using (FileStream input = File.OpenRead(pccFileName))
+            {
+                input.Seek(4, SeekOrigin.Begin); //skip package tag
+                ushort versionLo = input.ReadValueU16();
+                ushort versionHi = input.ReadValueU16();
+
+                //ME3
+                if (versionLo == 684 && versionHi == 194)
+                {
+                    return DecompressME3(input);
+                }
+                //ME2 || ME1
+                else if (versionLo == 512 && versionHi == 130 || versionLo == 491 && versionHi == 1008)
+                {
+                    return DecompressME1orME2(input);
+                }
+                else
+                {
+                    throw new FormatException("Not an ME1, ME2, or ME3 package file.");
+                }
+            }
+        }
+
         /// <summary>
         ///     decompress an entire ME1 or 2 pcc file.
         /// </summary>
@@ -176,50 +208,6 @@ namespace ME3Explorer.Packages
             return result;
         }
 
-        #region Decompression
-        /// <summary>
-        ///     decompress an entire ME3 pcc file.
-        /// </summary>
-        /// <param name="rawData">pcc file passed in byte array format.</param>
-        /// <returns>a decompressed array of bytes.</returns>
-        public static byte[] DecompressME3(byte[] rawData)
-        {
-            using (MemoryStream input = new MemoryStream(rawData))
-            {
-                return DecompressME3(input).ToArray();
-            }
-        }
-
-        /// <summary>
-        ///     decompress an entire ME3, 2, or 1 package file.
-        /// </summary>
-        /// <param name="pccFileName">pcc file's name to open.</param>
-        /// <returns>a decompressed array of bytes.</returns>
-        public static byte[] Decompress(string pccFileName)
-        {
-            using (FileStream input = File.OpenRead(pccFileName))
-            {
-                input.Seek(4, SeekOrigin.Begin); //skip package tag
-                ushort versionLo = input.ReadValueU16();
-                ushort versionHi = input.ReadValueU16();
-
-                //ME3
-                if (versionLo == 684 && versionHi == 194)
-                {
-                    return DecompressME3(input).ToArray();
-                }
-                //ME2 || ME1
-                else if (versionLo == 512 && versionHi == 130 || versionLo == 491 && versionHi == 1008)
-                {
-                    return DecompressME1orME2(input).ToArray();
-                }
-                else
-                {
-                    throw new FormatException("Not an ME1, ME2, or ME3 package file.");
-                }
-            }
-        }
-
         /// <summary>
         ///     decompress an entire ME3 pcc file into a new stream
         /// </summary>
@@ -290,7 +278,6 @@ namespace ME3Explorer.Packages
             int headBlockOff = (int)input.Position;
             var afterBlockTableOffset = headBlockOff + (blockCount * 16);
             var indataOffset = afterBlockTableOffset + 8;
-            byte[] buff;
 
             input.Seek(0, SeekOrigin.Begin);
             MemoryStream output = new MemoryStream();
@@ -321,7 +308,7 @@ namespace ME3Explorer.Packages
                 var compressedSize = input.ReadValueU32(endian);
                 headBlockOff = (int)input.Position;
 
-                buff = new byte[compressedSize];
+                var buff = new byte[compressedSize];
                 input.Seek(compressedOffset, SeekOrigin.Begin);
                 input.Read(buff, 0, buff.Length);
 

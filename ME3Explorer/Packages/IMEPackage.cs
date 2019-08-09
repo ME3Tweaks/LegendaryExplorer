@@ -180,8 +180,9 @@ namespace ME3Explorer.Packages
         ObservableCollection<GenericWindow> Tools { get; }
         void RegisterTool(GenericWindow tool);
         void Release(System.Windows.Window wpfWindow = null, System.Windows.Forms.Form winForm = null);
-        event MEPackage.MEPackageEventHandler noLongerOpenInTools;
+        event UnrealPackageFile.MEPackageEventHandler noLongerOpenInTools;
         void RegisterUse();
-        event MEPackage.MEPackageEventHandler noLongerUsed;
+        event UnrealPackageFile.MEPackageEventHandler noLongerUsed;
+        List<ME1Explorer.Unreal.Classes.TalkFile> LocalTalkFiles { get; }
     }
 }

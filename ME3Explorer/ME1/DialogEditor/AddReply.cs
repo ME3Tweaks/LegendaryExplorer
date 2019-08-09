@@ -16,7 +16,7 @@ namespace ME1Explorer
     public partial class AddReply : Form
     {
         public ME1BioConversation.EntryListReplyListStruct res;
-        public ME1Package pcc;
+        public IMEPackage pcc;
         public int state = 0;
 
         public AddReply()

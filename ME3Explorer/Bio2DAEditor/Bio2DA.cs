@@ -240,7 +240,7 @@ namespace ME3Explorer
                         {
                             int stringId = cell.GetIntValue();
                             //Unsure if we will have reference to filerefs here depending on which constructor was used. Hopefully we will.
-                            string tlkLookup = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(stringId, export.FileRef.Game, export.FileRef as ME1Package);
+                            string tlkLookup = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(stringId, export.FileRef.Game, export.FileRef);
                             if (tlkLookup != "No Data" && tlkLookup != "")
                             {
                                 worksheet.Cell(rowindex + 2, colindex + 2).Comment.AddText(tlkLookup);

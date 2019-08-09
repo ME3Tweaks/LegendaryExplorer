@@ -18,16 +18,12 @@ namespace ME3Explorer.Packages
         public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
 
         static Func<string, UDKPackage> UDKConstructorDelegate;
-        static Func<string, ME1Package> ME1ConstructorDelegate;
-        static Func<string, ME2Package> ME2ConstructorDelegate;
-        static Func<string, ME3Package> ME3ConstructorDelegate;
+        static Func<string, MEPackage> MEConstructorDelegate;
 
         public static void Initialize()
         {
             UDKConstructorDelegate = UDKPackage.Initialize();
-            ME1ConstructorDelegate = ME1Package.Initialize();
-            ME2ConstructorDelegate = ME2Package.Initialize();
-            ME3ConstructorDelegate = ME3Package.Initialize();
+            MEConstructorDelegate = MEPackage.Initialize();
         }
 
         public static IMEPackage OpenMEPackage(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
@@ -47,17 +43,11 @@ namespace ME3Explorer.Packages
                 }
 
 
-                if (version == 684 && licenseVersion == 194)
+                if (version == 684 && licenseVersion == 194 ||
+                    version == 512 && licenseVersion == 130 ||
+                    version == 491 && licenseVersion == 1008)
                 {
-                    package = ME3ConstructorDelegate(pathToFile);
-                }
-                else if (version == 512 && licenseVersion == 130)
-                {
-                    package = ME2ConstructorDelegate(pathToFile);
-                }
-                else if (version == 491 && licenseVersion == 1008)
-                {
-                    package = ME1ConstructorDelegate(pathToFile);
+                    package = MEConstructorDelegate(pathToFile);
                 }
                 else if (version == 868 && licenseVersion == 0)
                 {
@@ -97,12 +87,12 @@ namespace ME3Explorer.Packages
             return package;
         }
 
-        private static void Package_noLongerUsed(MEPackage sender)
+        private static void Package_noLongerUsed(UnrealPackageFile sender)
         {
-            var package = sender.FilePath;
-            if (Path.GetFileNameWithoutExtension(package) != "Core") //Keep Core loaded as it is very often referenced
+            var packagePath = sender.FilePath;
+            if (Path.GetFileNameWithoutExtension(packagePath) != "Core") //Keep Core loaded as it is very often referenced
             {
-                openPackages.TryRemove(package, out IMEPackage _);
+                openPackages.TryRemove(packagePath, out IMEPackage _);
             }
         }
 
@@ -115,44 +105,44 @@ namespace ME3Explorer.Packages
             }
         }
 
-        private static void Package_noLongerOpenInTools(MEPackage sender)
+        private static void Package_noLongerOpenInTools(UnrealPackageFile sender)
         {
             IMEPackage package = sender as IMEPackage;
             packagesInTools.Remove(package);
-            package.noLongerOpenInTools -= Package_noLongerOpenInTools;
+            sender.noLongerOpenInTools -= Package_noLongerOpenInTools;
 
         }
 
-        public static ME3Package OpenME3Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenME3Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
-            if (pck.Game == MEGame.ME3 && pck is ME3Package pcc)
+            if (pck.Game == MEGame.ME3)
             {
-                return pcc;
+                return pck;
             }
 
             pck.Release(wpfWindow, winForm);
             throw new FormatException("Not an ME3 package file.");
         }
 
-        public static ME2Package OpenME2Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenME2Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
-            if (pck.Game == MEGame.ME2 && pck is ME2Package pcc)
+            if (pck.Game == MEGame.ME2)
             {
-                return pcc;
+                return pck;
             }
 
             pck.Release(wpfWindow, winForm);
             throw new FormatException("Not an ME2 package file.");
         }
 
-        public static ME1Package OpenME1Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenME1Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
-            if (pck.Game == MEGame.ME1 && pck is ME1Package pcc)
+            if (pck.Game == MEGame.ME1)
             {
-                return pcc;
+                return pck;
             }
 
             pck.Release(wpfWindow, winForm);

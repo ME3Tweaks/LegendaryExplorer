@@ -85,7 +85,7 @@ namespace ME3Explorer.Meshplorer2
                                             }
                                             FileInfo f = new FileInfo(loc + "temp\\" + filename);
                                             DebugOutput.PrintLn("checking DLC: " + Path.GetFileName(DLCpath) + " File: " + filename + " Size: " + f.Length + " bytes", count % 3 == 0);
-                                            using (ME3Package pcc = MEPackageHandler.OpenME3Package(loc + "temp\\" + filename))
+                                            using (IMEPackage pcc = MEPackageHandler.OpenME3Package(loc + "temp\\" + filename))
                                             {
                                                 IReadOnlyList<ExportEntry> Exports = pcc.Exports;
                                                 for (int i = 0; i < Exports.Count; i++)
@@ -134,7 +134,7 @@ namespace ME3Explorer.Meshplorer2
                 DebugOutput.PrintLn("Scan file #" + count + " : " + file, count % 10 == 0);
                 try
                 {
-                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
+                    using (IMEPackage pcc = MEPackageHandler.OpenME3Package(file))
                     {
                         IReadOnlyList<ExportEntry> Exports = pcc.Exports;
                         for (int i = 0; i < Exports.Count; i++)
@@ -344,7 +344,7 @@ namespace ME3Explorer.Meshplorer2
                         EntryStruct en = Entries[i];
                         if (!en.isDLC)
                         {
-                            using (ME3Package pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename))
+                            using (IMEPackage pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename))
                             {
                                 if (en.isSkeletal)
                                 {
@@ -390,7 +390,7 @@ namespace ME3Explorer.Meshplorer2
 
                                                 if (en.isSkeletal)
                                                 {
-                                                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(loc + filename))
+                                                    using (IMEPackage pcc = MEPackageHandler.OpenME3Package(loc + filename))
                                                     {
                                                         SkeletalMesh skmesh = new SkeletalMesh(pcc, en.Index);
                                                         CenterView();
@@ -479,7 +479,7 @@ namespace ME3Explorer.Meshplorer2
 
         private void importLODToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ME3Package pcc = null;
+            IMEPackage pcc = null;
             try
             {
                 int n = listBox1.SelectedIndex;

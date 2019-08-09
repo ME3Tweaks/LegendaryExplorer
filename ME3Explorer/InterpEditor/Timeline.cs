@@ -152,7 +152,7 @@ namespace ME3Explorer.Matinee
         public TreeView tree1;
         public TreeView tree2;
 
-        public ME3Package pcc;
+        public IMEPackage pcc;
         public int index;
 
         public List<InterpGroup> InterpGroups;
@@ -186,7 +186,7 @@ namespace ME3Explorer.Matinee
             //AddChild(seperationLine);
         }
 
-        public void LoadInterpData(int idx, ME3Package pccobject)
+        public void LoadInterpData(int idx, IMEPackage pccobject)
         {
             TimeScale.RemoveAllChildren();
             TimeScale.Width = 3600;
@@ -366,7 +366,7 @@ namespace ME3Explorer.Matinee
             }
         }
         
-        public ME3Package pcc;
+        public IMEPackage pcc;
         public int index;
 
         public List<InterpTrack> InterpTracks;
@@ -430,7 +430,7 @@ namespace ME3Explorer.Matinee
             }
         }
 
-        public InterpGroup(int idx, ME3Package pccobj)
+        public InterpGroup(int idx, IMEPackage pccobj)
             : base()
         {
             index = idx;
@@ -744,7 +744,7 @@ namespace ME3Explorer.Matinee
             public float fTime;
             public bool bPreloadFired;
 
-            public TreeNode ToTree(int index, ME3Package pcc)
+            public TreeNode ToTree(int index, IMEPackage pcc)
             {
                 TreeNode root = new TreeNode(index + ": " + fTime);
                 root.Nodes.Add("pObject : " + pObject);
@@ -760,7 +760,7 @@ namespace ME3Explorer.Matinee
         public float m_fSceneLength;
         public float m_fPlayRate = 1;
 
-        public SFXSceneGroup(int idx, ME3Package pccobj)
+        public SFXSceneGroup(int idx, IMEPackage pccobj)
             : base(idx, pccobj)
         {
             LoadData();

@@ -26,7 +26,7 @@ namespace ME1Explorer
 
         public void InitBioTlkFileSet()
         {
-            tlkFileSet = new BioTlkFileSet(Pcc as ME1Package);
+            tlkFileSet = new BioTlkFileSet(Pcc);
             //tlkFiles = new TalkFiles();
             tlkFile = tlkFileSet;
         }
@@ -82,7 +82,7 @@ namespace ME1Explorer
             int n = toolStripComboBox1.SelectedIndex;
             if (n == -1)
                 return;
-            Dialog = new ME1BioConversation(Pcc as ME1Package, Objs[n]);
+            Dialog = new ME1BioConversation(Pcc, Objs[n]);
             tlkFileSet.loadData(Dialog.TlkFileSet - 1);
             if (!ME1TalkFiles.tlkList.Contains(tlkFileSet.talkFiles[tlkFileSet.selectedTLK]))
             {
@@ -107,10 +107,10 @@ namespace ME1Explorer
                 listBox1.Items.Add((count++) + " : " + i);
             count = 0;
             foreach (ME1BioConversation.EntryListStuct e in Dialog.EntryList)
-                treeView1.Nodes.Add(e.ToTree(count++, tlkFile, Pcc as ME1Package));
+                treeView1.Nodes.Add(e.ToTree(count++, tlkFile, Pcc));
             count = 0;
             foreach (ME1BioConversation.ReplyListStruct r in Dialog.ReplyList)
-                treeView2.Nodes.Add(r.ToTree(count++, tlkFile, Pcc as ME1Package));
+                treeView2.Nodes.Add(r.ToTree(count++, tlkFile, Pcc));
             count = 0;
             foreach (ME1BioConversation.SpeakerListStruct sp in Dialog.SpeakerList)
                 listBox2.Items.Add((count++) + " : " + sp.SpeakerTag.InstancedString);
@@ -834,7 +834,7 @@ namespace ME1Explorer
             }
             ME1BioConversation.EntryListStuct el = Dialog.EntryList[Index];
             AddReply ar = new AddReply();
-            ar.pcc = Pcc as ME1Package;
+            ar.pcc = Pcc;
             if (SubIndx != -1)
             {
                 ME1BioConversation.EntryListReplyListStruct tr = el.ReplyList[SubIndx];
@@ -901,7 +901,7 @@ namespace ME1Explorer
                 }
                 else
                 {
-                    Dialog = new ME1BioConversation(Pcc as ME1Package, Dialog.MyIndex);
+                    Dialog = new ME1BioConversation(Pcc, Dialog.MyIndex);
                     RefreshTabs();
                 }
                 updatedExports.Remove(Dialog.MyIndex);

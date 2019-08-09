@@ -9,7 +9,7 @@ namespace ME1Explorer.Unreal.Classes
 {
     public class ME1BioConversation
     {
-        public ME1Package pcc;
+        public IMEPackage pcc;
         public int MyIndex;
         public int Unk1;
         public int TlkFileSet;
@@ -62,7 +62,7 @@ namespace ME1Explorer.Unreal.Classes
             public bool NonTextline;
             public bool IgnoreBodyGestures;
             public int GUIStyleValue;
-            public TreeNode ToTree(int MyIndex, ITalkFile talk, ME1Package pcc)
+            public TreeNode ToTree(int MyIndex, ITalkFile talk, IMEPackage pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
@@ -133,7 +133,7 @@ namespace ME1Explorer.Unreal.Classes
             public bool IgnoreBodyGestures;
             public int GUIStyleValue;
 
-            public TreeNode ToTree(int MyIndex, ITalkFile talk, ME1Package pcc)
+            public TreeNode ToTree(int MyIndex, ITalkFile talk, IMEPackage pcc)
             {
                 string s = "";
                 if (Text.Length != 0)
@@ -164,7 +164,7 @@ namespace ME1Explorer.Unreal.Classes
             }
         }
 
-        public ME1BioConversation(ME1Package Pcc, int Index)
+        public ME1BioConversation(IMEPackage Pcc, int Index)
         {
             pcc = Pcc;
             MyIndex = Index;

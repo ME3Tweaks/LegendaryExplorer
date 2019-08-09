@@ -308,7 +308,7 @@ namespace ME3Explorer.SequenceObjects
                             if ((prop.Name == "m_srValue" || prop.Name == "m_srStringID")
                                 && prop is StringRefProperty strRefProp)
                             {
-                                return TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strRefProp.Value, export.FileRef.Game, export.FileRef as ME1Package);
+                                return TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strRefProp.Value, export.FileRef.Game, export.FileRef);
                             }
                         }
                         return "???";

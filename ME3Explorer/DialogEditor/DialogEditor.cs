@@ -99,10 +99,10 @@ namespace ME3Explorer.DialogEditor
                 startingListBox.Items.Add((count++) + " : " + i);
             count = 0;
             foreach (ME3BioConversation.EntryListStuct e in Dialog.EntryList)
-                entryListTreeView.Nodes.Add(e.ToTree(count++, Pcc as ME3Package));
+                entryListTreeView.Nodes.Add(e.ToTree(count++, Pcc));
             count = 0;
             foreach (ME3BioConversation.ReplyListStruct r in Dialog.ReplyList)
-                replyListTreeView.Nodes.Add(r.ToTree(count++, Pcc as ME3Package));
+                replyListTreeView.Nodes.Add(r.ToTree(count++, Pcc));
             count = 0;
             foreach (NameReference name in Dialog.SpeakerList)
                 speakerListBox.Items.Add($"{count++} : {name.InstancedString}");
@@ -859,7 +859,7 @@ namespace ME3Explorer.DialogEditor
             ME3BioConversation.EntryListStuct el = Dialog.EntryList[Index];
             AddReply ar = new AddReply
             {
-                pcc = Pcc as ME3Package
+                pcc = Pcc
             };
             if (SubIndx != -1)
             {
