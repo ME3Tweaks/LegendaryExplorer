@@ -746,13 +746,6 @@
     <Compile Include="SharedUI\StatusBarGameIDIndicator.xaml.cs">
       <DependentUpon>StatusBarGameIDIndicator.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SubtitleScanner\FileHelpers.cs" />
-    <Compile Include="SubtitleScanner\SubtitleScanner.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SubtitleScanner\SubtitleScanner.Designer.cs">
-      <DependentUpon>SubtitleScanner.cs</DependentUpon>
-    </Compile>
     <Compile Include="Main Window\TaskPane.xaml.cs">
       <DependentUpon>TaskPane.xaml</DependentUpon>
     </Compile>
@@ -1275,9 +1268,6 @@
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SubtitleScanner\SubtitleScanner.resx">
-      <DependentUpon>SubtitleScanner.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="WwiseBankViewer\WwiseViewer.resx">
       <DependentUpon>WwiseViewer.cs</DependentUpon>
     </EmbeddedResource>
@@ -1468,7 +1458,6 @@
     <Resource Include="Resources\psaviewer_256x256.ico" />
     <Resource Include="Resources\pskviewer_256x256.ico" />
     <Resource Include="Resources\scriptdatabase_256x256.ico" />
-    <Resource Include="Resources\subtitlescanner_256x256.ico" />
     <Resource Include="Resources\modmaker_256x256.ico" />
     <Resource Include="Resources\coalescededitor_256x256.ico" />
     <Resource Include="Resources\me2me3tlkeditor_256x256.ico" />

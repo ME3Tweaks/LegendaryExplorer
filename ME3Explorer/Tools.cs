@@ -342,19 +342,6 @@ namespace ME3Explorer
                 subCategory = "Databases",
                 description = "Script Database is used to locate UnrealScript exports across multiple files for ME3. This tool is deprecated and is no longer supported.",
             });
-            set.Add(new Tool
-            {
-                name = "Subtitle Scanner",
-                type = typeof(SubtitleScanner.SubtitleScanner),
-                icon = Application.Current.FindResource("iconSubtitleScanner") as ImageSource,
-                open = () =>
-                {
-                    (new SubtitleScanner.SubtitleScanner()).Show();
-                },
-                tags = new List<string> { "utility", "dialogue", "text", "line" },
-                subCategory = "Explorers",
-                description = "Subtitle Scanner is a utility for ME3 that scans game files for all subtitles and displays the results in a searchable dialog.",
-            });
             #endregion
 
             #region Create Mods
