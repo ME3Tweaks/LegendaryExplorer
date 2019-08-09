@@ -267,6 +267,10 @@ namespace ME3Explorer.Packages
             if (export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null)
             {
                 byte[] binData = export.getBinaryData();
+                if (binData.Length < 44)
+                {
+                    return; //¯\_(ツ)_ /¯
+                }
                 binData.OverwriteRange(44, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 48));
                 export.setBinaryData(binData);
             }
