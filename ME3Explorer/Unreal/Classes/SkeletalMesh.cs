@@ -420,7 +420,6 @@ namespace ME3Explorer.Unreal.Classes
                 //NumTexCoords
                 if (export.Game == MEGame.ME3 || export.Game == MEGame.UDK)
                 {
-                    var nothing = Container + (int)0; //Unknown
                     Debug.WriteLine("Num Texture Coordinates at " + Container.GetPos().ToString("X6"));
                     NumTexCoords = Container + NumTexCoords;
                 }
