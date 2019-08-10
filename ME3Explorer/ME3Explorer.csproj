@@ -774,6 +774,7 @@
     <Compile Include="UnrealScriptControl\UnrealScriptWPF.xaml.cs">
       <DependentUpon>UnrealScriptWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Unreal\BinaryConverters\ExportBinaryConverter.cs" />
     <Compile Include="Unreal\BitConverter.cs" />
     <Compile Include="Unreal\Bytecode.cs" />
     <Compile Include="Unreal\Classes\AnimNodeSlot.cs" />
@@ -788,6 +789,7 @@
     <Compile Include="Unreal\Classes\SkeletalMesh.cs" />
     <Compile Include="Unreal\Classes\StaticMesh.cs" />
     <Compile Include="Unreal\Classes\Texture2D.cs" />
+    <Compile Include="Unreal\BinaryConverters\World.cs" />
     <Compile Include="Unreal\Classes\WwiseBank.cs" />
     <Compile Include="Unreal\Classes\WwiseStream.cs" />
     <Compile Include="Unreal\DLCPackage.cs" />

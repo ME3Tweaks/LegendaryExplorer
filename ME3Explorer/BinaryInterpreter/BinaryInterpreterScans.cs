@@ -1083,7 +1083,7 @@ namespace ME3Explorer
                             new BinInterpNode(bin.Position, $"Plane: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()}, W: {bin.ReadSingle()})"),
                             MakeFloatNode(bin, "ShadowMapScale"),
                             MakeInt32Node(bin, "LightingChannels(Bitfield)"),
-                            Pcc.Game == MEGame.ME3 ? new BinInterpNode(bin.Position, $"iBrushPoly: {bin.ReadInt32()}") : null,
+                            Pcc.Game == MEGame.ME3 ? new BinInterpNode(bin.Position, $"iLightmassIndex: {bin.ReadInt32()}") : null,
                         }.NonNull().ToList()
                     })
                 });
@@ -5306,7 +5306,7 @@ namespace ME3Explorer
                 });
 
                 subnodes.Add(MakeInt32Node(bin, "CachedPhysBSPDataVersion"));
-                subnodes.Add(MakeInt32Node(bin, "CachedPhysBSPDataVersion"));
+                subnodes.Add(MakeInt32Node(bin, "CachedPhysSMDataVersion"));
 
                 int forceStreamTexturesCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"ForceStreamTextures: ({forceStreamTexturesCount = bin.ReadInt32()})")

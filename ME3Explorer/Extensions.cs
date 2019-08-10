@@ -642,6 +642,18 @@ namespace ME3Explorer
             return length < 0 ? stream.ReadStringUnicodeNull(length * -2) : stream.ReadStringASCIINull(length);
         }
 
+        public static void WriteUnrealString(this Stream stream, string value, MEGame game)
+        {
+            if (game == MEGame.ME3)
+            {
+                stream.WriteUnrealStringUnicode(value);
+            }
+            else
+            {
+                stream.WriteUnrealStringASCII(value);
+            }
+        }
+
         public static void WriteUnrealStringASCII(this Stream stream, string value)
         {
             stream.WriteInt32(value.Length + 1);

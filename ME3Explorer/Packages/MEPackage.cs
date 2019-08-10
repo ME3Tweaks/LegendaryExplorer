@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
+using ME3Explorer.Unreal.Classes;
 using StreamHelpers;
 using static ME3Explorer.Unreal.UnrealFlags;
 
@@ -42,7 +44,7 @@ namespace ME3Explorer.Packages
 
     public sealed class MEPackage : UnrealPackageFile, IMEPackage, IDisposable
     {
-        public MEGame Game { get; } //can only be ME1, ME2, or ME3. UDK is a seperate class
+        public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a seperate class
 
         public bool CanReconstruct =>
             Game == MEGame.ME3 ||
@@ -101,21 +103,12 @@ namespace ME3Explorer.Packages
         private int Gen0NameCount;
         private int Gen0NetworkedObjectCount;
         private int ImportExportGuidsOffset;
-        private int ImportGuidsCount;
-        private int ExportGuidsCount;
-        private int ThumbnailTableOffset;
-        private int engineVersion;
-        private int cookedContentVersion;
+        //private int ImportGuidsCount;
+        //private int ExportGuidsCount;
+        //private int ThumbnailTableOffset;
         private uint packageSource;
-        private int unknown1;
-        private int unknown2;
-        private int unknown3;
         private int unknown4;
-        private int unknown5;
         private int unknown6;
-        private int unknown7;
-        private int unknown8;
-        private int unknown9;
         #endregion
 
         static bool isInitialized;
@@ -173,7 +166,7 @@ namespace ME3Explorer.Packages
 
                 if (Game == MEGame.ME3 && Flags.HasFlag(EPackageFlags.Cooked))
                 {
-                    unknown1 = fs.ReadInt32();
+                    fs.SkipInt32(); //always 0
                 }
 
                 NameCount = fs.ReadInt32();
@@ -187,9 +180,9 @@ namespace ME3Explorer.Packages
                 if (Game == MEGame.ME3)
                 {
                     ImportExportGuidsOffset = fs.ReadInt32();
-                    ImportGuidsCount = fs.ReadInt32();
-                    ExportGuidsCount = fs.ReadInt32();
-                    ThumbnailTableOffset = fs.ReadInt32();
+                    fs.SkipInt32(); //ImportGuidsCount always 0
+                    fs.SkipInt32(); //ExportGuidsCount always 0
+                    fs.SkipInt32(); //ThumbnailTableOffset always 0
                 }
 
                 PackageGuid = fs.ReadGuid();
@@ -204,23 +197,23 @@ namespace ME3Explorer.Packages
                 //should never be more than 1 generation, but just in case
                 fs.Skip(generationsTableCount * 12);
 
-                engineVersion = fs.ReadInt32();
-                cookedContentVersion = fs.ReadInt32();
+                fs.SkipInt32();//engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
+                fs.SkipInt32();//cookedContentVersion   so we don't have to read them in
 
                 if (Game == MEGame.ME2 || Game == MEGame.ME1)
                 {
-                    unknown2 = fs.ReadInt32();
-                    unknown3 = fs.ReadInt32();
+                    fs.SkipInt32(); //always 0
+                    fs.SkipInt32(); //always 47699
                     unknown4 = fs.ReadInt32();
-                    unknown5 = fs.ReadInt32();
+                    fs.SkipInt32(); //always 1 in ME1, always 1966080 in ME2
                 }
 
                 unknown6 = fs.ReadInt32();
-                unknown7 = fs.ReadInt32();
+                fs.SkipInt32(); //always -1 in ME1 and ME2, always 145358848 in ME3
 
                 if (Game == MEGame.ME1)
                 {
-                    unknown8 = fs.ReadInt32();
+                    fs.SkipInt32(); //always -1
                 }
 
                 PackageCompressionType = (CompressionType)fs.ReadUInt32();
@@ -232,7 +225,7 @@ namespace ME3Explorer.Packages
 
                 if (Game == MEGame.ME2 || Game == MEGame.ME1)
                 {
-                    unknown9 = fs.ReadInt32();
+                    fs.SkipInt32(); //always 0
                 }
 
                 //Doesn't need to be written out, so it doesn't need to be read in
@@ -421,6 +414,7 @@ namespace ME3Explorer.Packages
         private void WriteHeader(Stream ms)
         {
             ms.WriteUInt32(packageTag);
+            //version
             switch (Game)
             {
                 case MEGame.ME1:
@@ -449,7 +443,7 @@ namespace ME3Explorer.Packages
 
             if (Game == MEGame.ME3 && Flags.HasFlag(EPackageFlags.Cooked))
             {
-                ms.WriteInt32(unknown1);
+                ms.WriteInt32(0);
             }
 
             ms.WriteInt32(NameCount);
@@ -463,9 +457,9 @@ namespace ME3Explorer.Packages
             if (Game == MEGame.ME3)
             {
                 ms.WriteInt32(ImportExportGuidsOffset);
-                ms.WriteInt32(ImportGuidsCount);
-                ms.WriteInt32(ExportGuidsCount);
-                ms.WriteInt32(ThumbnailTableOffset);
+                ms.WriteInt32(0); //ImportGuidsCount
+                ms.WriteInt32(0); //ExportGuidsCount
+                ms.WriteInt32(0); //ThumbnailTableOffset
             }
             ms.WriteGuid(PackageGuid);
 
@@ -475,24 +469,60 @@ namespace ME3Explorer.Packages
             ms.WriteInt32(Gen0NameCount);
             ms.WriteInt32(Gen0NetworkedObjectCount);
 
-            ms.WriteInt32(engineVersion);
-            ms.WriteInt32(cookedContentVersion);
+            //engineVersion and cookedContentVersion
+            switch (Game)
+            {
+                case MEGame.ME1:
+                    ms.WriteInt32(3240);
+                    ms.WriteInt32(47);
+                    break;
+                case MEGame.ME2:
+                    ms.WriteInt32(3607);
+                    ms.WriteInt32(64);
+                    break;
+                case MEGame.ME3:
+                    ms.WriteInt32(6383);
+                    ms.WriteInt32(196715);
+                    break;
+            }
 
 
             if (Game == MEGame.ME2 || Game == MEGame.ME1)
             {
-                ms.WriteInt32(unknown2);
-                ms.WriteInt32(unknown3);
-                ms.WriteInt32(unknown4);
-                ms.WriteInt32(unknown5);
+                ms.WriteInt32(0);
+                ms.WriteInt32(47699); //No idea what this is, but it's always 47699
+                switch (Game)
+                {
+                    case MEGame.ME1:
+                        ms.WriteInt32(0);
+                        ms.WriteInt32(1);
+                        break;
+                    case MEGame.ME2:
+                        ms.WriteInt32(unknown4);
+                        ms.WriteInt32(1966080);
+                        break;
+                }
             }
 
-            ms.WriteInt32(unknown6);
-            ms.WriteInt32(unknown7);
+            switch (Game)
+            {
+                case MEGame.ME1:
+                    ms.WriteInt32(0);
+                    ms.WriteInt32(-1);
+                    break;
+                case MEGame.ME2:
+                    ms.WriteInt32(-1);
+                    ms.WriteInt32(-1);
+                    break;
+                case MEGame.ME3:
+                    ms.WriteInt32(unknown6);
+                    ms.WriteInt32(145358848);
+                    break;
+            }
 
             if (Game == MEGame.ME1)
             {
-                ms.WriteInt32(unknown8);
+                ms.WriteInt32(-1);
             }
 
             ms.WriteUInt32((uint)CompressionType.None);
@@ -502,7 +532,7 @@ namespace ME3Explorer.Packages
 
             if (Game == MEGame.ME2 || Game == MEGame.ME1)
             {
-                ms.WriteInt32(unknown9);
+                ms.WriteInt32(0);
             }
 
             if (Game == MEGame.ME3 || Game == MEGame.ME2)
@@ -890,5 +920,49 @@ namespace ME3Explorer.Packages
             }
         }
 
+
+        public void ConvertTo(MEGame newGame)
+        {
+            var prePropBinary = new List<byte[]>(ExportCount);
+            var propCollections = new List<PropertyCollection>(ExportCount);
+            var postPropBinary = new List<byte[]>(ExportCount);
+            foreach (ExportEntry export in exports)
+            {
+                //convert stack, or just get the pre-prop binary if no stack
+                prePropBinary.Add(ExportBinaryConverter.ConvertPrePropBinary(export, newGame));
+
+                //read in all properties in the old format
+                if (export.ClassName == "Class")
+                {
+                    propCollections.Add(null);
+                }
+                else
+                {
+                    propCollections.Add(export.GetProperties());
+                }
+
+                //convert binary data
+                postPropBinary.Add(ExportBinaryConverter.ConvertPostPropBinary(export, newGame));
+
+                //writes header in whatever format is correct for newGame
+                export.RegenerateHeader(null, null, newGame == MEGame.ME1 || newGame == MEGame.ME2);
+            }
+
+            Game = newGame;
+
+            for (int i = 0; i < exports.Count; i++)
+            {
+                var newData = new MemoryStream();
+                newData.WriteFromBuffer(prePropBinary[i]);
+                //write back properties in new format
+                propCollections[i].WriteTo(newData, this);
+
+                newData.WriteFromBuffer(postPropBinary[i]);
+
+                exports[i].Data = newData.ToArray();
+            }
+
+
+        }
     }
 }

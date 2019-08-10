@@ -689,19 +689,13 @@ namespace ME3Explorer
 
                 List<TreeViewEntry> itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex).ToList();
 
-                if (itemsToTrash[0].Entry is ImportEntry)
-                {
-                    MessageBox.Show("Cannot trash a tree only containing imports.\nTrashing only works if there is at least one export in the subtree.");
-                    return;
-                }
-
                 if (selected.Entry is IEntry ent && ent.GetFullPath.StartsWith("ME3ExplorerTrashPackage"))
                 {
                     MessageBox.Show("Cannot trash an already trashed item.");
                     return;
                 }
 
-                ExportEntry existingTrashTopLevel = Pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == "ME3ExplorerTrashPackage");
+                ExportEntry trashTopLevel = Pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == "ME3ExplorerTrashPackage");
                 ImportEntry packageImport = Pcc.Imports.FirstOrDefault(x => x.GetFullPath == "Core.Package");
                 if (packageImport == null)
                 {
@@ -730,8 +724,7 @@ namespace ME3Explorer
                 }
                 foreach (TreeViewEntry entry in itemsToTrash)
                 {
-                    ExportEntry newTrash = TrashEntry(entry.Entry, existingTrashTopLevel, packageImport.UIndex);
-                    if (existingTrashTopLevel == null) existingTrashTopLevel = newTrash;
+                    trashTopLevel = TrashEntry(entry.Entry, trashTopLevel, packageImport.UIndex);
                 }
             }
         }
@@ -747,6 +740,12 @@ namespace ME3Explorer
         {
             if (entry is ImportEntry imp)
             {
+                if (trashContainer == null)
+                {
+                    trashContainer = TrashEntry(new ExportEntry(Pcc), null, packageClassIdx);
+                    Pcc.addExport(trashContainer);
+                    trashContainer.indexValue = 0;
+                }
                 imp.idxClassName = Pcc.FindNameOrAdd("Package");
                 imp.idxPackageFile = Pcc.FindNameOrAdd("Core");
                 imp.idxLink = trashContainer.UIndex;
@@ -774,7 +773,7 @@ namespace ME3Explorer
                         Debugger.Break();
                     }
                     exp.PackageGUID = ToGuid("ME3ExpTrashPackage"); //DO NOT EDIT THIS!!
-                    return exp;
+                    trashContainer = exp;
                 }
                 else
                 {
@@ -788,7 +787,7 @@ namespace ME3Explorer
                     exp.PackageGUID = Guid.Empty;
                 }
             }
-            return null;
+            return trashContainer;
         }
 
         public static Guid ToGuid(string src)
@@ -4079,6 +4078,30 @@ namespace ME3Explorer
             BusyText = "Scanning";
             Task.Run(() =>
             {
+                var unknown4ME2Set = new HashSet<int>();
+                var me2FlagsDict = new Dictionary<int, EPackageFlags>
+                {
+                    [104398850] = (EPackageFlags)0xFFFFFFFF,
+                    [104857600] = (EPackageFlags)0xFFFFFFFF,
+                    [104857603] = (EPackageFlags)0xFFFFFFFF,
+                    [104398851] = (EPackageFlags)0xFFFFFFFF,
+                    [105119752] = (EPackageFlags)0xFFFFFFFF,
+                    [105119751] = (EPackageFlags)0xFFFFFFFF,
+                    [105119744] = (EPackageFlags)0xFFFFFFFF,
+                    [105054209] = (EPackageFlags)0xFFFFFFFF,
+                    [104529921] = (EPackageFlags)0xFFFFFFFF,
+                    [105119746] = (EPackageFlags)0xFFFFFFFF,
+                };
+                var unknown6ME3Set = new HashSet<int>();
+                var me3FlagsDict = new Dictionary<int, EPackageFlags>
+                {
+                    [355663872] = (EPackageFlags) 0xFFFFFFFF,
+                    [355663876] = (EPackageFlags) 0xFFFFFFFF,
+                    [355663879] = (EPackageFlags) 0xFFFFFFFF,
+                    [355663877] = (EPackageFlags) 0xFFFFFFFF,
+                    [355663874] = (EPackageFlags) 0xFFFFFFFF,
+                    [355663881] = (EPackageFlags) 0xFFFFFFFF,
+                };
                 foreach (string filePath in filePaths)
                 {
                     //ScanShaderCache(filePath);
@@ -4111,7 +4134,7 @@ namespace ME3Explorer
 
                             if (meGame == MEGame.ME3 && flags.HasFlag(EPackageFlags.Cooked))
                             {
-                                uint unknown1 = fs.ReadUInt32();
+                                int unknown1 = fs.ReadInt32();
                             }
 
                             uint nameCount = fs.ReadUInt32();
@@ -4140,23 +4163,33 @@ namespace ME3Explorer
                                 uint generationNetcount = fs.ReadUInt32();
                             }
 
-                            uint engineVersion = fs.ReadUInt32();
-                            uint cookedContentVersion = fs.ReadUInt32();
+                            int engineVersion = fs.ReadInt32();
+                            int cookedContentVersion = fs.ReadInt32();
 
                             if (meGame == MEGame.ME2 || meGame == MEGame.ME1)
                             {
-                                uint dependencyTableOffset2 = fs.ReadUInt32();
                                 int unknown2 = fs.ReadInt32();
                                 int unknown3 = fs.ReadInt32();
                                 int unknown4 = fs.ReadInt32();
+                                int unknown5 = fs.ReadInt32();
+                                if (meGame == MEGame.ME2)
+                                {
+                                    unknown4ME2Set.Add(unknown4);
+                                    me2FlagsDict[unknown4] &= flags;
+                                }
                             }
 
-                            int unknown5 = fs.ReadInt32();
                             int unknown6 = fs.ReadInt32();
+                            int unknown7 = fs.ReadInt32();
+                            if (meGame == MEGame.ME3)
+                            {
+                                unknown6ME3Set.Add(unknown6);
+                                me3FlagsDict[unknown6] &= flags;
+                            }
 
                             if (meGame == MEGame.ME1)
                             {
-                                int unknown7 = fs.ReadInt32();
+                                int unknown8 = fs.ReadInt32();
                             }
 
                             CompressionType compressionType = (CompressionType)fs.ReadUInt32();
@@ -4174,7 +4207,7 @@ namespace ME3Explorer
 
                             if (meGame == MEGame.ME2 || meGame == MEGame.ME1)
                             {
-                                int unknown8 = fs.ReadInt32();
+                                int unknown9 = fs.ReadInt32();
                             }
 
                             if (meGame == MEGame.ME2 || meGame == MEGame.ME3)
@@ -4194,26 +4227,24 @@ namespace ME3Explorer
                                     }
                                 }
                             }
-                            if (numChunks == 0)
-                            {
-                                if (nameOffset != fs.Position)
-                                {
-                                    interestingExports.Add($"{filePath}");
-                                    break;
-                                }
-                            }
-                            else if(numChunks > 0 && compressedOffsets[0] != fs.Position)
-                            {
-                                interestingExports.Add($"{filePath}");
-                                break;
-                            }
                         }
                     }
-                    catch (Exception exception)
+                    catch (Exception exception) when (!App.IsDebug)
                     {
                         interestingExports.Add($"{filePath}\n{exception}");
                         break;
                     }
+                }
+
+                interestingExports.Add($"unknown4 ME2: {string.Join(", ", unknown4ME2Set)}");
+                foreach ((int unknown, EPackageFlags value) in me2FlagsDict)
+                {
+                    interestingExports.Add($"{unknown}: {value}");
+                }
+                interestingExports.Add($"unknown6 ME3: {string.Join(", ", unknown6ME3Set)}");
+                foreach ((int unknown, EPackageFlags value) in me3FlagsDict)
+                {
+                    interestingExports.Add($"{unknown}: {value}");
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
@@ -4776,6 +4807,32 @@ namespace ME3Explorer
                     IsBusy = false;
                     MessageBox.Show(this, "Done!");
                 });
+            }
+        }
+
+        private void ConvertToDifferentGameFormat_Click(object sender, RoutedEventArgs e)
+        {
+            if (Pcc is MEPackage pcc)
+            {
+                var gameString = InputComboBoxWPF.GetValue(this, "Which game's format do you want to convert to?",
+                                                           new[] { "ME1", "ME2", "ME3" }, "ME2");
+                if (Enum.TryParse(gameString, out MEGame game))
+                {
+                    IsBusy = true;
+                    BusyText = $"Making all {gameString} dialogue skippable";
+                    Task.Run(() =>
+                    {
+                        pcc.ConvertTo(game);
+                    }).ContinueWithOnUIThread(prevTask =>
+                    {
+                        IsBusy = false;
+                        MessageBox.Show(this, "Done!");
+                    });
+                }
+            }
+            else
+            {
+                MessageBox.Show(this, "Can only convert Mass Effect files!");
             }
         }
     }

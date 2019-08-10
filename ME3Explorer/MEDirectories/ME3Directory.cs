@@ -16,7 +16,7 @@ namespace ME3Explorer
         {
             get
             {
-                if (_gamePath == null)
+                if (string.IsNullOrEmpty(_gamePath))
                     return null;
                 return Path.GetFullPath(_gamePath); //normalize
             }

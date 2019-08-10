@@ -24,10 +24,13 @@ namespace ME3Explorer.Packages
         {
             FileRef = file;
             OriginalDataSize = 0;
+            Header = new byte[HasComponentMap ? 72 : 68];
         }
 
-        public ExportEntry(IMEPackage file, Stream stream) : this(file)
+        public ExportEntry(IMEPackage file, Stream stream)
         {
+            FileRef = file;
+            OriginalDataSize = 0;
             HeaderOffset = (uint)stream.Position;
             switch (file.Game)
             {
@@ -121,19 +124,19 @@ namespace ME3Explorer.Packages
             return _header.TypedClone();
         }
 
-        private void RegenerateHeader(List<KeyValuePair<NameReference, int>> componentMap, int[] generationNetObjectCount)
+        public void RegenerateHeader(List<KeyValuePair<NameReference, int>> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null)
         {
             var bin = new MemoryStream();
             bin.WriteInt32(idxClass);
             bin.WriteInt32(idxClassParent);
             bin.WriteInt32(idxLink);
             bin.WriteInt32(idxObjectName);
+            bin.WriteInt32(indexValue);
             bin.WriteInt32(idxArchtype);
-            bin.WriteInt32(idxClass);
             bin.WriteUInt64((ulong)ObjectFlags);
             bin.WriteInt32(DataSize);
             bin.WriteInt32(DataOffset);
-            if (HasComponentMap)
+            if (hasComponentMap ?? HasComponentMap)
             {
                 List<KeyValuePair<NameReference, int>> cmpMap = componentMap ?? ComponentMap;
                 bin.WriteInt32(cmpMap.Count);
