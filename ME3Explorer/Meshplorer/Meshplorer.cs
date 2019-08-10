@@ -189,33 +189,40 @@ namespace ME3Explorer.Meshplorer
         {
             DisableLODs();
             UnCheckLODs();
-            skm = new SkeletalMesh(Pcc, index);
+            try
+            {
+                skm = new SkeletalMesh(Pcc, index);
 
-            // Load preview model
-            preview?.Dispose();
-            preview = new ModelPreview(view.Device, skm, view.TextureCache);
-            RefreshChosenMaterialsList();
-            CenterView();
+                // Load preview model
+                preview?.Dispose();
+                preview = new ModelPreview(view.Device, skm, view.TextureCache);
+                RefreshChosenMaterialsList();
+                CenterView();
 
-            // Update treeview
-            treeView1.BeginUpdate();
-            treeView1.Nodes.Clear();
-            treeView1.Nodes.Add(skm.ToTree());
-            treeView1.Nodes[0].Expand();
-            treeView1.EndUpdate();
-            lODToolStripMenuItem.Visible = true;
-            lOD0ToolStripMenuItem.Enabled = true;
-            lOD0ToolStripMenuItem.Checked = true;
-            if (skm.LODModels.Count > 1)
-                lOD1ToolStripMenuItem.Enabled = true;
-            if (skm.LODModels.Count > 2)
-                lOD2ToolStripMenuItem.Enabled = true;
-            if (skm.LODModels.Count > 3)
-                lOD3ToolStripMenuItem.Enabled = true;
-            MaterialBox.Visible = false;
-            MaterialApplyButton.Visible = false;
-            MaterialIndexBox.Visible = false;
-            MaterialIndexApplyButton.Visible = false;
+                // Update treeview
+                treeView1.BeginUpdate();
+                treeView1.Nodes.Clear();
+                treeView1.Nodes.Add(skm.ToTree());
+                treeView1.Nodes[0].Expand();
+                treeView1.EndUpdate();
+                lODToolStripMenuItem.Visible = true;
+                lOD0ToolStripMenuItem.Enabled = true;
+                lOD0ToolStripMenuItem.Checked = true;
+                if (skm.LODModels.Count > 1)
+                    lOD1ToolStripMenuItem.Enabled = true;
+                if (skm.LODModels.Count > 2)
+                    lOD2ToolStripMenuItem.Enabled = true;
+                if (skm.LODModels.Count > 3)
+                    lOD3ToolStripMenuItem.Enabled = true;
+                MaterialBox.Visible = false;
+                MaterialApplyButton.Visible = false;
+                MaterialIndexBox.Visible = false;
+                MaterialIndexApplyButton.Visible = false;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(e));
+            }
         }
 
         public float dir;
