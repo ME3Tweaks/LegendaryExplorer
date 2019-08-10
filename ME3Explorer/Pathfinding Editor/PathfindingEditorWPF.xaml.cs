@@ -1753,7 +1753,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 var referencemap = new Dictionary<int, List<ExportEntry>>(); //node index mapped to list of things referencing it
                 foreach (ExportEntry export in Pcc.Exports)
                 {
-                    if (export.ClassName == "SFXSeqEvt_Touch" || export.ClassName.StartsWith("SeqVar") || export.ClassName.StartsWith("SFXSeq"))
+
+                    if (export.ClassName == "SeqEvent_Touch"  ||export.ClassName == "SFXSeqEvt_Touch" || export.ClassName.StartsWith("SeqVar") || export.ClassName.StartsWith("SFXSeq"))
                     {
                         var props = export.GetProperties();
 
