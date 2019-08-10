@@ -11,7 +11,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] memory;
         public int memsize;
         public int index;
-        public List<TextureParam> Textures;
+        public List<TextureParam> Textures = new List<TextureParam>();
 
         public struct TextureParam
         {
@@ -19,14 +19,15 @@ namespace ME3Explorer.Unreal.Classes
             public string Desc;
         }
 
-        public MaterialInstanceConstant(IMEPackage Pcc,int Idx)
+        public MaterialInstanceConstant(IMEPackage Pcc, int Idx)
         {
-            
+
             pcc = Pcc;
             index = Idx;
             memory = pcc.Exports[index].Data;
             memsize = memory.Length;
-            if (pcc.getExport(index).GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> paramVals)
+            var export = pcc.getExport(index);
+            if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> paramVals)
             {
                 foreach (StructProperty paramVal in paramVals)
                 {

@@ -128,7 +128,7 @@ namespace ME3Explorer.Scene3D
             int id = 0;
 
             // First, check the pcc that contains the material
-            using (ME3Package pcc = MEPackageHandler.OpenME3Package(ImportPCC))
+            using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(ImportPCC))
             {
                 foreach (ExportEntry exp in pcc.Exports)
                 {

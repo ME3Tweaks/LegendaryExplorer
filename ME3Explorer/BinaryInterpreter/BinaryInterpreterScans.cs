@@ -4408,7 +4408,7 @@ namespace ME3Explorer
                         string name = CurrentLoadedExport.FileRef.getNameEntry(nameindex);
                         subnodes.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Camera: {name}_{nameindexunreal}",
+                            Header = $"{(pos - binarystart):X4} Camera: {name}_{nameindexunreal}",
                             Name = $"_{pos.ToString()}",
                             Tag = NodeType.StructLeafName
                         });
@@ -4424,7 +4424,7 @@ namespace ME3Explorer
                         int count = BitConverter.ToInt32(data, pos);
                         subnodes.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Count: {count}",
+                            Header = $"{(pos - binarystart):X4} Count: {count}",
                             Name = $"_{pos.ToString()}"
                         });
                         pos += 4;
@@ -4444,7 +4444,7 @@ namespace ME3Explorer
                                 nameindexunreal = BitConverter.ToInt32(data, pos + 4);
                                 BinInterpNode parentnode = new BinInterpNode
                                 {
-                                    Header = $"{pos:X4} Camera {i + 1}: {CurrentLoadedExport.FileRef.getNameEntry(nameindex)}_{nameindexunreal}",
+                                    Header = $"{(pos - binarystart):X4} Camera {i + 1}: {CurrentLoadedExport.FileRef.getNameEntry(nameindex)}_{nameindexunreal}",
                                     Tag = NodeType.StructLeafName,
                                     Name = $"_{pos.ToString()}"
                                 };
@@ -5120,7 +5120,7 @@ namespace ME3Explorer
                 int count = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} count: {count}",
+                    Header = $"{(pos - binarystart):X4} count: {count}",
                     Name = "_" + pos,
 
                 });
@@ -5132,7 +5132,7 @@ namespace ME3Explorer
                     Guid guid = new Guid(data.Skip(pos + 8).Take(16).ToArray());
                     subnodes.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} {CurrentLoadedExport.FileRef.getNameEntry(nameRef)}_{nameIdx}: {{{guid}}}",
+                        Header = $"{(pos - binarystart):X4} {CurrentLoadedExport.FileRef.getNameEntry(nameRef)}_{nameIdx}: {{{guid}}}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafName
@@ -5673,7 +5673,7 @@ namespace ME3Explorer
                 int count = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} Count: {count}",
+                    Header = $"{(pos - binarystart):X4} Count: {count}",
                     Name = "_" + pos
 
                 });
@@ -5683,7 +5683,7 @@ namespace ME3Explorer
                     var exportRef = BitConverter.ToInt32(data, pos);
                     subnodes.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4}: {exportRef} Prefab: {CurrentLoadedExport.FileRef.getEntry(exportRef).GetFullPath}",
+                        Header = $"{(pos - binarystart):X4}: {exportRef} Prefab: {CurrentLoadedExport.FileRef.getEntry(exportRef).GetFullPath}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafObject
@@ -5694,7 +5694,7 @@ namespace ME3Explorer
                     {
                         (subnodes.Last() as BinInterpNode).Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4}: {exportRef} Level Object: Null",
+                            Header = $"{(pos - binarystart):X4}: {exportRef} Level Object: Null",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafObject
@@ -5704,7 +5704,7 @@ namespace ME3Explorer
                     {
                         (subnodes.Last() as BinInterpNode).Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4}: {exportRef} Level Object: {CurrentLoadedExport.FileRef.getEntry(exportRef).GetFullPath}",
+                            Header = $"{(pos - binarystart):X4}: {exportRef} Level Object: {CurrentLoadedExport.FileRef.getEntry(exportRef).GetFullPath}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafObject
@@ -5734,7 +5734,7 @@ namespace ME3Explorer
                 int count = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} Material Count: {count}",
+                    Header = $"{(pos - binarystart):X4} Material Count: {count}",
                     Name = "_" + pos,
 
                 });
@@ -5744,7 +5744,7 @@ namespace ME3Explorer
                     int material = BitConverter.ToInt32(data, pos);
                     subnodes.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Material: ({material}) {CurrentLoadedExport.FileRef.getEntry(material)?.GetFullPath ?? ""}",
+                        Header = $"{(pos - binarystart):X4} Material: ({material}) {CurrentLoadedExport.FileRef.getEntry(material)?.GetFullPath ?? ""}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafObject
@@ -5777,7 +5777,7 @@ namespace ME3Explorer
                 pos += 4;
                 BoundingBox.Items.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} Origin: X:({boxoriginX}) Y:({boxoriginY}) Z:({boxoriginZ})",
+                    Header = $"{(pos - binarystart):X4} Origin: X:({boxoriginX}) Y:({boxoriginY}) Z:({boxoriginZ})",
                     Name = "_" + pos,
 
                     Tag = NodeType.Unknown
@@ -5793,7 +5793,7 @@ namespace ME3Explorer
                 pos += 4;
                 BoundingBox.Items.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} Size: X:({sizeX}) Y:({sizeY}) Z:({sizeZ})",
+                    Header = $"{(pos - binarystart):X4} Size: X:({sizeX}) Y:({sizeY}) Z:({sizeZ})",
                     Name = "_" + pos,
 
                     Tag = NodeType.Unknown
@@ -5804,7 +5804,7 @@ namespace ME3Explorer
                 pos += 4;
                 BoundingBox.Items.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} Radius: R:({radius}) ",
+                    Header = $"{(pos - binarystart):X4} Radius: R:({radius}) ",
                     Name = "_" + pos,
 
                     Tag = NodeType.Unknown
@@ -5813,7 +5813,7 @@ namespace ME3Explorer
                 //Materials (again)
                 var materials = new BinInterpNode
                 {
-                    Header = $"{pos:X4} Materials: {count}",
+                    Header = $"{(pos - binarystart):X4} Materials: {count}",
                     Name = "_" + pos,
                     Tag = NodeType.StructLeafInt
                 };
@@ -5824,7 +5824,7 @@ namespace ME3Explorer
                     int material = BitConverter.ToInt32(data, pos);
                     materials.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Material: ({material}) {CurrentLoadedExport.FileRef.getEntry(material)?.GetFullPath ?? ""}",
+                        Header = $"{(pos - binarystart):X4} Material: ({material}) {CurrentLoadedExport.FileRef.getEntry(material)?.GetFullPath ?? ""}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafObject
@@ -5849,7 +5849,7 @@ namespace ME3Explorer
                 pos += 4;
                 skmLocation.Items.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} Origin: X:({originX}) Y:({originY}) Z:({originZ})",
+                    Header = $"{(pos - binarystart):X4} Origin: X:({originX}) Y:({originY}) Z:({originZ})",
                     Name = "_" + pos,
 
                     Tag = NodeType.Unknown
@@ -5864,7 +5864,7 @@ namespace ME3Explorer
                 pos += 4;
                 skmLocation.Items.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} Rotation: X:({rotX}) Y:({rotY}) Z:({rotZ})",
+                    Header = $"{(pos - binarystart):X4} Rotation: X:({rotX}) Y:({rotY}) Z:({rotZ})",
                     Name = "_" + pos,
 
                     Tag = NodeType.Unknown
@@ -5874,7 +5874,7 @@ namespace ME3Explorer
                 int bCount = BitConverter.ToInt32(data, pos);
                 var bones = new BinInterpNode
                 {
-                    Header = $"{pos:X4} Bones: {bCount}",
+                    Header = $"{(pos - binarystart):X4} Bones: {bCount}",
                     Name = "_" + pos,
                     Tag = NodeType.StructLeafInt
                 };
@@ -5888,7 +5888,7 @@ namespace ME3Explorer
                     pos -= 4; //reset to start for leaf
                     var nBoneNode = new BinInterpNode
                     {
-                        Header = $"{pos:X4} Bone {b}: ({nBone}) {CurrentLoadedExport.FileRef.getNameEntry(nBone)} _ {nBoneidx}",
+                        Header = $"{(pos - binarystart):X4} Bone {b}: ({nBone}) {CurrentLoadedExport.FileRef.getNameEntry(nBone)} _ {nBoneidx}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafName
@@ -5899,7 +5899,7 @@ namespace ME3Explorer
                     int unk1 = BitConverter.ToInt32(data, pos);
                     nBoneNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Unknown1: {unk1}",
+                        Header = $"{(pos - binarystart):X4} Unknown1: {unk1}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt
@@ -5909,7 +5909,7 @@ namespace ME3Explorer
                     float orientX = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Orientation: X: {orientX}",
+                        Header = $"{(pos - binarystart):X4} Orientation: X: {orientX}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafFloat
@@ -5919,7 +5919,7 @@ namespace ME3Explorer
                     float orientY = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Y: {orientY}",
+                        Header = $"{(pos - binarystart):X4} Y: {orientY}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafFloat
@@ -5929,7 +5929,7 @@ namespace ME3Explorer
                     float orientZ = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Z: {orientZ}",
+                        Header = $"{(pos - binarystart):X4} Z: {orientZ}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafFloat
@@ -5939,7 +5939,7 @@ namespace ME3Explorer
                     float orientW = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} W: {orientW}",
+                        Header = $"{(pos - binarystart):X4} W: {orientW}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafFloat
@@ -5949,7 +5949,7 @@ namespace ME3Explorer
                     float posX = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Position: X: {posX}",
+                        Header = $"{(pos - binarystart):X4} Position: X: {posX}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafFloat
@@ -5959,7 +5959,7 @@ namespace ME3Explorer
                     float posY = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Y: {posY}",
+                        Header = $"{(pos - binarystart):X4} Y: {posY}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafFloat
@@ -5969,7 +5969,7 @@ namespace ME3Explorer
                     float posZ = BitConverter.ToSingle(data, pos);
                     nBoneNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Z: {posZ}",
+                        Header = $"{(pos - binarystart):X4} Z: {posZ}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafFloat
@@ -5979,7 +5979,7 @@ namespace ME3Explorer
                     int nChildren = BitConverter.ToInt32(data, pos);
                     nBoneNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Children: {nChildren}",
+                        Header = $"{(pos - binarystart):X4} Children: {nChildren}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt
@@ -5989,7 +5989,7 @@ namespace ME3Explorer
                     int bnParent = BitConverter.ToInt32(data, pos);
                     nBoneNode.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Parent Bone: {bnParent}",
+                        Header = $"{(pos - binarystart):X4} Parent Bone: {bnParent}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt
@@ -6001,7 +6001,7 @@ namespace ME3Explorer
                         int bnColor = BitConverter.ToInt32(data, pos);
                         nBoneNode.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Color: {bnColor}",
+                            Header = $"{(pos - binarystart):X4} Color: {bnColor}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt
@@ -6012,7 +6012,7 @@ namespace ME3Explorer
                 int bnDepth = BitConverter.ToInt32(data, pos);
                 bones.Items.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} Bone Depth: {bnDepth}",
+                    Header = $"{(pos - binarystart):X4} Bone Depth: {bnDepth}",
                     Name = "_" + pos,
 
                     Tag = NodeType.StructLeafInt
@@ -6020,10 +6020,11 @@ namespace ME3Explorer
                 pos += 4;
 
                 //LOD DATA
+
                 int lodCount = BitConverter.ToInt32(data, pos);
                 var lods = new BinInterpNode
                 {
-                    Header = $"{pos:X4} Levels of Detail (LODs): {lodCount}",
+                    Header = $"{(pos - binarystart):X4} Levels of Detail (LODs): {lodCount}",
                     Name = "_" + pos,
 
                     Tag = NodeType.StructLeafInt
@@ -6035,7 +6036,7 @@ namespace ME3Explorer
                 {
                     var nLOD = new BinInterpNode
                     {
-                        Header = $"{pos:X4} LOD {lod}",
+                        Header = $"{(pos - binarystart):X4} LOD {lod}",
                         Name = "_" + pos,
 
                         Tag = NodeType.Unknown
@@ -6045,7 +6046,7 @@ namespace ME3Explorer
                     int sectionCt = BitConverter.ToInt32(data, pos); // Sections
                     var sections = new BinInterpNode
                     {
-                        Header = $"{pos:X4} Sections: {sectionCt}",
+                        Header = $"{(pos - binarystart):X4} Sections: {sectionCt}",
                         Name = "_" + pos,
 
                         Tag = NodeType.Unknown
@@ -6057,7 +6058,7 @@ namespace ME3Explorer
                     {
                         var nSection = new BinInterpNode
                         {
-                            Header = $"{pos:X4} Section: {sc}",
+                            Header = $"{(pos - binarystart):X4} Section: {sc}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6069,7 +6070,7 @@ namespace ME3Explorer
                             int mat = BitConverter.ToInt16(data, pos);
                             nSection.Items.Add(new BinInterpNode
                             {
-                                Header = $"{pos:X4} Material Index: {mat}",
+                                Header = $"{(pos - binarystart):X4} Material Index: {mat}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.StructLeafInt,
@@ -6079,7 +6080,7 @@ namespace ME3Explorer
                             int chunk = BitConverter.ToInt16(data, pos);
                             nSection.Items.Add(new BinInterpNode
                             {
-                                Header = $"{pos:X4} Chunk Index: {chunk}",
+                                Header = $"{(pos - binarystart):X4} Chunk Index: {chunk}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.StructLeafInt,
@@ -6089,7 +6090,7 @@ namespace ME3Explorer
                             int baseidx = BitConverter.ToInt32(data, pos);
                             nSection.Items.Add(new BinInterpNode
                             {
-                                Header = $"{pos:X4} Base Index: {baseidx}",
+                                Header = $"{(pos - binarystart):X4} Base Index: {baseidx}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.StructLeafInt,
@@ -6099,7 +6100,7 @@ namespace ME3Explorer
                             int nTriangles = BitConverter.ToInt16(data, pos); //Section Triangles
                             nSection.Items.Add(new BinInterpNode
                             {
-                                Header = $"{pos:X4} Triangles: {nTriangles}",
+                                Header = $"{(pos - binarystart):X4} Triangles: {nTriangles}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.StructLeafInt,
@@ -6109,7 +6110,7 @@ namespace ME3Explorer
                             bool bSortTri = BitConverter.ToBoolean(data, pos);
                             nSection.Items.Add(new BinInterpNode
                             {
-                                Header = $"{pos:X4} Sort Triangles: {bSortTri}",
+                                Header = $"{(pos - binarystart):X4} Sort Triangles: {bSortTri}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.StructLeafBool,
@@ -6121,7 +6122,7 @@ namespace ME3Explorer
                             int chunk = BitConverter.ToInt32(data, pos);
                             nSection.Items.Add(new BinInterpNode
                             {
-                                Header = $"{pos:X4} Chunk Index: {chunk}",
+                                Header = $"{(pos - binarystart):X4} Chunk Index: {chunk}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.StructLeafInt,
@@ -6131,7 +6132,7 @@ namespace ME3Explorer
                             int baseidx = BitConverter.ToInt32(data, pos);
                             nSection.Items.Add(new BinInterpNode
                             {
-                                Header = $"{pos:X4} Base Index: {baseidx}",
+                                Header = $"{(pos - binarystart):X4} Base Index: {baseidx}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.StructLeafInt,
@@ -6162,7 +6163,7 @@ namespace ME3Explorer
 
                     var idxHeader = new BinInterpNode // Multi-size index container
                     {
-                        Header = $"{pos:X4} Multi-size index container",
+                        Header = $"{(pos - binarystart):X4} Multi-size index container",
                         Name = "_" + pos,
 
                         Tag = NodeType.Unknown
@@ -6174,7 +6175,7 @@ namespace ME3Explorer
                         int iCPU = BitConverter.ToInt32(data, pos);
                         idxHeader.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Needs CPU Access: {iCPU}",
+                            Header = $"{(pos - binarystart):X4} Needs CPU Access: {iCPU}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6184,7 +6185,7 @@ namespace ME3Explorer
                         byte dataType = data[pos]; //Single byte
                         idxHeader.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Datatype Size: {dataType}",
+                            Header = $"{(pos - binarystart):X4} Datatype Size: {dataType}",
                             Name = "_" + pos,
 
                             Tag = NodeType.Unknown,
@@ -6196,7 +6197,7 @@ namespace ME3Explorer
                     int idxSize = BitConverter.ToInt32(data, pos); // Index Size
                     idxHeader.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} IndexSize: {idxSize}",
+                        Header = $"{(pos - binarystart):X4} IndexSize: {idxSize}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -6206,7 +6207,7 @@ namespace ME3Explorer
                     int countIdx = BitConverter.ToInt32(data, pos); // Index count
                     var indexes = new BinInterpNode
                     {
-                        Header = $"{pos:X4} Indexes: {countIdx}",
+                        Header = $"{(pos - binarystart):X4} Indexes: {countIdx}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -6219,7 +6220,7 @@ namespace ME3Explorer
                         int nIndex = BitConverter.ToInt16(data, pos);  //Index size = 2 (so int16)
                         indexes.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} {ic} : {nIndex}",
+                            Header = $"{(pos - binarystart):X4} {ic} : {nIndex}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6232,7 +6233,7 @@ namespace ME3Explorer
                         int Unknown1 = BitConverter.ToInt32(data, pos); // Unknown 1 not UDK
                         var UnkList1 = new BinInterpNode
                         {
-                            Header = $"{pos:X4} Unknown 1 List: {Unknown1}",
+                            Header = $"{(pos - binarystart):X4} Unknown 1 List: {Unknown1}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6245,7 +6246,7 @@ namespace ME3Explorer
                             int ukIndex = BitConverter.ToInt16(data, pos);  //int16 unknown
                             UnkList1.Items.Add(new BinInterpNode
                             {
-                                Header = $"{pos:X4} {uk1} : {ukIndex}",
+                                Header = $"{(pos - binarystart):X4} {uk1} : {ukIndex}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.StructLeafInt,
@@ -6257,7 +6258,7 @@ namespace ME3Explorer
                     int nActBones = BitConverter.ToInt32(data, pos); // Active Bones
                     var ActBones = new BinInterpNode
                     {
-                        Header = $"{pos:X4} Active Bones: {nActBones}",
+                        Header = $"{(pos - binarystart):X4} Active Bones: {nActBones}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -6270,7 +6271,7 @@ namespace ME3Explorer
                         int abIndex = BitConverter.ToInt16(data, pos);  // int16 = me3
                         ActBones.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} {ab} : {abIndex}",
+                            Header = $"{(pos - binarystart):X4} {ab} : {abIndex}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6283,7 +6284,7 @@ namespace ME3Explorer
                         int Unknown2 = BitConverter.ToInt32(data, pos); // Unknown 2 Not in UDK
                         var UnkList2 = new BinInterpNode
                         {
-                            Header = $"{pos:X4} Unknown 2 Bool List: {Unknown2}",
+                            Header = $"{(pos - binarystart):X4} Unknown 2 Bool List: {Unknown2}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6296,7 +6297,7 @@ namespace ME3Explorer
                             bool uk2Bool = BitConverter.ToBoolean(data, pos);  //Bool unknown
                             UnkList2.Items.Add(new BinInterpNode
                             {
-                                Header = $"{pos:X4} {uk2} : {uk2Bool}",
+                                Header = $"{(pos - binarystart):X4} {uk2} : {uk2Bool}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.StructLeafBool,
@@ -6309,7 +6310,7 @@ namespace ME3Explorer
                     int chunkCt = BitConverter.ToInt32(data, pos);
                     var chunks = new BinInterpNode
                     {
-                        Header = $"{pos:X4} Chunks: {chunkCt}",
+                        Header = $"{(pos - binarystart):X4} Chunks: {chunkCt}",
                         Name = "_" + pos,
 
                         Tag = NodeType.Unknown
@@ -6321,7 +6322,7 @@ namespace ME3Explorer
                     {
                         var nChunk = new BinInterpNode
                         {
-                            Header = $"{pos:X4} Chunk: {cc}",
+                            Header = $"{(pos - binarystart):X4} Chunk: {cc}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6331,7 +6332,7 @@ namespace ME3Explorer
                         int basevertexidx = BitConverter.ToInt32(data, pos);
                         nChunk.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Base Vertex Index: {basevertexidx}",
+                            Header = $"{(pos - binarystart):X4} Base Vertex Index: {basevertexidx}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6341,7 +6342,7 @@ namespace ME3Explorer
                         int rigidskinVertex = BitConverter.ToInt32(data, pos); //Rigid vertices collection
                         var rigidvertices = new BinInterpNode
                         {
-                            Header = $"{pos:X4} Rigid Skin Vertices: {rigidskinVertex}",
+                            Header = $"{(pos - binarystart):X4} Rigid Skin Vertices: {rigidskinVertex}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6392,7 +6393,7 @@ namespace ME3Explorer
 
                                 rigidvertices.Items.Add(new BinInterpNode
                                 {
-                                    Header = $"{pos:X4} {rv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ} UV(0) U:{uv1U} W:{uv1U} UV(1) U:{uv2U} W:{uv2U} UV(2) U:{uv3U} W:{uv3U} UV(3) U:{uv4U} W:{uv4U} Color: {color} Bone: {bone}",
+                                    Header = $"{(pos - binarystart):X4} {rv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ} UV(0) U:{uv1U} W:{uv1U} UV(1) U:{uv2U} W:{uv2U} UV(2) U:{uv3U} W:{uv3U} UV(3) U:{uv4U} W:{uv4U} Color: {color} Bone: {bone}",
                                     Name = "_" + pos,
 
                                     Tag = NodeType.Unknown,
@@ -6407,7 +6408,7 @@ namespace ME3Explorer
 
                                 rigidvertices.Items.Add(new BinInterpNode
                                 {
-                                    Header = $"{pos:X4} {rv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ}  UV U:{uv1U} W:{uv1U} Bone:{bone}",
+                                    Header = $"{(pos - binarystart):X4} {rv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ}  UV U:{uv1U} W:{uv1U} Bone:{bone}",
                                     Name = "_" + pos,
 
                                     Tag = NodeType.Unknown,
@@ -6419,7 +6420,7 @@ namespace ME3Explorer
                         int softskinVertex = BitConverter.ToInt32(data, pos); //Soft vertices collection
                         var softvertices = new BinInterpNode
                         {
-                            Header = $"{pos:X4} Soft Skin Vertices: {softskinVertex}",
+                            Header = $"{(pos - binarystart):X4} Soft Skin Vertices: {softskinVertex}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6487,7 +6488,7 @@ namespace ME3Explorer
 
                                 softvertices.Items.Add(new BinInterpNode
                                 {
-                                    Header = $"{pos:X4} {sv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ} UV(0) U:{uv1U} W:{uv1U} UV(1) U:{uv2U} W:{uv2U} UV(2) U:{uv3U} W:{uv3U} UV(3) U:{uv4U} W:{uv4U} Color: {color} Influence bones: ({inflbnA}, {inflbnB}, {inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB}, {inflwC}, {inflwD})",
+                                    Header = $"{(pos - binarystart):X4} {sv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ} UV(0) U:{uv1U} W:{uv1U} UV(1) U:{uv2U} W:{uv2U} UV(2) U:{uv3U} W:{uv3U} UV(3) U:{uv4U} W:{uv4U} Color: {color} Influence bones: ({inflbnA}, {inflbnB}, {inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB}, {inflwC}, {inflwD})",
                                     Name = "_" + pos,
 
                                     Tag = NodeType.Unknown,
@@ -6518,7 +6519,7 @@ namespace ME3Explorer
 
                                 softvertices.Items.Add(new BinInterpNode
                                 {
-                                    Header = $"{pos:X4} {sv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ}  UV U:{uv1U} W:{uv1U} Influence bones: ({inflbnA}, {inflbnB}, {inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB}, {inflwC}, {inflwD})",
+                                    Header = $"{(pos - binarystart):X4} {sv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ}  UV U:{uv1U} W:{uv1U} Influence bones: ({inflbnA}, {inflbnB}, {inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB}, {inflwC}, {inflwD})",
                                     Name = "_" + pos,
 
                                     Tag = NodeType.Unknown,
@@ -6530,7 +6531,7 @@ namespace ME3Explorer
                         int nMapBones = BitConverter.ToInt32(data, pos); // Bone Map
                         var mapBones = new BinInterpNode
                         {
-                            Header = $"{pos:X4} Bones Map: {nMapBones}",
+                            Header = $"{(pos - binarystart):X4} Bones Map: {nMapBones}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6543,7 +6544,7 @@ namespace ME3Explorer
                             int mbIndex = BitConverter.ToInt16(data, pos);  // int16 = me3
                             mapBones.Items.Add(new BinInterpNode
                             {
-                                Header = $"{pos:X4} {mb} : {mbIndex}",
+                                Header = $"{(pos - binarystart):X4} {mb} : {mbIndex}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.StructLeafInt,
@@ -6554,7 +6555,7 @@ namespace ME3Explorer
                         int numRigidVertex = BitConverter.ToInt32(data, pos);
                         nChunk.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Num Rigid Vertices: {numRigidVertex}",
+                            Header = $"{(pos - binarystart):X4} Num Rigid Vertices: {numRigidVertex}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6564,7 +6565,7 @@ namespace ME3Explorer
                         int numSoftVertex = BitConverter.ToInt32(data, pos);
                         nChunk.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Num Soft Vertices: {numSoftVertex}",
+                            Header = $"{(pos - binarystart):X4} Num Soft Vertices: {numSoftVertex}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6574,7 +6575,7 @@ namespace ME3Explorer
                         int maxBoneInfluence = BitConverter.ToInt32(data, pos);
                         nChunk.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Max Bone Influence: {maxBoneInfluence}",
+                            Header = $"{(pos - binarystart):X4} Max Bone Influence: {maxBoneInfluence}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6585,7 +6586,7 @@ namespace ME3Explorer
                     int Size1 = BitConverter.ToInt32(data, pos); // Size
                     nLOD.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Size: {Size1}",
+                        Header = $"{(pos - binarystart):X4} Size: {Size1}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -6595,7 +6596,7 @@ namespace ME3Explorer
                     int nVertices = BitConverter.ToInt32(data, pos); // NumVertices
                     nLOD.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} NumVertices: {nVertices}",
+                        Header = $"{(pos - binarystart):X4} NumVertices: {nVertices}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -6607,7 +6608,7 @@ namespace ME3Explorer
                         int Unknown3 = BitConverter.ToInt32(data, pos); // Unknown 3 Not in UDK
                         var UnkList3 = new BinInterpNode
                         {
-                            Header = $"{pos:X4} Unknown List 3: {Unknown3}",
+                            Header = $"{(pos - binarystart):X4} Unknown List 3: {Unknown3}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6627,7 +6628,7 @@ namespace ME3Explorer
                             pos += 4;
                             UnkList3.Items.Add(new BinInterpNode
                             {
-                                Header = $"{pos:X4} {uk3} : unkA {uk3IndexA} unkB {uk3IndexB} unkC {uk3IndexC} unkD {uk3IndexD}",
+                                Header = $"{(pos - binarystart):X4} {uk3} : unkA {uk3IndexA} unkB {uk3IndexB} unkC {uk3IndexC} unkD {uk3IndexD}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.Unknown,
@@ -6638,7 +6639,7 @@ namespace ME3Explorer
                     int nReqBones = BitConverter.ToInt32(data, pos); //Required Bones
                     var reqBones = new BinInterpNode
                     {
-                        Header = $"{pos:X4} Required Bones: {nReqBones}",
+                        Header = $"{(pos - binarystart):X4} Required Bones: {nReqBones}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -6651,7 +6652,7 @@ namespace ME3Explorer
                         //single byte integers (max 256 bones)
                         reqBones.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} {rq} : {data[pos]}",
+                            Header = $"{(pos - binarystart):X4} {rq} : {data[pos]}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafByte,
@@ -6663,7 +6664,7 @@ namespace ME3Explorer
                     int rawPoint1 = BitConverter.ToInt32(data, pos);
                     nLOD.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Raw Point Indices Flag: {rawPoint1}",
+                        Header = $"{(pos - binarystart):X4} Raw Point Indices Flag: {rawPoint1}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -6673,7 +6674,7 @@ namespace ME3Explorer
                     int rawPoint2 = BitConverter.ToInt32(data, pos);
                     nLOD.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Raw Point Indices Count: {rawPoint2}",
+                        Header = $"{(pos - binarystart):X4} Raw Point Indices Count: {rawPoint2}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -6683,7 +6684,7 @@ namespace ME3Explorer
                     int rawPoint3 = BitConverter.ToInt32(data, pos);
                     nLOD.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Raw Point Indices Size: {rawPoint3}",
+                        Header = $"{(pos - binarystart):X4} Raw Point Indices Size: {rawPoint3}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -6693,7 +6694,7 @@ namespace ME3Explorer
                     int rawPoint4 = BitConverter.ToInt32(data, pos);
                     nLOD.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Raw Point Indices Offset: {rawPoint4}",
+                        Header = $"{(pos - binarystart):X4} Raw Point Indices Offset: {rawPoint4}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -6704,7 +6705,7 @@ namespace ME3Explorer
                     {
                         var rawpoints = new BinInterpNode
                         {
-                            Header = $"{pos:X4} Raw Point Indices Collection",
+                            Header = $"{(pos - binarystart):X4} Raw Point Indices Collection",
                             Name = "_" + pos,
 
                             Tag = NodeType.Unknown,
@@ -6730,7 +6731,7 @@ namespace ME3Explorer
                         int Unknown9 = BitConverter.ToInt32(data, pos); // Unknown 9 ME3 or ME2 or UDK (Not ME1)
                         nLOD.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Unknown 9: {Unknown9}",
+                            Header = $"{(pos - binarystart):X4} Unknown 9: {Unknown9}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6740,7 +6741,7 @@ namespace ME3Explorer
 
                     var vtxGPUskin = new BinInterpNode
                     {
-                        Header = $"{pos:X4} Vertex Buffer GPU Skin",
+                        Header = $"{(pos - binarystart):X4} Vertex Buffer GPU Skin",
                         Name = "_" + pos,
 
                         Tag = NodeType.Unknown
@@ -6752,7 +6753,7 @@ namespace ME3Explorer
                         int nTexCoord = BitConverter.ToInt32(data, pos);
                         var lTexCoord = new BinInterpNode
                         {
-                            Header = $"{pos:X4} Texture Coordinates: {nTexCoord}",
+                            Header = $"{(pos - binarystart):X4} Texture Coordinates: {nTexCoord}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6765,7 +6766,7 @@ namespace ME3Explorer
                             int useFullUV = BitConverter.ToInt32(data, pos); // UDK only
                             vtxGPUskin.Items.Add(new BinInterpNode
                             {
-                                Header = $"{pos:X4} Use Full Precision UVs: {useFullUV}",
+                                Header = $"{(pos - binarystart):X4} Use Full Precision UVs: {useFullUV}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.StructLeafInt,
@@ -6775,7 +6776,7 @@ namespace ME3Explorer
                             int usePackedPre = BitConverter.ToInt32(data, pos); // UDK only
                             vtxGPUskin.Items.Add(new BinInterpNode
                             {
-                                Header = $"{pos:X4} Use Packed Precision: {usePackedPre}",
+                                Header = $"{(pos - binarystart):X4} Use Packed Precision: {usePackedPre}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.StructLeafInt,
@@ -6792,7 +6793,7 @@ namespace ME3Explorer
                         pos += 4;
                         vtxGPUskin.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Extension: X:({vetxX}) Y:({vetxY}) Z:({vetxZ})",
+                            Header = $"{(pos - binarystart):X4} Extension: X:({vetxX}) Y:({vetxY}) Z:({vetxZ})",
                             Name = "_" + pos,
 
                             Tag = NodeType.Unknown
@@ -6807,7 +6808,7 @@ namespace ME3Explorer
                         pos += 4;
                         vtxGPUskin.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Origin: X:({vorgX}) Y:({vorgY}) Z:({vorgZ})",
+                            Header = $"{(pos - binarystart):X4} Origin: X:({vorgX}) Y:({vorgY}) Z:({vorgZ})",
                             Name = "_" + pos,
 
                             Tag = NodeType.Unknown
@@ -6817,7 +6818,7 @@ namespace ME3Explorer
                     int vtxSize = BitConverter.ToInt32(data, pos);
                     vtxGPUskin.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Vertex Size: {vtxSize}",
+                        Header = $"{(pos - binarystart):X4} Vertex Size: {vtxSize}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -6828,7 +6829,7 @@ namespace ME3Explorer
                     int nVertex = BitConverter.ToInt32(data, pos); //Vertex Count
                     var vertices = new BinInterpNode
                     {
-                        Header = $"{pos:X4} Vertices: {nVertex}",
+                        Header = $"{(pos - binarystart):X4} Vertices: {nVertex}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -6873,7 +6874,7 @@ namespace ME3Explorer
                         vpos += 4;
                         vertices.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} {v}: Tangent X:{TanX} Y:{TanY} Z:{TanZ} Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Influences: {infB1}:{infW1} {infB2}:{infW2} {infB3}:{infW4} {infB4}:{infW4} UV U:{uvU} W:{uvV}",
+                            Header = $"{(pos - binarystart):X4} {v}: Tangent X:{TanX} Y:{TanY} Z:{TanZ} Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Influences: {infB1}:{infW1} {infB2}:{infW2} {infB3}:{infW4} {infB4}:{infW4} UV U:{uvU} W:{uvV}",
                             Name = "_" + pos,
 
                             Tag = NodeType.Unknown,
@@ -6886,7 +6887,7 @@ namespace ME3Explorer
                         int Unknown4 = BitConverter.ToInt32(data, pos); // Unknown 4 appears ME3/UDK (not ME2/ME1)
                         nLOD.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Unknown (Index GPU buffer size?): {Unknown4}",
+                            Header = $"{(pos - binarystart):X4} Unknown (Index GPU buffer size?): {Unknown4}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6899,7 +6900,7 @@ namespace ME3Explorer
                             int Unk4Count = BitConverter.ToInt32(data, pos);
                             var unk4List = new BinInterpNode
                             {
-                                Header = $"{pos:X4} ?Index GPU buffer?: {Unk4Count}",
+                                Header = $"{(pos - binarystart):X4} ?Index GPU buffer?: {Unk4Count}",
                                 Name = "_" + pos,
 
                                 Tag = NodeType.StructLeafInt,
@@ -6912,7 +6913,7 @@ namespace ME3Explorer
                                 int nUnk4 = BitConverter.ToInt32(data, pos);
                                 unk4List.Items.Add(new BinInterpNode
                                 {
-                                    Header = $"{pos:X4} {uk4} : {nUnk4}",
+                                    Header = $"{(pos - binarystart):X4} {uk4} : {nUnk4}",
                                     Name = "_" + pos,
 
                                     Tag = NodeType.StructLeafInt,
@@ -6927,7 +6928,7 @@ namespace ME3Explorer
                         int nUnkU1 = BitConverter.ToInt32(data, pos);
                         nLOD.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Unknown UDK 1 : {nUnkU1}",
+                            Header = $"{(pos - binarystart):X4} Unknown UDK 1 : {nUnkU1}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6937,7 +6938,7 @@ namespace ME3Explorer
                         int nUnkU2 = BitConverter.ToInt32(data, pos);
                         nLOD.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Unknown UDK 2 : {nUnkU2}",
+                            Header = $"{(pos - binarystart):X4} Unknown UDK 2 : {nUnkU2}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6947,7 +6948,7 @@ namespace ME3Explorer
                         int nUnkU3 = BitConverter.ToInt32(data, pos);
                         nLOD.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Unknown UDK 3 : {nUnkU3}",
+                            Header = $"{(pos - binarystart):X4} Unknown UDK 3 : {nUnkU3}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6957,7 +6958,7 @@ namespace ME3Explorer
                         int nUnkU4 = BitConverter.ToInt32(data, pos);
                         nLOD.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Unknown UDK 4 : {nUnkU4}",
+                            Header = $"{(pos - binarystart):X4} Unknown UDK 4 : {nUnkU4}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -6967,7 +6968,7 @@ namespace ME3Explorer
                         byte nUnkU5 = data[pos];
                         nLOD.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Unknown UDK 5 : {nUnkU5}",
+                            Header = $"{(pos - binarystart):X4} Unknown UDK 5 : {nUnkU5}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafByte,
@@ -6978,7 +6979,7 @@ namespace ME3Explorer
 
                 var tail = new BinInterpNode  // Tail
                 {
-                    Header = $"{pos:X4} Tail",
+                    Header = $"{(pos - binarystart):X4} Tail",
                     Name = "_" + pos,
 
                     Tag = NodeType.Unknown
@@ -6988,7 +6989,7 @@ namespace ME3Explorer
                 int blCount = BitConverter.ToInt32(data, pos);
                 var bonelist = new BinInterpNode
                 {
-                    Header = $"{pos:X4} Bone List: {blCount}",
+                    Header = $"{(pos - binarystart):X4} Bone List: {blCount}",
                     Name = "_" + pos,
                     Tag = NodeType.StructLeafInt
                 };
@@ -7004,7 +7005,7 @@ namespace ME3Explorer
                     pos -= 8;
                     bonelist.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} {bl}: {CurrentLoadedExport.FileRef.getNameEntry(bnName)}_{bnIdx}  Nbr: {iBone}",
+                        Header = $"{(pos - binarystart):X4} {bl}: {CurrentLoadedExport.FileRef.getNameEntry(bnName)}_{bnIdx}  Nbr: {iBone}",
                         Name = "_" + pos,
                         Tag = NodeType.StructLeafName
                     });
@@ -7014,7 +7015,7 @@ namespace ME3Explorer
                 int Unknown5 = BitConverter.ToInt32(data, pos); // Unknown ME3/ME2/ME1/UDK
                 tail.Items.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} Unknown 5: {Unknown5}",
+                    Header = $"{(pos - binarystart):X4} Unknown 5: {Unknown5}",
                     Name = "_" + pos,
 
                     Tag = NodeType.StructLeafInt,
@@ -7026,7 +7027,7 @@ namespace ME3Explorer
                     int Unknown6 = BitConverter.ToInt32(data, pos); // Unknown ME3/UDK (not ME2/1)
                     tail.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Unknown 6: {Unknown6}",
+                        Header = $"{(pos - binarystart):X4} Unknown 6: {Unknown6}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -7038,7 +7039,7 @@ namespace ME3Explorer
                         int nUnkU6 = BitConverter.ToInt32(data, pos);
                         tail.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Unknown UDK 6 : {nUnkU6}",
+                            Header = $"{(pos - binarystart):X4} Unknown UDK 6 : {nUnkU6}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -7049,7 +7050,7 @@ namespace ME3Explorer
                     int Unknown7 = BitConverter.ToInt32(data, pos); // Unknown 7 ME3/UDK (not ME2/1)
                     var lUnknown7 = new BinInterpNode
                     {
-                        Header = $"{pos:X4} Unknown List 7: {Unknown7}",
+                        Header = $"{(pos - binarystart):X4} Unknown List 7: {Unknown7}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -7062,7 +7063,7 @@ namespace ME3Explorer
                         int Unknown8 = BitConverter.ToInt32(data, pos); // Unknown list
                         lUnknown7.Items.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} {uk7} : {Unknown8}",
+                            Header = $"{(pos - binarystart):X4} {uk7} : {Unknown8}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafInt,
@@ -7077,7 +7078,7 @@ namespace ME3Explorer
                     int nUnkU7 = BitConverter.ToInt32(data, pos);
                     tail.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Unknown UDK 7 : {nUnkU7}",
+                        Header = $"{(pos - binarystart):X4} Unknown UDK 7 : {nUnkU7}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -7087,7 +7088,7 @@ namespace ME3Explorer
                     int nUnkU8 = BitConverter.ToInt32(data, pos);
                     tail.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Unknown UDK 8 : {nUnkU8}",
+                        Header = $"{(pos - binarystart):X4} Unknown UDK 8 : {nUnkU8}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -7097,7 +7098,7 @@ namespace ME3Explorer
                     int nUnkU9 = BitConverter.ToInt32(data, pos);
                     tail.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Unknown UDK 9 : {nUnkU9}",
+                        Header = $"{(pos - binarystart):X4} Unknown UDK 9 : {nUnkU9}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -7107,7 +7108,7 @@ namespace ME3Explorer
                     int nUnkU10 = BitConverter.ToInt32(data, pos);
                     tail.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Unknown UDK 10 : {nUnkU10}",
+                        Header = $"{(pos - binarystart):X4} Unknown UDK 10 : {nUnkU10}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -7117,7 +7118,7 @@ namespace ME3Explorer
                     int nUnkU11 = BitConverter.ToInt32(data, pos);
                     tail.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Unknown UDK 11 : {nUnkU11}",
+                        Header = $"{(pos - binarystart):X4} Unknown UDK 11 : {nUnkU11}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -7127,7 +7128,7 @@ namespace ME3Explorer
                     int nUnkU12 = BitConverter.ToInt32(data, pos);
                     tail.Items.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} Unknown UDK 12 : {nUnkU12}",
+                        Header = $"{(pos - binarystart):X4} Unknown UDK 12 : {nUnkU12}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt,
@@ -7419,7 +7420,7 @@ namespace ME3Explorer
                 int rbRef = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} RB_BodySetup: ({rbRef}) {CurrentLoadedExport.FileRef.getEntry(rbRef)?.GetFullPath ?? ""}",
+                    Header = $"{(pos - binarystart):X4} RB_BodySetup: ({rbRef}) {CurrentLoadedExport.FileRef.getEntry(rbRef)?.GetFullPath ?? ""}",
                     Name = "_" + pos,
 
                     Tag = NodeType.StructLeafObject
@@ -7446,7 +7447,7 @@ namespace ME3Explorer
                         int material = BitConverter.ToInt32(data, pos);
                         subnodes.Add(new BinInterpNode
                         {
-                            Header = $"{pos:X4} Material: ({material}) {CurrentLoadedExport.FileRef.getEntry(material)?.GetFullPath ?? ""}",
+                            Header = $"{(pos - binarystart):X4} Material: ({material}) {CurrentLoadedExport.FileRef.getEntry(material)?.GetFullPath ?? ""}",
                             Name = "_" + pos,
 
                             Tag = NodeType.StructLeafObject
@@ -7603,7 +7604,7 @@ namespace ME3Explorer
                 int unk1 = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} Unknown: {unk1}",
+                    Header = $"{(pos - binarystart):X4} Unknown: {unk1}",
                     Name = "_" + pos,
 
                 });
@@ -7611,7 +7612,7 @@ namespace ME3Explorer
                 int length = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} bik length: {length} (0x{length:X})",
+                    Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
                     Name = "_" + pos,
 
                     Tag = NodeType.StructLeafInt
@@ -7620,7 +7621,7 @@ namespace ME3Explorer
                 length = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} bik length: {length} (0x{length:X})",
+                    Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
                     Name = "_" + pos,
 
                     Tag = NodeType.StructLeafInt
@@ -7629,7 +7630,7 @@ namespace ME3Explorer
                 int offset = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"{pos:X4} bik offset in file: {offset} (0x{offset:X})",
+                    Header = $"{(pos - binarystart):X4} bik offset in file: {offset} (0x{offset:X})",
                     Name = "_" + pos,
 
                     Tag = NodeType.StructLeafInt
@@ -7639,7 +7640,7 @@ namespace ME3Explorer
                 {
                     subnodes.Add(new BinInterpNode
                     {
-                        Header = $"{pos:X4} The rest of the binary is the bik.",
+                        Header = $"{(pos - binarystart):X4} The rest of the binary is the bik.",
                         Name = "_" + pos,
 
                         Tag = NodeType.Unknown
@@ -7674,7 +7675,7 @@ namespace ME3Explorer
                 /*int length = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"{pos:X4} bik length: {length} (0x{length:X})",
+                    Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
                     Name = "_" + pos,
 
                     Tag = NodeType.StructLeafInt
@@ -7683,7 +7684,7 @@ namespace ME3Explorer
                 length = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"{pos:X4} bik length: {length} (0x{length:X})",
+                    Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
                     Name = "_" + pos,
 
                     Tag = NodeType.StructLeafInt
@@ -7692,7 +7693,7 @@ namespace ME3Explorer
                 int offset = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"{pos:X4} bik offset in file: {offset} (0x{offset:X})",
+                    Header = $"{(pos - binarystart):X4} bik offset in file: {offset} (0x{offset:X})",
                     Name = "_" + pos,
 
                     Tag = NodeType.StructLeafInt
@@ -7702,7 +7703,7 @@ namespace ME3Explorer
                 {
                     subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"{pos:X4} The rest of the binary is the bik.",
+                        Header = $"{(pos - binarystart):X4} The rest of the binary is the bik.",
                         Name = "_" + pos,
 
                         Tag = NodeType.Unknown

@@ -36,7 +36,7 @@ namespace ME3Explorer.Unreal.Classes
             public ImageSize imgSize;
         }
 
-        readonly ME3Package pccRef;
+        readonly IMEPackage pccRef;
         public const string className = "Texture2D";
         public string texName { get; }
         public string arcName { get; }
@@ -45,7 +45,7 @@ namespace ME3Explorer.Unreal.Classes
         public uint pccOffset;
         public List<ImageInfo> imgList { get; } // showable image list
 
-        public Texture2D(ME3Package pccObj, int texIdx)
+        public Texture2D(IMEPackage pccObj, int texIdx)
         {
             pccRef = pccObj;
             // check if texIdx is an Export index and a Texture2D class

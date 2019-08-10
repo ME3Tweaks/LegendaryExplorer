@@ -73,7 +73,7 @@ namespace ME3Explorer.Meshplorer
         private void loadPCCToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.pcc|*.pcc";
+            d.Filter = "*.pcc;*.sfm|*.pcc;*.sfm";
             if (d.ShowDialog() == DialogResult.OK)
                 LoadFile(d.FileName);
         }
@@ -84,12 +84,6 @@ namespace ME3Explorer.Meshplorer
             {
                 //LoadME3Package(path);
                 LoadMEPackage(path);
-                if (Pcc.Game != MEGame.ME3)
-                {
-                    MessageBox.Show(this, "Only files from Mass Effect 3 are supported.\nIf you want to help us debug loading ME1/ME2 files, please come to the ME3Tweaks Discord server.", "Unsupported game");
-                    Pcc.Release();
-                    return;
-                }
                 MeshplorerMode = 0;
                 RefreshMaterialList();
                 RefreshMeshList();
@@ -195,7 +189,7 @@ namespace ME3Explorer.Meshplorer
         {
             DisableLODs();
             UnCheckLODs();
-            skm = new SkeletalMesh(Pcc as ME3Package, index);
+            skm = new SkeletalMesh(Pcc, index);
 
             // Load preview model
             preview?.Dispose();
