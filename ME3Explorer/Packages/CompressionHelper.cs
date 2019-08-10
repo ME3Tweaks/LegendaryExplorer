@@ -143,7 +143,8 @@ namespace ME3Explorer.Packages
                     {
                         case CompressionType.LZO:
                         {
-                            if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                            if (
+                                    LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
                                 throw new Exception("LZO decompression failed!");
                             break;
                         }

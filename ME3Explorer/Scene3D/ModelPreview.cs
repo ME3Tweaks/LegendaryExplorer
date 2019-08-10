@@ -149,7 +149,7 @@ namespace ME3Explorer.Scene3D
                     string filename = importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc";
                     if (System.IO.File.Exists(filename))
                     {
-                        using (ME3Package pcc = MEPackageHandler.OpenME3Package(filename))
+                        using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filename))
                         {
                             foreach (ExportEntry exp in pcc.Exports)
                             {
@@ -169,7 +169,7 @@ namespace ME3Explorer.Scene3D
                     string filename = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
                     if (System.IO.File.Exists(filename))
                     {
-                        using (ME3Package pcc = MEPackageHandler.OpenME3Package(filename))
+                        using (var pcc = MEPackageHandler.OpenMEPackage(filename))
                         {
                             foreach (ExportEntry exp in pcc.Exports)
                             {

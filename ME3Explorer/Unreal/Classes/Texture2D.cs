@@ -19,17 +19,10 @@ namespace ME3Explorer.Unreal.Classes
 {
     public class Texture2D
     {
-        public enum storage
-        {
-            arcCpr = 0x3, // archive compressed
-            arcUnc = 0x1, // archive uncompressed (DLC)
-            pccSto = 0x0, // pcc local storage
-            empty = 0x21  // unused image (void pointer sorta)
-        }
 
         public struct ImageInfo
         {
-            public storage storageType;
+            public StorageTypes storageType;
             public int uncSize;
             public int cprSize;
             public int offset;
@@ -61,14 +54,16 @@ namespace ME3Explorer.Unreal.Classes
                 // if "None" property isn't found throws an exception
                 if (dataOffset == 0)
                     throw new Exception("\"None\" property not found");
-                byte[] rawData = expEntry.Data;
-                imageData = new byte[rawData.Length - dataOffset];
-                System.Buffer.BlockCopy(rawData, dataOffset, imageData, 0, imageData.Length);
+                imageData = expEntry.getBinaryData();
             }
             else
                 throw new Exception($"Texture2D {texIdx} not found");
 
             MemoryStream dataStream = new MemoryStream(imageData);
+            if (pccObj.Game != MEGame.ME3)
+            {
+                dataStream.Position += 16; //12 zeros, file offset
+            }
             uint numMipMaps = dataStream.ReadValueU32();
             uint count = numMipMaps;
 
@@ -77,12 +72,12 @@ namespace ME3Explorer.Unreal.Classes
             {
                 ImageInfo imgInfo = new ImageInfo
                 {
-                    storageType = (storage)dataStream.ReadValueS32(),
+                    storageType = (StorageTypes)dataStream.ReadValueS32(),
                     uncSize = dataStream.ReadValueS32(),
                     cprSize = dataStream.ReadValueS32(),
                     offset = dataStream.ReadValueS32()
                 };
-                if (imgInfo.storageType == storage.pccSto)
+                if (imgInfo.storageType == StorageTypes.pccUnc)
                 {
                     //imgInfo.offset = (int)(pccOffset + dataOffset); // saving pcc offset as relative to exportdata offset, not absolute
                     imgInfo.offset = (int)dataStream.Position; // saving pcc offset as relative to exportdata offset, not absolute
@@ -124,12 +119,13 @@ namespace ME3Explorer.Unreal.Classes
 
             switch (imgInfo.storageType)
             {
-                case storage.pccSto:
+                case StorageTypes.pccUnc:
                     imgBuffer = new byte[imgInfo.uncSize];
                     System.Buffer.BlockCopy(imageData, imgInfo.offset, imgBuffer, 0, imgInfo.uncSize);
                     break;
-                case storage.arcCpr:
-                case storage.arcUnc:
+                case StorageTypes.extUnc:
+                case StorageTypes.extZlib:
+                case StorageTypes.extLZO:
                     string archivePath;
                     if (archiveDir != null && File.Exists(Path.Combine(archiveDir, arcName)))
                     {
@@ -146,9 +142,13 @@ namespace ME3Explorer.Unreal.Classes
                         using (FileStream archiveStream = File.OpenRead(archivePath))
                         {
                             archiveStream.Seek(imgInfo.offset, SeekOrigin.Begin);
-                            if (imgInfo.storageType == storage.arcCpr)
+                            if (imgInfo.storageType == StorageTypes.extZlib)
                             {
                                 imgBuffer = ZBlock.Decompress(archiveStream, imgInfo.cprSize);
+                            } else if (imgInfo.storageType == StorageTypes.extLZO)
+                            {
+                                imgBuffer = new byte[imgInfo.uncSize];
+                                LZO2Helper.LZO2.Decompress(archiveStream.ReadBytes(imgInfo.cprSize), (uint) imgInfo.cprSize, imgBuffer);
                             }
                             else
                             {
@@ -156,12 +156,13 @@ namespace ME3Explorer.Unreal.Classes
                                 archiveStream.Read(imgBuffer, 0, imgBuffer.Length);
                             }
                         }
-                    } else
+                    }
+                    else
                     {
                         //how do i put default unreal texture
                         imgBuffer = null; //this will cause exception that will bubble up.
                     }
-                    
+
                     break;
                 default:
                     throw new FormatException("Unsupported texture storage type");
@@ -175,13 +176,17 @@ namespace ME3Explorer.Unreal.Classes
             ImageInfo info = new ImageInfo();
             foreach (ImageInfo i in imgList)
             {
-                if (i.storageType != storage.empty)
+                if (i.storageType != StorageTypes.empty)
                 {
                     info = i;
                     break;
                 }
             }
-
+            if (info.imgSize == null)
+            {
+                description = new Texture2DDescription();
+                return null;
+            }
             int width = (int)info.imgSize.width;
             int height = (int)info.imgSize.height;
             Console.WriteLine($"Generating preview texture for Texture2D of format {texFormat}");
@@ -206,8 +211,11 @@ namespace ME3Explorer.Unreal.Classes
                 case "A8R8G8B8":
                     format = DDSFormat.ARGB;
                     break;
+                case "NormalMap_HQ":
+                    format = DDSFormat.ATI2;
+                    break;
                 default:
-                    throw new FormatException("Unknown ME3 texture format");
+                    throw new FormatException("Unknown texture format: " + texFormat);
             }
 
             byte[] compressedData = extractRawData(info, Path.GetDirectoryName(pccRef.FilePath));
@@ -233,7 +241,7 @@ namespace ME3Explorer.Unreal.Classes
             description.OptionFlags = ResourceOptionFlags.GenerateMipMaps;
 
             // Set up the texture data
-            int stride = width * 4; 
+            int stride = width * 4;
             DataStream ds = new DataStream(height * stride, true, true);
             ds.Write(pixels, 0, height * stride);
             ds.Position = 0;

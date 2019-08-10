@@ -6716,7 +6716,7 @@ namespace ME3Explorer
                         {
                             rawpoints.Items.Add(new BinInterpNode
                             {
-                                Header = $"{rapos:X4} {rp} : {data[rapos]:X2}",
+                                Header = $"{(rapos - binarystart):X4} {rp} : {data[rapos]:X2}",
                                 Name = "_" + rapos,
 
                                 Tag = NodeType.StructLeafByte,

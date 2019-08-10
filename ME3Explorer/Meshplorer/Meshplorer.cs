@@ -73,7 +73,7 @@ namespace ME3Explorer.Meshplorer
         private void loadPCCToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.pcc;*.sfm|*.pcc;*.sfm";
+            d.Filter = "*.pcc;*.sfm;*.upk|*.pcc;*.sfm;*.upk";
             if (d.ShowDialog() == DialogResult.OK)
                 LoadFile(d.FileName);
         }

@@ -304,8 +304,8 @@ namespace ME3Explorer.Meshplorer
                 newLOD.RawPointIndicesCount = lod.RawPointIndicesCount;
                 newLOD.RawPointIndicesSize = lod.RawPointIndicesSize;
                 newLOD.RawPointIndicesOffset = lod.RawPointIndicesOffset;
-                newLOD.RawPointIndices = new List<int>();
-                foreach (int i in lod.RawPointIndices)
+                newLOD.RawPointIndices = new List<byte>(); //originally int!
+                foreach (var i in lod.RawPointIndices)
                     newLOD.RawPointIndices.Add(i);
                 newLOD.NumTexCoords = lod.NumTexCoords;
                 newLOD.VertexBufferGPUSkin = new SkeletalMesh.VertexBufferGPUSkinStruct();

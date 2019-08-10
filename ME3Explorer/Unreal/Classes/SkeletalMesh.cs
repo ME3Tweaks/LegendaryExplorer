@@ -178,7 +178,7 @@ namespace ME3Explorer.Unreal.Classes
                 }
                 Bone = Container + Bone;
                 long npos = Container.Memory.Position;
-                Debug.WriteLine("serialized size as " + (npos - pos));
+                //Debug.WriteLine("serialized size as " + (npos - pos));
             }
 
             public TreeNode ToTree(int MyIndex)
@@ -198,15 +198,15 @@ namespace ME3Explorer.Unreal.Classes
         public struct SoftSkinVertexStruct
         {
             public Vector3 Position;
-            public int TangentX;
-            public int TangentY;
-            public int TangentZ;
+            public float TangentX;
+            public float TangentY;
+            public float TangentZ;
             public Vector2[] UV;
             public int Color;
             public byte[] InfluenceBones;
             public byte[] InfluenceWeights;
 
-            public void Serialize(SerializingContainer Container)
+            public void Serialize(SerializingContainer Container, ExportEntry export)
             {
                 Position.X = Container + Position.X;
                 Position.Y = Container + Position.Y;
@@ -214,18 +214,22 @@ namespace ME3Explorer.Unreal.Classes
                 TangentX = Container + TangentX;
                 TangentY = Container + TangentY;
                 TangentZ = Container + TangentZ;
+
                 if (Container.isLoading)
                 {
-                    UV = new Vector2[4];
+                    UV = new Vector2[export.Game == MEGame.UDK ? 4 : 1];
                     InfluenceBones = new byte[4];
                     InfluenceWeights = new byte[4];
                 }
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < (export.Game == MEGame.UDK ? 4 : 1); i++)
                 {
                     UV[i].X = Container + UV[i].X;
                     UV[i].Y = Container + UV[i].Y;
                 }
-                Color = Container + Color;
+                if (export.Game == MEGame.UDK)
+                {
+                    Color = Container + Color;
+                }
                 for (int i = 0; i < 4; i++)
                     InfluenceBones[i] = Container + InfluenceBones[i];
                 for (int i = 0; i < 4; i++)
@@ -235,8 +239,8 @@ namespace ME3Explorer.Unreal.Classes
             {
                 string s = MyIndex + " : Position : X(";
                 s += Position.X + ") Y(" + Position.Y + ") Z(" + Position.Z + ") ";
-                s += "TangentX(" + TangentX.ToString("X8") + ") TangentY(" + TangentY.ToString("X8") + ") TangentZ(" + TangentZ.ToString("X8") + ") ";
-                for (int i = 0; i < 4; i++)
+                s += "TangentX(" + TangentX + ") TangentY(" + TangentY + ") TangentZ(" + TangentZ + ") ";
+                for (int i = 0; i < UV.Length; i++)
                     s += "UV[" + i + "](" + UV[i].X + " " + UV[i].Y + ") ";
                 s += "Color : " + Color.ToString("X8") + " InfluenceBones (";
                 for (int i = 0; i < 3; i++)
@@ -279,7 +283,7 @@ namespace ME3Explorer.Unreal.Classes
                 }
                 for (int i = 0; i < count; i++)
                 {
-                    Debug.WriteLine("Rigid at " + Container.GetPos().ToString("X6"));
+                    //Debug.WriteLine("Rigid at " + Container.GetPos().ToString("X6"));
                     RigidSkinVertexStruct v = RiginSkinVertices[i];
                     v.Serialize(Container, export);
                     RiginSkinVertices[i] = v;
@@ -298,7 +302,7 @@ namespace ME3Explorer.Unreal.Classes
                 for (int i = 0; i < count; i++)
                 {
                     SoftSkinVertexStruct v = SoftSkinVertices[i];
-                    v.Serialize(Container);
+                    v.Serialize(Container, export);
                     SoftSkinVertices[i] = v;
                 }
                 //bonemap
@@ -508,7 +512,7 @@ namespace ME3Explorer.Unreal.Classes
             public int RawPointIndicesCount;
             public int RawPointIndicesSize;
             public int RawPointIndicesOffset;
-            public List<int> RawPointIndices;
+            public List<byte> RawPointIndices;
             public int NumTexCoords;
             public VertexBufferGPUSkinStruct VertexBufferGPUSkin;
             public int Unk4;
@@ -596,6 +600,7 @@ namespace ME3Explorer.Unreal.Classes
                 //RequiredBones
                 if (!Container.isLoading)
                     count = RequiredBones.Count();
+                Debug.WriteLine("Required bones at " + Container.GetPos().ToString("X6"));
                 count = Container + count;
                 if (Container.isLoading)
                 {
@@ -605,6 +610,8 @@ namespace ME3Explorer.Unreal.Classes
                 }
                 for (int i = 0; i < count; i++)
                     RequiredBones[i] = Container + RequiredBones[i];
+                Debug.WriteLine("RawPointIndicesFlag at " + Container.GetPos().ToString("X6"));
+
                 //RawPointIndicesFlag
                 RawPointIndicesFlag = Container + RawPointIndicesFlag;
                 //RawPointIndicesCount
@@ -616,21 +623,36 @@ namespace ME3Explorer.Unreal.Classes
                 //RawPointIndices
                 if (Container.isLoading)
                 {
-                    RawPointIndices = new List<int>();
-                    for (int i = 0; i < RawPointIndicesCount; i++)
+                    RawPointIndices = new List<byte>(RawPointIndicesSize);
+                    for (int i = 0; i < RawPointIndicesSize; i++)
                         RawPointIndices.Add(0);
                 }
-                for (int i = 0; i < RawPointIndicesCount; i++)
+
+                for (int i = 0; i < RawPointIndicesSize; i++)
+                {
+                    //Debug.WriteLine("RawIndice " + i + " at " + Container.GetPos().ToString("X6"));
                     RawPointIndices[i] = Container + RawPointIndices[i];
+                }
                 //this appears to be part of vertexbuffer serializer
                 //NumTexCoords
                 //NumTexCoords = Container + NumTexCoords;
                 //VertexBufferGPUSkin
+                if (export.Game != MEGame.ME1)
+                {
+                    var nothing = Container + 1; //skip an int
+                }
                 if (Container.isLoading)
                     VertexBufferGPUSkin = new VertexBufferGPUSkinStruct();
+                Debug.WriteLine("VertexGPUSkin at " + Container.GetPos().ToString("X6"));
+
+
                 VertexBufferGPUSkin.Serialize(Container, export);
                 //unk4
-                Unk4 = Container + Unk4;
+                if (export.Game == MEGame.ME3 || export.Game == MEGame.UDK)
+                {
+                    Unk4 = Container + Unk4;
+                    //todo: add list for Index GPU from scan
+                }
             }
 
             public TreeNode ToTree(int MyIndex)
@@ -722,14 +744,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public SkeletalMesh(ExportEntry export)
         {
-            if (export.Game == MEGame.ME1)
-            {
-                LoadSkeletalMeshME1(export);
-            }
-            else
-            {
-                LoadSkeletalMesh(export);
-            }
+            LoadSkeletalMesh(export);
         }
 
         private void LoadSkeletalMesh(ExportEntry export)
@@ -752,37 +767,16 @@ namespace ME3Explorer.Unreal.Classes
             {
                 for (int i = 0; i < Materials.Count; i++)
                 {
+                    if (Materials[i] > 0)
+                    {
+                        //It's an export
+                        MatInsts.Add(new MaterialInstanceConstant(Owner, Materials[i] - 1));
+                    }
+                    else
+                    {
+                        //It's an import - no idea how to handle this here.
+                    }
 
-                    MatInsts.Add(new MaterialInstanceConstant(Owner, Materials[i] - 1));
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        private void LoadSkeletalMeshME1(ExportEntry export)
-        {
-            Loaded = true;
-            MyIndex = export.Index;
-            Owner = export.FileRef;
-            Flags = (int)((ulong)export.ObjectFlags >> 32);
-            //int start = GetPropertyEnd();
-            //byte[] data = export.Data;
-            //byte[] buff = new byte[data.Length - start];
-            ////for (int i = 0; i < data.Length - start; i++)
-            ////    buff[i] = data[i + start];
-            //Buffer.BlockCopy(data, start, buff, 0, buff.Length);
-            MemoryStream m = new MemoryStream(export.getBinaryData());
-            SerializingContainer Container = new SerializingContainer(m);
-            Container.isLoading = true;
-            Serialize(Container);
-            try
-            {
-                for (int i = 0; i < Materials.Count; i++)
-                {
-
-                    MatInsts.Add(new MaterialInstanceConstant(Owner, Materials[i] - 1));
                 }
             }
             catch
@@ -793,14 +787,7 @@ namespace ME3Explorer.Unreal.Classes
         public SkeletalMesh(IMEPackage pcc, int Index)
         {
             Export = pcc.Exports[Index];
-            if (Export.Game == MEGame.ME1)
-            {
-                LoadSkeletalMeshME1(Export);
-            }
-            else
-            {
-                LoadSkeletalMesh(Export);
-            }
+            LoadSkeletalMesh(Export);
         }
 
         public void Serialize(SerializingContainer Container)
