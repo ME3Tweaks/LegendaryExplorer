@@ -1465,7 +1465,6 @@ namespace ME3Explorer.Dialogue_Editor
                     var thisnode = newNodes.Dequeue();
                     if (!visitedNodes.Contains(thisnode))
                     {
-                        aSpkrs.Add(thisnode.SpeakerIndex);
                         if (thisnode.IsReply)
                         {
                             var thisprop = thisnode.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
@@ -1479,6 +1478,7 @@ namespace ME3Explorer.Dialogue_Editor
                         }
                         else
                         {
+                            aSpkrs.Add(thisnode.SpeakerIndex);
                             var thisprop = thisnode.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
                             foreach (var e in thisprop)
                             {
