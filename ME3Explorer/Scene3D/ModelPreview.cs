@@ -372,8 +372,36 @@ namespace ME3Explorer.Scene3D
         {
             // STEP 1: MATERIALS
             Materials = new Dictionary<string, ModelPreviewMaterial>();
-            foreach (Unreal.Classes.MaterialInstanceConstant mat in m.MatInsts)
+            for (int i = 0; i < m.Materials.Count; i++)
             {
+                Unreal.Classes.MaterialInstanceConstant mat = m.MatInsts[i];
+                if (mat == null)
+                {
+                    // The material instance is an import!
+                    ImportEntry matImport = m.Owner.getUImport(m.Materials[i]);
+
+                    // Find the filename of the package
+                    string packageFilename = "";
+                    if (m.Owner.Game == MEGame.ME1)
+                    {
+                        IEntry parent = matImport.Parent;
+                        while (parent.HasParent)
+                        {
+                            parent = parent.Parent;
+                        }
+                        packageFilename = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m.Owner.FilePath), parent.ObjectName + ".upk");
+                    }
+                    else
+                    {
+                        throw new NotImplementedException("We don't know how to find package filenames from imports for ME2 and ME3 yet!");
+                    }
+
+                    using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(packageFilename))
+                    {
+                        ExportEntry matExport = pcc.Exports.FirstOrDefault(exp => exp.ObjectName == matImport.ObjectName);
+                        mat = new Unreal.Classes.MaterialInstanceConstant(pcc, matExport.Index);
+                    }
+                }
                 ModelPreviewMaterial material;
                 // TODO: pick what material class best fits based on what properties the 
                 // MaterialInstanceConstant mat has.

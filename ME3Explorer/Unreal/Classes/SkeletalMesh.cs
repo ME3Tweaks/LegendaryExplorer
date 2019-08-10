@@ -769,12 +769,13 @@ namespace ME3Explorer.Unreal.Classes
                 {
                     if (Materials[i] > 0)
                     {
-                        //It's an export
+                        // It's an export
                         MatInsts.Add(new MaterialInstanceConstant(Owner, Materials[i] - 1));
                     }
                     else
                     {
-                        //It's an import - no idea how to handle this here.
+                        // It's an import - until we are able to resolve it, add a null so we can insert a dummy material in the preview.
+                        MatInsts.Add(null);
                     }
 
                 }
@@ -1112,8 +1113,12 @@ namespace ME3Explorer.Unreal.Classes
         private TreeNode MaterialsToTree()
         {
             TreeNode res = new TreeNode("Materials");
-            foreach (MaterialInstanceConstant matconst in MatInsts)
-                res.Nodes.Add(matconst.ToTree());
+            /*foreach (MaterialInstanceConstant matconst in MatInsts)
+                res.Nodes.Add(matconst.ToTree());*/
+            for (int i = 0; i < Materials.Count; i++)
+            {
+                res.Nodes.Add(MatInsts[i]?.ToTree() ?? new TreeNode("Import " + Materials[i]));
+            }
             return res;
         }
 

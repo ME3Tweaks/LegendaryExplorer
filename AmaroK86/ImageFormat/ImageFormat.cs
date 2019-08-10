@@ -27,14 +27,10 @@ namespace AmaroK86.ImageFormat
             this.height = height;
         }
 
+        // Thanks https://stackoverflow.com/a/600306
         private bool checkIsPower2(uint val)
         {
-            uint power = 1;
-            while (power < val)
-            {
-                power *= 2;
-            }
-            return val == power;
+            return (val != 0) && ((val & (val - 1)) == 0);
         }
 
         public int CompareTo(object obj)
