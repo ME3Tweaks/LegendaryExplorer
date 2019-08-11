@@ -27,15 +27,34 @@ namespace ME3Explorer.Unreal.Classes
             memory = pcc.Exports[index].Data;
             memsize = memory.Length;
             var export = pcc.getExport(index);
-            if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> paramVals)
+            var properties = export.GetProperties();
+
+            if (export.Game == MEGame.ME1) //todo: maybe check to see if textureparametervalues exists first, but in testing me1 didn't seem to have this
             {
-                foreach (StructProperty paramVal in paramVals)
+                if (export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
                 {
-                    Textures.Add(new TextureParam
+                    foreach (var obj in textures)
                     {
-                        TexIndex = paramVal.GetProp<ObjectProperty>("ParameterValue").Value,
-                        Desc = paramVal.GetProp<NameProperty>("ParameterName").Value
-                    });
+                        Textures.Add(new TextureParam
+                        {
+                            TexIndex = obj.Value,
+                            Desc = export.FileRef.getEntry(obj.Value).GetFullPath
+                        });
+                    }
+                }
+            }
+            else
+            {
+                if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> paramVals)
+                {
+                    foreach (StructProperty paramVal in paramVals)
+                    {
+                        Textures.Add(new TextureParam
+                        {
+                            TexIndex = paramVal.GetProp<ObjectProperty>("ParameterValue").Value,
+                            Desc = paramVal.GetProp<NameProperty>("ParameterName").Value
+                        });
+                    }
                 }
             }
         }

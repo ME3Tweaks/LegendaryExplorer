@@ -229,7 +229,7 @@ namespace ME3Explorer
                 else
                 {
                     string archive = CurrentLoadedCacheName;
-                    filename = System.IO.Path.Combine(MEDirectories.CookedPath(Pcc.Game), archive + ".tfc");
+                    filename = System.IO.Path.Combine(MEDirectories.CookedPath(Pcc.Game), archive + ".tfc"); //we should change this over to the proper lookup method
                     string packagePath = Pcc.FilePath;
                     string currentPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(packagePath), archive + ".tfc");
                     if (File.Exists(currentPath))

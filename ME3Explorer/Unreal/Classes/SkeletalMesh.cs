@@ -359,24 +359,50 @@ namespace ME3Explorer.Unreal.Classes
             public Vector3 Position;
             public ushort U;
             public ushort V;
-            public void Serialize(SerializingContainer Container)
+            public void Serialize(SerializingContainer Container, ExportEntry export)
             {
-                TangentX = Container + TangentX;
-                TangentZ = Container + TangentZ;
-                if (Container.isLoading)
+                if (export.Game == MEGame.ME1 || export.Game == MEGame.ME2)
                 {
-                    InfluenceBones = new byte[4];
-                    InfluenceWeights = new byte[4];
+                    //me1 seems to be different for UVs
+                    Position.X = Container + Position.X;
+                    Position.Y = Container + Position.Y;
+                    Position.Z = Container + Position.Z;
+                    TangentX = Container + TangentX;
+                    TangentZ = Container + TangentZ;
+                    if (Container.isLoading)
+                    {
+                        InfluenceBones = new byte[4];
+                        InfluenceWeights = new byte[4];
+                    }
+
+                    for (int i = 0; i < 4; i++)
+                        InfluenceBones[i] = Container + InfluenceBones[i];
+                    for (int i = 0; i < 4; i++)
+                        InfluenceWeights[i] = Container + InfluenceWeights[i];
+
+                    U = Container + U;
+                    V = Container + V;
                 }
-                for (int i = 0; i < 4; i++)
-                    InfluenceBones[i] = Container + InfluenceBones[i];
-                for (int i = 0; i < 4; i++)
-                    InfluenceWeights[i] = Container + InfluenceWeights[i];
-                Position.X = Container + Position.X;
-                Position.Y = Container + Position.Y;
-                Position.Z = Container + Position.Z;
-                U = Container + U;
-                V = Container + V;
+                else
+                {
+                    TangentX = Container + TangentX;
+                    TangentZ = Container + TangentZ;
+                    if (Container.isLoading)
+                    {
+                        InfluenceBones = new byte[4];
+                        InfluenceWeights = new byte[4];
+                    }
+
+                    for (int i = 0; i < 4; i++)
+                        InfluenceBones[i] = Container + InfluenceBones[i];
+                    for (int i = 0; i < 4; i++)
+                        InfluenceWeights[i] = Container + InfluenceWeights[i];
+                    Position.X = Container + Position.X;
+                    Position.Y = Container + Position.Y;
+                    Position.Z = Container + Position.Z;
+                    U = Container + U;
+                    V = Container + V;
+                }
             }
             public TreeNode ToTree(int MyIndex)
             {
@@ -463,7 +489,7 @@ namespace ME3Explorer.Unreal.Classes
                 for (int i = 0; i < count; i++)
                 {
                     GPUSkinVertexStruct v = Vertices[i];
-                    v.Serialize(Container);
+                    v.Serialize(Container, export);
 
                     if (VertexDiff > 0)
                     {

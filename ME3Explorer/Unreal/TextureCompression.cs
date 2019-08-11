@@ -76,7 +76,7 @@ namespace ME3Explorer
             public List<ChunkBlock> blocks;
         }
 
-        static public void DecompressTexture(byte[] DecompressedBuffer, MemoryStream stream, StorageTypes type, int uncompressedSize, int compressedSize)
+        public static void DecompressTexture(byte[] DecompressedBuffer, MemoryStream stream, StorageTypes type, int uncompressedSize, int compressedSize)
         {
             uint blockTag = stream.ReadUInt32();
             if (blockTag != textureTag)
