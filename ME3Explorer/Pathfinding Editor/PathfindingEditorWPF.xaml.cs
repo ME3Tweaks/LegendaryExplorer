@@ -2537,6 +2537,9 @@ namespace ME3Explorer.Pathfinding_Editor
                                 }
                             }
                             break;
+                        case "BioWaypointSet":
+                            HighlightBioWaypointSet(selectedNode.export);
+                            break;
                     }
                 }
 
@@ -2557,6 +2560,33 @@ namespace ME3Explorer.Pathfinding_Editor
                 NodePosition_Panel.IsEnabled = false;
             }
             OnPropertyChanged(nameof(NodeTypeDescriptionText));
+        }
+
+        private void HighlightBioWaypointSet(ExportEntry export)
+        {
+            var waypointReferences = export.GetProperty<ArrayProperty<StructProperty>>("WaypointReferences");
+            var waypointUIndexes = new List<int>();
+            if (waypointReferences != null)
+            {
+                foreach (var waypoint in waypointReferences)
+                {
+                    var nav = waypoint.GetProp<ObjectProperty>("Nav");
+                    if (nav != null && nav.Value > 0)
+                    {
+                        waypointUIndexes.Add(nav.Value);
+                    }
+                }
+            }
+            if (waypointUIndexes.Count > 0)
+            {
+                foreach (PathfindingNodeMaster pnm in GraphNodes)
+                {
+                    if (waypointUIndexes.Contains(pnm.export.UIndex))
+                    {
+                        pnm.shape.Brush = PathfindingNodeMaster.highlightedCoverSlotBrush;
+                    }
+                }
+            }
         }
 
         private void HighlightCoverlinkSlots(ExportEntry coverlink)
