@@ -2408,6 +2408,10 @@ namespace ME3Explorer.Pathfinding_Editor
             foreach (PathfindingNodeMaster pfm in GraphNodes)
             {
                 pfm.Deselect();
+                if (pfm.export.ClassName == "CoverLink" || pfm.export.ClassName == "CoverSlotMarker")
+                {
+                    pfm.shape.Brush = PathfindingNodeMaster.pathfindingNodeBrush;
+                }
             }
 
             if (ActiveNodes_ListBox.SelectedItem is ExportEntry export)
@@ -2481,65 +2485,6 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 PathfindingEditorWPF_ReachSpecsPanel.LoadExport(export);
 
-#if DEBUG
-                //Populate the export/import database
-
-                /*
-                if (!(SharedPathfinding.ExportClassDB.FirstOrDefault(x=>x.nodetypename == export.ClassName) is PathfindingDB_ExportType))
-                {
-                    Dictionary<string, string> data = new Dictionary<string, string>();
-                    data["class"] = export.FileRef.getEntry(export.idxClass).GetFullPath;
-                    data["name"] = export.ClassName;
-                    var collisioncomponent = export.GetProperty<ObjectProperty>("CollisionComponent");
-                    if (collisioncomponent != null)
-                    {
-                        ExportEntry collisionComp = export.FileRef.getUExport(collisioncomponent.Value);
-
-                        data["cylindercomponentarchetype"] = collisionComp.FileRef.getEntry(collisionComp.idxArchtype).GetFullPath;
-
-                        ////Add imports
-                        if (!SharedPathfinding.ImportClassDB.ContainsKey(data["cylindercomponentarchetype"]) && collisionComp.idxArchtype < 0)
-                        {
-                            //X.Default.CollisionCylinder
-                            Dictionary<string, string> cylindercompimp = new Dictionary<string, string>();
-                            ImportEntry collisionCylinderArchetype = collisionComp.FileRef.getEntry(collisionComp.idxArchtype) as ImportEntry;
-
-                            cylindercompimp["class"] = collisionCylinderArchetype.ClassName == "Class" ? "Class" : collisionCylinderArchetype.PackageFileNoExtension + "." + collisionCylinderArchetype.ClassName;
-                            cylindercompimp["packagefile"] = collisionCylinderArchetype.PackageFileNoExtension;
-                            SharedPathfinding.ImportClassDB[data["cylindercomponentarchetype"]] = cylindercompimp;
-
-                            //X.Default
-                            Dictionary<string, string> nodetypeimp = new Dictionary<string, string>();
-                            ImportEntry collisionCylinderArchetypeDefault = collisionCylinderArchetype.FileRef.getEntry(collisionCylinderArchetype.idxLink) as ImportEntry;
-                            nodetypeimp["class"] = collisionCylinderArchetypeDefault.ClassName == "Class" ? "Class" : collisionCylinderArchetypeDefault.PackageFileNoExtension + "." + collisionCylinderArchetypeDefault.ClassName;
-                            nodetypeimp["packagefile"] = collisionCylinderArchetypeDefault.PackageFileNoExtension;
-                            SharedPathfinding.ImportClassDB[collisionCylinderArchetypeDefault.GetFullPath] = nodetypeimp;
-                        }
-                    }
-                    data["description"] = "No data about this node type has been entered yet";
-                    SharedPathfinding.ExportClassDB[export.ClassName] = data;
-
-                    Dictionary<string, string> nodeclassimport = new Dictionary<string, string>();
-                    ImportEntry classImport = export.FileRef.getEntry(export.idxClass) as ImportEntry;
-
-                    if (classImport != null)
-                    {
-                        nodeclassimport["class"] = classImport.ClassName == "Class" ? "Class" : classImport.PackageFileNoExtension + "." + classImport.ClassName;
-                        nodeclassimport["packagefile"] = classImport.PackageFileNoExtension;
-
-                        SharedPathfinding.ImportClassDB[classImport.GetFullPath] = nodeclassimport;
-
-                        //Rename vars - debug only
-                        var exporttypes = SharedPathfinding.ExportClassDB;
-                        var importtypes = SharedPathfinding.ImportClassDB;
-
-                        Debug.WriteLine("Adding to pathfinding database file: " + export.ClassName);
-                        File.WriteAllText(SharedPathfinding.ClassesDatabasePath,
-                    JsonConvert.SerializeObject(new { exporttypes, importtypes }, Formatting.Indented));
-                    }
-                }*/
-
-#endif
                 //Clear coverlinknode highlighting.
                 /*foreach (PathfindingNodeMaster pnm in Objects)
                 {
@@ -2576,23 +2521,23 @@ namespace ME3Explorer.Pathfinding_Editor
                         NodePositionY_TextBox.Text = 0.ToString();
                         NodePositionZ_TextBox.Text = 0.ToString();
                     }
-                    //switch (s.export.ClassName)
-                    //{
-                    //    case "CoverLink":
-                    //        HighlightCoverlinkSlots(s.export);
-                    //        break;
-                    //    case "CoverSlotMarker":
-                    //        StructProperty sp = s.export.GetProperty<StructProperty>("OwningSlot");
-                    //        if (sp != null)
-                    //        {
-                    //            ObjectProperty op = sp.GetProp<ObjectProperty>("Link");
-                    //            if (op != null && op.Value - 1 < pcc.ExportCount)
-                    //            {
-                    //                HighlightCoverlinkSlots(pcc.Exports[op.Value - 1]);
-                    //            }
-                    //        }
-                    //        break;
-                    //}
+                    switch (selectedNode.export.ClassName)
+                    {
+                        case "CoverLink":
+                            HighlightCoverlinkSlots(selectedNode.export);
+                            break;
+                        case "CoverSlotMarker":
+                            StructProperty sp = selectedNode.export.GetProperty<StructProperty>("OwningSlot");
+                            if (sp != null)
+                            {
+                                ObjectProperty op = sp.GetProp<ObjectProperty>("Link");
+                                if (op != null && op.Value - 1 < Pcc.ExportCount)
+                                {
+                                    HighlightCoverlinkSlots(Pcc.getUExport(op.Value));
+                                }
+                            }
+                            break;
+                    }
                 }
 
                 //GetProperties(pcc.getExport(CurrentObjects[n]));
@@ -2612,6 +2557,41 @@ namespace ME3Explorer.Pathfinding_Editor
                 NodePosition_Panel.IsEnabled = false;
             }
             OnPropertyChanged(nameof(NodeTypeDescriptionText));
+        }
+
+        private void HighlightCoverlinkSlots(ExportEntry coverlink)
+        {
+
+            ArrayProperty<StructProperty> props = coverlink.GetProperty<ArrayProperty<StructProperty>>("Slots");
+            if (props != null)
+            {
+                CurrentlyHighlightedCoverlinkNodes = new List<int>();
+                CurrentlyHighlightedCoverlinkNodes.Add(coverlink.UIndex);
+
+                foreach (StructProperty slot in props)
+                {
+                    ObjectProperty coverslot = slot.GetProp<ObjectProperty>("SlotMarker");
+                    if (coverslot != null)
+                    {
+                        CurrentlyHighlightedCoverlinkNodes.Add(coverslot.Value);
+                    }
+                }
+                foreach (PathfindingNodeMaster pnm in GraphNodes)
+                {
+                    if (pnm.export == coverlink)
+                    {
+                        pnm.shape.Brush = PathfindingNodeMaster.sfxCombatZoneBrush;
+                        continue;
+                    }
+                    if (CurrentlyHighlightedCoverlinkNodes.Contains(pnm.export.UIndex))
+                    {
+                        pnm.shape.Brush = PathfindingNodeMaster.highlightedCoverSlotBrush;
+                    } else if (pnm.export.ClassName == "CoverLink" || pnm.export.ClassName == "CoverSlotMarker")
+                    {
+                        pnm.shape.Brush = PathfindingNodeMaster.pathfindingNodeBrush;
+                    }
+                }
+            }
         }
 
         private List<Zone> CloneCombatZonesForSelections()
@@ -3304,6 +3284,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public ObservableCollectionExtended<ExportEntry> CurrentNodeSequenceReferences { get; } = new ObservableCollectionExtended<ExportEntry>();
         public ObservableCollectionExtended<NodeType> AvailableNodeChangeableTypes { get; } = new ObservableCollectionExtended<NodeType>();
+        public List<int> CurrentlyHighlightedCoverlinkNodes { get; private set; }
+
         public class NodeType : NotifyPropertyChangedBase
         {
             private bool _active;
