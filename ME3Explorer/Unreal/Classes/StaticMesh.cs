@@ -405,7 +405,7 @@ namespace ME3Explorer.Unreal.Classes
                     q += s.Name;
                     if (s.Name > 0)
                     {
-                        m.MatInst.Add(new MaterialInstanceConstant(pcc, s.Name - 1));
+                        m.MatInst.Add(new MaterialInstanceConstant(pcc.getUExport(s.Name)));
                         q += $"(\'{pcc.getObjectName(s.Name)}\'), ";
                     }
 
@@ -1445,11 +1445,11 @@ namespace ME3Explorer.Unreal.Classes
             s.Name = materialname;
             Mesh.Mat.Lods[lod].Sections[section] = s;
             // Load the material if it isn't already loaded
-            bool found = Mesh.Mat.MatInst.Any(t => t.index == materialname - 1);
+            bool found = Mesh.Mat.MatInst.Any(t => t.export.UIndex == materialname);
             if (!found)
             {
                 // Load the material
-                Mesh.Mat.MatInst.Add(new MaterialInstanceConstant(pcc, materialname - 1));
+                Mesh.Mat.MatInst.Add(new MaterialInstanceConstant(pcc.getUExport(materialname)));
             }
             // Remove the previously assigned MaterialInstanceConstant if is isn't used anymore.
             found = false;
@@ -1465,7 +1465,7 @@ namespace ME3Explorer.Unreal.Classes
             {
                 for (int i = 0; i < Mesh.Mat.MatInst.Count; i++)
                 {
-                    if (Mesh.Mat.MatInst[i].index == oldMaterialName - 1)
+                    if (Mesh.Mat.MatInst[i].export.UIndex == oldMaterialName)
                     {
                         Mesh.Mat.MatInst.RemoveAt(i);
                     }
@@ -1622,7 +1622,7 @@ namespace ME3Explorer.Unreal.Classes
                 }
                 foreach (var mat in Mesh.Mat.MatInst)
                 {
-                    mtlWriter.WriteLine($"newmtl {pcc.getObjectName(mat.index)}");
+                    mtlWriter.WriteLine($"newmtl {mat.export.ObjectName}");
                 }
 
                 for (int i = 0; i < points.Count; i++)

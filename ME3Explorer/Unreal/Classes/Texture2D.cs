@@ -15,231 +15,254 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
+using static ME3Explorer.EmbeddedTextureViewer;
 
 namespace ME3Explorer.Unreal.Classes
 {
     public class Texture2D
     {
+        public List<Texture2DMipInfo> Mips { get; }
+        public readonly bool NeverStream;
+        public readonly ExportEntry Export;
+        private readonly string TextureFormat;
 
-        //TODO: Replace this with Texture2DMipInfo
-        public struct ImageInfo
+        public Texture2D(ExportEntry export)
         {
-            public StorageTypes storageType;
-            public int uncSize;
-            public int cprSize;
-            public int offset;
-            public uint inExportDataOffset; //This is only used for PCC stored
-            public ImageSize imgSize;
+            Export = export;
+            PropertyCollection properties = export.GetProperties();
+            TextureFormat = properties.GetProp<EnumProperty>("Format").Value.Name;
+            var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
+
+            NeverStream = properties.GetProp<BoolProperty>("NeverStream") ?? false;
+            Mips = GetTexture2DMipInfos(export, cache?.Value);
+
+            /*
+            //pccRef = pccObj;
+            //// check if texIdx is an Export index and a Texture2D class
+            //if (pccObj.isUExport(texIdx + 1) && pccObj.getExport(texIdx).ClassName == className)
+            //{
+            //    textureExport = pccObj.getExport(texIdx);
+            //    pccOffset = (uint)textureExport.DataOffset;
+            //    texName = textureExport.ObjectName;
+
+            //    texFormat = textureExport.GetProperty<EnumProperty>("Format")?.Value.Name.Substring(3) ?? "";
+            //    arcName = textureExport.GetProperty<NameProperty>("TextureFileCacheName")?.Value.Name ?? "";
+            //    int dataOffset = textureExport.propsEnd();
+            //    // if "None" property isn't found throws an exception
+            //    if (dataOffset == 0)
+            //        throw new Exception("\"None\" property not found");
+            //    imageData = textureExport.Data;
+            //}
+            //else
+            //    throw new Exception($"Texture2D {texIdx} not found");
+
+            //MemoryStream dataStream = new MemoryStream(imageData);
+            //dataStream.Position = textureExport.propsEnd(); //scroll to binary
+            //if (pccObj.Game != MEGame.ME3)
+            //{
+            //    dataStream.Position += 16; //12 zeros, file offset
+            //}
+            //uint numMipMaps = dataStream.ReadValueU32();
+            //uint count = numMipMaps;
+
+            //imgList = new List<Texture2DMipInfo>();
+            //while (dataStream.Position < dataStream.Length && count > 0)
+            //{
+            //    var imgInfo = new Texture2DMipInfo
+            //    {
+            //        storageType = (StorageTypes)dataStream.ReadValueS32(),
+            //        uncompressedSize = dataStream.ReadValueS32(),
+            //        compressedSize = dataStream.ReadValueS32(),
+            //        externalOffset = dataStream.ReadValueS32(),
+            //        localExportOffset = (int)dataStream.Position
+            //    };
+
+            //    //if locally stored, skip to next mip info
+            //    if (imgInfo.storageType == StorageTypes.pccUnc)
+            //    {
+            //        dataStream.Seek(imgInfo.uncompressedSize, SeekOrigin.Current);
+            //    }
+            //    else if (imgInfo.storageType == StorageTypes.pccLZO || imgInfo.storageType == StorageTypes.pccZlib)
+            //    {
+            //        dataStream.Seek(imgInfo.compressedSize, SeekOrigin.Current);
+            //    }
+            //    imgInfo.imgSize = new ImageSize(dataStream.ReadValueU32(), dataStream.ReadValueU32());
+
+            //    /* We might want to implement this. this is from mem code
+            //    if (mip.width == 4 && mips.Exists(m => m.width == mip.width))
+            //        mip.width = mips.Last().width / 2;
+            //    if (mip.height == 4 && mips.Exists(m => m.height == mip.height))
+            //        mip.height = mips.Last().height / 2;
+            //    if (mip.width == 0)
+            //        mip.width = 1;
+            //    if (mip.height == 0)
+            //        mip.height = 1;
+            //     */
+
+            //    imgList.Add(imgInfo);
+            //    count--;
+            //}
+
+            //// save what remains
+            ///int remainingBytes = (int)(dataStream.Length - dataStream.Position);
+            //footerData = new byte[remainingBytes];
+            //dataStream.Read(footerData, 0, footerData.Length);*/
         }
 
-        readonly IMEPackage pccRef;
-        private readonly ExportEntry textureExport;
-        public const string className = "Texture2D";
-        public string texName { get; }
-        public string arcName { get; }
-        private readonly string texFormat;
-        private readonly byte[] imageData;
-        public uint pccOffset;
-        public List<ImageInfo> imgList { get; } // showable image list
+        //public static string GetTFC(string arcname, MEGame game)
+        //{
+        //    if (!arcname.EndsWith(".tfc"))
+        //        arcname += ".tfc";
 
-        public Texture2D(IMEPackage pccObj, int texIdx)
-        {
-            pccRef = pccObj;
-            // check if texIdx is an Export index and a Texture2D class
-            if (pccObj.isUExport(texIdx + 1) && pccObj.getExport(texIdx).ClassName == className)
-            {
-                textureExport = pccObj.getExport(texIdx);
-                pccOffset = (uint)textureExport.DataOffset;
-                texName = textureExport.ObjectName;
+        //    foreach (string s in MELoadedFiles.GetEnabledDLC(game).OrderBy(dir => MELoadedFiles.GetMountPriority(dir, game)).Append(MEDirectories.BioGamePath(game)))
+        //    {
+        //        foreach (string file in Directory.EnumerateFiles(Path.Combine(s, game == MEGame.ME2 ? "CookedPC" : "CookedPCConsole")))
+        //        {
+        //            if (Path.GetFileName(file) == arcname)
+        //            {
+        //                return file;
+        //            }
+        //        }
+        //    }
+        //    return "";
+        //}
 
-                texFormat = textureExport.GetProperty<EnumProperty>("Format")?.Value.Name.Substring(3) ?? "";
-                arcName = textureExport.GetProperty<NameProperty>("TextureFileCacheName")?.Value.Name ?? "";
-                int dataOffset = textureExport.propsEnd();
-                // if "None" property isn't found throws an exception
-                if (dataOffset == 0)
-                    throw new Exception("\"None\" property not found");
-                imageData = textureExport.Data;
-            }
-            else
-                throw new Exception($"Texture2D {texIdx} not found");
-
-            MemoryStream dataStream = new MemoryStream(imageData);
-            dataStream.Position = textureExport.propsEnd(); //scroll to binary
-            if (pccObj.Game != MEGame.ME3)
-            {
-                dataStream.Position += 16; //12 zeros, file offset
-            }
-            uint numMipMaps = dataStream.ReadValueU32();
-            uint count = numMipMaps;
-
-            imgList = new List<ImageInfo>();
-            while (dataStream.Position < dataStream.Length && count > 0)
-            {
-                ImageInfo imgInfo = new ImageInfo
-                {
-                    storageType = (StorageTypes)dataStream.ReadValueS32(),
-                    uncSize = dataStream.ReadValueS32(),
-                    cprSize = dataStream.ReadValueS32(),
-                    offset = dataStream.ReadValueS32(),
-                    inExportDataOffset = (uint)dataStream.Position
-                };
-                if (imgInfo.storageType == StorageTypes.pccUnc)
-                {
-                    //imgInfo.offset = (int)(pccOffset + dataOffset); // saving pcc offset as relative to exportdata offset, not absolute
-                    imgInfo.offset = (int)dataStream.Position; // saving pcc offset as relative to exportdata offset, not absolute
-                    //MessageBox.Show("Pcc class offset: " + pccOffset + "\nimages data offset: " + imgInfo.offset.ToString());
-                    dataStream.Seek(imgInfo.uncSize, SeekOrigin.Current);
-                }
-                else if (imgInfo.storageType == StorageTypes.pccLZO || imgInfo.storageType == StorageTypes.pccZlib)
-                {
-                    dataStream.Seek(imgInfo.cprSize, SeekOrigin.Current);
-                }
-                imgInfo.imgSize = new ImageSize(dataStream.ReadValueU32(), dataStream.ReadValueU32());
-
-                /* We might want to implement this. this is from mem code
-                if (mip.width == 4 && mips.Exists(m => m.width == mip.width))
-                    mip.width = mips.Last().width / 2;
-                if (mip.height == 4 && mips.Exists(m => m.height == mip.height))
-                    mip.height = mips.Last().height / 2;
-                if (mip.width == 0)
-                    mip.width = 1;
-                if (mip.height == 0)
-                    mip.height = 1;
-                 */
-
-                imgList.Add(imgInfo);
-                count--;
-            }
-
-            // save what remains
-            /*int remainingBytes = (int)(dataStream.Length - dataStream.Position);
-            footerData = new byte[remainingBytes];
-            dataStream.Read(footerData, 0, footerData.Length);*/
-        }
-
-        public static string GetTFC(string arcname, MEGame game)
-        {
-            if (!arcname.EndsWith(".tfc"))
-                arcname += ".tfc";
-
-            foreach (string s in MELoadedFiles.GetEnabledDLC(game).OrderBy(dir => MELoadedFiles.GetMountPriority(dir, game)).Append(MEDirectories.BioGamePath(game)))
-            {
-                foreach (string file in Directory.EnumerateFiles(Path.Combine(s, game == MEGame.ME2 ? "CookedPC" : "CookedPCConsole")))
-                {
-                    if (Path.GetFileName(file) == arcname)
-                    {
-                        return file;
-                    }
-                }
-            }
-            return "";
-        }
-
-        public byte[] extractRawData(ImageInfo imgInfo, IMEPackage package = null)
-        {
-            byte[] imgBuffer;
-            string archiveDir = null;
-            if (package != null) archiveDir = Path.GetDirectoryName(package.FilePath);
-            switch (imgInfo.storageType)
-            {
-                case StorageTypes.pccUnc:
-                    imgBuffer = new byte[imgInfo.uncSize];
-                    System.Buffer.BlockCopy(imageData, imgInfo.offset, imgBuffer, 0, imgInfo.uncSize);
-                    break;
-                case StorageTypes.pccLZO:
-                case StorageTypes.pccZlib:
-                    imgBuffer = new byte[imgInfo.uncSize];
-                    using (MemoryStream tmpStream = new MemoryStream(textureExport.Data, (int)imgInfo.inExportDataOffset, imgInfo.cprSize)) //pcc stored don't use the direct offsets
-                    {
-                        try
-                        {
-                            TextureCompression.DecompressTexture(imgBuffer, tmpStream, imgInfo.storageType, imgInfo.uncSize, imgInfo.cprSize);
-                        }
-                        catch (Exception e)
-                        {
-                            throw new Exception(e.Message + "\nError decompressing texture.");
-                        }
-                    }
+        //public byte[] extractRawData(Texture2DMipInfo imgInfo, IMEPackage package = null)
+        //{
+        //    byte[] imgBuffer;
+        //    string archiveDir = null;
+        //    if (package != null) archiveDir = Path.GetDirectoryName(package.FilePath);
+        //    switch (imgInfo.storageType)
+        //    {
+        //        case StorageTypes.pccUnc:
+        //            imgBuffer = new byte[imgInfo.uncSize];
+        //            System.Buffer.BlockCopy(imageData, imgInfo.offset, imgBuffer, 0, imgInfo.uncSize);
+        //            break;
+        //        case StorageTypes.pccLZO:
+        //        case StorageTypes.pccZlib:
+        //            imgBuffer = new byte[imgInfo.uncSize];
+        //            using (MemoryStream tmpStream = new MemoryStream(textureExport.Data, (int)imgInfo.inExportDataOffset, imgInfo.cprSize)) //pcc stored don't use the direct offsets
+        //            {
+        //                try
+        //                {
+        //                    TextureCompression.DecompressTexture(imgBuffer, tmpStream, imgInfo.storageType, imgInfo.uncSize, imgInfo.cprSize);
+        //                }
+        //                catch (Exception e)
+        //                {
+        //                    throw new Exception(e.Message + "\nError decompressing texture.");
+        //                }
+        //            }
 
 
-                    break;
-                case StorageTypes.extUnc:
-                case StorageTypes.extZlib:
-                case StorageTypes.extLZO:
-                    string archivePath;
-                    imgBuffer = new byte[imgInfo.uncSize];
-                    if (archiveDir != null && File.Exists(Path.Combine(archiveDir, arcName)))
-                    {
-                        archivePath = Path.Combine(archiveDir, arcName);
-                    }
-                    else
-                    {
-                        archivePath = GetTFC(arcName, package.Game);
-                    }
-                    if (archivePath != null && File.Exists(archivePath))
-                    {
-                        Debug.WriteLine($"Loading texture from tfc '{archivePath}'.");
-                        try
-                        {
-                            using (FileStream archiveStream = File.OpenRead(archivePath))
-                            {
-                                archiveStream.Seek(imgInfo.offset, SeekOrigin.Begin);
-                                if (imgInfo.storageType == StorageTypes.extZlib || imgInfo.storageType == StorageTypes.extLZO)
-                                {
+        //            break;
+        //        case StorageTypes.extUnc:
+        //        case StorageTypes.extZlib:
+        //        case StorageTypes.extLZO:
+        //            if (pccRef.Game == MEGame.ME1)
+        //            {
+        //                //UPK Lookup
+        //                IEntry parent = matImport.Parent;
+        //                while (parent.HasParent)
+        //                {
+        //                    parent = parent.Parent;
+        //                }
+        //                var loadedPackages = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
+        //                if (loadedPackages.TryGetValue(parent.ObjectName, out string packagePath))
+        //                {
+        //                    packageFilename = packagePath;
+        //                }
+        //                else
+        //                {
+        //                    throw new Exception("Cannot find referenced package file: " + parent.ObjectName);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                //TFC Lookup
+        //                string archivePath;
+        //                imgBuffer = new byte[imgInfo.uncSize];
+        //                if (archiveDir != null && File.Exists(Path.Combine(archiveDir, arcName)))
+        //                {
+        //                    archivePath = Path.Combine(archiveDir, arcName);
+        //                }
+        //                else
+        //                {
+        //                    archivePath = GetTFC(arcName, package.Game);
+        //                }
 
-                                    using (MemoryStream tmpStream = new MemoryStream(archiveStream.ReadBytes(imgInfo.cprSize)))
-                                    {
-                                        try
-                                        {
-                                            TextureCompression.DecompressTexture(imgBuffer, tmpStream, imgInfo.storageType, imgInfo.uncSize, imgInfo.cprSize);
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            throw new Exception(e.Message + "\n" + "File: " + archivePath + "\n" +
-                                                                "StorageType: " + imgInfo.storageType + "\n" +
-                                                                "External file offset: " + imgInfo.offset);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    archiveStream.Read(imgBuffer, 0, imgBuffer.Length);
-                                }
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            //how do i put default unreal texture
-                            imgBuffer = null; //this will cause exception that will bubble up.
-                            throw new Exception(e.Message + "\n" + "File: " + archivePath + "\n" +
-                                                "StorageType: " + imgInfo.storageType + "\n" +
-                                                "External file offset: " + imgInfo.offset);
-                        }
-                    }
-                    break;
-                default:
-                    throw new FormatException("Unsupported texture storage type: " + imgInfo.storageType);
-            }
-            return imgBuffer; //cannot be uninitialized.
-        }
+        //                if (archivePath != null && File.Exists(archivePath))
+        //                {
+        //                    Debug.WriteLine($"Loading texture from tfc '{archivePath}'.");
+        //                    try
+        //                    {
+        //                        using (FileStream archiveStream = File.OpenRead(archivePath))
+        //                        {
+        //                            archiveStream.Seek(imgInfo.offset, SeekOrigin.Begin);
+        //                            if (imgInfo.storageType == StorageTypes.extZlib || imgInfo.storageType == StorageTypes.extLZO)
+        //                            {
 
-        // Creates a Direct3D texture that looks like this one.
+        //                                using (MemoryStream tmpStream = new MemoryStream(archiveStream.ReadBytes(imgInfo.cprSize)))
+        //                                {
+        //                                    try
+        //                                    {
+        //                                        TextureCompression.DecompressTexture(imgBuffer, tmpStream, imgInfo.storageType, imgInfo.uncSize, imgInfo.cprSize);
+        //                                    }
+        //                                    catch (Exception e)
+        //                                    {
+        //                                        throw new Exception(e.Message + "\n" + "File: " + archivePath + "\n" +
+        //                                                            "StorageType: " + imgInfo.storageType + "\n" +
+        //                                                            "External file offset: " + imgInfo.offset);
+        //                                    }
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                archiveStream.Read(imgBuffer, 0, imgBuffer.Length);
+        //                            }
+        //                        }
+        //                    }
+        //                    catch (Exception e)
+        //                    {
+        //                        //how do i put default unreal texture
+        //                        imgBuffer = null; //this will cause exception that will bubble up.
+        //                        throw new Exception(e.Message + "\n" + "File: " + archivePath + "\n" +
+        //                                            "StorageType: " + imgInfo.storageType + "\n" +
+        //                                            "External file offset: " + imgInfo.offset);
+        //                    }
+        //                }
+        //            }
+        //            break;
+        //        default:
+        //            throw new FormatException("Unsupported texture storage type: " + imgInfo.storageType);
+        //    }
+        //    return imgBuffer; //cannot be uninitialized.
+        //}
+
+        /// <summary>
+        /// Creates a Direct 3D 11 textured based off the top mip of this Texture2D export
+        /// </summary>
+        /// <param name="device">Device to render texture from/to ?</param>
+        /// <param name="description">Direct3D description of the texture</param>
+        /// <returns></returns>
         public SharpDX.Direct3D11.Texture2D generatePreviewTexture(Device device, out Texture2DDescription description)
         {
-            ImageInfo info = new ImageInfo();
-            info = imgList.FirstOrDefault(x => x.storageType != StorageTypes.empty);
-            if (info.imgSize == null)
+            Texture2DMipInfo info = new Texture2DMipInfo();
+            info = Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+            if (info == null)
             {
                 description = new Texture2DDescription();
                 return null;
             }
 
-            int width = (int)info.imgSize.width;
-            int height = (int)info.imgSize.height;
-            Debug.WriteLine($"Generating preview texture for Texture2D of format {texFormat}");
+            int width = (int)info.width;
+            int height = (int)info.height;
+            Debug.WriteLine($"Generating preview texture for Texture2D of format {TextureFormat}");
 
+            var imageBytes = GetTextureData(info);
+            var fmt = AmaroK86.ImageFormat.DDSImage.convertFormat(TextureFormat);
+            var bmp = AmaroK86.ImageFormat.DDSImage.ToBitmap(imageBytes, fmt, info.width, info.height);
             // Convert compressed image data to an A8R8G8B8 System.Drawing.Bitmap
-            DDSFormat format;
+            /* DDSFormat format;
             const Format dxformat = Format.B8G8R8A8_UNorm;
             switch (texFormat)
             {
@@ -266,7 +289,7 @@ namespace ME3Explorer.Unreal.Classes
             }
 
             byte[] compressedData = extractRawData(info, pccRef);
-            Bitmap bmp = DDSImage.ToBitmap(compressedData, format, width, height);
+            Bitmap bmp = DDSImage.ToBitmap(compressedData, format, width, height); */
 
             // Load the decompressed data into an array
             System.Drawing.Imaging.BitmapData data = bmp.LockBits(new System.Drawing.Rectangle(0, 0, width, height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -279,7 +302,7 @@ namespace ME3Explorer.Unreal.Classes
             description.Height = height;
             description.MipLevels = 1;
             description.ArraySize = 1;
-            description.Format = dxformat;
+            description.Format = Format.B8G8R8A8_UNorm;
             description.SampleDescription.Count = 1;
             description.SampleDescription.Quality = 0;
             description.Usage = ResourceUsage.Default;

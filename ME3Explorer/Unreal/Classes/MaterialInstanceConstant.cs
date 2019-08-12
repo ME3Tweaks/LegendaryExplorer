@@ -7,10 +7,9 @@ namespace ME3Explorer.Unreal.Classes
 {
     public class MaterialInstanceConstant
     {
-        public IMEPackage pcc;
+        public ExportEntry export;
         public byte[] memory;
         public int memsize;
-        public int index;
         public List<TextureParam> Textures = new List<TextureParam>();
 
         public struct TextureParam
@@ -19,14 +18,11 @@ namespace ME3Explorer.Unreal.Classes
             public string Desc;
         }
 
-        public MaterialInstanceConstant(IMEPackage Pcc, int Idx)
+        public MaterialInstanceConstant(ExportEntry export)
         {
-
-            pcc = Pcc;
-            index = Idx;
-            memory = pcc.Exports[index].Data;
+            this.export = export;
+            memory = export.Data;
             memsize = memory.Length;
-            var export = pcc.getExport(index);
             var properties = export.GetProperties();
 
             if (export.Game == MEGame.ME1) //todo: maybe check to see if textureparametervalues exists first, but in testing me1 didn't seem to have this
@@ -61,17 +57,17 @@ namespace ME3Explorer.Unreal.Classes
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode($"#{index} \"{pcc.Exports[index].ObjectName}\"");
+            TreeNode res = new TreeNode($"#{export.UIndex} \"{export.ObjectName}\"");
             for (int i = 0; i < Textures.Count; i++)
             {
                 string s = $"{Textures[i].Desc} = #{Textures[i].TexIndex - 1}";
-                s += $" \"{pcc.getObjectName(Textures[i].TexIndex)}\"";
+                s += $" \"{export.FileRef.getObjectName(Textures[i].TexIndex)}\"";
                 res.Nodes.Add(s);
             }
             TreeNode propsnode = new TreeNode("Properties");
             res.Nodes.Add(propsnode);
 
-            foreach (var prop in pcc.getExport(index).GetProperties())
+            foreach (var prop in export.GetProperties())
             {
                 propsnode.Nodes.Add(new TreeNode($"{prop.Name} | {prop.PropType}"));
             }

@@ -234,6 +234,8 @@ namespace ME3Explorer.Unreal.Classes
                     InfluenceBones[i] = Container + InfluenceBones[i];
                 for (int i = 0; i < 4; i++)
                     InfluenceWeights[i] = Container + InfluenceWeights[i];
+
+
             }
             public TreeNode ToTree(int MyIndex)
             {
@@ -367,21 +369,46 @@ namespace ME3Explorer.Unreal.Classes
                     Position.X = Container + Position.X;
                     Position.Y = Container + Position.Y;
                     Position.Z = Container + Position.Z;
-                    TangentX = Container + TangentX;
-                    TangentZ = Container + TangentZ;
-                    if (Container.isLoading)
+                    if (export.Game == MEGame.ME1)
                     {
-                        InfluenceBones = new byte[4];
-                        InfluenceWeights = new byte[4];
+
+                        TangentX = Container + TangentX;
+                        TangentZ = Container + TangentZ;
+
+                        U = Container + U;
+                        V = Container + V;
+                        Debug.WriteLine("U is " + U);
+                        if (Container.isLoading)
+                        {
+                            InfluenceBones = new byte[4];
+                            InfluenceWeights = new byte[4];
+                        }
+
+                        for (int i = 0; i < 4; i++)
+                            InfluenceBones[i] = Container + InfluenceBones[i];
+                        for (int i = 0; i < 4; i++)
+                            InfluenceWeights[i] = Container + InfluenceWeights[i];
+
+
                     }
+                    else
+                    {
+                        TangentX = Container + TangentX;
+                        TangentZ = Container + TangentZ;
+                        if (Container.isLoading)
+                        {
+                            InfluenceBones = new byte[4];
+                            InfluenceWeights = new byte[4];
+                        }
 
-                    for (int i = 0; i < 4; i++)
-                        InfluenceBones[i] = Container + InfluenceBones[i];
-                    for (int i = 0; i < 4; i++)
-                        InfluenceWeights[i] = Container + InfluenceWeights[i];
+                        for (int i = 0; i < 4; i++)
+                            InfluenceBones[i] = Container + InfluenceBones[i];
+                        for (int i = 0; i < 4; i++)
+                            InfluenceWeights[i] = Container + InfluenceWeights[i];
 
-                    U = Container + U;
-                    V = Container + V;
+                        U = Container + U;
+                        V = Container + V;
+                    }
                 }
                 else
                 {
@@ -755,8 +782,6 @@ namespace ME3Explorer.Unreal.Classes
         public int Unk2;
         public List<int> Unk3;
 
-        public IMEPackage Owner;
-        public int MyIndex;
         public bool Loaded = false;
         private int ReadEnd;
 
@@ -769,22 +794,15 @@ namespace ME3Explorer.Unreal.Classes
 
         public SkeletalMesh(ExportEntry export)
         {
+            Export = export;
             LoadSkeletalMesh(export);
         }
 
         private void LoadSkeletalMesh(ExportEntry export)
         {
             Loaded = true;
-            MyIndex = export.Index;
-            Owner = export.FileRef;
             Flags = (int)((ulong)export.ObjectFlags >> 32);
-            int start = GetPropertyEnd();
-            byte[] data = export.Data;
-            byte[] buff = new byte[data.Length - start];
-            //for (int i = 0; i < data.Length - start; i++)
-            //    buff[i] = data[i + start];
-            Buffer.BlockCopy(data, start, buff, 0, buff.Length);
-            MemoryStream m = new MemoryStream(buff);
+            MemoryStream m = new MemoryStream(export.getBinaryData());
             SerializingContainer Container = new SerializingContainer(m);
             Container.isLoading = true;
             Serialize(Container);
@@ -795,7 +813,7 @@ namespace ME3Explorer.Unreal.Classes
                     if (Materials[i] > 0)
                     {
                         // It's an export
-                        MatInsts.Add(new MaterialInstanceConstant(Owner, Materials[i] - 1));
+                        MatInsts.Add(new MaterialInstanceConstant(export.FileRef.getUExport(Materials[i])));
                     }
                     else
                     {
@@ -810,11 +828,11 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        public SkeletalMesh(IMEPackage pcc, int Index)
-        {
-            Export = pcc.Exports[Index];
-            LoadSkeletalMesh(Export);
-        }
+        //public SkeletalMesh(IMEPackage pcc, int Index)
+        //{
+        //    Export = pcc.Exports[Index];
+        //    LoadSkeletalMesh(Export);
+        //}
 
         public void Serialize(SerializingContainer Container)
         {
@@ -986,8 +1004,8 @@ namespace ME3Explorer.Unreal.Classes
         public TreeNode ToTree()
         {
             TreeNode res = new TreeNode("Skeletal Mesh");
-            res.Nodes.Add(GetFlags(MyIndex));
-            res.Nodes.Add(GetProperties(MyIndex));
+            //res.Nodes.Add(GetFlags(MyIndex));
+            //res.Nodes.Add(GetProperties(MyIndex));
             res.Nodes.Add(BoundingsToTree());
             res.Nodes.Add(MaterialsToTree());
             res.Nodes.Add(OrgRotToTree());
@@ -999,7 +1017,7 @@ namespace ME3Explorer.Unreal.Classes
             return res;
         }
 
-        public int GetPropertyEnd()
+        /*public int GetPropertyEnd()
         {
 
             int pos = 0x00;
@@ -1053,78 +1071,79 @@ namespace ME3Explorer.Unreal.Classes
                     res.Nodes.Add(t[0].Trim());
             }
             return res;
-        }
+        }*/
 
-        private TreeNode GetProperties(int n)
-        {
-            TreeNode res = new TreeNode("Properties");
+        //This should be replaced with something like InterpeterWPF
+        //private TreeNode GetProperties(int n)
+        //{
+        //    TreeNode res = new TreeNode("Properties");
 
-            int pos = 0x00;
-            try
-            {
-                byte[] data = Owner.Exports[n].Data;
-                int test = BitConverter.ToInt32(data, 8);
-                if (test == 0)
-                    pos = 0x04;
-                else
-                    pos = 0x08;
-                if ((Flags & 0x02000000) != 0)
-                    pos = 0x1A;
-                while (true)
-                {
-                    int idxname = BitConverter.ToInt32(data, pos);
-                    if (Owner.getNameEntry(idxname) == "None" || Owner.getNameEntry(idxname) == "")
-                        break;
-                    int idxtype = BitConverter.ToInt32(data, pos + 8);
-                    int size = BitConverter.ToInt32(data, pos + 16);
-                    if (size == 0)
-                        size = 1;   //boolean fix
-                    if (Owner.getNameEntry(idxtype) == "StructProperty")
-                        size += 8;
-                    if (Owner.getNameEntry(idxtype) == "ByteProperty")
-                        size += 8;
-                    string s = pos.ToString("X8") + " " + Owner.getNameEntry(idxname) + " (" + Owner.getNameEntry(idxtype) + ") : ";
-                    switch (Owner.getNameEntry(idxtype))
-                    {
-                        case "ObjectProperty":
-                        case "IntProperty":
-                            int val = BitConverter.ToInt32(data, pos + 24);
-                            s += val.ToString();
-                            break;
-                        case "NameProperty":
-                        case "StructProperty":
-                            int name = BitConverter.ToInt32(data, pos + 24);
-                            s += Owner.getNameEntry(name);
-                            break;
-                        case "FloatProperty":
-                            float f = BitConverter.ToSingle(data, pos + 24);
-                            s += f.ToString();
-                            break;
-                        case "BoolProperty":
-                            s += (data[pos + 24] == 1).ToString();
-                            break;
-                        case "StrProperty":
-                            int len = BitConverter.ToInt32(data, pos + 24);
-                            for (int i = 0; i < len - 1; i++)
-                                s += (char)data[pos + 28 + i];
-                            break;
-                    }
-                    res.Nodes.Add(s);
-                    pos += 24 + size;
-                    if (pos > data.Length)
-                    {
-                        pos -= 24 + size;
-                        break;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-            }
-            res.Nodes.Add(pos.ToString("X8") + " None");
-            return res;
-        }
+        //    int pos = 0x00;
+        //    try
+        //    {
+        //        byte[] data = Owner.Exports[n].Data;
+        //        int test = BitConverter.ToInt32(data, 8);
+        //        if (test == 0)
+        //            pos = 0x04;
+        //        else
+        //            pos = 0x08;
+        //        if ((Flags & 0x02000000) != 0)
+        //            pos = 0x1A;
+        //        while (true)
+        //        {
+        //            int idxname = BitConverter.ToInt32(data, pos);
+        //            if (Owner.getNameEntry(idxname) == "None" || Owner.getNameEntry(idxname) == "")
+        //                break;
+        //            int idxtype = BitConverter.ToInt32(data, pos + 8);
+        //            int size = BitConverter.ToInt32(data, pos + 16);
+        //            if (size == 0)
+        //                size = 1;   //boolean fix
+        //            if (Owner.getNameEntry(idxtype) == "StructProperty")
+        //                size += 8;
+        //            if (Owner.getNameEntry(idxtype) == "ByteProperty")
+        //                size += 8;
+        //            string s = pos.ToString("X8") + " " + Owner.getNameEntry(idxname) + " (" + Owner.getNameEntry(idxtype) + ") : ";
+        //            switch (Owner.getNameEntry(idxtype))
+        //            {
+        //                case "ObjectProperty":
+        //                case "IntProperty":
+        //                    int val = BitConverter.ToInt32(data, pos + 24);
+        //                    s += val.ToString();
+        //                    break;
+        //                case "NameProperty":
+        //                case "StructProperty":
+        //                    int name = BitConverter.ToInt32(data, pos + 24);
+        //                    s += Owner.getNameEntry(name);
+        //                    break;
+        //                case "FloatProperty":
+        //                    float f = BitConverter.ToSingle(data, pos + 24);
+        //                    s += f.ToString();
+        //                    break;
+        //                case "BoolProperty":
+        //                    s += (data[pos + 24] == 1).ToString();
+        //                    break;
+        //                case "StrProperty":
+        //                    int len = BitConverter.ToInt32(data, pos + 24);
+        //                    for (int i = 0; i < len - 1; i++)
+        //                        s += (char)data[pos + 28 + i];
+        //                    break;
+        //            }
+        //            res.Nodes.Add(s);
+        //            pos += 24 + size;
+        //            if (pos > data.Length)
+        //            {
+        //                pos -= 24 + size;
+        //                break;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        MessageBox.Show(e.ToString());
+        //    }
+        //    res.Nodes.Add(pos.ToString("X8") + " None");
+        //    return res;
+        //}
 
         private TreeNode BoundingsToTree()
         {
@@ -1161,7 +1180,7 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 0; i < Bones.Count; i++)
             {
                 BoneStruct b = Bones[i];
-                string s = "Name : \"" + Owner.getNameEntry(b.Name) + "\" ";
+                string s = "Name : \"" + Export.FileRef.getNameEntry(b.Name) + "\" ";
                 s += "Flags : 0x" + b.Flags.ToString("X8") + " ";
                 s += "Unk1 : 0x" + b.Unk1.ToString("X8") + " ";
                 s += "Orientation : X(" + b.Orientation.X + ") Y(" + b.Orientation.X + ") Z(" + b.Orientation.Z + ") W(" + b.Orientation.W + ")";
@@ -1187,7 +1206,7 @@ namespace ME3Explorer.Unreal.Classes
             TreeNode res = new TreeNode("Tail");
             TreeNode t = new TreeNode("Weird Bone List (" + TailNames.Count + ")");
             for (int i = 0; i < TailNames.Count; i++)
-                t.Nodes.Add(i + " : Name \"" + Owner.getNameEntry(TailNames[i].Name) + "\" Unk1 (" + TailNames[i].Unk1.ToString("X8") + ") Unk2(" + TailNames[i].Unk2.ToString("X8") + ")");
+                t.Nodes.Add(i + " : Name \"" + Export.FileRef.getNameEntry(TailNames[i].Name) + "\" Unk1 (" + TailNames[i].Unk1.ToString("X8") + ") Unk2(" + TailNames[i].Unk2.ToString("X8") + ")");
             res.Nodes.Add(t);
             res.Nodes.Add("Unk1 : " + Unk1.ToString("X8"));
             res.Nodes.Add("Unk2 : " + Unk2.ToString("X8"));
@@ -1240,7 +1259,7 @@ namespace ME3Explorer.Unreal.Classes
 
                     foreach (var mat in MatInsts)
                     {
-                        mtlWriter.WriteLine("newmtl " + Owner.getObjectName(mat.index));
+                        mtlWriter.WriteLine("newmtl " + mat.export.ObjectName);
                     }
 
                     lodIndex++;
@@ -1261,8 +1280,8 @@ namespace ME3Explorer.Unreal.Classes
                     int lodStart = LODVertexOffsets[lodIndex];
                     foreach (var section in lod.Sections)
                     {
-                        writer.WriteLine("usemtl " + Owner.getObjectName(MatInsts[section.MaterialIndex].index));
-                        writer.WriteLine("g LOD" + lodIndex + "-" + Owner.getObjectName(MatInsts[section.MaterialIndex].index));
+                        writer.WriteLine("usemtl " + MatInsts[section.MaterialIndex].export.ObjectName);
+                        writer.WriteLine("g LOD" + lodIndex + "-" + MatInsts[section.MaterialIndex].export.ObjectName);
 
                         for (int i = section.BaseIndex; i < section.BaseIndex + section.NumTriangles * 3; i += 3)
                         {

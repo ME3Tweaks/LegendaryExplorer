@@ -46,6 +46,15 @@ namespace ME3Explorer.Scene3D
             }
 
             /// <summary>
+            /// Creates a new cache entry for the given texture.
+            /// </summary>
+            public PreviewTextureEntry(ExportEntry export)
+            {
+                PCCPath = export.FileRef.FilePath;
+                ExportID = export.UIndex;
+            }
+
+            /// <summary>
             /// Disposes <see cref="TextureView"/> and <see cref="Texture"/> if they have been loaded.
             /// </summary>
             public void Dispose()
@@ -91,30 +100,62 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         /// <param name="pcc">The full path of the pcc where the texture export is.</param>
         /// <param name="exportid"></param>
-        public PreviewTextureEntry LoadTexture(string pcc, int exportid)
+        //public PreviewTextureEntry LoadTexture(string pcc, int exportid)
+        //{
+        //    foreach (PreviewTextureEntry e in cache)
+        //    {
+        //        if (e.PCCPath == pcc && e.ExportID == exportid)
+        //        {
+        //            return e;
+        //        }
+        //    }
+        //    using (var texpcc = MEPackageHandler.OpenMEPackage(pcc))
+        //    {
+        //        PreviewTextureEntry entry = new PreviewTextureEntry(pcc, exportid);
+        //        Unreal.Classes.Texture2D metex = new Unreal.Classes.Texture2D(texpcc.getUExport(exportid));
+        //        try
+        //        {
+        //            entry.Texture = metex.generatePreviewTexture(Device, out Texture2DDescription _);
+        //            entry.TextureView = new ShaderResourceView(Device, entry.Texture);
+        //            cache.Add(entry);
+        //            return entry;
+        //        } catch
+        //        {
+        //            return null;
+        //        }
+        //    }
+        //}
+
+        /// <summary>
+        /// Queues a texture for eventual loading.
+        /// </summary>
+        /// <param name="pcc">The full path of the pcc where the texture export is.</param>
+        /// <param name="exportid"></param>
+        public PreviewTextureEntry LoadTexture(ExportEntry export)
         {
             foreach (PreviewTextureEntry e in cache)
             {
-                if (e.PCCPath == pcc && e.ExportID == exportid)
+                if (e.PCCPath == export.FileRef.FilePath && e.ExportID == export.UIndex)
                 {
                     return e;
                 }
             }
-            using (var texpcc = MEPackageHandler.OpenMEPackage(pcc))
-            {
-                PreviewTextureEntry entry = new PreviewTextureEntry(pcc, exportid);
-                Unreal.Classes.Texture2D metex = new Unreal.Classes.Texture2D(texpcc, exportid);
+            //using (var texpcc = MEPackageHandler.OpenMEPackage(pcc))
+            //{
+                PreviewTextureEntry entry = new PreviewTextureEntry(export);
+                Unreal.Classes.Texture2D metex = new Unreal.Classes.Texture2D(export);
                 try
                 {
                     entry.Texture = metex.generatePreviewTexture(Device, out Texture2DDescription _);
                     entry.TextureView = new ShaderResourceView(Device, entry.Texture);
                     cache.Add(entry);
                     return entry;
-                } catch
+                }
+                catch
                 {
                     return null;
                 }
-            }
+            //}
         }
     }
 }

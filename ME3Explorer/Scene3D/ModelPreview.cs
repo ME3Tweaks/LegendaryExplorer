@@ -89,13 +89,13 @@ namespace ME3Explorer.Scene3D
         public ModelPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat)
         {
             if (mat == null) return;
-            Properties.Add("Name", mat.pcc.Exports[mat.index].ObjectName);
+            Properties.Add("Name", mat.export.ObjectName);
             foreach (Unreal.Classes.MaterialInstanceConstant.TextureParam texparam in mat.Textures)
             {
                 if (texparam.TexIndex != 0)
                 {
-                    var entry = mat.pcc.getEntry(texparam.TexIndex); //for debugging
-                    Textures.Add(texparam.Desc, FindTexture(texcache, entry, mat.pcc.FilePath));
+                    var entry = mat.export.FileRef.getEntry(texparam.TexIndex); //for debugging
+                    Textures.Add(texparam.Desc, FindTexture(texcache, entry, mat.export.FileRef.FilePath));
                 }
             }
         }
@@ -129,9 +129,10 @@ namespace ME3Explorer.Scene3D
             var FullTextureName = textureReference.GetFullPath;
             string importfiledir = System.IO.Path.GetDirectoryName(ImportPCC).ToLower();
             string importfilename = System.IO.Path.GetFileName(ImportPCC).ToLower();
-            string pccpath = "";
-            int id = 0;
+            //string pccpath = "";
+            //int id = 0;
 
+            ExportEntry referencedExport = null;
             // First, check the pcc that contains the material
             using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(ImportPCC))
             {
@@ -139,14 +140,17 @@ namespace ME3Explorer.Scene3D
                 {
                     if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D") //This should be instanced name as there may be same-named textures
                     {
-                        pccpath = ImportPCC;
-                        id = exp.Index;
+                        return texcache.LoadTexture(exp);
+
+                        referencedExport = exp;
+                        //pccpath = ImportPCC;
+                        //id = exp.UIndex;
                         break;
                     }
                 }
             }
 
-            if (id == 0)
+            if (/*id == 0*/ referencedExport == null)
             {
                 if (textureReference.FileRef.Game == MEGame.ME1)
                 {
@@ -159,8 +163,11 @@ namespace ME3Explorer.Scene3D
                         {
                             if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
                             {
-                                pccpath = file;
-                                id = exp.Index;
+                                return texcache.LoadTexture(exp);
+
+                                referencedExport = exp;
+                                //pccpath = file;
+                                //id = exp.UIndex;
                                 break;
                             }
                         }
@@ -170,7 +177,7 @@ namespace ME3Explorer.Scene3D
                 {
                     // Next, split the filename by underscores
                     string[] parts = System.IO.Path.GetFileNameWithoutExtension(FullTextureName).Split('_');
-                    if (pccpath == "" && (importfilename.StartsWith("bioa") || importfilename.StartsWith("biod")))
+                    if (/*pccpath == "" && */ (importfilename.StartsWith("bioa") || importfilename.StartsWith("biod"))) //referencedTexture will always be null here.
                     {
                         // Maybe go for the one with one less segment? ex. for input BioA_Nor_201CIC.pcc, look in BioA_Nor.pcc
                         if (parts.Length == 3)
@@ -184,8 +191,11 @@ namespace ME3Explorer.Scene3D
                                     {
                                         if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
                                         {
-                                            pccpath = importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc";
-                                            id = exp.Index;
+                                            return texcache.LoadTexture(exp);
+
+                                            referencedExport = exp;
+                                            //pccpath = file;
+                                            //id = exp.UIndex;
                                             break;
                                         }
                                     }
@@ -194,7 +204,7 @@ namespace ME3Explorer.Scene3D
                         }
 
                         // Now go for the BioP one.
-                        if (pccpath == "" && parts.Length >= 2)
+                        if (referencedExport == null && parts.Length >= 2)
                         {
                             string filename = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
                             if (System.IO.File.Exists(filename))
@@ -205,8 +215,10 @@ namespace ME3Explorer.Scene3D
                                     {
                                         if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
                                         {
-                                            pccpath = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
-                                            id = exp.Index;
+                                            return texcache.LoadTexture(exp);
+
+                                            //pccpath = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
+                                            //id = exp.Index;
                                             break;
                                         }
                                     }
@@ -217,15 +229,15 @@ namespace ME3Explorer.Scene3D
                 }
             }
 
-            if (id > 0)
-            {
-                return texcache.LoadTexture(pccpath, id);
-            }
-            else
-            {
+            //if (id > 0)
+            //{
+            //    return texcache.LoadTexture(pccpath, id);
+            //}
+            //else
+            //{
                 Debug.WriteLine("[TEXLOAD]: Could not find texture \"" + FullTextureName + "\", imported in \"" + ImportPCC + "\".");
                 return null;
-            }
+            //}
         }
     }
 
@@ -410,24 +422,26 @@ namespace ME3Explorer.Scene3D
                 if (mat == null)
                 {
                     // The material instance is an import!
-                    ImportEntry matImport = m.Owner.getUImport(m.Materials[i]);
+                    ImportEntry matImport = m.Export.FileRef.getUImport(m.Materials[i]);
 
                     // Find the filename of the package
                     string packageFilename = "";
-                    if (m.Owner.Game == MEGame.ME1)
+                    if (m.Export.FileRef.Game == MEGame.ME1)
                     {
                         IEntry parent = matImport.Parent;
                         while (parent.HasParent)
                         {
                             parent = parent.Parent;
                         }
-                        //                        packageFilename = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m.Owner.FilePath), parent.ObjectName + ".upk");
-                        var packagePath = MELoadedFiles.GetAllFiles(MEGame.ME1).FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).ToLower() == parent.ObjectName.ToLower());
-                        if (packagePath != null)
+                        var loadedPackages = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
+                        if (loadedPackages.TryGetValue(parent.ObjectName, out string packagePath))
                         {
                             packageFilename = packagePath;
                         }
-
+                        else
+                        {
+                            throw new Exception("Cannot find referenced package file: " + parent.ObjectName);
+                        }
                     }
                     else
                     {
@@ -439,7 +453,7 @@ namespace ME3Explorer.Scene3D
                         using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(packageFilename))
                         {
                             ExportEntry matExport = pcc.Exports.FirstOrDefault(exp => exp.ObjectName == matImport.ObjectName);
-                            mat = new Unreal.Classes.MaterialInstanceConstant(pcc, matExport.Index);
+                            mat = new Unreal.Classes.MaterialInstanceConstant(matExport);
                         }
                     }
                 }
