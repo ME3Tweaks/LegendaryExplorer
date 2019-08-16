@@ -17,11 +17,18 @@ namespace ME3Explorer.Unreal.BinaryConverters
             switch (export.ClassName)
             {
                 case "World":
-                    return new World(export).Write(newGame);
+                    return World.From(export).Write(newGame);
                 case "Level":
                     return ConvertLevel(export, newGame);
                 case "Model":
                     return ConvertModel(export, newGame);
+                case "Polys":
+                    return Polys.From(export).Write(export.FileRef, newGame);
+            }
+
+            if (export.IsTexture())
+            {
+                return ConvertTexture2D(export, newGame);
             }
 
             //no conversion neccesary
@@ -87,6 +94,82 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
 
             return export.Data.Slice(0, export.GetPropertyStart());
+        }
+
+        public static byte[] ConvertTexture2D(ExportEntry export, MEGame newGame)
+        {
+            MemoryStream bin = new MemoryStream(export.getBinaryData());
+            if (bin.Length == 0)
+            {
+                return bin.ToArray();
+            }
+            var os = new MemoryStream();
+
+            if (export.Game != MEGame.ME3)
+            {
+                bin.Skip(16);
+            }
+            if (newGame != MEGame.ME3)
+            {
+                os.WriteZeros(16);//includes fileOffset, but that will be set during save
+            }
+
+            int mipCount = bin.ReadInt32();
+            os.WriteInt32(mipCount);
+            for (int i = 0; i < mipCount; i++)
+            {
+                var storageType = (StorageTypes)bin.ReadInt32();
+                int uncompressedSize = bin.ReadInt32();
+                int compressedSize = bin.ReadInt32();
+                bin.SkipInt32();
+                byte[] texture;
+                switch (storageType)
+                {
+                    case StorageTypes.pccUnc:
+                        texture = bin.ReadToBuffer(uncompressedSize);
+                        break;
+                    case StorageTypes.pccLZO:
+                    case StorageTypes.pccZlib:
+                        texture = bin.ReadToBuffer(compressedSize);
+                        break;
+                    default:
+                        storageType = StorageTypes.pccUnc;
+                        texture = new byte[0]; //todo: copy in external textures as pccUnc. stub until ME1ME2Meshplorer branch is merged.
+                        uncompressedSize = compressedSize = texture.Length;
+                        break;
+
+                }
+
+                int width = bin.ReadInt32();
+                int height = bin.ReadInt32();
+
+                os.WriteInt32((int)storageType);
+                os.WriteInt32(uncompressedSize);
+                os.WriteInt32(compressedSize);
+                os.WriteInt32(0);//fileOffset will be fixed during save
+                os.WriteFromBuffer(texture);
+                os.WriteInt32(width);
+                os.WriteInt32(height);
+
+            }
+            os.WriteInt32(bin.ReadInt32());
+            Guid textureGuid = export.Game != MEGame.ME1 ? bin.ReadGuid() : Guid.NewGuid();
+
+            if (newGame != MEGame.ME1)
+            {
+                os.WriteGuid(textureGuid);
+            }
+
+            if (newGame == MEGame.ME3)
+            {
+                os.WriteInt32(0);
+                if (export.ClassName == "LightMapTexture2D")
+                {
+                    os.WriteInt32(0);//LightMapFlags noflag
+                }
+            }
+            
+            return os.ToArray();
         }
 
         private static byte[] ConvertLevel(ExportEntry export, MEGame newGame)
@@ -239,7 +322,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 }
                 if (newGame == MEGame.ME3)
                 {
-                    os.WriteInt32(0);//iLightmassIndex 
+                    os.WriteInt32(1);//iLightmassIndex 
                 }
             }
 

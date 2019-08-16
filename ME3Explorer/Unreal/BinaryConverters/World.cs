@@ -40,47 +40,36 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
         public World(ExportEntry export)
         {
-            var ms = new MemoryStream(export.getBinaryData());
-            PersistentLevel = ms.ReadInt32();
-            if (export.Game == MEGame.ME3)
+            Serialize(new SerializingContainer2(new MemoryStream(export.getBinaryData()), true), export.Game);
+        }
+
+        public static World From(ExportEntry export)
+        {
+            return new World(export);
+        }
+
+        private void Serialize(SerializingContainer2 sc, MEGame game)
+        {
+            sc.Serialize(ref PersistentLevel);
+            if (game == MEGame.ME3)
             {
-                PersistentFaceFXAnimSet = ms.ReadInt32();
+                sc.Serialize(ref PersistentFaceFXAnimSet);
+            }
+            sc.Serialize(ref EditorViews, 112);
+            int dummy = 0;
+            sc.Serialize(ref dummy);
+            if (game == MEGame.ME1)
+            {
+                sc.Serialize(ref DecalManager);
             }
 
-            EditorViews = ms.ReadToBuffer(112);
-            ms.SkipInt32();
-            if (export.Game == MEGame.ME1)
-            {
-                DecalManager = ms.ReadInt32();
-            }
-
-            int count = ms.ReadInt32();
-            ExtraReferencedObjects = new int[count];
-            for (int i = 0; i < count; i++)
-            {
-                ExtraReferencedObjects[i] = ms.ReadInt32();
-            }
+            sc.Serialize(ref ExtraReferencedObjects);
         }
 
         public byte[] Write(MEGame game)
         {
             var ms = new MemoryStream();
-            ms.WriteInt32(PersistentLevel);
-            if (game == MEGame.ME3)
-            {
-                ms.WriteInt32(PersistentFaceFXAnimSet);
-            }
-            ms.WriteFromBuffer(EditorViews);
-            ms.WriteInt32(0);
-            if (game == MEGame.ME1)
-            {
-                ms.WriteInt32(DecalManager);
-            }
-            ms.WriteInt32(ExtraReferencedObjects.Length);
-            foreach (int i in ExtraReferencedObjects)
-            {
-                ms.WriteInt32(i);
-            }
+            Serialize(new SerializingContainer2(ms), game);
 
             return ms.ToArray();
         }

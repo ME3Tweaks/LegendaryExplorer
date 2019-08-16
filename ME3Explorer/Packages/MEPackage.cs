@@ -74,19 +74,6 @@ namespace ME3Explorer.Packages
         public bool IsCompressed
         {
             get => Flags.HasFlag(EPackageFlags.Compressed);
-            private set
-            {
-                if (value)
-                {
-                    //Toolkit should never set this flag as we do not support compressing files.
-                    Flags |= EPackageFlags.Compressed;
-                }
-                else // else set to false
-                {
-                    Flags &= ~EPackageFlags.Compressed;
-                    PackageCompressionType = CompressionType.None;
-                }
-            }
         }
 
         public enum CompressionType
@@ -95,8 +82,6 @@ namespace ME3Explorer.Packages
             Zlib,
             LZO
         }
-
-        public CompressionType PackageCompressionType { get; private set; }
 
         #region HeaderMisc
         private int Gen0ExportCount;
@@ -216,8 +201,8 @@ namespace ME3Explorer.Packages
                     fs.SkipInt32(); //always -1
                 }
 
-                PackageCompressionType = (CompressionType)fs.ReadUInt32();
-                //skip chunks. Decompressor will handle that
+                //skip compression type chunks. Decompressor will handle that
+                fs.SkipInt32();
                 int numChunks = fs.ReadInt32();
                 fs.Skip(numChunks * 16);
 
@@ -250,7 +235,7 @@ namespace ME3Explorer.Packages
                 #endregion
 
                 Stream inStream = fs;
-                if (PackageCompressionType != CompressionType.None && numChunks > 0)
+                if (IsCompressed && numChunks > 0)
                 {
                     inStream = Game == MEGame.ME3 ? CompressionHelper.DecompressME3(fs) : CompressionHelper.DecompressME1orME2(fs);
                 }
@@ -300,19 +285,26 @@ namespace ME3Explorer.Packages
 
         public void save(string path)
         {
-            //If we're doing save as, IsCompressed should not be changed since we're saving a copy of the file
-            if (path == FilePath)
+            bool compressed = IsCompressed;
+            Flags &= ~EPackageFlags.Compressed;
+            try
             {
-                IsCompressed = false;
+                if (CanReconstruct)
+                {
+                    saveByReconstructing(path);
+                }
+                else
+                {
+                    throw new Exception($"Cannot save ME1 packages with compressed textures. Please make an issue on github: {App.BugReportURL}");
+                }
             }
-
-            if (CanReconstruct)
+            finally
             {
-                saveByReconstructing(path);
-            }
-            else
-            {
-                throw new Exception($"Cannot save ME1 packages with compressed textures. Please make an issue on github: {App.BugReportURL}");
+                //If we're doing save as, reset compressed flag to reflect file on disk
+                if (path != FilePath && compressed)
+                {
+                    Flags |= EPackageFlags.Compressed;
+                }
             }
         }
 
@@ -439,6 +431,7 @@ namespace ME3Explorer.Packages
             {
                 ms.WriteUnrealStringASCII("None");
             }
+
             ms.WriteUInt32((uint)Flags);
 
             if (Game == MEGame.ME3 && Flags.HasFlag(EPackageFlags.Cooked))
@@ -923,22 +916,26 @@ namespace ME3Explorer.Packages
 
         public void ConvertTo(MEGame newGame)
         {
+            MEGame oldGame = Game;
             var prePropBinary = new List<byte[]>(ExportCount);
             var propCollections = new List<PropertyCollection>(ExportCount);
             var postPropBinary = new List<byte[]>(ExportCount);
+
+            EntryPruner.TrashIncompatibleEntries(this, oldGame, newGame);
+
             foreach (ExportEntry export in exports)
             {
                 //convert stack, or just get the pre-prop binary if no stack
                 prePropBinary.Add(ExportBinaryConverter.ConvertPrePropBinary(export, newGame));
 
-                //read in all properties in the old format
                 if (export.ClassName == "Class")
                 {
                     propCollections.Add(null);
                 }
                 else
                 {
-                    propCollections.Add(export.GetProperties());
+                    //read in all properties in the old format, and remove ones that are incompatible with newGame
+                    propCollections.Add(EntryPruner.RemoveIncompatibleProperties(this, export.GetProperties(), export.ClassName, newGame));
                 }
 
                 //convert binary data
@@ -955,14 +952,29 @@ namespace ME3Explorer.Packages
                 var newData = new MemoryStream();
                 newData.WriteFromBuffer(prePropBinary[i]);
                 //write back properties in new format
-                propCollections[i].WriteTo(newData, this);
+                propCollections[i]?.WriteTo(newData, this);
 
                 newData.WriteFromBuffer(postPropBinary[i]);
 
                 exports[i].Data = newData.ToArray();
             }
 
-
+            if (oldGame == MEGame.ME1 && newGame != MEGame.ME1)
+            {
+                int idx = names.IndexOf("BIOC_Base");
+                if (idx >= 0)
+                {
+                    names[idx] = "SFXGame";
+                }
+            }
+            else if(newGame == MEGame.ME1)
+            {
+                int idx = names.IndexOf("SFXGame");
+                if (idx >= 0)
+                {
+                    names[idx] = "BIOC_Base";
+                }
+            }
         }
     }
 }

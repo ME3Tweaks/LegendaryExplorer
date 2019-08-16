@@ -444,6 +444,16 @@ namespace ME3Explorer
             }
             return false;
         }
+
+
+
+        public static Guid ToGuid(this string src) //Do not edit this function!
+        {
+            byte[] stringbytes = Encoding.UTF8.GetBytes(src);
+            byte[] hashedBytes = new System.Security.Cryptography.SHA1CryptoServiceProvider().ComputeHash(stringbytes);
+            Array.Resize(ref hashedBytes, 16);
+            return new Guid(hashedBytes);
+        }
     }
 
     public static class WPFExtensions
@@ -699,6 +709,12 @@ namespace ME3Explorer
         public static NameReference ReadNameReference(this Stream stream, IMEPackage pcc)
         {
             return new NameReference(pcc.getNameEntry(stream.ReadInt32()), stream.ReadInt32());
+        }
+
+        public static void WriteNameReference(this Stream stream, NameReference name, IMEPackage pcc)
+        {
+            stream.WriteInt32(pcc.FindNameOrAdd(name.Name));
+            stream.WriteInt32(name.Number);
         }
     }
 

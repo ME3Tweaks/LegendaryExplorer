@@ -526,7 +526,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new EnumProperty(stream, pcc, enumType) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<EnumProperty>(arrayOffset, props, name);
+                        return new ArrayProperty<EnumProperty>(arrayOffset, props, name) {Reference = enumType};
                     }
                 case ArrayType.Struct:
                     {
@@ -609,7 +609,7 @@ namespace ME3Explorer.Unreal
 #endif
                             }
                         }
-                        return new ArrayProperty<StructProperty>(arrayOffset, props, name);
+                        return new ArrayProperty<StructProperty>(arrayOffset, props, name) {Reference = arrayStructType};
                     }
                 case ArrayType.Bool:
                     {
@@ -1471,6 +1471,8 @@ namespace ME3Explorer.Unreal
 
     public abstract class ArrayPropertyBase : UProperty, IEnumerable
     {
+        public string Reference;
+
         public override PropertyType PropType => PropertyType.ArrayProperty;
 
         public abstract IReadOnlyList<UProperty> Properties { get; }

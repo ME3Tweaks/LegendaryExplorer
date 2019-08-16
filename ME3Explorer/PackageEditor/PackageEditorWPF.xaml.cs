@@ -33,6 +33,7 @@ using System.Windows.Threading;
 using Gammtek.Conduit.Extensions.IO;
 using ME2Explorer.Unreal;
 using ME3Explorer.CurveEd;
+using ME3Explorer.Unreal.BinaryConverters;
 using static ME3Explorer.Packages.MEPackage;
 using static ME3Explorer.Unreal.UnrealFlags;
 
@@ -397,8 +398,22 @@ namespace ME3Explorer
 
         private void SaveFileAs()
         {
-            string extension = Path.GetExtension(Pcc.FilePath);
-            SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
+            string fileFilter;
+            switch (Pcc.Game)
+            {
+                case MEGame.ME1:
+                    fileFilter = App.ME1FileFilter;
+                    break;
+                case MEGame.ME2:
+                case MEGame.ME3:
+                    fileFilter = App.ME3ME2FileFilter;
+                    break;
+                default:
+                    string extension = Path.GetExtension(Pcc.FilePath);
+                    fileFilter = $"*{extension}|*{extension}";
+                    break;
+            }
+            SaveFileDialog d = new SaveFileDialog { Filter = fileFilter };
             if (d.ShowDialog() == true)
             {
                 Pcc.save(d.FileName);
@@ -687,7 +702,7 @@ namespace ME3Explorer
             {
                 TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
 
-                List<TreeViewEntry> itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex).ToList();
+                var itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex).Select(tvEntry => tvEntry.Entry);
 
                 if (selected.Entry is IEntry ent && ent.GetFullPath.StartsWith("ME3ExplorerTrashPackage"))
                 {
@@ -695,109 +710,8 @@ namespace ME3Explorer
                     return;
                 }
 
-                ExportEntry trashTopLevel = Pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == "ME3ExplorerTrashPackage");
-                ImportEntry packageImport = Pcc.Imports.FirstOrDefault(x => x.GetFullPath == "Core.Package");
-                if (packageImport == null)
-                {
-                    ImportEntry coreImport = Pcc.Imports.FirstOrDefault(x => x.GetFullPath == "Core");
-                    if (coreImport == null)
-                    {
-                        //really small file
-                        coreImport = new ImportEntry(Pcc)
-                        {
-                            idxObjectName = Pcc.FindNameOrAdd("Core"),
-                            idxClassName = Pcc.FindNameOrAdd("Package"),
-                            idxLink = 0,
-                            idxPackageFile = Pcc.FindNameOrAdd("Core")
-                        };
-                        Pcc.addImport(coreImport);
-                    }
-                    //Package isn't an import, could be one of the 2DA files or other small ones
-                    packageImport = new ImportEntry(Pcc)
-                    {
-                        idxObjectName = Pcc.FindNameOrAdd("Package"),
-                        idxClassName = Pcc.FindNameOrAdd("Class"),
-                        idxLink = coreImport.UIndex,
-                        idxPackageFile = Pcc.FindNameOrAdd("Core")
-                    };
-                    Pcc.addImport(packageImport);
-                }
-                foreach (TreeViewEntry entry in itemsToTrash)
-                {
-                    trashTopLevel = TrashEntry(entry.Entry, trashTopLevel, packageImport.UIndex);
-                }
+                EntryPruner.TrashEntries(Pcc, itemsToTrash);
             }
-        }
-
-        /// <summary>
-        /// Trashes an entry.
-        /// </summary>
-        /// <param name="entry">Entry to trash</param>
-        /// <param name="trashContainer">Container for trash. Pass null if you want to create the trash container from the passed in value.</param>
-        /// <param name="packageClassIdx">Idx for package class. Prevents multiple calls to find it</param>
-        /// <returns>New trash container, otherwise will be null</returns>
-        private ExportEntry TrashEntry(IEntry entry, ExportEntry trashContainer, int packageClassIdx)
-        {
-            if (entry is ImportEntry imp)
-            {
-                if (trashContainer == null)
-                {
-                    trashContainer = TrashEntry(new ExportEntry(Pcc), null, packageClassIdx);
-                    Pcc.addExport(trashContainer);
-                    trashContainer.indexValue = 0;
-                }
-                imp.idxClassName = Pcc.FindNameOrAdd("Package");
-                imp.idxPackageFile = Pcc.FindNameOrAdd("Core");
-                imp.idxLink = trashContainer.UIndex;
-                imp.idxObjectName = Pcc.FindNameOrAdd("Trash");
-                imp.indexValue = 0;
-            }
-            else if (entry is ExportEntry exp)
-            {
-                MemoryStream trashData = new MemoryStream();
-                trashData.WriteInt32(-1);
-                trashData.WriteInt32(Pcc.findName("None"));
-                trashData.WriteInt32(0);
-                exp.Data = trashData.ToArray();
-                exp.idxArchtype = 0;
-                exp.idxClassParent = 0;
-                exp.indexValue = 0;
-                exp.idxClass = packageClassIdx;
-                exp.ObjectFlags &= ~EObjectFlags.HasStack;
-                if (trashContainer == null)
-                {
-                    exp.idxObjectName = Pcc.FindNameOrAdd("ME3ExplorerTrashPackage");
-                    exp.idxLink = 0;
-                    if (exp.idxLink == exp.UIndex)
-                    {
-                        Debugger.Break();
-                    }
-                    exp.PackageGUID = ToGuid("ME3ExpTrashPackage"); //DO NOT EDIT THIS!!
-                    trashContainer = exp;
-                }
-                else
-                {
-                    exp.idxLink = trashContainer.UIndex;
-                    if (exp.idxLink == exp.UIndex)
-                    {
-                        //This should not occur
-                        Debugger.Break();
-                    }
-                    exp.idxObjectName = Pcc.FindNameOrAdd("Trash");
-                    exp.PackageGUID = Guid.Empty;
-                }
-            }
-            return trashContainer;
-        }
-
-        public static Guid ToGuid(string src)
-        {
-            byte[] stringbytes = Encoding.UTF8.GetBytes(src);
-            byte[] hashedBytes = new System.Security.Cryptography
-                .SHA1CryptoServiceProvider()
-                .ComputeHash(stringbytes);
-            Array.Resize(ref hashedBytes, 16);
-            return new Guid(hashedBytes);
         }
 
         private void ReindexObjectByName()
@@ -4069,9 +3983,9 @@ namespace ME3Explorer
 
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
-            MEGame game = MEGame.ME1;
-            var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
-            //var filePaths = MELoadedFiles.GetAllFiles(game);
+            MEGame game = MEGame.ME3;
+            //var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
+            var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             IsBusy = true;
@@ -4109,9 +4023,9 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    //findClass(filePath, "Terrain", true);
+                    if (findClass(filePath, "Texture2D", true)) break;
                     //findClassesWithBinary(filePath);
-
+                    continue;
                     try
                     {
                         using (var fs = File.OpenRead(filePath))
@@ -4236,6 +4150,7 @@ namespace ME3Explorer
                     }
                 }
 
+                return;
                 interestingExports.Add($"unknown4 ME2: {string.Join(", ", unknown4ME2Set)}");
                 foreach ((int unknown, EPackageFlags value) in me2FlagsDict)
                 {
@@ -4286,6 +4201,13 @@ namespace ME3Explorer
                     {
                         try
                         {
+                            if (exp.ClassName == "Blood_Splatter_Crust")
+                            {
+                                interestingExports.Add($"{exp.UIndex}: {filePath}");
+                                return true;
+                            }
+
+                            continue;
                             if (!withBinary || exp.propsEnd() < exp.DataSize)
                             {
                                 interestingExports.Add($"{exp.UIndex}: {filePath}");
@@ -4655,6 +4577,36 @@ namespace ME3Explorer
 
         private void GenerateObjectInfoDiff_Click(object sender, RoutedEventArgs e)
         {
+            var enumsDiff = new Dictionary<string, (List<NameReference>, List<NameReference>)>();
+            var structsDiff = new Dictionary<string, (ClassInfo, ClassInfo)>();
+            var classesDiff = new Dictionary<string, (ClassInfo, ClassInfo)>();
+
+            var immutableME1Structs = ME1UnrealObjectInfo.Structs.Where(kvp => ME1UnrealObjectInfo.IsImmutableStruct(kvp.Key)).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            var immutableME2Structs = ME2UnrealObjectInfo.Structs.Where(kvp => ME2UnrealObjectInfo.IsImmutableStruct(kvp.Key)).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            var immutableME3Structs = ME2UnrealObjectInfo.Structs.Where(kvp => ME3UnrealObjectInfo.IsImmutableStruct(kvp.Key)).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            foreach ((string className, ClassInfo classInfo) in immutableME1Structs)
+            {
+                if (immutableME2Structs.TryGetValue(className, out ClassInfo classInfo2) && (!classInfo.properties.SequenceEqual(classInfo2.properties) || classInfo.baseClass != classInfo2.baseClass))
+                {
+                    structsDiff.Add(className, (classInfo, classInfo2));
+                }
+                if (immutableME3Structs.TryGetValue(className, out ClassInfo classInfo3) && (!classInfo.properties.SequenceEqual(classInfo3.properties) || classInfo.baseClass != classInfo3.baseClass))
+                {
+                    structsDiff.Add(className, (classInfo, classInfo3));
+                }
+            }
+
+            foreach ((string className, ClassInfo classInfo) in immutableME2Structs)
+            {
+                if (immutableME3Structs.TryGetValue(className, out ClassInfo classInfo3) && (!classInfo.properties.SequenceEqual(classInfo3.properties) || classInfo.baseClass != classInfo3.baseClass))
+                {
+                    structsDiff.Add(className, (classInfo, classInfo3));
+                }
+            }
+            File.WriteAllText(Path.Combine(App.ExecFolder, "Diff.json"), JsonConvert.SerializeObject((immutableME1Structs, immutableME2Structs, immutableME3Structs), Formatting.Indented));
+            return;
+
             var srcEnums = ME2UnrealObjectInfo.Enums;
             var compareEnums = ME3UnrealObjectInfo.Enums;
             var srcStructs = ME2UnrealObjectInfo.Structs;
@@ -4662,7 +4614,6 @@ namespace ME3Explorer
             var srcClasses = ME2UnrealObjectInfo.Classes;
             var compareClasses = ME3UnrealObjectInfo.Classes;
 
-            var enumsDiff = new Dictionary<string, (List<NameReference>, List<NameReference>)>();
             foreach ((string enumName, List<NameReference> values) in srcEnums)
             {
                 if (!compareEnums.TryGetValue(enumName, out var values2) || !values.SubsetOf(values2))
@@ -4671,7 +4622,6 @@ namespace ME3Explorer
                 }
             }
 
-            var structsDiff = new Dictionary<string, (ClassInfo, ClassInfo)>();
             foreach ((string className, ClassInfo classInfo) in srcStructs)
             {
                 if (!compareStructs.TryGetValue(className, out var classInfo2) || !classInfo.properties.SubsetOf(classInfo2.properties) || classInfo.baseClass != classInfo2.baseClass)
@@ -4680,7 +4630,6 @@ namespace ME3Explorer
                 }
             }
 
-            var classesDiff = new Dictionary<string, (ClassInfo, ClassInfo)>();
             foreach ((string className, ClassInfo classInfo) in srcClasses)
             {
                 if (!compareClasses.TryGetValue(className, out var classInfo2) || !classInfo.properties.SubsetOf(classInfo2.properties) || classInfo.baseClass != classInfo2.baseClass)
@@ -4819,14 +4768,15 @@ namespace ME3Explorer
                 if (Enum.TryParse(gameString, out MEGame game))
                 {
                     IsBusy = true;
-                    BusyText = $"Making all {gameString} dialogue skippable";
+                    BusyText = "Converting...";
                     Task.Run(() =>
                     {
                         pcc.ConvertTo(game);
                     }).ContinueWithOnUIThread(prevTask =>
                     {
                         IsBusy = false;
-                        MessageBox.Show(this, "Done!");
+                        SaveFileAs();
+                        Close();
                     });
                 }
             }

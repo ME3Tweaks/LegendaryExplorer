@@ -67,7 +67,7 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static List<NameReference> GetEnumValues(MEGame game, string enumName, bool includeNone)
+        public static List<NameReference> GetEnumValues(MEGame game, string enumName, bool includeNone = false)
         {
             switch (game)
             {
@@ -213,6 +213,19 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
+        public static List<KeyValuePair<string, PropertyInfo>> GetAllProperties(MEGame game, string typeName)
+        {
+            var props = new List<KeyValuePair<string, PropertyInfo>>();
+            ClassInfo info = GetClassOrStructInfo(game, typeName);
+            while (info != null)
+            {
+                props.AddRange(info.properties);
+                info = GetClassOrStructInfo(game, info.baseClass);
+            }
+
+            return props;
+        }
+
         public static ClassInfo GetClassOrStructInfo(MEGame game, string typeName)
         {
             ClassInfo result = null;
@@ -230,6 +243,51 @@ namespace ME3Explorer.Unreal
             }
 
             return result;
+        }
+
+        public static Dictionary<string, ClassInfo> GetClasses(MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return ME1UnrealObjectInfo.Classes;
+                case MEGame.ME2:
+                    return ME2UnrealObjectInfo.Classes;
+                case MEGame.ME3:
+                    return ME3UnrealObjectInfo.Classes;
+                default:
+                    return null;
+            }
+        }
+
+        public static Dictionary<string, ClassInfo> GetStructs(MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return ME1UnrealObjectInfo.Structs;
+                case MEGame.ME2:
+                    return ME2UnrealObjectInfo.Structs;
+                case MEGame.ME3:
+                    return ME3UnrealObjectInfo.Structs;
+                default:
+                    return null;
+            }
+        }
+
+        public static Dictionary<string, List<NameReference>> GetEnums(MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return ME1UnrealObjectInfo.Enums;
+                case MEGame.ME2:
+                    return ME2UnrealObjectInfo.Enums;
+                case MEGame.ME3:
+                    return ME3UnrealObjectInfo.Enums;
+                default:
+                    return null;
+            }
         }
 
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
@@ -735,6 +793,20 @@ namespace ME3Explorer.Unreal
                     new KeyValuePair<string, PropertyInfo>("m_aoTargets", new PropertyInfo(PropertyType.ArrayProperty, "Actor")),
                     new KeyValuePair<string, PropertyInfo>("m_pDefaultFaceFXAsset", new PropertyInfo(PropertyType.ObjectProperty, "FaceFXAsset"))
                 }
+            };
+
+            NewClasses["LightMapTexture2D"] = new ClassInfo
+            {
+                baseClass = "Texture2D",
+                exportIndex = 0,
+                pccPath = "ME3Explorer_CustomNativeAdditions"
+            };
+
+            NewClasses["Package"] = new ClassInfo
+            {
+                baseClass = "Object",
+                exportIndex = 0,
+                pccPath = "ME3Explorer_CustomNativeAdditions"
             };
 
             #endregion

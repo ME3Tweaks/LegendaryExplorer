@@ -602,6 +602,10 @@ namespace ME3Explorer.Packages
 
         public int GetPropertyStart()
         {
+            if (ClassName == "Class")
+            {
+                return 0;
+            }
             IMEPackage pcc = FileRef;
             if (HasStack)
             {

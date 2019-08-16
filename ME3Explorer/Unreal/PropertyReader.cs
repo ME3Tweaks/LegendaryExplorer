@@ -12,7 +12,7 @@ using StreamHelpers;
 
 namespace ME3Explorer.Unreal
 {
-    public struct NameReference : IEquatable<NameReference>
+    public readonly struct NameReference : IEquatable<NameReference>
     {
         public string Name { get; }
         public int Number { get; }

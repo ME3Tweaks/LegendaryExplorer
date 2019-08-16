@@ -31,6 +31,8 @@ namespace ME3Explorer
 
         public static bool TlkFirstLoadDone; //Set when the TLK loading at startup is finished.
         public const string FileFilter = "*.pcc;*.u;*.upk;*sfm|*.pcc;*.u;*.upk;*sfm|All Files (*.*)|*.*";
+        public const string ME1FileFilter = "*.u;*.upk;*sfm|*.u;*.upk;*sfm";
+        public const string ME3ME2FileFilter = "*.pcc|*.pcc";
 
         public static string Version => GetVersion();
 

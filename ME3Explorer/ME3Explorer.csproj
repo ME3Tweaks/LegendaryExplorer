@@ -774,7 +774,12 @@
     <Compile Include="UnrealScriptControl\UnrealScriptWPF.xaml.cs">
       <DependentUpon>UnrealScriptWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Unreal\BinaryConverters\EntryPruner.cs" />
     <Compile Include="Unreal\BinaryConverters\ExportBinaryConverter.cs" />
+    <Compile Include="Unreal\BinaryConverters\Polys.cs" />
+    <Compile Include="Unreal\SerializingContainer2.cs" />
+    <Compile Include="Unreal\BinaryConverters\TreeNode.cs" />
+    <Compile Include="Unreal\BinaryConverters\UnrealStructs.cs" />
     <Compile Include="Unreal\BitConverter.cs" />
     <Compile Include="Unreal\Bytecode.cs" />
     <Compile Include="Unreal\Classes\AnimNodeSlot.cs" />

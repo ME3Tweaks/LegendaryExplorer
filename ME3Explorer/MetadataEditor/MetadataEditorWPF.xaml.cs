@@ -452,7 +452,7 @@ namespace ME3Explorer.MetadataEditor
 
         private void Info_ObjectNameComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!loadingNewData && InfoTab_Objectname_ComboBox.SelectedIndex >= 0)
+            if (!loadingNewData && InfoTab_Objectname_ComboBox.SelectedIndex >= 0 && CurrentLoadedEntry != null)
             {
                 var selectedNameIndex = InfoTab_Objectname_ComboBox.SelectedIndex;
                 if (selectedNameIndex >= 0)

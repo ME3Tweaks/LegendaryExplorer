@@ -983,7 +983,7 @@ namespace ME3Explorer
                                     MakeFloatNode(bin, "EmissiveBoost"),
                                     MakeFloatNode(bin, "DiffuseBoost"),
                                     MakeFloatNode(bin, "SpecularBoost"),
-                                    new BinInterpNode(bin.Position, $"RulesetVariation: {bin.ReadNameReference(Pcc)}")
+                                    MakeNameNode(bin, "RulesetVariation")
                                 }),
                             }
                         })
