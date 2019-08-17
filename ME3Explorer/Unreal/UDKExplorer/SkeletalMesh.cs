@@ -8,6 +8,7 @@ using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using SharpDX;
+using System.Diagnostics;
 
 namespace UDKExplorer.UDK.Classes
 {
@@ -434,7 +435,7 @@ namespace UDKExplorer.UDK.Classes
             public int RawPointIndicesCount;
             public int RawPointIndicesSize;
             public int RawPointIndicesOffset;
-            public List<int> RawPointIndices;
+            public List<byte> RawPointIndices;
             public int NumTexCoords;
             public VertexBufferGPUSkinStruct VertexBufferGPUSkin;
             public int Unk1;
@@ -449,6 +450,7 @@ namespace UDKExplorer.UDK.Classes
                 int count = 0;
                 if (!Container.isLoading)
                     count = Sections.Count();
+                Debug.WriteLine("Serializing LOD at " + Container.GetPos().ToString("X6"));
                 count = Container + count;
                 if (Container.isLoading)
                 {
@@ -521,7 +523,7 @@ namespace UDKExplorer.UDK.Classes
                 //RawPointIndices
                 if (Container.isLoading)
                 {
-                    RawPointIndices = new List<int>();
+                    RawPointIndices = new List<byte>();
                     for (int i = 0; i < RawPointIndicesCount; i++)
                         RawPointIndices.Add(0);
                 }

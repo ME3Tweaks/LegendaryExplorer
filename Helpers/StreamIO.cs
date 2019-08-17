@@ -208,6 +208,27 @@ namespace StreamHelpers
             stream.Write(BitConverter.GetBytes(data), 0, sizeof(short));
         }
 
+        public static float ReadFloat16(this Stream stream)
+        {
+            var buffer = new byte[sizeof(ushort)];
+            if (stream.Read(buffer, 0, sizeof(ushort)) != sizeof(ushort))
+                throw new Exception();
+            ushort u = BitConverter.ToUInt16(buffer, 0);
+            int sign = (u >> 15) & 0x00000001;
+            int exp = (u >> 10) & 0x0000001F;
+            int mant = u & 0x000003FF;
+            switch (exp)
+            {
+                case 0:
+                    return 0f;
+                case 31:
+                    return 65504f;
+            }
+            exp += (127 - 15);
+            int i = (sign << 31) | (exp << 23) | (mant << 13);
+            return BitConverter.ToSingle(BitConverter.GetBytes(i), 0);
+        }
+
         public static float ReadFloat(this Stream stream)
         {
             var buffer = new byte[sizeof(float)];

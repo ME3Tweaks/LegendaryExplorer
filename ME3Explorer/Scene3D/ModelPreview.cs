@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -86,12 +88,14 @@ namespace ME3Explorer.Scene3D
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
         public ModelPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat)
         {
-            Properties.Add("Name", mat.pcc.Exports[mat.index].ObjectName);
+            if (mat == null) return;
+            Properties.Add("Name", mat.export.ObjectName);
             foreach (Unreal.Classes.MaterialInstanceConstant.TextureParam texparam in mat.Textures)
             {
                 if (texparam.TexIndex != 0)
                 {
-                    Textures.Add(texparam.Desc, FindTexture(texcache, mat.pcc.getEntry(texparam.TexIndex).GetFullPath, mat.pcc.FilePath));
+                    var entry = mat.export.FileRef.getEntry(texparam.TexIndex); //for debugging
+                    Textures.Add(texparam.Desc, FindTexture(texcache, entry, mat.export.FileRef.FilePath));
                 }
             }
         }
@@ -120,64 +124,104 @@ namespace ME3Explorer.Scene3D
 
         }
 
-        private PreviewTextureCache.PreviewTextureEntry FindTexture(PreviewTextureCache texcache, string FullTextureName, string ImportPCC)
+        private PreviewTextureCache.PreviewTextureEntry FindTexture(PreviewTextureCache texcache, IEntry textureReference, string ImportPCC)
         {
+            var FullTextureName = textureReference.GetFullPath;
             string importfiledir = System.IO.Path.GetDirectoryName(ImportPCC).ToLower();
             string importfilename = System.IO.Path.GetFileName(ImportPCC).ToLower();
-            string pccpath = "";
-            int id = 0;
+            //string pccpath = "";
+            //int id = 0;
 
+            ExportEntry referencedExport = null;
             // First, check the pcc that contains the material
-            using (IMEPackage pcc = MEPackageHandler.OpenME3Package(ImportPCC))
+            using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(ImportPCC))
             {
                 foreach (ExportEntry exp in pcc.Exports)
                 {
-                    if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                    if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D") //This should be instanced name as there may be same-named textures
                     {
-                        pccpath = ImportPCC;
-                        id = exp.Index;
+                        return texcache.LoadTexture(exp);
+
+                        referencedExport = exp;
+                        //pccpath = ImportPCC;
+                        //id = exp.UIndex;
                         break;
                     }
                 }
             }
-            // Next, split the filename by underscores
-            string[] parts = System.IO.Path.GetFileNameWithoutExtension(importfilename).Split('_');
-            if (pccpath == "" && (importfilename.StartsWith("bioa") || importfilename.StartsWith("biod"))) {
-                // Maybe go for the one with one less segment? ex. for input BioA_Nor_201CIC.pcc, look in BioA_Nor.pcc
-                if (parts.Length == 3)
+
+            if (/*id == 0*/ referencedExport == null)
+            {
+                if (textureReference.FileRef.Game == MEGame.ME1)
                 {
-                    string filename = importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc";
-                    if (System.IO.File.Exists(filename))
+                    string baseName = textureReference.FileRef.FollowLink(textureReference.idxLink).Split('.')[0].ToUpper(); //Get package filename
+                    var gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
+                    var file = gameFiles[baseName]; //this should be in a try catch
+                    using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(file))
                     {
-                        using (IMEPackage pcc = MEPackageHandler.OpenME3Package(filename))
+                        foreach (ExportEntry exp in pcc.Exports)
                         {
-                            foreach (ExportEntry exp in pcc.Exports)
+                            if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
                             {
-                                if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
-                                {
-                                    pccpath = importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc";
-                                    id = exp.Index;
-                                    break;
-                                }
+                                return texcache.LoadTexture(exp);
+
+                                referencedExport = exp;
+                                //pccpath = file;
+                                //id = exp.UIndex;
+                                break;
                             }
                         }
                     }
                 }
-                // Now go for the BioP one.
-                if (pccpath == "" && parts.Length >= 2)
+                else
                 {
-                    string filename = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
-                    if (System.IO.File.Exists(filename))
+                    // Next, split the filename by underscores
+                    string[] parts = System.IO.Path.GetFileNameWithoutExtension(FullTextureName).Split('_');
+                    if (/*pccpath == "" && */ (importfilename.StartsWith("bioa") || importfilename.StartsWith("biod"))) //referencedTexture will always be null here.
                     {
-                        using (IMEPackage pcc = MEPackageHandler.OpenME3Package(filename))
+                        // Maybe go for the one with one less segment? ex. for input BioA_Nor_201CIC.pcc, look in BioA_Nor.pcc
+                        if (parts.Length == 3)
                         {
-                            foreach (ExportEntry exp in pcc.Exports)
+                            string filename = importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc";
+                            if (System.IO.File.Exists(filename))
                             {
-                                if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filename))
                                 {
-                                    pccpath = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
-                                    id = exp.Index;
-                                    break;
+                                    foreach (ExportEntry exp in pcc.Exports)
+                                    {
+                                        if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                                        {
+                                            return texcache.LoadTexture(exp);
+
+                                            referencedExport = exp;
+                                            //pccpath = file;
+                                            //id = exp.UIndex;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Now go for the BioP one.
+                        if (referencedExport == null && parts.Length >= 2)
+                        {
+                            string filename = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
+                            if (System.IO.File.Exists(filename))
+                            {
+                                using (var pcc = MEPackageHandler.OpenMEPackage(filename))
+                                {
+                                    foreach (ExportEntry exp in pcc.Exports)
+                                    {
+                                        if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                                        {
+                                            return texcache.LoadTexture(exp);
+
+                                            //pccpath = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
+                                            //id = exp.Index;
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -185,15 +229,15 @@ namespace ME3Explorer.Scene3D
                 }
             }
 
-            if (id > 0)
-            {
-                return texcache.LoadTexture(pccpath, id);
-            }
-            else
-            {
-                Console.WriteLine("[TEXLOAD]: Could not find texture \"" + FullTextureName + "\", imported in \"" + ImportPCC + "\".");
+            //if (id > 0)
+            //{
+            //    return texcache.LoadTexture(pccpath, id);
+            //}
+            //else
+            //{
+                Debug.WriteLine("[TEXLOAD]: Could not find texture \"" + FullTextureName + "\", imported in \"" + ImportPCC + "\".");
                 return null;
-            }
+            //}
         }
     }
 
@@ -245,7 +289,7 @@ namespace ME3Explorer.Scene3D
         public override void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix transform, SceneRenderControl view)
         {
             view.DefaultEffect.PrepDraw(view.ImmediateContext);
-            view.DefaultEffect.RenderObject(view.ImmediateContext, new SceneRenderControl.WorldConstants(Matrix.Transpose(view.Camera.ProjectionMatrix), Matrix.Transpose(view.Camera.ViewMatrix), Matrix.Transpose(transform)), lod.Mesh, (int) s.StartIndex, (int) s.TriangleCount * 3, Textures.ContainsKey(DiffuseTextureFullName) ? Textures[DiffuseTextureFullName]?.TextureView ?? view.DefaultTextureView : view.DefaultTextureView);
+            view.DefaultEffect.RenderObject(view.ImmediateContext, new SceneRenderControl.WorldConstants(Matrix.Transpose(view.Camera.ProjectionMatrix), Matrix.Transpose(view.Camera.ViewMatrix), Matrix.Transpose(transform)), lod.Mesh, (int)s.StartIndex, (int)s.TriangleCount * 3, Textures.ContainsKey(DiffuseTextureFullName) ? Textures[DiffuseTextureFullName]?.TextureView ?? view.DefaultTextureView : view.DefaultTextureView);
         }
     }
 
@@ -372,8 +416,47 @@ namespace ME3Explorer.Scene3D
         {
             // STEP 1: MATERIALS
             Materials = new Dictionary<string, ModelPreviewMaterial>();
-            foreach (Unreal.Classes.MaterialInstanceConstant mat in m.MatInsts)
+            for (int i = 0; i < m.Materials.Count; i++)
             {
+                Unreal.Classes.MaterialInstanceConstant mat = m.MatInsts[i];
+                if (mat == null)
+                {
+                    // The material instance is an import!
+                    ImportEntry matImport = m.Export.FileRef.getUImport(m.Materials[i]);
+
+                    // Find the filename of the package
+                    string packageFilename = "";
+                    if (m.Export.FileRef.Game == MEGame.ME1)
+                    {
+                        IEntry parent = matImport.Parent;
+                        while (parent.HasParent)
+                        {
+                            parent = parent.Parent;
+                        }
+                        var loadedPackages = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
+                        if (loadedPackages.TryGetValue(parent.ObjectName, out string packagePath))
+                        {
+                            packageFilename = packagePath;
+                        }
+                        else
+                        {
+                            throw new Exception("Cannot find referenced package file: " + parent.ObjectName);
+                        }
+                    }
+                    else
+                    {
+                        throw new NotImplementedException("We don't know how to find package filenames from imports for ME2 and ME3 yet!");
+                    }
+
+                    if (File.Exists(packageFilename))
+                    {
+                        using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(packageFilename))
+                        {
+                            ExportEntry matExport = pcc.Exports.FirstOrDefault(exp => exp.ObjectName == matImport.ObjectName);
+                            mat = new Unreal.Classes.MaterialInstanceConstant(matExport);
+                        }
+                    }
+                }
                 ModelPreviewMaterial material;
                 // TODO: pick what material class best fits based on what properties the 
                 // MaterialInstanceConstant mat has.

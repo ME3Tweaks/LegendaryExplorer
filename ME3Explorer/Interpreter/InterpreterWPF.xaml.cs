@@ -756,7 +756,7 @@ namespace ME3Explorer
                             parsedValue = entry.GetInstancedFullPath;
                             if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
                             {
-                                editableValue += $" {ExportToString(parsingExport.FileRef.Exports[index - 1])}";
+                                editableValue += $" {ExportToString(parsingExport.FileRef.getUExport(index))}";
                             }
                         }
                         else if (index == 0)
@@ -1713,34 +1713,34 @@ namespace ME3Explorer
                         }
                         break;
                     case NameProperty namep:
-                    {
-                        //get string
-                        string input = Value_ComboBox.Text;
-                        var index = Pcc.findName(input);
-                        if (index == -1)
                         {
-                            //couldn't find name
-                            if (MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(Pcc.FilePath)} does not contain the Name: {input}\nWould you like to add it to the Name list?", "Name not found", MessageBoxButton.YesNo))
+                            //get string
+                            string input = Value_ComboBox.Text;
+                            var index = Pcc.findName(input);
+                            if (index == -1)
                             {
-                                break;
+                                //couldn't find name
+                                if (MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(Pcc.FilePath)} does not contain the Name: {input}\nWould you like to add it to the Name list?", "Name not found", MessageBoxButton.YesNo))
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    index = Pcc.FindNameOrAdd(input);
+                                    //Wait for namelist to update. we may need to set a timer here.
+                                    Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+                                }
                             }
-                            else
-                            {
-                                index = Pcc.FindNameOrAdd(input);
-                                //Wait for namelist to update. we may need to set a timer here.
-                                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
-                            }
-                        }
 
-                        bool nameindexok = int.TryParse(NameIndex_TextBox.Text, out int nameIndex);
-                        nameindexok &= nameIndex >= 0;
-                        if (index >= 0 && nameindexok)
-                        {
-                            namep.Value = new NameReference(input, nameIndex);
-                            updated = true;
+                            bool nameindexok = int.TryParse(NameIndex_TextBox.Text, out int nameIndex);
+                            nameindexok &= nameIndex >= 0;
+                            if (index >= 0 && nameindexok)
+                            {
+                                namep.Value = new NameReference(input, nameIndex);
+                                updated = true;
+                            }
+                            break;
                         }
-                        break;
-                    }
                     case DelegateProperty delp:
                         if (int.TryParse(Value_TextBox.Text, out int _o) && (Pcc.isEntry(_o) || _o == 0))
                         {
@@ -2058,7 +2058,7 @@ namespace ME3Explorer
                     //case NameProperty _:
                     //case StringRefProperty _:
                     case StrProperty _:
-                    //case ObjectProperty _:
+                        //case ObjectProperty _:
                         return true;
                     default:
                         return false;

@@ -67,13 +67,13 @@ namespace ME3Explorer.Scene3D
             // Reset the AABB
             if (Vertices.Count == 0)
             {
-                AABBMin = Vertices[0].Position;
-                AABBMax = Vertices[1].Position;
+                AABBMin = Vector3.Zero;
+                AABBMax = Vector3.Zero;
             }
             else
             {
-                AABBMin = Vector3.Zero;
-                AABBMax = Vector3.Zero;
+                AABBMin = Vertices[0].Position;
+                AABBMax = Vertices[0].Position;
             }
 
             // Update the AABB

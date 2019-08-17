@@ -32,16 +32,16 @@ namespace ME3Explorer.Meshplorer
         private void openUDKPackageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog d = new OpenFileDialog();
-             d.Filter = "*.u;*.upk;*.udk|*.u;*.upk;*.udk";
-             if (d.ShowDialog() == DialogResult.OK)
-             {
-                 udk = new UDKPackage(d.FileName);
-                 Objects = new List<int>();
-                 for (int i = 0; i < udk.ExportCount; i++)
-                     if (udk.Exports[i].ClassName == "SkeletalMesh")
-                         Objects.Add(i);
-                 RefreshLists();
-             }
+            d.Filter = "*.u;*.upk;*.udk|*.u;*.upk;*.udk";
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                udk = new UDKPackage(d.FileName);
+                Objects = new List<int>();
+                for (int i = 0; i < udk.ExportCount; i++)
+                    if (udk.Exports[i].ClassName == "SkeletalMesh")
+                        Objects.Add(i);
+                RefreshLists();
+            }
         }
 
         public void RefreshLists()
@@ -70,7 +70,7 @@ namespace ME3Explorer.Meshplorer
             int m = LODListBox.SelectedIndex;
             if (m == -1)
                 return;
-            SkeletalMesh skm = new SkeletalMesh(pcc, SelectedObject);
+            SkeletalMesh skm = new SkeletalMesh(pcc.getUExport(SelectedObject));
             SkeletalMesh.LODModelStruct lodpcc = skm.LODModels[SelectedLOD];
             UDKExplorer.UDK.Classes.SkeletalMesh skmudk = new UDKExplorer.UDK.Classes.SkeletalMesh(udk, Objects[n]);
             if (skm.Bones.Count != skmudk.Bones.Count)
@@ -111,7 +111,7 @@ namespace ME3Explorer.Meshplorer
                         {
                             SkeletalMesh.BoneStruct bpcc = skm.Bones[j];
                             UDKExplorer.UDK.Classes.SkeletalMesh.BoneStruct budk = skmudk.Bones[i];
-                            bpcc.Orientation = budk.Orientation;                   
+                            bpcc.Orientation = budk.Orientation;
                             bpcc.Position = budk.Position;
                             skm.Bones[j] = bpcc;
                         }
@@ -169,11 +169,13 @@ namespace ME3Explorer.Meshplorer
             con.Memory = new MemoryStream();
             con.isLoading = false;
             skm.Serialize(con);
-            int end = skm.GetPropertyEnd();
-            MemoryStream mem = new MemoryStream();
-            mem.Write(pcc.Exports[SelectedObject].Data, 0, end);
-            mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
-            pcc.Exports[SelectedObject].Data = mem.ToArray();
+            skm.Export.setBinaryData(con.Memory.ToArray());
+            //Old serializing code
+            //int end = skm.GetPropertyEnd();
+            //MemoryStream mem = new MemoryStream();
+            //mem.Write(pcc.Exports[SelectedObject].Data, 0, end);
+            //mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
+            //pcc.Exports[SelectedObject].Data = mem.ToArray();
             MessageBox.Show("Done");
             Close();
         }
@@ -184,17 +186,17 @@ namespace ME3Explorer.Meshplorer
                 return;
 
             SkeletalMesh newMesh = new SkeletalMesh();
-            SkeletalMesh oldMesh = new SkeletalMesh(pcc, SelectedObject);
+            SkeletalMesh oldMesh = new SkeletalMesh(pcc.getUExport(SelectedObject));
             UDKExplorer.UDK.Classes.SkeletalMesh sourceMesh = new UDKExplorer.UDK.Classes.SkeletalMesh(udk, Objects[MeshListBox.SelectedIndex]);
 
             // Fill out data in newMesh
-            newMesh.MyIndex = SelectedObject;
-            newMesh.Owner = pcc;
-            newMesh.Flags = (int)((ulong)pcc.Exports[SelectedObject].ObjectFlags >> 32); // Keep the flags from the overwritten mesh
-            
+            //newMesh.MyIndex = SelectedObject;
+            //newMesh.Owner = pcc;
+            newMesh.Flags = (int)((ulong)pcc.getUExport(SelectedObject).ObjectFlags >> 32); // Keep the flags from the overwritten mesh
+
             // Bounding
             newMesh.Bounding = new SkeletalMesh.BoundingStruct(sourceMesh.Bounding);
-            
+
             // Materials
             newMesh.Materials = new List<int>();
             foreach (int materialObjectIndex in sourceMesh.Materials)
@@ -206,7 +208,7 @@ namespace ME3Explorer.Meshplorer
             {
                 newMesh.MatInsts.Add(new MaterialInstanceConstant(pcc, newMesh.Materials[i] - 1));
             }*/
-            
+
             // OrgRot
             newMesh.Origin = sourceMesh.Origin;
             newMesh.Rotation = sourceMesh.Rotation;
@@ -304,8 +306,8 @@ namespace ME3Explorer.Meshplorer
                 newLOD.RawPointIndicesCount = lod.RawPointIndicesCount;
                 newLOD.RawPointIndicesSize = lod.RawPointIndicesSize;
                 newLOD.RawPointIndicesOffset = lod.RawPointIndicesOffset;
-                newLOD.RawPointIndices = new List<int>();
-                foreach (int i in lod.RawPointIndices)
+                newLOD.RawPointIndices = new List<byte>(); //originally int!
+                foreach (var i in lod.RawPointIndices)
                     newLOD.RawPointIndices.Add(i);
                 newLOD.NumTexCoords = lod.NumTexCoords;
                 newLOD.VertexBufferGPUSkin = new SkeletalMesh.VertexBufferGPUSkinStruct();
@@ -347,17 +349,19 @@ namespace ME3Explorer.Meshplorer
             serializer.Memory = new MemoryStream();
             serializer.isLoading = false;
             newMesh.Serialize(serializer);
+            newMesh.Export.setBinaryData(serializer.Memory.ToArray());
 
+            //old serializing
             // Copy in the properties from the old mesh
-            int propertyEnd = newMesh.GetPropertyEnd();
-            MemoryStream finalData = new MemoryStream();
-            finalData.Write(pcc.Exports[SelectedObject].Data, 0, propertyEnd);
+            //int propertyEnd = newMesh.GetPropertyEnd();
+            //MemoryStream finalData = new MemoryStream();
+            //finalData.Write(pcc.Exports[SelectedObject].Data, 0, propertyEnd);
 
-            // Copy in the data from the new mesh
-            finalData.Write(serializer.Memory.ToArray(), 0, (int)serializer.Memory.Length);
+            //// Copy in the data from the new mesh
+            //finalData.Write(serializer.Memory.ToArray(), 0, (int)serializer.Memory.Length);
 
-            // Upload final data
-            pcc.Exports[SelectedObject].Data = finalData.ToArray();
+            //// Upload final data
+            //pcc.Exports[SelectedObject].Data = finalData.ToArray();
             MessageBox.Show("Mesh replaced.");
             Close();
         }

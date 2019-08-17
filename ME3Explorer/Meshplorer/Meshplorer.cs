@@ -73,7 +73,7 @@ namespace ME3Explorer.Meshplorer
         private void loadPCCToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.pcc|*.pcc";
+            d.Filter = "*.pcc;*.sfm;*.upk|*.pcc;*.sfm;*.upk";
             if (d.ShowDialog() == DialogResult.OK)
                 LoadFile(d.FileName);
         }
@@ -84,12 +84,6 @@ namespace ME3Explorer.Meshplorer
             {
                 //LoadME3Package(path);
                 LoadMEPackage(path);
-                if (Pcc.Game != MEGame.ME3)
-                {
-                    MessageBox.Show(this, "Only files from Mass Effect 3 are supported.\nIf you want to help us debug loading ME1/ME2 files, please come to the ME3Tweaks Discord server.", "Unsupported game");
-                    Pcc.Release();
-                    return;
-                }
                 MeshplorerMode = 0;
                 RefreshMaterialList();
                 RefreshMeshList();
@@ -111,19 +105,17 @@ namespace ME3Explorer.Meshplorer
             listBox1.Items.Clear();
             Objects.Clear();
             IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
-            ExportEntry exportEntry;
-            for (int i = 0; i < Exports.Count(); i++)
+            foreach (var export in Pcc.Exports)
             {
-                exportEntry = Exports[i];
-                if (exportEntry.ClassName == "StaticMesh")
+                if (export.ClassName == "StaticMesh")
                 {
-                    listBox1.Items.Add("StM#" + i + " : " + exportEntry.ObjectName);
-                    Objects.Add(i);
+                    listBox1.Items.Add("StM#" + export.UIndex + " : " + export.ObjectName);
+                    Objects.Add(export.UIndex);
                 }
-                else if (exportEntry.ClassName == "SkeletalMesh")
+                else if (export.ClassName == "SkeletalMesh")
                 {
-                    listBox1.Items.Add("SkM#" + i + " : " + exportEntry.ObjectName);
-                    Objects.Add(i);
+                    listBox1.Items.Add("SkM#" + export.UIndex + " : " + export.ObjectName);
+                    Objects.Add(export.UIndex);
                 }
             }
         }
@@ -134,15 +126,20 @@ namespace ME3Explorer.Meshplorer
             MaterialBox.Items.Clear();
             IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
             ExportEntry exportEntry;
-            for (int i = 0; i < Exports.Count(); i++)
+            var listItems = Pcc.Exports.Where(x => x.ClassName == "Material" || x.ClassName == "MaterialInstanceConstant");
+            foreach (var item in listItems)
             {
-                exportEntry = Exports[i];
-                if (exportEntry.ClassName == "Material" || exportEntry.ClassName == "MaterialInstanceConstant")
-                {
-                    Materials.Add(i);
-                    MaterialBox.Items.Add("#" + i + " : " + exportEntry.ObjectName);
-                }
+                Materials.Add(item.UIndex);
+                MaterialBox.Items.Add("#" + item.UIndex + " : " + item.ObjectName);
             }
+            //for (int i = 0; i < Exports.Count(); i++)
+            //{
+            //    exportEntry = Exports[i];
+            //    if (exportEntry.ClassName == "Material" || exportEntry.ClassName == "MaterialInstanceConstant")
+            //    {
+                    
+            //    }
+            //}
         }
 
         public void RefreshChosenMaterialsList()
@@ -157,7 +154,7 @@ namespace ME3Explorer.Meshplorer
                     string desc = "";
                     if (skm.Materials[i] > 0)
                     { // Material is export
-                        ExportEntry export = Pcc.getExport(skm.Materials[i] - 1);
+                        ExportEntry export = Pcc.getUExport(skm.Materials[i]);
                         desc = " Export #" + skm.Materials[i] + " : " + export.ObjectName;
                     }
                     else if (skm.Materials[i] < 0)
@@ -191,37 +188,44 @@ namespace ME3Explorer.Meshplorer
             MaterialIndexApplyButton.Visible = false;
         }
 
-        public void LoadSkeletalMesh(int index)
+        public void LoadSkeletalMesh(int uindex)
         {
             DisableLODs();
             UnCheckLODs();
-            skm = new SkeletalMesh(Pcc, index);
+            try
+            {
+                skm = new SkeletalMesh(Pcc.getUExport(uindex));
 
-            // Load preview model
-            preview?.Dispose();
-            preview = new ModelPreview(view.Device, skm, view.TextureCache);
-            RefreshChosenMaterialsList();
-            CenterView();
+                // Load preview model
+                preview?.Dispose();
+                preview = new ModelPreview(view.Device, skm, view.TextureCache);
+                RefreshChosenMaterialsList();
+                CenterView();
 
-            // Update treeview
-            treeView1.BeginUpdate();
-            treeView1.Nodes.Clear();
-            treeView1.Nodes.Add(skm.ToTree());
-            treeView1.Nodes[0].Expand();
-            treeView1.EndUpdate();
-            lODToolStripMenuItem.Visible = true;
-            lOD0ToolStripMenuItem.Enabled = true;
-            lOD0ToolStripMenuItem.Checked = true;
-            if (skm.LODModels.Count > 1)
-                lOD1ToolStripMenuItem.Enabled = true;
-            if (skm.LODModels.Count > 2)
-                lOD2ToolStripMenuItem.Enabled = true;
-            if (skm.LODModels.Count > 3)
-                lOD3ToolStripMenuItem.Enabled = true;
-            MaterialBox.Visible = false;
-            MaterialApplyButton.Visible = false;
-            MaterialIndexBox.Visible = false;
-            MaterialIndexApplyButton.Visible = false;
+                // Update treeview
+                treeView1.BeginUpdate();
+                treeView1.Nodes.Clear();
+                treeView1.Nodes.Add(skm.ToTree());
+                treeView1.Nodes[0].Expand();
+                treeView1.EndUpdate();
+                lODToolStripMenuItem.Visible = true;
+                lOD0ToolStripMenuItem.Enabled = true;
+                lOD0ToolStripMenuItem.Checked = true;
+                if (skm.LODModels.Count > 1)
+                    lOD1ToolStripMenuItem.Enabled = true;
+                if (skm.LODModels.Count > 2)
+                    lOD2ToolStripMenuItem.Enabled = true;
+                if (skm.LODModels.Count > 3)
+                    lOD3ToolStripMenuItem.Enabled = true;
+                MaterialBox.Visible = false;
+                MaterialApplyButton.Visible = false;
+                MaterialIndexBox.Visible = false;
+                MaterialIndexApplyButton.Visible = false;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(e));
+            }
         }
 
         public float dir;
@@ -263,17 +267,17 @@ namespace ME3Explorer.Meshplorer
             int n;
             if (stm != null)
             {
-                n = stm.index;
+                n = stm.index + 1; //TODO: CHANGE FOR UINDEXING
             }
             else if (skm != null)
             {
-                n = skm.MyIndex;
+                n = skm.Export.UIndex;
             }
             else
             {
                 return;
             }
-            if (Pcc.Exports[n].ClassName == "StaticMesh")
+            if (Pcc.getUExport(n).ClassName == "StaticMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.psk|*.psk";
@@ -283,7 +287,7 @@ namespace ME3Explorer.Meshplorer
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
-            if (Pcc.Exports[n].ClassName == "SkeletalMesh")
+            if (Pcc.getUExport(n).ClassName == "SkeletalMesh")
             {
                 /*SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.psk|*.psk";
@@ -310,32 +314,32 @@ namespace ME3Explorer.Meshplorer
             int n;
             if (stm != null)
             {
-                n = stm.index;
+                n = stm.index + 1; //TODO: CHANGE FOR UINDEXING
             }
             else if (skm != null)
             {
-                n = skm.MyIndex;
+                n = skm.Export.UIndex;
             }
             else
             {
                 return;
             }
-            if (Pcc.Exports[n].ClassName == "StaticMesh")
+            if (Pcc.getUExport(n).ClassName == "StaticMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = Pcc.Exports[n].ObjectName + ".bin";
+                d.FileName = Pcc.getUExport(n).ObjectName + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     stm.SerializeToFile(d.FileName);
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
-            if (Pcc.Exports[n].ClassName == "SkeletalMesh")
+            if (Pcc.getUExport(n).ClassName == "SkeletalMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = Pcc.Exports[n].ObjectName + ".bin";
+                d.FileName = Pcc.getUExport(n).ObjectName + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     SerializingContainer c = new SerializingContainer();
@@ -355,17 +359,17 @@ namespace ME3Explorer.Meshplorer
             int n;
             if (stm != null)
             {
-                n = stm.index;
+                n = stm.index + 1;
             }
             else if (skm != null)
             {
-                n = skm.MyIndex;
+                n = skm.Export.UIndex;
             }
             else
             {
                 return;
             }
-            if (Pcc.Exports[n].ClassName == "StaticMesh")
+            if (Pcc.getUExport(n).ClassName == "StaticMesh")
             {
                 OpenFileDialog d = new OpenFileDialog();
                 d.Filter = "*.psk|*.psk;*.pskx";
@@ -375,13 +379,13 @@ namespace ME3Explorer.Meshplorer
                     stm.ImportPSK(d.FileName);
                     byte[] buff = stm.SerializeToBuffer();
                     int idx = n;
-                    ExportEntry en = Pcc.Exports[idx];
+                    ExportEntry en = Pcc.getUExport(idx);
                     en.Data = buff;
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                     timer1.Enabled = true;
                 }
             }
-            if (Pcc.Exports[n].ClassName == "SkeletalMesh")
+            if (Pcc.getUExport(n).ClassName == "SkeletalMesh")
             {
                 /*OpenFileDialog d = new OpenFileDialog();
                 d.Filter = "*.psk|*.psk;*.pskx";
@@ -500,20 +504,21 @@ namespace ME3Explorer.Meshplorer
 
         private void exportTo3DSToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n;
+            ExportEntry export = null;
             if (stm != null)
             {
-                n = stm.index;
+                export = Pcc.getUExport(stm.index + 1); //TODO: CHANGE THIS TO JUST INDEX ONCE REFACTORING STM TO UINDEXING
             }
             else if (skm != null)
             {
-                n = skm.MyIndex;
+                //Not sure why we have this condition if we can never do it since it's a staticmesh only?
+                export = skm.Export;
             }
             else
             {
                 return;
             }
-            if (Pcc.Exports[n].ClassName == "StaticMesh")
+            if (export.ClassName == "StaticMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.3ds|*.3ds";
@@ -545,9 +550,9 @@ namespace ME3Explorer.Meshplorer
             MaterialApplyButton.Visible = false;
             MaterialIndexBox.Visible = false;
             MaterialIndexApplyButton.Visible = false;
-            if (Pcc.getExport(n).ClassName == "StaticMesh")
+            if (Pcc.getUExport(n).ClassName == "StaticMesh")
                 LoadStaticMesh(n);
-            if (Pcc.getExport(n).ClassName == "SkeletalMesh")
+            if (Pcc.getUExport(n).ClassName == "SkeletalMesh")
                 LoadSkeletalMesh(n);
         }
 
@@ -613,18 +618,18 @@ namespace ME3Explorer.Meshplorer
             int n;
             if (stm != null)
             {
-                n = stm.index;
+                n = stm.index + 1; //TODO: CHANGE FOR UINDEXING
             }
             else if (skm != null)
             {
-                n = skm.MyIndex;
+                n = skm.Export.UIndex;
             }
             else
             {
                 return;
             }
 
-            ExportEntry export = Pcc.getExport(n);
+            ExportEntry export = Pcc.getUExport(n);
             if (export.ClassName == "StaticMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
@@ -645,12 +650,12 @@ namespace ME3Explorer.Meshplorer
                 d.FileName = export.ObjectName + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
-                    FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                    byte[] buff = export.Data;
-                    int start = skm.GetPropertyEnd();
-                    for (int i = start; i < buff.Length; i++)
-                        fs.WriteByte(buff[i]);
-                    fs.Close();
+                    using (FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write))
+                    {
+                        var data = export.getBinaryData();
+                        fs.Write(data, 0, data.Length);
+                    }
+
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
@@ -658,14 +663,14 @@ namespace ME3Explorer.Meshplorer
 
         private void importFromUDKToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n;
+            int uindex;
             if (stm != null)
             {
-                n = stm.index;
+                uindex = stm.index + 1; //TODO: CHANGE FOR UINDEXING
             }
             else if (skm != null)
             {
-                n = skm.MyIndex;
+                uindex = skm.Export.UIndex;
             }
             else
             {
@@ -684,7 +689,7 @@ namespace ME3Explorer.Meshplorer
             }
             else if (skm != null)
             {
-                n = skm.MyIndex;
+                n = skm.Export.UIndex;
             }
             else
             {
@@ -703,7 +708,7 @@ namespace ME3Explorer.Meshplorer
             int lod = t4.Index;
             int sec = t2.Index;
             int currmat = skm.LODModels[lod].Sections[sec].MaterialIndex;
-            string result = PromptDialog.Prompt(null, "Please enter new ID", "ME3 Explorer", currmat.ToString(), true);
+            string result = PromptDialog.Prompt(null, "Please enter new ID", "ME3Explorer", currmat.ToString(), true);
             int newmat = currmat;
             if (Int32.TryParse(result, out newmat))
             {
@@ -714,11 +719,13 @@ namespace ME3Explorer.Meshplorer
                 con.Memory = new MemoryStream();
                 con.isLoading = false;
                 skm.Serialize(con);
-                int end = skm.GetPropertyEnd();
-                MemoryStream mem = new MemoryStream();
-                mem.Write(Pcc.Exports[exp].Data, 0, end);
-                mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
-                Pcc.Exports[exp].Data = mem.ToArray();
+                skm.Export.setBinaryData(con.Memory.ToArray());
+                //old binary setting
+                //int end = skm.Export.propsEnd();
+                //MemoryStream mem = new MemoryStream();
+                //mem.Write(Pcc.Exports[exp].Data, 0, end);
+                //mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
+                //Pcc.Exports[exp].Data = mem.ToArray();
             }
         }
 
@@ -748,11 +755,14 @@ namespace ME3Explorer.Meshplorer
                 con.Memory = new MemoryStream();
                 con.isLoading = false;
                 skm.Serialize(con);
-                int end = skm.GetPropertyEnd();
-                MemoryStream mem = new MemoryStream();
-                mem.Write(Pcc.Exports[skm.MyIndex].Data, 0, end);
-                mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
-                Pcc.Exports[skm.MyIndex].Data = mem.ToArray();
+                skm.Export.setBinaryData(con.Memory.ToArray());
+
+                //Old binary setting code
+                //int end = skm.GetPropertyEnd();
+                //MemoryStream mem = new MemoryStream();
+                //mem.Write(Pcc.Exports[skm.MyIndex].Data, 0, end);
+                //mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
+                //Pcc.Exports[skm.MyIndex].Data = mem.ToArray();
             }
         }
 
@@ -769,11 +779,14 @@ namespace ME3Explorer.Meshplorer
                 con.Memory = new MemoryStream();
                 con.isLoading = false;
                 skm.Serialize(con);
-                int end = skm.GetPropertyEnd();
-                MemoryStream mem = new MemoryStream();
-                mem.Write(Pcc.Exports[skm.MyIndex].Data, 0, end);
-                mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
-                Pcc.Exports[skm.MyIndex].Data = mem.ToArray();
+                skm.Export.setBinaryData(con.Memory.ToArray());
+
+                //Old binary setting code
+                //int end = skm.GetPropertyEnd();
+                //MemoryStream mem = new MemoryStream();
+                //mem.Write(Pcc.Exports[skm.MyIndex].Data, 0, end);
+                //mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
+                //Pcc.Exports[skm.MyIndex].Data = mem.ToArray();
             }
         }
 
@@ -783,11 +796,10 @@ namespace ME3Explorer.Meshplorer
                                                                             x.change != PackageChange.ImportAdd &&
                                                                             x.change != PackageChange.Names);
             List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (skm != null && updatedExports.Contains(skm.MyIndex))
+            if (skm != null && updatedExports.Contains(skm.Export.Index)) //Property updates are done through Index, not UIndex unfortunately.
             {
-                int index = skm.MyIndex;
                 //loaded SkeletalMesh is no longer a SkeletalMesh
-                if (Pcc.getExport(index).ClassName != "SkeletalMesh")
+                if (skm.Export.ClassName != "SkeletalMesh")
                 {
                     skm = null;
                     preview?.Dispose();
@@ -797,9 +809,9 @@ namespace ME3Explorer.Meshplorer
                 }
                 else
                 {
-                    LoadSkeletalMesh(index);
+                    LoadSkeletalMesh(skm.Export.UIndex); //this will be refactored someday
                 }
-                updatedExports.Remove(index);
+                updatedExports.Remove(skm.Export.Index);
             }
             else if (stm != null && updatedExports.Contains(stm.index))
             {
