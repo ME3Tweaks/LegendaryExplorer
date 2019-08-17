@@ -308,15 +308,6 @@ namespace ME3Explorer.Packages
             }
         }
 
-
-        #endregion
-
-        #region Exports
-        protected List<ExportEntry> exports;
-
-        //This isn't actually obsolete but this will force a message on every use. This is used to find 0-based index references for now.
-        [Obsolete("Exports should not be directly accessed. Access exports via getUExport() and the count for loops in ExportCount.")]
-        public IReadOnlyList<ExportEntry> Exports => exports;
         private void saveByReconstructing(string path)
         {
             try

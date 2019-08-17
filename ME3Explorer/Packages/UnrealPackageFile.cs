@@ -102,7 +102,7 @@ namespace ME3Explorer.Packages
         public void addExport(ExportEntry exportEntry)
         {
             if (exportEntry.FileRef != this)
-                throw new Exception("you cannot add a new export entry from another pcc file, it has invalid references!");
+                throw new Exception("Cannot add an export entry from another package file");
 
             exportEntry.DataChanged = true;
             exportEntry.Index = exports.Count;

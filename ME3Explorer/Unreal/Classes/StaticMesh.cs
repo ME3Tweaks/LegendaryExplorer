@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Drawing;
@@ -18,12 +19,12 @@ namespace ME3Explorer.Unreal.Classes
 {
     public class StaticMesh
     {
+        public int aDebuggingPosition => Export != null ? (readerpos + Export.propsEnd()) : 0;
         public byte[] memory;
-        public int index;
         public int memsize;
-        public IMEPackage pcc;
         public int readerpos;
         public PSKFile psk;
+        public ExportEntry Export;
 
         #region MeshStructs
         public MeshStruct Mesh;
@@ -128,7 +129,7 @@ namespace ME3Explorer.Unreal.Classes
             public Vector3 Box;
             public float R;
             public int RB_BodySetup;
-            public float[] unk;
+            public float[] MinMaxFloats;
             public byte[] raw;
             public TreeNode t;
         }
@@ -163,7 +164,6 @@ namespace ME3Explorer.Unreal.Classes
         public List<kDOPNode> kdNodes;
         public List<RawTriangle> RawTriangles;
         public List<Vector3> Vertices;
-        public string MyName;
         public bool isVolumetric = false; //draw debug meshes as wireframe
         public bool isSelected = false;
         #endregion
@@ -172,17 +172,16 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
 
-        public StaticMesh(IMEPackage Pcc, int Index)
+        public StaticMesh(ExportEntry export)
         {
-            pcc = Pcc;
-            index = Index;
-            MyName = pcc.Exports[index].ObjectName;
-            if (MyName.ToLower().Contains("volumetric") || MyName.ToLower().Contains("spheremesh"))
+            this.Export = export;
+            if (Export.ObjectName.ToLower().Contains("volumetric") || Export.ObjectName.ToLower().Contains("spheremesh"))
                 isVolumetric = true;
-            memory = pcc.Exports[index].Data;
+            memory = Export.Data;
             memsize = memory.Length;
             Deserialize();
         }
+
 
         #region Deserialize Binary
 
@@ -200,15 +199,26 @@ namespace ME3Explorer.Unreal.Classes
             readerpos = 0;
             try
             {
+                Debug.WriteLine($"Boundings at 0x{aDebuggingPosition:X8}");
                 ReadBoundings(raw);
+                Debug.WriteLine($"kDOP at 0x{aDebuggingPosition:X8}");
+
                 ReadkDOPTree(raw);
+                Debug.WriteLine($"RawTris at 0x{aDebuggingPosition:X8}");
                 ReadRawTris(raw);
+                Debug.WriteLine($"Materials at 0x{aDebuggingPosition:X8}");
                 ReadMaterials(raw);
+                Debug.WriteLine($"Verts at 0x{aDebuggingPosition:X8}");
                 ReadVerts(raw);
+                Debug.WriteLine($"Buffers at 0x{aDebuggingPosition:X8}");
                 ReadBuffers(raw);
+                Debug.WriteLine($"Edges at 0x{aDebuggingPosition:X8}");
                 ReadEdges(raw);
+                Debug.WriteLine($"Unknown at 0x{aDebuggingPosition:X8}");
                 UnknownPart(raw);
+                Debug.WriteLine($"IndexBuffer at 0x{aDebuggingPosition:X8}");
                 ReadIndexBuffer(raw);
+                Debug.WriteLine($"End at 0x{aDebuggingPosition:X8}");
                 ReadEnd(raw);
             }
             catch (Exception e)
@@ -220,44 +230,48 @@ namespace ME3Explorer.Unreal.Classes
         public void ReadBoundings(byte[] memory)
         {
             TreeNode res = new TreeNode($"Bounding pos: 0x{readerpos:X4}");
-            Bounding b = new Bounding
+            Bounding b = new Bounding();
+            b.Origin = new Vector3
             {
-                Origin =
-                {
-                    X = BitConverter.ToSingle(memory, readerpos),
-                    Y = BitConverter.ToSingle(memory, readerpos + 4),
-                    Z = BitConverter.ToSingle(memory, readerpos + 8)
-                },
-                Box =
-                {
-                    X = BitConverter.ToSingle(memory, readerpos + 12),
-                    Y = BitConverter.ToSingle(memory, readerpos + 16),
-                    Z = BitConverter.ToSingle(memory, readerpos + 20)
-                },
-                R = BitConverter.ToSingle(memory, readerpos + 24),
-                RB_BodySetup = BitConverter.ToInt32(memory, readerpos + 28),
-                unk = new float[6]
+                X = BitConverter.ToSingle(memory, readerpos),
+                Y = BitConverter.ToSingle(memory, readerpos + 4),
+                Z = BitConverter.ToSingle(memory, readerpos + 8)
             };
-            int pos = readerpos + 32;
-            string unk = "Unknown{";
-            for (int i = 0; i < 6; i++)
+            b.Box = new Vector3
             {
-                b.unk[i] = BitConverter.ToSingle(memory, pos);
-                unk += $"{b.unk[i]} ";
-                pos += 4;
-            }
-            unk += "}";
-            b.raw = new byte[56];
-            for (int i = 0; i < 56; i++)
+                X = BitConverter.ToSingle(memory, readerpos + 12),
+                Y = BitConverter.ToSingle(memory, readerpos + 16),
+                Z = BitConverter.ToSingle(memory, readerpos + 20)
+            };
+            b.R = BitConverter.ToSingle(memory, readerpos + 24);
+            b.RB_BodySetup = BitConverter.ToInt32(memory, readerpos + 28);
+            b.MinMaxFloats = new float[6];
+
+            string minMaxStr = "Min/Max {";
+            if (Export.Game == MEGame.ME3)
             {
-                b.raw[i] = memory[readerpos];
-                readerpos++;
+                int pos = readerpos + 32;
+                for (int i = 0; i < 6; i++)
+                {
+                    b.MinMaxFloats[i] = BitConverter.ToSingle(memory, pos);
+                    minMaxStr += $"{b.MinMaxFloats[i]} ";
+                    pos += 4;
+                }
+
+                minMaxStr += "}";
             }
+
+            int rawSize = Export.Game == MEGame.ME3 ? 56 : 32;
+            b.raw = new byte[rawSize];
+            Buffer.BlockCopy(memory, readerpos, b.raw, 0, rawSize);
+            readerpos += rawSize;
+
             res.Nodes.Add(new TreeNode($"Origin: {{{b.Origin.X} ; {b.Origin.Y} ; {b.Origin.Z}}}"));
             res.Nodes.Add(new TreeNode($"Box: {{{b.Box.X} ; {b.Box.Y} ; {b.Box.Z}}}"));
             res.Nodes.Add(new TreeNode($"Radius: {{{b.R}}}"));
-            res.Nodes.Add(new TreeNode($"RB_BodySetup: {{{pcc.getEntry(b.RB_BodySetup)?.GetFullPath ?? "None"}}}"));
-            res.Nodes.Add(unk);
+            res.Nodes.Add(new TreeNode($"RB_BodySetup: {{{Export.FileRef.getEntry(b.RB_BodySetup)?.GetFullPath ?? "None"}}}"));
+            if (Export.Game == MEGame.ME3)
+                res.Nodes.Add(minMaxStr);
             b.t = res;
             Mesh.Bounds = b;
         }
@@ -383,7 +397,8 @@ namespace ME3Explorer.Unreal.Classes
             readerpos += 8;
             for (int i = 0; i < m.LodCount; i++)
             {
-                Lod l = new Lod {Guid = new byte[16]};
+                //THIS IS NOT A GUID - THIS IS BULK DATA FLAGS
+                Lod l = new Lod { Guid = new byte[16] };
                 string t = "Guid: ";
                 for (int j = 0; j < 16; j++)
                 {
@@ -391,6 +406,8 @@ namespace ME3Explorer.Unreal.Classes
                     t += $"{l.Guid[j]:X2} ";
                     readerpos++;
                 }
+
+
                 t1.Nodes.Add(new TreeNode(t));
                 l.SectionCount = BitConverter.ToInt32(memory, readerpos);
                 t1.Nodes.Add(new TreeNode($"Section Count : {l.SectionCount}"));
@@ -405,8 +422,8 @@ namespace ME3Explorer.Unreal.Classes
                     q += s.Name;
                     if (s.Name > 0)
                     {
-                        m.MatInst.Add(new MaterialInstanceConstant(pcc.getUExport(s.Name)));
-                        q += $"(\'{pcc.getObjectName(s.Name)}\'), ";
+                        m.MatInst.Add(new MaterialInstanceConstant(Export.FileRef.getUExport(s.Name)));
+                        q += $"(\'{Export.FileRef.getObjectName(s.Name)}\'), ";
                     }
 
                     s.Unk1 = BitConverter.ToInt32(memory, readerpos + 4);
@@ -442,7 +459,7 @@ namespace ME3Explorer.Unreal.Classes
                         s.FirstIdx2 = BitConverter.ToInt32(memory, readerpos + 41);
                         q += $"FirstIdx2 = {s.FirstIdx2}, ";
                         s.NumFaces2 = BitConverter.ToInt32(memory, readerpos + 45);
-                        q += $"NumFaces2 = {s.NumFaces2}, ";                        
+                        q += $"NumFaces2 = {s.NumFaces2}, ";
                         q += "Unk6 = " + s.Unk6 + "}";
                     }
                     t2.Nodes.Add(q);
@@ -456,7 +473,7 @@ namespace ME3Explorer.Unreal.Classes
                 t1.Nodes.Add(new TreeNode($"Num Vert : {l.NumVert}"));
                 l.LodCount = BitConverter.ToInt32(memory, readerpos + 8);
                 t1.Nodes.Add(new TreeNode($"Lod Count : {l.LodCount}"));
-                if(l.Sections[0].Unk5 == 1)
+                if (l.Sections[0].Unk5 == 1)
                     readerpos += 12;
                 else
                     readerpos += 4;
@@ -504,7 +521,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void ReadBuffers(byte[] memory)
         {
-            Buffers X = new Buffers {Wireframe1 = new byte[4]};
+            Buffers X = new Buffers { Wireframe1 = new byte[4] };
 
             var res = new TreeNode($"Buffers (?), Position: 0x{readerpos:X4}");
             var buffer = new byte[20];
@@ -565,7 +582,7 @@ namespace ME3Explorer.Unreal.Classes
                 size = BitConverter.ToInt32(memory, readerpos),
                 count = BitConverter.ToInt32(memory, readerpos + 4)
             };
-            Edges e = new Edges {size = edges.size, count = edges.count};
+            Edges e = new Edges { size = edges.size, count = edges.count };
             //quick'n'dirty fix above, need work! <--------------
             readerpos += 8;
             int len = edges.size * edges.count;
@@ -718,7 +735,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             #region End
 
-            EndOfStruct endChunk = new EndOfStruct {data = new byte[memory.Length - readerpos]};
+            EndOfStruct endChunk = new EndOfStruct { data = new byte[memory.Length - readerpos] };
 
             TreeNode res = new TreeNode($"Last chunk, 0x{readerpos:X4}");
 
@@ -839,7 +856,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void SerializeToFile(string path)
         {
-            
+
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             WriteBoundaries(fs);
             Write_kDOP(fs);
@@ -857,7 +874,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public byte[] SerializeToBuffer()
         {
-            
+
             MemoryStream fs = new MemoryStream();
             WriteProperties(fs);
             WriteBoundaries(fs);
@@ -884,7 +901,7 @@ namespace ME3Explorer.Unreal.Classes
             fs.Write(BitConverter.GetBytes(Mesh.Bounds.R), 0, 4);
             fs.Write(BitConverter.GetBytes(Mesh.Bounds.RB_BodySetup), 0, 4);
             for (int i = 0; i < 6; i++)
-                fs.Write(BitConverter.GetBytes(Mesh.Bounds.unk[i]), 0, 4);
+                fs.Write(BitConverter.GetBytes(Mesh.Bounds.MinMaxFloats[i]), 0, 4);
         }
 
         public void Write_kDOP(FileStream fs)
@@ -946,9 +963,9 @@ namespace ME3Explorer.Unreal.Classes
                     {
                         fs.Write(BitConverter.GetBytes(Mesh.Mat.Lods[i].Sections[j].Unk6), 0, 1);
                         fs.Write(BitConverter.GetBytes(Mesh.Mat.Lods[i].Sections[j].FirstIdx2), 0, 4);
-                        fs.Write(BitConverter.GetBytes(Mesh.Mat.Lods[i].Sections[j].NumFaces2), 0, 4);                        
+                        fs.Write(BitConverter.GetBytes(Mesh.Mat.Lods[i].Sections[j].NumFaces2), 0, 4);
                     }
-                        
+
                 }
                 if (Mesh.Mat.Lods[i].Sections[0].Unk5 == 1)
                 {
@@ -956,7 +973,7 @@ namespace ME3Explorer.Unreal.Classes
                     fs.Write(BitConverter.GetBytes(Mesh.Mat.Lods[i].NumVert), 0, 4);
                     fs.Write(BitConverter.GetBytes(Mesh.Mat.Lods[i].LodCount), 0, 4);
                 }
-            }     
+            }
         }
 
         public void WriteVerts(FileStream fs)
@@ -1039,7 +1056,8 @@ namespace ME3Explorer.Unreal.Classes
         public void WriteProperties(MemoryStream fs)
 
         {
-            int len = pcc.getExport(index).propsEnd();            
+            //This really needs optimized. This is disgusting
+            int len = Export.propsEnd();
             byte[] buffer = new byte[len];
             for (int i = 0; i < len; i++)
                 buffer[i] = memory[i];
@@ -1057,7 +1075,7 @@ namespace ME3Explorer.Unreal.Classes
             fs.Write(BitConverter.GetBytes(Mesh.Bounds.R), 0, 4);
             fs.Write(BitConverter.GetBytes(Mesh.Bounds.RB_BodySetup), 0, 4);
             for (int i = 0; i < 6; i++)
-                fs.Write(BitConverter.GetBytes(Mesh.Bounds.unk[i]), 0, 4);
+                fs.Write(BitConverter.GetBytes(Mesh.Bounds.MinMaxFloats[i]), 0, 4);
         }
 
         public void Write_kDOP(MemoryStream fs)
@@ -1129,7 +1147,7 @@ namespace ME3Explorer.Unreal.Classes
                     fs.Write(BitConverter.GetBytes(Mesh.Mat.Lods[i].NumVert), 0, 4);
                     fs.Write(BitConverter.GetBytes(Mesh.Mat.Lods[i].LodCount), 0, 4);
                 }
-            } 
+            }
         }
 
         public void WriteVerts(MemoryStream fs)
@@ -1359,7 +1377,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             List<Vector3> v = new List<Vector3>();
             foreach (PSKFile.PSKPoint p in points)
-                v.Add(new Vector3(p.x,p.y,p.z));
+                v.Add(new Vector3(p.x, p.y, p.z));
             return v;
         }
 
@@ -1420,7 +1438,7 @@ namespace ME3Explorer.Unreal.Classes
                 if (v.Z > extends.Z)
                     extends.Z = v.Z;
             }
-            
+
             Mesh.Bounds.Box = (extends - org) * 0.5f;
             Mesh.Bounds.Origin = org + Mesh.Bounds.Box;
             Mesh.Bounds.R = (float)Math.Sqrt(sq(Mesh.Bounds.Box.X) + sq(Mesh.Bounds.Box.Y) + sq(Mesh.Bounds.Box.Z));
@@ -1457,7 +1475,7 @@ namespace ME3Explorer.Unreal.Classes
             if (!found)
             {
                 // Load the material
-                Mesh.Mat.MatInst.Add(new MaterialInstanceConstant(pcc.getUExport(materialname)));
+                Mesh.Mat.MatInst.Add(new MaterialInstanceConstant(Export.FileRef.getUExport(materialname)));
             }
             // Remove the previously assigned MaterialInstanceConstant if is isn't used anymore.
             found = false;
@@ -1484,10 +1502,10 @@ namespace ME3Explorer.Unreal.Classes
         #endregion
 
         #region Export
-        
+
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode($"#{index} : Static Mesh");
+            TreeNode res = new TreeNode($"#{Export.UIndex} : Static Mesh");
             if (Mesh.Bounds.t != null)
             {
                 res.Nodes.Add(Mesh.Bounds.t);
@@ -1506,12 +1524,8 @@ namespace ME3Explorer.Unreal.Classes
 
         public byte[] Dump()
         {
-            int startbinary = pcc.getExport(index).propsEnd();
-            int lenofbinary = memsize - startbinary;
-            byte[] buffer = new byte[lenofbinary];
-            for (int i = 0; i < lenofbinary; i++)
-                buffer[i] = memory[i + startbinary];
-            return buffer;
+            //todo: optimize this out
+            return Export.getBinaryData();
         }
 
         public byte GetMaterial(int index)
@@ -1595,7 +1609,7 @@ namespace ME3Explorer.Unreal.Classes
                 }
             }
             foreach (Section s in Mesh.Mat.Lods[0].Sections)
-                pskc.materials.Add(new PSKFile.PSKMaterial(pcc.getObjectName(s.Name), 0));
+                pskc.materials.Add(new PSKFile.PSKMaterial(Export.FileRef.getObjectName(s.Name), 0));
             return new PSKFile { psk = pskc };
         }
 
@@ -1608,7 +1622,7 @@ namespace ME3Explorer.Unreal.Classes
             }
             catch (Exception e)
             {
-                DebugOutput.PrintLn($"Export to 3ds ERROR: in\"{MyName}\" {e.Message}");
+                DebugOutput.PrintLn($"Export to 3ds ERROR: in\"{Export.GetFullPath}\" {e.Message}");
             }
         }
 
@@ -1645,8 +1659,8 @@ namespace ME3Explorer.Unreal.Classes
                 {
                     foreach (var section in lod.Sections)
                     {
-                        writer.WriteLine($"usemtl {pcc.getObjectName(section.Name)}");
-                        writer.WriteLine($"g {pcc.getObjectName(section.Name)}");
+                        writer.WriteLine($"usemtl {Export.FileRef.getObjectName(section.Name)}");
+                        writer.WriteLine($"g {Export.FileRef.getObjectName(section.Name)}");
                         if (Mesh.IdxBuf.Indexes != null && Mesh.IdxBuf.count > 0)
                         {
                             // Use the index buffer
@@ -1680,7 +1694,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             psk = new PSKFile();
             psk.ImportPSK(path);
-#region Vertices
+            #region Vertices
             Mesh.Vertices = new Verts();
             Mesh.Vertices.Points = new List<Vector3>();
             for (int i = 0; i < psk.psk.edges.Count; i++)
@@ -1697,14 +1711,14 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 0; i < 4; i++)
                 Mesh.UnknownPart.data[24 + i] = buff[i];
             #endregion
-#region materials
+            #region materials
             Lod l = Mesh.Mat.Lods[0];
             l.Sections = new List<Section>();
             for (int i = 0; i < psk.psk.faces.Count; i++)
             {
                 PSKFile.PSKFace e = psk.psk.faces[i];
                 int mat = e.material;
-                
+
                 if (mat >= l.Sections.Count)
                 {
                     int min = i * 3;
@@ -1748,7 +1762,7 @@ namespace ME3Explorer.Unreal.Classes
                         maxv = e.v1;
                     if (e.v2 > maxv)
                         maxv = e.v2;
-                    if (i - s.FirstIdx1 / 3  + 1> max)
+                    if (i - s.FirstIdx1 / 3 + 1 > max)
                         max = i - s.FirstIdx1 / 3 + 1;
                     if (i < min)
                         min = i;
@@ -1768,16 +1782,18 @@ namespace ME3Explorer.Unreal.Classes
                 selm.hasSelected = false;
                 selm.listBox1.Items.Clear();
                 selm.Objects = new List<int>();
-                for(int j =0;j<pcc.Exports.Count;j++)
+                foreach (ExportEntry e in Export.FileRef.Exports)
                 {
-                    ExportEntry e =pcc.Exports[j];
                     if (e.ClassName == "Material" || e.ClassName == "MaterialInstanceConstant")
                     {
-                        selm.listBox1.Items.Add(j + "\t" + e.ClassName + " : " + e.ObjectName);
-                        selm.Objects.Add(j);
+                        selm.listBox1.Items.Add(e.UIndex + "\t" + e.ClassName + " : " + e.ObjectName);
+                        selm.Objects.Add(e.UIndex);
                     }
                 }
+
                 selm.Show();
+
+                //what is this?
                 while (selm != null && !selm.hasSelected)
                 {
                     Application.DoEvents();
@@ -1789,8 +1805,8 @@ namespace ME3Explorer.Unreal.Classes
             }
             l.NumVert = psk.psk.points.Count;
             Mesh.Mat.Lods[0] = l;
-#endregion
-#region Edges
+            #endregion
+            #region Edges
             int oldcount = Mesh.Edges.UVSet[0].UVs.Count;
             Mesh.Buffers.UV1 = oldcount;
             Mesh.Buffers.UV2 = oldcount * 4 + 8;
@@ -1811,11 +1827,11 @@ namespace ME3Explorer.Unreal.Classes
                 newSet.w1 = 0;
                 newSet.w2 = 0;
                 Mesh.Edges.UVSet.Add(newSet);
-            }            
+            }
             Mesh.Edges.count = psk.psk.edges.Count;
             Mesh.Edges.size = 8 + 4 * oldcount;
-#endregion
-#region Faces
+            #endregion
+            #region Faces
             Mesh.RawTris.RawTriangles = new List<RawTriangle>();
             bool WithIndex = (Mesh.IdxBuf.Indexes.Count != 0);
             if (WithIndex)
@@ -1835,10 +1851,10 @@ namespace ME3Explorer.Unreal.Classes
                     Mesh.IdxBuf.Indexes.Add((ushort)f.v1);
                     Mesh.IdxBuf.Indexes.Add((ushort)f.v2);
                     Mesh.IdxBuf.count = Mesh.IdxBuf.Indexes.Count;
-                }               
+                }
             }
             CalcTangentSpace();
-#endregion
+            #endregion
             RecalculateBoundings();
 
         }
@@ -1967,7 +1983,7 @@ namespace ME3Explorer.Unreal.Classes
                     weldedTriangle.MaterialIndex = triangle.MaterialIndex;
                     weldedSection.Add(weldedTriangle);
                     if (section.IndexOf(triangle) % 100 == 0)
-                    System.Diagnostics.Debug.WriteLine("Weld: " + section.IndexOf(triangle) + " out of " + section.Count);
+                        System.Diagnostics.Debug.WriteLine("Weld: " + section.IndexOf(triangle) + " out of " + section.Count);
                 }
                 weldedSections.Add(weldedSection);
             }
@@ -2000,7 +2016,7 @@ namespace ME3Explorer.Unreal.Classes
                 newSection.Unk6 = 0;
                 newSection.FirstIdx1 = newSection.FirstIdx2 = indexCount;
                 newSection.NumFaces1 = newSection.NumFaces2 = section.Count;
-                
+
                 int minPosIndex = section[0].VertexIndices[0];
                 int maxPosIndex = section[0].VertexIndices[0];
                 foreach (WeldedTriangle tri in section)
@@ -2029,13 +2045,12 @@ namespace ME3Explorer.Unreal.Classes
                 selm.hasSelected = false;
                 selm.listBox1.Items.Clear();
                 selm.Objects = new List<int>();
-                for (int j = 0; j < pcc.Exports.Count; j++)
+                foreach (ExportEntry e in Export.FileRef.Exports)
                 {
-                    ExportEntry e = pcc.Exports[j];
                     if (e.ClassName == "Material" || e.ClassName == "MaterialInstanceConstant")
                     {
-                        selm.listBox1.Items.Add(j + "\t" + e.ClassName + " : " + e.ObjectName);
-                        selm.Objects.Add(j);
+                        selm.listBox1.Items.Add(e.UIndex + "\t" + e.ClassName + " : " + e.ObjectName);
+                        selm.Objects.Add(e.UIndex);
                     }
                 }
                 selm.Show();

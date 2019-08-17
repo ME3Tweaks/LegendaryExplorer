@@ -137,7 +137,7 @@ namespace ME3Explorer.Meshplorer
             //    exportEntry = Exports[i];
             //    if (exportEntry.ClassName == "Material" || exportEntry.ClassName == "MaterialInstanceConstant")
             //    {
-                    
+
             //    }
             //}
         }
@@ -168,24 +168,31 @@ namespace ME3Explorer.Meshplorer
 
         public void LoadStaticMesh(int index)
         {
-            stm = new StaticMesh(Pcc, index);
+            try
+            {
+                stm = new StaticMesh(Pcc.getUExport(index));
 
-            // Load meshes for the LODs
-            preview?.Dispose();
-            preview = new ModelPreview(view.Device, stm, view.TextureCache);
-            RefreshChosenMaterialsList();
-            CenterView();
+                // Load meshes for the LODs
+                preview?.Dispose();
+                preview = new ModelPreview(view.Device, stm, view.TextureCache);
+                RefreshChosenMaterialsList();
+                CenterView();
 
-            // Update treeview
-            treeView1.BeginUpdate();
-            treeView1.Nodes.Clear();
-            treeView1.Nodes.Add(stm.ToTree());
-            treeView1.Nodes[0].Expand();
-            treeView1.EndUpdate();
-            MaterialBox.Visible = false;
-            MaterialApplyButton.Visible = false;
-            MaterialIndexBox.Visible = false;
-            MaterialIndexApplyButton.Visible = false;
+                // Update treeview
+                treeView1.BeginUpdate();
+                treeView1.Nodes.Clear();
+                treeView1.Nodes.Add(stm.ToTree());
+                treeView1.Nodes[0].Expand();
+                treeView1.EndUpdate();
+                MaterialBox.Visible = false;
+                MaterialApplyButton.Visible = false;
+                MaterialIndexBox.Visible = false;
+                MaterialIndexApplyButton.Visible = false;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(e));
+            }
         }
 
         public void LoadSkeletalMesh(int uindex)
@@ -267,7 +274,7 @@ namespace ME3Explorer.Meshplorer
             int n;
             if (stm != null)
             {
-                n = stm.index + 1; //TODO: CHANGE FOR UINDEXING
+                n = stm.Export.UIndex;
             }
             else if (skm != null)
             {
@@ -314,7 +321,7 @@ namespace ME3Explorer.Meshplorer
             int n;
             if (stm != null)
             {
-                n = stm.index + 1; //TODO: CHANGE FOR UINDEXING
+                n = stm.Export.UIndex; //TODO: CHANGE FOR UINDEXING
             }
             else if (skm != null)
             {
@@ -359,7 +366,7 @@ namespace ME3Explorer.Meshplorer
             int n;
             if (stm != null)
             {
-                n = stm.index + 1;
+                n = stm.Export.UIndex;
             }
             else if (skm != null)
             {
@@ -507,7 +514,7 @@ namespace ME3Explorer.Meshplorer
             ExportEntry export = null;
             if (stm != null)
             {
-                export = Pcc.getUExport(stm.index + 1); //TODO: CHANGE THIS TO JUST INDEX ONCE REFACTORING STM TO UINDEXING
+                export = Pcc.getUExport(stm.Export.UIndex); //TODO: CHANGE THIS TO JUST INDEX ONCE REFACTORING STM TO UINDEXING
             }
             else if (skm != null)
             {
@@ -618,7 +625,7 @@ namespace ME3Explorer.Meshplorer
             int n;
             if (stm != null)
             {
-                n = stm.index + 1; //TODO: CHANGE FOR UINDEXING
+                n = stm.Export.UIndex; //TODO: CHANGE FOR UINDEXING
             }
             else if (skm != null)
             {
@@ -666,7 +673,7 @@ namespace ME3Explorer.Meshplorer
             int uindex;
             if (stm != null)
             {
-                uindex = stm.index + 1; //TODO: CHANGE FOR UINDEXING
+                uindex = stm.Export.UIndex; //TODO: CHANGE FOR UINDEXING
             }
             else if (skm != null)
             {
@@ -676,7 +683,7 @@ namespace ME3Explorer.Meshplorer
             {
                 return;
             }
-            UDKCopy u = new UDKCopy(Pcc, n, getLOD());
+            UDKCopy u = new UDKCopy(Pcc, uindex, getLOD());
             u.Show();
         }
 
@@ -685,7 +692,7 @@ namespace ME3Explorer.Meshplorer
             int n;
             if (stm != null)
             {
-                n = stm.index;
+                n = stm.Export.UIndex;
             }
             else if (skm != null)
             {
@@ -740,8 +747,9 @@ namespace ME3Explorer.Meshplorer
             {
                 stm.SetSectionMaterial(CurrentLOD, t.Index, Materials[n] + 1);
                 //SerializingCont
-                MemoryStream ms = new MemoryStream();
-                Pcc.Exports[stm.index].Data = stm.SerializeToBuffer();
+                //                MemoryStream ms = new MemoryStream();
+                //              Pcc.Exports[stm.index].Data = stm.SerializeToBuffer();
+                stm.Export.Data = stm.SerializeToBuffer(); //hope this works
                 // Update treeview
 
                 // Update preview
@@ -813,9 +821,9 @@ namespace ME3Explorer.Meshplorer
                 }
                 updatedExports.Remove(skm.Export.Index);
             }
-            else if (stm != null && updatedExports.Contains(stm.index))
+            else if (stm != null && updatedExports.Contains(stm.Export.Index))
             {
-                int index = stm.index;
+                int index = stm.Export.Index;
                 //loaded SkeletalMesh is no longer a SkeletalMesh
                 if (Pcc.getExport(index).ClassName != "StaticMesh")
                 {
@@ -1091,9 +1099,7 @@ namespace ME3Explorer.Meshplorer
             {
                 timer1.Enabled = false;
                 stm.ImportOBJ(dialog.FileName);
-                byte[] buff = stm.SerializeToBuffer();
-                ExportEntry en = Pcc.Exports[stm.index];
-                en.Data = buff;
+                stm.Export.Data = stm.SerializeToBuffer();
                 MessageBox.Show("OBJ import complete.");
                 timer1.Enabled = true;
             }

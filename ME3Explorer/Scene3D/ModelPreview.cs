@@ -364,7 +364,7 @@ namespace ME3Explorer.Scene3D
             List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
             foreach (Unreal.Classes.StaticMesh.Section section in m.Mesh.Mat.Lods[0].Sections)
             {
-                sections.Add(new ModelPreviewSection(m.pcc.getObjectName(section.Name), (uint)section.FirstIdx1, (uint)section.NumFaces1));
+                sections.Add(new ModelPreviewSection(m.Export.FileRef.getObjectName(section.Name), (uint)section.FirstIdx1, (uint)section.NumFaces1));
             }
             LODs = new List<ModelPreviewLOD>();
             LODs.Add(new ModelPreviewLOD(new WorldMesh(Device, triangles, vertices), sections));
