@@ -131,6 +131,7 @@ namespace ME3Explorer
             "ComponentProperty",
             "Const",
             "CookedBulkDataInfoContainer",
+            "CoverMeshComponent",
             "DecalComponent",
             "DecalMaterial",
             "DelegateProperty",
@@ -143,16 +144,20 @@ namespace ME3Explorer
             "FaceFXAnimSet",
             "FaceFXAsset",
             "FloatProperty",
+            "FluidSurfaceComponent",
             "GuidCache",
+            "InteractiveFoliageComponent",
             "IntProperty",
             "Level",
             "LightMapTexture2D",
             "Material",
             "MaterialInstanceConstant",
             "MaterialInstanceConstants",
+            "MaterialInstanceTimeVarying",
             "MetaData",
             "Model",
             "ModelComponent",
+            "MorphTarget",
             "NameProperty",
             "ObjectProperty",
             "ObjectRedirector",
@@ -171,6 +176,7 @@ namespace ME3Explorer
             "SoundCue",
             "SoundNodeWave",
             "SphericalHarmonicLightComponent",
+            "SplineMeshComponent",
             "SpotLightComponent",
             "State",
             "StaticLightCollectionActor",
@@ -423,6 +429,7 @@ namespace ME3Explorer
                         subNodes.AddRange(StartMaterialScan(data, ref binarystart));
                         break;
                     case "MaterialInstanceConstant":
+                    case "MaterialInstanceTimeVarying":
                         subNodes.AddRange(StartMaterialInstanceConstantScan(data, ref binarystart));
                         break;
                     case "PrefabInstance":
@@ -437,6 +444,9 @@ namespace ME3Explorer
                     case "StaticMesh":
                         subNodes.AddRange(StartStaticMeshScan(data, ref binarystart));
                         break;
+                    case "CoverMeshComponent":
+                    case "InteractiveFoliageComponent":
+                    case "SplineMeshComponent":
                     case "StaticMeshComponent":
                         subNodes.AddRange(StartStaticMeshComponentScan(data, ref binarystart));
                         break;
@@ -532,6 +542,12 @@ namespace ME3Explorer
                         break;
                     case "TerrainComponent":
                         subNodes.AddRange(StartTerrainComponentScan(data, ref binarystart));
+                        break;
+                    case "FluidSurfaceComponent":
+                        subNodes.AddRange(StartFluidSurfaceComponentScan(data, ref binarystart));
+                        break;
+                    case "MorphTarget":
+                        subNodes.AddRange(StartMorphTargetScan(data, ref binarystart));
                         break;
                     default:
                         if (!CurrentLoadedExport.HasStack)

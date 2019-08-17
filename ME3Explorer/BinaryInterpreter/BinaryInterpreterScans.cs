@@ -375,6 +375,30 @@ namespace ME3Explorer
             LMT_6
         }
 
+        private List<ITreeItem> StartFluidSurfaceComponentScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+
+
+                if (Pcc.Game == MEGame.ME3)
+                {
+                    subnodes.Add(MakeLightMapNode(bin));
+                }
+
+                binarystart = (int)bin.Position;
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
         private List<ITreeItem> StartTerrainComponentScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
@@ -887,6 +911,41 @@ namespace ME3Explorer
                         }
                     })
                 });
+
+                binarystart = (int)bin.Position;
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
+        private static List<ITreeItem> StartMorphTargetScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+
+                subnodes.Add(MakeArrayNode(bin, "MorphLODModels", i => new BinInterpNode(bin.Position, $"{i}")
+                {
+                    Items =
+                    {
+                        MakeArrayNode(bin, "Vertices", j => new BinInterpNode(bin.Position, $"{j}")
+                        {
+                            Items =
+                            {
+                                MakeVectorNode(bin, "PositionDelta"),
+                                MakePackedNormalNode(bin, "TangentZDelta"),
+                                MakeUInt16Node(bin, "SourceIdx")
+                            }
+                        }),
+                        MakeInt32Node(bin, "NumBaseMeshVerts")
+                    }
+                }));
 
                 binarystart = (int)bin.Position;
             }
