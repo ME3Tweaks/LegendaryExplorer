@@ -1320,6 +1320,14 @@ namespace ME3Explorer.Unreal.Classes
             int sign = (u >> 15) & 0x00000001;
             int exp = (u >> 10) & 0x0000001F;
             int mant = u & 0x000003FF;
+            if (exp == 0)
+            {
+                return 0f;
+            }
+            if (exp == 31)
+            {
+                return 65504f;
+            }
             exp = exp + (127 - 15);
             int i = (sign << 31) | (exp << 23) | (mant << 13);
             byte[] buff = BitConverter.GetBytes(i);
