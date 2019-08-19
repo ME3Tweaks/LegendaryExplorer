@@ -375,7 +375,7 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         /// <param name="val">The <see cref="Single"/> encoded as a <see cref="UInt16"/>.</param>
         /// <returns>The decoded <see cref="Single"/>.</returns>
-        private float HalfToFloat(ushort val)
+        public static float HalfToFloat(ushort val)
         {
 
             UInt16 u = val;

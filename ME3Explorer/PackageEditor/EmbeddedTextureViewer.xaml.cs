@@ -235,42 +235,29 @@ namespace ME3Explorer
             else if (mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib)
             {
                 string filename = null;
-                var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(mipToLoad.Export.Game);
-                if (mipToLoad.Export.Game == MEGame.ME1)
+                //Check local folder first
+                string archive = mipToLoad.TextureCacheName + (mipToLoad.Export.Game != MEGame.ME1 ? ".tfc" : ".upk");
+                var localDirectoryArchivePath = Path.Combine(Path.GetDirectoryName(mipToLoad.Export.FileRef.FilePath), archive);
+                if (File.Exists(localDirectoryArchivePath))
                 {
-                    if (loadedFiles.TryGetValue(mipToLoad.TextureCacheName, out string filepath))
+                    filename = localDirectoryArchivePath;
+                }
+
+                //Not found locally
+                if (filename == null)
+                {
+                    var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(mipToLoad.Export.Game);
+                    if (loadedFiles.TryGetValue(archive, out string fullPath))
                     {
-                        filename = filepath;
+                        filename = fullPath;
                     }
                     else
                     {
-                        throw new Exception($"Externally referenced texture file not found in game: {mipToLoad.TextureCacheName}.");
-                    }
-                }
-                else
-                {
-                    string archive = mipToLoad.TextureCacheName + ".tfc";
-                    var localDirectoryTFCPath = Path.Combine(Path.GetDirectoryName(mipToLoad.Export.FileRef.FilePath), archive);
-                    if (File.Exists(localDirectoryTFCPath))
-                    {
-                        filename = localDirectoryTFCPath;
-                    }
-
-                    if (filename != null)
-                    {
-                        if (loadedFiles.TryGetValue(archive, out string fullPath))
-                        {
-                            filename = fullPath;
-                        }
-                        else
-                        {
-                            throw new Exception($"Externally referenced texture cache not found: {mipToLoad.TextureCacheName}.tfc.");
-                        }
+                        throw new Exception($"Externally referenced texture cache not found: {mipToLoad.TextureCacheName}.tfc.");
                     }
                 }
 
                 //exceptions above will prevent filename from being null here
-
                 try
                 {
                     using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
@@ -356,9 +343,9 @@ namespace ME3Explorer
                 get
                 {
                     if (Export.Game != MEGame.ME1) return _textureCacheName; //ME2/ME3 have property specifying the name. ME1 uses package lookup
-                    
+
                     //ME1 externally references the UPKs. I think. It doesn't load external textures from SFMs
-                    string baseName = Export.FileRef.FollowLink(Export.idxLink).Split('.')[0].ToUpper()+".upk"; //get top package name
+                    string baseName = Export.FileRef.FollowLink(Export.idxLink).Split('.')[0].ToUpper() + ".upk"; //get top package name
 
                     if (storageType == StorageTypes.extLZO || storageType == StorageTypes.extZlib || storageType == StorageTypes.extUnc)
                     {
