@@ -197,14 +197,15 @@ namespace ME3Explorer.Unreal.Classes
 
         public struct SoftSkinVertexStruct
         {
-            public Vector3 Position;
-            public float TangentX;
-            public float TangentY;
-            public float TangentZ;
-            public Vector2[] UV;
-            public int Color;
-            public byte[] InfluenceBones;
-            public byte[] InfluenceWeights;
+            public Vector3 Position; //12
+            public float TangentX; //4
+            public float TangentY; //4
+            public float TangentZ; //4
+            public Vector2[] UV; //4
+            public int Color; //Only used in UDK, 4
+            public byte[] InfluenceBones; //4
+            public byte[] InfluenceWeights; //4
+            //Total: 40 (UDK: 44)
 
             public void Serialize(SerializingContainer Container, ExportEntry export)
             {
@@ -354,63 +355,76 @@ namespace ME3Explorer.Unreal.Classes
 
         public struct GPUSkinVertexStruct
         {
-            public int TangentX;
-            public int TangentZ;
-            public byte[] InfluenceBones;
-            public byte[] InfluenceWeights;
-            public Vector3 Position;
-            public ushort U;
-            public ushort V;
+            public int TangentX; //4 
+            public int TangentZ; //4
+            public byte[] InfluenceBones; //4
+            public byte[] InfluenceWeights; //4 
+            public Vector3 Position; //12
+            public ushort U; //2
+            public ushort V; //2
+                             //total: 32
+
+            public int TangentY; //COMPATIBILITY WITH ME1 ONLY
+            public float UFullPrecision; //COMPATIBILITY WITH ME1 ONLY
+            public float VFullPrecision; //COMPATIBILITY WITH ME1 ONLY
+
             public void Serialize(SerializingContainer Container, ExportEntry export)
             {
-                if (export.Game == MEGame.ME1 || export.Game == MEGame.ME2)
+                if (export.Game == MEGame.ME1)
                 {
+                    long pos = Container.Memory.Position;
                     //me1 seems to be different for UVs
                     Position.X = Container + Position.X;
                     Position.Y = Container + Position.Y;
                     Position.Z = Container + Position.Z;
-                    if (export.Game == MEGame.ME1)
+                    TangentX = Container + TangentX;
+                    //float f = Container + (float)0;
+                    TangentY = Container + TangentY;
+                    TangentZ = Container + TangentZ;
+
+                    UFullPrecision = Container + UFullPrecision;
+                    //Debug.WriteLine("U is " + HalfToFloat(U) + " at " + (Container.GetPos() - 2).ToString("X6"));
+                    VFullPrecision = Container + VFullPrecision;
+                    //Debug.WriteLine("V is " + HalfToFloat(V) + " at " + (Container.GetPos() - 2).ToString("X6"));
+
+
+                    if (Container.isLoading)
                     {
-
-                        TangentX = Container + TangentX;
-                        TangentZ = Container + TangentZ;
-
-                        U = Container + U;
-                        V = Container + V;
-                        Debug.WriteLine("U is " + U);
-                        if (Container.isLoading)
-                        {
-                            InfluenceBones = new byte[4];
-                            InfluenceWeights = new byte[4];
-                        }
-
-                        for (int i = 0; i < 4; i++)
-                            InfluenceBones[i] = Container + InfluenceBones[i];
-                        for (int i = 0; i < 4; i++)
-                            InfluenceWeights[i] = Container + InfluenceWeights[i];
-
-
+                        InfluenceBones = new byte[4];
+                        InfluenceWeights = new byte[4];
                     }
-                    else
-                    {
-                        TangentX = Container + TangentX;
-                        TangentZ = Container + TangentZ;
-                        if (Container.isLoading)
-                        {
-                            InfluenceBones = new byte[4];
-                            InfluenceWeights = new byte[4];
-                        }
 
-                        for (int i = 0; i < 4; i++)
-                            InfluenceBones[i] = Container + InfluenceBones[i];
-                        for (int i = 0; i < 4; i++)
-                            InfluenceWeights[i] = Container + InfluenceWeights[i];
+                    for (int i = 0; i < 4; i++)
+                        InfluenceBones[i] = Container + InfluenceBones[i];
+                    for (int i = 0; i < 4; i++)
+                        InfluenceWeights[i] = Container + InfluenceWeights[i];
 
-                        U = Container + U;
-                        V = Container + V;
-                    }
+                    long npos = Container.Memory.Position;
+                    if (npos - pos != 40)
+                        throw new Exception();
                 }
-                else
+                else if (export.Game == MEGame.ME2)
+                {
+                    Position.X = Container + Position.X;
+                    Position.Y = Container + Position.Y;
+                    Position.Z = Container + Position.Z;
+                    TangentX = Container + TangentX;
+                    TangentZ = Container + TangentZ;
+                    if (Container.isLoading)
+                    {
+                        InfluenceBones = new byte[4];
+                        InfluenceWeights = new byte[4];
+                    }
+
+                    for (int i = 0; i < 4; i++)
+                        InfluenceBones[i] = Container + InfluenceBones[i];
+                    for (int i = 0; i < 4; i++)
+                        InfluenceWeights[i] = Container + InfluenceWeights[i];
+
+                    U = Container + U;
+                    V = Container + V;
+                }
+                else //ME3, or crazy people UDK
                 {
                     TangentX = Container + TangentX;
                     TangentZ = Container + TangentZ;
@@ -512,18 +526,18 @@ namespace ME3Explorer.Unreal.Classes
                     for (int i = 0; i < count; i++)
                         Vertices.Add(new GPUSkinVertexStruct());
                 }
-                int VertexDiff = VertexSize - 32;
+                //int VertexDiff = VertexSize - 32;
                 for (int i = 0; i < count; i++)
                 {
                     GPUSkinVertexStruct v = Vertices[i];
                     v.Serialize(Container, export);
 
-                    if (VertexDiff > 0)
+                    /*if (VertexDiff > 0)
                     {
                         byte b = 0;
                         for (int j = 0; j < VertexDiff; j++)
                             b = Container + b;
-                    }
+                    }*/
                     Vertices[i] = v;
                 }
                 Debug.WriteLine("End of vertices at " + Container.GetPos().ToString("X6"));
@@ -620,7 +634,7 @@ namespace ME3Explorer.Unreal.Classes
                 //unk2
                 Unk2 = Container + Unk2;
                 Container.Memory.Position += Unk2; //unknown bool list
-                //Chunks
+                                                   //Chunks
                 if (!Container.isLoading)
                     count = Chunks.Count();
                 Debug.WriteLine("SkelMushChunks Count at " + Container.GetPos().ToString("X6"));

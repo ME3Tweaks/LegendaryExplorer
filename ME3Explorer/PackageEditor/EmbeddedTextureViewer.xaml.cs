@@ -244,7 +244,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        throw new Exception($"Externally referenced texture file not found in game: {mipToLoad.TextureCacheName}.");
+                        throw new FileNotFoundException($"Externally referenced texture file not found in game: {mipToLoad.TextureCacheName}.");
                     }
                 }
                 else
@@ -255,8 +255,7 @@ namespace ME3Explorer
                     {
                         filename = localDirectoryTFCPath;
                     }
-
-                    if (filename != null)
+                    else
                     {
                         if (loadedFiles.TryGetValue(archive, out string fullPath))
                         {
@@ -264,7 +263,7 @@ namespace ME3Explorer
                         }
                         else
                         {
-                            throw new Exception($"Externally referenced texture cache not found: {mipToLoad.TextureCacheName}.tfc.");
+                            throw new FileNotFoundException($"Externally referenced texture cache not found: {mipToLoad.TextureCacheName}.tfc.");
                         }
                     }
                 }
@@ -356,9 +355,9 @@ namespace ME3Explorer
                 get
                 {
                     if (Export.Game != MEGame.ME1) return _textureCacheName; //ME2/ME3 have property specifying the name. ME1 uses package lookup
-                    
+
                     //ME1 externally references the UPKs. I think. It doesn't load external textures from SFMs
-                    string baseName = Export.FileRef.FollowLink(Export.idxLink).Split('.')[0].ToUpper()+".upk"; //get top package name
+                    string baseName = Export.FileRef.FollowLink(Export.idxLink).Split('.')[0].ToUpper() + ".upk"; //get top package name
 
                     if (storageType == StorageTypes.extLZO || storageType == StorageTypes.extZlib || storageType == StorageTypes.extUnc)
                     {

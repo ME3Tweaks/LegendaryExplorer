@@ -375,7 +375,7 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         /// <param name="val">The <see cref="Single"/> encoded as a <see cref="UInt16"/>.</param>
         /// <returns>The decoded <see cref="Single"/>.</returns>
-        private float HalfToFloat(ushort val)
+        public static float HalfToFloat(ushort val)
         {
 
             UInt16 u = val;
@@ -471,10 +471,20 @@ namespace ME3Explorer.Scene3D
             {
                 // Vertices
                 List<WorldVertex> vertices = new List<WorldVertex>();
-                foreach (Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
+                if (m.Export.Game == MEGame.ME1)
                 {
-                    // NOTE: note the switched Y and Z coordinates. Unreal seems to think that Z is up.
-                    vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(HalfToFloat(vertex.U), HalfToFloat(vertex.V))));
+                    foreach (Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
+                    {
+                        vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(vertex.UFullPrecision,vertex.VFullPrecision)));
+                    }
+                }
+                else
+                {
+                    foreach (Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
+                    {
+                        // NOTE: note the switched Y and Z coordinates. Unreal seems to think that Z is up.
+                        vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(HalfToFloat(vertex.U), HalfToFloat(vertex.V))));
+                    }
                 }
                 // Triangles
                 List<Triangle> triangles = new List<Triangle>();
