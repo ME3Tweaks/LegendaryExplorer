@@ -430,7 +430,7 @@ namespace ME3Explorer
                         break;
                     case "MaterialInstanceConstant":
                     case "MaterialInstanceTimeVarying":
-                        subNodes.AddRange(StartMaterialInstanceConstantScan(data, ref binarystart));
+                        subNodes.AddRange(StartMaterialInstanceScan(data, ref binarystart));
                         break;
                     case "PrefabInstance":
                         subNodes.AddRange(StartPrefabInstanceScan(data, ref binarystart));

@@ -335,45 +335,6 @@ namespace ME3Explorer
             key = kvp.Key;
             value = kvp.Value;
         }
-
-        public static bool ContainsKey<Tkey, TValue>(this List<KeyValuePair<Tkey, TValue>> list, Tkey key)
-        {
-            foreach (var kvp in list)
-            {
-                if (EqualityComparer<Tkey>.Default.Equals(kvp.Key, key))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool TryGetValue<Tkey, TValue>(this List<KeyValuePair<Tkey, TValue>> list, Tkey key, out TValue value)
-        {
-            foreach (var kvp in list)
-            {
-                if (EqualityComparer<Tkey>.Default.Equals(kvp.Key, key))
-                {
-                    value = kvp.Value;
-                    return true;
-                }
-            }
-            value = default;
-            return false;
-        }
-
-        public static void Add<Tkey, TValue>(this List<KeyValuePair<Tkey, TValue>> list, Tkey key, TValue value)
-        {
-            list.Add(new KeyValuePair<Tkey, TValue>(key, value));
-        }
-
-        public static IEnumerable<TValue> Values<Tkey, TValue>(this List<KeyValuePair<Tkey, TValue>> list)
-        {
-            foreach (var kvp in list)
-            {
-                yield return kvp.Value;
-            }
-        }
     }
 
     public static class StringExtensions
@@ -847,6 +808,39 @@ namespace ME3Explorer
 
                 typeToCheck = typeToCheck.BaseType;
             }
+        }
+
+        public static float AsFloat16(this ushort float16bits)
+        {
+            int sign = (float16bits >> 15) & 0x00000001;
+            int exp = (float16bits >> 10) & 0x0000001F;
+            int mant = float16bits & 0x000003FF;
+            switch (exp)
+            {
+                case 0:
+                    return 0f;
+                case 31:
+                    return 65504f;
+            }
+            exp += (127 - 15);
+            int i = (sign << 31) | (exp << 23) | (mant << 13);
+            return BitConverter.ToSingle(BitConverter.GetBytes(i), 0);
+        }
+
+        public static ushort ToFloat16bits(this float f)
+        {
+            byte[] bytes = BitConverter.GetBytes((double)f);
+            ulong bits = BitConverter.ToUInt64(bytes, 0);
+            ulong exponent = bits & 0x7ff0000000000000L;
+            ulong mantissa = bits & 0x000fffffffffffffL;
+            ulong sign = bits & 0x8000000000000000L;
+            int placement = (int)((exponent >> 52) - 1023);
+            if (placement > 15 || placement < -14)
+                return 0;
+            ushort exponentBits = (ushort)((15 + placement) << 10);
+            ushort mantissaBits = (ushort)(mantissa >> 42);
+            ushort signBits = (ushort)(sign >> 48);
+            return (ushort)(exponentBits | mantissaBits | signBits);
         }
     }
 

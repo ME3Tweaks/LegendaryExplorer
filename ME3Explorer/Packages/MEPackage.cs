@@ -918,7 +918,7 @@ namespace ME3Explorer.Packages
             MEGame oldGame = Game;
             var prePropBinary = new List<byte[]>(ExportCount);
             var propCollections = new List<PropertyCollection>(ExportCount);
-            var postPropBinary = new List<byte[]>(ExportCount);
+            var postPropBinary = new List<ObjectBinary>(ExportCount);
 
             EntryPruner.TrashIncompatibleEntries(this, oldGame, newGame);
 
@@ -953,7 +953,7 @@ namespace ME3Explorer.Packages
                 //write back properties in new format
                 propCollections[i]?.WriteTo(newData, this);
 
-                newData.WriteFromBuffer(postPropBinary[i]);
+                newData.WriteFromBuffer(postPropBinary[i].Write(this));
 
                 exports[i].Data = newData.ToArray();
             }

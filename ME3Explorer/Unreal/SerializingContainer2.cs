@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using SharpDX;
 using StreamHelpers;
 
 namespace ME3Explorer
@@ -15,151 +16,200 @@ namespace ME3Explorer
     {
         public Stream ms;
         public bool IsLoading;
+        public IMEPackage Pcc;
+        public MEGame Game => Pcc.Game;
 
-        public SerializingContainer2(Stream stream, bool isLoading = false)
+        public SerializingContainer2(Stream stream, IMEPackage pcc, bool isLoading = false)
         {
             ms = stream;
             IsLoading = isLoading;
+            Pcc = pcc;
         }
+    }
 
-        public void Serialize(ref int val)
+    public static class SCExt
+    {
+        public static void Serialize(this SerializingContainer2 sc, ref int val)
         {
-            if (IsLoading)
-                val = ms.ReadInt32();
+            if (sc.IsLoading)
+                val = sc.ms.ReadInt32();
             else
-                ms.WriteInt32(val);
+                sc.ms.WriteInt32(val);
         }
 
-        public void Serialize(ref uint val)
+        public static void Serialize(this SerializingContainer2 sc, ref uint val)
         {
-            if (IsLoading)
-                val = ms.ReadUInt32();
+            if (sc.IsLoading)
+                val = sc.ms.ReadUInt32();
             else
-                ms.WriteUInt32(val);
+                sc.ms.WriteUInt32(val);
         }
 
-        public void Serialize(ref short val)
+        public static void Serialize(this SerializingContainer2 sc, ref short val)
         {
-            if (IsLoading)
-                val = ms.ReadInt16();
+            if (sc.IsLoading)
+                val = sc.ms.ReadInt16();
             else
-                ms.WriteInt16(val);
+                sc.ms.WriteInt16(val);
         }
 
-        public void Serialize(ref ushort val)
+        public static void Serialize(this SerializingContainer2 sc, ref ushort val)
         {
-            if (IsLoading)
-                val = ms.ReadUInt16();
+            if (sc.IsLoading)
+                val = sc.ms.ReadUInt16();
             else
-                ms.WriteUInt16(val);
+                sc.ms.WriteUInt16(val);
         }
 
-        public void Serialize(ref long val)
+        public static void Serialize(this SerializingContainer2 sc, ref long val)
         {
-            if (IsLoading)
-                val = ms.ReadInt64();
+            if (sc.IsLoading)
+                val = sc.ms.ReadInt64();
             else
-                ms.WriteInt64(val);
+                sc.ms.WriteInt64(val);
         }
 
-        public void Serialize(ref ulong val)
+        public static void Serialize(this SerializingContainer2 sc, ref ulong val)
         {
-            if (IsLoading)
-                val = ms.ReadUInt64();
+            if (sc.IsLoading)
+                val = sc.ms.ReadUInt64();
             else
-                ms.WriteUInt64(val);
+                sc.ms.WriteUInt64(val);
         }
 
-        public void Serialize(ref byte val)
+        public static void Serialize(this SerializingContainer2 sc, ref byte val)
         {
-            if (IsLoading)
-                val = (byte)ms.ReadByte();
+            if (sc.IsLoading)
+                val = (byte)sc.ms.ReadByte();
             else
-                ms.WriteByte(val);
+                sc.ms.WriteByte(val);
         }
 
-        public void Serialize(ref string val, MEGame game)
+        public static void Serialize(this SerializingContainer2 sc, ref string val)
         {
-            if (IsLoading)
-                val = ms.ReadUnrealString();
+            if (sc.IsLoading)
+                val = sc.ms.ReadUnrealString();
             else
-                ms.WriteUnrealString(val, game);
+                sc.ms.WriteUnrealString(val, sc.Game);
         }
 
-        public void Serialize(ref float val)
+        public static void Serialize(this SerializingContainer2 sc, ref float val)
         {
-            if (IsLoading)
-                val = ms.ReadFloat();
+            if (sc.IsLoading)
+                val = sc.ms.ReadFloat();
             else
-                ms.WriteFloat(val);
+                sc.ms.WriteFloat(val);
         }
 
-        public void Serialize(ref double val)
+        public static void Serialize(this SerializingContainer2 sc, ref double val)
         {
-            if (IsLoading)
-                val = ms.ReadDouble();
+            if (sc.IsLoading)
+                val = sc.ms.ReadDouble();
             else
-                ms.WriteDouble(val);
+                sc.ms.WriteDouble(val);
         }
 
-        public void Serialize(ref bool val, bool isInt = false)
+        public static void Serialize(this SerializingContainer2 sc, ref bool val)
         {
-            if (IsLoading)
-                val = isInt ? ms.ReadBoolInt() : ms.ReadBoolByte();
-            else if (isInt)
-                ms.WriteBoolInt(val);
+            if (sc.IsLoading)
+                val = sc.ms.ReadBoolInt();
             else
-                ms.WriteBoolByte(val);
+                sc.ms.WriteBoolInt(val);
         }
 
-        public void Serialize(ref byte[] buffer, int size)
+        public static void Serialize(this SerializingContainer2 sc, ref byte[] buffer, int size)
         {
-            if (IsLoading)
+            if (sc.IsLoading)
             {
-                buffer = ms.ReadToBuffer(size);
+                buffer = sc.ms.ReadToBuffer(size);
             }
             else
             {
-                ms.WriteFromBuffer(buffer);
+                sc.ms.WriteFromBuffer(buffer);
             }
         }
 
-        public void Serialize(ref Guid guid)
+        public static void Serialize(this SerializingContainer2 sc, ref Guid guid)
         {
-            if (IsLoading)
-                guid = ms.ReadGuid();
+            if (sc.IsLoading)
+                guid = sc.ms.ReadGuid();
             else
-                ms.WriteGuid(guid);
+                sc.ms.WriteGuid(guid);
         }
 
-        public void Serialize(ref int[] arr)
+        public delegate void SerializeDelegate<T>(SerializingContainer2 sc, ref T item);
+
+        public static void Serialize<T>(this SerializingContainer2 sc, ref T[] arr, SerializeDelegate<T> serialize)
         {
             int count = arr?.Length ?? 0;
-            Serialize(ref count);
-            if (IsLoading)
+            sc.Serialize(ref count);
+            if (sc.IsLoading)
             {
-                arr = new int[count];
+                arr = new T[count];
             }
 
             for (int i = 0; i < count; i++)
             {
-                Serialize(ref arr[i]);
+                serialize(sc, ref arr[i]);
             }
-
         }
-    }
-
-    public static class SerializingContainerExtensions
-    {
-        public static void Serialize(this SerializingContainer2 sc, ref NameReference name, IMEPackage pcc)
+        public static void Serialize<TKey, TValue>(this SerializingContainer2 sc, ref OrderedMultiValueDictionary<TKey, TValue> dict, SerializeDelegate<TKey> serializeKey, SerializeDelegate<TValue> serializeValue)
         {
+            int count = dict?.Count ?? 0;
+            sc.Serialize(ref count);
             if (sc.IsLoading)
             {
-                name = sc.ms.ReadNameReference(pcc);
+                dict = new OrderedMultiValueDictionary<TKey, TValue>(count);
+                for (int i = 0; i < count; i++)
+                {
+                    TKey key = default;
+                    serializeKey(sc, ref key);
+                    TValue value = default;
+                    serializeValue(sc, ref value);
+                    dict.Add(key, value);
+                }
             }
             else
             {
-                sc.ms.WriteNameReference(name, pcc);
+                for (int i = 0; i < count; i++)
+                {
+                    var key = dict[i].Key;
+                    serializeKey(sc, ref key);
+                    var value = dict[i].Value;
+                    serializeValue(sc, ref value);
+                }
+            }
+
+        }
+
+        public static void Serialize(this SerializingContainer2 sc, ref NameReference name)
+        {
+            if (sc.IsLoading)
+            {
+                name = sc.ms.ReadNameReference(sc.Pcc);
+            }
+            else
+            {
+                sc.ms.WriteNameReference(name, sc.Pcc);
+            }
+        }
+
+        public static void Serialize(this SerializingContainer2 sc, ref Color color)
+        {
+            if (sc.IsLoading)
+            {
+                byte b = (byte)sc.ms.ReadByte();
+                byte g = (byte)sc.ms.ReadByte();
+                byte r = (byte)sc.ms.ReadByte();
+                byte a = (byte)sc.ms.ReadByte();
+                color = new Color(r, g, b, a);
+            }
+            else
+            {
+                sc.ms.WriteByte(color.B);
+                sc.ms.WriteByte(color.G);
+                sc.ms.WriteByte(color.R);
+                sc.ms.WriteByte(color.A);
             }
         }
     }

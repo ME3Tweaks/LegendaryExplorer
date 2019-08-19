@@ -114819,6 +114819,85 @@
       "baseClass": "Texture2D",
       "pccPath": "ME3Explorer_CustomNativeAdditions",
       "exportIndex": 0
+    },
+	"StaticMesh": {
+      "properties": [
+        {
+          "Key": "UseSimpleRigidBodyCollision",
+          "Value": {
+            "reference": null,
+            "transient": false,
+            "type": 6
+          }
+        },
+        {
+          "Key": "UseSimpleLineCollision",
+          "Value": {
+            "reference": null,
+            "transient": false,
+            "type": 6
+          }
+        },
+        {
+          "Key": "UseSimpleBoxCollision",
+          "Value": {
+            "reference": null,
+            "transient": false,
+            "type": 6
+          }
+        },
+        {
+          "Key": "ForceDoubleSidedShadowVolumes",
+          "Value": {
+            "reference": null,
+            "transient": false,
+            "type": 6
+          }
+        },
+        {
+          "Key": "BodySetup",
+          "Value": {
+            "reference": "RB_BodySetup",
+            "transient": false,
+            "type": 4
+          }
+        },
+        {
+          "Key": "LODDistanceRatio",
+          "Value": {
+            "reference": null,
+            "transient": false,
+            "type": 3
+          }
+        },
+        {
+          "Key": "LightMapCoordinateIndex",
+          "Value": {
+            "reference": null,
+            "transient": false,
+            "type": 2
+          }
+        },
+        {
+          "Key": "LightMapResolution",
+          "Value": {
+            "reference": null,
+            "transient": false,
+            "type": 2
+          }
+        },
+        {
+          "Key": "SoundCue",
+          "Value": {
+            "reference": "SoundCue",
+            "transient": false,
+            "type": 4
+          }
+        }
+	  ],
+      "baseClass": "Object",
+      "pccPath": "ME3Explorer_CustomNativeAdditions",
+      "exportIndex": 0
     }
   },
   "Structs": {

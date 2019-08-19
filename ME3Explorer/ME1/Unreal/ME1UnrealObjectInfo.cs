@@ -429,13 +429,31 @@ namespace ME1Explorer.Unreal
             }
 
             //CUSTOM ADDITIONS
-            ClassInfo info = new ClassInfo
+            Classes["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",
                 exportIndex = 0,
                 pccPath = "ME3Explorer_CustomNativeAdditions"
             };
-            Classes.Add("LightMapTexture2D", info);
+
+            Classes["StaticMesh"] = new ClassInfo
+            {
+                baseClass = "Object",
+                exportIndex = 0,
+                pccPath = "ME3Explorer_CustomNativeAdditions",
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("UseSimpleBoxCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("ForceDoubleSidedShadowVolumes", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
+                    new KeyValuePair<string, PropertyInfo>("LODDistanceRatio", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<string, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<string, PropertyInfo>("SoundCue", new PropertyInfo(PropertyType.ObjectProperty, "SoundCue")),
+                }
+            };
 
 
             File.WriteAllText(jsonPath, JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }, Formatting.Indented));

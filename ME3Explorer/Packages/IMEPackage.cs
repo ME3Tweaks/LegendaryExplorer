@@ -87,7 +87,7 @@ namespace ME3Explorer.Packages
 
     public class ClassInfo
     {
-        public List<KeyValuePair<string, PropertyInfo>> properties = new List<KeyValuePair<string, PropertyInfo>>();
+        public OrderedMultiValueDictionary<string, PropertyInfo> properties = new OrderedMultiValueDictionary<string, PropertyInfo>();
         public string baseClass;
         //Relative to BIOGame
         public string pccPath;

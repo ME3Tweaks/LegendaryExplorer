@@ -249,7 +249,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "dialogue", "subtitle", "text" },
                 subCategory = "Extractors + Repackers",
-                description = "TLK Editor converts between XML and TLK formats, allowing users to edit the display of all game text in ME2 and ME3. Edits to XML files must be done in an external editor, such as Notepad++.",
+                description = "TLK Editor converts between XML and TLK formats, allowing users to edit the display of all game text in ME2 and ME3. Edits to XML files must be done in an external editor, like Notepad++.",
             });
             set.Add(new Tool
             {

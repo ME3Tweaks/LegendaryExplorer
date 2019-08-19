@@ -7,32 +7,44 @@ using System.Threading.Tasks;
 using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.Packages;
 using StreamHelpers;
+using static ME3Explorer.Unreal.BinaryConverters.ObjectBinary;
 
 namespace ME3Explorer.Unreal.BinaryConverters
 {
     public static class ExportBinaryConverter
     {
-        public static byte[] ConvertPostPropBinary(ExportEntry export, MEGame newGame)
+        public static ObjectBinary ConvertPostPropBinary(ExportEntry export, MEGame newGame)
         {
+            if (export.getBinaryData().Length == 0)
+            {
+                return new GenericObjectBinary(new byte[0]);
+            }
+
             switch (export.ClassName)
             {
                 case "World":
-                    return World.From(export).Write(newGame);
-                case "Level":
-                    return ConvertLevel(export, newGame);
-                case "Model":
-                    return ConvertModel(export, newGame);
+                    return From<World>(export);
                 case "Polys":
-                    return Polys.From(export).Write(export.FileRef, newGame);
+                    return From<Polys>(export);
+                case "DecalMaterial":
+                case "Material":
+                    return From<Material>(export);
+                case "MaterialInstanceConstant":
+                case "MaterialInstanceTimeVarying":
+                    return From<MaterialInstance>(export);
+                case "Level":
+                    return new GenericObjectBinary(ConvertLevel(export, newGame));
+                case "Model":
+                    return new GenericObjectBinary(ConvertModel(export, newGame));
             }
 
             if (export.IsTexture())
             {
-                return ConvertTexture2D(export, newGame);
+                return new GenericObjectBinary(ConvertTexture2D(export, newGame));
             }
 
             //no conversion neccesary
-            return export.getBinaryData();
+            return new GenericObjectBinary(export.getBinaryData());
         }
 
         public static byte[] ConvertPrePropBinary(ExportEntry export, MEGame newGame)
@@ -116,6 +128,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
             int mipCount = bin.ReadInt32();
             os.WriteInt32(mipCount);
+            List<EmbeddedTextureViewer.Texture2DMipInfo> mips = EmbeddedTextureViewer.GetTexture2DMipInfos(export, export.GetProperty<NameProperty>("TextureFileCacheName")?.Value);
             for (int i = 0; i < mipCount; i++)
             {
                 var storageType = (StorageTypes)bin.ReadInt32();
@@ -132,9 +145,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     case StorageTypes.pccZlib:
                         texture = bin.ReadToBuffer(compressedSize);
                         break;
+                    case StorageTypes.empty:
+                        texture = new byte[0];
+                        break;
                     default:
                         storageType = StorageTypes.pccUnc;
-                        texture = new byte[0]; //todo: copy in external textures as pccUnc. stub until ME1ME2Meshplorer branch is merged.
+                        texture = EmbeddedTextureViewer.GetTextureData(mips[i]); //copy in external textures as pccUnc
                         uncompressedSize = compressedSize = texture.Length;
                         break;
 
@@ -411,4 +427,43 @@ namespace ME3Explorer.Unreal.BinaryConverters
             return os.ToArray();
         }
     }
+
+    public abstract class ObjectBinary
+    {
+        public static T From<T>(ExportEntry export) where T : ObjectBinary, new()
+        {
+            var t = new T();
+            t.Serialize(new SerializingContainer2(new MemoryStream(export.getBinaryData()), export.FileRef, true));
+            return t;
+        }
+        protected abstract void Serialize(SerializingContainer2 sc);
+
+        public virtual byte[] Write(IMEPackage pcc)
+        {
+            var ms = new MemoryStream();
+            Serialize(new SerializingContainer2(ms, pcc));
+
+            return ms.ToArray();
+        }
+    }
+
+    public sealed class GenericObjectBinary : ObjectBinary
+    {
+        private byte[] data;
+
+        public GenericObjectBinary(byte[] buff)
+        {
+            data = buff;
+        }
+
+        protected override void Serialize(SerializingContainer2 sc)
+        {
+            data = sc.ms.ReadFully();
+        }
+        public override byte[] Write(IMEPackage pcc)
+        {
+            return data;
+        }
+    }
+
 }

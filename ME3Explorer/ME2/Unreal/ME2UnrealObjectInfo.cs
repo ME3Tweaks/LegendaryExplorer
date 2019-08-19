@@ -435,6 +435,24 @@ namespace ME2Explorer.Unreal
                     exportIndex = 0,
                     pccPath = "ME3Explorer_CustomNativeAdditions"
                 });
+
+                NewClasses["StaticMesh"] = new ClassInfo
+                {
+                    baseClass = "Object",
+                    exportIndex = 0,
+                    pccPath = "ME3Explorer_CustomNativeAdditions",
+                    properties =
+                    {
+                        new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<string, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<string, PropertyInfo>("UseSimpleBoxCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<string, PropertyInfo>("UseFullPrecisionUVs", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<string, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
+                        new KeyValuePair<string, PropertyInfo>("LODDistanceRatio", new PropertyInfo(PropertyType.FloatProperty)),
+                        new KeyValuePair<string, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
+                        new KeyValuePair<string, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
+                    }
+                };
             }
             catch (Exception)
             {

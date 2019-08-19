@@ -3983,11 +3983,12 @@ namespace ME3Explorer
 
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
-            MEGame game = MEGame.ME3;
+            MEGame game = MEGame.ME1;
             //var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
             var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
+            var foundProps = new Dictionary<string, string>();
             IsBusy = true;
             BusyText = "Scanning";
             Task.Run(() =>
@@ -4023,7 +4024,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "Texture2D", true)) break;
+                    if (findClass(filePath, "StaticMesh", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
                     try
@@ -4149,7 +4150,7 @@ namespace ME3Explorer
                         break;
                     }
                 }
-
+                interestingExports.AddRange(foundProps.Select(kvp => $"{kvp.Key}{kvp.Value}"));
                 return;
                 interestingExports.Add($"unknown4 ME2: {string.Join(", ", unknown4ME2Set)}");
                 foreach ((int unknown, EPackageFlags value) in me2FlagsDict)
@@ -4196,17 +4197,19 @@ namespace ME3Explorer
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
-                    var exports = pcc.Exports.Where(exp => exp.InheritsFrom(className) && !exp.IsDefaultObject);
+                    var exports = pcc.Exports.Where(exp => exp.ClassName == className && !exp.IsDefaultObject);
                     foreach (ExportEntry exp in exports)
                     {
                         try
                         {
-                            if (exp.ClassName == "Blood_Splatter_Crust")
+                            foreach (UProperty prop in exp.GetProperties())
                             {
-                                interestingExports.Add($"{exp.UIndex}: {filePath}");
-                                return true;
+                                string key = $"{prop.Name} - {prop.PropType} - ";
+                                if (!foundProps.ContainsKey(key))
+                                {
+                                    foundProps.Add(key, $"#{exp.UIndex} - {pcc.FilePath}");
+                                }
                             }
-
                             continue;
                             if (!withBinary || exp.propsEnd() < exp.DataSize)
                             {

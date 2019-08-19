@@ -213,9 +213,9 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static List<KeyValuePair<string, PropertyInfo>> GetAllProperties(MEGame game, string typeName)
+        public static OrderedMultiValueDictionary<string, PropertyInfo> GetAllProperties(MEGame game, string typeName)
         {
-            var props = new List<KeyValuePair<string, PropertyInfo>>();
+            var props = new OrderedMultiValueDictionary<string, PropertyInfo>();
             ClassInfo info = GetClassOrStructInfo(game, typeName);
             while (info != null)
             {
@@ -807,6 +807,26 @@ namespace ME3Explorer.Unreal
                 baseClass = "Object",
                 exportIndex = 0,
                 pccPath = "ME3Explorer_CustomNativeAdditions"
+            };
+
+            NewClasses["StaticMesh"] = new ClassInfo
+            {
+                baseClass = "Object",
+                exportIndex = 0,
+                pccPath = "ME3Explorer_CustomNativeAdditions",
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("UseSimpleBoxCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("bUsedForInstancing", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("ForceDoubleSidedShadowVolumes", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("UseFullPrecisionUVs", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
+                    new KeyValuePair<string, PropertyInfo>("LODDistanceRatio", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<string, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
+                }
             };
 
             #endregion

@@ -30,48 +30,30 @@ namespace ME3Explorer.Unreal.BinaryConverters
         #ENDIF
         ExtraReferencedObjects: TArray<UObject*>
      */
-    public class World
+    public sealed class World : ObjectBinary
     {
-        private int PersistentLevel;
-        private int PersistentFaceFXAnimSet;
+        private UIndex PersistentLevel;
+        private UIndex PersistentFaceFXAnimSet;
         private byte[] EditorViews; //112
-        private int DecalManager;
-        private int[] ExtraReferencedObjects;
+        private UIndex DecalManager;
+        private UIndex[] ExtraReferencedObjects;
 
-        public World(ExportEntry export)
-        {
-            Serialize(new SerializingContainer2(new MemoryStream(export.getBinaryData()), true), export.Game);
-        }
-
-        public static World From(ExportEntry export)
-        {
-            return new World(export);
-        }
-
-        private void Serialize(SerializingContainer2 sc, MEGame game)
+        protected override void Serialize(SerializingContainer2 sc)
         {
             sc.Serialize(ref PersistentLevel);
-            if (game == MEGame.ME3)
+            if (sc.Game == MEGame.ME3)
             {
                 sc.Serialize(ref PersistentFaceFXAnimSet);
             }
             sc.Serialize(ref EditorViews, 112);
             int dummy = 0;
             sc.Serialize(ref dummy);
-            if (game == MEGame.ME1)
+            if (sc.Game == MEGame.ME1)
             {
                 sc.Serialize(ref DecalManager);
             }
 
             sc.Serialize(ref ExtraReferencedObjects);
-        }
-
-        public byte[] Write(MEGame game)
-        {
-            var ms = new MemoryStream();
-            Serialize(new SerializingContainer2(ms), game);
-
-            return ms.ToArray();
         }
     }
 }

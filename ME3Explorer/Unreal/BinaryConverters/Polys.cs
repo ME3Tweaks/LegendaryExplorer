@@ -8,7 +8,7 @@ using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal.BinaryConverters
 {
-    class Polys
+    public sealed class Polys : ObjectBinary
     {
         public class Poly
         {
@@ -18,9 +18,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
             public Vector TextureV;
             public Vector[] Vertices;
             public int PolyFlags;
-            public int Actor;
+            public UIndex Actor;
             public NameReference ItemName;
-            public int Material;
+            public UIndex Material;
             public int iLink;
             public int iBrushPoly;
             public float ShadowMapScale;
@@ -31,20 +31,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
         public int PolyCount;
         public int PolyMax;
-        public int Owner;
+        public UIndex Owner;
         public Poly[] Elements;
 
-        public Polys(ExportEntry export)
-        {
-            Serialize(new SerializingContainer2(new MemoryStream(export.getBinaryData()), true), export.FileRef, export.Game);
-        }
-
-        public static Polys From(ExportEntry export)
-        {
-            return new Polys(export);
-        }
-
-        private void Serialize(SerializingContainer2 sc, IMEPackage pcc, MEGame game)
+        protected override void Serialize(SerializingContainer2 sc)
         {
             if (!sc.IsLoading)
             {
@@ -73,16 +63,16 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.Serialize(ref poly.Vertices);
                 sc.Serialize(ref poly.PolyFlags);
                 sc.Serialize(ref poly.Actor);
-                sc.Serialize(ref poly.ItemName, pcc);
+                sc.Serialize(ref poly.ItemName);
                 sc.Serialize(ref poly.Material);
                 sc.Serialize(ref poly.iLink);
                 sc.Serialize(ref poly.iBrushPoly);
                 sc.Serialize(ref poly.ShadowMapScale);
                 sc.Serialize(ref poly.LightingChannels);
-                if (game == MEGame.ME3)
+                if (sc.Game == MEGame.ME3)
                 {
                     sc.Serialize(ref poly.LightmassSettings);
-                    sc.Serialize(ref poly.RulesetVariation, pcc);
+                    sc.Serialize(ref poly.RulesetVariation);
                 }
                 else if(sc.IsLoading)
                 {
@@ -98,13 +88,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     poly.RulesetVariation = "None";
                 }
             }
-        }
-
-        public byte[] Write(IMEPackage pcc, MEGame game)
-        {
-            var ms = new MemoryStream();
-            Serialize(new SerializingContainer2(ms), pcc, game);
-            return ms.ToArray();
         }
     }
 }
