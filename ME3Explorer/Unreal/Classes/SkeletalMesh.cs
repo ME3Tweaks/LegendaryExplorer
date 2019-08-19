@@ -377,8 +377,7 @@ namespace ME3Explorer.Unreal.Classes
 
                         U = Container + U;
                         V = Container + V;
-                        Debug.WriteLine("U: " + HalfToFloat(U));
-                        Debug.WriteLine("V: " + HalfToFloat(V));
+                        Debug.WriteLine("U is " + U);
                         if (Container.isLoading)
                         {
                             InfluenceBones = new byte[4];
@@ -430,8 +429,6 @@ namespace ME3Explorer.Unreal.Classes
                     Position.Z = Container + Position.Z;
                     U = Container + U;
                     V = Container + V;
-                    //Debug.WriteLine("U: " + HalfToFloat(U));
-                    //Debug.WriteLine("V: " + HalfToFloat(V));
                 }
             }
             public TreeNode ToTree(int MyIndex)

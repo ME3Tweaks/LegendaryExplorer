@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using SharpDX;
 using SharpDX.Direct3D11;
 using ME3Explorer.Packages;
-using System.Diagnostics;
 
 namespace ME3Explorer.Scene3D
 {
@@ -152,9 +151,8 @@ namespace ME3Explorer.Scene3D
                     cache.Add(entry);
                     return entry;
                 }
-                catch (Exception e)
+                catch
                 {
-                Debug.WriteLine("Exception: " + e.Message);
                     return null;
                 }
             //}
