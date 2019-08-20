@@ -8,6 +8,8 @@ namespace ME3Explorer.Packages
     [DebuggerDisplay("ImportEntry | {UIndex} = {GetFullPath}")]
     public class ImportEntry : NotifyPropertyChangedBase, IEntry
     {
+        public MEGame Game => FileRef.Game;
+
         public ImportEntry(IMEPackage pccFile, Stream importData)
         {
             HeaderOffset = importData.Position;

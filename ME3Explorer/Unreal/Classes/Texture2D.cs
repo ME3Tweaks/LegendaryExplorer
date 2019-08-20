@@ -264,6 +264,7 @@ namespace ME3Explorer.Unreal.Classes
             }
             catch (FileNotFoundException e)
             {
+                Debug.WriteLine("External cache not found. Defaulting to internal mips.");
                 //External archive not found - using built in mips (will be hideous, but better than nothing)
                 info = Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
                 if (info != null)

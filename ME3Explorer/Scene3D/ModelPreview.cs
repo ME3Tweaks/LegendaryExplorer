@@ -155,81 +155,8 @@ namespace ME3Explorer.Scene3D
 
             if (/*id == 0*/ referencedExport == null)
             {
-                if (textureReference.FileRef.Game == MEGame.ME1)
-                {
-                    string baseName = textureReference.FileRef.FollowLink(textureReference.idxLink).Split('.')[0].ToUpper() + ".upk"; //Get package filename
-                    var gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
-                    var file = gameFiles[baseName]; //this should be in a try catch
-                    using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(file))
-                    {
-                        foreach (ExportEntry exp in pcc.Exports)
-                        {
-                            if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
-                            {
-                                return texcache.LoadTexture(exp);
 
-                                referencedExport = exp;
-                                //pccpath = file;
-                                //id = exp.UIndex;
-                                break;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // Next, split the filename by underscores
-                    string[] parts = System.IO.Path.GetFileNameWithoutExtension(FullTextureName).Split('_');
-                    if (/*pccpath == "" && */ (importfilename.StartsWith("bioa") || importfilename.StartsWith("biod"))) //referencedTexture will always be null here.
-                    {
-                        // Maybe go for the one with one less segment? ex. for input BioA_Nor_201CIC.pcc, look in BioA_Nor.pcc
-                        if (parts.Length == 3)
-                        {
-                            string filename = importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc";
-                            if (System.IO.File.Exists(filename))
-                            {
-                                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filename))
-                                {
-                                    foreach (ExportEntry exp in pcc.Exports)
-                                    {
-                                        if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
-                                        {
-                                            return texcache.LoadTexture(exp);
 
-                                            referencedExport = exp;
-                                            //pccpath = file;
-                                            //id = exp.UIndex;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        // Now go for the BioP one.
-                        if (referencedExport == null && parts.Length >= 2)
-                        {
-                            string filename = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
-                            if (System.IO.File.Exists(filename))
-                            {
-                                using (var pcc = MEPackageHandler.OpenMEPackage(filename))
-                                {
-                                    foreach (ExportEntry exp in pcc.Exports)
-                                    {
-                                        if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
-                                        {
-                                            return texcache.LoadTexture(exp);
-
-                                            //pccpath = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
-                                            //id = exp.Index;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
             }
 
             //if (id > 0)
@@ -467,6 +394,17 @@ namespace ME3Explorer.Scene3D
                 else if (section.Material.value < 0)
                 {
                     Debug.WriteLine("WE DON'T SUPPORT IMPORT MATERIALS");
+                    Debug.WriteLine("Import material: " + m.Export.FileRef.GetEntryString(section.Material.value));
+                    var extMaterialExport = FindExternalAsset(m.Export.FileRef.getUImport(section.Material.value));
+                    if (extMaterialExport != null)
+                    {
+                        ModelPreviewMaterial material;
+                        // TODO: pick what material class best fits based on what properties the 
+                        // MaterialInstanceConstant mat has.
+                        // For now, just use the default material.
+                        material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(extMaterialExport));
+                        AddMaterial(material.Properties["Name"], material);
+                    }
                 }
 
                 sections.Add(new ModelPreviewSection(m.Export.FileRef.getObjectName(section.Material.value), section.FirstIndex, section.NumTriangles));
@@ -480,6 +418,73 @@ namespace ME3Explorer.Scene3D
             LODs = new List<ModelPreviewLOD>();
             LODs.Add(new ModelPreviewLOD(new WorldMesh(Device, triangles, vertices), sections));
         }
+
+        private ExportEntry FindExternalAsset(ImportEntry entry)
+        {
+            if (entry.Game == MEGame.ME1)
+            {
+                string baseName = entry.FileRef.FollowLink(entry.idxLink).Split('.')[0].ToUpper() + ".upk"; //Get package filename
+                var gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
+                var file = gameFiles[baseName]; //this should be in a try catch
+                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(file))
+                {
+                    foreach (ExportEntry exp in pcc.Exports)
+                    {
+                        if (exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName) //We might want to check instancing
+                        {
+                            return exp;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Next, split the filename by underscores
+                string filenameWithoutExtension = Path.GetFileNameWithoutExtension(entry.FileRef.FilePath).ToLower();
+                string containingDirectory = Path.GetDirectoryName(entry.FileRef.FilePath);
+
+                if (filenameWithoutExtension.StartsWith("bioa_") || filenameWithoutExtension.StartsWith("biod_"))
+                {
+                    string[] parts = filenameWithoutExtension.Split('_');
+                    if (parts.Length >= 2) //BioA_Nor_WowThatsAlot310.pcc
+                    {
+                        string filename = Path.Combine(containingDirectory, $"{parts[0]}_{parts[1]}.pcc"); //BioA_Nor.pcc
+                        if (File.Exists(filename))
+                        {
+                            using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filename))
+                            {
+                                foreach (ExportEntry exp in pcc.Exports)
+                                {
+                                    if (exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName) //We might want to check instancing
+                                    {
+                                        return exp;
+                                    }
+                                }
+                            }
+                        }
+
+                        //No result in BioA, BioD - check BioP level master
+                        filename = Path.Combine(containingDirectory, $"BioP_{parts[1]}.pcc"); //BioA_Nor.pcc
+                        if (File.Exists(filename))
+                        {
+                            using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filename))
+                            {
+                                foreach (ExportEntry exp in pcc.Exports)
+                                {
+                                    if (exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName) //We might want to check instancing
+                                    {
+                                        return exp;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            Debug.WriteLine("Could not find external asset: " + entry.GetFullPath);
+            return null;
+        }
+
 
         /// <summary>
         /// Internal method for decoding UV values.
