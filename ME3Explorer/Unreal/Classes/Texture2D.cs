@@ -254,11 +254,29 @@ namespace ME3Explorer.Unreal.Classes
                 return null;
             }
 
+            
+            Debug.WriteLine($"Generating preview texture for Texture2D {info.Export.GetFullPath} of format {TextureFormat}");
+
+            byte[] imageBytes = null;
+            try
+            {
+                imageBytes = GetTextureData(info);
+            }
+            catch (FileNotFoundException e)
+            {
+                //External archive not found - using built in mips (will be hideous, but better than nothing)
+                info = Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
+                if (info != null)
+                {
+                    imageBytes = GetTextureData(info);
+                }
+            }
+            if (imageBytes == null)
+            {
+                throw new Exception("Could not fetch texture for 3D preview");
+            }
             int width = (int)info.width;
             int height = (int)info.height;
-            Debug.WriteLine($"Generating preview texture for Texture2D of format {TextureFormat}");
-
-            var imageBytes = GetTextureData(info);
             var fmt = AmaroK86.ImageFormat.DDSImage.convertFormat(TextureFormat);
             var bmp = AmaroK86.ImageFormat.DDSImage.ToBitmap(imageBytes, fmt, info.width, info.height);
             // Convert compressed image data to an A8R8G8B8 System.Drawing.Bitmap

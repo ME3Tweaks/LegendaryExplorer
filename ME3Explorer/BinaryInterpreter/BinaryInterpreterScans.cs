@@ -11,6 +11,7 @@ using Gibbed.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
+using ME3Explorer.Scene3D;
 using ME3Explorer.Unreal.ME3Enums;
 using StreamHelpers;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
@@ -198,7 +199,7 @@ namespace ME3Explorer
             {
                 str = bin.ReadStringASCIINull(strLen);
             }
-            return new BinInterpNode(pos, $"{nodeName}: {str}") {Length = strLen + 4};
+            return new BinInterpNode(pos, $"{nodeName}: {str}") { Length = strLen + 4 };
         }
 
         enum EShaderFrequency : byte
@@ -772,7 +773,7 @@ namespace ME3Explorer
                 bin.JumpTo(binarystart);
 
                 int count;
-                foreach (string propName in new[]{"InclusionConvexVolumes", "ExclusionConvexVolumes"})
+                foreach (string propName in new[] { "InclusionConvexVolumes", "ExclusionConvexVolumes" })
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"{propName} ({count = bin.ReadInt32()})")
                     {
@@ -5245,11 +5246,11 @@ namespace ME3Explorer
                 {
                     Items = ReadList(texToInstCount, i =>
                                          new BinInterpNode(bin.Position, $"{entryRefString(bin)}: ({streamableTexInstCount = bin.ReadInt32()} StreamableTextureInstances)")
-                    {
-                        Items = ReadList(streamableTexInstCount, j => new BinInterpNode(bin.Position, $"{j}")
-                        {
-                            IsExpanded = true,
-                            Items =
+                                         {
+                                             Items = ReadList(streamableTexInstCount, j => new BinInterpNode(bin.Position, $"{j}")
+                                             {
+                                                 IsExpanded = true,
+                                                 Items =
                             {
                                 new BinInterpNode(bin.Position, "BoundingSphere")
                                 {
@@ -5262,8 +5263,8 @@ namespace ME3Explorer
                                 },
                                 new BinInterpNode(bin.Position, $"TexelFactor: {bin.ReadSingle()}")
                             }
-                        })
-                    })
+                                             })
+                                         })
                 });
 
                 if (Pcc.Game == MEGame.ME3)
@@ -5273,7 +5274,7 @@ namespace ME3Explorer
                     //should always be zero, but just in case...
                     if (apexSize > 0)
                     {
-                        subnodes.Add(new BinInterpNode(bin.Position, $"APEX mesh?: {apexSize} bytes") { Length = apexSize});
+                        subnodes.Add(new BinInterpNode(bin.Position, $"APEX mesh?: {apexSize} bytes") { Length = apexSize });
                         bin.Skip(apexSize);
                     }
                 }
@@ -5447,7 +5448,7 @@ namespace ME3Explorer
                     });
                 }
 
-                binarystart = (int) bin.Position;
+                binarystart = (int)bin.Position;
             }
             catch (Exception ex)
             {
@@ -5457,15 +5458,15 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private static BinInterpNode MakeBoolIntNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolInt()}") {Length = 4};
+        private static BinInterpNode MakeBoolIntNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolInt()}") { Length = 4 };
 
         private static BinInterpNode MakeBoolByteNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolByte()}") { Length = 1 };
 
-        private static BinInterpNode MakeFloatNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) {Length = 4};
+        private static BinInterpNode MakeFloatNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) { Length = 4 };
 
         private static BinInterpNode MakeUInt32Node(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32()}") { Length = 4 };
 
-        private static BinInterpNode MakeInt32Node(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}", NodeType.StructLeafInt) {Length = 4};
+        private static BinInterpNode MakeInt32Node(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 };
 
         private static BinInterpNode MakeUInt16Node(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt16()}") { Length = 2 };
 
@@ -5473,13 +5474,13 @@ namespace ME3Explorer
 
         private BinInterpNode MakeNameNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName) { Length = 8 };
 
-        private BinInterpNode MakeEntryNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}", NodeType.StructLeafObject) {Length = 4};
+        private BinInterpNode MakeEntryNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}", NodeType.StructLeafObject) { Length = 4 };
 
-        private static BinInterpNode MakePackedNormalNode(MemoryStream bin, string name) => 
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadByte()}, Y: {bin.ReadByte()}, Z: {bin.ReadByte()}, W: {bin.ReadByte()})") {Length = 4};
+        private static BinInterpNode MakePackedNormalNode(MemoryStream bin, string name) =>
+            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadByte()}, Y: {bin.ReadByte()}, Z: {bin.ReadByte()}, W: {bin.ReadByte()})") { Length = 4 };
 
         private static BinInterpNode MakeVectorNode(MemoryStream bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})") {Length = 12};
+            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})") { Length = 12 };
 
         private static BinInterpNode MakeBoxNode(MemoryStream bin, string name) =>
             new BinInterpNode(bin.Position, name)
@@ -5495,7 +5496,7 @@ namespace ME3Explorer
             };
 
         private static BinInterpNode MakeVector2DNode(MemoryStream bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()})") {Length = 8};
+            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()})") { Length = 8 };
 
         private static BinInterpNode MakeVector2DHalfNode(MemoryStream bin, string name) =>
             new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat16()}, Y: {bin.ReadFloat16()})") { Length = 4 };
@@ -5528,7 +5529,7 @@ namespace ME3Explorer
             };
         }
 
-        private static BinInterpNode MakeGuidNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadGuid()}") {Length = 16};
+        private static BinInterpNode MakeGuidNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadGuid()}") { Length = 16 };
 
         private static BinInterpNode MakeArrayNode(MemoryStream bin, string name, Func<int, BinInterpNode> selector)
         {
@@ -6523,102 +6524,11 @@ namespace ME3Explorer
 
                         for (int sv = 0; sv < softskinVertex; sv++)
                         {
-                            //UDK has lots of unused values
-                            int rvpos = pos;
-                            float vPosX = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float vPosY = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float vPosZ = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float TanX = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float TanY = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float TanZ = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float uv1U = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float uv1V = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4; //32
+                            BinInterpNode node = ReadSoftSkinVertice(game, data, pos);
+                            node.Header = $"{(pos - binarystart):X4} {sv}: {node.Header}";
+                            softvertices.Items.Add(node);
+                            pos += game != MEGame.UDK ? 40 : 68;
 
-                            if (game == MEGame.UDK)
-                            {
-                                float uv2U = BitConverter.ToSingle(data, rvpos);
-                                rvpos += 4;
-                                float uv2V = BitConverter.ToSingle(data, rvpos);
-                                rvpos += 4;
-                                float uv3U = BitConverter.ToSingle(data, rvpos);
-                                rvpos += 4;
-                                float uv3V = BitConverter.ToSingle(data, rvpos);
-                                rvpos += 4;
-                                float uv4U = BitConverter.ToSingle(data, rvpos);
-                                rvpos += 4;
-                                float uv4V = BitConverter.ToSingle(data, rvpos);
-                                rvpos += 4;
-                                int color = BitConverter.ToInt32(data, rvpos);
-                                rvpos += 4;
-
-                                //Influence Bones
-                                byte inflbnA = data[rvpos];  //SINGLE BYTE Influence
-                                rvpos += 1;
-                                byte inflbnB = data[rvpos];
-                                rvpos += 1;
-                                byte inflbnC = data[rvpos];
-                                rvpos += 1;
-                                byte inflbnD = data[rvpos];
-                                rvpos += 1;
-
-                                //Influence Weights
-                                byte inflwA = data[rvpos];  //SINGLE BYTE Influence
-                                rvpos += 1;
-                                byte inflwB = data[rvpos];
-                                rvpos += 1;
-                                byte inflwC = data[rvpos];
-                                rvpos += 1;
-                                byte inflwD = data[rvpos];
-                                rvpos += 1;
-
-                                softvertices.Items.Add(new BinInterpNode
-                                {
-                                    Header = $"{(pos - binarystart):X4} {sv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ} UV(0) U:{uv1U} W:{uv1U} UV(1) U:{uv2U} W:{uv2U} UV(2) U:{uv3U} W:{uv3U} UV(3) U:{uv4U} W:{uv4U} Color: {color} Influence bones: ({inflbnA}, {inflbnB}, {inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB}, {inflwC}, {inflwD})",
-                                    Name = "_" + pos,
-
-                                    Tag = NodeType.Unknown,
-                                });
-                                pos += 68;
-                            }
-                            else
-                            {
-                                //Influence Bones
-                                byte inflbnA = data[rvpos];  //SINGLE BYTE Influence
-                                rvpos += 1;
-                                byte inflbnB = data[rvpos];
-                                rvpos += 1;
-                                byte inflbnC = data[rvpos];
-                                rvpos += 1;
-                                byte inflbnD = data[rvpos];
-                                rvpos += 1;
-
-                                //Influence Weights
-                                byte inflwA = data[rvpos];
-                                rvpos += 1;
-                                byte inflwB = data[rvpos];
-                                rvpos += 1;
-                                byte inflwC = data[rvpos];
-                                rvpos += 1;
-                                byte inflwD = data[rvpos];
-                                rvpos += 1;
-
-                                softvertices.Items.Add(new BinInterpNode
-                                {
-                                    Header = $"{(pos - binarystart):X4} {sv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ}  UV U:{uv1U} W:{uv1U} Influence bones: ({inflbnA}, {inflbnB}, {inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB}, {inflwC}, {inflwD})",
-                                    Name = "_" + pos,
-
-                                    Tag = NodeType.Unknown,
-                                });
-                                pos += 40;
-                            }
                         }
 
                         int nMapBones = BitConverter.ToInt32(data, pos); // Bone Map
@@ -6930,49 +6840,103 @@ namespace ME3Explorer
                     vtxGPUskin.Items.Add(vertices);
                     pos += 4;
 
-                    for (int v = 0; v < nVertex; v++)
+                    if (game == MEGame.ME1)
                     {
-                        int vpos = pos; //use seperate positioning as vertex size is variable
-                        float TanX = BitConverter.ToSingle(data, vpos);
-                        vpos += 4;
-                        float TanY = BitConverter.ToSingle(data, vpos);
-                        vpos += 4;
-                        float TanZ = BitConverter.ToSingle(data, vpos);
-                        vpos += 4;
-                        float vPosX = BitConverter.ToSingle(data, vpos);
-                        vpos += 4;
-                        float vPosY = BitConverter.ToSingle(data, vpos);
-                        vpos += 4;
-                        float vPosZ = BitConverter.ToSingle(data, vpos);
-                        vpos += 4;
-                        int infB1 = BitConverter.ToInt16(data, vpos);
-                        vpos += 2;
-                        int infW1 = BitConverter.ToInt16(data, vpos);
-                        vpos += 2;
-                        int infB2 = BitConverter.ToInt16(data, vpos);
-                        vpos += 2;
-                        int infW2 = BitConverter.ToInt16(data, vpos);
-                        vpos += 2;
-                        int infB3 = BitConverter.ToInt16(data, vpos);
-                        vpos += 2;
-                        int infW3 = BitConverter.ToInt16(data, vpos);
-                        vpos += 2;
-                        int infB4 = BitConverter.ToInt16(data, vpos);
-                        vpos += 2;
-                        int infW4 = BitConverter.ToInt16(data, vpos);
-                        vpos += 2;
-                        float uvU = BitConverter.ToSingle(data, vpos);
-                        vpos += 4;
-                        float uvV = BitConverter.ToSingle(data, vpos);
-                        vpos += 4;
-                        vertices.Items.Add(new BinInterpNode
+                        for (int v = 0; v < nVertex; v++)
                         {
-                            Header = $"{(pos - binarystart):X4} {v}: Tangent X:{TanX} Y:{TanY} Z:{TanZ} Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Influences: {infB1}:{infW1} {infB2}:{infW2} {infB3}:{infW4} {infB4}:{infW4} UV U:{uvU} W:{uvV}",
-                            Name = "_" + pos,
+                            int vpos = pos; //use seperate positioning as vertex size is variable
+                            float vPosX = BitConverter.ToSingle(data, vpos);
+                            vpos += 4;
+                            float vPosY = BitConverter.ToSingle(data, vpos);
+                            vpos += 4;
+                            float vPosZ = BitConverter.ToSingle(data, vpos);
+                            vpos += 4;
 
-                            Tag = NodeType.Unknown,
-                        });
-                        pos += vtxSize;
+                            float TanX = BitConverter.ToSingle(data, vpos);
+                            vpos += 4;
+                            float TanY = BitConverter.ToSingle(data, vpos);
+                            vpos += 4;
+                            float TanZ = BitConverter.ToSingle(data, vpos);
+                            vpos += 4;
+                            
+                            int infB1 = data[vpos];
+                            vpos += 1;
+                            int infW1 = data[vpos];
+                            vpos += 1;
+                            int infB2 = data[vpos];
+                            vpos += 1;
+                            int infW2 = data[vpos];
+                            vpos += 1;
+                            int infB3 = data[vpos];
+                            vpos += 1;
+                            int infW3 = data[vpos];
+                            vpos += 1;
+                            int infB4 = data[vpos];
+                            vpos += 1;
+                            int infW4 = data[vpos];
+                            vpos += 1;
+                            float uvU = BitConverter.ToSingle(data, vpos); //full precision
+                            vpos += 4;
+                            float uvV = BitConverter.ToSingle(data, vpos); //full precision
+                            vpos += 4;
+                            vertices.Items.Add(new BinInterpNode
+                            {
+                                Header = $"{(pos - binarystart):X4} {v}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} | Tangent X:{TanX} Y:{TanY} Z:{TanZ} | Influences: {infB1}:{infW1} {infB2}:{infW2} {infB3}:{infW4} {infB4}:{infW4} | UV U:{uvU} W:{uvV}",
+                                Name = "_" + pos,
+
+                                Tag = NodeType.Unknown,
+                            });
+                            if (vpos - pos != vtxSize) throw new Exception();
+                            pos += vtxSize;
+                        }
+                    }
+                    else
+                    {
+                        for (int v = 0; v < nVertex; v++)
+                        {
+                            int vpos = pos; //use seperate positioning as vertex size is variable
+                            float TanX = BitConverter.ToSingle(data, vpos);
+                            vpos += 4;
+                            //float TanY = BitConverter.ToSingle(data, vpos);
+                            //vpos += 4;
+                            float TanZ = BitConverter.ToSingle(data, vpos);
+                            vpos += 4;
+                            float vPosX = BitConverter.ToSingle(data, vpos);
+                            vpos += 4;
+                            float vPosY = BitConverter.ToSingle(data, vpos);
+                            vpos += 4;
+                            float vPosZ = BitConverter.ToSingle(data, vpos);
+                            vpos += 4;
+                            int infB1 = BitConverter.ToInt16(data, vpos);
+                            vpos += 2;
+                            int infW1 = BitConverter.ToInt16(data, vpos);
+                            vpos += 2;
+                            int infB2 = BitConverter.ToInt16(data, vpos);
+                            vpos += 2;
+                            int infW2 = BitConverter.ToInt16(data, vpos);
+                            vpos += 2;
+                            int infB3 = BitConverter.ToInt16(data, vpos);
+                            vpos += 2;
+                            int infW3 = BitConverter.ToInt16(data, vpos);
+                            vpos += 2;
+                            int infB4 = BitConverter.ToInt16(data, vpos);
+                            vpos += 2;
+                            int infW4 = BitConverter.ToInt16(data, vpos);
+                            vpos += 2;
+                            float uvU = ModelPreview.HalfToFloat(BitConverter.ToUInt16(data, vpos));
+                            vpos += 4;
+                            float uvV = ModelPreview.HalfToFloat(BitConverter.ToUInt16(data, vpos));
+                            vpos += 4;
+                            vertices.Items.Add(new BinInterpNode
+                            {
+                                Header = $"{(pos - binarystart):X4} {v}: Tangent X:{TanX} Z:{TanZ} Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Influences: {infB1}:{infW1} {infB2}:{infW2} {infB3}:{infW4} {infB4}:{infW4} UV U:{uvU} W:{uvV}",
+                                Name = "_" + pos,
+
+                                Tag = NodeType.Unknown,
+                            });
+                            if (vpos - pos != vtxSize) throw new Exception();
+                            pos += vtxSize;
+                        }
                     }
 
                     if (game == MEGame.ME3 || game == MEGame.UDK)
@@ -7237,6 +7201,104 @@ namespace ME3Explorer
 
             return subnodes;
 
+        }
+
+        private BinInterpNode ReadSoftSkinVertice(MEGame game, byte[] data, int pos)
+        {
+            //UDK has lots of unused values
+            int rvpos = pos;
+            float vPosX = BitConverter.ToSingle(data, rvpos);
+            rvpos += 4;
+            float vPosY = BitConverter.ToSingle(data, rvpos);
+            rvpos += 4;
+            float vPosZ = BitConverter.ToSingle(data, rvpos);
+            rvpos += 4;
+            float TanX = BitConverter.ToSingle(data, rvpos);
+            rvpos += 4;
+            float TanY = BitConverter.ToSingle(data, rvpos);
+            rvpos += 4;
+            float TanZ = BitConverter.ToSingle(data, rvpos);
+            rvpos += 4;
+            float uv1U = BitConverter.ToSingle(data, rvpos);
+            rvpos += 4;
+            float uv1V = BitConverter.ToSingle(data, rvpos);
+            rvpos += 4; //32
+
+            if (game == MEGame.UDK)
+            {
+                float uv2U = BitConverter.ToSingle(data, rvpos);
+                rvpos += 4;
+                float uv2V = BitConverter.ToSingle(data, rvpos);
+                rvpos += 4;
+                float uv3U = BitConverter.ToSingle(data, rvpos);
+                rvpos += 4;
+                float uv3V = BitConverter.ToSingle(data, rvpos);
+                rvpos += 4;
+                float uv4U = BitConverter.ToSingle(data, rvpos);
+                rvpos += 4;
+                float uv4V = BitConverter.ToSingle(data, rvpos);
+                rvpos += 4;
+                int color = BitConverter.ToInt32(data, rvpos);
+                rvpos += 4;
+
+                //Influence Bones
+                byte inflbnA = data[rvpos];  //SINGLE BYTE Influence
+                rvpos += 1;
+                byte inflbnB = data[rvpos];
+                rvpos += 1;
+                byte inflbnC = data[rvpos];
+                rvpos += 1;
+                byte inflbnD = data[rvpos];
+                rvpos += 1;
+
+                //Influence Weights
+                byte inflwA = data[rvpos];  //SINGLE BYTE Influence
+                rvpos += 1;
+                byte inflwB = data[rvpos];
+                rvpos += 1;
+                byte inflwC = data[rvpos];
+                rvpos += 1;
+                byte inflwD = data[rvpos];
+                rvpos += 1;
+
+                return new BinInterpNode
+                {
+                    Header = $"Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ} UV(0) U:{uv1U} W:{uv1U} UV(1) U:{uv2U} W:{uv2U} UV(2) U:{uv3U} W:{uv3U} UV(3) U:{uv4U} W:{uv4U} Color: {color} Influence bones: ({inflbnA}, {inflbnB}, {inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB}, {inflwC}, {inflwD})",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.Unknown,
+                };
+            }
+            else
+            {
+                //Influence Bones
+                byte inflbnA = data[rvpos];  //SINGLE BYTE Influence
+                rvpos += 1;
+                byte inflbnB = data[rvpos];
+                rvpos += 1;
+                byte inflbnC = data[rvpos];
+                rvpos += 1;
+                byte inflbnD = data[rvpos];
+                rvpos += 1;
+
+                //Influence Weights
+                byte inflwA = data[rvpos];
+                rvpos += 1;
+                byte inflwB = data[rvpos];
+                rvpos += 1;
+                byte inflwC = data[rvpos];
+                rvpos += 1;
+                byte inflwD = data[rvpos];
+                rvpos += 1;
+
+                return new BinInterpNode
+                {
+                    Header = $"Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ}  UV U:{uv1U} W:{uv1U} Influence bones: ({inflbnA}, {inflbnB}, {inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB}, {inflwC}, {inflwD})",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.Unknown,
+                };
+            }
         }
 
         private List<ITreeItem> StartStaticMeshCollectionActorScan(byte[] data, ref int binarystart)
@@ -7528,7 +7590,7 @@ namespace ME3Explorer
                                     MakeFloatNode(bin, "Max[2]")
                                 }
                             }
-                            
+
                         }),
                         MakeInt32Node(bin, "kDOPNodeSize"),
                         MakeArrayNode(bin, "Nodes", i => new BinInterpNode(bin.Position, $"{i}")
@@ -7772,7 +7834,7 @@ namespace ME3Explorer
                     subnodes.Add(MakeInt32Node(bin, "BulkDataOffsetInFile"));
                     if (size > 0)
                     {
-                        subnodes.Add(new BinInterpNode(bin.Position, $"XML file ({size} bytes)"){ Length = size });
+                        subnodes.Add(new BinInterpNode(bin.Position, $"XML file ({size} bytes)") { Length = size });
                         bin.Skip(size);
                     }
                     subnodes.Add(MakeUInt32Node(bin, "unk"));

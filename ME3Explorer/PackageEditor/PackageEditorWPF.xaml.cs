@@ -1711,7 +1711,6 @@ namespace ME3Explorer
         {
             Recents_MenuItem.IsEnabled = false;
             RFiles = new List<string>();
-            RFiles.Clear();
             string path = PackageEditorDataFolder + RECENTFILES_FILE;
             if (File.Exists(path))
             {
