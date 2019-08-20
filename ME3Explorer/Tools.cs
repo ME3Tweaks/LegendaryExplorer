@@ -240,6 +240,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Meshplorer WPF",
+                type = typeof(Meshplorer.Meshplorer),
+                icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
+                open = () =>
+                {
+                    (new MeshplorerWPF()).Show();
+                },
+                tags = new List<string> { "developer", "mesh" },
+                subCategory = "Meshes + Textures",
+                description = "Meshplorer WPF is the rewritten version of Meshplorer."
+            });
+            set.Add(new Tool
+            {
                 name = "ME3 + ME2 TLK Editor",
                 type = typeof(TLKEditor),
                 icon = Application.Current.FindResource("iconTLKEditorME23") as ImageSource,
