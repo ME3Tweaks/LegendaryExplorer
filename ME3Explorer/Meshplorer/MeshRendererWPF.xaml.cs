@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -27,7 +28,7 @@ namespace ME3Explorer.Meshplorer
     public partial class MeshRendererWPF : ExportLoaderControl
     {
         private static readonly string[] parsableClasses = { "SkeletalMesh", "StaticMesh" };
-        FrostyRenderImage imageSource = new FrostyRenderImage();
+        FrostyRenderImage imageSource;
         public SwapChain SwapChain { get; private set; } = null;
         public Texture2D BackBuffer { get; private set; } = null;
         public SharpDX.Direct3D11.Device Device { get; private set; } = null;
@@ -36,7 +37,6 @@ namespace ME3Explorer.Meshplorer
         public MeshRendererWPF()
         {
             InitializeComponent();
-            LoadDirect3D();
         }
 
         public override bool CanParse(ExportEntry exportEntry)
@@ -67,17 +67,20 @@ namespace ME3Explorer.Meshplorer
 
         public void LoadDirect3D()
         {
+            Window window = Window.GetWindow(this);
+            var wih = new WindowInteropHelper(window);
+            imageSource = new FrostyRenderImage(wih.Handle);
             // Set up description of swap chain
             SwapChainDescription scd = new SwapChainDescription();
             scd.BufferCount = 1;
             scd.ModeDescription = new ModeDescription(1024,1024, new Rational(60, 1), Format.B8G8R8A8_UNorm);
             scd.Usage = Usage.RenderTargetOutput;
-            scd.OutputHandle = FrostyRenderImage.GetDesktopWindow();
+
+            
+            scd.OutputHandle = wih.Handle;
             scd.SampleDescription.Count = 1;
             scd.SampleDescription.Quality = 0;
             scd.IsWindowed = true;
-            scd.ModeDescription.Width = 1024;
-            scd.ModeDescription.Height = 1024;
 
             // Create device and swap chain according to the description above
             SharpDX.Direct3D11.Device d;
@@ -91,9 +94,38 @@ namespace ME3Explorer.Meshplorer
             this.Device = d; // because properties can't be passed as out parameters. =(
             BackBuffer = Texture2D.FromSwapChain<Texture2D>(SwapChain, 0);
 
+            var textureD3D11 = new Texture2D(Device, new Texture2DDescription
+            {
+                Width = 1024,
+                Height = 1024,
+                MipLevels = 1,
+                ArraySize = 1,
+                Format = Format.B8G8R8A8_UNorm,
+                SampleDescription = new SampleDescription(1, 0),
+                Usage = ResourceUsage.Default,
+                BindFlags = BindFlags.RenderTarget | BindFlags.ShaderResource,
+                CpuAccessFlags = CpuAccessFlags.None,
+                OptionFlags = ResourceOptionFlags.SharedKeyedmutex
+            });
 
-            imageSource.SetBackBuffer(BackBuffer);
+            imageSource.SetBackBuffer(textureD3D11);
             FrostyImageContainer.Source = imageSource;
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Get PresentationSource
+            PresentationSource presentationSource = PresentationSource.FromVisual((Visual)sender);
+
+            // Subscribe to PresentationSource's ContentRendered event
+            presentationSource.ContentRendered += TestUserControl_ContentRendered;
+        }
+
+        void TestUserControl_ContentRendered(object sender, EventArgs e)
+        {
+            // Don't forget to unsubscribe from the event
+            ((PresentationSource)sender).ContentRendered -= TestUserControl_ContentRendered;
+            LoadDirect3D();
         }
     }
 }

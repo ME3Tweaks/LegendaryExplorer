@@ -14,8 +14,8 @@ namespace ME3Explorer
 {
     public class FrostyRenderImage : D3DImage, IDisposable
     {
-        [DllImport("user32.dll", EntryPoint = "GetDesktopWindow", SetLastError = false)]
-        public static extern IntPtr GetDesktopWindow();
+        //[DllImport("user32.dll", EntryPoint = "GetDesktopWindow", SetLastError = false)]
+        //public static extern IntPtr GetDesktopWindow();
 
         private static readonly object d3dLock = new object();
 
@@ -27,7 +27,7 @@ namespace ME3Explorer
         private static int refCount;
         private bool disposed;
 
-        public FrostyRenderImage()
+        public FrostyRenderImage(IntPtr windowPtr)
         {
             lock (d3dLock)
             {
@@ -45,12 +45,11 @@ namespace ME3Explorer
                             BackBufferFormat = D3D9.Format.Unknown,
                             BackBufferHeight = 1,
                             BackBufferWidth = 1,
-
-                            DeviceWindowHandle = GetDesktopWindow()
+                            DeviceWindowHandle = windowPtr
                         };
 
                         device = new D3D9.Device(d3d9, 0, D3D9.DeviceType.Hardware, IntPtr.Zero,
-                            D3D9.CreateFlags.HardwareVertexProcessing | D3D9.CreateFlags.Multithreaded | D3D9.CreateFlags.FpuPreserve, pp);
+                            D3D9.CreateFlags.HardwareVertexProcessing | D3D9.CreateFlags.FpuPreserve, pp);
                     }
                     catch (Exception e)
                     {
@@ -77,7 +76,7 @@ namespace ME3Explorer
                 using (SharpDX.DXGI.Resource resource = texture.QueryInterface<SharpDX.DXGI.Resource>())
                 {
                     IntPtr handle = resource.SharedHandle;
-                    backBuffer = new D3D9.Texture(device, texture.Description.Width, texture.Description.Height, 1, D3D9.Usage.RenderTarget, D3D9.Format.A8R8G8B8, D3D9.Pool.Default, ref handle);
+                    backBuffer = new D3D9.Texture(device, texture.Description.Width, texture.Description.Height, 1, D3D9.Usage.RenderTarget, D3D9.Format.A8B8G8R8, D3D9.Pool.Default, ref handle);
 
                     if (backBuffer != null)
                     {
