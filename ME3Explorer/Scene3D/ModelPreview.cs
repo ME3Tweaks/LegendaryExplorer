@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using SharpDX;
 using SharpDX.Direct3D11;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal.BinaryConverters;
+using ME3Explorer.Unreal.Classes;
+using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
 
 
 // MODEL RENDERING OVERVIEW:
@@ -154,7 +157,7 @@ namespace ME3Explorer.Scene3D
             {
                 if (textureReference.FileRef.Game == MEGame.ME1)
                 {
-                    string baseName = textureReference.FileRef.FollowLink(textureReference.idxLink).Split('.')[0].ToUpper(); //Get package filename
+                    string baseName = textureReference.FileRef.FollowLink(textureReference.idxLink).Split('.')[0].ToUpper() + ".upk"; //Get package filename
                     var gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
                     var file = gameFiles[baseName]; //this should be in a try catch
                     using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(file))
@@ -235,8 +238,8 @@ namespace ME3Explorer.Scene3D
             //}
             //else
             //{
-                Debug.WriteLine("[TEXLOAD]: Could not find texture \"" + FullTextureName + "\", imported in \"" + ImportPCC + "\".");
-                return null;
+            Debug.WriteLine("[TEXLOAD]: Could not find texture \"" + FullTextureName + "\", imported in \"" + ImportPCC + "\".");
+            return null;
             //}
         }
     }
@@ -309,28 +312,83 @@ namespace ME3Explorer.Scene3D
         public Dictionary<string, ModelPreviewMaterial> Materials;
 
         /// <summary>
-        /// Creates a preview of the given <see cref="Unreal.Classes.StaticMesh"/>.
+        /// Creates a preview of the given <see cref="StaticMesh"/>.
         /// </summary>
         /// <param name="Device">The Direct3D device to use for buffer creation.</param>
         /// <param name="m">The mesh to generate a preview for.</param>
         /// <param name="texcache">The texture cache for loading textures.</param>
-        public ModelPreview(Device Device, Unreal.Classes.StaticMesh m, PreviewTextureCache texcache)
+        public ModelPreview(Device Device, StaticMesh m, int selectedLOD, PreviewTextureCache texcache)
         {
             // STEP 1: MESH
             List<Triangle> triangles = new List<Triangle>();
             List<WorldVertex> vertices = new List<WorldVertex>();
             // Gather all the vertex data
             // Only one LOD? odd but I guess that's just how it rolls.
-            for (int i = 0; i < m.Mesh.Vertices.Points.Count; i++)
+
+            var lodModel = m.LODModels[selectedLOD];
+            for (int i = 0; i < lodModel.NumVertices; i++)
             {
-                // Note the reversal of the Z and Y coordinates. Unreal seems to think that Z should be up.
-                vertices.Add(new Scene3D.WorldVertex(new SharpDX.Vector3(-m.Mesh.Vertices.Points[i].X, m.Mesh.Vertices.Points[i].Z, m.Mesh.Vertices.Points[i].Y), SharpDX.Vector3.Zero, new SharpDX.Vector2(m.Mesh.Edges.UVSet[i].UVs[0].X, m.Mesh.Edges.UVSet[i].UVs[0].Y)));
+                var v = lodModel.PositionVertexBuffer.VertexData[i];
+                if (lodModel.VertexBuffer.bUseFullPrecisionUVs)
+                {
+                    var uvVector = lodModel.VertexBuffer.VertexData[i].FullPrecisionUVs;
+                    //SharpDX takes items differently than unreal.
+                    vertices.Add(new Scene3D.WorldVertex(new SharpDX.Vector3(-v.X, v.Z, v.Y), SharpDX.Vector3.Zero, new SharpDX.Vector2(uvVector[0].X, uvVector[0].Y)));
+                }
+                else
+                {
+                    var uvVector = lodModel.VertexBuffer.VertexData[i].HalfPrecisionUVs;
+                    //SharpDX takes items differently than unreal.
+                    vertices.Add(new Scene3D.WorldVertex(new SharpDX.Vector3(-v.X, v.Z, v.Y), SharpDX.Vector3.Zero, new SharpDX.Vector2(uvVector[0].X, uvVector[0].Y)));
+                }
+
+
             }
+
+            //OLD CODE
+            //for (int i = 0; i < m.L.Vertices.Points.Count; i++)
+            //{
+            //    // Note the reversal of the Z and Y coordinates. Unreal seems to think that Z should be up.
+            //    vertices.Add(new Scene3D.WorldVertex(new SharpDX.Vector3(-m.Mesh.Vertices.Points[i].X, m.Mesh.Vertices.Points[i].Z, m.Mesh.Vertices.Points[i].Y), SharpDX.Vector3.Zero, new SharpDX.Vector2(m.Mesh.Edges.UVSet[i].UVs[0].X, m.Mesh.Edges.UVSet[i].UVs[0].Y)));
+            //}
 
             // Sometimes there might not be an index buffer.
             // If there is one, use that. 
-            // Otherwise, assume that each vertex is uesd exactly once.
-            // Note that this is based on the earlier implementstion which didn't take LODs into consideration, which is odd considering that both the hit testing and the skeletalmesh class do.
+            // Otherwise, assume that each vertex is used exactly once.
+            // Note that this is based on the earlier implementation which didn't take LODs into consideration, which is odd considering that both the hit testing and the skeletalmesh class do.
+            if (lodModel.IndexBuffer.Length > 0)
+            {
+                // Hey, we have indices all set up for us. How considerate.
+                for (int i = 0; i < lodModel.IndexBuffer.Length; i += 3)
+                {
+                    triangles.Add(new Triangle(lodModel.IndexBuffer[i], lodModel.IndexBuffer[i + 1], lodModel.IndexBuffer[i + 2]));
+                }
+            }
+            else
+            {
+                // Gather all the vertex data from the raw triangles, not the Mesh.Vertices.Point list.
+                if (m.Export.Game == MEGame.ME1)
+                {
+                    var kdop = m.kDOPTreeME1ME2;
+                    for (int i = 0; i < kdop.Triangles.Length; i++)
+                    {
+                        triangles.Add(new Triangle(kdop.Triangles[i].Vertex1, kdop.Triangles[i].Vertex2, kdop.Triangles[i].Vertex3));
+                    }
+                }
+                else
+                {
+                    var kdop = m.kDOPTreeME3;
+                    for (int i = 0; i < kdop.Triangles.Length; i++)
+                    {
+                        triangles.Add(new Triangle(kdop.Triangles[i].Vertex1, kdop.Triangles[i].Vertex2, kdop.Triangles[i].Vertex3));
+                    }
+                }
+
+            }
+
+
+
+            /*
             if (m.Mesh.IdxBuf.Indexes != null && m.Mesh.IdxBuf.Indexes.Count > 0)
             {
                 // Hey, we have indices all set up for us. How considerate.
@@ -346,26 +404,69 @@ namespace ME3Explorer.Scene3D
                 {
                     triangles.Add(new Triangle((uint)m.Mesh.RawTris.RawTriangles[i].v0, (uint)m.Mesh.RawTris.RawTriangles[i].v1, (uint)m.Mesh.RawTris.RawTriangles[i].v2));
                 }
-            }
+            }*/
+
+
+            //OLD CODE
+            /* if (m.Mesh.IdxBuf.Indexes != null && m.Mesh.IdxBuf.Indexes.Count > 0)
+                        {
+                            // Hey, we have indices all set up for us. How considerate.
+                            for (int i = 0; i < m.Mesh.IdxBuf.Indexes.Count; i += 3)
+                            {
+                                triangles.Add(new Triangle(m.Mesh.IdxBuf.Indexes[i], m.Mesh.IdxBuf.Indexes[i + 1], m.Mesh.IdxBuf.Indexes[i + 2]));
+                            }
+                        }
+                        else
+                        {
+                            // Gather all the vertex data from the raw triangles, not the Mesh.Vertices.Point list.
+                            for (int i = 0; i < m.Mesh.RawTris.RawTriangles.Count; i++)
+                            {
+                                triangles.Add(new Triangle((uint)m.Mesh.RawTris.RawTriangles[i].v0, (uint)m.Mesh.RawTris.RawTriangles[i].v1, (uint)m.Mesh.RawTris.RawTriangles[i].v2));
+                            }
+                        }*/
 
             // STEP 2: MATERIALS
             Materials = new Dictionary<string, ModelPreviewMaterial>();
-            foreach (Unreal.Classes.MaterialInstanceConstant mat in m.Mesh.Mat.MatInst)
-            {
-                ModelPreviewMaterial material;
-                // TODO: pick what material class best fits based on what properties the 
-                // MaterialInstanceConstant mat has.
-                // For now, just use the default material.
-                material = new TexturedPreviewMaterial(texcache, mat);
-                AddMaterial(material.Properties["Name"], material);
-            }
+            //foreach (var v in lodModel.Elements)
+
+
+            //foreach (Unreal.Classes.MaterialInstanceConstant mat in m.Mesh.Mat.MatInst)
+            //{
+            //    ModelPreviewMaterial material;
+            //    // TODO: pick what material class best fits based on what properties the 
+            //    // MaterialInstanceConstant mat has.
+            //    // For now, just use the default material.
+            //    material = new TexturedPreviewMaterial(texcache, mat);
+            //    AddMaterial(material.Properties["Name"], material);
+            //}
 
             // STEP 3: SECTIONS
+
             List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
-            foreach (Unreal.Classes.StaticMesh.Section section in m.Mesh.Mat.Lods[0].Sections)
+            foreach (var section in lodModel.Elements)
             {
-                sections.Add(new ModelPreviewSection(m.Export.FileRef.getObjectName(section.Name), (uint)section.FirstIdx1, (uint)section.NumFaces1));
+                if (section.Material.value > 0)
+                {
+                    ModelPreviewMaterial material;
+                    // TODO: pick what material class best fits based on what properties the 
+                    // MaterialInstanceConstant mat has.
+                    // For now, just use the default material.
+                    material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(m.Export.FileRef.getUExport(section.Material.value)));
+                    AddMaterial(material.Properties["Name"], material);
+                }
+                else if (section.Material.value < 0)
+                {
+                    Debug.WriteLine("WE DON'T SUPPORT IMPORT MATERIALS");
+                }
+
+                sections.Add(new ModelPreviewSection(m.Export.FileRef.getObjectName(section.Material.value), section.FirstIndex, section.NumTriangles));
             }
+
+            //List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
+            //foreach (var section in lodModel.Elements)
+            //{
+            //    sections.Add(new ModelPreviewSection(m.Export.FileRef.getObjectName(section.Material.value), section.FirstIndex, section.NumTriangles));
+            //}
             LODs = new List<ModelPreviewLOD>();
             LODs.Add(new ModelPreviewLOD(new WorldMesh(Device, triangles, vertices), sections));
         }
@@ -475,7 +576,7 @@ namespace ME3Explorer.Scene3D
                 {
                     foreach (Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
                     {
-                        vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(vertex.UFullPrecision,vertex.VFullPrecision)));
+                        vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(vertex.UFullPrecision, vertex.VFullPrecision)));
                     }
                 }
                 else

@@ -185,7 +185,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     os.WriteInt32(0);//LightMapFlags noflag
                 }
             }
-            
+
             return os.ToArray();
         }
 
@@ -431,9 +431,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
     public abstract class ObjectBinary
     {
+        public ExportEntry Export { get; set; }
         public static T From<T>(ExportEntry export) where T : ObjectBinary, new()
         {
-            var t = new T();
+            var t = new T {Export = export};
             t.Serialize(new SerializingContainer2(new MemoryStream(export.getBinaryData()), export.FileRef, true, export.DataOffset + export.propsEnd()));
             return t;
         }

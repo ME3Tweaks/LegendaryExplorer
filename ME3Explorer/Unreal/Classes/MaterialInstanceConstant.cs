@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -27,17 +28,27 @@ namespace ME3Explorer.Unreal.Classes
 
             if (export.Game == MEGame.ME1) //todo: maybe check to see if textureparametervalues exists first, but in testing me1 didn't seem to have this
             {
-                if (export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
+                var parsedMaterial = ObjectBinary.From<Material>(export);
+                foreach (var v in parsedMaterial.SM3MaterialResource.Uniform2DTextureExpressions)
                 {
-                    foreach (var obj in textures)
+                    Textures.Add(new TextureParam
                     {
-                        Textures.Add(new TextureParam
-                        {
-                            TexIndex = obj.Value,
-                            Desc = export.FileRef.getEntry(obj.Value).GetFullPath
-                        });
-                    }
+                        TexIndex = v.TextureIndex.value,
+                        Desc = export.FileRef.getEntry(v.TextureIndex.value).GetFullPath
+                    });
                 }
+
+                //if (export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
+                //{
+                //    foreach (var obj in textures)
+                //    {
+                //        Textures.Add(new TextureParam
+                //        {
+                //            TexIndex = obj.Value,
+                //            Desc = export.FileRef.getEntry(obj.Value).GetFullPath
+                //        });
+                //    }
+                //}
             }
             else
             {

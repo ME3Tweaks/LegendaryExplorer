@@ -201,11 +201,18 @@ namespace ME3Explorer.Unreal.Classes
             {
                 Debug.WriteLine($"Boundings at 0x{aDebuggingPosition:X8}");
                 ReadBoundings(raw);
+
+                // KDOP===============
                 Debug.WriteLine($"kDOP at 0x{aDebuggingPosition:X8}");
 
                 ReadkDOPTree(raw);
                 Debug.WriteLine($"RawTris at 0x{aDebuggingPosition:X8}");
                 ReadRawTris(raw);
+
+                //END KDOP------------
+
+
+                //LOD MODELS (only reads LOD 0) ------
                 Debug.WriteLine($"Materials at 0x{aDebuggingPosition:X8}");
                 ReadMaterials(raw);
                 Debug.WriteLine($"Verts at 0x{aDebuggingPosition:X8}");

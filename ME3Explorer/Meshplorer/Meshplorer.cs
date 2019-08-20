@@ -14,7 +14,11 @@ using Be.Windows.Forms;
 using ME3Explorer.Scene3D;
 using System.Globalization;
 using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal.BinaryConverters;
 using StreamHelpers;
+using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
+
+//using StaticMesh = ME3Explorer.Unreal.Classes.StaticMesh;
 
 namespace ME3Explorer.Meshplorer
 {
@@ -170,19 +174,19 @@ namespace ME3Explorer.Meshplorer
         {
             try
             {
-                stm = new StaticMesh(Pcc.getUExport(index));
-
+                stm = ObjectBinary.From<StaticMesh>(Pcc.getUExport(index));
+                //var mesh = ObjectBinary.From <StaticMesh>(Pcc.getUExport(index));
                 // Load meshes for the LODs
                 preview?.Dispose();
-                preview = new ModelPreview(view.Device, stm, view.TextureCache);
+                preview = new ModelPreview(view.Device, stm, 0, view.TextureCache);
                 RefreshChosenMaterialsList();
                 CenterView();
 
                 // Update treeview
                 treeView1.BeginUpdate();
                 treeView1.Nodes.Clear();
-                treeView1.Nodes.Add(stm.ToTree());
-                treeView1.Nodes[0].Expand();
+                //treeView1.Nodes.Add(stm.ToTree());
+                //treeView1.Nodes[0].Expand();
                 treeView1.EndUpdate();
                 MaterialBox.Visible = false;
                 MaterialApplyButton.Visible = false;
@@ -290,7 +294,8 @@ namespace ME3Explorer.Meshplorer
                 d.Filter = "*.psk|*.psk";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
-                    stm.ExportPSK(d.FileName);
+                    //DISABLED TEMP
+                    //stm.ExportPSK(d.FileName);
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
@@ -338,7 +343,8 @@ namespace ME3Explorer.Meshplorer
                 d.FileName = Pcc.getUExport(n).ObjectName + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
-                    stm.SerializeToFile(d.FileName);
+                    //DISABLED TEMP
+                    //stm.SerializeToFile(d.FileName);
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
@@ -383,11 +389,13 @@ namespace ME3Explorer.Meshplorer
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     timer1.Enabled = false;
-                    stm.ImportPSK(d.FileName);
-                    byte[] buff = stm.SerializeToBuffer();
-                    int idx = n;
-                    ExportEntry en = Pcc.getUExport(idx);
-                    en.Data = buff;
+                    //DISABLED TEMP
+
+                    //stm.ImportPSK(d.FileName);
+                    //byte[] buff = stm.SerializeToBuffer();
+                    //int idx = n;
+                    //ExportEntry en = Pcc.getUExport(idx);
+                    //en.Data = buff;
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                     timer1.Enabled = true;
                 }
@@ -533,7 +541,8 @@ namespace ME3Explorer.Meshplorer
                 {
                     if (File.Exists(d.FileName))
                         File.Delete(d.FileName);
-                    stm.ExportPSK(d.FileName);
+                    //DISABLED TEMP
+                    // stm.ExportPSK(d.FileName);
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
@@ -612,10 +621,12 @@ namespace ME3Explorer.Meshplorer
                     MaterialApplyButton.Visible = true;
                     // HACK: assume that all static meshes have only 1 LOD. This has been true in my experience.
                     int section = t.Index;
-                    int mat = stm.Mesh.Mat.Lods[0].Sections[section].Name - 1;
-                    for (int i = 0; i < Materials.Count; i++)
-                        if (Materials[i] == mat)
-                            MaterialBox.SelectedIndex = i;
+                    //DISABLED TEMP
+
+                    //int mat = stm.Mesh.Mat.Lods[0].Sections[section].Name - 1;
+                    //for (int i = 0; i < Materials.Count; i++)
+                    //    if (Materials[i] == mat)
+                    //        MaterialBox.SelectedIndex = i;
                 }
             }
         }
@@ -745,16 +756,23 @@ namespace ME3Explorer.Meshplorer
 
             if (stm != null && t.Parent.Text == "Sections")
             {
-                stm.SetSectionMaterial(CurrentLOD, t.Index, Materials[n] + 1);
+                //DISABLED TEMP
+
+                //stm.SetSectionMaterial(CurrentLOD, t.Index, Materials[n] + 1);
+
+
                 //SerializingCont
                 //                MemoryStream ms = new MemoryStream();
                 //              Pcc.Exports[stm.index].Data = stm.SerializeToBuffer();
-                stm.Export.Data = stm.SerializeToBuffer(); //hope this works
+
+
+                //DISABLED TEMP
+                //stm.Export.Data = stm.SerializeToBuffer(); //hope this works
                 // Update treeview
 
                 // Update preview
                 preview.Dispose();
-                preview = new ModelPreview(view.Device, stm, view.TextureCache);
+                preview = new ModelPreview(view.Device, stm, 0, view.TextureCache);
             }
             else if (skm != null && t.Parent.Text == "Materials")
             {
@@ -1075,7 +1093,8 @@ namespace ME3Explorer.Meshplorer
             {
                 if (stm != null)
                 {
-                    stm.ExportOBJ(dialog.FileName);
+                    //DISABLED TEMP
+                    //stm.ExportOBJ(dialog.FileName);
                 }
                 else if (skm != null)
                 {
@@ -1098,8 +1117,9 @@ namespace ME3Explorer.Meshplorer
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 timer1.Enabled = false;
-                stm.ImportOBJ(dialog.FileName);
-                stm.Export.Data = stm.SerializeToBuffer();
+                //DISABLED TEMP
+                //stm.ImportOBJ(dialog.FileName);
+                //stm.Export.Data = stm.SerializeToBuffer();
                 MessageBox.Show("OBJ import complete.");
                 timer1.Enabled = true;
             }
