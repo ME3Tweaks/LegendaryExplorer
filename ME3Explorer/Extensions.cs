@@ -610,6 +610,10 @@ namespace ME3Explorer
         public static string ReadUnrealString(this Stream stream)
         {
             int length = stream.ReadInt32();
+            if (length == 0)
+            {
+                return "";
+            }
             return length < 0 ? stream.ReadStringUnicodeNull(length * -2) : stream.ReadStringASCIINull(length);
         }
 
@@ -627,13 +631,20 @@ namespace ME3Explorer
 
         public static void WriteUnrealStringASCII(this Stream stream, string value)
         {
-            stream.WriteInt32(value.Length + 1);
-            stream.WriteStringASCIINull(value);
+            if (value?.Length > 0)
+            {
+                stream.WriteInt32(value.Length + 1);
+                stream.WriteStringASCIINull(value);
+            }
+            else
+            {
+                stream.WriteInt32(0);
+            }
         }
 
         public static void WriteUnrealStringUnicode(this Stream stream, string value)
         {
-            if (value.Length > 0)
+            if (value?.Length > 0)
             {
                 stream.WriteInt32(-(value.Length + 1));
                 stream.WriteStringUnicodeNull(value);

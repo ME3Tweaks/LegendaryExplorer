@@ -32,6 +32,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 case "MaterialInstanceConstant":
                 case "MaterialInstanceTimeVarying":
                     return From<MaterialInstance>(export);
+                case "StaticMesh":
+                    return From<StaticMesh>(export);
                 case "Level":
                     return new GenericObjectBinary(ConvertLevel(export, newGame));
                 case "Model":
@@ -149,9 +151,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         texture = new byte[0];
                         break;
                     default:
-                        storageType = StorageTypes.pccUnc;
-                        texture = EmbeddedTextureViewer.GetTextureData(mips[i]); //copy in external textures as pccUnc
-                        uncompressedSize = compressedSize = texture.Length;
+                        storageType &= (StorageTypes)~StorageFlags.externalFile;
+                        texture = EmbeddedTextureViewer.GetTextureData(mips[i], false); //copy in external textures
                         break;
 
                 }
@@ -433,17 +434,14 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public static T From<T>(ExportEntry export) where T : ObjectBinary, new()
         {
             var t = new T();
-            t.Serialize(new SerializingContainer2(new MemoryStream(export.getBinaryData()), export.FileRef, true));
+            t.Serialize(new SerializingContainer2(new MemoryStream(export.getBinaryData()), export.FileRef, true, export.DataOffset + export.propsEnd()));
             return t;
         }
         protected abstract void Serialize(SerializingContainer2 sc);
 
-        public virtual byte[] Write(IMEPackage pcc)
+        public virtual void WriteTo(Stream ms, IMEPackage pcc, int fileOffset)
         {
-            var ms = new MemoryStream();
-            Serialize(new SerializingContainer2(ms, pcc));
-
-            return ms.ToArray();
+            Serialize(new SerializingContainer2(ms, pcc, false, fileOffset));
         }
     }
 
@@ -460,9 +458,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
         {
             data = sc.ms.ReadFully();
         }
-        public override byte[] Write(IMEPackage pcc)
+        public override void WriteTo(Stream ms, IMEPackage pcc, int fileOffset)
         {
-            return data;
+            ms.WriteFromBuffer(data);
         }
     }
 

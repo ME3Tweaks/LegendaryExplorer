@@ -72,15 +72,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public int unkCount
         {
             get => unkList?.Length ?? 0;
-            set
-            {
-                var tmp = new (int, float, int)[value];
-                if (unkList != null)
-                {
-                    Array.Copy(tmp, unkList, Math.Min(value, unkList.Length));
-                }
-                unkList = tmp;
-            }
+            set => Array.Resize(ref unkList, value);
         }
         public int unkInt2;
         public (int, float, int)[] unkList;
@@ -346,52 +338,52 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
     public static class MaterialSCExt
     {
-        public static void Serialize(this SerializingContainer2 sc, ref MaterialResource mr)
+        public static void Serialize(this SerializingContainer2 sc, ref MaterialResource mres)
         {
             if (sc.IsLoading)
             {
-                mr = new MaterialResource();
+                mres = new MaterialResource();
             }
-            sc.Serialize(ref mr.CompileErrors, SCExt.Serialize);
-            sc.Serialize(ref mr.TextureDependencyLengthMap, UnrealStructSCExt.Serialize, SCExt.Serialize);
-            sc.Serialize(ref mr.MaxTextureDependencyLength);
-            sc.Serialize(ref mr.ID);
-            sc.Serialize(ref mr.NumUserTexCoords);
+            sc.Serialize(ref mres.CompileErrors, SCExt.Serialize);
+            sc.Serialize(ref mres.TextureDependencyLengthMap, UnrealStructSCExt.Serialize, SCExt.Serialize);
+            sc.Serialize(ref mres.MaxTextureDependencyLength);
+            sc.Serialize(ref mres.ID);
+            sc.Serialize(ref mres.NumUserTexCoords);
             if (sc.Game == MEGame.ME3)
             {
-                sc.Serialize(ref mr.UniformExpressionTextures);
+                sc.Serialize(ref mres.UniformExpressionTextures);
             }
             else
             {
-                sc.Serialize(ref mr.UniformPixelVectorExpressions, Serialize);
-                sc.Serialize(ref mr.UniformPixelScalarExpressions, Serialize);
-                sc.Serialize(ref mr.Uniform2DTextureExpressions, Serialize);
-                sc.Serialize(ref mr.UniformCubeTextureExpressions, Serialize);
+                sc.Serialize(ref mres.UniformPixelVectorExpressions, Serialize);
+                sc.Serialize(ref mres.UniformPixelScalarExpressions, Serialize);
+                sc.Serialize(ref mres.Uniform2DTextureExpressions, Serialize);
+                sc.Serialize(ref mres.UniformCubeTextureExpressions, Serialize);
             }
-            sc.Serialize(ref mr.bUsesSceneColor);
-            sc.Serialize(ref mr.bUsesSceneDepth);
+            sc.Serialize(ref mres.bUsesSceneColor);
+            sc.Serialize(ref mres.bUsesSceneDepth);
             if (sc.Game == MEGame.ME3)
             {
-                sc.Serialize(ref mr.bUsesDynamicParameter);
-                sc.Serialize(ref mr.bUsesLightmapUVs);
-                sc.Serialize(ref mr.bUsesMaterialVertexPositionOffset);
-                sc.Serialize(ref mr.unkBool1);
+                sc.Serialize(ref mres.bUsesDynamicParameter);
+                sc.Serialize(ref mres.bUsesLightmapUVs);
+                sc.Serialize(ref mres.bUsesMaterialVertexPositionOffset);
+                sc.Serialize(ref mres.unkBool1);
             }
-            sc.Serialize(ref mr.UsingTransforms);
-            sc.Serialize(ref mr.TextureLookups, Serialize);
+            sc.Serialize(ref mres.UsingTransforms);
+            sc.Serialize(ref mres.TextureLookups, Serialize);
             int dummy = 0;
             sc.Serialize(ref dummy);
             if (sc.Game == MEGame.ME1)
             {
-                int tmp = mr.unkCount;
+                int tmp = mres.unkCount;
                 sc.Serialize(ref tmp);
-                mr.unkCount = tmp; //will create mr.unkList of unkCount size
-                sc.Serialize(ref mr.unkInt2);
-                for (int i = 0; i < mr.unkCount; i++)
+                mres.unkCount = tmp; //will create mr.unkList of unkCount size
+                sc.Serialize(ref mres.unkInt2);
+                for (int i = 0; i < mres.unkCount; i++)
                 {
-                    sc.Serialize(ref mr.unkList[i].Item1);
-                    sc.Serialize(ref mr.unkList[i].Item2);
-                    sc.Serialize(ref mr.unkList[i].Item3);
+                    sc.Serialize(ref mres.unkList[i].Item1);
+                    sc.Serialize(ref mres.unkList[i].Item2);
+                    sc.Serialize(ref mres.unkList[i].Item3);
                 }
             }
         }

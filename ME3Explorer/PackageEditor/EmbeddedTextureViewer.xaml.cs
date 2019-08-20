@@ -211,9 +211,9 @@ namespace ME3Explorer
             }
         }
 
-        public static byte[] GetTextureData(Texture2DMipInfo mipToLoad)
+        public static byte[] GetTextureData(Texture2DMipInfo mipToLoad, bool decompress = true)
         {
-            var imagebytes = new byte[mipToLoad.uncompressedSize];
+            var imagebytes = new byte[decompress ? mipToLoad.uncompressedSize : mipToLoad.compressedSize];
 
             if (mipToLoad.storageType == StorageTypes.pccUnc)
             {
@@ -221,15 +221,22 @@ namespace ME3Explorer
             }
             else if (mipToLoad.storageType == StorageTypes.pccLZO || mipToLoad.storageType == StorageTypes.pccZlib)
             {
-                try
+                if (decompress)
                 {
-                    TextureCompression.DecompressTexture(imagebytes,
-                                         new MemoryStream(mipToLoad.Export.Data, mipToLoad.localExportOffset, mipToLoad.compressedSize),
-                                         mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
+                    try
+                    {
+                        TextureCompression.DecompressTexture(imagebytes,
+                                                             new MemoryStream(mipToLoad.Export.Data, mipToLoad.localExportOffset, mipToLoad.compressedSize),
+                                                             mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception($"{e.Message}\nStorageType: {mipToLoad.storageType}\n");
+                    }
                 }
-                catch (Exception e)
+                else
                 {
-                    throw new Exception($"{e.Message}\nStorageType: {mipToLoad.storageType}\n");
+                    Buffer.BlockCopy(mipToLoad.Export.Data, mipToLoad.localExportOffset, imagebytes, 0, mipToLoad.compressedSize);
                 }
             }
             else if (mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib)
@@ -280,18 +287,25 @@ namespace ME3Explorer
                             fs.Seek(mipToLoad.externalOffset, SeekOrigin.Begin);
                             if (mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib)
                             {
-                                using (MemoryStream tmpStream = new MemoryStream(fs.ReadBytes(mipToLoad.compressedSize)))
+                                if (decompress)
                                 {
-                                    try
+                                    using (MemoryStream tmpStream = new MemoryStream(fs.ReadBytes(mipToLoad.compressedSize)))
                                     {
-                                        TextureCompression.DecompressTexture(imagebytes, tmpStream, mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
+                                        try
+                                        {
+                                            TextureCompression.DecompressTexture(imagebytes, tmpStream, mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            throw new Exception(e.Message + "\n" + "File: " + filename + "\n" +
+                                                                "StorageType: " + mipToLoad.storageType + "\n" +
+                                                                "External file offset: " + mipToLoad.externalOffset);
+                                        }
                                     }
-                                    catch (Exception e)
-                                    {
-                                        throw new Exception(e.Message + "\n" + "File: " + filename + "\n" +
-                                            "StorageType: " + mipToLoad.storageType + "\n" +
-                                            "External file offset: " + mipToLoad.externalOffset);
-                                    }
+                                }
+                                else
+                                {
+                                    fs.Read(imagebytes, 0, mipToLoad.compressedSize);
                                 }
                             }
                             else

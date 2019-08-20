@@ -140,19 +140,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public float W;
     }
 
-    public class LightmassPrimitiveSettings
-    {
-        public bool bUseTwoSidedLighting;
-        public bool bShadowIndirectOnly;
-        public float FullyOccludedSamplesFraction;
-        public bool bUseEmissiveForStaticLighting;
-        public float EmissiveLightFalloffExponent;
-        public float EmissiveLightExplicitInfluenceRadius;
-        public float EmissiveBoost;
-        public float DiffuseBoost;
-        public float SpecularBoost;
-    }
-
     public static class UnrealStructSCExt
     {
         public static void Serialize(this SerializingContainer2 sc, ref UIndex uidx)
@@ -258,22 +245,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
             sc.Serialize(ref sphere.Center);
             sc.Serialize(ref sphere.W);
-        }
-        public static void Serialize(this SerializingContainer2 sc, ref LightmassPrimitiveSettings lps)
-        {
-            if (sc.IsLoading)
-            {
-                lps = new LightmassPrimitiveSettings();
-            }
-            sc.Serialize(ref lps.bUseTwoSidedLighting);
-            sc.Serialize(ref lps.bShadowIndirectOnly);
-            sc.Serialize(ref lps.FullyOccludedSamplesFraction);
-            sc.Serialize(ref lps.bUseEmissiveForStaticLighting);
-            sc.Serialize(ref lps.EmissiveLightFalloffExponent);
-            sc.Serialize(ref lps.EmissiveLightExplicitInfluenceRadius);
-            sc.Serialize(ref lps.EmissiveBoost);
-            sc.Serialize(ref lps.DiffuseBoost);
-            sc.Serialize(ref lps.SpecularBoost);
         }
         public static void Serialize(this SerializingContainer2 sc, ref Vector[] arr)
         {

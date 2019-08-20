@@ -953,9 +953,15 @@ namespace ME3Explorer.Packages
                 //write back properties in new format
                 propCollections[i]?.WriteTo(newData, this);
 
-                newData.WriteFromBuffer(postPropBinary[i].Write(this));
+                postPropBinary[i].WriteTo(newData, this, exports[i].DataOffset); //should do this again during Save to get offsets correct
+                                                                                    //might not matter though
 
                 exports[i].Data = newData.ToArray();
+            }
+
+            foreach (ExportEntry texport in exports.Where(exp => exp.IsTexture()))
+            {
+                texport.WriteProperty(new BoolProperty(true, "NeverStream"));
             }
 
             if (oldGame == MEGame.ME1 && newGame != MEGame.ME1)

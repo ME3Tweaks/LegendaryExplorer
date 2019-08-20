@@ -7779,6 +7779,7 @@ namespace ME3Explorer
                     subnodes.Add(MakeUInt32Node(bin, "unk"));
                     subnodes.Add(MakeUInt32Node(bin, "unk"));
                     subnodes.Add(MakeUInt32Node(bin, "unk"));
+                    subnodes.Add(MakeUInt32Node(bin, "unk"));
                 }
                 else
                 {

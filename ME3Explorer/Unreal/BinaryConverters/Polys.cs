@@ -10,84 +10,117 @@ namespace ME3Explorer.Unreal.BinaryConverters
 {
     public sealed class Polys : ObjectBinary
     {
-        public class Poly
+        public int PolyCount
         {
-            public Vector Base;
-            public Vector Normal;
-            public Vector TextureU;
-            public Vector TextureV;
-            public Vector[] Vertices;
-            public int PolyFlags;
-            public UIndex Actor;
-            public NameReference ItemName;
-            public UIndex Material;
-            public int iLink;
-            public int iBrushPoly;
-            public float ShadowMapScale;
-            public int LightingChannels;
-            public LightmassPrimitiveSettings LightmassSettings; //ME3 only
-            public NameReference RulesetVariation; //ME3 only
+            get => Elements?.Length ?? 0;
+            set => Array.Resize(ref Elements, value);
         }
-
-        public int PolyCount;
         public int PolyMax;
         public UIndex Owner;
         public Poly[] Elements;
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            if (!sc.IsLoading)
-            {
-                PolyCount = Elements.Length;
-            }
-            sc.Serialize(ref PolyCount);
+            int polyCount = PolyCount;
+            sc.Serialize(ref polyCount);
+            PolyCount = polyCount;
             sc.Serialize(ref PolyMax);
             sc.Serialize(ref Owner);
-            if (sc.IsLoading)
-            {
-                Elements = new Poly[PolyCount];
-            }
 
             for (int i = 0; i < PolyCount; i++)
             {
-                if (sc.IsLoading)
-                {
-                    Elements[i] = new Poly();
-                }
-                var poly = Elements[i];
-
-                sc.Serialize(ref poly.Base);
-                sc.Serialize(ref poly.Normal);
-                sc.Serialize(ref poly.TextureU);
-                sc.Serialize(ref poly.TextureV);
-                sc.Serialize(ref poly.Vertices);
-                sc.Serialize(ref poly.PolyFlags);
-                sc.Serialize(ref poly.Actor);
-                sc.Serialize(ref poly.ItemName);
-                sc.Serialize(ref poly.Material);
-                sc.Serialize(ref poly.iLink);
-                sc.Serialize(ref poly.iBrushPoly);
-                sc.Serialize(ref poly.ShadowMapScale);
-                sc.Serialize(ref poly.LightingChannels);
-                if (sc.Game == MEGame.ME3)
-                {
-                    sc.Serialize(ref poly.LightmassSettings);
-                    sc.Serialize(ref poly.RulesetVariation);
-                }
-                else if(sc.IsLoading)
-                {
-                    //defaults that won't break the lighting completely
-                    poly.LightmassSettings = new LightmassPrimitiveSettings
-                    {
-                        FullyOccludedSamplesFraction = 1,
-                        EmissiveLightFalloffExponent = 2,
-                        DiffuseBoost = 1,
-                        EmissiveBoost = 1,
-                        SpecularBoost = 1,
-                    };
-                    poly.RulesetVariation = "None";
-                }
+                sc.Serialize(ref Elements[i]);
             }
         }
+    }
+    public class Poly
+    {
+        public Vector Base;
+        public Vector Normal;
+        public Vector TextureU;
+        public Vector TextureV;
+        public Vector[] Vertices;
+        public int PolyFlags;
+        public UIndex Actor;
+        public NameReference ItemName;
+        public UIndex Material;
+        public int iLink;
+        public int iBrushPoly;
+        public float ShadowMapScale;
+        public int LightingChannels;
+        public LightmassPrimitiveSettings LightmassSettings; //ME3 only
+        public NameReference RulesetVariation; //ME3 only
+    }
+
+    public class LightmassPrimitiveSettings
+    {
+        public bool bUseTwoSidedLighting;
+        public bool bShadowIndirectOnly;
+        public float FullyOccludedSamplesFraction;
+        public bool bUseEmissiveForStaticLighting;
+        public float EmissiveLightFalloffExponent;
+        public float EmissiveLightExplicitInfluenceRadius;
+        public float EmissiveBoost;
+        public float DiffuseBoost;
+        public float SpecularBoost;
+    }
+
+    static class PolysSCExt
+    {
+        public static void Serialize(this SerializingContainer2 sc, ref LightmassPrimitiveSettings lps)
+        {
+            if (sc.IsLoading)
+            {
+                lps = new LightmassPrimitiveSettings();
+            }
+            sc.Serialize(ref lps.bUseTwoSidedLighting);
+            sc.Serialize(ref lps.bShadowIndirectOnly);
+            sc.Serialize(ref lps.FullyOccludedSamplesFraction);
+            sc.Serialize(ref lps.bUseEmissiveForStaticLighting);
+            sc.Serialize(ref lps.EmissiveLightFalloffExponent);
+            sc.Serialize(ref lps.EmissiveLightExplicitInfluenceRadius);
+            sc.Serialize(ref lps.EmissiveBoost);
+            sc.Serialize(ref lps.DiffuseBoost);
+            sc.Serialize(ref lps.SpecularBoost);
+        }
+        public static void Serialize(this SerializingContainer2 sc, ref Poly poly)
+        {
+            if (sc.IsLoading)
+            {
+                poly = new Poly();
+            }
+            sc.Serialize(ref poly.Base);
+            sc.Serialize(ref poly.Normal);
+            sc.Serialize(ref poly.TextureU);
+            sc.Serialize(ref poly.TextureV);
+            sc.Serialize(ref poly.Vertices);
+            sc.Serialize(ref poly.PolyFlags);
+            sc.Serialize(ref poly.Actor);
+            sc.Serialize(ref poly.ItemName);
+            sc.Serialize(ref poly.Material);
+            sc.Serialize(ref poly.iLink);
+            sc.Serialize(ref poly.iBrushPoly);
+            sc.Serialize(ref poly.ShadowMapScale);
+            sc.Serialize(ref poly.LightingChannels);
+            if (sc.Game == MEGame.ME3)
+            {
+                sc.Serialize(ref poly.LightmassSettings);
+                sc.Serialize(ref poly.RulesetVariation);
+            }
+            else if (sc.IsLoading)
+            {
+                //defaults that won't break the lighting completely
+                poly.LightmassSettings = new LightmassPrimitiveSettings
+                {
+                    FullyOccludedSamplesFraction = 1,
+                    EmissiveLightFalloffExponent = 2,
+                    DiffuseBoost = 1,
+                    EmissiveBoost = 1,
+                    SpecularBoost = 1,
+                };
+                poly.RulesetVariation = "None";
+            }
+        }
+
     }
 }

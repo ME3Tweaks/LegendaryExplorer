@@ -14,16 +14,22 @@ namespace ME3Explorer
 {
     public class SerializingContainer2
     {
-        public Stream ms;
-        public bool IsLoading;
-        public IMEPackage Pcc;
+        public readonly Stream ms;
+        public readonly bool IsLoading;
+        public readonly IMEPackage Pcc;
+        private readonly int startOffset;
+
+        public bool IsSaving => !IsLoading;
+
+        public int FileOffset => startOffset + (int)ms.Position;
         public MEGame Game => Pcc.Game;
 
-        public SerializingContainer2(Stream stream, IMEPackage pcc, bool isLoading = false)
+        public SerializingContainer2(Stream stream, IMEPackage pcc, bool isLoading = false, int offset = 0)
         {
             ms = stream;
             IsLoading = isLoading;
             Pcc = pcc;
+            startOffset = offset;
         }
     }
 

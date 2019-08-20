@@ -9,33 +9,12 @@ using StreamHelpers;
 
 namespace ME3Explorer.Unreal.BinaryConverters
 {
-    /*
-        PersistentLevel: ULevel*
-        #IF ME3
-        PersistentFaceFXAnimSet: UFaceFXAnimSet*
-        #ENDIF
-        EditorViews[4] : FLevelViewportInfo
-	        CamPosition: FVector
-		        X: float
-		        Y: float
-		        Z: float
-	        CamRotation: FRotator
-		        Pitch: int
-		        Yaw: int
-		        Roll: int
-	        CamOrthoZoom: float
-        SaveGameSummary_DEPRECATED: UDEPRECATED_SaveGameSummary*
-        #IF ME1
-        DecalManager: UObject*
-        #ENDIF
-        ExtraReferencedObjects: TArray<UObject*>
-     */
     public sealed class World : ObjectBinary
     {
         private UIndex PersistentLevel;
-        private UIndex PersistentFaceFXAnimSet;
-        private byte[] EditorViews; //112
-        private UIndex DecalManager;
+        private UIndex PersistentFaceFXAnimSet; //ME3
+        private readonly LevelViewportInfo[] EditorViews = new LevelViewportInfo[4];
+        private UIndex DecalManager; //ME1
         private UIndex[] ExtraReferencedObjects;
 
         protected override void Serialize(SerializingContainer2 sc)
@@ -45,7 +24,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 sc.Serialize(ref PersistentFaceFXAnimSet);
             }
-            sc.Serialize(ref EditorViews, 112);
+
+            for (int i = 0; i < 4; i++)
+            {
+
+                sc.Serialize(ref EditorViews[i]);
+            }
             int dummy = 0;
             sc.Serialize(ref dummy);
             if (sc.Game == MEGame.ME1)
@@ -54,6 +38,27 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
 
             sc.Serialize(ref ExtraReferencedObjects);
+        }
+    }
+
+    public class LevelViewportInfo
+    {
+        public Vector CamPosition;
+        public Rotator CamRotation;
+        public float CamOrthoZoom;
+    }
+
+    static class WorldSCExt
+    {
+        public static void Serialize(this SerializingContainer2 sc, ref LevelViewportInfo info)
+        {
+            if (sc.IsLoading)
+            {
+                info = new LevelViewportInfo();
+            }
+            sc.Serialize(ref info.CamPosition);
+            sc.Serialize(ref info.CamRotation);
+            sc.Serialize(ref info.CamOrthoZoom);
         }
     }
 }
