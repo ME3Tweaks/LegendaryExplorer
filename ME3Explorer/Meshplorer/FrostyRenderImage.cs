@@ -15,7 +15,7 @@ namespace ME3Explorer
     public class FrostyRenderImage : D3DImage, IDisposable
     {
         [DllImport("user32.dll", EntryPoint = "GetDesktopWindow", SetLastError = false)]
-        static extern IntPtr GetDesktopWindow();
+        public static extern IntPtr GetDesktopWindow();
 
         private static readonly object d3dLock = new object();
 

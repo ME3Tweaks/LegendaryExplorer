@@ -9,6 +9,7 @@
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
                xmlns:fa="http://schemas.fontawesome.com/icons/"
+               xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
                mc:Ignorable="d"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
@@ -131,7 +132,7 @@
                     <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch"/>
                     <local:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter" Grid.Row="2"/>
                 </Grid>
-
+                <meshplorer:MeshRendererWPF x:Name="Mesh3DViewer" Grid.Column="4"/>
                 <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectionChanged="MeshExportsList_SelectionChanged">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type packages:ExportEntry}">

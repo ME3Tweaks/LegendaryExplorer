@@ -122,6 +122,9 @@
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
+    <Reference Include="NAudio, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.9.0\lib\net35\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -1343,10 +1346,6 @@
     <ProjectReference Include="..\HexConverterWPF\HexConverterWPF.csproj">
       <Project>{947a6918-ad71-4f61-bc63-8da7997e10e6}</Project>
       <Name>HexConverterWPF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NAudio\NAudio.csproj">
-      <Project>{da4f02e3-0b5e-42cd-b8d9-5583fa51d66e}</Project>
-      <Name>NAudio</Name>
     </ProjectReference>
     <ProjectReference Include="..\Piccolo\Piccolo.csproj">
       <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>
