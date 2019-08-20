@@ -15,7 +15,7 @@
         AllowDrop="True"
         Closing="MeshplorerWPF_Closing"
         Icon="/Resources/meshplorer_256x256.ico"
-        Title="Meshplorer WPF" Height="550" Width="800">
+        Title="Meshplorer WPF" Height="550" Width="1200">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
@@ -59,15 +59,17 @@
                     <ColumnDefinition MinWidth="250" Width="250"/>
                     <ColumnDefinition MinWidth="5" MaxWidth="5"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition MinWidth="5" MaxWidth="5"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
-                <StackPanel Grid.Column="2">
-                    <TextBlock Margin="5" Text="Welcome to Meshplorer WPF, the rewritten version of Meshplorer" FontWeight="Bold"/>
-                    <TextBlock Margin="5">
+                <StackPanel Grid.Column="2" Grid.ColumnSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                    <TextBlock Margin="5" Text="Welcome to Meshplorer WPF, the rewritten version of Meshplorer" FontWeight="Bold" TextWrapping="Wrap"/>
+                    <TextBlock Margin="5" TextWrapping="Wrap">
                             Meshplorer WPF is a bit different from the classic Meshplorer.
                                 <LineBreak/>
                                 Indexes are done strictly by UIndex, which is how they appear in game code. 
@@ -92,7 +94,7 @@
                                 </Hyperlink>
                     </TextBlock>
 
-                    <Grid HorizontalAlignment="Left" Margin="20" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                    <Grid HorizontalAlignment="Left" Margin="20">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
@@ -119,8 +121,18 @@
                     </Grid>
                 </StackPanel>
 
+                <Grid Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition MinHeight="5" MaxHeight="5" Height="5"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <local:InterpreterWPF x:Name="InterpreterTab_Interpreter"/>
+                    <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch"/>
+                    <local:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter" Grid.Row="2"/>
+                </Grid>
 
-                <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}">
+                <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectionChanged="MeshExportsList_SelectionChanged">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type packages:ExportEntry}">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">

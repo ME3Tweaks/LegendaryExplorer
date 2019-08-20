@@ -25,6 +25,9 @@ namespace ME3Explorer
         public List<string> RFiles;
         readonly List<Button> RecentButtons = new List<Button>();
         public ObservableCollectionExtended<ExportEntry> MeshExports { get; } = new ObservableCollectionExtended<ExportEntry>();
+        private ExportEntry CurrentExport;
+
+
 
         public MeshplorerWPF()
         {
@@ -322,6 +325,22 @@ namespace ME3Explorer
         private void MeshplorerWPF_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
 
+        }
+
+        private void MeshExportsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (MeshExportsList.SelectedIndex < 0)
+            {
+                CurrentExport = null;
+                BinaryInterpreterTab_BinaryInterpreter.UnloadExport();
+                InterpreterTab_Interpreter.UnloadExport();
+            }
+            else
+            {
+                CurrentExport = (ExportEntry)MeshExportsList.SelectedItem;
+                BinaryInterpreterTab_BinaryInterpreter.LoadExport(CurrentExport);
+                InterpreterTab_Interpreter.LoadExport(CurrentExport);
+            }
         }
     }
 }

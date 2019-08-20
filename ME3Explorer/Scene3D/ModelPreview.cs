@@ -280,6 +280,16 @@ namespace ME3Explorer.Scene3D
                     return;
                 }
             }
+            foreach (Unreal.Classes.MaterialInstanceConstant.TextureParam texparam in mat.Textures)
+            {
+                if (!texparam.Desc.ToLower().Contains("norm"))
+                {
+                    //Anything is better than nothing I suppose
+                    DiffuseTextureFullName = texparam.Desc;
+                    //Console.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
+                    return;
+                }
+            }
         }
 
         /// <summary>

@@ -271,7 +271,7 @@ namespace ME3Explorer
                     break;
                 case "FMaterialUniformExpressionTexture":
                 case "FMaterialUniformExpressionFlipBookTextureParameter":
-                    node.Items.Add(MakeInt32Node(bin, "TextureIndex:"));
+                    node.Items.Add(MakeEntryNode(bin, "TextureIndex:"));
                     break;
                 case "FMaterialUniformExpressionTextureParameter":
                     node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).InstancedString}"));

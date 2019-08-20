@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal.BinaryConverters;
@@ -28,27 +29,8 @@ namespace ME3Explorer.Unreal.Classes
 
             if (export.Game == MEGame.ME1) //todo: maybe check to see if textureparametervalues exists first, but in testing me1 didn't seem to have this
             {
-                var parsedMaterial = ObjectBinary.From<Material>(export);
-                foreach (var v in parsedMaterial.SM3MaterialResource.Uniform2DTextureExpressions)
-                {
-                    Textures.Add(new TextureParam
-                    {
-                        TexIndex = v.TextureIndex.value,
-                        Desc = export.FileRef.getEntry(v.TextureIndex.value).GetFullPath
-                    });
-                }
 
-                //if (export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
-                //{
-                //    foreach (var obj in textures)
-                //    {
-                //        Textures.Add(new TextureParam
-                //        {
-                //            TexIndex = obj.Value,
-                //            Desc = export.FileRef.getEntry(obj.Value).GetFullPath
-                //        });
-                //    }
-                //}
+                ReadMaterial(export);
             }
             else
             {
@@ -60,6 +42,50 @@ namespace ME3Explorer.Unreal.Classes
                         {
                             TexIndex = paramVal.GetProp<ObjectProperty>("ParameterValue").Value,
                             Desc = paramVal.GetProp<NameProperty>("ParameterName").Value
+                        });
+                    }
+                }
+            }
+        }
+
+        private void ReadMaterial(ExportEntry export)
+        {
+            if (export.ClassName == "Material")
+            {
+                var parsedMaterial = ObjectBinary.From<Material>(export);
+                foreach (var v in parsedMaterial.SM3MaterialResource.Uniform2DTextureExpressions)
+                {
+                    Textures.Add(new TextureParam
+                    {
+                        TexIndex = v.TextureIndex.value,
+                        Desc = export.FileRef.getEntry(v.TextureIndex.value).GetFullPath
+                    });
+                }
+            }
+            else if (export.ClassName == "MaterialInstanceConstant")
+            {
+                if (export.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentObjProp)
+                {
+                    // This is an instance... maybe?
+                    if (parentObjProp.Value > 0)
+                    {
+                        // Local export
+                        ReadMaterial(export.FileRef.getUExport(parentObjProp.Value));
+                    }
+                    else
+                    {
+                        Debug.WriteLine("PARENT IS AN IMPORT MATERIAL... Not supported right now");
+                    }
+
+                }
+                else if(export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
+                {
+                    foreach (var obj in textures)
+                    {
+                        Textures.Add(new TextureParam
+                        {
+                            TexIndex = obj.Value,
+                            Desc = export.FileRef.getEntry(obj.Value).GetFullPath
                         });
                     }
                 }
