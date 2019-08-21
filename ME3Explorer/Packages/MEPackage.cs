@@ -953,8 +953,8 @@ namespace ME3Explorer.Packages
                 //write back properties in new format
                 propCollections[i]?.WriteTo(newData, this);
 
-                postPropBinary[i].WriteTo(newData, this, exports[i].DataOffset); //should do this again during Save to get offsets correct
-                                                                                    //might not matter though
+                postPropBinary[i].WriteTo(newData, this, exports[i].DataOffset + exports[i].propsEnd()); //should do this again during Save to get offsets correct
+                                                                                                                      //might not matter though
 
                 exports[i].Data = newData.ToArray();
             }

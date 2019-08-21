@@ -214,7 +214,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.ms.WriteByte(norm.X);
                 sc.ms.WriteByte(norm.Y);
                 sc.ms.WriteByte(norm.Z);
-                sc.ms.WriteByte(norm.Z);
+                sc.ms.WriteByte(norm.W);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref BoxSphereBounds bounds)

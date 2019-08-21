@@ -4149,7 +4149,6 @@ namespace ME3Explorer
                         break;
                     }
                 }
-                interestingExports.AddRange(foundProps.Select(kvp => $"{kvp.Key}{kvp.Value}"));
                 return;
                 interestingExports.Add($"unknown4 ME2: {string.Join(", ", unknown4ME2Set)}");
                 foreach ((int unknown, EPackageFlags value) in me2FlagsDict)
@@ -4196,19 +4195,29 @@ namespace ME3Explorer
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
+                    if (!pcc.IsCompressed) return false;
+                    if (filePath.Contains("DLC_MOD"))
+                    {
+                        return false;
+                    }
                     var exports = pcc.Exports.Where(exp => exp.ClassName == className && !exp.IsDefaultObject);
                     foreach (ExportEntry exp in exports)
                     {
                         try
                         {
-                            foreach (UProperty prop in exp.GetProperties())
+                            var stm = ME3Explorer.Unreal.BinaryConverters.ObjectBinary.From<ME3Explorer.Unreal.BinaryConverters.StaticMesh>(exp);
+                            var ms = new MemoryStream();
+                            stm.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
+                            var buff = ms.ToArray();
+
+                            if (!buff.SequenceEqual(exp.getBinaryData()))
                             {
-                                string key = $"{prop.Name} - {prop.PropType} - ";
-                                if (!foundProps.ContainsKey(key))
-                                {
-                                    foundProps.Add(key, $"#{exp.UIndex} - {pcc.FilePath}");
-                                }
+                                File.WriteAllBytes(@"C:\Users\Image 17\convertedSTM", buff);
+                                File.WriteAllBytes(@"C:\Users\Image 17\originalSTM", exp.getBinaryData());
+                                interestingExports.Add($"{exp.UIndex}: {filePath}");
+                                return true;
                             }
+
                             continue;
                             if (!withBinary || exp.propsEnd() < exp.DataSize)
                             {

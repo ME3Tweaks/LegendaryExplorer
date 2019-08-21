@@ -18,13 +18,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public kDOPTreeCompact kDOPTreeME3;
         public int InternalVersion;
         public StaticMeshRenderData[] LODModels;
-        public uint unk1;
-        public byte[] xmlFile; //ME1 BulkData
         public uint unk2; //ME1
         public uint unk3; //ME1
         public uint unk4; //ME1
         public uint unk5; //ME1
         public uint unk6; //ME1
+        public uint unk1; //ME2/3
         public Rotator ThumbnailAngle; //ME2/3
         public float ThumbnailDistance; //ME2/3
         public uint unk7; //ME2/3
@@ -60,19 +59,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
             sc.Serialize(ref InternalVersion);
             sc.Serialize(ref LODModels, StaticMeshSCExt.Serialize);
-            sc.Serialize(ref unk1);
             if (sc.Game == MEGame.ME1)
             {
-                int bulkDataFlags = 0;
-                sc.Serialize(ref bulkDataFlags);
-                int byteCount = xmlFile?.Length ?? 0;
-                sc.Serialize(ref byteCount);
-                sc.Serialize(ref byteCount);
-                int offsetInFile = sc.FileOffset;
-                sc.Serialize(ref offsetInFile);
-                sc.Serialize(ref xmlFile, byteCount);
-
-
                 sc.Serialize(ref unk2);
                 sc.Serialize(ref unk3);
                 sc.Serialize(ref unk4);
@@ -81,6 +69,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
             else
             {
+                sc.Serialize(ref unk1);
                 sc.Serialize(ref ThumbnailAngle);
                 sc.Serialize(ref ThumbnailDistance);
                 sc.Serialize(ref unk7);
@@ -172,15 +161,15 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public StaticMeshElement[] Elements;
         public PositionVertexBuffer PositionVertexBuffer;
         public StaticMeshVertexBuffer VertexBuffer;
-        public uint unk1; //ME3
-        public uint unk2; //ME3
         public ColorVertexBuffer ColorVertexBuffer; //ME3
-        public ExtrusionVertexBuffer ShadowExtrusionVertexBuffer; //ME1/2
+        public ExtrusionVertexBuffer ShadowExtrusionVertexBuffer;
         public uint NumVertices;
         public ushort[] IndexBuffer; //BulkSerialize
         public ushort[] WireframeIndexBuffer; //BulkSerialize
         public MeshEdge[] Edges; //BulkSerialize
         public byte[] ShadowTriangleDoubleSided;
+        public uint unk1; //ME1
+        public byte[] xmlFile; //ME1 BulkData
     }
 
     public class StaticMeshTriangle
@@ -310,11 +299,18 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 buff = new ColorVertexBuffer();
             }
 
+            if (sc.IsSaving)
+            {
+                buff.Stride = buff.NumVertices > 0 ? 4u : 0u;
+            }
             sc.Serialize(ref buff.Stride);
             sc.Serialize(ref buff.NumVertices);
-            int elementsize = 4;
-            sc.Serialize(ref elementsize);
-            sc.Serialize(ref buff.VertexData, SCExt.Serialize);
+            if (buff.NumVertices > 0)
+            {
+                int elementsize = 4;
+                sc.Serialize(ref elementsize);
+                sc.Serialize(ref buff.VertexData, SCExt.Serialize);
+            }
         }
         public static void Serialize(this SerializingContainer2 sc, ref StaticMeshVertexBuffer buff)
         {
@@ -325,7 +321,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
             else
             {
-                elementSize = 8u + buff.NumTexCoords * (buff.bUseFullPrecisionUVs ? 4u : 2u);
+                elementSize = 8u + buff.NumTexCoords * (buff.bUseFullPrecisionUVs ? 8u : 4u);
                 if (sc.Game != MEGame.ME3)
                 {
                     elementSize += 4;
@@ -337,6 +333,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref buff.Stride);
             sc.Serialize(ref buff.NumVertices);
             sc.Serialize(ref buff.bUseFullPrecisionUVs);
+            if (sc.Game == MEGame.ME3)
+            {
+                sc.Serialize(ref buff.unk);
+            }
             elementSize = buff.Stride;
             sc.Serialize(ref elementSize);
             int count = buff.VertexData?.Length ?? 0;
@@ -501,7 +501,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             int sizeOnDisk = 0;
             long sizeOnDiskPosition = sc.ms.Position;
             sc.Serialize(ref sizeOnDisk);//when saving, come back and rewrite this after writing RawTriangles
-            int offsetInFile = sc.FileOffset;
+            int offsetInFile = sc.FileOffset + 4;
             sc.Serialize(ref offsetInFile);
             if (sc.IsLoading)
             {
@@ -516,7 +516,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 long curPos = sc.ms.Position;
                 sc.ms.JumpTo(sizeOnDiskPosition);
-                sc.ms.WriteInt32((int)(curPos - sizeOnDiskPosition));
+                sc.ms.WriteInt32((int)(curPos - (sizeOnDiskPosition + 8)));
                 sc.ms.JumpTo(curPos);
             }
             sc.Serialize(ref data.Elements, Serialize);
@@ -545,14 +545,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref data.VertexBuffer);
             if (sc.Game == MEGame.ME3)
             {
-                sc.Serialize(ref data.unk1);
-                sc.Serialize(ref data.unk2);
                 sc.Serialize(ref data.ColorVertexBuffer);
             }
-            else
-            {
-                sc.Serialize(ref data.ShadowExtrusionVertexBuffer);
-            }
+            sc.Serialize(ref data.ShadowExtrusionVertexBuffer);
             sc.Serialize(ref data.NumVertices);
             int elementSize = 2;
             sc.Serialize(ref elementSize);
@@ -564,6 +559,23 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref elementSize);
             sc.Serialize(ref data.Edges, Serialize);
             sc.Serialize(ref data.ShadowTriangleDoubleSided, SCExt.Serialize);
+            if (sc.Game == MEGame.ME1)
+            {
+                sc.Serialize(ref data.unk1);
+
+                int bulkDataFlags = 0;
+                sc.Serialize(ref bulkDataFlags);
+                int byteCount = data.xmlFile?.Length ?? 0;
+                sc.Serialize(ref byteCount);
+                sc.Serialize(ref byteCount);
+                int xmlOffsetInFile = sc.FileOffset + 4;
+                sc.Serialize(ref xmlOffsetInFile);
+                sc.Serialize(ref data.xmlFile, byteCount);
+            }
+            else if (sc.IsLoading)
+            {
+                data.xmlFile = Array.Empty<byte>();
+            }
         }
         public static void Serialize(this SerializingContainer2 sc, ref kDOPCollisionTriangle kTri)
         {
@@ -633,7 +645,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
 
             sc.Serialize(ref kDopTree.RootBound);
+            int elementSize = 6;
+            sc.Serialize(ref elementSize);
             sc.Serialize(ref kDopTree.Nodes, Serialize);
+            elementSize = 8;
+            sc.Serialize(ref elementSize);
             sc.Serialize(ref kDopTree.Triangles, Serialize);
         }
         public static void Serialize(this SerializingContainer2 sc, ref kDOPTree kDopTree)

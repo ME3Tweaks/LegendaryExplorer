@@ -48,7 +48,10 @@ namespace ME3Explorer
         /// Gets the base DLC directory of each unpacked DLC/mod that will load in game (eg. C:\Program Files (x86)\Origin Games\Mass Effect 3\BIOGame\DLC\DLC_EXP_Pack001)
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<string> GetEnabledDLC(MEGame game) => Directory.EnumerateDirectories(MEDirectories.DLCPath(game)).Where(dir => IsEnabledDLC(dir, game));
+        public static IEnumerable<string> GetEnabledDLC(MEGame game) =>
+            Directory.Exists(MEDirectories.DLCPath(game))
+                ? Directory.EnumerateDirectories(MEDirectories.DLCPath(game)).Where(dir => IsEnabledDLC(dir, game))
+                : Enumerable.Empty<string>();
 
         private static string GetMountDLCFromDLCDir(string dlcDirectory, MEGame game) => Path.Combine(dlcDirectory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC", "Mount.dlc");
 
