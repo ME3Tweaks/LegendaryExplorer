@@ -27,12 +27,22 @@ namespace ME3Explorer.Unreal.Classes
             memsize = memory.Length;
             var properties = export.GetProperties();
 
+            bool me1Parsed = false;
             if (export.Game == MEGame.ME1) //todo: maybe check to see if textureparametervalues exists first, but in testing me1 didn't seem to have this
             {
+                try
+                {
+                    ReadMaterial(export);
+                    me1Parsed = true;
+                }
+                catch (Exception e)
+                {
 
-                ReadMaterial(export);
+                }
             }
-            else
+
+
+            if (export.Game != MEGame.ME1 || !me1Parsed)
             {
                 if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> paramVals)
                 {
@@ -55,11 +65,25 @@ namespace ME3Explorer.Unreal.Classes
                 var parsedMaterial = ObjectBinary.From<Material>(export);
                 foreach (var v in parsedMaterial.SM3MaterialResource.Uniform2DTextureExpressions)
                 {
-                    Textures.Add(new TextureParam
+                    if (v is MaterialUniformExpressionTextureParameter muetp)
                     {
-                        TexIndex = v.TextureIndex.value,
-                        Desc = export.FileRef.getEntry(v.TextureIndex.value).GetFullPath
-                    });
+                        //TODO: CHANGE BACK ONCE SIRCXYRTYX FIXES PARSING
+                        int expIndex = muetp.ParameterName.Number;
+                        Textures.Add(new TextureParam
+                        {
+                            TexIndex = expIndex,
+                            Desc = export.FileRef.getEntry(expIndex).GetFullPath
+                        });
+                    }
+                    else
+                    {
+                        Textures.Add(new TextureParam
+                        {
+                            TexIndex = v.TextureIndex.value,
+                            Desc = export.FileRef.getEntry(v.TextureIndex.value).GetFullPath
+                        });
+                    }
+                    
                 }
             }
             else if (export.ClassName == "MaterialInstanceConstant")
@@ -78,7 +102,7 @@ namespace ME3Explorer.Unreal.Classes
                     }
 
                 }
-                else if(export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
+                else if (export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
                 {
                     foreach (var obj in textures)
                     {

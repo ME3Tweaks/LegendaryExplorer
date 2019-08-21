@@ -95,10 +95,21 @@ namespace ME3Explorer.Scene3D
             Properties.Add("Name", mat.export.ObjectName);
             foreach (Unreal.Classes.MaterialInstanceConstant.TextureParam texparam in mat.Textures)
             {
-                if (texparam.TexIndex != 0)
+                if (texparam.TexIndex != 0 && !Textures.ContainsKey(texparam.Desc))
                 {
                     var entry = mat.export.FileRef.getEntry(texparam.TexIndex); //for debugging
-                    Textures.Add(texparam.Desc, FindTexture(texcache, entry, mat.export.FileRef.FilePath));
+                    if (entry is ImportEntry import)
+                    {
+                        var extAsset = ModelPreview.FindExternalAsset(import);
+                        if (extAsset != null)
+                        {
+                            Textures.Add(texparam.Desc, texcache.LoadTexture(extAsset));
+                        }
+                    }
+                    else
+                    {
+                        Textures.Add(texparam.Desc, texcache.LoadTexture(entry as ExportEntry));
+                    }
                 }
             }
         }
@@ -419,22 +430,18 @@ namespace ME3Explorer.Scene3D
             LODs.Add(new ModelPreviewLOD(new WorldMesh(Device, triangles, vertices), sections));
         }
 
-        private ExportEntry FindExternalAsset(ImportEntry entry)
+        internal static ExportEntry FindExternalAsset(ImportEntry entry)
         {
             if (entry.Game == MEGame.ME1)
             {
+                var sourcePackageInternalPath = entry.GetFullPath.Substring(entry.GetFullPath.IndexOf('.') +1 );
                 string baseName = entry.FileRef.FollowLink(entry.idxLink).Split('.')[0].ToUpper() + ".upk"; //Get package filename
                 var gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
                 var file = gameFiles[baseName]; //this should be in a try catch
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(file))
                 {
-                    foreach (ExportEntry exp in pcc.Exports)
-                    {
-                        if (exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName) //We might want to check instancing
-                        {
-                            return exp;
-                        }
-                    }
+                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.GetFullPath == sourcePackageInternalPath && exp.ClassName == entry.ClassName);
+                    if (foundExp != null) return foundExp;
                 }
             }
             else

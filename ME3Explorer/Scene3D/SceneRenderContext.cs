@@ -119,10 +119,10 @@ namespace ME3Explorer.Scene3D
         {
             // Clear the color and depth buffers
             ImmediateContext.ClearDepthStencilView(DepthBufferView, DepthStencilClearFlags.Depth, 1.0f, 0);
-            ImmediateContext.ClearRenderTargetView(BackBufferView, new SharpDX.Color(1.0f, 1.0f, 1.0f));
+            //ImmediateContext.ClearRenderTargetView(BackBufferView, new SharpDX.Color(1.0f, 1.0f, 1.0f));
             
             //Debugging: Yellow blink
-            //ImmediateContext.ClearRenderTargetView(BackBufferView, new SharpDX.Color(1.0f, 1.0f, (float)Math.Sin(this.Time), 1.0f));
+            ImmediateContext.ClearRenderTargetView(BackBufferView, new SharpDX.Color(1.0f, 1.0f, (float)Math.Sin(this.Time), 1.0f));
 
             // Do whatever a derived class wants
             OnRender();

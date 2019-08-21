@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ using System.Windows.Shapes;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
 using ME3Explorer.Unreal.BinaryConverters;
+using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
@@ -31,6 +33,33 @@ namespace ME3Explorer.Meshplorer
         private static readonly string[] parsableClasses = { "SkeletalMesh", "StaticMesh" };
 
         #region 3D
+
+        private bool _rotating, _wireframe, _solid = true, _firstperson;
+
+        public bool Rotating
+        {
+            get => _rotating;
+            set => SetProperty(ref _rotating, value);
+        }
+
+        public bool Wireframe
+        {
+            get => _wireframe;
+            set => SetProperty(ref _wireframe, value);
+        }
+
+        public bool Solid
+        {
+            get => _solid;
+            set => SetProperty(ref _solid, value);
+        }
+
+        public bool FirstPerson
+        {
+            get => _firstperson;
+            set => SetProperty(ref _firstperson, value);
+        }
+
         private ModelPreview Preview;
         private int CurrentLOD = 0;
         private float PreviewRotation = 0.0f;
@@ -39,12 +68,16 @@ namespace ME3Explorer.Meshplorer
         {
             if (Preview != null && Preview.LODs.Count > 0)
             {
-                //if (solidToolStripMenuItem.Checked && CurrentLOD < preview.LODs.Count) // TODO: Implement Solid and LOD options
+                if (Rotating)
+                {
+                    PreviewRotation += .005f;
+                }
+                if (Solid && CurrentLOD < Preview.LODs.Count)
                 {
                     SceneViewer.Context.Wireframe = false;
                     Preview.Render(SceneViewer.Context, CurrentLOD, SharpDX.Matrix.RotationY(PreviewRotation));
                 }
-                //if (wireframeToolStripMenuItem.Checked) // TODO: Implement Wireframe option
+                if (Wireframe)
                 {
                     SceneViewer.Context.Wireframe = true;
                     SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(SharpDX.Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
@@ -53,10 +86,37 @@ namespace ME3Explorer.Meshplorer
                 }
             }
         }
+
+        private float globalscale = 1.0f;
+        private void CenterView()
+        {
+            if (Preview != null && Preview.LODs.Count > 0)
+            {
+                WorldMesh m = Preview.LODs[CurrentLOD].Mesh;
+                globalscale = 0.5f / m.AABBHalfSize.Length();
+                SceneViewer.Context.Camera.Position = m.AABBCenter * globalscale;
+                SceneViewer.Context.Camera.FocusDepth = 1.0f;
+                if (SceneViewer.Context.Camera.FirstPerson)
+                {
+                    SceneViewer.Context.Camera.Position -= SceneViewer.Context.Camera.CameraForward * SceneViewer.Context.Camera.FocusDepth;
+                }
+
+                Debug.WriteLine("Camera position: " + SceneViewer.Context.Camera.Position);
+            }
+            else
+            {
+                SceneViewer.Context.Camera.Position = SharpDX.Vector3.Zero;
+                SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 5.0f;
+                SceneViewer.Context.Camera.Yaw = (float)Math.PI / 4.0f;
+                globalscale = 1.0f;
+                Debug.WriteLine("Camera position: " + SceneViewer.Context.Camera.Position);
+            }
+        }
         #endregion
 
         public MeshRendererWPF()
         {
+            DataContext = this;
             InitializeComponent();
         }
 
@@ -72,12 +132,24 @@ namespace ME3Explorer.Meshplorer
             Preview?.Dispose();
             if (CurrentLoadedExport.ClassName == "StaticMesh")
             {
-                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, ObjectBinary.From<StaticMesh>(CurrentLoadedExport), CurrentLOD, SceneViewer.Context.TextureCache);
+                var sm = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
+                //globalscale = 1f;
+                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, sm, CurrentLOD, SceneViewer.Context.TextureCache);
+                //var bounding = sm.Bounds.SphereRadius;
+                //SceneViewer.Context.Camera.Position = new Vector3(bounding / 2, bounding / 2, bounding / 3);
+
             }
             else if (CurrentLoadedExport.ClassName == "SkeletalMesh")
             {
-                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, new Unreal.Classes.SkeletalMesh(CurrentLoadedExport), SceneViewer.Context.TextureCache);
+                var sm = new Unreal.Classes.SkeletalMesh(CurrentLoadedExport);
+                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, sm, SceneViewer.Context.TextureCache);
+                //var bounding = sm.Bounding.r;
+                //SceneViewer.Context.Camera.Position = new Vector3(bounding / 2, bounding / 2, bounding / 3);
             }
+
+            //It seems like globalscale in this tool is not the same as main meshplorer and it's causing things to not be focused. 
+            //need to find way to make item in view by default.
+            CenterView();
         }
 
         public override void UnloadExport()

@@ -129,7 +129,7 @@
                         <RowDefinition MinHeight="5" MaxHeight="5" Height="5"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <local:InterpreterWPF x:Name="InterpreterTab_Interpreter"/>
+                    <local:InterpreterWPF x:Name="InterpreterTab_Interpreter" HideHexBox="True"/>
                     <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch"/>
                     <local:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter" Grid.Row="2"/>
                 </Grid>
