@@ -275,7 +275,7 @@
             this.view.Size = new System.Drawing.Size(432, 199);
             this.view.TabIndex = 1;
             this.view.TabStop = false;
-            this.view.Wireframe = false;
+            this.view.Context.Wireframe = false;
             this.view.Update += new System.EventHandler<float>(this.view_Update);
             this.view.Render += new System.EventHandler(this.view_Render);
             // 

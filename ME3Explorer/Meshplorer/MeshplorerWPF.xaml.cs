@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using ByteSizeLib;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal.BinaryConverters;
 using Microsoft.Win32;
 
 namespace ME3Explorer
@@ -27,7 +28,9 @@ namespace ME3Explorer
         public ObservableCollectionExtended<ExportEntry> MeshExports { get; } = new ObservableCollectionExtended<ExportEntry>();
         private ExportEntry CurrentExport;
 
-
+        private Scene3D.ModelPreview Preview = null;
+        private int CurrentLOD = 0;
+        private float PreviewRotation = 0.0f;
 
         public MeshplorerWPF()
         {
@@ -340,6 +343,35 @@ namespace ME3Explorer
                 CurrentExport = (ExportEntry)MeshExportsList.SelectedItem;
                 BinaryInterpreterTab_BinaryInterpreter.LoadExport(CurrentExport);
                 InterpreterTab_Interpreter.LoadExport(CurrentExport);
+
+                Preview?.Dispose();
+                if (CurrentExport.ClassName == "StaticMesh")
+                {
+                    Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, ObjectBinary.From<StaticMesh>(CurrentExport), CurrentLOD, SceneViewer.Context.TextureCache);
+                }
+                else if (CurrentExport.ClassName == "SkeletalMesh")
+                {
+                    Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, new Unreal.Classes.SkeletalMesh(CurrentExport), SceneViewer.Context.TextureCache);
+                }
+            }
+        }
+
+        private void SceneViewer_Render(object sender, EventArgs e)
+        {
+            if (Preview != null && Preview.LODs.Count > 0)
+            {
+                //if (solidToolStripMenuItem.Checked && CurrentLOD < preview.LODs.Count) // TODO: Implement Solid and LOD options
+                {
+                    SceneViewer.Context.Wireframe = false;
+                    Preview.Render(SceneViewer.Context, CurrentLOD, SharpDX.Matrix.RotationY(PreviewRotation));
+                }
+                //if (wireframeToolStripMenuItem.Checked) // TODO: Implement Wireframe option
+                {
+                    SceneViewer.Context.Wireframe = true;
+                    Scene3D.SceneRenderContext.WorldConstants ViewConstants = new Scene3D.SceneRenderContext.WorldConstants(SharpDX.Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
+                    SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
+                    SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, Preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+                }
             }
         }
     }
