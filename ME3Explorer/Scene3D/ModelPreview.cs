@@ -117,7 +117,7 @@ namespace ME3Explorer.Scene3D
         /// <param name="s">Which faces to render.</param>
         /// <param name="transform">The model transformation to be applied to the vertices.</param>
         /// <param name="view">The SceneRenderControl that the given LOD should be rendered into.</param>
-        public abstract void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix transform, SceneRenderControl view);
+        public abstract void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix transform, SceneRenderContext context);
 
         /// <summary>
         /// Disposes any outstanding resources.
@@ -226,10 +226,10 @@ namespace ME3Explorer.Scene3D
         /// <param name="s">Which faces to render.</param>
         /// <param name="transform">The model transformation to be applied to the vertices.</param>
         /// <param name="view">The SceneRenderControl that the given LOD should be rendered into.</param>
-        public override void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix transform, SceneRenderControl view)
+        public override void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix transform, SceneRenderContext context)
         {
-            view.DefaultEffect.PrepDraw(view.ImmediateContext);
-            view.DefaultEffect.RenderObject(view.ImmediateContext, new SceneRenderControl.WorldConstants(Matrix.Transpose(view.Camera.ProjectionMatrix), Matrix.Transpose(view.Camera.ViewMatrix), Matrix.Transpose(transform)), lod.Mesh, (int)s.StartIndex, (int)s.TriangleCount * 3, Textures.ContainsKey(DiffuseTextureFullName) ? Textures[DiffuseTextureFullName]?.TextureView ?? view.DefaultTextureView : view.DefaultTextureView);
+            context.DefaultEffect.PrepDraw(context.ImmediateContext);
+            context.DefaultEffect.RenderObject(context.ImmediateContext, new SceneRenderContext.WorldConstants(Matrix.Transpose(context.Camera.ProjectionMatrix), Matrix.Transpose(context.Camera.ViewMatrix), Matrix.Transpose(transform)), lod.Mesh, (int)s.StartIndex, (int)s.TriangleCount * 3, Textures.ContainsKey(DiffuseTextureFullName) ? Textures[DiffuseTextureFullName]?.TextureView ?? context.DefaultTextureView : context.DefaultTextureView);
         }
     }
 
@@ -628,7 +628,7 @@ namespace ME3Explorer.Scene3D
         /// <param name="view">The SceneRenderControl to render the preview into.</param>
         /// <param name="LOD">Which level of detail to render at. Level 0 is traditionally the most detailed.</param>
         /// <param name="transform">The model transformation to be applied to the vertices.</param>
-        public void Render(SceneRenderControl view, int LOD, Matrix transform)
+        public void Render(SceneRenderContext view, int LOD, Matrix transform)
         {
             foreach (ModelPreviewSection section in LODs[LOD].Sections)
             {

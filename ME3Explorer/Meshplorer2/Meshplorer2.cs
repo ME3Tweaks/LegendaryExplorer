@@ -262,7 +262,7 @@ namespace ME3Explorer.Meshplorer2
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            view.UpdateScene();
+            view.UpdateScene(0.1f); // TODO: Measure actual elapsed time
             view.Invalidate();
         }
 
@@ -352,7 +352,7 @@ namespace ME3Explorer.Meshplorer2
                                 if (en.isSkeletal)
                                 {
                                     SkeletalMesh skmesh = new SkeletalMesh(pcc.getUExport(en.UIndex)); // TODO: pass device
-                                    preview = new ModelPreview(view.Device, skmesh, view.TextureCache);
+                                    preview = new ModelPreview(view.Context.Device, skmesh, view.Context.TextureCache);
                                     CenterView();
                                     treeView2.Nodes.Clear();
                                     if (previewWithTreeToolStripMenuItem.Checked)
@@ -767,7 +767,7 @@ namespace ME3Explorer.Meshplorer2
         private void Meshplorer2_FormClosing(object sender, FormClosingEventArgs e)
         {
             preview?.Dispose();
-            view.UnloadDirect3D();
+            view.Context.UnloadDirect3D();
         }
 
         private void view_Update(object sender, float e)
@@ -780,12 +780,12 @@ namespace ME3Explorer.Meshplorer2
         {
             if (preview != null)
             {
-                view.Wireframe = false;
-                preview.Render(view, 0, SharpDX.Matrix.RotationY(PreviewRotation));
-                view.Wireframe = true;
-                SceneRenderControl.WorldConstants ViewConstants = new SceneRenderControl.WorldConstants(SharpDX.Matrix.Transpose(view.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(view.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
-                view.DefaultEffect.PrepDraw(view.ImmediateContext);
-                view.DefaultEffect.RenderObject(view.ImmediateContext, ViewConstants, preview.LODs[0].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+                view.Context.Wireframe = false;
+                preview.Render(view.Context, 0, SharpDX.Matrix.RotationY(PreviewRotation));
+                view.Context.Wireframe = true;
+                SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(SharpDX.Matrix.Transpose(view.Context.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(view.Context.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
+                view.Context.DefaultEffect.PrepDraw(view.Context.ImmediateContext);
+                view.Context.DefaultEffect.RenderObject(view.Context.ImmediateContext, ViewConstants, preview.LODs[0].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
             }
         }
 
@@ -794,18 +794,18 @@ namespace ME3Explorer.Meshplorer2
             if (preview != null && preview.LODs.Count > 0)
             {
                 WorldMesh m = preview.LODs[0].Mesh;
-                view.Camera.Position = m.AABBCenter;
-                view.Camera.FocusDepth = Math.Max(m.AABBHalfSize.X * 2.0f, Math.Max(m.AABBHalfSize.Y * 2.0f, m.AABBHalfSize.Z * 2.0f));
-                if (view.Camera.FirstPerson)
+                view.Context.Camera.Position = m.AABBCenter;
+                view.Context.Camera.FocusDepth = Math.Max(m.AABBHalfSize.X * 2.0f, Math.Max(m.AABBHalfSize.Y * 2.0f, m.AABBHalfSize.Z * 2.0f));
+                if (view.Context.Camera.FirstPerson)
                 {
-                    view.Camera.Position -= view.Camera.CameraForward * view.Camera.FocusDepth;
+                    view.Context.Camera.Position -= view.Context.Camera.CameraForward * view.Context.Camera.FocusDepth;
                 }
             }
             else
             {
-                view.Camera.Position = SharpDX.Vector3.Zero;
-                view.Camera.Pitch = -(float)Math.PI / 5.0f;
-                view.Camera.Yaw = (float)Math.PI / 4.0f;
+                view.Context.Camera.Position = SharpDX.Vector3.Zero;
+                view.Context.Camera.Pitch = -(float)Math.PI / 5.0f;
+                view.Context.Camera.Yaw = (float)Math.PI / 4.0f;
             }
         }
     }

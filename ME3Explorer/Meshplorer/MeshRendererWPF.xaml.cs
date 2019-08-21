@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
+using ME3Explorer.Unreal.BinaryConverters;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
@@ -28,11 +29,31 @@ namespace ME3Explorer.Meshplorer
     public partial class MeshRendererWPF : ExportLoaderControl
     {
         private static readonly string[] parsableClasses = { "SkeletalMesh", "StaticMesh" };
-        FrostyRenderImage imageSource;
-        public SwapChain SwapChain { get; private set; } = null;
-        public Texture2D BackBuffer { get; private set; } = null;
-        public SharpDX.Direct3D11.Device Device { get; private set; } = null;
 
+        #region 3D
+        private ModelPreview Preview;
+        private int CurrentLOD = 0;
+        private float PreviewRotation = 0.0f;
+
+        private void SceneViewer_Render(object sender, EventArgs e)
+        {
+            if (Preview != null && Preview.LODs.Count > 0)
+            {
+                //if (solidToolStripMenuItem.Checked && CurrentLOD < preview.LODs.Count) // TODO: Implement Solid and LOD options
+                {
+                    SceneViewer.Context.Wireframe = false;
+                    Preview.Render(SceneViewer.Context, CurrentLOD, SharpDX.Matrix.RotationY(PreviewRotation));
+                }
+                //if (wireframeToolStripMenuItem.Checked) // TODO: Implement Wireframe option
+                {
+                    SceneViewer.Context.Wireframe = true;
+                    SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(SharpDX.Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
+                    SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
+                    SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, Preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+                }
+            }
+        }
+        #endregion
 
         public MeshRendererWPF()
         {
@@ -47,6 +68,16 @@ namespace ME3Explorer.Meshplorer
         public override void LoadExport(ExportEntry exportEntry)
         {
             CurrentLoadedExport = exportEntry;
+
+            Preview?.Dispose();
+            if (CurrentLoadedExport.ClassName == "StaticMesh")
+            {
+                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, ObjectBinary.From<StaticMesh>(CurrentLoadedExport), CurrentLOD, SceneViewer.Context.TextureCache);
+            }
+            else if (CurrentLoadedExport.ClassName == "SkeletalMesh")
+            {
+                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, new Unreal.Classes.SkeletalMesh(CurrentLoadedExport), SceneViewer.Context.TextureCache);
+            }
         }
 
         public override void UnloadExport()
@@ -61,71 +92,9 @@ namespace ME3Explorer.Meshplorer
 
         public override void Dispose()
         {
+            Preview?.Dispose();
+            CurrentLoadedExport = null;
             //throw new NotImplementedException();
-        }
-
-
-        public void LoadDirect3D()
-        {
-            Window window = Window.GetWindow(this);
-            var wih = new WindowInteropHelper(window);
-            imageSource = new FrostyRenderImage(wih.Handle);
-            // Set up description of swap chain
-            SwapChainDescription scd = new SwapChainDescription();
-            scd.BufferCount = 1;
-            scd.ModeDescription = new ModeDescription(1024,1024, new Rational(60, 1), Format.B8G8R8A8_UNorm);
-            scd.Usage = Usage.RenderTargetOutput;
-
-            
-            scd.OutputHandle = wih.Handle;
-            scd.SampleDescription.Count = 1;
-            scd.SampleDescription.Quality = 0;
-            scd.IsWindowed = true;
-
-            // Create device and swap chain according to the description above
-            SharpDX.Direct3D11.Device d;
-            SwapChain sc;
-            DeviceCreationFlags flags = DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded;
-#if DEBUG
-            flags |= DeviceCreationFlags.Debug;
-#endif
-            SharpDX.Direct3D11.Device.CreateWithSwapChain(DriverType.Hardware, flags, scd, out d, out sc);
-            this.SwapChain = sc; // we have to use these temp variables
-            this.Device = d; // because properties can't be passed as out parameters. =(
-            BackBuffer = Texture2D.FromSwapChain<Texture2D>(SwapChain, 0);
-
-            var textureD3D11 = new Texture2D(Device, new Texture2DDescription
-            {
-                Width = 1024,
-                Height = 1024,
-                MipLevels = 1,
-                ArraySize = 1,
-                Format = Format.B8G8R8A8_UNorm,
-                SampleDescription = new SampleDescription(1, 0),
-                Usage = ResourceUsage.Default,
-                BindFlags = BindFlags.RenderTarget | BindFlags.ShaderResource,
-                CpuAccessFlags = CpuAccessFlags.None,
-                OptionFlags = ResourceOptionFlags.SharedKeyedmutex
-            });
-
-            imageSource.SetBackBuffer(textureD3D11);
-            FrostyImageContainer.Source = imageSource;
-        }
-
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            // Get PresentationSource
-            PresentationSource presentationSource = PresentationSource.FromVisual((Visual)sender);
-
-            // Subscribe to PresentationSource's ContentRendered event
-            presentationSource.ContentRendered += TestUserControl_ContentRendered;
-        }
-
-        void TestUserControl_ContentRendered(object sender, EventArgs e)
-        {
-            // Don't forget to unsubscribe from the event
-            ((PresentationSource)sender).ContentRendered -= TestUserControl_ContentRendered;
-            LoadDirect3D();
         }
     }
 }

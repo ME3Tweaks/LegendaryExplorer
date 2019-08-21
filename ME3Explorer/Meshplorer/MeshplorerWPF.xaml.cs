@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using ByteSizeLib;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal.BinaryConverters;
 using Microsoft.Win32;
 
 namespace ME3Explorer
@@ -334,12 +335,15 @@ namespace ME3Explorer
                 CurrentExport = null;
                 BinaryInterpreterTab_BinaryInterpreter.UnloadExport();
                 InterpreterTab_Interpreter.UnloadExport();
+                Mesh3DViewer.UnloadExport();
+
             }
             else
             {
                 CurrentExport = (ExportEntry)MeshExportsList.SelectedItem;
                 BinaryInterpreterTab_BinaryInterpreter.LoadExport(CurrentExport);
                 InterpreterTab_Interpreter.LoadExport(CurrentExport);
+                Mesh3DViewer.LoadExport(CurrentExport);
             }
         }
     }

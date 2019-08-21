@@ -70,7 +70,7 @@ namespace ME3Explorer.Meshplorer
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            view.UpdateScene();
+            view.Context.UpdateScene(0.1f); // TODO: Measure actual elapsed time
             view.Invalidate();
         }
 
@@ -105,7 +105,7 @@ namespace ME3Explorer.Meshplorer
 
         public void RefreshMeshList()
         {
-            view.TextureCache.Dispose(); // Clear out the loaded textures from the previous pcc
+            view.Context.TextureCache.Dispose(); // Clear out the loaded textures from the previous pcc
             listBox1.Items.Clear();
             Objects.Clear();
             IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
@@ -178,7 +178,7 @@ namespace ME3Explorer.Meshplorer
                 //var mesh = ObjectBinary.From <StaticMesh>(Pcc.getUExport(index));
                 // Load meshes for the LODs
                 preview?.Dispose();
-                preview = new ModelPreview(view.Device, stm, 0, view.TextureCache);
+                preview = new ModelPreview(view.Context.Device, stm, 0, view.Context.TextureCache);
                 RefreshChosenMaterialsList();
                 CenterView();
 
@@ -209,7 +209,7 @@ namespace ME3Explorer.Meshplorer
 
                 // Load preview model
                 preview?.Dispose();
-                preview = new ModelPreview(view.Device, skm, view.TextureCache);
+                preview = new ModelPreview(view.Context.Device, skm, view.Context.TextureCache);
                 RefreshChosenMaterialsList();
                 CenterView();
 
@@ -264,7 +264,7 @@ namespace ME3Explorer.Meshplorer
             {
                 preview?.Dispose();
                 preview = null;
-                view.UnloadDirect3D();
+                view.DestroyDirect3D();
                 Properties.Settings.Default.MeshplorerViewRotating = rotatingToolStripMenuItem.Checked;
                 Properties.Settings.Default.MeshplorerViewWireframeEnabled = wireframeToolStripMenuItem.Checked;
                 Properties.Settings.Default.MeshplorerViewSolidEnabled = solidToolStripMenuItem.Checked;
@@ -772,7 +772,7 @@ namespace ME3Explorer.Meshplorer
 
                 // Update preview
                 preview.Dispose();
-                preview = new ModelPreview(view.Device, stm, 0, view.TextureCache);
+                preview = new ModelPreview(view.Context.Device, stm, 0, view.Context.TextureCache);
             }
             else if (skm != null && t.Parent.Text == "Materials")
             {
@@ -913,18 +913,18 @@ namespace ME3Explorer.Meshplorer
             {
                 WorldMesh m = preview.LODs[CurrentLOD].Mesh;
                 globalscale = 0.5f / m.AABBHalfSize.Length();
-                view.Camera.Position = m.AABBCenter * globalscale;
-                view.Camera.FocusDepth = 1.0f;
-                if (view.Camera.FirstPerson)
+                view.Context.Camera.Position = m.AABBCenter * globalscale;
+                view.Context.Camera.FocusDepth = 1.0f;
+                if (view.Context.Camera.FirstPerson)
                 {
-                    view.Camera.Position -= view.Camera.CameraForward * view.Camera.FocusDepth;
+                    view.Context.Camera.Position -= view.Context.Camera.CameraForward * view.Context.Camera.FocusDepth;
                 }
             }
             else
             {
-                view.Camera.Position = SharpDX.Vector3.Zero;
-                view.Camera.Pitch = -(float)Math.PI / 5.0f;
-                view.Camera.Yaw = (float)Math.PI / 4.0f;
+                view.Context.Camera.Position = SharpDX.Vector3.Zero;
+                view.Context.Camera.Pitch = -(float)Math.PI / 5.0f;
+                view.Context.Camera.Yaw = (float)Math.PI / 4.0f;
                 globalscale = 1.0f;
             }
         }
@@ -935,15 +935,15 @@ namespace ME3Explorer.Meshplorer
             {
                 if (solidToolStripMenuItem.Checked && CurrentLOD < preview.LODs.Count)
                 {
-                    view.Wireframe = false;
-                    preview.Render(view, CurrentLOD, SharpDX.Matrix.Scaling(globalscale) * SharpDX.Matrix.RotationY(PreviewRotation));
+                    view.Context.Wireframe = false;
+                    preview.Render(view.Context, CurrentLOD, SharpDX.Matrix.Scaling(globalscale) * SharpDX.Matrix.RotationY(PreviewRotation));
                 }
                 if (wireframeToolStripMenuItem.Checked)
                 {
-                    view.Wireframe = true;
-                    SceneRenderControl.WorldConstants ViewConstants = new SceneRenderControl.WorldConstants(SharpDX.Matrix.Transpose(view.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(view.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.Scaling(globalscale) * SharpDX.Matrix.RotationY(PreviewRotation)));
-                    view.DefaultEffect.PrepDraw(view.ImmediateContext);
-                    view.DefaultEffect.RenderObject(view.ImmediateContext, ViewConstants, preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+                    view.Context.Wireframe = true;
+                    SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(SharpDX.Matrix.Transpose(view.Context.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(view.Context.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.Scaling(globalscale) * SharpDX.Matrix.RotationY(PreviewRotation)));
+                    view.Context.DefaultEffect.PrepDraw(view.Context.ImmediateContext);
+                    view.Context.DefaultEffect.RenderObject(view.Context.ImmediateContext, ViewConstants, preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
             }
         }
@@ -951,21 +951,21 @@ namespace ME3Explorer.Meshplorer
         private void view_Update(object sender, float e)
         {
             if (rotatingToolStripMenuItem.Checked) PreviewRotation += e * 0.05f;
-            //view.Camera.Pitch = (float)Math.Sin(view.Time);
+            //view.Context.Camera.Pitch = (float)Math.Sin(view.Context.Time);
         }
 
         private void firstPersonToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            bool old = view.Camera.FirstPerson;
-            view.Camera.FirstPerson = firstPersonToolStripMenuItem.Checked;
+            bool old = view.Context.Camera.FirstPerson;
+            view.Context.Camera.FirstPerson = firstPersonToolStripMenuItem.Checked;
             // Adjust view position so the camera doesn't teleport
-            if (!old && view.Camera.FirstPerson)
+            if (!old && view.Context.Camera.FirstPerson)
             {
-                view.Camera.Position += -view.Camera.CameraForward * view.Camera.FocusDepth;
+                view.Context.Camera.Position += -view.Context.Camera.CameraForward * view.Context.Camera.FocusDepth;
             }
-            else if (old && !view.Camera.FirstPerson)
+            else if (old && !view.Context.Camera.FirstPerson)
             {
-                view.Camera.Position += view.Camera.CameraForward * view.Camera.FocusDepth;
+                view.Context.Camera.Position += view.Context.Camera.CameraForward * view.Context.Camera.FocusDepth;
             }
         }
         #endregion
