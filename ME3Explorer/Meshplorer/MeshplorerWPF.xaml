@@ -133,8 +133,7 @@
                     <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch"/>
                     <local:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter" Grid.Row="2"/>
                 </Grid>
-                <!--<meshplorer:MeshRendererWPF x:Name="Mesh3DViewer" Grid.Column="4"/>-->
-                <scene3d:SceneRenderControlWPF x:Name="SceneViewer" Grid.Column="4" Render="SceneViewer_Render"/>
+                <meshplorer:MeshRendererWPF x:Name="Mesh3DViewer" Grid.Column="4"/>
                 <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectionChanged="MeshExportsList_SelectionChanged">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type packages:ExportEntry}">
