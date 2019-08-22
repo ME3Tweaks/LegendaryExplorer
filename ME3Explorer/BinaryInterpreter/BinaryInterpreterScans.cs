@@ -280,6 +280,10 @@ namespace ME3Explorer
                         node.Items.Add(MakeEntryNode(bin, "TextureIndex:"));
                     }
                     break;
+                case "FMaterialUniformExpressionFlipbookParameter":
+                    node.Items.Add(MakeInt32Node(bin, "Index:"));
+                    node.Items.Add(MakeEntryNode(bin, "TextureIndex:"));
+                    break;
                 case "FMaterialUniformExpressionTextureParameter":
                     node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).InstancedString}"));
                     node.Items.Add(MakeInt32Node(bin, "TextureIndex:"));
@@ -293,6 +297,9 @@ namespace ME3Explorer
                     node.Items.Add(MakeFloatNode(bin, "Default G"));
                     node.Items.Add(MakeFloatNode(bin, "Default B"));
                     node.Items.Add(MakeFloatNode(bin, "Default A"));
+                    break;
+                case "FMaterialUniformExpressionFractionOfEffectEnabled":
+                    //Not sure what it does, but it doesn't seem to have any parameters
                     break;
                 default:
                     throw new ArgumentException(expressionType.InstancedString);
@@ -5560,8 +5567,9 @@ namespace ME3Explorer
                 var bin = new MemoryStream(data);
                 bin.JumpTo(binarystart);
 
-                nodes.Add(MakeMaterialResourceNode(bin, "Material Resource"));
-                nodes.Add(MakeMaterialResourceNode(bin, "2nd Material Resource"));
+                nodes.Add(MakeMaterialResourceNode(bin, "ShaderMap 3 Material Resource"));
+                nodes.Add(MakeMaterialResourceNode(bin, "ShaderMap 2 Material Resource"));
+
             }
             catch (Exception ex)
             {
@@ -5671,69 +5679,98 @@ namespace ME3Explorer
                 IsExpanded = true
             };
             List<ITreeItem> nodes = node.Items;
-            nodes.Add(MakeArrayNode(bin, "Compile Errors", i => MakeStringNode(bin, $"{i}")));
-            nodes.Add(MakeArrayNode(bin, "TextureDependencyLengthMap", i => new BinInterpNode(bin.Position, $"{entryRefString(bin)}: {bin.ReadInt32()}")));
-            nodes.Add(MakeInt32Node(bin, "MaxTextureDependencyLength"));
-            nodes.Add(MakeGuidNode(bin, "ID"));
-            nodes.Add(MakeUInt32Node(bin, "NumUserTexCoords"));
-            if (Pcc.Game == MEGame.ME3)
+            try
             {
-                nodes.Add(MakeArrayNode(bin, "UniformExpressionTextures", i => MakeEntryNode(bin, $"{i}")));
-            }
-            else
-            {
-                nodes.Add(MakeArrayNode(bin, "UniformPixelVectorExpressions", i => ReadMaterialUniformExpression(bin, $"{i}")));
-                nodes.Add(MakeArrayNode(bin, "UniformPixelScalarExpressions", i => ReadMaterialUniformExpression(bin, $"{i}")));
-                nodes.Add(MakeArrayNode(bin, "Uniform2DTextureExpressions", i => ReadMaterialUniformExpression(bin, $"{i}")));
-                nodes.Add(MakeArrayNode(bin, "UniformCubeTextureExpressions", i => ReadMaterialUniformExpression(bin, $"{i}")));
-            }
-            nodes.Add(MakeBoolIntNode(bin, "bUsesSceneColor"));
-            nodes.Add(MakeBoolIntNode(bin, "bUsesSceneDepth"));
-            nodes.Add(ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
-            {
-                MakeBoolIntNode(bin, "bUsesDynamicParameter"),
-                MakeBoolIntNode(bin, "bUsesLightmapUVs"),
-                MakeBoolIntNode(bin, "bUsesMaterialVertexPositionOffset"),
-                MakeBoolIntNode(bin, "unknown bool?")
-            }));
-            nodes.Add(new BinInterpNode(bin.Position, $"UsingTransforms: {(ECoordTransformUsage)bin.ReadUInt32()}"));
-            nodes.Add(MakeArrayNode(bin, "TextureLookups", i => new BinInterpNode(bin.Position, $"{i}")
-            {
-                Items =
+                nodes.Add(MakeArrayNode(bin, "Compile Errors", i => MakeStringNode(bin, $"{i}")));
+                nodes.Add(MakeArrayNode(bin, "TextureDependencyLengthMap", i => new BinInterpNode(bin.Position, $"{entryRefString(bin)}: {bin.ReadInt32()}")));
+                nodes.Add(MakeInt32Node(bin, "MaxTextureDependencyLength"));
+                nodes.Add(MakeGuidNode(bin, "ID"));
+                nodes.Add(MakeUInt32Node(bin, "NumUserTexCoords"));
+                if (Pcc.Game == MEGame.ME3)
                 {
-                    MakeInt32Node(bin, "TexCoordIndex"),
-                    MakeInt32Node(bin, "TextureIndex"),
-                    ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME1, ifTrue: () => new ITreeItem[]
-                    {
-                        MakeFloatNode(bin, "TilingScale")
-                    }, ifFalse: () => new ITreeItem[]
-                    {
-                        MakeFloatNode(bin, "TilingUScale"),
-                        MakeFloatNode(bin, "TilingVScale")
-                    }),
+                    nodes.Add(MakeArrayNode(bin, "UniformExpressionTextures", i => MakeEntryNode(bin, $"{i}")));
                 }
-            }));
-            nodes.Add(MakeInt32Node(bin, "Zero?"));
-            if (Pcc.Game == MEGame.ME1)
-            {
-                int unkCount;
-                nodes.Add(new BinInterpNode(bin.Position, $"Unknown count: {unkCount = bin.ReadInt32()}"));
-                nodes.Add(MakeInt32Node(bin, "Unknown?"));
-                if (unkCount > 0)
+                else
                 {
-                    nodes.Add(new BinInterpNode(bin.Position, $"unknown array ({unkCount} items)")
+                    nodes.Add(MakeArrayNode(bin, "UniformPixelVectorExpressions", i => ReadMaterialUniformExpression(bin, $"{i}")));
+                    nodes.Add(MakeArrayNode(bin, "UniformPixelScalarExpressions", i => ReadMaterialUniformExpression(bin, $"{i}")));
+                    nodes.Add(MakeArrayNode(bin, "Uniform2DTextureExpressions", i => ReadMaterialUniformExpression(bin, $"{i}")));
+                    nodes.Add(MakeArrayNode(bin, "UniformCubeTextureExpressions", i => ReadMaterialUniformExpression(bin, $"{i}")));
+                }
+                nodes.Add(MakeBoolIntNode(bin, "bUsesSceneColor"));
+                nodes.Add(MakeBoolIntNode(bin, "bUsesSceneDepth"));
+                nodes.Add(ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                {
+                    MakeBoolIntNode(bin, "bUsesDynamicParameter"),
+                    MakeBoolIntNode(bin, "bUsesLightmapUVs"),
+                    MakeBoolIntNode(bin, "bUsesMaterialVertexPositionOffset"),
+                    MakeBoolIntNode(bin, "unknown bool?")
+                }));
+                nodes.Add(new BinInterpNode(bin.Position, $"UsingTransforms: {(ECoordTransformUsage)bin.ReadUInt32()}"));
+                if (Pcc.Game == MEGame.ME1)
+                {
+                    int count = bin.ReadInt32();
+                    var unkListNode = new BinInterpNode(bin.Position - 4, $"MaterialExpressions list? ({count} items)");
+                    nodes.Add(unkListNode);
+                    for (int i = 0; i < count; i++)
                     {
-                        Items = ReadList(unkCount, i => new BinInterpNode(bin.Position, $"{i}")
+                        var iNode = new BinInterpNode(bin.Position, $"{i}");
+                        unkListNode.Items.Add(iNode);
+                        iNode.Items.Add(MakeArrayNode(bin, "VectorExpressions", j => ReadMaterialUniformExpression(bin, $"{j}")));
+                        iNode.Items.Add(MakeArrayNode(bin, "ScalarExpressions", j => ReadMaterialUniformExpression(bin, $"{j}")));
+                        iNode.Items.Add(MakeArrayNode(bin, "TextureExpressions", j => ReadMaterialUniformExpression(bin, $"{j}")));
+                        iNode.Items.Add(MakeArrayNode(bin, "UniformCubeTextureExpressions", j => ReadMaterialUniformExpression(bin, $"{j}")));
+                        iNode.Items.Add(MakeUInt32Node(bin, "unk?"));
+                        iNode.Items.Add(MakeUInt32Node(bin, "unk?"));
+                        iNode.Items.Add(MakeUInt32Node(bin, "unk?"));
+                        iNode.Items.Add(MakeUInt32Node(bin, "unk?"));
+                    }
+                }
+                else
+                {
+                    nodes.Add(MakeArrayNode(bin, "TextureLookups", i => new BinInterpNode(bin.Position, $"{i}")
+                    {
+                        Items =
                         {
-                            Items =
+                            MakeInt32Node(bin, "TexCoordIndex"),
+                            MakeInt32Node(bin, "TextureIndex"),
+                            ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME1, ifTrue: () => new ITreeItem[]
                             {
-                                MakeInt32Node(bin, "unk int"),
-                                MakeFloatNode(bin, "unk float"),
-                                MakeInt32Node(bin, "unk int")
-                            }
-                        })
-                    });
+                                MakeFloatNode(bin, "TilingScale")
+                            }, ifFalse: () => new ITreeItem[]
+                            {
+                                MakeFloatNode(bin, "TilingUScale"),
+                                MakeFloatNode(bin, "TilingVScale")
+                            }),
+                        }
+                    }));
                 }
+                nodes.Add(MakeInt32Node(bin, "unk"));
+                if (Pcc.Game == MEGame.ME1)
+                {
+                    int unkCount;
+                    nodes.Add(new BinInterpNode(bin.Position, $"Unknown count: {unkCount = bin.ReadInt32()}"));
+                    nodes.Add(MakeInt32Node(bin, "Unknown?"));
+                    if (unkCount > 0)
+                    {
+                        nodes.Add(new BinInterpNode(bin.Position, $"unknown array ({unkCount} items)")
+                        {
+                            Items = ReadList(unkCount, i => new BinInterpNode(bin.Position, $"{i}")
+                            {
+                                Items =
+                                {
+                                    MakeInt32Node(bin, "unk int"),
+                                    MakeFloatNode(bin, "unk float"),
+                                    MakeInt32Node(bin, "unk int")
+                                }
+                            })
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                nodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return node;
         }

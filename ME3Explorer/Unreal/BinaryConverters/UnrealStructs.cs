@@ -104,6 +104,22 @@ namespace ME3Explorer.Unreal.BinaryConverters
         }
     }
 
+    public readonly struct Quat
+    {
+        public readonly float X;
+        public readonly float Y;
+        public readonly float Z;
+        public readonly float W;
+
+        public Quat(float x, float y, float z, float w)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+            W = w;
+        }
+    }
+
     public readonly struct PackedNormal
     {
         public readonly byte X;
@@ -177,6 +193,20 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.ms.WriteInt32(rot.Pitch);
                 sc.ms.WriteInt32(rot.Yaw);
                 sc.ms.WriteInt32(rot.Roll);
+            }
+        }
+        public static void Serialize(this SerializingContainer2 sc, ref Quat quat)
+        {
+            if (sc.IsLoading)
+            {
+                quat = new Quat(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat());
+            }
+            else
+            {
+                sc.ms.WriteFloat(quat.X);
+                sc.ms.WriteFloat(quat.Y);
+                sc.ms.WriteFloat(quat.Z);
+                sc.ms.WriteFloat(quat.W);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Vector2D vec)

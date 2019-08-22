@@ -63,17 +63,7 @@ namespace ME3Explorer.Unreal.Classes
                 var parsedMaterial = ObjectBinary.From<Material>(export);
                 foreach (var v in parsedMaterial.SM3MaterialResource.Uniform2DTextureExpressions)
                 {
-                    if (v is MaterialUniformExpressionTextureParameter muetp)
-                    {
-                        //TODO: CHANGE BACK ONCE SIRCXYRTYX FIXES PARSING
-                        int expIndex = muetp.ParameterName.Number;
-                        Textures.Add(export.FileRef.getEntry(expIndex));
-                    }
-                    else
-                    {
-                        Textures.Add(export.FileRef.getEntry(v.TextureIndex.value));
-                    }
-                    
+                    Textures.Add(export.FileRef.getEntry(v.TextureIndex.value));
                 }
             }
             else if (export.ClassName == "MaterialInstanceConstant")

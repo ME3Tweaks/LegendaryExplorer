@@ -67,8 +67,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public bool unkBool1;
         //end ME3
         public uint UsingTransforms; //ECoordTransformUsage
-        public TextureLookup[] TextureLookups;
+        public TextureLookup[] TextureLookups; //not ME1
         //begin ME1
+        public ME1MaterialUniformExpressionsElement[] Me1MaterialUniformExpressionsList;
+        public int unk1;
         public int unkCount
         {
             get => unkList?.Length ?? 0;
@@ -77,6 +79,18 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public int unkInt2;
         public (int, float, int)[] unkList;
         //end ME1
+    }
+
+    public class ME1MaterialUniformExpressionsElement
+    {
+        public MaterialUniformExpression[] UniformPixelVectorExpressions;
+        public MaterialUniformExpression[] UniformPixelScalarExpressions;
+        public MaterialUniformExpressionTexture[] Uniform2DTextureExpressions;
+        public MaterialUniformExpressionTexture[] UniformCubeTextureExpressions;
+        public uint unk2;
+        public uint unk3;
+        public uint unk4;
+        public uint unk5;
     }
 
     public class StaticParameterSet
@@ -115,6 +129,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
     #region MaterialUniformExpressions
     //FMaterialUniformExpressionRealTime
     //FMaterialUniformExpressionTime
+    //FMaterialUniformExpressionFractionOfEffectEnabled
     public class MaterialUniformExpression
     {
         public NameReference ExpressionType;
@@ -151,6 +166,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return new MaterialUniformExpressionFoldedMath();
                 case "FMaterialUniformExpressionTime":
                 case "FMaterialUniformExpressionRealTime":
+                case "FMaterialUniformExpressionFractionOfEffectEnabled":
                     return new MaterialUniformExpression();
                 case "FMaterialUniformExpressionScalarParameter":
                     return new MaterialUniformExpressionScalarParameter();
@@ -163,6 +179,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return new MaterialUniformExpressionTextureParameter();
                 case "FMaterialUniformExpressionVectorParameter":
                     return new MaterialUniformExpressionVectorParameter();
+                case "FMaterialUniformExpressionFlipbookParameter":
+                    return new MaterialUniformExpressionFlipbookParameter();
                 default:
                     throw new ArgumentException(expressionType.InstancedString);
             }
@@ -185,6 +203,18 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 X = Create(sc);
             }
             X.Serialize(sc);
+        }
+    }
+    //FMaterialUniformExpressionFlipbookParameter
+    public class MaterialUniformExpressionFlipbookParameter : MaterialUniformExpression
+    {
+        public int Index;
+        public UIndex TextureIndex;
+        public override void Serialize(SerializingContainer2 sc)
+        {
+            base.Serialize(sc);
+            sc.Serialize(ref Index);
+            sc.Serialize(ref TextureIndex);
         }
     }
     //FMaterialUniformExpressionSine
@@ -300,8 +330,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public NameReference ParameterName;
         public override void Serialize(SerializingContainer2 sc)
         {
-            base.Serialize(sc);
+            sc.Serialize(ref ExpressionType);
             sc.Serialize(ref ParameterName);
+            sc.Serialize(ref TextureIndex);
         }
     }
     //FMaterialUniformExpressionScalarParameter
@@ -370,11 +401,19 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.Serialize(ref mres.unkBool1);
             }
             sc.Serialize(ref mres.UsingTransforms);
-            sc.Serialize(ref mres.TextureLookups, Serialize);
-            int dummy = 0;
-            sc.Serialize(ref dummy);
             if (sc.Game == MEGame.ME1)
             {
+                sc.Serialize(ref mres.Me1MaterialUniformExpressionsList, Serialize);
+            }
+            else
+            {
+                sc.Serialize(ref mres.TextureLookups, Serialize);
+                int dummy = 0;
+                sc.Serialize(ref dummy);
+            }
+            if (sc.Game == MEGame.ME1)
+            {
+                sc.Serialize(ref mres.unk1);
                 int tmp = mres.unkCount;
                 sc.Serialize(ref tmp);
                 mres.unkCount = tmp; //will create mr.unkList of unkCount size
@@ -468,6 +507,21 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref param.CompressionSettings);
             sc.Serialize(ref param.bOverride);
             sc.Serialize(ref param.ExpressionGUID);
+        }
+        public static void Serialize(this SerializingContainer2 sc, ref ME1MaterialUniformExpressionsElement elem)
+        {
+            if (sc.IsLoading)
+            {
+                elem = new ME1MaterialUniformExpressionsElement();
+            }
+            sc.Serialize(ref elem.UniformPixelVectorExpressions, Serialize);
+            sc.Serialize(ref elem.UniformPixelScalarExpressions, Serialize);
+            sc.Serialize(ref elem.Uniform2DTextureExpressions, Serialize);
+            sc.Serialize(ref elem.UniformCubeTextureExpressions, Serialize);
+            sc.Serialize(ref elem.unk2);
+            sc.Serialize(ref elem.unk3);
+            sc.Serialize(ref elem.unk4);
+            sc.Serialize(ref elem.unk5);
         }
     }
 }

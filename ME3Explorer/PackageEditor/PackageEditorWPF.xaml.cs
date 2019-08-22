@@ -3983,7 +3983,7 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            //var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Union(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
+            //var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
             var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
@@ -4023,7 +4023,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "StaticMesh", true)) break;
+                    if (findClass(filePath, "Material", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
                     try
@@ -4205,15 +4205,15 @@ namespace ME3Explorer
                     {
                         try
                         {
-                            var stm = ME3Explorer.Unreal.BinaryConverters.ObjectBinary.From<ME3Explorer.Unreal.BinaryConverters.StaticMesh>(exp);
+                            var mat = ME3Explorer.Unreal.BinaryConverters.ObjectBinary.From<ME3Explorer.Unreal.BinaryConverters.Material>(exp);
                             var ms = new MemoryStream();
-                            stm.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
+                            mat.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
                             var buff = ms.ToArray();
 
                             if (!buff.SequenceEqual(exp.getBinaryData()))
                             {
-                                File.WriteAllBytes(@"C:\Users\Image 17\convertedSTM", buff);
-                                File.WriteAllBytes(@"C:\Users\Image 17\originalSTM", exp.getBinaryData());
+                                File.WriteAllBytes(@"C:\Users\Image 17\convertedMat", buff);
+                                File.WriteAllBytes(@"C:\Users\Image 17\originalMAt", exp.getBinaryData());
                                 interestingExports.Add($"{exp.UIndex}: {filePath}");
                                 return true;
                             }
