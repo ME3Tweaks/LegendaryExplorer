@@ -72,7 +72,7 @@ namespace ME3Explorer.MetadataEditor
 
         public bool HexChanged
         {
-            get => _hexChanged;
+            get => _hexChanged && CurrentLoadedEntry != null;
             private set => SetProperty(ref _hexChanged, value);
         }
 
@@ -83,7 +83,7 @@ namespace ME3Explorer.MetadataEditor
             SaveHexChangesCommand = new GenericCommand(SaveHexChanges, CanSaveHexChanges);
         }
 
-        private bool CanSaveHexChanges() => HexChanged;
+        private bool CanSaveHexChanges() => CurrentLoadedEntry!= null && HexChanged;
 
         private void SaveHexChanges()
         {
@@ -402,6 +402,8 @@ namespace ME3Explorer.MetadataEditor
         private void UnloadEntry()
         {
             CurrentLoadedEntry = null;
+            ClearMetadataPane();
+            Header_Hexbox?.Refresh();
         }
 
         internal void LoadPccData(IMEPackage pcc)

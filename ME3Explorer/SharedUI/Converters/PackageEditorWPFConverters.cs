@@ -109,6 +109,8 @@ namespace ME3Explorer.SharedUI.Converters
                     case "SkeletalMesh":
                     case "StaticMesh":
                         return "/PackageEditor/EntryIcons/icon_mesh.png";
+                    case "Sequence":
+                        return "/PackageEditor/EntryIcons/icon_sequence.png";
                 }
             }
 
