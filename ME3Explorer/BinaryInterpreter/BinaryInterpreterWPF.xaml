@@ -35,7 +35,7 @@
             <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
                 <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="BinaryInterpreter_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
                 <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
-                <Button Content="Toggle Hexbox Width" Click="BinaryInterpreter_ToggleHexboxWidth_Click"/>
+                <Button Name="ToggleHexboxWidth_Button" Content="Toggle Hexbox Width" Click="BinaryInterpreter_ToggleHexboxWidth_Click"/>
                 <Separator Name="EditorSet_Separator_LeftsideArray" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array" Content="Add Array Element" Click="AddArrayElement_Button_Click" VerticalAlignment="Center"/>
                 <Button Name="RemoveArrayElement_Button" ToolTip="Remove the selected element from the array" Content="Remove Array Element" Click="RemoveArrayElement_Button_Click" VerticalAlignment="Center"/>
@@ -97,7 +97,7 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
-                        <ColumnDefinition Width="1" />
+                        <ColumnDefinition Width="1" Name="HexboxColumn_GridSplitter_ColumnDefinition"/>
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
@@ -107,6 +107,7 @@
                         </hb1:HexBox>
                     </WindowsFormsHost>
                     <GridSplitter Grid.Column="1" 
+                      Name="HexProps_GridSplitter"
                       Grid.Row="1" HorizontalAlignment="Stretch" 
                       Margin="-5,0"
                       BorderThickness="5,0"

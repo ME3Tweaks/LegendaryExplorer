@@ -23,6 +23,7 @@
         xmlns:metadataeditor="clr-namespace:ME3Explorer.MetadataEditor"
                 xmlns:me1tlkeditor="clr-namespace:ME3Explorer.ME1TlkEditor"
                 xmlns:packageEditor="clr-namespace:ME3Explorer.PackageEditor"
+                xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
                 Title="Package Editor WPF" Height="720" Width="1100"
         Icon="..\Resources\packageeditorwpf_256x256.ico"
         DragOver="Window_DragOver"
@@ -467,6 +468,12 @@
                             <TextBlock Text="Binary Interpreter" ToolTip="View and edit binary data for supported classes"/>
                         </TabItem.Header>
                         <global:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter"/>
+                    </TabItem>
+                    <TabItem Name="MeshRenderer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Mesh" ToolTip="View 3D mesh"/>
+                        </TabItem.Header>
+                        <meshplorer:MeshRendererWPF x:Name="MeshRendererTab_MeshRenderer"/>
                     </TabItem>
                     <TabItem Name="Script_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

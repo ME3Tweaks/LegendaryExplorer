@@ -31,6 +31,14 @@ namespace ME3Explorer
     /// </summary>
     public partial class BinaryInterpreterWPF : ExportLoaderControl
     {
+        public bool HideHexBox
+        {
+            get => (bool)GetValue(HideHexBoxProperty);
+            set => SetValue(HideHexBoxProperty, value);
+        }
+        public static readonly DependencyProperty HideHexBoxProperty = DependencyProperty.Register(
+            "HideHexBox", typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false, HideHexBoxChangedCallback));
+
         private HexBox BinaryInterpreter_Hexbox;
 
         private string _selectedFileOffset;
@@ -1153,6 +1161,27 @@ namespace ME3Explorer
             BinaryInterpreter_Hexbox = null;
             BinaryInterpreter_Hexbox_Host.Child.Dispose();
             BinaryInterpreter_Hexbox_Host.Dispose();
+        }
+
+        private static void HideHexBoxChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            BinaryInterpreterWPF i = (BinaryInterpreterWPF)obj;
+            if ((bool)e.NewValue)
+            {
+                i.BinaryInterpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Collapsed;
+                i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(0);
+                i.HexboxColumnDefinition.MinWidth = 0;
+                i.HexboxColumnDefinition.MaxWidth = 0;
+                i.HexboxColumnDefinition.Width = new GridLength(0);
+            }
+            else
+            {
+                i.BinaryInterpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Visible;
+                i.HexboxColumnDefinition.Width = new GridLength(285);
+                i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
+                i.HexboxColumnDefinition.MinWidth = 220;
+                i.HexboxColumnDefinition.MaxWidth = 718;
+            }
         }
 
         private void CopyTree_Button_OnClick(object sender, RoutedEventArgs e)

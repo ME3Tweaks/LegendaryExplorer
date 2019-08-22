@@ -558,50 +558,26 @@ namespace ME3Explorer.Scene3D
             for (int i = 0; i < m.Materials.Count; i++)
             {
                 Unreal.Classes.MaterialInstanceConstant mat = m.MatInsts[i];
-                if (mat == null)
+                if (mat == null && m.Materials[i] < 0)
                 {
                     // The material instance is an import!
                     ImportEntry matImport = m.Export.FileRef.getUImport(m.Materials[i]);
-
-                    // Find the filename of the package
-                    string packageFilename = "";
-                    if (m.Export.FileRef.Game == MEGame.ME1)
+                    var externalAsset = FindExternalAsset(matImport);
+                    if (externalAsset != null)
                     {
-                        IEntry parent = matImport.Parent;
-                        while (parent.HasParent)
-                        {
-                            parent = parent.Parent;
-                        }
-                        var loadedPackages = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
-                        if (loadedPackages.TryGetValue(parent.ObjectName, out string packagePath))
-                        {
-                            packageFilename = packagePath;
-                        }
-                        else
-                        {
-                            throw new Exception("Cannot find referenced package file: " + parent.ObjectName);
-                        }
-                    }
-                    else
-                    {
-                        throw new NotImplementedException("We don't know how to find package filenames from imports for ME2 and ME3 yet!");
-                    }
-
-                    if (File.Exists(packageFilename))
-                    {
-                        using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(packageFilename))
-                        {
-                            ExportEntry matExport = pcc.Exports.FirstOrDefault(exp => exp.ObjectName == matImport.ObjectName);
-                            mat = new Unreal.Classes.MaterialInstanceConstant(matExport);
-                        }
+                        mat = new MaterialInstanceConstant(externalAsset);
                     }
                 }
-                ModelPreviewMaterial material;
-                // TODO: pick what material class best fits based on what properties the 
-                // MaterialInstanceConstant mat has.
-                // For now, just use the default material.
-                material = new TexturedPreviewMaterial(texcache, mat);
-                AddMaterial(material.Properties["Name"], material);
+
+                if (mat != null)
+                {
+                    ModelPreviewMaterial material;
+                    // TODO: pick what material class best fits based on what properties the 
+                    // MaterialInstanceConstant mat has.
+                    // For now, just use the default material.
+                    material = new TexturedPreviewMaterial(texcache, mat);
+                    AddMaterial(material.Properties["Name"], material);
+                }
             }
 
             // STEP 2: LODS

@@ -121,6 +121,7 @@ namespace ME3Explorer.Meshplorer
 
         public override void LoadExport(ExportEntry exportEntry)
         {
+            SceneViewer.InitializeD3D();
             CurrentLoadedExport = exportEntry;
 
             Preview?.Dispose();

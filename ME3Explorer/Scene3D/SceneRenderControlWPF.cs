@@ -9,6 +9,7 @@ using SharpDX;
 using SharpDX.DXGI;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D;
+using System.Windows;
 
 namespace ME3Explorer.Scene3D
 {
@@ -19,6 +20,7 @@ namespace ME3Explorer.Scene3D
     {
         private Microsoft.Wpf.Interop.DirectX.D3D11Image D3DImage = null;
         private Image Image = null;
+        private bool initialized;
 
         public SceneRenderContext Context { get; } = new SceneRenderContext();
 
@@ -45,13 +47,29 @@ namespace ME3Explorer.Scene3D
             CompositionTarget.Rendering += CompositionTarget_Rendering;
 
             this.SizeChanged += SceneRenderControlWPF_SizeChanged;
-            this.Loaded += SceneRenderControlWPF_Loaded;
             this.PreviewMouseDown += SceneRenderControlWPF_PreviewMouseDown;
             this.PreviewMouseMove += SceneRenderControlWPF_PreviewMouseMove;
             this.PreviewMouseUp += SceneRenderControlWPF_PreviewMouseUp;
             this.PreviewMouseWheel += SceneRenderControlWPF_PreviewMouseWheel;
             // TODO: Hook up keyboard events
             // TODO: Hook up some sort of dispose event
+        }
+
+        /// <summary>
+        /// Call this method at once, once the window hosting this control has been fully loaded.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void InitializeD3D()
+        {
+            if (initialized) return;
+            initialized = true;
+            D3DImage.WindowOwner = (new System.Windows.Interop.WindowInteropHelper(System.Windows.Window.GetWindow(this))).Handle;
+            DeviceCreationFlags flags = DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded;
+#if DEBUG
+            flags |= DeviceCreationFlags.Debug;
+#endif
+            Context.LoadDirect3D(new SharpDX.Direct3D11.Device(DriverType.Hardware, flags));
         }
 
         private void SceneRenderControlWPF_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
@@ -93,16 +111,6 @@ namespace ME3Explorer.Scene3D
                 return;
             System.Windows.Point position = e.GetPosition(this);
             Context.MouseDown(buttons, (int)position.X, (int)position.Y);
-        }
-
-        private void SceneRenderControlWPF_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            D3DImage.WindowOwner = (new System.Windows.Interop.WindowInteropHelper(System.Windows.Window.GetWindow(this))).Handle;
-            DeviceCreationFlags flags = DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded;
-#if DEBUG
-            flags |= DeviceCreationFlags.Debug;
-#endif
-            Context.LoadDirect3D(new SharpDX.Direct3D11.Device(DriverType.Hardware, flags));
         }
 
         private void SceneRenderControlWPF_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)

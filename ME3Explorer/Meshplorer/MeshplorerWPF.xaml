@@ -60,7 +60,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MinWidth="250" Width="250"/>
                     <ColumnDefinition MinWidth="5" MaxWidth="5"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" MinWidth="300"/>
                     <ColumnDefinition MinWidth="5" MaxWidth="5"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
@@ -123,17 +123,6 @@
                     </Grid>
                 </StackPanel>
 
-                <Grid Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition MinHeight="5" MaxHeight="5" Height="5"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <local:InterpreterWPF x:Name="InterpreterTab_Interpreter" HideHexBox="True"/>
-                    <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch"/>
-                    <local:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter" Grid.Row="2"/>
-                </Grid>
-                <meshplorer:MeshRendererWPF x:Name="Mesh3DViewer" Grid.Column="4"/>
                 <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectionChanged="MeshExportsList_SelectionChanged">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type packages:ExportEntry}">
@@ -159,6 +148,19 @@
                         </DataTemplate>
                     </ListBox.Resources>
                 </ListBox>
+
+                <Grid Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition MinHeight="5" MaxHeight="5" Height="5"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <local:InterpreterWPF x:Name="InterpreterTab_Interpreter" HideHexBox="True"/>
+                    <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch"/>
+                    <local:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter" Grid.Row="2" HideHexBox="True"/>
+                </Grid>
+                <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch"  Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}"/>
+                <meshplorer:MeshRendererWPF x:Name="Mesh3DViewer" Grid.Column="4"  Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}"/>
             </Grid>
         </DockPanel>
     </xctk:BusyIndicator>
