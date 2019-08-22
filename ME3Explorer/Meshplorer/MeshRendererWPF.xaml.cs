@@ -63,6 +63,7 @@ namespace ME3Explorer.Meshplorer
         private ModelPreview Preview;
         private int CurrentLOD = 0;
         private float PreviewRotation = 0.0f;
+        private bool HasLoaded;
 
         private void SceneViewer_Render(object sender, EventArgs e)
         {
@@ -132,14 +133,14 @@ namespace ME3Explorer.Meshplorer
                 Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, sm, CurrentLOD, SceneViewer.Context.TextureCache);
                 //var bounding = sm.Bounds.SphereRadius;
                 //SceneViewer.Context.Camera.Position = new Vector3(bounding / 2, bounding / 2, bounding / 3);
-                SceneViewer.Context.Camera.FocusDepth = sm.Bounds.SphereRadius *2.5f;
+                SceneViewer.Context.Camera.FocusDepth = sm.Bounds.SphereRadius *2.3f;
 
             }
             else if (CurrentLoadedExport.ClassName == "SkeletalMesh")
             {
                 var sm = new Unreal.Classes.SkeletalMesh(CurrentLoadedExport);
                 Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, sm, SceneViewer.Context.TextureCache);
-                SceneViewer.Context.Camera.FocusDepth = sm.Bounding.r * 2.5f;
+                SceneViewer.Context.Camera.FocusDepth = sm.Bounding.r * 2.0f;
 
                 //var bounding = sm.Bounding.r;
                 //SceneViewer.Context.Camera.Position = new Vector3(bounding / 2, bounding / 2, bounding / 3);
@@ -152,7 +153,11 @@ namespace ME3Explorer.Meshplorer
 
         private void MeshRenderer_Loaded(object sender, RoutedEventArgs e)
         {
-            SceneViewer.Context.Update += MeshRenderer_ViewUpdate;
+            if (!HasLoaded)
+            {
+                HasLoaded = true;
+                SceneViewer.Context.Update += MeshRenderer_ViewUpdate;
+            }
         }
 
         private void MeshRenderer_ViewUpdate(object sender, float e)

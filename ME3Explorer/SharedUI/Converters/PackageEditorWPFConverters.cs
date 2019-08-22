@@ -89,7 +89,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is ExportEntry exp && PackageEditorWPF.ExportFileTypes.Contains(exp.ClassName))
+            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && !exp.ObjectName.StartsWith("Default__") && PackageEditorWPF.ExportIconTypes.Contains(exp.ClassName))
             {
                 switch (exp.ClassName)
                 {
@@ -102,6 +102,13 @@ namespace ME3Explorer.SharedUI.Converters
                         return "/PackageEditor/EntryIcons/icon_sound.png";
                     case "BioTlkFile":
                         return "/PackageEditor/EntryIcons/icon_tlkfile.png";
+                    case "World":
+                        return "/PackageEditor/EntryIcons/icon_world.png";
+                    case "Package":
+                        return "/PackageEditor/EntryIcons/icon_package.png";
+                    case "SkeletalMesh":
+                    case "StaticMesh":
+                        return "/PackageEditor/EntryIcons/icon_mesh.png";
                 }
             }
 
@@ -119,7 +126,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is ExportEntry exp && PackageEditorWPF.ExportFileTypes.Contains(exp.ClassName))
+            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && !exp.ObjectName.StartsWith("Default__") && PackageEditorWPF.ExportIconTypes.Contains(exp.ClassName))
             {
                 return Visibility.Visible;
             }
@@ -138,7 +145,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is ExportEntry exp && parameter is string type)
+            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && parameter is string type)
             {
                 return exp.ClassName == type ? Visibility.Visible : Visibility.Collapsed;
             }

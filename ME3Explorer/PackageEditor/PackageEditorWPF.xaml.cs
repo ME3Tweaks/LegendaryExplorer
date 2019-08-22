@@ -52,6 +52,7 @@ namespace ME3Explorer
             Tree
         }
         public static readonly string[] ExportFileTypes = { "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile" };
+        public static readonly string[] ExportIconTypes = { "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile", "World", "Package", "StaticMesh", "SkeletalMesh"};
 
         /// <summary>
         /// Used to populate the metadata editor values so the list does not constantly need to rebuilt, which can slow down the program on large files like SFXGame or BIOC_Base.
@@ -3939,8 +3940,6 @@ namespace ME3Explorer
             {
                 AllTreeViewNodesX[0].FlattenTree().ForEach(x => x.RefreshDisplayName());
             }
-
-
         }
 
         private void EmbeddedTextureViewer_AutoLoad_Click(object sender, RoutedEventArgs e)
@@ -4797,6 +4796,15 @@ namespace ME3Explorer
             {
                 MessageBox.Show(this, "Can only convert Mass Effect files!");
             }
+        }
+
+        private void ShowExportIcons_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.PackageEditorWPF_ShowExportIcons = !Properties.Settings.Default.PackageEditorWPF_ShowExportIcons;
+            Properties.Settings.Default.Save();
+            //todo: refire bindings
+            LeftSide_TreeView.DataContext = null;
+            LeftSide_TreeView.DataContext = this;
         }
     }
 }
