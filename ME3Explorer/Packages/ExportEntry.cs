@@ -11,6 +11,8 @@ using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
+    [DebuggerDisplay("{Game} ExportEntry | {UIndex} {ObjectName}({ClassName}) in {System.IO.Path.GetFileName(FileRef.FilePath)}")]
+
     public class ExportEntry : NotifyPropertyChangedBase, IEntry
     {
         public IMEPackage FileRef { get; protected set; }

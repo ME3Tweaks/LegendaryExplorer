@@ -6865,7 +6865,7 @@ namespace ME3Explorer
                             vpos += 4;
                             float TanZ = BitConverter.ToSingle(data, vpos);
                             vpos += 4;
-                            
+
                             int infB1 = data[vpos];
                             vpos += 1;
                             int infW1 = data[vpos];
@@ -6914,26 +6914,26 @@ namespace ME3Explorer
                             vpos += 4;
                             float vPosZ = BitConverter.ToSingle(data, vpos);
                             vpos += 4;
-                            int infB1 = BitConverter.ToInt16(data, vpos);
-                            vpos += 2;
-                            int infW1 = BitConverter.ToInt16(data, vpos);
-                            vpos += 2;
-                            int infB2 = BitConverter.ToInt16(data, vpos);
-                            vpos += 2;
-                            int infW2 = BitConverter.ToInt16(data, vpos);
-                            vpos += 2;
-                            int infB3 = BitConverter.ToInt16(data, vpos);
-                            vpos += 2;
-                            int infW3 = BitConverter.ToInt16(data, vpos);
-                            vpos += 2;
-                            int infB4 = BitConverter.ToInt16(data, vpos);
-                            vpos += 2;
-                            int infW4 = BitConverter.ToInt16(data, vpos);
-                            vpos += 2;
+                            int infB1 = data[vpos];
+                            vpos += 1;
+                            int infW1 = data[vpos];
+                            vpos += 1;
+                            int infB2 = data[vpos];
+                            vpos += 1;
+                            int infW2 = data[vpos];
+                            vpos += 1;
+                            int infB3 = data[vpos];
+                            vpos += 1;
+                            int infW3 = data[vpos];
+                            vpos += 1;
+                            int infB4 = data[vpos];
+                            vpos += 1;
+                            int infW4 = data[vpos];
+                            vpos += 1;
                             float uvU = ModelPreview.HalfToFloat(BitConverter.ToUInt16(data, vpos));
-                            vpos += 4;
+                            vpos += 2;
                             float uvV = ModelPreview.HalfToFloat(BitConverter.ToUInt16(data, vpos));
-                            vpos += 4;
+                            vpos += 2;
                             vertices.Items.Add(new BinInterpNode
                             {
                                 Header = $"{(pos - binarystart):X4} {v}: Tangent X:{TanX} Z:{TanZ} Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Influences: {infB1}:{infW1} {infB2}:{infW2} {infB3}:{infW4} {infB4}:{infW4} UV U:{uvU} W:{uvV}",
@@ -6941,7 +6941,8 @@ namespace ME3Explorer
 
                                 Tag = NodeType.Unknown,
                             });
-                            if (vpos - pos != vtxSize) throw new Exception();
+                            int amountRead = vpos - pos;
+                            if (amountRead != vtxSize) throw new Exception("Vertex size read does not match listed vertex size. Should be: " + vtxSize + ", read " + amountRead);
                             pos += vtxSize;
                         }
                     }
@@ -7800,7 +7801,7 @@ namespace ME3Explorer
                                         MakeInt32Node(bin, "FColor size"),
                                         MakeArrayNode(bin, "VertexData", k => MakeColorNode(bin, $"{k}"))
                                     }),
-                                    
+
                                 }
                             }
                         }),
@@ -7838,7 +7839,7 @@ namespace ME3Explorer
                             MakeInt32Node(bin, "ElementCount"),
                             new BinInterpNode(bin.Position, $"BulkDataSizeOnDisk: {count = bin.ReadInt32()}"),
                             MakeInt32Node(bin, "BulkDataOffsetInFile"),
-                            ListInitHelper.ConditionalAdd(count > 0, () => 
+                            ListInitHelper.ConditionalAdd(count > 0, () =>
                             {
                                 ITreeItem node = new BinInterpNode(bin.Position, $"XML file ({count} bytes)") {Length = count};
                                 bin.Skip(count);

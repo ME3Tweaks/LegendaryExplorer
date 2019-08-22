@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using ME3Explorer.Packages;
+using ME3Explorer.Scene3D;
 using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Explorer.Unreal.Classes
@@ -12,13 +13,14 @@ namespace ME3Explorer.Unreal.Classes
         public ExportEntry export;
         public byte[] memory;
         public int memsize;
-        public List<TextureParam> Textures = new List<TextureParam>();
+        public List<IEntry> Textures = new List<IEntry>();
+        //public List<TextureParam> Textures = new List<TextureParam>();
 
-        public struct TextureParam
-        {
-            public int TexIndex;
-            public string Desc;
-        }
+        //public struct TextureParam
+        //{
+        //    public int TexIndex;
+        //    public string Desc;
+        //}
 
         public MaterialInstanceConstant(ExportEntry export)
         {
@@ -28,7 +30,7 @@ namespace ME3Explorer.Unreal.Classes
             var properties = export.GetProperties();
 
             bool me1Parsed = false;
-            if (export.Game == MEGame.ME1) //todo: maybe check to see if textureparametervalues exists first, but in testing me1 didn't seem to have this
+            if (export.Game == MEGame.ME1 || export.Game == MEGame.ME2) //todo: maybe check to see if textureparametervalues exists first, but in testing me1 didn't seem to have this
             {
                 try
                 {
@@ -42,17 +44,13 @@ namespace ME3Explorer.Unreal.Classes
             }
 
 
-            if (export.Game != MEGame.ME1 || !me1Parsed)
+            if (export.Game == MEGame.ME3 || !me1Parsed)
             {
                 if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> paramVals)
                 {
                     foreach (StructProperty paramVal in paramVals)
                     {
-                        Textures.Add(new TextureParam
-                        {
-                            TexIndex = paramVal.GetProp<ObjectProperty>("ParameterValue").Value,
-                            Desc = paramVal.GetProp<NameProperty>("ParameterName").Value
-                        });
+                        Textures.Add(export.FileRef.getEntry(paramVal.GetProp<ObjectProperty>("ParameterValue").Value));
                     }
                 }
             }
@@ -69,25 +67,18 @@ namespace ME3Explorer.Unreal.Classes
                     {
                         //TODO: CHANGE BACK ONCE SIRCXYRTYX FIXES PARSING
                         int expIndex = muetp.ParameterName.Number;
-                        Textures.Add(new TextureParam
-                        {
-                            TexIndex = expIndex,
-                            Desc = export.FileRef.getEntry(expIndex).GetFullPath
-                        });
+                        Textures.Add(export.FileRef.getEntry(expIndex));
                     }
                     else
                     {
-                        Textures.Add(new TextureParam
-                        {
-                            TexIndex = v.TextureIndex.value,
-                            Desc = export.FileRef.getEntry(v.TextureIndex.value).GetFullPath
-                        });
+                        Textures.Add(export.FileRef.getEntry(v.TextureIndex.value));
                     }
                     
                 }
             }
             else if (export.ClassName == "MaterialInstanceConstant")
             {
+                //Read parent
                 if (export.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentObjProp)
                 {
                     // This is an instance... maybe?
@@ -98,19 +89,22 @@ namespace ME3Explorer.Unreal.Classes
                     }
                     else
                     {
-                        Debug.WriteLine("PARENT IS AN IMPORT MATERIAL... Not supported right now");
+                        ImportEntry ie = export.FileRef.getUImport(parentObjProp.Value);
+                        var externalEntry = ModelPreview.FindExternalAsset(ie);
+                        if (externalEntry != null)
+                        {
+                            ReadMaterial(externalEntry);
+                        }
                     }
 
                 }
-                else if (export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
+
+                //Read Local
+                if (export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
                 {
                     foreach (var obj in textures)
                     {
-                        Textures.Add(new TextureParam
-                        {
-                            TexIndex = obj.Value,
-                            Desc = export.FileRef.getEntry(obj.Value).GetFullPath
-                        });
+                        Textures.Add(export.FileRef.getEntry(obj.Value));
                     }
                 }
             }
@@ -121,8 +115,8 @@ namespace ME3Explorer.Unreal.Classes
             TreeNode res = new TreeNode($"#{export.UIndex} \"{export.ObjectName}\"");
             for (int i = 0; i < Textures.Count; i++)
             {
-                string s = $"{Textures[i].Desc} = #{Textures[i].TexIndex - 1}";
-                s += $" \"{export.FileRef.getObjectName(Textures[i].TexIndex)}\"";
+                string s = $"{Textures[i].GetFullPath} = #{Textures[i].UIndex}";
+                s += $" \"{export.FileRef.getObjectName(Textures[i].UIndex)}\"";
                 res.Nodes.Add(s);
             }
             TreeNode propsnode = new TreeNode("Properties");

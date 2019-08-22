@@ -68,10 +68,7 @@ namespace ME3Explorer.Meshplorer
         {
             if (Preview != null && Preview.LODs.Count > 0)
             {
-                if (Rotating)
-                {
-                    PreviewRotation += .005f;
-                }
+               
                 if (Solid && CurrentLOD < Preview.LODs.Count)
                 {
                     SceneViewer.Context.Wireframe = false;
@@ -87,15 +84,13 @@ namespace ME3Explorer.Meshplorer
             }
         }
 
-        private float globalscale = 1.0f;
         private void CenterView()
         {
             if (Preview != null && Preview.LODs.Count > 0)
             {
                 WorldMesh m = Preview.LODs[CurrentLOD].Mesh;
-                globalscale = 0.5f / m.AABBHalfSize.Length();
-                SceneViewer.Context.Camera.Position = m.AABBCenter * globalscale;
-                SceneViewer.Context.Camera.FocusDepth = 1.0f;
+                SceneViewer.Context.Camera.Position = m.AABBCenter;
+                //SceneViewer.Context.Camera.FocusDepth = 1.0f;
                 if (SceneViewer.Context.Camera.FirstPerson)
                 {
                     SceneViewer.Context.Camera.Position -= SceneViewer.Context.Camera.CameraForward * SceneViewer.Context.Camera.FocusDepth;
@@ -108,7 +103,6 @@ namespace ME3Explorer.Meshplorer
                 SceneViewer.Context.Camera.Position = SharpDX.Vector3.Zero;
                 SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 5.0f;
                 SceneViewer.Context.Camera.Yaw = (float)Math.PI / 4.0f;
-                globalscale = 1.0f;
                 Debug.WriteLine("Camera position: " + SceneViewer.Context.Camera.Position);
             }
         }
@@ -137,12 +131,15 @@ namespace ME3Explorer.Meshplorer
                 Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, sm, CurrentLOD, SceneViewer.Context.TextureCache);
                 //var bounding = sm.Bounds.SphereRadius;
                 //SceneViewer.Context.Camera.Position = new Vector3(bounding / 2, bounding / 2, bounding / 3);
+                SceneViewer.Context.Camera.FocusDepth = sm.Bounds.SphereRadius *2.5f;
 
             }
             else if (CurrentLoadedExport.ClassName == "SkeletalMesh")
             {
                 var sm = new Unreal.Classes.SkeletalMesh(CurrentLoadedExport);
                 Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, sm, SceneViewer.Context.TextureCache);
+                SceneViewer.Context.Camera.FocusDepth = sm.Bounding.r * 2.5f;
+
                 //var bounding = sm.Bounding.r;
                 //SceneViewer.Context.Camera.Position = new Vector3(bounding / 2, bounding / 2, bounding / 3);
             }
@@ -150,6 +147,24 @@ namespace ME3Explorer.Meshplorer
             //It seems like globalscale in this tool is not the same as main meshplorer and it's causing things to not be focused. 
             //need to find way to make item in view by default.
             CenterView();
+        }
+
+        private void MeshRenderer_Loaded(object sender, RoutedEventArgs e)
+        {
+            SceneViewer.Context.Update += MeshRenderer_ViewUpdate;
+        }
+
+        private void MeshRenderer_ViewUpdate(object sender, float e)
+        {
+            if (Rotating)
+            {
+                PreviewRotation += .05f * e;
+            }
+        }
+
+        private void BackgroundColorPicker_Changed(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
+        {
+            SceneViewer.Context.BackgroundColor = new SharpDX.Color(Background_ColorPicker.SelectedColor.Value.R, Background_ColorPicker.SelectedColor.Value.G, Background_ColorPicker.SelectedColor.Value.B);
         }
 
         public override void UnloadExport()
@@ -166,7 +181,7 @@ namespace ME3Explorer.Meshplorer
         {
             Preview?.Dispose();
             CurrentLoadedExport = null;
-            //throw new NotImplementedException();
+            SceneViewer.Context.Update -= MeshRenderer_ViewUpdate;
         }
     }
 }
