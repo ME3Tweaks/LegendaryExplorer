@@ -44,7 +44,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Codecs\CompressonatorCodecs.cs" />
     <Compile Include="DDSImage.cs" />
+    <Compile Include="Image.cs" />
+    <Compile Include="ImageBMP.cs" />
+    <Compile Include="ImageDDS.cs" />
+    <Compile Include="ImageTGA.cs" />
     <Compile Include="LZO2Helper.cs" />
     <Compile Include="SevenZipHelper.cs" />
     <Compile Include="StreamIO.cs" />

@@ -19,10 +19,15 @@
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
-        <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock Name="TextureStatus_TextBlock" Text="{Binding CannotShowTextureText}" Visibility="{Binding CannotShowTextureTextVisibility}" TextAlignment="Center"/>
-            <!--<Button Name="TFCSelect_Button" Margin="10,0,0,0" Content="Select TFC"/>-->
-            <Image Name="TextureImage" Stretch="Uniform"/>
+        <DockPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Background="Red" VerticalAlignment="Bottom">
+                <Button Content="Export to PNG" Command="{Binding ExportToPNGCommand}"/>
+            </StackPanel>
+            <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Name="TextureStatus_TextBlock" Text="{Binding CannotShowTextureText, FallbackValue=Select a mip}" Visibility="{Binding CannotShowTextureTextVisibility}" TextAlignment="Center"/>
+                <!--<Button Name="TFCSelect_Button" Margin="10,0,0,0" Content="Select TFC"/>-->
+                <Image Name="TextureImage" Stretch="Uniform"/>
+            </DockPanel>
         </DockPanel>
     </DockPanel>
 </global:ExportLoaderControl>

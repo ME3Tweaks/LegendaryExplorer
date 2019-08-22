@@ -76,6 +76,66 @@ namespace ME3Explorer
             public List<ChunkBlock> blocks;
         }
 
+        public static byte[] CompressTexture(byte[] inputData, StorageTypes type)
+        {
+            using (MemoryStream ouputStream = new MemoryStream())
+            {
+                uint compressedSize = 0;
+                uint dataBlockLeft = (uint)inputData.Length;
+                uint newNumBlocks = ((uint)inputData.Length + maxBlockSize - 1) / maxBlockSize;
+                List<ChunkBlock> blocks = new List<ChunkBlock>();
+                using (MemoryStream inputStream = new MemoryStream(inputData))
+                {
+                    // skip blocks header and table - filled later
+                    ouputStream.Seek(SizeOfChunk + SizeOfChunkBlock * newNumBlocks, SeekOrigin.Begin);
+
+                    for (int b = 0; b < newNumBlocks; b++)
+                    {
+                        ChunkBlock block = new ChunkBlock();
+                        block.uncomprSize = Math.Min(maxBlockSize, dataBlockLeft);
+                        dataBlockLeft -= block.uncomprSize;
+                        block.uncompressedBuffer = inputStream.ReadToBuffer(block.uncomprSize);
+                        blocks.Add(block);
+                    }
+                }
+
+                Parallel.For(0, blocks.Count, b =>
+                {
+                    ChunkBlock block = blocks[b];
+                    if (type == StorageTypes.extLZO || type == StorageTypes.pccLZO)
+                        block.compressedBuffer = LZO2Helper.LZO2.Compress(block.uncompressedBuffer);
+                    else if (type == StorageTypes.extZlib || type == StorageTypes.pccZlib)
+                        block.compressedBuffer = ZlibHelper.Zlib.Compress(block.uncompressedBuffer);
+                    else
+                        throw new Exception("Compression type not expected!");
+                    if (block.compressedBuffer.Length == 0)
+                        throw new Exception("Compression failed!");
+                    block.comprSize = (uint)block.compressedBuffer.Length;
+                    blocks[b] = block;
+                });
+
+                for (int b = 0; b < blocks.Count; b++)
+                {
+                    ChunkBlock block = blocks[b];
+                    ouputStream.Write(block.compressedBuffer, 0, (int)block.comprSize);
+                    compressedSize += block.comprSize;
+                }
+
+                ouputStream.SeekBegin();
+                ouputStream.WriteUInt32(textureTag);
+                ouputStream.WriteUInt32(maxBlockSize);
+                ouputStream.WriteUInt32(compressedSize);
+                ouputStream.WriteInt32(inputData.Length);
+                foreach (ChunkBlock block in blocks)
+                {
+                    ouputStream.WriteUInt32(block.comprSize);
+                    ouputStream.WriteUInt32(block.uncomprSize);
+                }
+
+                return ouputStream.ToArray();
+            }
+        }
+
         public static void DecompressTexture(byte[] DecompressedBuffer, MemoryStream stream, StorageTypes type, int uncompressedSize, int compressedSize)
         {
             uint blockTag = stream.ReadUInt32();
