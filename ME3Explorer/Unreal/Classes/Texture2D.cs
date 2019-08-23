@@ -27,6 +27,7 @@ namespace ME3Explorer.Unreal.Classes
         public readonly bool NeverStream;
         public readonly ExportEntry Export;
         public readonly string TextureFormat;
+        public Guid TextureGuid;
 
         public Texture2D(ExportEntry export)
         {
@@ -37,6 +38,10 @@ namespace ME3Explorer.Unreal.Classes
 
             NeverStream = properties.GetProp<BoolProperty>("NeverStream") ?? false;
             Mips = GetTexture2DMipInfos(export, cache?.Value);
+            if (Export.Game != MEGame.ME1)
+            {
+                TextureGuid = new Guid(Export.Data.Skip(Export.Data.Length - 16).Take(16).ToArray());
+            }
         }
 
         public void RemoveEmptyMipsFromMipList()
@@ -209,6 +214,13 @@ namespace ME3Explorer.Unreal.Classes
                 {
                     ms.Write(mip.newDataForSerializing, 0, mip.newDataForSerializing.Length);
                 }
+                ms.WriteValueS32(mip.width);
+                ms.WriteValueS32(mip.height);
+            }
+            ms.WriteValueS32(0);
+            if (Export.Game != MEGame.ME1)
+            {
+                ms.WriteValueGuid(TextureGuid);
             }
             return ms.ToArray();
         }

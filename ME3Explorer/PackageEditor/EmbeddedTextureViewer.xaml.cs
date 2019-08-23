@@ -495,10 +495,6 @@ namespace ME3Explorer
                     compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extZlib));
             }
 
-            foreach (var mip in texture.Mips)
-            {
-
-            }
 
             //if (verify)
             //    matched.crcs = new List<uint>();
