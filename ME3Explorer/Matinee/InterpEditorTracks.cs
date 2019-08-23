@@ -38,10 +38,16 @@ namespace ME3Explorer.Matinee
                 GroupColor = Color.FromArgb(a, r, g, b);
             }
 
-            var tracksProp = export.GetProperty<ArrayProperty<ObjectProperty>>("InterpTracks");
+            RefreshTracks();
+        }
+
+        public void RefreshTracks()
+        {
+            Tracks.ClearEx();
+            var tracksProp = Export.GetProperty<ArrayProperty<ObjectProperty>>("InterpTracks");
             if (tracksProp != null)
             {
-                var trackExports = tracksProp.Where(prop => export.FileRef.isUExport(prop.Value)).Select(prop => export.FileRef.getUExport(prop.Value));
+                var trackExports = tracksProp.Where(prop => Export.FileRef.isUExport(prop.Value)).Select(prop => Export.FileRef.getUExport(prop.Value));
                 foreach (IExportEntry trackExport in trackExports)
                 {
                     if (trackExport.inheritsFrom("BioInterpTrack"))

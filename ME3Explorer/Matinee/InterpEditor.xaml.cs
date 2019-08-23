@@ -264,6 +264,7 @@ namespace ME3Explorer.Matinee
             LoadMEPackage(fileName);
             AddRecent(fileName);
             InterpDataExports.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "InterpData"));
+            Title = $"Interp Editor - {Pcc.FileName}";
         }
 
         private void LoadInterpData(IExportEntry value)
@@ -274,7 +275,46 @@ namespace ME3Explorer.Matinee
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            throw new NotImplementedException();
+            IEnumerable<PackageUpdate> exportUpdates = updates.Where(update => update.change == PackageChange.ExportAdd || 
+                                                                                       update.change == PackageChange.ExportData ||
+                                                                                       update.change == PackageChange.ExportHeader);
+            foreach (var update in exportUpdates)
+            {
+                var changedExport = Pcc.getExport(update.index);
+                if (InterpDataExports.Contains(changedExport))
+                {
+                    if (changedExport.ClassName != "InterpData")
+                    {
+                        InterpDataExports.Remove(changedExport);
+                    }
+                    else if (SelectedInterpData == changedExport)
+                    {
+                        LoadInterpData(changedExport);
+                    }
+                }
+                else if (changedExport.ClassName == "InterpData")
+                {
+                    InterpDataExports.Add(changedExport);
+                }
+                else if (DescendantOf(changedExport, SelectedInterpData))
+                {
+                    timelineControl.RefreshInterpData(changedExport);
+                }
+            }
+
+            bool DescendantOf(IExportEntry export, IExportEntry ancestor)
+            {
+                IEntry exp = export;
+                while (exp.HasParent)
+                {
+                    exp = exp.Parent;
+                    if (exp == ancestor)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
 
         private void InterpDataExportsList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)

@@ -12,7 +12,7 @@
              xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             DataContext="{Binding RelativeSource={RelativeSource Self}}" PreviewMouseWheel="OnScroll" SizeChanged="Timeline_OnSizeChanged">
     <UserControl.Resources>
         <local:TimeToPositionConverter x:Key="TimeToPositionConverter"/>
         <SolidColorBrush x:Key="KeyBrush" Color="#FF640000"/>
@@ -26,8 +26,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
-                        <Grid Width="15"
-                            Height="13"
+                        <Grid Width="20"
+                            Height="20"
                             Background="Transparent">
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CheckStates">
@@ -220,8 +220,22 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <Canvas Grid.Column="0" Grid.Row="0" Background="#FF3C3C3C"/>
+        <Canvas Grid.Column="1" Grid.Row="1" Background="#FF505050" Name="Guide" Cursor="ScrollWE" ForceCursor="True"
+                PreviewMouseDown="Guide_OnPreviewMouseDown" PreviewMouseUp="Guide_OnPreviewMouseUp" PreviewMouseMove="Guide_OnPreviewMouseMove" MouseLeave="Guide_OnMouseLeave">
+            <Canvas.Resources>
+                <Style TargetType="{x:Type Line}">
+                    <Setter Property="StrokeThickness" Value="1"/>
+                    <Setter Property="Stroke" Value="#FF9C9C9C"/>
+                    <Setter Property="Y2" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
+                </Style>
+                <Style TargetType="Label">
+                    <Setter Property="Foreground" Value="#FFE0E0E0"/>
+                    <Setter Property="FontFamily" Value="/ME3Explorer;component/Resources/#FFF Hero"/>
+                    <Setter Property="FontSize" Value="10"/>
+                </Style>
+            </Canvas.Resources>
+        </Canvas>
         <Canvas Grid.Column="0" Grid.Row="1" Background="Black"/>
-        <Canvas Grid.Column="1" Grid.Row="1" Background="#FF505050"/>
         <TreeView Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" ItemsSource="{Binding InterpGroups}" Background="{x:Null}" SelectedItemChanged="TreeView_SelectedItemChanged">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local:InterpGroup}" ItemsSource="{Binding Tracks}">
@@ -249,9 +263,6 @@
                                 <ColumnDefinition Width="196"/>
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <Canvas Grid.Column="0" Background="DarkGray">
-                                <TextBlock Text="{Binding TrackTitle}" Canvas.Left="30" Canvas.Top="3"/>
-                            </Canvas>
                             <ItemsControl Grid.Column="1" ItemsSource="{Binding Keys}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -260,13 +271,21 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemContainerStyle>
                                     <Style TargetType="local:Key">
-                                        <Setter Property="Canvas.Left" Value="{Binding RelativeSource={RelativeSource Self}, Path=Time, Converter={StaticResource TimeToPositionConverter}}"/>
+                                        <Setter Property="Canvas.Left">
+                                            <Setter.Value>
+                                                <MultiBinding Converter="{StaticResource TimeToPositionConverter}">
+                                                    <Binding Path="Time" RelativeSource="{RelativeSource Self}"/>
+                                                    <Binding Path="Scale" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=UserControl}"/>
+                                                    <Binding Path="Offset" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=UserControl}"/>
+                                                </MultiBinding>
+                                            </Setter.Value>
+                                        </Setter>
                                         <Setter Property="Canvas.Bottom" Value="0" />
-                                        <Setter Property="Cursor" Value="Hand"/>
+                                        <!--<Setter Property="Cursor" Value="Hand"/>-->
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate>
-                                                    <Path Data="M -10 10 L 0 0 L 10 10 Z">
+                                                    <Path Data="M -8 8 L 0 0 L 8 8 Z">
                                                         <Path.Fill>
                                                             <SolidColorBrush Color="#FF640000"/>
                                                         </Path.Fill>
@@ -277,6 +296,9 @@
                                     </Style>
                                 </ItemsControl.ItemContainerStyle>
                             </ItemsControl>
+                            <Canvas Grid.Column="0" Background="DarkGray">
+                                <TextBlock Text="{Binding TrackTitle}" Canvas.Left="30" Canvas.Top="3"/>
+                            </Canvas>
                         </Grid>
                     </Border>
                 </DataTemplate>

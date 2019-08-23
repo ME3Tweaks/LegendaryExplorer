@@ -12,7 +12,7 @@
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
         mc:Ignorable="d"
-        Title="Interp Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200"
+        Title="Interp Viewer" Height="750" Width="1300" MinWidth="900" MinHeight="200"
         DataContext="{Binding RelativeSource={RelativeSource Self}}" Closing="WPFBase_Closing">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -119,7 +119,7 @@
                     <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
                     <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
                 </Grid>
-                <ListBox Name="InterpDataExports_ListBox" Grid.Column="0" ItemsSource="{Binding InterpDataExports}" SelectedItem="{Binding SelectedInterpData}" SelectionChanged="InterpDataExportsList_SelectedItemChanged"
+                <ListBox Name="InterpDataExports_ListBox" Grid.Column="0" ItemsSource="{Binding InterpDataExports}" SelectedItem="{Binding SelectedInterpData}"
                          HorizontalContentAlignment="Stretch" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
