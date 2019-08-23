@@ -638,6 +638,7 @@ namespace ME3Explorer
 
         public override void UnloadExport()
         {
+            //Todo: convert to this single byteprovider and clear bytes rather than instantiating new ones.
             BinaryInterpreter_Hexbox.ByteProvider = new DynamicByteProvider();
             TreeViewItems.ClearEx();
             if (CurrentLoadedExport != null && CurrentLoadedExport.Data.Length > 20480)
