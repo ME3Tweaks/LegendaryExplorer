@@ -26,6 +26,20 @@ namespace ME3Explorer
                     throw new ArgumentOutOfRangeException(nameof(game), game, null);
             }
         }
+        public static string GamePath(MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return ME1Directory.gamePath;
+                case MEGame.ME2:
+                    return ME2Directory.gamePath;
+                case MEGame.ME3:
+                    return ME3Directory.gamePath;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
+            }
+        }
         public static string BioGamePath(MEGame game)
         {
             switch (game)

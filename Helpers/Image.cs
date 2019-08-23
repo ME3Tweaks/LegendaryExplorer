@@ -28,6 +28,7 @@ using StreamHelpers;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace MassEffectModder
 {
@@ -36,6 +37,7 @@ namespace MassEffectModder
         Unknown, DXT1, DXT3, DXT5, ATI2, V8U8, ARGB, RGB, G8
     }
 
+    [DebuggerDisplay("MEM MipMap {width}x{height}")]
     public class MipMap
     {
         public byte[] data { get; private set; }
@@ -104,6 +106,8 @@ namespace MassEffectModder
             }
         }
     }
+
+    [DebuggerDisplay("MEM Image | Num Mips: {mipMaps.Count}")]
 
     public partial class Image
     {

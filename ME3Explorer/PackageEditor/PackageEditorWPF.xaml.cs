@@ -55,7 +55,7 @@ namespace ME3Explorer
             Tree
         }
         public static readonly string[] ExportFileTypes = { "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile" };
-        public static readonly string[] ExportIconTypes = { "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile", "World", "Package", "StaticMesh", "SkeletalMesh"};
+        public static readonly string[] ExportIconTypes = { "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile", "World", "Package", "StaticMesh", "SkeletalMesh", "Sequence"};
 
         /// <summary>
         /// Used to populate the metadata editor values so the list does not constantly need to rebuilt, which can slow down the program on large files like SFXGame or BIOC_Base.
@@ -2175,7 +2175,10 @@ namespace ME3Explorer
         {
             if (!TryGetSelectedEntry(out IEntry selectedEntry))
             {
-                InterpreterTab_Interpreter.UnloadExport();
+                foreach(var ex in ExportLoaders.Keys)
+                {
+                    ex.UnloadExport();
+                }
                 return;
             }
             if (selectedEntry == null)

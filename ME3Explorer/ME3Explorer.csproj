@@ -1499,6 +1499,7 @@
     <Resource Include="PackageEditor\EntryIcons\icon_package.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_world.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_mesh.png" />
+    <Resource Include="PackageEditor\EntryIcons\icon_sequence.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

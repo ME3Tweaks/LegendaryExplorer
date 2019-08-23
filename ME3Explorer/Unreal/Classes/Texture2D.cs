@@ -26,7 +26,8 @@ namespace ME3Explorer.Unreal.Classes
         public List<Texture2DMipInfo> Mips { get; }
         public readonly bool NeverStream;
         public readonly ExportEntry Export;
-        private readonly string TextureFormat;
+        public readonly string TextureFormat;
+        public Guid TextureGuid;
 
         public Texture2D(ExportEntry export)
         {
@@ -37,6 +38,15 @@ namespace ME3Explorer.Unreal.Classes
 
             NeverStream = properties.GetProp<BoolProperty>("NeverStream") ?? false;
             Mips = GetTexture2DMipInfos(export, cache?.Value);
+            if (Export.Game != MEGame.ME1)
+            {
+                TextureGuid = new Guid(Export.Data.Skip(Export.Data.Length - 16).Take(16).ToArray());
+            }
+        }
+
+        public void RemoveEmptyMipsFromMipList()
+        {
+            Mips.RemoveAll(x => x.storageType == StorageTypes.empty);
         }
 
         public bool ExportToPNG(string outputPath)
@@ -63,7 +73,6 @@ namespace ME3Explorer.Unreal.Classes
 
                 if (imageBytes != null)
                 {
-                    var i = new Image(new MemoryStream(imageBytes), ImageFormat.DDS);
                     PixelFormat format = Image.getPixelFormatType(TextureFormat);
 
                     PngBitmapEncoder image = Image.convertToPng(imageBytes, info.width, info.height, format);
@@ -179,6 +188,47 @@ namespace ME3Explorer.Unreal.Classes
             ds.Dispose();
 
             return tex;
+        }
+
+        internal byte[] SerializeNewData()
+        {
+            MemoryStream ms = new MemoryStream();
+            if (Export.FileRef.Game != MEGame.ME3)
+            {
+                for (int i = 0; i < 12; i++)
+                    ms.WriteByte(0); //12 0s
+                for (int i = 0; i < 4; i++)
+                    ms.WriteByte(0); //position in the package. will be updated later
+            }
+
+            ms.WriteValueS32(Mips.Count);
+            foreach (var mip in Mips)
+            {
+                ms.WriteValueU32((uint)mip.storageType);
+                ms.WriteValueS32(mip.uncompressedSize);
+                ms.WriteValueS32(mip.compressedSize);
+                ms.WriteValueS32(mip.externalOffset);
+                if (mip.storageType == StorageTypes.pccUnc ||
+                    mip.storageType == StorageTypes.pccLZO ||
+                    mip.storageType == StorageTypes.pccZlib)
+                {
+                    ms.Write(mip.newDataForSerializing, 0, mip.newDataForSerializing.Length);
+                }
+                ms.WriteValueS32(mip.width);
+                ms.WriteValueS32(mip.height);
+            }
+            ms.WriteValueS32(0);
+            if (Export.Game != MEGame.ME1)
+            {
+                ms.WriteValueGuid(TextureGuid);
+            }
+            return ms.ToArray();
+        }
+
+        internal void ReplaceMips(List<Texture2DMipInfo> mipmaps)
+        {
+            Mips.Clear();
+            Mips.AddRange(mipmaps);
         }
     }
 }
