@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Media;
+using DocumentFormat.OpenXml.Drawing;
 using Gammtek.Conduit.Extensions.IO;
 using Gibbed.IO;
 using ME3Explorer.Packages;
@@ -5472,7 +5473,12 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private static BinInterpNode MakeBoolIntNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolInt()}") { Length = 4 };
+        private static BinInterpNode MakeBoolIntNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolInt()}", NodeType.StructLeafBool) { Length = 4 };
+
+        private static BinInterpNode MakeBoolIntNode(MemoryStream bin, string name, out bool boolVal)
+        {
+            return new BinInterpNode(bin.Position, $"{name}: {boolVal = bin.ReadBoolInt()}", NodeType.StructLeafBool) {Length = 4};
+        }
 
         private static BinInterpNode MakeBoolByteNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolByte()}") { Length = 1 };
 
@@ -5491,10 +5497,19 @@ namespace ME3Explorer
         private BinInterpNode MakeEntryNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}", NodeType.StructLeafObject) { Length = 4 };
 
         private static BinInterpNode MakePackedNormalNode(MemoryStream bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadByte()}, Y: {bin.ReadByte()}, Z: {bin.ReadByte()}, W: {bin.ReadByte()})") { Length = 4 };
+            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadByte() / 127.5f - 1}, Y: {bin.ReadByte() / 127.5f - 1}, Z: {bin.ReadByte() / 127.5f - 1}, W: {bin.ReadByte() / 127.5f - 1})")
+            {
+                Length = 4
+            };
 
         private static BinInterpNode MakeVectorNode(MemoryStream bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})") { Length = 12 };
+            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
+
+        private static BinInterpNode MakeQuatNode(MemoryStream bin, string name) =>
+            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()}, W: {bin.ReadFloat()})") { Length = 16 };
+
+        private static BinInterpNode MakeRotatorNode(MemoryStream bin, string name) =>
+            new BinInterpNode(bin.Position, $"{name}: (Pitch: {bin.ReadInt32()}, Yaw: {bin.ReadInt32()}, Roll: {bin.ReadInt32()})") { Length = 12 };
 
         private static BinInterpNode MakeBoxNode(MemoryStream bin, string name) =>
             new BinInterpNode(bin.Position, name)
@@ -5545,11 +5560,21 @@ namespace ME3Explorer
 
         private static BinInterpNode MakeGuidNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadGuid()}") { Length = 16 };
 
-        private static BinInterpNode MakeArrayNode(MemoryStream bin, string name, Func<int, BinInterpNode> selector)
+        private static BinInterpNode MakeArrayNode(MemoryStream bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false)
         {
             int count;
             return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadInt32()})")
             {
+                IsExpanded = IsExpanded,
+                Items = ReadList(count, selector)
+            };
+        }
+
+        private static BinInterpNode MakeArrayNode(int count, MemoryStream bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false)
+        {
+            return new BinInterpNode(bin.Position, $"{name} ({count})")
+            {
+                IsExpanded = IsExpanded,
                 Items = ReadList(count, selector)
             };
         }
@@ -5867,1381 +5892,196 @@ namespace ME3Explorer
             var game = CurrentLoadedExport.FileRef.Game;
             try
             {
-                int pos = binarystart;
-                pos += 28; //bounding
-                int count = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new BinInterpNode
+
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+
+                subnodes.Add(MakeBoxSphereBoundsNode(bin, "Bounds"));
+                subnodes.Add(MakeArrayNode(bin, "Materials", i => MakeEntryNode(bin, $"{i}"), true));
+                subnodes.Add(MakeVectorNode(bin, "Origin"));
+                subnodes.Add(MakeRotatorNode(bin, "Rotation Origin"));
+                subnodes.Add(MakeArrayNode(bin, "RefSkeleton", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadNameReference(Pcc).InstancedString}")
                 {
-                    Header = $"{(pos - binarystart):X4} Material Count: {count}",
-                    Name = "_" + pos,
-
-                });
-                pos += 4;
-                for (int i = 0; i < count; i++)
-                {
-                    int material = BitConverter.ToInt32(data, pos);
-                    subnodes.Add(new BinInterpNode
+                    Items =
                     {
-                        Header = $"{(pos - binarystart):X4} Material: ({material}) {CurrentLoadedExport.FileRef.getEntry(material)?.GetFullPath ?? ""}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafObject
-                    });
-                    pos += 4;
-                }
-                // SKELMESH TREE
-                pos = binarystart;  //reset to  start again
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $" --------- FULL TREE ----------",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.Unknown
-                });
-
-                var BoundingBox = new BinInterpNode
-                {
-                    Header = $"0x{pos:X4} Boundings Box",
-                    Name = "_" + pos,
-                    Tag = NodeType.Unknown
-                };
-                subnodes.Add(BoundingBox);
-                //Get Origin X, Y, Z
-                float boxoriginX = BitConverter.ToSingle(data, pos);
-                pos += 4;
-                float boxoriginY = BitConverter.ToSingle(data, pos);
-                pos += 4;
-                float boxoriginZ = BitConverter.ToSingle(data, pos);
-                pos += 4;
-                BoundingBox.Items.Add(new BinInterpNode
-                {
-                    Header = $"{(pos - binarystart):X4} Origin: X:({boxoriginX}) Y:({boxoriginY}) Z:({boxoriginZ})",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.Unknown
-                });
-
-
-                //Get Size X, Y, Z
-                float sizeX = BitConverter.ToSingle(data, pos);
-                pos += 4;
-                float sizeY = BitConverter.ToSingle(data, pos);
-                pos += 4;
-                float sizeZ = BitConverter.ToSingle(data, pos);
-                pos += 4;
-                BoundingBox.Items.Add(new BinInterpNode
-                {
-                    Header = $"{(pos - binarystart):X4} Size: X:({sizeX}) Y:({sizeY}) Z:({sizeZ})",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.Unknown
-                });
-
-                //Get Radius R
-                float radius = BitConverter.ToSingle(data, pos);
-                pos += 4;
-                BoundingBox.Items.Add(new BinInterpNode
-                {
-                    Header = $"{(pos - binarystart):X4} Radius: R:({radius}) ",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.Unknown
-                });
-
-                //Materials (again)
-                var materials = new BinInterpNode
-                {
-                    Header = $"{(pos - binarystart):X4} Materials: {count}",
-                    Name = "_" + pos,
-                    Tag = NodeType.StructLeafInt
-                };
-                subnodes.Add(materials);
-                pos += 4;
-                for (int m = 0; m < count; m++)
-                {
-                    int material = BitConverter.ToInt32(data, pos);
-                    materials.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Material: ({material}) {CurrentLoadedExport.FileRef.getEntry(material)?.GetFullPath ?? ""}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafObject
-                    });
-                    pos += 4;
-                }
-
-                //Origin and Rotation
-                var skmLocation = new BinInterpNode
-                {
-                    Header = $"0x{pos:X4} Origin and Rotation",
-                    Name = "_" + pos,
-                    Tag = NodeType.Unknown
-                };
-                subnodes.Add(skmLocation);
-                //Get Origin X, Y, Z
-                float originX = BitConverter.ToInt32(data, pos);
-                pos += 4;
-                float originY = BitConverter.ToInt32(data, pos);
-                pos += 4;
-                float originZ = BitConverter.ToInt32(data, pos);
-                pos += 4;
-                skmLocation.Items.Add(new BinInterpNode
-                {
-                    Header = $"{(pos - binarystart):X4} Origin: X:({originX}) Y:({originY}) Z:({originZ})",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.Unknown
-                });
-
-                //Get Rotation X, Y, Z ?CONVERT TO RADIANS/DEG?
-                float rotX = BitConverter.ToInt32(data, pos);
-                pos += 4;
-                float rotY = BitConverter.ToInt32(data, pos);
-                pos += 4;
-                float rotZ = BitConverter.ToInt32(data, pos);
-                pos += 4;
-                skmLocation.Items.Add(new BinInterpNode
-                {
-                    Header = $"{(pos - binarystart):X4} Rotation: X:({rotX}) Y:({rotY}) Z:({rotZ})",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.Unknown
-                });
-
-                //Bone Data
-                int bCount = BitConverter.ToInt32(data, pos);
-                var bones = new BinInterpNode
-                {
-                    Header = $"{(pos - binarystart):X4} Bones: {bCount}",
-                    Name = "_" + pos,
-                    Tag = NodeType.StructLeafInt
-                };
-                subnodes.Add(bones);
-                pos += 4;
-                for (int b = 0; b < bCount; b++)
-                {
-                    int nBone = BitConverter.ToInt32(data, pos);
-                    pos += 4;
-                    int nBoneidx = BitConverter.ToInt32(data, pos);
-                    pos -= 4; //reset to start for leaf
-                    var nBoneNode = new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Bone {b}: ({nBone}) {CurrentLoadedExport.FileRef.getNameEntry(nBone)} _ {nBoneidx}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafName
-                    };
-                    bones.Items.Add(nBoneNode);
-                    pos += 8;
-
-                    int unk1 = BitConverter.ToInt32(data, pos);
-                    nBoneNode.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Unknown1: {unk1}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt
-                    });
-                    pos += 4;
-
-                    float orientX = BitConverter.ToSingle(data, pos);
-                    nBoneNode.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Orientation: X: {orientX}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafFloat
-                    });
-                    pos += 4;
-
-                    float orientY = BitConverter.ToSingle(data, pos);
-                    nBoneNode.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Y: {orientY}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafFloat
-                    });
-                    pos += 4;
-
-                    float orientZ = BitConverter.ToSingle(data, pos);
-                    nBoneNode.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Z: {orientZ}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafFloat
-                    });
-                    pos += 4;
-
-                    float orientW = BitConverter.ToSingle(data, pos);
-                    nBoneNode.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} W: {orientW}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafFloat
-                    });
-                    pos += 4;
-
-                    float posX = BitConverter.ToSingle(data, pos);
-                    nBoneNode.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Position: X: {posX}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafFloat
-                    });
-                    pos += 4;
-
-                    float posY = BitConverter.ToSingle(data, pos);
-                    nBoneNode.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Y: {posY}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafFloat
-                    });
-                    pos += 4;
-
-                    float posZ = BitConverter.ToSingle(data, pos);
-                    nBoneNode.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Z: {posZ}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafFloat
-                    });
-                    pos += 4;
-
-                    int nChildren = BitConverter.ToInt32(data, pos);
-                    nBoneNode.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Children: {nChildren}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt
-                    });
-                    pos += 4;
-
-                    int bnParent = BitConverter.ToInt32(data, pos);
-                    nBoneNode.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Parent Bone: {bnParent}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt
-                    });
-                    pos += 4;
-
-                    if (game == MEGame.ME3 || game == MEGame.UDK) //Color in ME3 and UDK only
-                    {
-                        int bnColor = BitConverter.ToInt32(data, pos);
-                        nBoneNode.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Color: {bnColor}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt
-                        });
-                        pos += 4;
+                        MakeUInt32Node(bin, "Flags"),
+                        MakeQuatNode(bin, "Bone Orientation (quaternion)"),
+                        MakeVectorNode(bin, "Bone Position"),
+                        MakeInt32Node(bin, "NumChildren"),
+                        MakeInt32Node(bin, "ParentIndex"),
+                        ListInitHelper.ConditionalAddOne<ITreeItem>( Pcc.Game >= MEGame.ME3, () => MakeColorNode(bin, "BoneColor")),
                     }
-                }
-                int bnDepth = BitConverter.ToInt32(data, pos);
-                bones.Items.Add(new BinInterpNode
+                }));
+                subnodes.Add(MakeInt32Node(bin, "SkeletalDepth"));
+                int rawPointIndicesCount;
+                bool useFullPrecisionUVs = true;
+                subnodes.Add(MakeArrayNode(bin, "LODModels", i =>
                 {
-                    Header = $"{(pos - binarystart):X4} Bone Depth: {bnDepth}",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
-
-                //LOD DATA
-
-                int lodCount = BitConverter.ToInt32(data, pos);
-                var lods = new BinInterpNode
-                {
-                    Header = $"{(pos - binarystart):X4} Levels of Detail (LODs): {lodCount}",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.StructLeafInt
-                };
-                subnodes.Add(lods);
-                pos += 4;
-
-                for (int lod = 0; lod < lodCount; lod++)
-                {
-                    var nLOD = new BinInterpNode
+                    BinInterpNode node = new BinInterpNode(bin.Position, $"{i}");
+                    try
                     {
-                        Header = $"{(pos - binarystart):X4} LOD {lod}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.Unknown
-                    };
-                    lods.Items.Add(nLOD);
-
-                    int sectionCt = BitConverter.ToInt32(data, pos); // Sections
-                    var sections = new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Sections: {sectionCt}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.Unknown
-                    };
-                    nLOD.Items.Add(sections);
-                    pos += 4;
-
-                    for (int sc = 0; sc < sectionCt; sc++)
-                    {
-                        var nSection = new BinInterpNode
+                        node.Items.Add(MakeArrayNode(bin, "Sections", j => new BinInterpNode(bin.Position, $"{j}")
                         {
-                            Header = $"{(pos - binarystart):X4} Section: {sc}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        };
-                        sections.Items.Add(nSection);
-
-                        if (game == MEGame.UDK)  //UDK section quite different
-                        {
-                            int mat = BitConverter.ToInt16(data, pos);
-                            nSection.Items.Add(new BinInterpNode
+                            Items =
                             {
-                                Header = $"{(pos - binarystart):X4} Material Index: {mat}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.StructLeafInt,
-                            });
-                            pos += 2;
-
-                            int chunk = BitConverter.ToInt16(data, pos);
-                            nSection.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} Chunk Index: {chunk}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.StructLeafInt,
-                            });
-                            pos += 2;
-
-                            int baseidx = BitConverter.ToInt32(data, pos);
-                            nSection.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} Base Index: {baseidx}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.StructLeafInt,
-                            });
-                            pos += 4;
-
-                            int nTriangles = BitConverter.ToInt16(data, pos); //Section Triangles
-                            nSection.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} Triangles: {nTriangles}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.StructLeafInt,
-                            });
-                            pos += 4;
-
-                            bool bSortTri = BitConverter.ToBoolean(data, pos);
-                            nSection.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} Sort Triangles: {bSortTri}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.StructLeafBool,
-                            });
-                            pos += 1;
-                        }
-                        else
-                        {
-                            int chunk = BitConverter.ToInt32(data, pos);
-                            nSection.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} Chunk Index: {chunk}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.StructLeafInt,
-                            });
-                            pos += 4;
-
-                            int baseidx = BitConverter.ToInt32(data, pos);
-                            nSection.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} Base Index: {baseidx}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.StructLeafInt,
-                            });
-                            pos += 4;
-
-                            var initpos = pos;  //Section Triangles
-                            int nTriangles = 0;
-                            if (game == MEGame.ME3)
-                            {
-                                nTriangles = BitConverter.ToInt32(data, pos);  //ME3 int32
-                                pos += 4;
+                                MakeUInt16Node(bin, "MaterialIndex"),
+                                MakeUInt16Node(bin, "ChunkIndex"),
+                                MakeUInt32Node(bin, "BaseIndex"),
+                                ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game >= MEGame.ME3, 
+                                                                            () => MakeUInt32Node(bin, "NumTriangles"), 
+                                                                            () => MakeUInt16Node(bin, "NumTriangles")),
+                                ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK, () => MakeByteNode(bin, "TriangleSorting"))
                             }
-                            else
+                        }));
+                        node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.UDK, () => new ITreeItem[]
+                        {
+                            MakeBoolIntNode(bin, "NeedsCPUAccess"),
+                            MakeByteNode(bin, "Datatype size"),
+                        }));
+                        node.Items.Add(MakeInt32Node(bin, "ushort size"));
+                        node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt16Node(bin, $"{j}")));
+                        node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "ShadowIndices", j => MakeUInt16Node(bin, $"{j}"))));
+                        node.Items.Add(MakeArrayNode(bin, "ActiveBoneIndices", j => MakeUInt16Node(bin, $"{j}")));
+                        node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "ShadowTriangleDoubleSided", j => MakeByteNode(bin, $"{j}"))));
+                        node.Items.Add(MakeArrayNode(bin, "Chunks", j => new BinInterpNode(bin.Position, $"{j}")
+                        {
+                            Items =
                             {
-                                nTriangles = BitConverter.ToInt16(data, pos); //ME2/1 int16
-                                pos += 2;
-                            }
-                            nSection.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{initpos:X4} Triangles: {nTriangles}",
-                                Name = "_" + initpos,
-
-                                Tag = NodeType.StructLeafInt,
-                            });
-                        }
-                    }
-
-                    var idxHeader = new BinInterpNode // Multi-size index container
-                    {
-                        Header = $"{(pos - binarystart):X4} Multi-size index container",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.Unknown
-                    };
-                    nLOD.Items.Add(idxHeader);
-
-                    if (game == MEGame.UDK)
-                    {
-                        int iCPU = BitConverter.ToInt32(data, pos);
-                        idxHeader.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Needs CPU Access: {iCPU}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-
-                        byte dataType = data[pos]; //Single byte
-                        idxHeader.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Datatype Size: {dataType}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.Unknown,
-                        });
-                        pos += 1;
-
-                    }
-
-                    int idxSize = BitConverter.ToInt32(data, pos); // Index Size
-                    idxHeader.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} IndexSize: {idxSize}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-                    int countIdx = BitConverter.ToInt32(data, pos); // Index count
-                    var indexes = new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Indexes: {countIdx}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    };
-                    idxHeader.Items.Add(indexes);
-                    pos += 4;
-
-                    for (int ic = 0; ic < countIdx; ic++)
-                    {
-                        int nIndex = BitConverter.ToInt16(data, pos);  //Index size = 2 (so int16)
-                        indexes.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} {ic} : {nIndex}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 2;
-                    }
-
-                    if (game != MEGame.UDK)
-                    {
-                        int Unknown1 = BitConverter.ToInt32(data, pos); // Unknown 1 not UDK
-                        var UnkList1 = new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Unknown 1 List: {Unknown1}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        };
-                        idxHeader.Items.Add(UnkList1);
-                        pos += 4;
-
-                        for (int uk1 = 0; uk1 < Unknown1; uk1++)
-                        {
-                            int ukIndex = BitConverter.ToInt16(data, pos);  //int16 unknown
-                            UnkList1.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} {uk1} : {ukIndex}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.StructLeafInt,
-                            });
-                            pos += 2;
-                        }
-                    }
-
-                    int nActBones = BitConverter.ToInt32(data, pos); // Active Bones
-                    var ActBones = new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Active Bones: {nActBones}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    };
-                    nLOD.Items.Add(ActBones);
-                    pos += 4;
-
-                    for (int ab = 0; ab < nActBones; ab++)
-                    {
-                        int abIndex = BitConverter.ToInt16(data, pos);  // int16 = me3
-                        ActBones.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} {ab} : {abIndex}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 2;
-                    }
-
-                    if (game != MEGame.UDK)
-                    {
-                        int Unknown2 = BitConverter.ToInt32(data, pos); // Unknown 2 Not in UDK
-                        var UnkList2 = new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Unknown 2 Bool List: {Unknown2}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        };
-                        nLOD.Items.Add(UnkList2);
-                        pos += 4;
-
-                        for (int uk2 = 0; uk2 < Unknown2; uk2++)
-                        {
-                            bool uk2Bool = BitConverter.ToBoolean(data, pos);  //Bool unknown
-                            UnkList2.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} {uk2} : {uk2Bool}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.StructLeafBool,
-                            });
-                            pos += 1;
-                        }
-                    }
-
-                    // Chunk Data
-                    int chunkCt = BitConverter.ToInt32(data, pos);
-                    var chunks = new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Chunks: {chunkCt}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.Unknown
-                    };
-                    nLOD.Items.Add(chunks);
-                    pos += 4;
-
-                    for (int cc = 0; cc < chunkCt; cc++) // Chunks
-                    {
-                        var nChunk = new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Chunk: {cc}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        };
-                        chunks.Items.Add(nChunk);
-
-                        int basevertexidx = BitConverter.ToInt32(data, pos);
-                        nChunk.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Base Vertex Index: {basevertexidx}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-
-                        int rigidskinVertex = BitConverter.ToInt32(data, pos); //Rigid vertices collection
-                        var rigidvertices = new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Rigid Skin Vertices: {rigidskinVertex}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        };
-                        nChunk.Items.Add(rigidvertices);
-                        pos += 4;
-
-                        for (int rv = 0; rv < rigidskinVertex; rv++)
-                        {
-                            //UDK has lots of unused values
-                            int rvpos = pos;
-                            float vPosX = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float vPosY = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float vPosZ = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float TanX = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float TanY = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float TanZ = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float uv1U = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4;
-                            float uv1V = BitConverter.ToSingle(data, rvpos);
-                            rvpos += 4; //32
-
-                            if (game == MEGame.UDK)
-                            {
-                                float uv2U = BitConverter.ToSingle(data, rvpos);
-                                rvpos += 4;
-                                float uv2V = BitConverter.ToSingle(data, rvpos);
-                                rvpos += 4;
-                                float uv3U = BitConverter.ToSingle(data, rvpos);
-                                rvpos += 4;
-                                float uv3V = BitConverter.ToSingle(data, rvpos);
-                                rvpos += 4; //48
-                                float uv4U = BitConverter.ToSingle(data, rvpos);
-                                rvpos += 4;
-                                float uv4V = BitConverter.ToSingle(data, rvpos);
-                                rvpos += 4; //56
-                                int color = BitConverter.ToInt32(data, rvpos);
-                                rvpos += 4; //60
-
-                                byte bone = data[rvpos];  //SINGLE BYTE
-                                rvpos += 1;
-
-                                rigidvertices.Items.Add(new BinInterpNode
+                                MakeUInt32Node(bin, "BaseVertexIndex"),
+                                MakeArrayNode(bin, "RigidVertices", k => new BinInterpNode(bin.Position, $"{k}")
                                 {
-                                    Header = $"{(pos - binarystart):X4} {rv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ} UV(0) U:{uv1U} W:{uv1U} UV(1) U:{uv2U} W:{uv2U} UV(2) U:{uv3U} W:{uv3U} UV(3) U:{uv4U} W:{uv4U} Color: {color} Bone: {bone}",
-                                    Name = "_" + pos,
-
-                                    Tag = NodeType.Unknown,
-                                });
-                                pos += 61;
-                            }
-                            else
-                            {
-
-                                byte bone = data[rvpos];  //SINGLE BYTE
-                                rvpos += 1;
-
-                                rigidvertices.Items.Add(new BinInterpNode
+                                    Items =
+                                    {
+                                        MakeVectorNode(bin, "Position"),
+                                        MakePackedNormalNode(bin, "TangentX"),
+                                        MakePackedNormalNode(bin, "TangentY"),
+                                        MakePackedNormalNode(bin, "TangentZ"),
+                                        MakeVector2DNode(bin, "UV"),
+                                        ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.UDK, () => new ITreeItem[]
+                                        {
+                                            MakeVector2DNode(bin, "UV2"),
+                                            MakeVector2DNode(bin, "UV3"),
+                                            MakeVector2DNode(bin, "UV4"),
+                                            MakeColorNode(bin, "BoneColor"),
+                                        }),
+                                        MakeByteNode(bin, "Bone")
+                                    }
+                                }),
+                                MakeArrayNode(bin, "SoftVertices", k => new BinInterpNode(bin.Position, $"{k}")
                                 {
-                                    Header = $"{(pos - binarystart):X4} {rv}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ}  UV U:{uv1U} W:{uv1U} Bone:{bone}",
-                                    Name = "_" + pos,
-
-                                    Tag = NodeType.Unknown,
-                                });
-                                pos += 33;
+                                    Items =
+                                    {
+                                        MakeVectorNode(bin, "Position"),
+                                        MakePackedNormalNode(bin, "TangentX"),
+                                        MakePackedNormalNode(bin, "TangentY"),
+                                        MakePackedNormalNode(bin, "TangentZ"),
+                                        MakeVector2DNode(bin, "UV"),
+                                        ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.UDK, () => new ITreeItem[]
+                                        {
+                                            MakeVector2DNode(bin, "UV2"),
+                                            MakeVector2DNode(bin, "UV3"),
+                                            MakeVector2DNode(bin, "UV4"),
+                                            MakeColorNode(bin, "BoneColor"),
+                                        }),
+                                        new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, l => MakeByteNode(bin, $"InfluenceBones[{l}]"))),
+                                        new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, l => MakeByteNode(bin, $"InfluenceWeights[{l}]")))
+                                    }
+                                }),
+                                MakeArrayNode(bin, "BoneMap", k => MakeUInt16Node(bin, $"{k}")),
+                                MakeInt32Node(bin, "NumRigidVertices"),
+                                MakeInt32Node(bin, "NumSoftVertices"),
+                                MakeInt32Node(bin, "MaxBoneInfluences"),
                             }
-                        }
-
-                        int softskinVertex = BitConverter.ToInt32(data, pos); //Soft vertices collection
-                        var softvertices = new BinInterpNode
+                        }));
+                        node.Items.Add(MakeUInt32Node(bin, "Size"));
+                        node.Items.Add(MakeUInt32Node(bin, "NumVertices"));
+                        node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "Edges", j => new BinInterpNode(bin.Position, $"{j}")
                         {
-                            Header = $"{(pos - binarystart):X4} Soft Skin Vertices: {softskinVertex}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        };
-                        nChunk.Items.Add(softvertices);
-                        pos += 4;
-
-                        for (int sv = 0; sv < softskinVertex; sv++)
-                        {
-                            BinInterpNode node = ReadSoftSkinVertice(game, data, pos);
-                            node.Header = $"{(pos - binarystart):X4} {sv}: {node.Header}";
-                            softvertices.Items.Add(node);
-                            pos += game != MEGame.UDK ? 40 : 68;
-
-                        }
-
-                        int nMapBones = BitConverter.ToInt32(data, pos); // Bone Map
-                        var mapBones = new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Bones Map: {nMapBones}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        };
-                        nChunk.Items.Add(mapBones);
-                        pos += 4;
-
-                        for (int mb = 0; mb < nMapBones; mb++)
-                        {
-                            int mbIndex = BitConverter.ToInt16(data, pos);  // int16 = me3
-                            mapBones.Items.Add(new BinInterpNode
+                            Items =
                             {
-                                Header = $"{(pos - binarystart):X4} {mb} : {mbIndex}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.StructLeafInt,
-                            });
-                            pos += 2;
-                        }
-
-                        int numRigidVertex = BitConverter.ToInt32(data, pos);
-                        nChunk.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Num Rigid Vertices: {numRigidVertex}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-
-                        int numSoftVertex = BitConverter.ToInt32(data, pos);
-                        nChunk.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Num Soft Vertices: {numSoftVertex}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-
-                        int maxBoneInfluence = BitConverter.ToInt32(data, pos);
-                        nChunk.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Max Bone Influence: {maxBoneInfluence}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-                    }
-
-                    int Size1 = BitConverter.ToInt32(data, pos); // Size
-                    nLOD.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Size: {Size1}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-                    int nVertices = BitConverter.ToInt32(data, pos); // NumVertices
-                    nLOD.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} NumVertices: {nVertices}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-                    if (game != MEGame.UDK)
-                    {
-                        int Unknown3 = BitConverter.ToInt32(data, pos); // Unknown 3 Not in UDK
-                        var UnkList3 = new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Unknown List 3: {Unknown3}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        };
-                        nLOD.Items.Add(UnkList3);
-                        pos += 4;
-
-                        for (int uk3 = 0; uk3 < Unknown3; uk3++)
-                        {
-                            int uk3IndexA = BitConverter.ToInt32(data, pos);  //int32 unknown
-                            pos += 4;
-                            int uk3IndexB = BitConverter.ToInt32(data, pos);  //int32 unknown
-                            pos += 4;
-                            int uk3IndexC = BitConverter.ToInt32(data, pos);  //int32 unknown
-                            pos += 4;
-                            int uk3IndexD = BitConverter.ToInt32(data, pos);  //int32 unknown
-                            pos += 4;
-                            UnkList3.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} {uk3} : unkA {uk3IndexA} unkB {uk3IndexB} unkC {uk3IndexC} unkD {uk3IndexD}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.Unknown,
-                            });
-                        }
-                    }
-
-                    int nReqBones = BitConverter.ToInt32(data, pos); //Required Bones
-                    var reqBones = new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Required Bones: {nReqBones}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    };
-                    nLOD.Items.Add(reqBones);
-                    pos += 4;
-
-                    for (int rq = 0; rq < nReqBones; rq++)
-                    {
-                        //single byte integers (max 256 bones)
-                        reqBones.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} {rq} : {data[pos]}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafByte,
-                        });
-                        pos += 1;
-                    }
-
-                    //Raw Point Data
-                    int rawPoint1 = BitConverter.ToInt32(data, pos);
-                    nLOD.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Raw Point Indices Flag: {rawPoint1}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-                    int rawPoint2 = BitConverter.ToInt32(data, pos);
-                    nLOD.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Raw Point Indices Count: {rawPoint2}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-                    int rawPoint3 = BitConverter.ToInt32(data, pos);
-                    nLOD.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Raw Point Indices Size: {rawPoint3}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-                    int rawPoint4 = BitConverter.ToInt32(data, pos);
-                    nLOD.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Raw Point Indices Offset: {rawPoint4}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-                    if (rawPoint3 != 0)
-                    {
-                        var rawpoints = new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Raw Point Indices Collection",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.Unknown,
-                        };
-                        nLOD.Items.Add(rawpoints);
-                        int rapos = pos;
-                        for (int rp = 0; rp < rawPoint3; rp++)
-                        {
-                            rawpoints.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(rapos - binarystart):X4} {rp} : {data[rapos]:X2}",
-                                Name = "_" + rapos,
-
-                                Tag = NodeType.StructLeafByte,
-                            });
-                            rapos += 1;
-                        }
-                        pos += rawPoint3;
-                    }
-
-                    if (game != MEGame.ME1)
-                    {
-                        int Unknown9 = BitConverter.ToInt32(data, pos); // Unknown 9 ME3 or ME2 or UDK (Not ME1)
-                        nLOD.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Unknown 9: {Unknown9}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-                    }
-
-                    var vtxGPUskin = new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Vertex Buffer GPU Skin",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.Unknown
-                    };
-                    nLOD.Items.Add(vtxGPUskin);
-
-                    if (game == MEGame.ME3 || game == MEGame.UDK)
-                    {
-                        int nTexCoord = BitConverter.ToInt32(data, pos);
-                        var lTexCoord = new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Texture Coordinates: {nTexCoord}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        };
-                        vtxGPUskin.Items.Add(lTexCoord);
-                        pos += 4;
-
-                        if (game == MEGame.UDK)
-                        {
-                            int useFullUV = BitConverter.ToInt32(data, pos); // UDK only
-                            vtxGPUskin.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} Use Full Precision UVs: {useFullUV}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.StructLeafInt,
-                            });
-                            pos += 4;
-
-                            int usePackedPre = BitConverter.ToInt32(data, pos); // UDK only
-                            vtxGPUskin.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} Use Packed Precision: {usePackedPre}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.StructLeafInt,
-                            });
-                            pos += 4;
-                        }
-
-                        //Get Extension X, Y, Z
-                        float vetxX = BitConverter.ToSingle(data, pos);
-                        pos += 4;
-                        float vetxY = BitConverter.ToSingle(data, pos);
-                        pos += 4;
-                        float vetxZ = BitConverter.ToSingle(data, pos);
-                        pos += 4;
-                        vtxGPUskin.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Extension: X:({vetxX}) Y:({vetxY}) Z:({vetxZ})",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.Unknown
-                        });
-
-                        //Get origin X, Y, Z
-                        float vorgX = BitConverter.ToSingle(data, pos);
-                        pos += 4;
-                        float vorgY = BitConverter.ToSingle(data, pos);
-                        pos += 4;
-                        float vorgZ = BitConverter.ToSingle(data, pos);
-                        pos += 4;
-                        vtxGPUskin.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Origin: X:({vorgX}) Y:({vorgY}) Z:({vorgZ})",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.Unknown
-                        });
-                    }
-
-                    int vtxSize = BitConverter.ToInt32(data, pos);
-                    vtxGPUskin.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Vertex Size: {vtxSize}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-
-                    int nVertex = BitConverter.ToInt32(data, pos); //Vertex Count
-                    var vertices = new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Vertices: {nVertex}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    };
-                    vtxGPUskin.Items.Add(vertices);
-                    pos += 4;
-
-                    if (game == MEGame.ME1)
-                    {
-                        for (int v = 0; v < nVertex; v++)
-                        {
-                            int vpos = pos; //use seperate positioning as vertex size is variable
-                            float vPosX = BitConverter.ToSingle(data, vpos);
-                            vpos += 4;
-                            float vPosY = BitConverter.ToSingle(data, vpos);
-                            vpos += 4;
-                            float vPosZ = BitConverter.ToSingle(data, vpos);
-                            vpos += 4;
-
-                            float TanX = BitConverter.ToSingle(data, vpos);
-                            vpos += 4;
-                            float TanY = BitConverter.ToSingle(data, vpos);
-                            vpos += 4;
-                            float TanZ = BitConverter.ToSingle(data, vpos);
-                            vpos += 4;
-
-                            int infB1 = data[vpos];
-                            vpos += 1;
-                            int infW1 = data[vpos];
-                            vpos += 1;
-                            int infB2 = data[vpos];
-                            vpos += 1;
-                            int infW2 = data[vpos];
-                            vpos += 1;
-                            int infB3 = data[vpos];
-                            vpos += 1;
-                            int infW3 = data[vpos];
-                            vpos += 1;
-                            int infB4 = data[vpos];
-                            vpos += 1;
-                            int infW4 = data[vpos];
-                            vpos += 1;
-                            float uvU = BitConverter.ToSingle(data, vpos); //full precision
-                            vpos += 4;
-                            float uvV = BitConverter.ToSingle(data, vpos); //full precision
-                            vpos += 4;
-                            vertices.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} {v}: Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} | Tangent X:{TanX} Y:{TanY} Z:{TanZ} | Influences: {infB1}:{infW1} {infB2}:{infW2} {infB3}:{infW4} {infB4}:{infW4} | UV U:{uvU} W:{uvV}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.Unknown,
-                            });
-                            if (vpos - pos != vtxSize) throw new Exception();
-                            pos += vtxSize;
-                        }
-                    }
-                    else
-                    {
-                        for (int v = 0; v < nVertex; v++)
-                        {
-                            int vpos = pos; //use seperate positioning as vertex size is variable
-                            float TanX = BitConverter.ToSingle(data, vpos);
-                            vpos += 4;
-                            //float TanY = BitConverter.ToSingle(data, vpos);
-                            //vpos += 4;
-                            float TanZ = BitConverter.ToSingle(data, vpos);
-                            vpos += 4;
-                            float vPosX = BitConverter.ToSingle(data, vpos);
-                            vpos += 4;
-                            float vPosY = BitConverter.ToSingle(data, vpos);
-                            vpos += 4;
-                            float vPosZ = BitConverter.ToSingle(data, vpos);
-                            vpos += 4;
-                            int infB1 = data[vpos];
-                            vpos += 1;
-                            int infW1 = data[vpos];
-                            vpos += 1;
-                            int infB2 = data[vpos];
-                            vpos += 1;
-                            int infW2 = data[vpos];
-                            vpos += 1;
-                            int infB3 = data[vpos];
-                            vpos += 1;
-                            int infW3 = data[vpos];
-                            vpos += 1;
-                            int infB4 = data[vpos];
-                            vpos += 1;
-                            int infW4 = data[vpos];
-                            vpos += 1;
-                            float uvU = ModelPreview.HalfToFloat(BitConverter.ToUInt16(data, vpos));
-                            vpos += 2;
-                            float uvV = ModelPreview.HalfToFloat(BitConverter.ToUInt16(data, vpos));
-                            vpos += 2;
-                            vertices.Items.Add(new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} {v}: Tangent X:{TanX} Z:{TanZ} Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Influences: {infB1}:{infW1} {infB2}:{infW2} {infB3}:{infW4} {infB4}:{infW4} UV U:{uvU} W:{uvV}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.Unknown,
-                            });
-                            int amountRead = vpos - pos;
-                            if (amountRead != vtxSize) throw new Exception("Vertex size read does not match listed vertex size. Should be: " + vtxSize + ", read " + amountRead);
-                            pos += vtxSize;
-                        }
-                    }
-
-                    if (game == MEGame.ME3 || game == MEGame.UDK)
-                    {
-                        int Unknown4 = BitConverter.ToInt32(data, pos); // Unknown 4 appears ME3/UDK (not ME2/ME1)
-                        nLOD.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Unknown (Index GPU buffer size?): {Unknown4}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-
-                        if (Unknown4 > 0)
-                        {
-
-                            int Unk4Count = BitConverter.ToInt32(data, pos);
-                            var unk4List = new BinInterpNode
-                            {
-                                Header = $"{(pos - binarystart):X4} ?Index GPU buffer?: {Unk4Count}",
-                                Name = "_" + pos,
-
-                                Tag = NodeType.StructLeafInt,
-                            };
-                            nLOD.Items.Add(unk4List);
-                            pos += 4;
-
-                            for (int uk4 = 0; uk4 < Unk4Count; uk4++)
-                            {
-                                int nUnk4 = BitConverter.ToInt32(data, pos);
-                                unk4List.Items.Add(new BinInterpNode
-                                {
-                                    Header = $"{(pos - binarystart):X4} {uk4} : {nUnk4}",
-                                    Name = "_" + pos,
-
-                                    Tag = NodeType.StructLeafInt,
-                                });
-                                pos += Unknown4;
+                                MakeInt32Node(bin, "Vertices[0]"),
+                                MakeInt32Node(bin, "Vertices[1]"),
+                                MakeInt32Node(bin, "Faces[0]"),
+                                MakeInt32Node(bin, "Faces[1]"),
                             }
-                        }
+                        })));
+                        node.Items.Add(MakeArrayNode(bin, "RequiredBones", j => MakeByteNode(bin, $"{j}")));
+                        node.Items.Add(MakeUInt32Node(bin, "RawPointIndices BulkDataFlags"));
+                        node.Items.Add(new BinInterpNode(bin.Position, $"RawPointIndices Count: {rawPointIndicesCount = bin.ReadInt32()}"));
+                        node.Items.Add(MakeUInt32Node(bin, "RawPointIndices size"));
+                        node.Items.Add(MakeUInt32Node(bin, "RawPointIndices file offset"));
+                        node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK,
+                                                                                   () => MakeArrayNode(rawPointIndicesCount, bin, "RawPointIndices", k => MakeInt32Node(bin, $"{k}")),
+                                                                                   () => MakeArrayNode(rawPointIndicesCount, bin, "RawPointIndices", k => MakeUInt16Node(bin, $"{k}"))));
+                        node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK, () => MakeInt32Node(bin, "NumTexCoords")));
+                        BinInterpNode item = new BinInterpNode(bin.Position, "VertexBufferGPUSkin")
+                        {
+                            IsExpanded = true
+                        };
+                        node.Items.Add(item);
+                        item.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME1, () => new List<ITreeItem>
+                        {
+                            ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK, () => MakeInt32Node(bin, "NumTexCoords")),
+                            MakeBoolIntNode(bin, "bUseFullPrecisionUVs", out useFullPrecisionUVs),
+                            ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new ITreeItem[]
+                            {
+                                MakeBoolIntNode(bin, "bUsePackedPosition"),
+                                MakeVectorNode(bin, "MeshExtension"),
+                                MakeVectorNode(bin, "MeshOrigin"),
+                            }),
+                        }));
+                        item.Items.Add(MakeInt32Node(bin, "vertex size"));
+                        item.Items.Add(MakeArrayNode(bin, "VertexData", k => new BinInterpNode(bin.Position, $"{k}")
+                        {
+                            Items =
+                            {
+                                ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game <= MEGame.ME2, () => MakeVectorNode(bin, "Position")),
+                                MakePackedNormalNode(bin, "TangentX"),
+                                ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.ME1, () =>  MakePackedNormalNode(bin, "TangentY")),
+                                MakePackedNormalNode(bin, "TangentZ"),
+                                ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.ME1, () =>  MakeVector2DNode(bin, "UV")),
+                                new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, l => MakeByteNode(bin, $"InfluenceBones[{l}]"))),
+                                new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, l => MakeByteNode(bin, $"InfluenceWeights[{l}]"))),
+                                ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game >= MEGame.ME3, () => MakeVectorNode(bin, "Position")),
+                                ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME1, 
+                                                              () => ListInitHelper.ConditionalAddOne<ITreeItem>(useFullPrecisionUVs,
+                                                                                                                () => MakeVector2DNode(bin, "UV"), 
+                                                                                                                () => MakeVector2DHalfNode(bin, "UV")))
+                            }
+                        }));
+                        node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game >= MEGame.ME3, () => MakeInt32Node(bin, "VertexInfluences count")));
+                        node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.UDK, () => new ITreeItem[]
+                        {
+                            MakeBoolIntNode(bin, "NeedsCPUAccess"),
+                            MakeByteNode(bin, "Datatype size"),
+                            MakeInt32Node(bin, "ushort size"),
+                            MakeArrayNode(bin, "Second IndexBuffer?", j => MakeUInt16Node(bin, $"{j}")),
+                        }));
                     }
-
-                    if (game == MEGame.UDK) //UDK only - are these LOD or tail?
+                    catch (Exception e)
                     {
-                        int nUnkU1 = BitConverter.ToInt32(data, pos);
-                        nLOD.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Unknown UDK 1 : {nUnkU1}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-
-                        int nUnkU2 = BitConverter.ToInt32(data, pos);
-                        nLOD.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Unknown UDK 2 : {nUnkU2}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-
-                        int nUnkU3 = BitConverter.ToInt32(data, pos);
-                        nLOD.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Unknown UDK 3 : {nUnkU3}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-
-                        int nUnkU4 = BitConverter.ToInt32(data, pos);
-                        nLOD.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Unknown UDK 4 : {nUnkU4}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-
-                        byte nUnkU5 = data[pos];
-                        nLOD.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Unknown UDK 5 : {nUnkU5}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafByte,
-                        });
-                        pos += 1;
+                        node.Items.Add(new BinInterpNode { Header = $"Error reading binary data: {e}" });
                     }
-                }
-
-                var tail = new BinInterpNode  // Tail
+                    return node;
+                }, true));
+                subnodes.Add(MakeArrayNode(bin, "NameIndexMap", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc).InstancedString}: {bin.ReadInt32()}")));
+                subnodes.Add(MakeArrayNode(bin, "PerPolyBoneKDOPs", i => new BinInterpNode(bin.Position, $"{i}")
                 {
-                    Header = $"{(pos - binarystart):X4} Tail",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.Unknown
-                };
-                subnodes.Add(tail);
-
-                int blCount = BitConverter.ToInt32(data, pos);
-                var bonelist = new BinInterpNode
-                {
-                    Header = $"{(pos - binarystart):X4} Bone List: {blCount}",
-                    Name = "_" + pos,
-                    Tag = NodeType.StructLeafInt
-                };
-                tail.Items.Add(bonelist);
-                pos += 4;
-                for (int bl = 0; bl < blCount; bl++)
-                {
-                    int bnName = BitConverter.ToInt32(data, pos);
-                    pos += 4;
-                    int bnIdx = BitConverter.ToInt32(data, pos);
-                    pos += 4;
-                    int iBone = BitConverter.ToInt32(data, pos);
-                    pos -= 8;
-                    bonelist.Items.Add(new BinInterpNode
+                    Items =
                     {
-                        Header = $"{(pos - binarystart):X4} {bl}: {CurrentLoadedExport.FileRef.getNameEntry(bnName)}_{bnIdx}  Nbr: {iBone}",
-                        Name = "_" + pos,
-                        Tag = NodeType.StructLeafName
-                    });
-                    pos += 12;
-                }
-
-                int Unknown5 = BitConverter.ToInt32(data, pos); // Unknown ME3/ME2/ME1/UDK
-                tail.Items.Add(new BinInterpNode
-                {
-                    Header = $"{(pos - binarystart):X4} Unknown 5: {Unknown5}",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.StructLeafInt,
-                });
-                pos += 4;
-
-                if (game == MEGame.ME3 || game == MEGame.UDK)
-                {
-                    int Unknown6 = BitConverter.ToInt32(data, pos); // Unknown ME3/UDK (not ME2/1)
-                    tail.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Unknown 6: {Unknown6}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-                    if (game == MEGame.UDK)
-                    {
-                        int nUnkU6 = BitConverter.ToInt32(data, pos);
-                        tail.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} Unknown UDK 6 : {nUnkU6}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
+                        MakekDOPTreeNode(bin),
+                        MakeArrayNode(bin, "CollisionVerts", j => MakeVectorNode(bin, $"{j}"))
                     }
-
-                    int Unknown7 = BitConverter.ToInt32(data, pos); // Unknown 7 ME3/UDK (not ME2/1)
-                    var lUnknown7 = new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Unknown List 7: {Unknown7}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    };
-                    tail.Items.Add(lUnknown7);
-                    pos += 4;
-
-                    for (int uk7 = 0; uk7 < Unknown7; uk7++)
-                    {
-                        int Unknown8 = BitConverter.ToInt32(data, pos); // Unknown list
-                        lUnknown7.Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4} {uk7} : {Unknown8}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafInt,
-                        });
-                        pos += 4;
-                    }
-                }
-
-                if (game == MEGame.UDK)  // Extended Tail in UDK
+                }));
+                if (Pcc.Game >= MEGame.ME3)
                 {
-
-                    int nUnkU7 = BitConverter.ToInt32(data, pos);
-                    tail.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Unknown UDK 7 : {nUnkU7}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-                    int nUnkU8 = BitConverter.ToInt32(data, pos);
-                    tail.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Unknown UDK 8 : {nUnkU8}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-                    int nUnkU9 = BitConverter.ToInt32(data, pos);
-                    tail.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Unknown UDK 9 : {nUnkU9}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-                    int nUnkU10 = BitConverter.ToInt32(data, pos);
-                    tail.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Unknown UDK 10 : {nUnkU10}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-                    int nUnkU11 = BitConverter.ToInt32(data, pos);
-                    tail.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Unknown UDK 11 : {nUnkU11}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
-
-                    int nUnkU12 = BitConverter.ToInt32(data, pos);
-                    tail.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{(pos - binarystart):X4} Unknown UDK 12 : {nUnkU12}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafInt,
-                    });
-                    pos += 4;
+                    subnodes.Add(MakeArrayNode(bin, "BoneBreakNames", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadUnrealString()}")));
+                    subnodes.Add(MakeArrayNode(bin, "ClothingAssets", i => MakeEntryNode(bin, $"{i}")));
                 }
-                binarystart = pos;
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
 
             return subnodes;
@@ -7615,88 +6455,7 @@ namespace ME3Explorer
 
                 subnodes.Add(MakeBoxSphereBoundsNode(bin, "Bounds"));
                 subnodes.Add(MakeEntryNode(bin, "BodySetup"));
-                bool bIsLeaf;
-                subnodes.Add(new BinInterpNode(bin.Position, "kDOPTree")
-                {
-                    IsExpanded = true,
-                    Items =
-                    {
-                        ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
-                        {
-                            new BinInterpNode(bin.Position, "RootBound")
-                            {
-                                Items =
-                                {
-                                    MakeFloatNode(bin, "Min[0]"),
-                                    MakeFloatNode(bin, "Min[1]"),
-                                    MakeFloatNode(bin, "Min[2]"),
-                                    MakeFloatNode(bin, "Max[0]"),
-                                    MakeFloatNode(bin, "Max[1]"),
-                                    MakeFloatNode(bin, "Max[2]")
-                                }
-                            }
-
-                        }),
-                        MakeInt32Node(bin, "kDOPNodeSize"),
-                        MakeArrayNode(bin, "Nodes", i => new BinInterpNode(bin.Position, $"{i}")
-                        {
-                            Items =
-                            {
-                                ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
-                                {
-                                    new BinInterpNode(bin.Position, "BoundingVolume")
-                                    {
-                                        IsExpanded = true,
-                                        Items =
-                                        {
-                                            MakeByteNode(bin, "Min[0]"),
-                                            MakeByteNode(bin, "Min[1]"),
-                                            MakeByteNode(bin, "Min[2]"),
-                                            MakeByteNode(bin, "Max[0]"),
-                                            MakeByteNode(bin, "Max[1]"),
-                                            MakeByteNode(bin, "Max[2]")
-                                        }
-                                    }
-                                },() => new List<ITreeItem>
-                                {
-                                    new BinInterpNode(bin.Position, "BoundingVolume")
-                                    {
-                                        Items =
-                                        {
-                                            MakeFloatNode(bin, "Min[0]"),
-                                            MakeFloatNode(bin, "Min[1]"),
-                                            MakeFloatNode(bin, "Min[2]"),
-                                            MakeFloatNode(bin, "Max[0]"),
-                                            MakeFloatNode(bin, "Max[1]"),
-                                            MakeFloatNode(bin, "Max[2]")
-                                        }
-                                    },
-                                    new BinInterpNode(bin.Position, $"bIsLeaf: {bIsLeaf = bin.ReadBoolInt()}"),
-                                    ListInitHelper.ConditionalAdd(bIsLeaf, () => new ITreeItem[]
-                                    {
-                                        MakeUInt16Node(bin, "NumTriangles"),
-                                        MakeUInt16Node(bin, "StartIndex")
-                                    }, () => new ITreeItem[]
-                                    {
-                                        MakeUInt16Node(bin, "LeftNode"),
-                                        MakeUInt16Node(bin, "RightNode")
-                                    })
-                                })
-                            }
-                        }),
-                        MakeInt32Node(bin, "FkDOPCollisionTriangleSize"),
-                        MakeArrayNode(bin, "Triangles", i => new BinInterpNode(bin.Position, $"{i}")
-                        {
-                            Items =
-                            {
-                                MakeUInt16Node(bin, "Vertex1"),
-                                MakeUInt16Node(bin, "Vertex2"),
-                                MakeUInt16Node(bin, "Vertex3"),
-                                MakeUInt16Node(bin, "MaterialIndex"),
-                            }
-                        })
-                    }
-                });
+                subnodes.Add(MakekDOPTreeNode(bin));
 
                 subnodes.Add(MakeInt32Node(bin, "InternalVersion"));
                 int count;
@@ -7914,6 +6673,92 @@ namespace ME3Explorer
             }
 
             return subnodes;
+        }
+
+        private BinInterpNode MakekDOPTreeNode(MemoryStream bin)
+        {
+            bool bIsLeaf;
+            return new BinInterpNode(bin.Position, "kDOPTree")
+            {
+                IsExpanded = true,
+                Items =
+                {
+                    ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                    {
+                        new BinInterpNode(bin.Position, "RootBound")
+                        {
+                            Items =
+                            {
+                                MakeFloatNode(bin, "Min[0]"),
+                                MakeFloatNode(bin, "Min[1]"),
+                                MakeFloatNode(bin, "Min[2]"),
+                                MakeFloatNode(bin, "Max[0]"),
+                                MakeFloatNode(bin, "Max[1]"),
+                                MakeFloatNode(bin, "Max[2]")
+                            }
+                        }
+
+                    }),
+                    MakeInt32Node(bin, "kDOPNodeSize"),
+                    MakeArrayNode(bin, "Nodes", i => new BinInterpNode(bin.Position, $"{i}")
+                    {
+                        Items =
+                        {
+                            ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                            {
+                                new BinInterpNode(bin.Position, "BoundingVolume")
+                                {
+                                    IsExpanded = true,
+                                    Items =
+                                    {
+                                        MakeByteNode(bin, "Min[0]"),
+                                        MakeByteNode(bin, "Min[1]"),
+                                        MakeByteNode(bin, "Min[2]"),
+                                        MakeByteNode(bin, "Max[0]"),
+                                        MakeByteNode(bin, "Max[1]"),
+                                        MakeByteNode(bin, "Max[2]")
+                                    }
+                                }
+                            },() => new List<ITreeItem>
+                            {
+                                new BinInterpNode(bin.Position, "BoundingVolume")
+                                {
+                                    Items =
+                                    {
+                                        MakeFloatNode(bin, "Min[0]"),
+                                        MakeFloatNode(bin, "Min[1]"),
+                                        MakeFloatNode(bin, "Min[2]"),
+                                        MakeFloatNode(bin, "Max[0]"),
+                                        MakeFloatNode(bin, "Max[1]"),
+                                        MakeFloatNode(bin, "Max[2]")
+                                    }
+                                },
+                                new BinInterpNode(bin.Position, $"bIsLeaf: {bIsLeaf = bin.ReadBoolInt()}"),
+                                ListInitHelper.ConditionalAdd(bIsLeaf, () => new ITreeItem[]
+                                {
+                                    MakeUInt16Node(bin, "NumTriangles"),
+                                    MakeUInt16Node(bin, "StartIndex")
+                                }, () => new ITreeItem[]
+                                {
+                                    MakeUInt16Node(bin, "LeftNode"),
+                                    MakeUInt16Node(bin, "RightNode")
+                                })
+                            })
+                        }
+                    }),
+                    MakeInt32Node(bin, "FkDOPCollisionTriangleSize"),
+                    MakeArrayNode(bin, "Triangles", i => new BinInterpNode(bin.Position, $"{i}")
+                    {
+                        Items =
+                        {
+                            MakeUInt16Node(bin, "Vertex1"),
+                            MakeUInt16Node(bin, "Vertex2"),
+                            MakeUInt16Node(bin, "Vertex3"),
+                            MakeUInt16Node(bin, "MaterialIndex"),
+                        }
+                    })
+                }
+            };
         }
 
         private List<ITreeItem> StartTextureBinaryScan(byte[] data, int binarystart)

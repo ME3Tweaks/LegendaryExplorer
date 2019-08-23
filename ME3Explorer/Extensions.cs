@@ -916,7 +916,12 @@ namespace ME3Explorer
         public class InitCollection<T> : List<T>
         {
             public InitCollection(IEnumerable<T> collection) : base(collection) { }
+            public InitCollection() { }
         }
+
+        public static InitCollection<T> ConditionalAddOne<T>(bool condition, Func<T> elem) => condition ? new InitCollection<T> { elem() } : null;
+
+        public static InitCollection<T> ConditionalAddOne<T>(bool condition, Func<T> ifTrue, Func<T> ifFalse) => new InitCollection<T> { condition ? ifTrue() : ifFalse() };
 
         public static InitCollection<T> ConditionalAdd<T>(bool condition, Func<IEnumerable<T>> elems) => condition ? new InitCollection<T>(elems()) : null;
 
