@@ -18,6 +18,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using MassEffectModder;
+using System.Globalization;
 
 namespace ME3Explorer
 {
@@ -43,6 +44,13 @@ namespace ME3Explorer
         {
             get => _cannotShowTextureTextVisibility;
             set => SetProperty(ref _cannotShowTextureTextVisibility, value);
+        }
+
+        private System.Windows.Media.Stretch _imageStretchOption = System.Windows.Media.Stretch.Uniform;
+        public System.Windows.Media.Stretch ImageStretchOption
+        {
+            get => _imageStretchOption;
+            set => SetProperty(ref _imageStretchOption, value);
         }
 
         public EmbeddedTextureViewer()
@@ -85,7 +93,7 @@ namespace ME3Explorer
                     MessageBox.Show("Cannot replace texture: Aspect ratios must be the same.");
                     return;
                 }
-                replaceTextures(image, props);
+                replaceTextures(image, props, selectDDS.FileName);
             }
 
         }
@@ -411,7 +419,7 @@ namespace ME3Explorer
             }
         }
 
-        public string replaceTextures(MassEffectModder.Image image, PropertyCollection props)
+        public string replaceTextures(MassEffectModder.Image image, PropertyCollection props, string fileSourcePath = null)
         {
             string errors = "";
             Texture2D texture = new Texture2D(CurrentLoadedExport);
@@ -711,7 +719,8 @@ namespace ME3Explorer
                     {
                         mipmap.compressedSize = mipmap.uncompressedSize;
                         mipmap.newDataForSerializing = image.mipMaps[m].data;
-                    } else
+                    }
+                    else
                     {
                         throw new Exception("Unknown mip storage type!");
                     }
@@ -796,6 +805,12 @@ namespace ME3Explorer
             //Set properties
             props.AddOrReplaceProp(new IntProperty(texture.Mips.First().width, "SizeX"));
             props.AddOrReplaceProp(new IntProperty(texture.Mips.First().height, "SizeY"));
+            if (CurrentLoadedExport.Game == MEGame.ME1 && fileSourcePath != null)
+            {
+                props.AddOrReplaceProp(new StrProperty(fileSourcePath, "SourceFilePath"));
+                props.AddOrReplaceProp(new StrProperty(File.GetLastWriteTimeUtc(fileSourcePath).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), "SourceFileTimestamp"));
+            }
+
             var mipTailIdx = props.GetProp<IntProperty>("MipTailBaseIdx");
             if (mipTailIdx != null)
             {
@@ -839,7 +854,7 @@ namespace ME3Explorer
             //    }
             //}
 
-           
+
             return errors;
         }
 
@@ -918,6 +933,16 @@ namespace ME3Explorer
                     return mipinfostring;
                 }
             }
+        }
+
+        private void ScalingTurnOff(object sender, RoutedEventArgs e)
+        {
+            ImageStretchOption = System.Windows.Media.Stretch.None;
+        }
+
+        private void ScalingTurnOn(object sender, RoutedEventArgs e)
+        {
+            ImageStretchOption = System.Windows.Media.Stretch.Uniform;
         }
     }
 }

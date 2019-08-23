@@ -584,6 +584,7 @@
       <DependentUpon>KismetLogParser.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\AttachedProperties.cs" />
+    <Compile Include="SharedUI\Converters\EntryGameMatchVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeBooleanConverter.cs" />
     <Compile Include="SharedUI\InputComboBoxWPF.xaml.cs">
       <DependentUpon>InputComboBoxWPF.xaml</DependentUpon>
@@ -1499,6 +1500,8 @@
     <Resource Include="PackageEditor\EntryIcons\icon_world.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_mesh.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_sequence.png" />
+    <Resource Include="PackageEditor\EntryIcons\icon_material.png" />
+    <Resource Include="PackageEditor\EntryIcons\icon_package_fileroot.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

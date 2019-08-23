@@ -52,7 +52,8 @@ namespace ME3Explorer
             Tree
         }
         public static readonly string[] ExportFileTypes = { "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile" };
-        public static readonly string[] ExportIconTypes = { "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile", "World", "Package", "StaticMesh", "SkeletalMesh", "Sequence"};
+        public static readonly string[] ExportIconTypes = { "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile",
+                                                            "World", "Package", "StaticMesh", "SkeletalMesh", "Sequence", "Material"};
 
         /// <summary>
         /// Used to populate the metadata editor values so the list does not constantly need to rebuilt, which can slow down the program on large files like SFXGame or BIOC_Base.
@@ -1620,7 +1621,7 @@ namespace ME3Explorer
             IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
             int importsOffset = Exports.Count;
 
-            var rootEntry = new TreeViewEntry(null, Pcc.FilePath) { IsExpanded = true };
+            var rootEntry = new TreeViewEntry(null, Path.GetFileName(Pcc.FilePath)) { IsExpanded = true };
 
             var rootNodes = new List<TreeViewEntry> { rootEntry };
             rootNodes.AddRange(Exports.Select(t => new TreeViewEntry(t)));
@@ -1667,7 +1668,7 @@ namespace ME3Explorer
             AllEntriesList = new List<string>();
             int importsOffset = Exports.Count;
 
-            TreeViewEntry rootEntry = new TreeViewEntry(null, Pcc.FilePath) { IsExpanded = true };
+            TreeViewEntry rootEntry = new TreeViewEntry(null, Path.GetFileName(Pcc.FilePath)) { IsExpanded = true };
             AllTreeViewNodesX.Add(rootEntry);
 
             foreach (ExportEntry exp in Exports)
