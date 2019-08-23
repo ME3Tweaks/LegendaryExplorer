@@ -4,9 +4,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+    mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Converters:EntryGameMatchVisibilityConverter x:Key="EntryGameMatchVisibilityConverter"/>
+    </UserControl.Resources>
     <DockPanel>
         <ListBox Name="Mips_ListBox"  DockPanel.Dock="Left"  MinWidth="200" ItemsSource="{Binding MipList}" DisplayMemberPath="MipDisplayString" SelectionChanged="MipList_SelectedItemChanged" ScrollViewer.CanContentScroll="False">
             <ListBox.ItemContainerStyle>
@@ -20,13 +24,19 @@
             </ListBox.ItemContainerStyle>
         </ListBox>
         <DockPanel>
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Background="Red" VerticalAlignment="Bottom">
-                <Button Content="Export to PNG" Command="{Binding ExportToPNGCommand}"/>
+            <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
+                <CheckBox Content="Scale image to viewport" IsChecked="True" VerticalContentAlignment="Center" Margin="0,0,5,0" Checked="ScalingTurnOn" Unchecked="ScalingTurnOff"/>
+                <Button Content="Export to PNG" Command="{Binding ExportToPNGCommand}" Padding="5,2"/>
+                <Button Content="Replace from PNG" Command="{Binding ReplaceFromPNGCommand}" Padding="5,2" Margin="5,0"/>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}">
+                    <TextBlock Text="Texture Cache:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBox Width="100" VerticalContentAlignment="Center" ToolTip="Changing the texture cache requires changing the texture"/>
+                </StackPanel>
             </StackPanel>
             <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Name="TextureStatus_TextBlock" Text="{Binding CannotShowTextureText, FallbackValue=Select a mip}" Visibility="{Binding CannotShowTextureTextVisibility}" TextAlignment="Center"/>
                 <!--<Button Name="TFCSelect_Button" Margin="10,0,0,0" Content="Select TFC"/>-->
-                <Image Name="TextureImage" Stretch="Uniform"/>
+                <Image Name="TextureImage" Stretch="{Binding ImageStretchOption}"/>
             </DockPanel>
         </DockPanel>
     </DockPanel>

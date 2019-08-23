@@ -584,6 +584,7 @@
       <DependentUpon>KismetLogParser.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\AttachedProperties.cs" />
+    <Compile Include="SharedUI\Converters\EntryGameMatchVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeBooleanConverter.cs" />
     <Compile Include="SharedUI\InputComboBoxWPF.xaml.cs">
       <DependentUpon>InputComboBoxWPF.xaml</DependentUpon>
@@ -763,6 +764,9 @@
     <Compile Include="Main Window\TaskPane.xaml.cs">
       <DependentUpon>TaskPane.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TFCCompactor\TFCCompactor.xaml.cs">
+      <DependentUpon>TFCCompactor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TlkEditor\TlkEditor.xaml.cs">
       <DependentUpon>TlkEditor.xaml</DependentUpon>
     </Compile>
@@ -793,6 +797,7 @@
     <Compile Include="Unreal\BinaryConverters\Material.cs" />
     <Compile Include="Unreal\BinaryConverters\OrderedDictionary.cs" />
     <Compile Include="Unreal\BinaryConverters\Polys.cs" />
+    <Compile Include="Unreal\BinaryConverters\SkeletalMesh.cs" />
     <Compile Include="Unreal\BinaryConverters\StaticMesh.cs" />
     <Compile Include="Unreal\SerializingContainer2.cs" />
     <Compile Include="Unreal\BinaryConverters\TreeNode.cs" />
@@ -1085,6 +1090,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SharedUI\StatusBarGameIDIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TFCCompactor\TFCCompactor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1499,6 +1508,8 @@
     <Resource Include="PackageEditor\EntryIcons\icon_world.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_mesh.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_sequence.png" />
+    <Resource Include="PackageEditor\EntryIcons\icon_material.png" />
+    <Resource Include="PackageEditor\EntryIcons\icon_package_fileroot.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

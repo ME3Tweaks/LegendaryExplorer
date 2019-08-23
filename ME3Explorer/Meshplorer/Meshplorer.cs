@@ -18,7 +18,8 @@ using ME3Explorer.Unreal.BinaryConverters;
 using StreamHelpers;
 using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
 
-//using StaticMesh = ME3Explorer.Unreal.Classes.StaticMesh;
+//until it gets switched over
+using SkeletalMesh = ME3Explorer.Unreal.Classes.SkeletalMesh;
 
 namespace ME3Explorer.Meshplorer
 {

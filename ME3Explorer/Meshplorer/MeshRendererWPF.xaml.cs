@@ -34,7 +34,7 @@ namespace ME3Explorer.Meshplorer
 
         #region 3D
 
-        private bool _rotating, _wireframe, _solid = true, _firstperson;
+        private bool _rotating = true, _wireframe, _solid = true, _firstperson;
 
         public bool Rotating
         {
@@ -69,7 +69,7 @@ namespace ME3Explorer.Meshplorer
         {
             if (Preview != null && Preview.LODs.Count > 0)
             {
-               
+
                 if (Solid && CurrentLOD < Preview.LODs.Count)
                 {
                     SceneViewer.Context.Wireframe = false;
@@ -91,20 +91,17 @@ namespace ME3Explorer.Meshplorer
             {
                 WorldMesh m = Preview.LODs[CurrentLOD].Mesh;
                 SceneViewer.Context.Camera.Position = m.AABBCenter;
-                //SceneViewer.Context.Camera.FocusDepth = 1.0f;
+                SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 7.0f;
                 if (SceneViewer.Context.Camera.FirstPerson)
                 {
                     SceneViewer.Context.Camera.Position -= SceneViewer.Context.Camera.CameraForward * SceneViewer.Context.Camera.FocusDepth;
                 }
-
-                Debug.WriteLine("Camera position: " + SceneViewer.Context.Camera.Position);
             }
             else
             {
                 SceneViewer.Context.Camera.Position = SharpDX.Vector3.Zero;
                 SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 5.0f;
                 SceneViewer.Context.Camera.Yaw = (float)Math.PI / 4.0f;
-                Debug.WriteLine("Camera position: " + SceneViewer.Context.Camera.Position);
             }
         }
         #endregion
@@ -123,31 +120,25 @@ namespace ME3Explorer.Meshplorer
         public override void LoadExport(ExportEntry exportEntry)
         {
             SceneViewer.InitializeD3D();
+            SceneViewer.Context.BackgroundColor = new SharpDX.Color(128,128,128);
+
             CurrentLoadedExport = exportEntry;
 
             Preview?.Dispose();
             if (CurrentLoadedExport.ClassName == "StaticMesh")
             {
                 var sm = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
-                //globalscale = 1f;
                 Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, sm, CurrentLOD, SceneViewer.Context.TextureCache);
-                //var bounding = sm.Bounds.SphereRadius;
-                //SceneViewer.Context.Camera.Position = new Vector3(bounding / 2, bounding / 2, bounding / 3);
-                SceneViewer.Context.Camera.FocusDepth = sm.Bounds.SphereRadius *2.3f;
+                SceneViewer.Context.Camera.FocusDepth = sm.Bounds.SphereRadius * 1.2f;
 
             }
             else if (CurrentLoadedExport.ClassName == "SkeletalMesh")
             {
                 var sm = new Unreal.Classes.SkeletalMesh(CurrentLoadedExport);
                 Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, sm, SceneViewer.Context.TextureCache);
-                SceneViewer.Context.Camera.FocusDepth = sm.Bounding.r * 2.0f;
-
-                //var bounding = sm.Bounding.r;
-                //SceneViewer.Context.Camera.Position = new Vector3(bounding / 2, bounding / 2, bounding / 3);
+                SceneViewer.Context.Camera.FocusDepth = sm.Bounding.r * 1.2f;
             }
 
-            //It seems like globalscale in this tool is not the same as main meshplorer and it's causing things to not be focused. 
-            //need to find way to make item in view by default.
             CenterView();
         }
 
@@ -162,6 +153,7 @@ namespace ME3Explorer.Meshplorer
 
         private void MeshRenderer_ViewUpdate(object sender, float e)
         {
+            //Todo: Find a way to disable SceneViewer.Context.Update from firing if this control is not visible
             if (Rotating)
             {
                 PreviewRotation += .05f * e;
@@ -175,6 +167,7 @@ namespace ME3Explorer.Meshplorer
 
         public override void UnloadExport()
         {
+            Preview?.Dispose();
             CurrentLoadedExport = null;
         }
 

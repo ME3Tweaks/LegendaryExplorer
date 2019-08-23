@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -105,12 +106,15 @@ namespace ME3Explorer.SharedUI.Converters
                     case "World":
                         return "/PackageEditor/EntryIcons/icon_world.png";
                     case "Package":
-                        return "/PackageEditor/EntryIcons/icon_package.png";
+                        string fname = Path.GetFileNameWithoutExtension(exp.FileRef.FilePath);
+                        return fname.Equals(exp.ObjectName, StringComparison.InvariantCultureIgnoreCase) ? "/PackageEditor/EntryIcons/icon_package_fileroot.png" :  "/PackageEditor/EntryIcons/icon_package.png";
                     case "SkeletalMesh":
                     case "StaticMesh":
                         return "/PackageEditor/EntryIcons/icon_mesh.png";
                     case "Sequence":
                         return "/PackageEditor/EntryIcons/icon_sequence.png";
+                    case "Material":
+                        return "/PackageEditor/EntryIcons/icon_material.png";
                 }
             }
 

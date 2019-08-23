@@ -494,31 +494,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 data = new StaticMeshRenderData();
             }
 
-            int bulkdataflags = 0;
-            sc.Serialize(ref bulkdataflags);
-            int elementCount = data.RawTriangles?.Length ?? 0;
-            sc.Serialize(ref elementCount);
-            int sizeOnDisk = 0;
-            long sizeOnDiskPosition = sc.ms.Position;
-            sc.Serialize(ref sizeOnDisk);//when saving, come back and rewrite this after writing RawTriangles
-            int offsetInFile = sc.FileOffset + 4;
-            sc.Serialize(ref offsetInFile);
-            if (sc.IsLoading)
-            {
-                data.RawTriangles = new StaticMeshTriangle[elementCount];
-            }
-            for (int i = 0; i < elementCount; i++)
-            {
-                sc.Serialize(ref data.RawTriangles[i]);
-            }
-
-            if (sc.IsSaving)
-            {
-                long curPos = sc.ms.Position;
-                sc.ms.JumpTo(sizeOnDiskPosition);
-                sc.ms.WriteInt32((int)(curPos - (sizeOnDiskPosition + 8)));
-                sc.ms.JumpTo(curPos);
-            }
+            sc.SerializeBulkData(ref data.RawTriangles, Serialize);
             sc.Serialize(ref data.Elements, Serialize);
             sc.Serialize(ref data.PositionVertexBuffer);
             if (sc.IsSaving)

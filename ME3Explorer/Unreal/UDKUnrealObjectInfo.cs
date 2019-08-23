@@ -12,20 +12,9 @@ namespace ME3Explorer.Unreal
 {
     public static class UDKUnrealObjectInfo
     {
-
-        //public class SequenceObjectInfo
-        //{
-        //    public List<string> inputLinks;
-
-        //    public SequenceObjectInfo()
-        //    {
-        //        inputLinks = new List<string>();
-        //    }
-        //}
         public static bool IsLoaded = false;
         public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
-        //public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new Dictionary<string, SequenceObjectInfo>();
         public static Dictionary<string, List<NameReference>> Enums = new Dictionary<string, List<NameReference>>();
 
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
@@ -33,37 +22,6 @@ namespace ME3Explorer.Unreal
             "CoverReference", "CoverInfo", "CoverSlot", "RwVector2", "RwVector3", "RwVector4" };
 
         private static readonly string jsonPath = Path.Combine(App.ExecFolder, "UDKObjectInfo.json");
-
-       /* public static bool isImmutableStruct(string structName)
-        {
-            return ImmutableStructs.Contains(structName);
-        }
-
-        #region struct default values
-        private static byte[] CoverReferenceDefault = { 
-            //SlotIdx
-            0x78, 0x45, 0, 0, 0, 0, 0, 0, 0xB6, 0x29, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //Direction
-            0x28, 0x1B, 0, 0, 0, 0, 0, 0, 0xB6, 0x29, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //Guid
-            0xC7, 0x26, 0, 0, 0, 0, 0, 0, 0x17, 0x48, 0, 0, 0, 0, 0, 0, 0x10, 0, 0, 0, 0, 0, 0, 0, 0xC7, 0x26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //Actor
-            0xF7, 0, 0, 0, 0, 0, 0, 0, 0x62, 0x34, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //None
-            0x73, 0x33, 0, 0, 0, 0, 0, 0 };
-
-        private static byte[] PlaneDefault = { 
-            //X
-            0x09, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //Y
-            0x0D, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //Z
-            0x12, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //W
-            0x04, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //None
-            0xF0, 0x01, 0, 0, 0, 0, 0, 0 };
-        #endregion*/
 
         public static void loadfromJSON()
         {
@@ -73,7 +31,6 @@ namespace ME3Explorer.Unreal
                 {
                     string raw = File.ReadAllText(jsonPath);
                     var blob = JsonConvert.DeserializeAnonymousType(raw, new { Classes, Structs, Enums });
-                    //SequenceObjects = blob.SequenceObjects;
                     Classes = blob.Classes;
                     Structs = blob.Structs;
                     Enums = blob.Enums;
@@ -86,26 +43,6 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        /*public static SequenceObjectInfo getSequenceObjectInfo(string objectName)
-        {
-            if (objectName.StartsWith("Default__"))
-            {
-                objectName = objectName.Substring(9);
-            }
-            if (SequenceObjects.ContainsKey(objectName))
-            {
-                if (SequenceObjects[objectName].inputLinks != null && SequenceObjects[objectName].inputLinks.Count > 0)
-                {
-                    return SequenceObjects[objectName];
-                }
-                else
-                {
-                    return getSequenceObjectInfo(Classes[objectName].baseClass);
-                }
-            }
-            return null;
-        }
-        */
         public static string getEnumTypefromProp(string className, string propName)
         {
             PropertyInfo p = getPropertyInfo(className, propName, false);

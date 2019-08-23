@@ -187,6 +187,35 @@ namespace ME3Explorer
             }
 
         }
+        public static void SerializeBulkData<T>(this SerializingContainer2 sc, ref T[] arr, SerializeDelegate<T> serialize)
+        {
+            int bulkdataflags = 0;
+            sc.Serialize(ref bulkdataflags);
+            int elementCount = arr?.Length ?? 0;
+            sc.Serialize(ref elementCount);
+            int sizeOnDisk = 0;
+            long sizeOnDiskPosition = sc.ms.Position;
+            sc.Serialize(ref sizeOnDisk); //when saving, come back and rewrite this after writing arr
+            int offsetInFile = sc.FileOffset + 4;
+            sc.Serialize(ref offsetInFile);
+            if (sc.IsLoading)
+            {
+                arr = new T[elementCount];
+            }
+
+            for (int i = 0; i < elementCount; i++)
+            {
+                serialize(sc, ref arr[i]);
+            }
+
+            if (sc.IsSaving)
+            {
+                long curPos = sc.ms.Position;
+                sc.ms.JumpTo(sizeOnDiskPosition);
+                sc.ms.WriteInt32((int)(curPos - (sizeOnDiskPosition + 8)));
+                sc.ms.JumpTo(curPos);
+            }
+        }
 
         public static void Serialize(this SerializingContainer2 sc, ref NameReference name)
         {

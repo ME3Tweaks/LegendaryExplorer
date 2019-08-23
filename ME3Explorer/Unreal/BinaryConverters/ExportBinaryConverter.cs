@@ -34,6 +34,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<MaterialInstance>(export);
                 case "StaticMesh":
                     return From<StaticMesh>(export);
+                case "SkeletalMesh":
+                    return From<SkeletalMesh>(export);
                 case "Level":
                     return new GenericObjectBinary(ConvertLevel(export, newGame));
                 case "Model":

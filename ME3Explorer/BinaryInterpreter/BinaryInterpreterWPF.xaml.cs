@@ -39,6 +39,14 @@ namespace ME3Explorer
         public static readonly DependencyProperty HideHexBoxProperty = DependencyProperty.Register(
             "HideHexBox", typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false, HideHexBoxChangedCallback));
 
+        public bool AlwaysLoadRegardlessOfSize
+        {
+            get => (bool)GetValue(AlwaysLoadRegardlessOfSizeProperty);
+            set => SetValue(AlwaysLoadRegardlessOfSizeProperty, value);
+        }
+        public static readonly DependencyProperty AlwaysLoadRegardlessOfSizeProperty = DependencyProperty.Register(
+            "AlwaysLoadRegardlessOfSize", typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false));
+
         private HexBox BinaryInterpreter_Hexbox;
 
         private string _selectedFileOffset;
@@ -242,7 +250,7 @@ namespace ME3Explorer
 
             OnDemand_Panel.Visibility = Visibility.Visible;
             LoadedContent_Panel.Visibility = Visibility.Collapsed;
-            if (CurrentLoadedExport.Data.Length < 20480 || Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways)
+            if (CurrentLoadedExport.Data.Length < 20480 || Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways || AlwaysLoadRegardlessOfSize)
             {
                 StartBinaryScan();
             }
