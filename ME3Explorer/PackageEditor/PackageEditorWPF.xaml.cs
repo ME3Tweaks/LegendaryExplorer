@@ -538,9 +538,8 @@ namespace ME3Explorer
             if (!TryGetSelectedExport(out ExportEntry export)) return;
             Matinee.InterpEditor p = new Matinee.InterpEditor();
             p.Show();
-            p.LoadPCC(export.FileRef.FilePath); //hmm...
-            p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(export.Index);
-            p.loadInterpData(export.Index);
+            p.LoadFile(export.FileRef.FilePath); //hmm...
+            p.SelectedInterpData = export;
         }
 
         private bool CanOpenInInterpViewer() => TryGetSelectedExport(out ExportEntry export) && export.FileRef.Game == MEGame.ME3 && export.ClassName == "InterpData" && !export.IsDefaultObject;

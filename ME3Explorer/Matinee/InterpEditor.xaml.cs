@@ -30,7 +30,7 @@ namespace ME3Explorer.Matinee
 
         public InterpEditor()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Sequence Editor WPF", new WeakReference(this));
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Interp Viewer", new WeakReference(this));
             LoadCommands();
             DataContext = this;
             StatusText = "Select package file to load";
@@ -41,12 +41,12 @@ namespace ME3Explorer.Matinee
             timelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
         }
 
-        private void TimelineControlOnSelectionChanged(IExportEntry export)
+        private void TimelineControlOnSelectionChanged(ExportEntry export)
         {
             Properties_InterpreterWPF.LoadExport(export);
         }
 
-        public ObservableCollectionExtended<IExportEntry> InterpDataExports { get; } = new ObservableCollectionExtended<IExportEntry>();
+        public ObservableCollectionExtended<ExportEntry> InterpDataExports { get; } = new ObservableCollectionExtended<ExportEntry>();
 
         #region Properties and Bindings
         public ICommand OpenCommand { get; set; }
@@ -66,7 +66,7 @@ namespace ME3Explorer.Matinee
         {
         }
 
-        public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FileName) : "";
+        public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "";
 
         private string _statusText;
 
@@ -76,9 +76,9 @@ namespace ME3Explorer.Matinee
             set => SetProperty(ref _statusText, $"{CurrentFile} {value}");
         }
 
-        private IExportEntry _selectedInterpData;
+        private ExportEntry _selectedInterpData;
 
-        public IExportEntry SelectedInterpData
+        public ExportEntry SelectedInterpData
         {
             get => _selectedInterpData;
             set
@@ -92,7 +92,7 @@ namespace ME3Explorer.Matinee
 
         private void SavePackageAs()
         {
-            string extension = Path.GetExtension(Pcc.FileName);
+            string extension = Path.GetExtension(Pcc.FilePath);
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
@@ -258,16 +258,16 @@ namespace ME3Explorer.Matinee
 
         #endregion Recents
 
-        private void LoadFile(string fileName)
+        public void LoadFile(string fileName)
         {
             InterpDataExports.ClearEx();
             LoadMEPackage(fileName);
             AddRecent(fileName);
             InterpDataExports.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "InterpData"));
-            Title = $"Interp Editor - {Pcc.FileName}";
+            Title = $"Interp Viewer - {Pcc.FilePath}";
         }
 
-        private void LoadInterpData(IExportEntry value)
+        private void LoadInterpData(ExportEntry value)
         {
             timelineControl.InterpDataExport = value;
             Properties_InterpreterWPF.LoadExport(value);
@@ -296,30 +296,11 @@ namespace ME3Explorer.Matinee
                 {
                     InterpDataExports.Add(changedExport);
                 }
-                else if (DescendantOf(changedExport, SelectedInterpData))
+                else if (changedExport.IsDescendantOf(SelectedInterpData))
                 {
                     timelineControl.RefreshInterpData(changedExport);
                 }
             }
-
-            bool DescendantOf(IExportEntry export, IExportEntry ancestor)
-            {
-                IEntry exp = export;
-                while (exp.HasParent)
-                {
-                    exp = exp.Parent;
-                    if (exp == ancestor)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
-
-        private void InterpDataExportsList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
-        {
-
         }
 
         private void WPFBase_Closing(object sender, CancelEventArgs e)

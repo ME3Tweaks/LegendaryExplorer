@@ -89,5 +89,21 @@ namespace ME3Explorer.Packages
                    exportEntry.ClassName == "TerrainWeightMapTexture" ||
                    exportEntry.ClassName == "TextureFlipBook";
         }
+
+
+
+        public static bool IsDescendantOf(this ExportEntry export, ExportEntry ancestor)
+        {
+            IEntry exp = export;
+            while (exp.HasParent)
+            {
+                exp = exp.Parent;
+                if (exp == ancestor)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

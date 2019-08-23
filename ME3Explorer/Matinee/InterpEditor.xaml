@@ -39,9 +39,6 @@
             <MenuItem Header="Tools" Padding="4">
                 <MenuItem Header="Goto #" Command="{Binding GotoCommand}" InputGestureText="Ctrl+G"/>
             </MenuItem>
-
-            <MenuItem Header="View Options" Padding="4">
-            </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
             <SharedUI:StatusBarGameIDIndicator Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
@@ -75,21 +72,12 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                    <TextBlock Margin="5" Text="Welcome to Interp Editor, the rewritten version of Interp Viewer" FontWeight="Bold"/>
+                    <TextBlock Margin="5" Text="Welcome to Interp Viewer" FontWeight="Bold"/>
                     <TextBlock Margin="5">
-                            Sequence Editor WPF is a bit different from the classic Sequence Editor.
+                            This tool allows you to visualize Unreal's Matinee Sequences
                                 <LineBreak/>
-                                Indexes are done strictly by UIndex, which is how they appear in game code.
+                            It does not yet support direct editing, but you can still change values in the Interpreter panel
                                 <LineBreak/>
-                                <LineBreak/>
-                            This means:
-                                <LineBreak/>
-                                -  Export references will be incremented by 1 from what you have seen in the old Sequence Editor
-                            <LineBreak/>
-                                -  Import references will remain the same
-                            <LineBreak/>
-                                -  0 indicates null, empty, or "Class", depending on the context
-                             <LineBreak/>
                     </TextBlock>
                 </StackPanel>
 

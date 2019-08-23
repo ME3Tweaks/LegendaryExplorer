@@ -25,8 +25,8 @@ namespace ME3Explorer.Matinee
     {
         public IMEPackage Pcc => InterpDataExport?.FileRef;
 
-        private IExportEntry _interpDataExport;
-        public IExportEntry InterpDataExport
+        private ExportEntry _interpDataExport;
+        public ExportEntry InterpDataExport
         {
             get => _interpDataExport;
             set
@@ -54,7 +54,7 @@ namespace ME3Explorer.Matinee
             set => SetProperty(ref _offset, value);
         }
 
-        public event Action<IExportEntry> SelectionChanged;
+        public event Action<ExportEntry> SelectionChanged;
 
         public ObservableCollectionExtended<InterpGroup> InterpGroups { get; } = new ObservableCollectionExtended<InterpGroup>();
 
@@ -76,7 +76,7 @@ namespace ME3Explorer.Matinee
             }
         }
 
-        public void RefreshInterpData(IExportEntry changedExport)
+        public void RefreshInterpData(ExportEntry changedExport)
         {
             if (changedExport.ClassName == "InterpGroup")
             {

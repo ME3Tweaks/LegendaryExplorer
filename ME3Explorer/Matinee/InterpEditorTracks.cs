@@ -15,7 +15,7 @@ namespace ME3Explorer.Matinee
 {
     public class InterpGroup : NotifyPropertyChangedBase
     {
-        public IExportEntry Export { get; }
+        public ExportEntry Export { get; }
 
         public string GroupName { get; set; }
 
@@ -23,7 +23,7 @@ namespace ME3Explorer.Matinee
 
         public ObservableCollectionExtended<InterpTrack> Tracks { get; } = new ObservableCollectionExtended<InterpTrack>();
 
-        public InterpGroup(IExportEntry export)
+        public InterpGroup(ExportEntry export)
         {
             Export = export;
             GroupName = export.GetProperty<NameProperty>("GroupName")?.Value ?? "Group";
@@ -48,49 +48,49 @@ namespace ME3Explorer.Matinee
             if (tracksProp != null)
             {
                 var trackExports = tracksProp.Where(prop => Export.FileRef.isUExport(prop.Value)).Select(prop => Export.FileRef.getUExport(prop.Value));
-                foreach (IExportEntry trackExport in trackExports)
+                foreach (ExportEntry trackExport in trackExports)
                 {
-                    if (trackExport.inheritsFrom("BioInterpTrack"))
+                    if (trackExport.InheritsFrom("BioInterpTrack"))
                     {
                         Tracks.Add(new BioInterpTrack(trackExport));
                     }
-                    else if (trackExport.inheritsFrom("InterpTrackFloatBase"))
+                    else if (trackExport.InheritsFrom("InterpTrackFloatBase"))
                     {
                         Tracks.Add(new InterpTrackFloatBase(trackExport));
                     }
-                    else if (trackExport.inheritsFrom("InterpTrackVectorBase"))
+                    else if (trackExport.InheritsFrom("InterpTrackVectorBase"))
                     {
                         Tracks.Add(new InterpTrackVectorBase(trackExport));
                     }
-                    else if (trackExport.inheritsFrom("InterpTrackEvent"))
+                    else if (trackExport.InheritsFrom("InterpTrackEvent"))
                     {
                         Tracks.Add(new InterpTrackEvent(trackExport));
                     }
-                    else if (trackExport.inheritsFrom("InterpTrackFaceFX"))
+                    else if (trackExport.InheritsFrom("InterpTrackFaceFX"))
                     {
                         Tracks.Add(new InterpTrackFaceFX(trackExport));
                     }
-                    else if (trackExport.inheritsFrom("InterpTrackAnimControl"))
+                    else if (trackExport.InheritsFrom("InterpTrackAnimControl"))
                     {
                         Tracks.Add(new InterpTrackAnimControl(trackExport));
                     }
-                    else if (trackExport.inheritsFrom("InterpTrackMove"))
+                    else if (trackExport.InheritsFrom("InterpTrackMove"))
                     {
                         Tracks.Add(new InterpTrackMove(trackExport));
                     }
-                    else if (trackExport.inheritsFrom("InterpTrackVisibility"))
+                    else if (trackExport.InheritsFrom("InterpTrackVisibility"))
                     {
                         Tracks.Add(new InterpTrackVisibility(trackExport));
                     }
-                    else if (trackExport.inheritsFrom("InterpTrackToggle"))
+                    else if (trackExport.InheritsFrom("InterpTrackToggle"))
                     {
                         Tracks.Add(new InterpTrackToggle(trackExport));
                     }
-                    else if (trackExport.inheritsFrom("InterpTrackWwiseEvent"))
+                    else if (trackExport.InheritsFrom("InterpTrackWwiseEvent"))
                     {
                         Tracks.Add(new InterpTrackWwiseEvent(trackExport));
                     }
-                    else if (trackExport.inheritsFrom("InterpTrackDirector"))
+                    else if (trackExport.InheritsFrom("InterpTrackDirector"))
                     {
                         Tracks.Add(new InterpTrackDirector(trackExport));
                     }
@@ -105,13 +105,13 @@ namespace ME3Explorer.Matinee
 
     public abstract class InterpTrack : NotifyPropertyChangedBase
     {
-        public IExportEntry Export { get; }
+        public ExportEntry Export { get; }
 
         public string TrackTitle { get; set; }
 
         public ObservableCollectionExtended<Key> Keys { get; } = new ObservableCollectionExtended<Key>();
 
-        protected InterpTrack(IExportEntry export)
+        protected InterpTrack(ExportEntry export)
         {
             Export = export;
             TrackTitle = export.GetProperty<StrProperty>("TrackTitle")?.Value ?? export.ObjectName;
@@ -120,7 +120,7 @@ namespace ME3Explorer.Matinee
 
     public class BioInterpTrack : InterpTrack
     {
-        public BioInterpTrack(IExportEntry exp) : base(exp)
+        public BioInterpTrack(ExportEntry exp) : base(exp)
         {
             var trackKeys = exp.GetProperty<ArrayProperty<StructProperty>>("m_aTrackKeys");
             if (trackKeys != null)
@@ -135,7 +135,7 @@ namespace ME3Explorer.Matinee
     }
     public class InterpTrackFloatBase : InterpTrack
     {
-        public InterpTrackFloatBase(IExportEntry export) : base(export)
+        public InterpTrackFloatBase(ExportEntry export) : base(export)
         {
             var floatTrackProp = export.GetProperty<StructProperty>("FloatTrack");
             if (floatTrackProp?.GetStruct<InterpCurveFloat>() is InterpCurveFloat curveFloat)
@@ -149,7 +149,7 @@ namespace ME3Explorer.Matinee
     }
     public class InterpTrackVectorBase : InterpTrack
     {
-        public InterpTrackVectorBase(IExportEntry export) : base(export)
+        public InterpTrackVectorBase(ExportEntry export) : base(export)
         {
             var vectorTrackProp = export.GetProperty<StructProperty>("VectorTrack");
             if (vectorTrackProp?.GetStruct<InterpCurveVector>() is InterpCurveVector curveVector)
@@ -163,7 +163,7 @@ namespace ME3Explorer.Matinee
     }
     public class InterpTrackEvent : InterpTrack
     {
-        public InterpTrackEvent(IExportEntry export) : base(export)
+        public InterpTrackEvent(ExportEntry export) : base(export)
         {
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("EventTrack");
             if (trackKeys != null)
@@ -177,7 +177,7 @@ namespace ME3Explorer.Matinee
     }
     public class InterpTrackFaceFX : InterpTrack
     {
-        public InterpTrackFaceFX(IExportEntry export) : base(export)
+        public InterpTrackFaceFX(ExportEntry export) : base(export)
         {
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("FaceFXSeqs");
             if (trackKeys != null)
@@ -192,7 +192,7 @@ namespace ME3Explorer.Matinee
     }
     public class InterpTrackAnimControl : InterpTrack
     {
-        public InterpTrackAnimControl(IExportEntry export) : base(export)
+        public InterpTrackAnimControl(ExportEntry export) : base(export)
         {
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("AnimSeqs");
             if (trackKeys != null)
@@ -206,13 +206,13 @@ namespace ME3Explorer.Matinee
     }
     public class InterpTrackMove : InterpTrack
     {
-        public InterpTrackMove(IExportEntry export) : base(export)
+        public InterpTrackMove(ExportEntry export) : base(export)
         {
         }
     }
     public class InterpTrackVisibility : InterpTrack
     {
-        public InterpTrackVisibility(IExportEntry export) : base(export)
+        public InterpTrackVisibility(ExportEntry export) : base(export)
         {
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("VisibilityTrack");
             if (trackKeys != null)
@@ -226,7 +226,7 @@ namespace ME3Explorer.Matinee
     }
     public class InterpTrackToggle : InterpTrack
     {
-        public InterpTrackToggle(IExportEntry export) : base(export)
+        public InterpTrackToggle(ExportEntry export) : base(export)
         {
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("ToggleTrack");
             if (trackKeys != null)
@@ -240,7 +240,7 @@ namespace ME3Explorer.Matinee
     }
     public class InterpTrackWwiseEvent : InterpTrack
     {
-        public InterpTrackWwiseEvent(IExportEntry export) : base(export)
+        public InterpTrackWwiseEvent(ExportEntry export) : base(export)
         {
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("WwiseEvents");
             if (trackKeys != null)
@@ -254,7 +254,7 @@ namespace ME3Explorer.Matinee
     }
     public class InterpTrackDirector : InterpTrack
     {
-        public InterpTrackDirector(IExportEntry export) : base(export)
+        public InterpTrackDirector(ExportEntry export) : base(export)
         {
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("CutTrack");
             if (trackKeys != null)

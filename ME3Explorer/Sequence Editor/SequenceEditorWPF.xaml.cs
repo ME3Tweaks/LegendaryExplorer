@@ -29,6 +29,7 @@ using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using MassEffect.NativesEditor.Views;
+using ME3Explorer.Matinee;
 
 namespace ME3Explorer.Sequence_Editor
 {
@@ -1839,15 +1840,15 @@ namespace ME3Explorer.Sequence_Editor
 
             if (CurrentObjects_ListBox.SelectedItem is SObj obj)
             {
-                int index; //0-based index because Interp Viewer is old
+                int uIndex;
                 ExportEntry exportEntry = obj.Export;
                 if (exportEntry.ObjectName == "InterpData")
                 {
-                    index = exportEntry.Index;
+                    uIndex = exportEntry.UIndex;
                 }
                 else if (obj is SAction sAction && sAction.Varlinks.Any() && sAction.Varlinks[0].Links.Any())
                 {
-                    index = sAction.Varlinks[0].Links[0] - 1;
+                    uIndex = sAction.Varlinks[0].Links[0];
                 }
                 else
                 {
@@ -1857,9 +1858,8 @@ namespace ME3Explorer.Sequence_Editor
                 AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
                 var p = new InterpEditor();
                 p.Show();
-                p.LoadPCC(Pcc.FilePath);
-                p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(index);
-                p.loadInterpData(index);
+                p.LoadFile(Pcc.FilePath);
+                p.SelectedInterpData = Pcc.getUExport(uIndex);
             }
         }
 

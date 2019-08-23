@@ -936,16 +936,6 @@
     <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.Designer.cs">
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Matinee\InterpViewer\InterpEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Matinee\InterpViewer\InterpEditor.Designer.cs">
-      <DependentUpon>InterpEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Matinee\InterpViewer\InterpViewerTracks.cs" />
-    <Compile Include="Matinee\InterpViewer\Timeline.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Main Window\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -1260,12 +1250,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.resx">
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Matinee\InterpViewer\InterpEditor.resx">
-      <DependentUpon>InterpEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Matinee\InterpViewer\Timeline.resx">
-      <DependentUpon>Timeline.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\LevelExplorer.resx">
       <DependentUpon>LevelExplorer.cs</DependentUpon>

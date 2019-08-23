@@ -3868,11 +3868,10 @@ namespace ME3Explorer.Dialogue_Editor
 
             var p = new InterpEditor();
             p.Show();
-            p.LoadPCC(Pcc.FilePath);
+            p.LoadFile(Pcc.FilePath);
             if (exportEntry.ObjectName == "InterpData")
             {
-                p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(exportEntry.Index);
-                p.loadInterpData(exportEntry.Index);
+                p.SelectedInterpData = exportEntry;
             }
             else
             {

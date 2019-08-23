@@ -42,15 +42,15 @@ namespace ME3Explorer.SharedUI
             set => SetProperty(ref _progress, value);
         }
 
-        private readonly Func<IExportEntry, bool> ExportSelector;
-        private readonly Func<IExportEntry, string> ExportTransformer;
+        private readonly Func<ExportEntry, bool> ExportSelector;
+        private readonly Func<ExportEntry, string> ExportTransformer;
 
         private readonly List<string> filePaths;
 
-        public ExportScanner(Func<IExportEntry, bool> exportSelector, Func<IExportEntry, string> exportTransformer)
+        public ExportScanner(Func<ExportEntry, bool> exportSelector, Func<ExportEntry, string> exportTransformer)
         {
             InitializeComponent();
-            filePaths = ME3LoadedFiles.GetEnabledDLC().Append(ME3Directory.BIOGamePath)
+            filePaths = MELoadedFiles.GetEnabledDLC(MEGame.ME3).Append(ME3Directory.BIOGamePath)
                                              .SelectMany(dlcDir => Directory.EnumerateFiles(Path.Combine(dlcDir, "CookedPCConsole"), "*.pcc")).ToList();
 
             progressBar.Maximum = filePaths.Count;
@@ -66,7 +66,7 @@ namespace ME3Explorer.SharedUI
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
-                    foreach (IExportEntry export in pcc.Exports.Where(ExportSelector))
+                    foreach (ExportEntry export in pcc.Exports.Where(ExportSelector))
                     {
                         string message = ExportTransformer(export);
                         if (message != null)

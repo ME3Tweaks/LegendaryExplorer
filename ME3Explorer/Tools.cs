@@ -11,6 +11,7 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Pathfinding_Editor;
 using Newtonsoft.Json;
 using ME3Explorer.AutoTOC;
+using ME3Explorer.Matinee;
 
 namespace ME3Explorer
 {
@@ -215,28 +216,15 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Interp Viewer",
-                type = typeof(InterpViewer.InterpEditor),
+                type = typeof(InterpEditor),
                 icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
                 open = () =>
                 {
-                    (new InterpViewer.InterpEditor()).Show();
+                    (new InterpEditor()).Show();
                 },
                 tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene", "interpdata" },
                 subCategory = "Explorers",
                 description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
-            });
-            set.Add(new Tool
-            {
-                name = "Interp Editor",
-                type = typeof(Matinee.InterpEditor),
-                icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
-                open = () =>
-                {
-                    (new Matinee.InterpEditor()).Show();
-                },
-                tags = new List<string> { "developer", "dialogue", "matinee", "cutscene", "animcutscene", "interpdata" },
-                subCategory = "Explorers",
-                description = "Interp Editor is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene."
             });
             set.Add(new Tool
             {

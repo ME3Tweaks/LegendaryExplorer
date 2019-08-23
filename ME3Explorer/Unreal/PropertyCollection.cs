@@ -904,7 +904,7 @@ namespace ME3Explorer.Unreal
                     case DelegateProperty delegateProperty:
                         return delegateProperty.Value;
                     case EnumProperty enumProperty:
-                        var enumType = Type.GetType($"ME3Explorer.Unreal.ME3Enums.{propInfo.reference}");
+                        var enumType = Type.GetType($"ME3Explorer.Unreal.ME3Enums.{propInfo.Reference}");
                         return Enum.Parse(enumType, enumProperty.Value.InstancedString);
                     case FloatProperty floatProperty:
                         return floatProperty.Value;
@@ -920,7 +920,7 @@ namespace ME3Explorer.Unreal
                         return strProperty.Value;
                     case StructProperty structProperty:
                     {
-                        Type structType = Type.GetType($"ME3Explorer.Unreal.ME3Structs.{propInfo.reference}");
+                        Type structType = Type.GetType($"ME3Explorer.Unreal.ME3Structs.{propInfo.Reference}");
                         //return structProperty.GetStruct<structType>();
                         return typeof(StructProperty).InvokeGenericMethod(nameof(structProperty.GetStruct), structType, structProperty);
                     }
@@ -956,9 +956,9 @@ namespace ME3Explorer.Unreal
                     case ArrayProperty<NameProperty> _:
                         return typeof(NameReference);
                     case ArrayProperty<EnumProperty> _:
-                        return Type.GetType($"ME3Explorer.Unreal.ME3Enums.{propInfo.reference}");
+                        return Type.GetType($"ME3Explorer.Unreal.ME3Enums.{propInfo.Reference}");
                     case ArrayProperty<StructProperty> _:
-                        return Type.GetType($"ME3Explorer.Unreal.ME3Structs.{propInfo.reference}");
+                        return Type.GetType($"ME3Explorer.Unreal.ME3Structs.{propInfo.Reference}");
                     default:
                         throw new  NotImplementedException();
                 }
