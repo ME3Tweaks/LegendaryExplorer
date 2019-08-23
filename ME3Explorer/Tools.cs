@@ -215,15 +215,28 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Interp Viewer",
+                type = typeof(InterpViewer.InterpEditor),
+                icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
+                open = () =>
+                {
+                    (new InterpViewer.InterpEditor()).Show();
+                },
+                tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene", "interpdata" },
+                subCategory = "Explorers",
+                description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
+            });
+            set.Add(new Tool
+            {
+                name = "Interp Editor",
                 type = typeof(Matinee.InterpEditor),
                 icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
                 open = () =>
                 {
                     (new Matinee.InterpEditor()).Show();
                 },
-                tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene", "interpdata" },
+                tags = new List<string> { "developer", "dialogue", "matinee", "cutscene", "animcutscene", "interpdata" },
                 subCategory = "Explorers",
-                description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
+                description = "Interp Editor is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene."
             });
             set.Add(new Tool
             {

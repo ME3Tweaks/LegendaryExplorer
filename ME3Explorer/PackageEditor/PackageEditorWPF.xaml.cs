@@ -15,6 +15,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using StreamHelpers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -36,6 +37,7 @@ using ME3Explorer.CurveEd;
 using ME3Explorer.Unreal.BinaryConverters;
 using static ME3Explorer.Packages.MEPackage;
 using static ME3Explorer.Unreal.UnrealFlags;
+using Guid = System.Guid;
 
 //todo: switch this to new SkeletalMesh class
 using SkeletalMesh = ME3Explorer.Unreal.Classes.SkeletalMesh;

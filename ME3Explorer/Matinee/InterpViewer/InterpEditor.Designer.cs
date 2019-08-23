@@ -1,4 +1,4 @@
-﻿namespace ME3Explorer.Matinee
+﻿namespace ME3Explorer.InterpViewer
 {
     partial class InterpEditor
     {
@@ -50,7 +50,7 @@
             this.treeView2 = new System.Windows.Forms.TreeView();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.timeline = new ME3Explorer.Matinee.Timeline();
+            this.timeline = new Timeline();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();

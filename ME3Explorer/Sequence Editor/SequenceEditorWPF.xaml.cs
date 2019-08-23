@@ -26,7 +26,6 @@ using UMD.HCIL.Piccolo.Nodes;
 using Color = System.Drawing.Color;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using InterpEditor = ME3Explorer.Matinee.InterpEditor;
 using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using MassEffect.NativesEditor.Views;
