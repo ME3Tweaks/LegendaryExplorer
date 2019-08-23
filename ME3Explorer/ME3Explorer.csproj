@@ -829,7 +829,6 @@
     <Compile Include="Unreal\Classes\AnimSet.cs" />
     <Compile Include="Unreal\Classes\AnimTree.cs" />
     <Compile Include="Unreal\Classes\BioAnimSetData.cs" />
-    <Compile Include="DialogEditor\ME3BioConversation.cs" />
     <Compile Include="FaceFXAnimSetEditor\ME3FaceFXAnimSet.cs" />
     <Compile Include="Unreal\Classes\Function.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
@@ -914,18 +913,6 @@
     </Compile>
     <Compile Include="Conditionals\Conditionals.Designer.cs">
       <DependentUpon>Conditionals.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DialogEditor\AddReply.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DialogEditor\AddReply.Designer.cs">
-      <DependentUpon>AddReply.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DialogEditor\DialogEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DialogEditor\DialogEditor.Designer.cs">
-      <DependentUpon>DialogEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\InputComboBox.cs">
       <SubType>Form</SubType>
@@ -1145,39 +1132,13 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ME1\DialogEditor\AddReply.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ME1\DialogEditor\AddReply.Designer.cs">
-      <DependentUpon>AddReply.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ME1\DialogEditor\DialogEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ME1\DialogEditor\DialogEditor.Designer.cs">
-      <DependentUpon>DialogEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="ME1\HuffmanCompression.cs" />
     <Compile Include="ME1\Talkfiles.cs" />
-    <Compile Include="ME1\Unreal\Classes\ME1BioConversation.cs" />
     <Compile Include="ME1\Unreal\Classes\BioTlkFileSet.cs" />
     <Compile Include="ME1\Unreal\Classes\TalkFile.cs" />
     <Compile Include="ME1\Unreal\ME1UnrealObjectInfo.cs" />
-    <Compile Include="ME2\DialogEditor\AddReply.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ME2\DialogEditor\AddReply.Designer.cs">
-      <DependentUpon>AddReply.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ME2\DialogEditor\DialogEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ME2\DialogEditor\DialogEditor.Designer.cs">
-      <DependentUpon>DialogEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Packages\CompressionHelper.cs" />
     <Compile Include="ME2\TlkManager\ME2TalkFiles.cs" />
-    <Compile Include="ME2\Unreal\Classes\ME2BioConversation.cs" />
     <Compile Include="ME2\Unreal\ME2UnrealObjectInfo.cs" />
     <Compile Include="Meshplorer2\Meshplorer2.cs">
       <SubType>Form</SubType>
@@ -1246,12 +1207,6 @@
     <EmbeddedResource Include="Debugging\DebugWindow.resx">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DialogEditor\AddReply.resx">
-      <DependentUpon>AddReply.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DialogEditor\DialogEditor.resx">
-      <DependentUpon>DialogEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="SharedUI\InputComboBox.resx">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
@@ -1260,18 +1215,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\LevelExplorer.resx">
       <DependentUpon>LevelExplorer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ME1\DialogEditor\AddReply.resx">
-      <DependentUpon>AddReply.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ME1\DialogEditor\DialogEditor.resx">
-      <DependentUpon>DialogEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ME2\DialogEditor\AddReply.resx">
-      <DependentUpon>AddReply.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ME2\DialogEditor\DialogEditor.resx">
-      <DependentUpon>DialogEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ME2\FaceFXAnimSetEditor.resx">
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
