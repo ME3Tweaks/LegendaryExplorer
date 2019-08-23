@@ -794,6 +794,7 @@
     <Compile Include="Unreal\BinaryConverters\Material.cs" />
     <Compile Include="Unreal\BinaryConverters\OrderedDictionary.cs" />
     <Compile Include="Unreal\BinaryConverters\Polys.cs" />
+    <Compile Include="Unreal\BinaryConverters\SkeletalMesh.cs" />
     <Compile Include="Unreal\BinaryConverters\StaticMesh.cs" />
     <Compile Include="Unreal\SerializingContainer2.cs" />
     <Compile Include="Unreal\BinaryConverters\TreeNode.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Gammtek.Conduit;
 using StreamHelpers;
 
 namespace ME3Explorer.Unreal.BinaryConverters
@@ -120,6 +121,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         }
     }
 
+    // -1 to 1 converted to 0-255
     public readonly struct PackedNormal
     {
         public readonly byte X;
@@ -133,6 +135,20 @@ namespace ME3Explorer.Unreal.BinaryConverters
             Y = y;
             Z = z;
             W = w;
+        }
+
+        public static explicit operator Vector(PackedNormal packedNormal)
+        {
+            return new Vector(packedNormal.X / 127.5f - 1, packedNormal.Y / 127.5f - 1, packedNormal.Z / 127.5f - 1);
+        }
+
+
+        public static explicit operator PackedNormal(Vector vec)
+        {
+            return new PackedNormal((byte)((int)(vec.X * 127.5f + 128.0f)).Clamp(0, 255),
+                                    (byte)((int)(vec.X * 127.5f + 128.0f)).Clamp(0, 255),
+                                    (byte)((int)(vec.X * 127.5f + 128.0f)).Clamp(0, 255),
+                                    128);
         }
     }
 

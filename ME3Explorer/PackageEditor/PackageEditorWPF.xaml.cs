@@ -37,6 +37,9 @@ using ME3Explorer.Unreal.BinaryConverters;
 using static ME3Explorer.Packages.MEPackage;
 using static ME3Explorer.Unreal.UnrealFlags;
 
+//todo: switch this to new SkeletalMesh class
+using SkeletalMesh = ME3Explorer.Unreal.Classes.SkeletalMesh;
+
 namespace ME3Explorer
 {
     /// <summary>
@@ -1384,7 +1387,7 @@ namespace ME3Explorer
             }
         }
 
-        private bool CanCompareToUnmodded() => PackageIsLoaded() && !(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC());
+        private bool CanCompareToUnmodded() => Pcc.Game != MEGame.UDK && PackageIsLoaded() && !(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC());
 
         private void CompareUnmodded()
         {
@@ -4028,7 +4031,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "Material", true)) break;
+                    if (findClass(filePath, "SkeletalMesh", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
                     try
@@ -4210,7 +4213,7 @@ namespace ME3Explorer
                     {
                         try
                         {
-                            var mat = ME3Explorer.Unreal.BinaryConverters.ObjectBinary.From<ME3Explorer.Unreal.BinaryConverters.Material>(exp);
+                            var mat = ME3Explorer.Unreal.BinaryConverters.ObjectBinary.From<ME3Explorer.Unreal.BinaryConverters.SkeletalMesh>(exp);
                             var ms = new MemoryStream();
                             mat.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
                             var buff = ms.ToArray();
