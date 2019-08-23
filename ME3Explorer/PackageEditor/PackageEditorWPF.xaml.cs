@@ -1387,7 +1387,7 @@ namespace ME3Explorer
             }
         }
 
-        private bool CanCompareToUnmodded() => Pcc.Game != MEGame.UDK && PackageIsLoaded() && !(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC());
+        private bool CanCompareToUnmodded() => Pcc!= null && Pcc.Game != MEGame.UDK && PackageIsLoaded() && !(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC());
 
         private void CompareUnmodded()
         {

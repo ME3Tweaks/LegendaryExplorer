@@ -12,7 +12,7 @@ namespace ME3Explorer
 {
     public static class MELoadedFiles
     {
-        private static readonly string[] ME1FilePatterns = { "*.u", "*.upk", "*.sfm"};
+        private static readonly string[] ME1FilePatterns = { "*.u", "*.upk", "*.sfm" };
         private const string ME2and3FilePattern = "*.pcc";
         /// <summary>
         /// Gets a Dictionary of all loaded files in the given game. Key is the filename, value is file path
@@ -46,16 +46,17 @@ namespace ME3Explorer
 
         /// <summary>
         /// Gets the base DLC directory of each unpacked DLC/mod that will load in game (eg. C:\Program Files (x86)\Origin Games\Mass Effect 3\BIOGame\DLC\DLC_EXP_Pack001)
+        /// Directory Override is used to use a custom path, for things like TFC Compactor, where the directory ME3Exp is pointing to may not be the one you want to use.
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<string> GetEnabledDLC(MEGame game) =>
+        public static IEnumerable<string> GetEnabledDLC(MEGame game, string directoryOverride = null) =>
             Directory.Exists(MEDirectories.DLCPath(game))
-                ? Directory.EnumerateDirectories(MEDirectories.DLCPath(game)).Where(dir => IsEnabledDLC(dir, game))
+                ? Directory.EnumerateDirectories(directoryOverride ?? MEDirectories.DLCPath(game)).Where(dir => IsEnabledDLC(dir, game))
                 : Enumerable.Empty<string>();
 
-        private static string GetMountDLCFromDLCDir(string dlcDirectory, MEGame game) => Path.Combine(dlcDirectory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC", "Mount.dlc");
+        public static string GetMountDLCFromDLCDir(string dlcDirectory, MEGame game) => Path.Combine(dlcDirectory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC", "Mount.dlc");
 
-        private static bool IsEnabledDLC(string dir, MEGame game)
+        public static bool IsEnabledDLC(string dir, MEGame game)
         {
             string dlcName = Path.GetFileName(dir);
             if (game == MEGame.ME1)

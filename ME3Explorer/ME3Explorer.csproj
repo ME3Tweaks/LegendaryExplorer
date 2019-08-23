@@ -764,6 +764,9 @@
     <Compile Include="Main Window\TaskPane.xaml.cs">
       <DependentUpon>TaskPane.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TFCCompactor\TFCCompactor.xaml.cs">
+      <DependentUpon>TFCCompactor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TlkEditor\TlkEditor.xaml.cs">
       <DependentUpon>TlkEditor.xaml</DependentUpon>
     </Compile>
@@ -1087,6 +1090,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SharedUI\StatusBarGameIDIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TFCCompactor\TFCCompactor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
