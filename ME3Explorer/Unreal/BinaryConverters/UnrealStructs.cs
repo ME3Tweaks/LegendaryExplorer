@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Gammtek.Conduit;
+using SharpDX;
 using StreamHelpers;
 
 namespace ME3Explorer.Unreal.BinaryConverters
@@ -137,9 +138,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
             W = w;
         }
 
-        public static explicit operator Vector(PackedNormal packedNormal)
+        public static explicit operator Vector3(PackedNormal packedNormal)
         {
-            return new Vector(packedNormal.X / 127.5f - 1, packedNormal.Y / 127.5f - 1, packedNormal.Z / 127.5f - 1);
+            return new Vector3(packedNormal.X / 127.5f - 1, packedNormal.Y / 127.5f - 1, packedNormal.Z / 127.5f - 1);
         }
 
 

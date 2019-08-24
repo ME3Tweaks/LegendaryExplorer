@@ -35,6 +35,7 @@ using Gammtek.Conduit.Extensions.IO;
 using ME2Explorer.Unreal;
 using ME3Explorer.CurveEd;
 using ME3Explorer.Unreal.BinaryConverters;
+using UsefulThings;
 using static ME3Explorer.Packages.MEPackage;
 using static ME3Explorer.Unreal.UnrealFlags;
 using Guid = System.Guid;
@@ -197,6 +198,7 @@ namespace ME3Explorer
         public ICommand GotoCommand { get; set; }
         public ICommand TabRightCommand { get; set; }
         public ICommand TabLeftCommand { get; set; }
+        public ICommand DumpAllShadersCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -237,6 +239,8 @@ namespace ME3Explorer
 
             BulkExportSWFCommand = new GenericCommand(BulkExportSWFs, PackageIsLoaded);
             BulkImportSWFCommand = new GenericCommand(BulkImportSWFs, PackageIsLoaded);
+
+            DumpAllShadersCommand = new GenericCommand(DumpAllShaders, () => PackageIsLoaded() && Pcc.Exports.Any(exp => exp.ClassName == "ShaderCache"));
         }
 
         private void ExportEmbeddedFilePrompt()
@@ -1388,7 +1392,7 @@ namespace ME3Explorer
             }
         }
 
-        private bool CanCompareToUnmodded() => Pcc!= null && Pcc.Game != MEGame.UDK && PackageIsLoaded() && !(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC());
+        private bool CanCompareToUnmodded() => PackageIsLoaded() && Pcc.Game != MEGame.UDK && !(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC());
 
         private void CompareUnmodded()
         {
@@ -4813,6 +4817,30 @@ namespace ME3Explorer
             //todo: refire bindings
             LeftSide_TreeView.DataContext = null;
             LeftSide_TreeView.DataContext = this;
+        }
+
+        private void DumpAllShaders()
+        {
+            if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is ExportEntry shaderCacheExport)
+            {
+                var dlg = new CommonOpenFileDialog("Pick a folder to save Shaders to.")
+                {
+                    IsFolderPicker = true,
+                    EnsurePathExists = true
+                };
+                if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    var shaderCache = ObjectBinary.From<ShaderCache>(shaderCacheExport);
+                    foreach (Shader shader in shaderCache.Shaders.Values)
+                    {
+                        string name = shader.Name;
+                        string pathWithoutInvalids = Path.Combine(dlg.FileName, $"{name.GetPathWithoutInvalids()} - {shader.Guid}.txt");
+                        File.WriteAllText(pathWithoutInvalids, SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderFile)).Disassemble());
+                    }
+
+                    MessageBox.Show(this, "Done!");
+                }
+            }
         }
     }
 }

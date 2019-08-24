@@ -17,7 +17,7 @@ namespace ME3Explorer
         public readonly Stream ms;
         public readonly bool IsLoading;
         public readonly IMEPackage Pcc;
-        private readonly int startOffset;
+        public readonly int startOffset;
 
         public bool IsSaving => !IsLoading;
 
