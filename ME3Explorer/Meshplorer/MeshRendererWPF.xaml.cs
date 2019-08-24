@@ -148,12 +148,14 @@ namespace ME3Explorer.Meshplorer
                         if (section.Material.value > 0)
                         {
                             ExportEntry entry = meshObject.Export.FileRef.getUExport(section.Material.value);
+                            Debug.WriteLine("Getting material assets " + entry.GetFullPath);
+
                             AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
 
                         }
                         else if (section.Material.value < 0)
                         {
-                            var extMaterialExport = ModelPreview.FindExternalAsset(meshObject.Export.FileRef.getUImport(section.Material.value));
+                            var extMaterialExport = ModelPreview.FindExternalAsset(meshObject.Export.FileRef.getUImport(section.Material.value), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
                             if (extMaterialExport != null)
                             {
                                 AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
@@ -177,7 +179,39 @@ namespace ME3Explorer.Meshplorer
                 //var sm = new Unreal.Classes.SkeletalMesh(CurrentLoadedExport);
                 bw.DoWork += (a, b) =>
                 {
-                    b.Result = ObjectBinary.From<SkeletalMesh>(CurrentLoadedExport);
+                    BusyText = "Fetching assets";
+                    IsBusy = true;
+                    var meshObject = ObjectBinary.From<SkeletalMesh>(CurrentLoadedExport);
+                    ModelPreview.PreloadedModelData pmd = new ModelPreview.PreloadedModelData();
+                    pmd.meshObject = meshObject;
+                    pmd.sections = new List<ModelPreviewSection>();
+                    pmd.texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>();
+                    foreach (var material in meshObject.Materials)
+                    {
+                        if (material.value > 0)
+                        {
+                            ExportEntry entry = meshObject.Export.FileRef.getUExport(material.value);
+                            Debug.WriteLine("Getting material assets " + entry.GetFullPath);
+
+                            AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
+
+                        }
+                        else if (material.value < 0)
+                        {
+                            var extMaterialExport = ModelPreview.FindExternalAsset(meshObject.Export.FileRef.getUImport(material.value), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
+                            if (extMaterialExport != null)
+                            {
+                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
+                            }
+                            else
+                            {
+
+                                Debug.WriteLine("Could not find import material from materials list.");
+                                Debug.WriteLine("Import material: " + meshObject.Export.FileRef.GetEntryString(material.value));
+                            }
+                        }
+                    }
+                    b.Result = pmd;
                 };
                 hasWorkToDo = true;
             }
@@ -194,9 +228,10 @@ namespace ME3Explorer.Meshplorer
                             Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, statM, CurrentLOD, SceneViewer.Context.TextureCache, pmd);
                             SceneViewer.Context.Camera.FocusDepth = statM.Bounds.SphereRadius * 1.2f;
                         }
-                        else if (b.Result is SkeletalMesh skm)
+                        else
+                        if (pmd.meshObject is SkeletalMesh skm)
                         {
-                            Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, skm, SceneViewer.Context.TextureCache);
+                            Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, skm, SceneViewer.Context.TextureCache, pmd);
                             SceneViewer.Context.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
                         }
                         CenterView();
@@ -212,14 +247,14 @@ namespace ME3Explorer.Meshplorer
             foreach (var tex in matinst.Textures)
             {
 
-                Debug.WriteLine("Preloading " + tex.GetFullPath);
+                //Debug.WriteLine("Preloading " + tex.GetFullPath);
                 if (tex is ImportEntry import)
                 {
-                    var extAsset = ModelPreview.FindExternalAsset(import);
+                    var extAsset = ModelPreview.FindExternalAsset(import, texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
                     if (extAsset != null) //Apparently some assets are cubemaps, we don't want these.
                     {
                         var preloadedTextureData = new ModelPreview.PreloadedTextureData();
-                        Debug.WriteLine("Preloading ext texture " + extAsset.ObjectName+" for material "+entry.ObjectName);
+                        //Debug.WriteLine("Preloading ext texture " + extAsset.ObjectName + " for material " + entry.ObjectName);
                         Texture2D t2d = new Texture2D(extAsset);
                         preloadedTextureData.decompressedTextureData = t2d.GetImageBytesForMip(t2d.GetTopMip());
                         preloadedTextureData.MaterialExport = entry;
@@ -232,7 +267,7 @@ namespace ME3Explorer.Meshplorer
 
                     var preloadedTextureData = new ModelPreview.PreloadedTextureData();
                     Texture2D t2d = new Texture2D(tex as ExportEntry);
-                    Debug.WriteLine("Preloading local texture " + tex.ObjectName + " for material " + entry.ObjectName);
+                    //Debug.WriteLine("Preloading local texture " + tex.ObjectName + " for material " + entry.ObjectName);
                     preloadedTextureData.decompressedTextureData = t2d.GetImageBytesForMip(t2d.GetTopMip());
                     preloadedTextureData.MaterialExport = entry;
                     preloadedTextureData.Mip = t2d.GetTopMip(); //This may need to be adjusted for data returned by previous function if it's using a lower mip

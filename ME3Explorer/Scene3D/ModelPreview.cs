@@ -105,7 +105,8 @@ namespace ME3Explorer.Scene3D
                         if (preloadedInfo != null)
                         {
                             Textures.Add(textureEntry.GetFullPath, texcache.LoadTexture(preloadedInfo.Mip.Export, preloadedInfo.Mip, preloadedInfo.decompressedTextureData));
-                        } else
+                        }
+                        else
                         {
                             Debug.WriteLine("Preloading error");
                         }
@@ -115,7 +116,7 @@ namespace ME3Explorer.Scene3D
 
                     if (textureEntry is ImportEntry import)
                     {
-                        var extAsset = ModelPreview.FindExternalAsset(import);
+                        var extAsset = ModelPreview.FindExternalAsset(import, texcache.cache.Select(x => x.TextureExport).ToList());
                         if (extAsset != null)
                         {
                             Textures.Add(textureEntry.GetFullPath, texcache.LoadTexture(extAsset));
@@ -170,6 +171,19 @@ namespace ME3Explorer.Scene3D
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
         public TexturedPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, preloadedTextures)
         {
+            var matPackage = mat.export.Parent.GetFullPath.ToLower();
+            foreach (var textureEntry in mat.Textures)
+            {
+                var texObjectName = textureEntry.GetFullPath.ToLower();
+                if (texObjectName.StartsWith(matPackage) && texObjectName.Contains("diff"))
+                {
+                    // we have found the diffuse texture!
+                    DiffuseTextureFullName = textureEntry.GetFullPath;
+                    Debug.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
+                    return;
+                }
+            }
+
             foreach (var textureEntry in mat.Textures)
             {
                 var texObjectName = textureEntry.ObjectName.ToLower();
@@ -384,7 +398,7 @@ namespace ME3Explorer.Scene3D
                     }
                     else if (section.Material.value < 0)
                     {
-                        var extMaterialExport = FindExternalAsset(m.Export.FileRef.getUImport(section.Material.value));
+                        var extMaterialExport = FindExternalAsset(m.Export.FileRef.getUImport(section.Material.value), texcache.cache.Select(x => x.TextureExport).ToList());
                         if (extMaterialExport != null)
                         {
                             ModelPreviewMaterial material;
@@ -410,14 +424,10 @@ namespace ME3Explorer.Scene3D
                 //Preloaded
                 sections = preloadedData.sections;
                 var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
-                foreach(var mat in uniqueMaterials)
+                foreach (var mat in uniqueMaterials)
                 {
                     var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), preloadedData.texturePreviewMaterials);
                     AddMaterial(mat.ObjectName, material);
-                }
-                foreach (var preloadedTexturePreviewMaterial in preloadedData.texturePreviewMaterials)
-                {
-                    
                 }
             }
 
@@ -430,61 +440,89 @@ namespace ME3Explorer.Scene3D
             LODs.Add(new ModelPreviewLOD(new WorldMesh(Device, triangles, vertices), sections));
         }
 
-        internal static ExportEntry FindExternalAsset(ImportEntry entry)
+        internal static ExportEntry FindExternalAsset(ImportEntry entry, List<ExportEntry> alreadyLoadedPackageEntries)
         {
+            //Debug.WriteLine("Finding external asset " + entry.GetFullPath);
             if (entry.Game == MEGame.ME1)
             {
                 var sourcePackageInternalPath = entry.GetFullPath.Substring(entry.GetFullPath.IndexOf('.') + 1);
                 string baseName = entry.FileRef.FollowLink(entry.idxLink).Split('.')[0].ToUpper() + ".upk"; //Get package filename
-                var gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
-                var file = gameFiles[baseName]; //this should be in a try catch
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(file))
+                var preloadedPackageEntry = alreadyLoadedPackageEntries?.FirstOrDefault(x => Path.GetFileName(x.FileRef.FilePath).Equals(baseName, StringComparison.InvariantCultureIgnoreCase));
+                if (preloadedPackageEntry == null && MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).TryGetValue(baseName, out string packagePath))
                 {
-                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.GetFullPath == sourcePackageInternalPath && exp.ClassName == entry.ClassName);
+                    var package = MEPackageHandler.OpenMEPackage(packagePath);
+                    var foundExp = package.Exports.FirstOrDefault(exp => exp.GetFullPath == sourcePackageInternalPath && exp.ClassName == entry.ClassName);
+                    if (foundExp != null) return foundExp;
+                    package.Dispose();
+                }
+                else
+                {
+                    Debug.WriteLine("ME1 External Asset lookup: Using existing preloaded export package");
+                    var foundExp = preloadedPackageEntry.FileRef.Exports.FirstOrDefault(exp => exp.GetFullPath == sourcePackageInternalPath && exp.ClassName == entry.ClassName);
                     if (foundExp != null) return foundExp;
                 }
+
             }
             else
             {
                 // Next, split the filename by underscores
                 string filenameWithoutExtension = Path.GetFileNameWithoutExtension(entry.FileRef.FilePath).ToLower();
                 string containingDirectory = Path.GetDirectoryName(entry.FileRef.FilePath);
+                var packagesToCheck = new List<string>();
+                var gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game);
 
                 if (filenameWithoutExtension.StartsWith("bioa_") || filenameWithoutExtension.StartsWith("biod_"))
                 {
                     string[] parts = filenameWithoutExtension.Split('_');
                     if (parts.Length >= 2) //BioA_Nor_WowThatsAlot310.pcc
                     {
-                        string filename = Path.Combine(containingDirectory, $"{parts[0]}_{parts[1]}.pcc"); //BioA_Nor.pcc
+                        string bioad = $"{parts[0]}_{parts[1]}.pcc";
+                        string filename = Path.Combine(containingDirectory, bioad); //BioA_Nor.pcc
                         if (File.Exists(filename))
                         {
-                            using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filename))
+                            packagesToCheck.Add(filename);
+                        }
+                        else
+                        {
+                            if (gameFiles.TryGetValue(filename, out string inGamePath))
                             {
-                                foreach (ExportEntry exp in pcc.Exports)
-                                {
-                                    if (exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName) //We might want to check instancing
-                                    {
-                                        return exp;
-                                    }
-                                }
+                                packagesToCheck.Add(inGamePath);
                             }
                         }
 
-                        //No result in BioA, BioD - check BioP level master
-                        filename = Path.Combine(containingDirectory, $"BioP_{parts[1]}.pcc"); //BioA_Nor.pcc
+                        string biop = $"BioP_{parts[1]}.pcc";
+                        filename = Path.Combine(containingDirectory, biop); //BioP_Nor.pcc
                         if (File.Exists(filename))
                         {
-                            using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filename))
+                            packagesToCheck.Add(filename);
+                        }
+                        else
+                        {
+                            if (gameFiles.TryGetValue(filename, out string inGamePath))
                             {
-                                foreach (ExportEntry exp in pcc.Exports)
-                                {
-                                    if (exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName) //We might want to check instancing
-                                    {
-                                        return exp;
-                                    }
-                                }
+                                packagesToCheck.Add(inGamePath);
                             }
                         }
+                    }
+                }
+
+                foreach (string packagePath in packagesToCheck)
+                {
+                    var preloadedPackageEntry = alreadyLoadedPackageEntries?.FirstOrDefault(x => Path.GetFileName(x.FileRef.FilePath).Equals(packagePath, StringComparison.InvariantCultureIgnoreCase));
+                    if (preloadedPackageEntry == null)
+                    {
+                        Debug.WriteLine("ME2/3 External Asset lookup: Checking " + packagePath);
+                        var package = MEPackageHandler.OpenMEPackage(packagePath);
+                        var foundExp = package.Exports.FirstOrDefault(exp => exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName);
+                        if (foundExp != null) return foundExp;
+                        //Debug.WriteLine("ME2/3 External Asset lookup: Not found, disposing " + packagePath);
+                        package.Dispose();
+                    }
+                    else
+                    {
+                        Debug.WriteLine("ME2/3 External Asset lookup: Using existing preloaded export package");
+                        var foundExp = preloadedPackageEntry.FileRef.Exports.FirstOrDefault(exp => exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName);
+                        if (foundExp != null) return foundExp;
                     }
                 }
 
@@ -496,9 +534,35 @@ namespace ME3Explorer.Scene3D
                     IMEPackage pcc = MEPackageHandler.OpenMEPackage(sfxgamePath);
                     var foundExp = pcc.Exports.FirstOrDefault(exp => exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName);
                     if (foundExp != null) return foundExp;
+                    //Debug.WriteLine("ME2/3 External Asset lookup: Not SFXGame, disposing");
+
                     pcc.Dispose(); //Dump from memory
                 }
 
+                //Check EntryMenu
+                string entryMenuPath = Path.Combine(MEDirectories.CookedPath(entry.Game), "EntryMenu.pcc");
+                if (File.Exists(entryMenuPath))
+                {
+                    //This is not in using statement as we have to keep this in memory.
+                    IMEPackage pcc = MEPackageHandler.OpenMEPackage(entryMenuPath);
+                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName);
+                    if (foundExp != null) return foundExp;
+                    //Debug.WriteLine("ME2/3 External Asset lookup: Not EntryMenu, disposing");
+
+                    pcc.Dispose(); //Dump from memory
+                }
+
+                //Check Startup
+                string startupPath = Path.Combine(MEDirectories.CookedPath(entry.Game), "Startup.pcc");
+                if (File.Exists(startupPath))
+                {
+                    //This is not in using statement as we have to keep this in memory.
+                    IMEPackage pcc = MEPackageHandler.OpenMEPackage(startupPath);
+                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName);
+                    if (foundExp != null) return foundExp;
+                    //Debug.WriteLine("ME2/3 External Asset lookup: Not Startup, disposing");
+                    pcc.Dispose(); //Dump from memory
+                }
             }
             Debug.WriteLine("Could not find external asset: " + entry.GetFullPath);
             return null;
@@ -547,37 +611,52 @@ namespace ME3Explorer.Scene3D
         /// <param name="Device">The Direct3D device to use for buffer creation.</param>
         /// <param name="m">The mesh to generate a preview for.</param>
         /// <param name="texcache">The texture cache for loading textures.</param>
-        public ModelPreview(Device Device, Unreal.BinaryConverters.SkeletalMesh m, PreviewTextureCache texcache)
+        public ModelPreview(Device Device, Unreal.BinaryConverters.SkeletalMesh m, PreviewTextureCache texcache, PreloadedModelData preloadedData = null)
         {
             // STEP 1: MATERIALS
             Materials = new Dictionary<string, ModelPreviewMaterial>();
-            for (int i = 0; i < m.Materials.Length; i++)
+            if (preloadedData == null)
             {
-                UIndex materialUIndex = m.Materials[i];
-                MaterialInstanceConstant mat = null;
-                if (materialUIndex.value > 0)
+                for (int i = 0; i < m.Materials.Length; i++)
                 {
-                    mat = new MaterialInstanceConstant(m.Export.FileRef.getUExport(materialUIndex.value));
-                }
-                else if (materialUIndex.value < 0)
-                {
-                    // The material instance is an import!
-                    ImportEntry matImport = m.Export.FileRef.getUImport(materialUIndex.value);
-                    var externalAsset = FindExternalAsset(matImport);
-                    if (externalAsset != null)
+                    UIndex materialUIndex = m.Materials[i];
+                    MaterialInstanceConstant mat = null;
+                    if (materialUIndex.value > 0)
                     {
-                        mat = new MaterialInstanceConstant(externalAsset);
+                        mat = new MaterialInstanceConstant(m.Export.FileRef.getUExport(materialUIndex.value));
+                    }
+                    else if (materialUIndex.value < 0)
+                    {
+                        // The material instance is an import!
+                        ImportEntry matImport = m.Export.FileRef.getUImport(materialUIndex.value);
+                        var externalAsset = FindExternalAsset(matImport, texcache.cache.Select(x => x.TextureExport).ToList());
+                        if (externalAsset != null)
+                        {
+                            mat = new MaterialInstanceConstant(externalAsset);
+                        }
+                    }
+
+                    if (mat != null)
+                    {
+                        ModelPreviewMaterial material;
+                        // TODO: pick what material class best fits based on what properties the 
+                        // MaterialInstanceConstant mat has.
+                        // For now, just use the default material.
+                        material = new TexturedPreviewMaterial(texcache, mat);
+                        AddMaterial(material.Properties["Name"], material);
                     }
                 }
-
-                if (mat != null)
+            }
+            else
+            {
+                //Preloaded
+                //sections = preloadedData.sections;
+                var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
+                foreach (var mat in uniqueMaterials)
                 {
-                    ModelPreviewMaterial material;
-                    // TODO: pick what material class best fits based on what properties the 
-                    // MaterialInstanceConstant mat has.
-                    // For now, just use the default material.
-                    material = new TexturedPreviewMaterial(texcache, mat);
-                    AddMaterial(material.Properties["Name"], material);
+                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), preloadedData.texturePreviewMaterials);
+                    AddMaterial(mat.ObjectName, material);
+
                 }
             }
 
@@ -586,7 +665,7 @@ namespace ME3Explorer.Scene3D
             foreach (var lodmodel in m.LODModels)
             {
                 // Vertices
-                List<WorldVertex> vertices = new List<WorldVertex>();
+                List<WorldVertex> vertices = new List<WorldVertex>(m.Export.Game == MEGame.ME1 ? lodmodel.ME1VertexBufferGPUSkin.Length : lodmodel.VertexBufferGPUSkin.VertexData.Length);
                 if (m.Export.Game == MEGame.ME1)
                 {
                     foreach (var vertex in lodmodel.ME1VertexBufferGPUSkin)
@@ -602,7 +681,7 @@ namespace ME3Explorer.Scene3D
                     }
                 }
                 // Triangles
-                List<Triangle> triangles = new List<Triangle>();
+                List<Triangle> triangles = new List<Triangle>(lodmodel.IndexBuffer.Length/3);
                 for (int i = 0; i < lodmodel.IndexBuffer.Length; i += 3)
                 {
                     triangles.Add(new Triangle(lodmodel.IndexBuffer[i], lodmodel.IndexBuffer[i + 1], lodmodel.IndexBuffer[i + 2]));
@@ -638,7 +717,7 @@ namespace ME3Explorer.Scene3D
                 {
                     // The material instance is an import!
                     ImportEntry matImport = m.Export.FileRef.getUImport(m.Materials[i]);
-                    var externalAsset = FindExternalAsset(matImport);
+                    var externalAsset = FindExternalAsset(matImport, texcache.cache.Select(x => x.TextureExport).ToList());
                     if (externalAsset != null)
                     {
                         mat = new MaterialInstanceConstant(externalAsset);

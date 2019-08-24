@@ -82,7 +82,7 @@ namespace ME3Explorer.Scene3D
         /// <summary>
         /// Stores loaded textures by their full name.
         /// </summary>
-        private readonly List<PreviewTextureEntry> cache = new List<PreviewTextureEntry>();
+        public readonly List<PreviewTextureEntry> cache = new List<PreviewTextureEntry>();
 
         /// <summary>
         /// Queues a texture for eventual loading.

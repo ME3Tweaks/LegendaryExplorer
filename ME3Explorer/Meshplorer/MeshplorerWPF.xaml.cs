@@ -349,5 +349,15 @@ namespace ME3Explorer
                 Mesh3DViewer.LoadExport(CurrentExport);
             }
         }
+
+        private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (MeshExportsList.SelectedItem is ExportEntry export){
+                PackageEditorWPF p = new PackageEditorWPF();
+                p.Show();
+                p.LoadFile(export.FileRef.FilePath, export.UIndex);
+                p.Activate(); //bring to front
+            }
+        }
     }
 }

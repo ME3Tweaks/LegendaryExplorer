@@ -56,13 +56,73 @@ namespace ME3Explorer.Unreal.Classes
             if (export.ClassName == "Material")
             {
                 var parsedMaterial = ObjectBinary.From<Material>(export);
-                foreach (var v in parsedMaterial.SM3MaterialResource.Uniform2DTextureExpressions)
+                if (parsedMaterial.SM3MaterialResource.Uniform2DTextureExpressions != null)
                 {
-                    Textures.Add(export.FileRef.getEntry(v.TextureIndex.value));
+                    foreach (var v in parsedMaterial.SM3MaterialResource.Uniform2DTextureExpressions)
+                    {
+                        Textures.Add(export.FileRef.getEntry(v.TextureIndex.value));
+                    }
+                }
+                if (parsedMaterial.SM3MaterialResource.Uniform2DTextureExpressions != null)
+                {
+                    foreach (var v in parsedMaterial.SM2MaterialResource.Uniform2DTextureExpressions)
+                    {
+                        Textures.Add(export.FileRef.getEntry(v.TextureIndex.value));
+                    }
+                }
+                if (parsedMaterial.SM2MaterialResource.UniformExpressionTextures != null)
+                {
+                    foreach (var v in parsedMaterial.SM2MaterialResource.UniformExpressionTextures)
+                    {
+                        var texport = export.FileRef.getEntry(v.value);
+                        if (texport.ClassName == "Texture2D")
+                        {
+                            Textures.Add(texport);
+                        }
+                    }
+                }
+                if (parsedMaterial.SM3MaterialResource.UniformExpressionTextures != null)
+                {
+                    foreach (var v in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
+                    {
+                        var texport = export.FileRef.getEntry(v.value);
+                        if (texport.ClassName == "Texture2D")
+                        {
+                            Debug.WriteLine(texport.ObjectName);
+                            Textures.Add(texport);
+                        }
+                    }
                 }
             }
             else if (export.ClassName == "MaterialInstanceConstant")
             {
+                
+                //Read Local
+                if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> textureparams)
+                {
+                    foreach (var param in textureparams)
+                    {
+                        var paramValue = param.GetProp<ObjectProperty>("ParameterValue");
+                        var texntry = export.FileRef.getEntry(paramValue.Value);
+                        if (texntry.ClassName == "Texture2D" && !Textures.Contains(texntry))
+                        {
+                            Textures.Add(texntry);
+                        }
+                    }
+                }
+
+                if (export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
+                {
+                    foreach (var obj in textures)
+                    {
+                        var texntry = export.FileRef.getEntry(obj.Value);
+                        if (texntry.ClassName == "Texture2D" && !Textures.Contains(texntry))
+                        {
+                            Textures.Add(texntry);
+                        }
+                    }
+                }
+
                 //Read parent
                 if (export.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentObjProp)
                 {
@@ -75,21 +135,11 @@ namespace ME3Explorer.Unreal.Classes
                     else
                     {
                         ImportEntry ie = export.FileRef.getUImport(parentObjProp.Value);
-                        var externalEntry = ModelPreview.FindExternalAsset(ie);
+                        var externalEntry = ModelPreview.FindExternalAsset(ie, null);
                         if (externalEntry != null)
                         {
                             ReadMaterial(externalEntry);
                         }
-                    }
-
-                }
-
-                //Read Local
-                if (export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
-                {
-                    foreach (var obj in textures)
-                    {
-                        Textures.Add(export.FileRef.getEntry(obj.Value));
                     }
                 }
             }

@@ -28,6 +28,13 @@
         <Converters:EntryFileTypeIconPathConverter x:Key="EntryFileTypeIconPathConverter"/>
         <Converters:EmbeddedFileToolTipConverter x:Key="EmbeddedFileToolTipConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
+        <ContextMenu x:Key="MyMenu">
+            <MenuItem Header="Open in Package Editor" ToolTip="Opens this mesh in Package Editor" Click="OpenInPackageEditor_Clicked"/>
+        </ContextMenu>
+        <Style x:Key="MeshExports_ListboxItemStyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
     </Window.Resources>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel>
@@ -123,7 +130,7 @@
                     </Grid>
                 </StackPanel>
 
-                <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectionChanged="MeshExportsList_SelectionChanged">
+                <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectionChanged="MeshExportsList_SelectionChanged" ItemContainerStyle="{StaticResource MeshExports_ListboxItemStyle}">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type packages:ExportEntry}">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
