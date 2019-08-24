@@ -281,6 +281,7 @@ namespace ME3Explorer
                 bitmapImage.EndInit();
                 TextureImage.Source = bitmapImage; //image1 is your control            }
             }
+            TextureCache_TextBox.Text = mipToLoad.TextureCacheName;
         }
 
         public static byte[] GetTextureData(Texture2DMipInfo mipToLoad, bool decompress = true)
@@ -437,17 +438,17 @@ namespace ME3Explorer
             //    for (int i = texture.mipMapsList.Count - 1; i != 0; i--)
             //        texture.mipMapsList.RemoveAt(i);
             //}
-
             PixelFormat newPixelFormat = pixelFormat;
 
             //Changing Texture Type. Not sure what this is, exactly.
             //if (mod.markConvert)
             //    newPixelFormat = changeTextureType(pixelFormat, image.pixelFormat, ref package, ref texture);
 
+            
             if (!image.checkDDSHaveAllMipmaps() ||
                 (texture.Mips.Count > 1 && image.mipMaps.Count() <= 1))
             //||
-            //(mod.markConvert && image.pixelFormat != newPixelFormat) ||
+            //(image.pixelFormat != newPixelFormat) ||
             //(!mod.markConvert && image.pixelFormat != pixelFormat))
             {
                 bool dxt1HasAlpha = false;
@@ -515,10 +516,14 @@ namespace ME3Explorer
                 //if (verify)
                 //    matched.crcs.Add(texture.getCrcData(image.mipMaps[m].data));
                 Texture2DMipInfo mipmap = new Texture2DMipInfo();
+                mipmap.Export = CurrentLoadedExport;
                 mipmap.width = image.mipMaps[m].origWidth;
                 mipmap.height = image.mipMaps[m].origHeight;
-                if (texture.Mips.Exists(x => x.width == mipmap.width && x.height == mipmap.height))
-                    mipmap.storageType = texture.Mips.First(x => x.width == mipmap.width && x.height == mipmap.height).storageType;
+                if (texture.Mips.Exists(x => x.width == mipmap.width && x.height == mipmap.height)) {
+                    var oldMip = texture.Mips.First(x => x.width == mipmap.width && x.height == mipmap.height);
+                    mipmap.storageType = oldMip.storageType; 
+                    mipmap.TextureCacheName = oldMip.TextureCacheName;
+                }
                 else
                 {
                     mipmap.storageType = texture.Mips[0].storageType;
@@ -594,7 +599,6 @@ namespace ME3Explorer
             bool triggerCacheArc = false;
             bool newTfcFile = false;
             bool oldSpace = true;
-            string archiveFile = "";
 
             //Implement later. TFC Storage Support
 
@@ -706,6 +710,22 @@ namespace ME3Explorer
             //    }
             //}
 
+            int allextmipssize = 0;
+
+            for (int m = 0; m < image.mipMaps.Count(); m++)
+            {
+                Texture2DMipInfo x = mipmaps[m];
+                var compsize = image.mipMaps[m].data.Length;
+
+                if (x.storageType == StorageTypes.extZlib ||
+                        x.storageType == StorageTypes.extLZO ||
+                        x.storageType == StorageTypes.extUnc)
+                {
+                    allextmipssize += compsize; //compsize on Unc textures is same as LZO/ZLib
+                }
+            }
+            //todo: check to make sure TFC will not be larger than 2GiB
+
             for (int m = 0; m < image.mipMaps.Count(); m++)
             {
                 Texture2DMipInfo mipmap = mipmaps[m];
@@ -749,7 +769,67 @@ namespace ME3Explorer
                         mipmap.storageType == StorageTypes.extLZO ||
                         mipmap.storageType == StorageTypes.extUnc)
                     {
-                        //if (mod.arcTexture == null)
+                        if (!string.IsNullOrEmpty(mipmap.TextureCacheName) && mipmap.Export.Game != MEGame.ME1)
+                        {
+                            //Check local dir
+                            string tfcarchive = mipmap.TextureCacheName + ".tfc";
+                            var localDirectoryTFCPath = Path.Combine(Path.GetDirectoryName(mipmap.Export.FileRef.FilePath), tfcarchive);
+                            if (File.Exists(localDirectoryTFCPath))
+                            {
+                                try
+                                {
+                                    using (FileStream fs = new FileStream(localDirectoryTFCPath, FileMode.Open, FileAccess.Write))
+                                    {
+                                        fs.Seek(0, SeekOrigin.End);
+                                        mipmap.externalOffset = (int)fs.Position;
+                                        fs.Write(mipmap.newDataForSerializing, 0, mipmap.compressedSize);
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    throw new Exception("Problem appending to TFC file " + tfcarchive + ": " + e.Message);
+                                }
+                                continue;
+                            }
+
+                            //Check game
+                            var gameFiles = MELoadedFiles.GetFilesLoadedInGame(mipmap.Export.Game);
+                            if (gameFiles.TryGetValue(tfcarchive, out string archiveFile)) 
+                            {
+                                try
+                                {
+                                    using (FileStream fs = new FileStream(archiveFile, FileMode.Open, FileAccess.Write))
+                                    {
+                                        fs.Seek(0, SeekOrigin.End);
+                                        mipmap.externalOffset = (int)fs.Position;
+                                        fs.Write(mipmap.newDataForSerializing, 0, mipmap.compressedSize);
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    throw new Exception("Problem appending to TFC file " + archiveFile + ": " + e.Message);
+                                }
+                                continue;
+                            }
+                            //Make new TFC
+
+                            //Cache not found
+                            try
+                            {
+                                using (FileStream fs = new FileStream(localDirectoryTFCPath, FileMode.OpenOrCreate, FileAccess.Write))
+                                {
+                                    Guid g = new Guid();
+                                    fs.WriteGuid(g); //TFC GUID. Don't know if this has to be part of a texture.
+                                    mipmap.externalOffset = (int)fs.Position;
+                                    fs.Write(mipmap.newDataForSerializing, 0, mipmap.compressedSize);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                throw new Exception("Problem appending to TFC file " + tfcarchive + ": " + e.Message);
+                            }
+                            continue;
+                        }
                         //{
                         //    triggerCacheArc = true;
 
@@ -788,6 +868,8 @@ namespace ME3Explorer
                         //    }
                         //}
                         //else
+
+                        //UNSURE WHAT THIS DOES - MIGHT BE IMPORTANT.
                         //{
                         //    if ((mipmap.width >= 4 && mod.arcTexture[m].width != mipmap.width) ||
                         //        (mipmap.height >= 4 && mod.arcTexture[m].height != mipmap.height))
