@@ -1,24 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using AmaroK86.ImageFormat;
 using Gammtek.Conduit.Extensions.IO;
+using MassEffectModder.Images;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Packages;
+using ME3Explorer.Properties;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
-using MassEffectModder;
-using System.Globalization;
+using Image = MassEffectModder.Images.Image;
+using PixelFormat = MassEffectModder.Images.PixelFormat;
 
 namespace ME3Explorer
 {
@@ -46,8 +49,8 @@ namespace ME3Explorer
             set => SetProperty(ref _cannotShowTextureTextVisibility, value);
         }
 
-        private System.Windows.Media.Stretch _imageStretchOption = System.Windows.Media.Stretch.Uniform;
-        public System.Windows.Media.Stretch ImageStretchOption
+        private Stretch _imageStretchOption = Stretch.Uniform;
+        public Stretch ImageStretchOption
         {
             get => _imageStretchOption;
             set => SetProperty(ref _imageStretchOption, value);
@@ -55,7 +58,7 @@ namespace ME3Explorer
 
         public EmbeddedTextureViewer()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Embedded Texture Viewer Export Loader", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem("Embedded Texture Viewer Export Loader", new WeakReference(this));
 
             DataContext = this;
             CannotShowTextureText = "Select a mip to view";
@@ -74,7 +77,7 @@ namespace ME3Explorer
 
         private void ReplaceFromPNG()
         {
-            OpenFileDialog selectDDS = new OpenFileDialog()
+            OpenFileDialog selectDDS = new OpenFileDialog
             {
                 Title = "Select texture file",
                 Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga"
@@ -82,7 +85,7 @@ namespace ME3Explorer
             var result = selectDDS.ShowDialog();
             if (result.HasValue && result.Value)
             {
-                var image = new MassEffectModder.Image(selectDDS.FileName);
+                var image = new Image(selectDDS.FileName);
                 //Check aspect ratios
                 var props = CurrentLoadedExport.GetProperties();
                 var listedWidth = props.GetProp<IntProperty>("SizeX");
@@ -168,7 +171,7 @@ namespace ME3Explorer
                         if (baseName != "" && !neverStream)
                         {
                             List<string> gameFiles = MEDirectories.EnumerateGameFiles(MEGame.ME1, ME1Directory.gamePath);
-                            if (gameFiles.Exists(s => System.IO.Path.GetFileNameWithoutExtension(s).ToUpperInvariant() == baseName))
+                            if (gameFiles.Exists(s => Path.GetFileNameWithoutExtension(s).ToUpperInvariant() == baseName))
                             {
                                 CurrentLoadedBasePackageName = baseName;
                             }
@@ -179,7 +182,7 @@ namespace ME3Explorer
                 CurrentLoadedExport = exportEntry;
                 CurrentLoadedFormat = format.Value.Name;
                 MipList.ReplaceAll(mips);
-                if (Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad)
+                if (Settings.Default.EmbeddedTextureViewer_AutoLoad)
                 {
                     Mips_ListBox.SelectedIndex = MipList.IndexOf(topmip);
                 }
@@ -265,11 +268,11 @@ namespace ME3Explorer
             var imagebytes = GetTextureData(mipToLoad);
 
             CannotShowTextureTextVisibility = Visibility.Collapsed;
-            var fmt = AmaroK86.ImageFormat.DDSImage.convertFormat(CurrentLoadedFormat);
-            var bitmap = AmaroK86.ImageFormat.DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height);
+            var fmt = DDSImage.convertFormat(CurrentLoadedFormat);
+            var bitmap = DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height);
             using (MemoryStream memory = new MemoryStream())
             {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+                bitmap.Save(memory, ImageFormat.Bmp);
                 memory.Position = 0;
                 BitmapImage bitmapImage = new BitmapImage();
                 bitmapImage.BeginInit();
@@ -410,7 +413,7 @@ namespace ME3Explorer
             MipList.ClearEx();
         }
 
-        private void MipList_SelectedItemChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void MipList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
             if (MipList.Count > 0 && Mips_ListBox.SelectedIndex >= 0)
             {
@@ -419,7 +422,7 @@ namespace ME3Explorer
             }
         }
 
-        public string replaceTextures(MassEffectModder.Image image, PropertyCollection props, string fileSourcePath = null)
+        public string replaceTextures(Image image, PropertyCollection props, string fileSourcePath = null)
         {
             string errors = "";
             Texture2D texture = new Texture2D(CurrentLoadedExport);
@@ -892,16 +895,14 @@ namespace ME3Explorer
                     {
                         return baseName;
                     }
-                    else
+
+                    //NeverStream is set if there are more than 6 mips. Some sort of design implementation of ME1 texture streaming
+                    if (baseName != "" && !NeverStream)
                     {
-                        //NeverStream is set if there are more than 6 mips. Some sort of design implementation of ME1 texture streaming
-                        if (baseName != "" && !NeverStream)
+                        var gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
+                        if (gameFiles.ContainsKey(baseName)) //I am pretty sure these will only ever resolve to UPKs...
                         {
-                            var gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
-                            if (gameFiles.ContainsKey(baseName)) //I am pretty sure these will only ever resolve to UPKs...
-                            {
-                                return baseName;
-                            }
+                            return baseName;
                         }
                     }
                     return null;
@@ -937,12 +938,12 @@ namespace ME3Explorer
 
         private void ScalingTurnOff(object sender, RoutedEventArgs e)
         {
-            ImageStretchOption = System.Windows.Media.Stretch.None;
+            ImageStretchOption = Stretch.None;
         }
 
         private void ScalingTurnOn(object sender, RoutedEventArgs e)
         {
-            ImageStretchOption = System.Windows.Media.Stretch.Uniform;
+            ImageStretchOption = Stretch.Uniform;
         }
     }
 }

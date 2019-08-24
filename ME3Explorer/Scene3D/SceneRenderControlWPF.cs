@@ -155,7 +155,7 @@ namespace ME3Explorer.Scene3D
         {
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            Context.TextureCache.Dispose();
+            Context.TextureCache?.Dispose();
             this.SizeChanged -= SceneRenderControlWPF_SizeChanged;
             this.PreviewMouseDown -= SceneRenderControlWPF_PreviewMouseDown;
             this.PreviewMouseMove -= SceneRenderControlWPF_PreviewMouseMove;

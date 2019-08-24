@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,6 +19,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using Microsoft.Win32;
+using SlavaGu.ConsoleAppLauncher;
 
 namespace ME3Explorer.TFCCompactor
 {
@@ -153,6 +155,7 @@ namespace ME3Explorer.TFCCompactor
             backgroundWorker.RunWorkerCompleted += (a, b) =>
             {
                 OnPropertyChanged(nameof(IsNotBusy));
+                ScanForGameCompleted = true;
             };
             backgroundWorker.RunWorkerAsync();
             OnPropertyChanged(nameof(IsNotBusy));
@@ -160,7 +163,61 @@ namespace ME3Explorer.TFCCompactor
 
         private void BeginTFCCompaction()
         {
-            //throw new NotImplementedException();
+            backgroundWorker = new BackgroundWorker();
+            backgroundWorker.WorkerReportsProgress = true;
+            string sourceGamePath = Path.GetDirectoryName(Path.GetDirectoryName(SelectedGame.DLCPath));
+            string workingGamePath = Path.Combine(Path.GetTempPath(), "TFCCompact");
+
+            backgroundWorker.DoWork += (a, b) =>
+            {
+                CurrentOperationText = "Creating compaction workspace";
+                ProgressBarValue = 0;
+                ProgressBarMax = 100;
+                ProgressBarIndeterminate = false;
+
+
+                var game = (int)SelectedGame.Game;
+                //get MassEffectModder.ini
+                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "MassEffectModder");
+                string _iniPath = Path.Combine(path, "MassEffectModder.ini");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                if (!File.Exists(_iniPath))
+                {
+                    File.Create(_iniPath);
+                }
+
+                Ini.IniFile ini = new Ini.IniFile(_iniPath);
+                var oldValue = ini.ReadValue("ME" + game, "GameDataPath");
+                ini.WriteValue("ME" + game, sourceGamePath, "GameDataPath");
+
+
+                var triggers = new Dictionary<string, Action<string>> {
+                    { "TASK_PROGRESS", s => ProgressBarValue = int.Parse(s)},
+                    { "PROCESSING_FILE", s => CurrentOperationText = $"Processing file: {s}"}
+                };
+
+                string args = $"--compact-dlc --gameid {game} --dlc-name {SelectedDLCModFolder} --ipc"; //--pull-textures
+                var memProcess = MassEffectModder.MassEffectModderIPCWrapper.RunMEM(args, triggers);
+                while (memProcess.State == AppState.Running)
+                {
+                    Thread.Sleep(100); //this is kind of hacky but it works
+                }
+
+                if (!string.IsNullOrEmpty(oldValue))
+                {
+                    ini.WriteValue("ME" + game, oldValue, "GameDataPath");
+                }
+            };
+            backgroundWorker.RunWorkerCompleted += (a, b) =>
+            {
+                OnPropertyChanged(nameof(IsNotBusy));
+            };
+            backgroundWorker.RunWorkerAsync();
+            OnPropertyChanged(nameof(IsNotBusy));
         }
 
         private bool GameIsSelected() => SelectedGame != null && SelectedGame.IsBrowseForCustom == false;
@@ -191,10 +248,12 @@ namespace ME3Explorer.TFCCompactor
         {
             if (e.AddedItems.Count > 0)
             {
+                ScanForGameCompleted = false;
                 SelectedDLCModFolder = (string)e.AddedItems[0];
             }
             else
             {
+                ScanForGameCompleted = false;
                 SelectedDLCModFolder = null;
             }
         }
@@ -203,6 +262,7 @@ namespace ME3Explorer.TFCCompactor
         {
             if (e.AddedItems.Count > 0)
             {
+                ScanForGameCompleted = false;
                 var newItem = (GameWrapper)e.AddedItems[0];
                 if (newItem.IsBrowseForCustom)
                 {
@@ -240,6 +300,7 @@ namespace ME3Explorer.TFCCompactor
                 }
                 else
                 {
+                    ScanForGameCompleted = false;
                     SelectedGame = newItem;
                     var officialDLC = newItem.Game == MEGame.ME3 ? ME3Directory.OfficialDLC : ME2Directory.OfficialDLC;
                     var DLC = MELoadedFiles.GetEnabledDLC(newItem.Game, newItem.DLCPath).Select(x => Path.GetFileName(x)).Where(x => !officialDLC.Contains(x));

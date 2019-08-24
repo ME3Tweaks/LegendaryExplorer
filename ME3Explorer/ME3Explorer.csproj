@@ -92,6 +92,9 @@
     <Reference Include="ClosedXML, Version=0.94.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClosedXML.0.94.2\lib\net46\ClosedXML.dll</HintPath>
     </Reference>
+    <Reference Include="ConsoleAppLauncher, Version=1.0.6354.408, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ConsoleAppLauncher.1.0.6354.408\lib\net40\ConsoleAppLauncher.dll</HintPath>
+    </Reference>
     <Reference Include="CSharpImageLibrary, Version=3.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CSharpImageLibrary.3.1.6.0\lib\net45\CSharpImageLibrary.exe</HintPath>
     </Reference>
@@ -354,6 +357,7 @@
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogue Editor\DialogueObjects.cs" />
+    <Compile Include="MassEffectModder\MassEffectModderIPCWrapper.cs" />
     <Compile Include="Meshplorer\MeshplorerWPF.xaml.cs">
       <DependentUpon>MeshplorerWPF.xaml</DependentUpon>
     </Compile>
