@@ -216,7 +216,7 @@ namespace ME3Explorer.Dialogue_Editor
         #region Startup/Exit
         public DialogueEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Dialogue Editor WPF", new WeakReference(this));
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Dialogue Editor", new WeakReference(this));
             LoadCommands();
             StatusText = "Select package file to load";
             SelectedSpeaker = new SpeakerExtended(-3, "None");
@@ -524,7 +524,7 @@ namespace ME3Explorer.Dialogue_Editor
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
 
-                Title = $"Dialogue Editor WPF - {fileName}";
+                Title = $"Dialogue Editor - {fileName}";
                 StatusText = null;
 
                 Level = Path.GetFileName(Pcc.FilePath);
@@ -548,7 +548,7 @@ namespace ME3Explorer.Dialogue_Editor
             catch (Exception ex)
             {
                 MessageBox.Show("Error:\n" + ex.Message);
-                Title = "Dialogue Editor WPF";
+                Title = "Dialogue Editor";
                 UnloadFile();
             }
         }
@@ -3868,11 +3868,10 @@ namespace ME3Explorer.Dialogue_Editor
 
             var p = new InterpEditor();
             p.Show();
-            p.LoadPCC(Pcc.FilePath);
+            p.LoadFile(Pcc.FilePath);
             if (exportEntry.ObjectName == "InterpData")
             {
-                p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(exportEntry.Index);
-                p.loadInterpData(exportEntry.Index);
+                p.SelectedInterpData = exportEntry;
             }
             else
             {

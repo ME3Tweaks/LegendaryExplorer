@@ -183,6 +183,15 @@ namespace ME3Explorer
             throw new ArgumentOutOfRangeException();
         }
 
+        public static T First<T>(this LinkedList<T> list)
+        {
+            return list.First.Value;
+        }
+        public static T Last<T>(this LinkedList<T> list)
+        {
+            return list.Last.Value;
+        }
+
         /// <summary>
         /// Overwrites a portion of an array starting at offset with the contents of another array.
         /// Accepts negative indexes

@@ -11,6 +11,7 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Pathfinding_Editor;
 using Newtonsoft.Json;
 using ME3Explorer.AutoTOC;
+using ME3Explorer.Matinee;
 
 namespace ME3Explorer
 {
@@ -66,7 +67,7 @@ namespace ME3Explorer
                     (new AutoTOCWPF()).Show();
                 },
                 tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
-                description = "AutoTOC WPF is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
+                description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
             });
 #if DEBUG
             set.Add(new Tool
@@ -215,11 +216,11 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Interp Viewer",
-                type = typeof(Matinee.InterpEditor),
+                type = typeof(InterpEditor),
                 icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
                 open = () =>
                 {
-                    (new Matinee.InterpEditor()).Show();
+                    (new InterpEditor()).Show();
                 },
                 tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene", "interpdata" },
                 subCategory = "Explorers",
@@ -249,7 +250,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "mesh" },
                 subCategory = "Meshes + Textures",
-                description = "Meshplorer WPF is the rewritten version of Meshplorer."
+                description = "Meshplorer WPF loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
             });
             set.Add(new Tool
             {
@@ -406,33 +407,7 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Dialogue Editor Classic",
-                type = typeof(DialogEditor.DialogEditor),
-                icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
-                open = () =>
-                {
-                    string result = InputComboBoxWPF.GetValue(null, "Which game's files do you want to edit?", new[] { "ME3", "ME2", "ME1" }, "ME3", true);
-                    switch (result)
-                    {
-                        case "ME3":
-                            (new DialogEditor.DialogEditor()).Show();
-                            break;
-                        case "ME2":
-                            (new ME2Explorer.DialogEditor()).Show();
-                            break;
-                        case "ME1":
-                            (new ME1Explorer.DialogEditor()).Show();
-                            break;
-                    }
-
-                },
-                tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
-                subCategory = "Scene Shop",
-                description = "Dialogue Editor is a cross-game tool used to edit Bioconversation objects, which control the flow of dialogue during a conversation.",
-            });
-            set.Add(new Tool
-            {
-                name = "Dialogue Editor WPF",
+                name = "Dialogue Editor",
                 type = typeof(Dialogue_Editor.DialogueEditorWPF),
                 icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
                 open = () =>
@@ -441,21 +416,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
                 subCategory = "Scene Shop",
-                description = "Dialogue Editor WPF is a visual tool used to edit in game conversations. It works with all the games.",
-            });
-            set.Add(new Tool
-            {
-                name = "ME2 Dialogue Editor",
-                type = typeof(ME2Explorer.DialogEditor),
-                icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
-                tags = new List<string>(),
-            });
-            set.Add(new Tool
-            {
-                name = "ME3 Dialogue Editor",
-                type = typeof(ME1Explorer.DialogEditor),
-                icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
-                tags = new List<string>(),
+                description = "Dialogue Editor is a visual tool used to edit in-game conversations. It works with all the games.",
             });
             set.Add(new Tool
             {
@@ -468,7 +429,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation", "me3", "me3" },
                 subCategory = "Scene Shop",
-                description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit ME3 and ME2 FaceFX AnimSets (FXEs).",
+                description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit FaceFX AnimSets (FXEs) for all three games.",
             });
             set.Add(new Tool
             {
@@ -536,7 +497,7 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "TLK Manager WPF",
+                name = "TLK Manager",
                 type = typeof(TlkManagerNS.TLKManagerWPF),
                 icon = Application.Current.FindResource("iconTLKManager") as ImageSource,
                 open = () =>
@@ -545,7 +506,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "dialogue", "subtitle", "text", "string", "localize", "language" },
                 subCategory = "Core",
-                description = "TLK Manager WPF manages loaded TLK files that are used to display string data in editor tools. You can also use it to extract and recompile TLK files."
+                description = "TLK Manager manages loaded TLK files that are used to display string data in editor tools. You can also use it to extract and recompile TLK files."
             });
             set.Add(new Tool
             {
@@ -558,7 +519,8 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 subCategory = "Core",
-                description = "Package Editor WPF is a complete rewrite of Package Editor using the WPF design language. Edit trilogy game files in a single window with access to external tools such as Curve Editor and Soundplorer, right in the same window."
+                description = "Package Editor is ME3Explorer's general purpose editing tool for unreal package files. It can edit ME3 and ME2 .pcc files, as well as ME1 .sfm, .upk, and .u files." +
+                              "\n\nEdit trilogy game files in a single window with access to external tools such as Curve Editor and Soundplorer, right in the same window."
             });
             set.Add(new Tool
             {
@@ -571,7 +533,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level" },
                 subCategory = "Core",
-                description = "Pathfinding Editor WPF allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
+                description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
             });
             set.Add(new Tool
             {
@@ -598,7 +560,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "developer", "kismet", "me1", "me2", "me3" },
                 subCategory = "Core",
-                description = "Sequence Editor WPF is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
+                description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
             set.Add(new Tool
             {
@@ -624,7 +586,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
                 subCategory = "Scene Shop",
-                description = "Soundplorer WPF is a complete rewrite of the original  Soundplorer. Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
+                description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
             });
             set.Add(new Tool
             {
