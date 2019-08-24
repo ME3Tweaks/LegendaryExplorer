@@ -1,27 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
 using ME3Explorer.Unreal.BinaryConverters;
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-using Device = SharpDX.DXGI.Device;
+using ME3Explorer.Unreal.Classes;
+using SkeletalMesh = ME3Explorer.Unreal.BinaryConverters.SkeletalMesh;
+using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
 
 namespace ME3Explorer.Meshplorer
 {
@@ -106,6 +94,23 @@ namespace ME3Explorer.Meshplorer
         }
         #endregion
 
+        #region Busy variables
+        private bool _isBusy;
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
+        }
+
+        private string _busyText;
+
+        public string BusyText
+        {
+            get => _busyText;
+            set => SetProperty(ref _busyText, value);
+        }
+        #endregion
+
         public MeshRendererWPF()
         {
             DataContext = this;
@@ -120,26 +125,120 @@ namespace ME3Explorer.Meshplorer
         public override void LoadExport(ExportEntry exportEntry)
         {
             SceneViewer.InitializeD3D();
-            SceneViewer.Context.BackgroundColor = new SharpDX.Color(128,128,128);
+            SceneViewer.Context.BackgroundColor = new SharpDX.Color(128, 128, 128);
 
             CurrentLoadedExport = exportEntry;
 
             Preview?.Dispose();
+            bool hasWorkToDo = false;
+            BackgroundWorker bw = new BackgroundWorker();
             if (CurrentLoadedExport.ClassName == "StaticMesh")
             {
-                var sm = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
-                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, sm, CurrentLOD, SceneViewer.Context.TextureCache);
-                SceneViewer.Context.Camera.FocusDepth = sm.Bounds.SphereRadius * 1.2f;
+                bw.DoWork += (a, b) =>
+                {
+                    BusyText = "Fetching assets";
+                    IsBusy = true;
+                    var meshObject = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
+                    ModelPreview.PreloadedModelData pmd = new ModelPreview.PreloadedModelData();
+                    pmd.meshObject = meshObject;
+                    pmd.sections = new List<ModelPreviewSection>();
+                    pmd.texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>();
+                    foreach (var section in meshObject.LODModels[CurrentLOD].Elements)
+                    {
+                        if (section.Material.value > 0)
+                        {
+                            ExportEntry entry = meshObject.Export.FileRef.getUExport(section.Material.value);
+                            AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
 
+                        }
+                        else if (section.Material.value < 0)
+                        {
+                            var extMaterialExport = ModelPreview.FindExternalAsset(meshObject.Export.FileRef.getUImport(section.Material.value));
+                            if (extMaterialExport != null)
+                            {
+                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
+                            }
+                            else
+                            {
+
+                                Debug.WriteLine("Could not find import material from section.");
+                                Debug.WriteLine("Import material: " + meshObject.Export.FileRef.GetEntryString(section.Material.value));
+                            }
+                        }
+
+                        pmd.sections.Add(new ModelPreviewSection(meshObject.Export.FileRef.getObjectName(section.Material.value), section.FirstIndex, section.NumTriangles));
+                    }
+                    b.Result = pmd;
+                };
+                hasWorkToDo = true;
             }
             else if (CurrentLoadedExport.ClassName == "SkeletalMesh")
             {
-                var sm = new Unreal.Classes.SkeletalMesh(CurrentLoadedExport);
-                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, sm, SceneViewer.Context.TextureCache);
-                SceneViewer.Context.Camera.FocusDepth = sm.Bounding.r * 1.2f;
+                //var sm = new Unreal.Classes.SkeletalMesh(CurrentLoadedExport);
+                bw.DoWork += (a, b) =>
+                {
+                    b.Result = ObjectBinary.From<SkeletalMesh>(CurrentLoadedExport);
+                };
+                hasWorkToDo = true;
             }
 
-            CenterView();
+            if (hasWorkToDo)
+            {
+                bw.RunWorkerCompleted += (a, b) =>
+                {
+                    IsBusy = false;
+                    if (b.Result is ModelPreview.PreloadedModelData pmd)
+                    {
+                        if (pmd.meshObject is StaticMesh statM)
+                        {
+                            Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, statM, CurrentLOD, SceneViewer.Context.TextureCache, pmd);
+                            SceneViewer.Context.Camera.FocusDepth = statM.Bounds.SphereRadius * 1.2f;
+                        }
+                        else if (b.Result is SkeletalMesh skm)
+                        {
+                            Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, skm, SceneViewer.Context.TextureCache);
+                            SceneViewer.Context.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
+                        }
+                        CenterView();
+                    }
+                };
+                bw.RunWorkerAsync();
+            }
+        }
+
+        private void AddMaterialBackgroundThreadTextures(List<ModelPreview.PreloadedTextureData> texturePreviewMaterials, ExportEntry entry)
+        {
+            var matinst = new Unreal.Classes.MaterialInstanceConstant(entry);
+            foreach (var tex in matinst.Textures)
+            {
+
+                Debug.WriteLine("Preloading " + tex.GetFullPath);
+                if (tex is ImportEntry import)
+                {
+                    var extAsset = ModelPreview.FindExternalAsset(import);
+                    if (extAsset != null) //Apparently some assets are cubemaps, we don't want these.
+                    {
+                        var preloadedTextureData = new ModelPreview.PreloadedTextureData();
+                        Debug.WriteLine("Preloading ext texture " + extAsset.ObjectName+" for material "+entry.ObjectName);
+                        Texture2D t2d = new Texture2D(extAsset);
+                        preloadedTextureData.decompressedTextureData = t2d.GetImageBytesForMip(t2d.GetTopMip());
+                        preloadedTextureData.MaterialExport = entry;
+                        preloadedTextureData.Mip = t2d.GetTopMip(); //This may need to be adjusted for data returned by previous function if it's using a lower mip
+                        texturePreviewMaterials.Add(preloadedTextureData);
+                    }
+                }
+                else
+                {
+
+                    var preloadedTextureData = new ModelPreview.PreloadedTextureData();
+                    Texture2D t2d = new Texture2D(tex as ExportEntry);
+                    Debug.WriteLine("Preloading local texture " + tex.ObjectName + " for material " + entry.ObjectName);
+                    preloadedTextureData.decompressedTextureData = t2d.GetImageBytesForMip(t2d.GetTopMip());
+                    preloadedTextureData.MaterialExport = entry;
+                    preloadedTextureData.Mip = t2d.GetTopMip(); //This may need to be adjusted for data returned by previous function if it's using a lower mip
+                    texturePreviewMaterials.Add(preloadedTextureData);
+                }
+            }
         }
 
         private void MeshRenderer_Loaded(object sender, RoutedEventArgs e)
@@ -179,8 +278,10 @@ namespace ME3Explorer.Meshplorer
         public override void Dispose()
         {
             Preview?.Dispose();
-            CurrentLoadedExport = null;
             SceneViewer.Context.Update -= MeshRenderer_ViewUpdate;
+            SceneViewer.Dispose();
+            CurrentLoadedExport = null;
+            SceneViewer = null;
         }
     }
 }

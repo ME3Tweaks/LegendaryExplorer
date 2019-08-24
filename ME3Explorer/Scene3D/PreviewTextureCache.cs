@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using SharpDX;
 using SharpDX.Direct3D11;
 using ME3Explorer.Packages;
+using static ME3Explorer.EmbeddedTextureViewer;
 
 namespace ME3Explorer.Scene3D
 {
@@ -20,11 +21,9 @@ namespace ME3Explorer.Scene3D
         public class PreviewTextureEntry : IDisposable
         {
             /// <summary>
-            /// The full path of the pcc file;
+            /// Texture export for this cache entry
             /// </summary>
-            public string PCCPath;
-
-            public int ExportID;
+            public ExportEntry TextureExport;
 
             /// <summary>
             /// The Direct3D ShaderResourceView for binding to shaders.
@@ -39,19 +38,9 @@ namespace ME3Explorer.Scene3D
             /// <summary>
             /// Creates a new cache entry for the given texture.
             /// </summary>
-            public PreviewTextureEntry(string pcc, int exportid)
-            {
-                PCCPath = pcc;
-                ExportID = exportid;
-            }
-
-            /// <summary>
-            /// Creates a new cache entry for the given texture.
-            /// </summary>
             public PreviewTextureEntry(ExportEntry export)
             {
-                PCCPath = export.FileRef.FilePath;
-                ExportID = export.UIndex;
+                TextureExport = export;
             }
 
             /// <summary>
@@ -131,30 +120,31 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         /// <param name="pcc">The full path of the pcc where the texture export is.</param>
         /// <param name="exportid"></param>
-        public PreviewTextureEntry LoadTexture(ExportEntry export)
+        public PreviewTextureEntry LoadTexture(ExportEntry export, Texture2DMipInfo preloadedMipInfo = null, byte[] decompressedTextureData = null)
         {
             foreach (PreviewTextureEntry e in cache)
             {
-                if (e.PCCPath == export.FileRef.FilePath && e.ExportID == export.UIndex)
+                if (e.TextureExport.FileRef.FilePath == export.FileRef.FilePath && e.TextureExport.UIndex == export.UIndex)
                 {
                     return e;
                 }
             }
             //using (var texpcc = MEPackageHandler.OpenMEPackage(pcc))
             //{
-                PreviewTextureEntry entry = new PreviewTextureEntry(export);
-                Unreal.Classes.Texture2D metex = new Unreal.Classes.Texture2D(export);
-                try
-                {
-                    entry.Texture = metex.generatePreviewTexture(Device, out Texture2DDescription _);
-                    entry.TextureView = new ShaderResourceView(Device, entry.Texture);
-                    cache.Add(entry);
-                    return entry;
-                }
-                catch
-                {
-                    return null;
-                }
+            PreviewTextureEntry entry = new PreviewTextureEntry(export);
+            Unreal.Classes.Texture2D metex = new Unreal.Classes.Texture2D(export);
+            try
+            {
+                if (preloadedMipInfo != null && metex.Export != preloadedMipInfo.Export) throw new Exception();
+                entry.Texture = metex.generatePreviewTexture(Device, out Texture2DDescription _, preloadedMipInfo, decompressedTextureData);
+                entry.TextureView = new ShaderResourceView(Device, entry.Texture);
+                cache.Add(entry);
+                return entry;
+            }
+            catch
+            {
+                return null;
+            }
             //}
         }
     }

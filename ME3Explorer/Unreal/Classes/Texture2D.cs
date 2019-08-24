@@ -93,10 +93,13 @@ namespace ME3Explorer.Unreal.Classes
         /// <param name="device">Device to render texture from/to ?</param>
         /// <param name="description">Direct3D description of the texture</param>
         /// <returns></returns>
-        public SharpDX.Direct3D11.Texture2D generatePreviewTexture(Device device, out Texture2DDescription description)
+        public SharpDX.Direct3D11.Texture2D generatePreviewTexture(Device device, out Texture2DDescription description, Texture2DMipInfo info = null, byte[] imageBytes = null)
         {
-            Texture2DMipInfo info = new Texture2DMipInfo();
-            info = Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+            if (info == null)
+            {
+                info = new Texture2DMipInfo();
+                info = Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+            }
             if (info == null)
             {
                 description = new Texture2DDescription();
@@ -105,25 +108,9 @@ namespace ME3Explorer.Unreal.Classes
 
 
             Debug.WriteLine($"Generating preview texture for Texture2D {info.Export.GetFullPath} of format {TextureFormat}");
-
-            byte[] imageBytes = null;
-            try
-            {
-                imageBytes = GetTextureData(info);
-            }
-            catch (FileNotFoundException e)
-            {
-                Debug.WriteLine("External cache not found. Defaulting to internal mips.");
-                //External archive not found - using built in mips (will be hideous, but better than nothing)
-                info = Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
-                if (info != null)
-                {
-                    imageBytes = GetTextureData(info);
-                }
-            }
             if (imageBytes == null)
             {
-                throw new Exception("Could not fetch texture for 3D preview");
+                imageBytes = GetImageBytesForMip(info);
             }
             int width = (int)info.width;
             int height = (int)info.height;
@@ -188,6 +175,40 @@ namespace ME3Explorer.Unreal.Classes
             ds.Dispose();
 
             return tex;
+        }
+
+        internal Texture2DMipInfo GetTopMip()
+        {
+            return Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+        }
+
+        public byte[] GetImageBytesForMip(Texture2DMipInfo info)
+        {
+            byte[] imageBytes = null;
+            try
+            {
+                imageBytes = GetTextureData(info);
+            }
+            catch (FileNotFoundException e)
+            {
+                Debug.WriteLine("External cache not found. Defaulting to internal mips.");
+                //External archive not found - using built in mips (will be hideous, but better than nothing)
+                info = Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
+                if (info != null)
+                {
+                    imageBytes = GetTextureData(info);
+                }
+            }
+            if (imageBytes == null)
+            {
+                throw new Exception("Could not fetch texture data for texture " + info.Export.ObjectName);
+            }
+            return imageBytes;
+        }
+
+        private byte[] GetImageBytes()
+        {
+            throw new NotImplementedException();
         }
 
         internal byte[] SerializeNewData()

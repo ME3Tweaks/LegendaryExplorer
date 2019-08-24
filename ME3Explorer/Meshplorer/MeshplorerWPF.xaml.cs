@@ -325,7 +325,10 @@ namespace ME3Explorer
 
         private void MeshplorerWPF_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
+            CurrentExport = null;
+            BinaryInterpreterTab_BinaryInterpreter.Dispose();
+            InterpreterTab_Interpreter.Dispose();
+            Mesh3DViewer.Dispose();
         }
 
         private void MeshExportsList_SelectionChanged(object sender, SelectionChangedEventArgs e)

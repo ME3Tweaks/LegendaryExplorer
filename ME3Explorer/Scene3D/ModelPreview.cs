@@ -11,6 +11,8 @@ using ME3Explorer.Packages;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
+using static ME3Explorer.EmbeddedTextureViewer;
+using static ME3Explorer.Scene3D.ModelPreview;
 
 
 // MODEL RENDERING OVERVIEW:
@@ -89,19 +91,32 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
-        public ModelPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat)
+        public ModelPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null)
         {
             if (mat == null) return;
             Properties.Add("Name", mat.export.ObjectName);
             foreach (var textureEntry in mat.Textures)
             {
-                if (!Textures.ContainsKey(textureEntry.GetFullPath) && textureEntry.ClassName == "Texture2D")
+                if (!Textures.ContainsKey(textureEntry.GetFullPath) && textureEntry.ClassName == "Texture2D")  //Apparently some assets are cubemaps, we don't want these.
                 {
-                    //var entry = mat.export.FileRef.getEntry(textureEntry.TexIndex); //for debugging
+                    if (preloadedTextures != null)
+                    {
+                        var preloadedInfo = preloadedTextures.FirstOrDefault(x => x.MaterialExport == mat.export && x.Mip.Export.ObjectName == textureEntry.ObjectName); //i don't like matching on object name but its export vs import here.
+                        if (preloadedInfo != null)
+                        {
+                            Textures.Add(textureEntry.GetFullPath, texcache.LoadTexture(preloadedInfo.Mip.Export, preloadedInfo.Mip, preloadedInfo.decompressedTextureData));
+                        } else
+                        {
+                            Debug.WriteLine("Preloading error");
+                        }
+                        //if (textureEntry is ExportEntry texPort && preloadedMipInfo.Export != texPort) throw new Exception();
+                        continue; //Don't further parse
+                    }
+
                     if (textureEntry is ImportEntry import)
                     {
                         var extAsset = ModelPreview.FindExternalAsset(import);
-                        if (extAsset != null) //Apparently some assets are cubemaps, we don't want these.
+                        if (extAsset != null)
                         {
                             Textures.Add(textureEntry.GetFullPath, texcache.LoadTexture(extAsset));
                         }
@@ -137,49 +152,6 @@ namespace ME3Explorer.Scene3D
         {
 
         }
-
-        private PreviewTextureCache.PreviewTextureEntry FindTexture(PreviewTextureCache texcache, IEntry textureReference, string ImportPCC)
-        {
-            var FullTextureName = textureReference.GetFullPath;
-            string importfiledir = System.IO.Path.GetDirectoryName(ImportPCC).ToLower();
-            string importfilename = System.IO.Path.GetFileName(ImportPCC).ToLower();
-            //string pccpath = "";
-            //int id = 0;
-
-            ExportEntry referencedExport = null;
-            // First, check the pcc that contains the material
-            using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(ImportPCC))
-            {
-                foreach (ExportEntry exp in pcc.Exports)
-                {
-                    if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D") //This should be instanced name as there may be same-named textures
-                    {
-                        return texcache.LoadTexture(exp);
-
-                        referencedExport = exp;
-                        //pccpath = ImportPCC;
-                        //id = exp.UIndex;
-                        break;
-                    }
-                }
-            }
-
-            if (/*id == 0*/ referencedExport == null)
-            {
-
-
-            }
-
-            //if (id > 0)
-            //{
-            //    return texcache.LoadTexture(pccpath, id);
-            //}
-            //else
-            //{
-            Debug.WriteLine("[TEXLOAD]: Could not find texture \"" + FullTextureName + "\", imported in \"" + ImportPCC + "\".");
-            return null;
-            //}
-        }
     }
 
     /// <summary>
@@ -196,35 +168,39 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
-        public TexturedPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat) : base(texcache, mat)
+        public TexturedPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, preloadedTextures)
         {
             foreach (var textureEntry in mat.Textures)
             {
-                if (textureEntry.ObjectName.ToLower().Contains("diff") || textureEntry.ObjectName.ToLower().Contains("tex"))
+                var texObjectName = textureEntry.ObjectName.ToLower();
+                if (texObjectName.Contains("diff") || texObjectName.Contains("tex"))
                 {
                     // we have found the diffuse texture!
                     DiffuseTextureFullName = textureEntry.GetFullPath;
-                    //Console.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
+                    Debug.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
                     return;
                 }
             }
             foreach (var texparam in mat.Textures)
             {
-                if (texparam.ObjectName.ToLower().Contains("detail"))
+                var texObjectName = texparam.ObjectName.ToLower();
+
+                if (texObjectName.Contains("detail"))
                 {
                     // I guess a detail texture is good enough if we didn't return for a diffuse texture earlier...
                     DiffuseTextureFullName = texparam.GetFullPath;
-                    //Console.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
+                    Debug.WriteLine("Diffuse (Detail) texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
                     return;
                 }
             }
             foreach (var texparam in mat.Textures)
             {
-                if (!texparam.ObjectName.ToLower().Contains("norm"))
+                var texObjectName = texparam.ObjectName.ToLower();
+                if (!texObjectName.Contains("norm") && !texObjectName.Contains("opac"))
                 {
                     //Anything is better than nothing I suppose
                     DiffuseTextureFullName = texparam.GetFullPath;
-                    //Console.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
+                    Debug.WriteLine("Using first found texture (last resort)  of new material <" + Properties["Name"] + "> as diffuse: " + DiffuseTextureFullName);
                     return;
                 }
             }
@@ -265,15 +241,15 @@ namespace ME3Explorer.Scene3D
         /// <param name="Device">The Direct3D device to use for buffer creation.</param>
         /// <param name="m">The mesh to generate a preview for.</param>
         /// <param name="texcache">The texture cache for loading textures.</param>
-        public ModelPreview(Device Device, StaticMesh m, int selectedLOD, PreviewTextureCache texcache)
+        public ModelPreview(Device Device, StaticMesh m, int selectedLOD, PreviewTextureCache texcache, PreloadedModelData preloadedData = null)
         {
             // STEP 1: MESH
-            List<Triangle> triangles = new List<Triangle>();
-            List<WorldVertex> vertices = new List<WorldVertex>();
+            var lodModel = m.LODModels[selectedLOD];
+            List<Triangle> triangles = new List<Triangle>(lodModel.IndexBuffer.Length / 3);
+            List<WorldVertex> vertices = new List<WorldVertex>((int)lodModel.NumVertices);
             // Gather all the vertex data
             // Only one LOD? odd but I guess that's just how it rolls.
 
-            var lodModel = m.LODModels[selectedLOD];
             for (int i = 0; i < lodModel.NumVertices; i++)
             {
                 var v = lodModel.PositionVertexBuffer.VertexData[i];
@@ -389,40 +365,60 @@ namespace ME3Explorer.Scene3D
             //}
 
             // STEP 3: SECTIONS
-
-            List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
-            foreach (var section in lodModel.Elements)
+            List<ModelPreviewSection> sections = preloadedData != null ? preloadedData.sections : null;
+            //This section exists for Meshplorer Winforms. WPF version preloads this in a background thread to improve performance
+            if (sections == null)
             {
-                if (section.Material.value > 0)
+                sections = new List<ModelPreviewSection>();
+                foreach (var section in lodModel.Elements)
                 {
-                    ModelPreviewMaterial material;
-                    // TODO: pick what material class best fits based on what properties the 
-                    // MaterialInstanceConstant mat has.
-                    // For now, just use the default material.
-                    ExportEntry entry = m.Export.FileRef.getUExport(section.Material.value);
-                    material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(entry));
-                    AddMaterial(material.Properties["Name"], material);
-                }
-                else if (section.Material.value < 0)
-                {
-                    var extMaterialExport = FindExternalAsset(m.Export.FileRef.getUImport(section.Material.value));
-                    if (extMaterialExport != null)
+                    if (section.Material.value > 0)
                     {
                         ModelPreviewMaterial material;
                         // TODO: pick what material class best fits based on what properties the 
                         // MaterialInstanceConstant mat has.
                         // For now, just use the default material.
-                        material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(extMaterialExport));
+                        ExportEntry entry = m.Export.FileRef.getUExport(section.Material.value);
+                        material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(entry));
                         AddMaterial(material.Properties["Name"], material);
-                    } else
-                    {
-
-                        Debug.WriteLine("Could not find import material from section.");
-                        Debug.WriteLine("Import material: " + m.Export.FileRef.GetEntryString(section.Material.value));
                     }
-                }
+                    else if (section.Material.value < 0)
+                    {
+                        var extMaterialExport = FindExternalAsset(m.Export.FileRef.getUImport(section.Material.value));
+                        if (extMaterialExport != null)
+                        {
+                            ModelPreviewMaterial material;
+                            // TODO: pick what material class best fits based on what properties the 
+                            // MaterialInstanceConstant mat has.
+                            // For now, just use the default material.
+                            material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(extMaterialExport));
+                            AddMaterial(material.Properties["Name"], material);
+                        }
+                        else
+                        {
 
-                sections.Add(new ModelPreviewSection(m.Export.FileRef.getObjectName(section.Material.value), section.FirstIndex, section.NumTriangles));
+                            Debug.WriteLine("Could not find import material from section.");
+                            Debug.WriteLine("Import material: " + m.Export.FileRef.GetEntryString(section.Material.value));
+                        }
+                    }
+
+                    sections.Add(new ModelPreviewSection(m.Export.FileRef.getObjectName(section.Material.value), section.FirstIndex, section.NumTriangles));
+                }
+            }
+            else
+            {
+                //Preloaded
+                sections = preloadedData.sections;
+                var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
+                foreach(var mat in uniqueMaterials)
+                {
+                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), preloadedData.texturePreviewMaterials);
+                    AddMaterial(mat.ObjectName, material);
+                }
+                foreach (var preloadedTexturePreviewMaterial in preloadedData.texturePreviewMaterials)
+                {
+                    
+                }
             }
 
             //List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
@@ -546,6 +542,86 @@ namespace ME3Explorer.Scene3D
         }
 
         /// <summary>
+        /// Creates a preview of the given <see cref="Unreal.BinaryConverters.SkeletalMesh"/>.
+        /// </summary>
+        /// <param name="Device">The Direct3D device to use for buffer creation.</param>
+        /// <param name="m">The mesh to generate a preview for.</param>
+        /// <param name="texcache">The texture cache for loading textures.</param>
+        public ModelPreview(Device Device, Unreal.BinaryConverters.SkeletalMesh m, PreviewTextureCache texcache)
+        {
+            // STEP 1: MATERIALS
+            Materials = new Dictionary<string, ModelPreviewMaterial>();
+            for (int i = 0; i < m.Materials.Length; i++)
+            {
+                UIndex materialUIndex = m.Materials[i];
+                MaterialInstanceConstant mat = null;
+                if (materialUIndex.value > 0)
+                {
+                    mat = new MaterialInstanceConstant(m.Export.FileRef.getUExport(materialUIndex.value));
+                }
+                else if (materialUIndex.value < 0)
+                {
+                    // The material instance is an import!
+                    ImportEntry matImport = m.Export.FileRef.getUImport(materialUIndex.value);
+                    var externalAsset = FindExternalAsset(matImport);
+                    if (externalAsset != null)
+                    {
+                        mat = new MaterialInstanceConstant(externalAsset);
+                    }
+                }
+
+                if (mat != null)
+                {
+                    ModelPreviewMaterial material;
+                    // TODO: pick what material class best fits based on what properties the 
+                    // MaterialInstanceConstant mat has.
+                    // For now, just use the default material.
+                    material = new TexturedPreviewMaterial(texcache, mat);
+                    AddMaterial(material.Properties["Name"], material);
+                }
+            }
+
+            // STEP 2: LODS
+            LODs = new List<ModelPreviewLOD>();
+            foreach (var lodmodel in m.LODModels)
+            {
+                // Vertices
+                List<WorldVertex> vertices = new List<WorldVertex>();
+                if (m.Export.Game == MEGame.ME1)
+                {
+                    foreach (var vertex in lodmodel.ME1VertexBufferGPUSkin)
+                    {
+                        vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(vertex.UV.X, vertex.UV.Y)));
+                    }
+                }
+                else
+                {
+                    foreach (var vertex in lodmodel.VertexBufferGPUSkin.VertexData)
+                    {
+                        vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(vertex.UV.X, vertex.UV.Y)));
+                    }
+                }
+                // Triangles
+                List<Triangle> triangles = new List<Triangle>();
+                for (int i = 0; i < lodmodel.IndexBuffer.Length; i += 3)
+                {
+                    triangles.Add(new Triangle(lodmodel.IndexBuffer[i], lodmodel.IndexBuffer[i + 1], lodmodel.IndexBuffer[i + 2]));
+                }
+                WorldMesh mesh = new WorldMesh(Device, triangles, vertices);
+                // Sections
+                List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
+                foreach (var section in lodmodel.Sections)
+                {
+                    if (section.MaterialIndex < Materials.Count)
+                    {
+                        sections.Add(new ModelPreviewSection(Materials.Keys.ElementAt(section.MaterialIndex), (uint)section.BaseIndex, (uint)section.NumTriangles));
+                    }
+                }
+                LODs.Add(new ModelPreviewLOD(mesh, sections));
+            }
+        }
+
+        /// <summary>
         /// Creates a preview of the given <see cref="Unreal.Classes.SkeletalMesh"/>.
         /// </summary>
         /// <param name="Device">The Direct3D device to use for buffer creation.</param>
@@ -653,6 +729,22 @@ namespace ME3Explorer.Scene3D
                 lod.Mesh.Dispose();
             }
             LODs.Clear();
+        }
+
+        public class PreloadedModelData
+        {
+            public object meshObject;
+            public List<ModelPreviewSection> sections;
+            public List<PreloadedTextureData> texturePreviewMaterials;
+
+
+        }
+
+        public class PreloadedTextureData
+        {
+            public byte[] decompressedTextureData;
+            public ExportEntry MaterialExport { get; internal set; }
+            public Texture2DMipInfo Mip { get; internal set; }
         }
     }
 }

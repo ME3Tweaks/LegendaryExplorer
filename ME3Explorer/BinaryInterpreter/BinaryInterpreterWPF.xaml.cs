@@ -21,6 +21,7 @@ using System.Windows.Threading;
 using Be.Windows.Forms;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Unreal;
 using static ME3Explorer.PackageEditorWPF;
 
@@ -1167,6 +1168,8 @@ namespace ME3Explorer
 
         public override void Dispose()
         {
+            TreeViewItems.Clear();
+            DispatcherHelper.EmptyQueue(); //this should force out references to us hopefully
             BinaryInterpreter_Hexbox = null;
             BinaryInterpreter_Hexbox_Host.Child.Dispose();
             BinaryInterpreter_Hexbox_Host.Dispose();

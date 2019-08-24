@@ -14,13 +14,24 @@ namespace ME3Explorer
     {
         private static readonly string[] ME1FilePatterns = { "*.u", "*.upk", "*.sfm" };
         private const string ME2and3FilePattern = "*.pcc";
+
+        private static Dictionary<string, string> cachedME1LoadedFiles;
+        private static Dictionary<string, string> cachedME2LoadedFiles;
+        private static Dictionary<string, string> cachedME3LoadedFiles;
         /// <summary>
         /// Gets a Dictionary of all loaded files in the given game. Key is the filename, value is file path
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public static Dictionary<string, string> GetFilesLoadedInGame(MEGame game)
+        public static Dictionary<string, string> GetFilesLoadedInGame(MEGame game, bool forceReload = false)
         {
+            if (!forceReload)
+            {
+                if (game == MEGame.ME1 && cachedME1LoadedFiles != null) return cachedME1LoadedFiles;
+                if (game == MEGame.ME2 && cachedME2LoadedFiles != null) return cachedME2LoadedFiles;
+                if (game == MEGame.ME3 && cachedME3LoadedFiles != null) return cachedME3LoadedFiles;
+            }
+
             //make dictionary from basegame files
             var loadedFiles = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
@@ -32,6 +43,11 @@ namespace ME3Explorer
                     if (fileName != null) loadedFiles[fileName] = filePath;
                 }
             }
+
+            if (game == MEGame.ME1) cachedME1LoadedFiles = loadedFiles;
+            if (game == MEGame.ME2) cachedME2LoadedFiles = loadedFiles;
+            if (game == MEGame.ME3) cachedME3LoadedFiles = loadedFiles;
+
             return loadedFiles;
         }
 

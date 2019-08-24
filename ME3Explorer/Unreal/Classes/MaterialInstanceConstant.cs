@@ -11,8 +11,6 @@ namespace ME3Explorer.Unreal.Classes
     public class MaterialInstanceConstant
     {
         public ExportEntry export;
-        public byte[] memory;
-        public int memsize;
         public List<IEntry> Textures = new List<IEntry>();
         //public List<TextureParam> Textures = new List<TextureParam>();
 
@@ -25,35 +23,32 @@ namespace ME3Explorer.Unreal.Classes
         public MaterialInstanceConstant(ExportEntry export)
         {
             this.export = export;
-            memory = export.Data;
-            memsize = memory.Length;
-            var properties = export.GetProperties();
+            ReadMaterial(export);
 
-            bool me1Parsed = false;
-            if (export.Game == MEGame.ME1 || export.Game == MEGame.ME2) //todo: maybe check to see if textureparametervalues exists first, but in testing me1 didn't seem to have this
-            {
-                try
-                {
-                    ReadMaterial(export);
-                    me1Parsed = true;
-                }
-                catch (Exception e)
-                {
+            //bool me1Parsed = false;
+            //if (export.Game == MEGame.ME1 || export.Game == MEGame.ME2) //todo: maybe check to see if textureparametervalues exists first, but in testing me1 didn't seem to have this
+            //{
+            //    try
+            //    {
+            //        me1Parsed = true;
+            //    }
+            //    catch (Exception e)
+            //    {
 
-                }
-            }
+            //    }
+            //}
 
 
-            if (export.Game == MEGame.ME3 || !me1Parsed)
-            {
-                if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> paramVals)
-                {
-                    foreach (StructProperty paramVal in paramVals)
-                    {
-                        Textures.Add(export.FileRef.getEntry(paramVal.GetProp<ObjectProperty>("ParameterValue").Value));
-                    }
-                }
-            }
+            //if (export.Game == MEGame.ME3 || !me1Parsed)
+            //{
+            //    if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> paramVals)
+            //    {
+            //        foreach (StructProperty paramVal in paramVals)
+            //        {
+            //            Textures.Add(export.FileRef.getEntry(paramVal.GetProp<ObjectProperty>("ParameterValue").Value));
+            //        }
+            //    }
+            //}
         }
 
         private void ReadMaterial(ExportEntry export)

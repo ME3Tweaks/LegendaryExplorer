@@ -16,7 +16,7 @@ namespace ME3Explorer.Scene3D
     /// <summary>
     /// Hosts a <see cref="SceneRenderContext"/> in a WPF control.
     /// </summary>
-    public class SceneRenderControlWPF : System.Windows.Controls.ContentControl
+    public class SceneRenderControlWPF : System.Windows.Controls.ContentControl, IDisposable
     {
         private Microsoft.Wpf.Interop.DirectX.D3D11Image D3DImage = null;
         private Image Image = null;
@@ -149,6 +149,18 @@ namespace ME3Explorer.Scene3D
             Context.RenderScene();
             Render?.Invoke(this, new EventArgs());
             Context.ImmediateContext.Flush();
+        }
+
+        public void Dispose()
+        {
+
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            Context.TextureCache.Dispose();
+            this.SizeChanged -= SceneRenderControlWPF_SizeChanged;
+            this.PreviewMouseDown -= SceneRenderControlWPF_PreviewMouseDown;
+            this.PreviewMouseMove -= SceneRenderControlWPF_PreviewMouseMove;
+            this.PreviewMouseUp -= SceneRenderControlWPF_PreviewMouseUp;
+            this.PreviewMouseWheel -= SceneRenderControlWPF_PreviewMouseWheel;
         }
     }
 }

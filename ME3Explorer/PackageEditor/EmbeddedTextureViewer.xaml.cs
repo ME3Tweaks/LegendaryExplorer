@@ -283,7 +283,7 @@ namespace ME3Explorer
         public static byte[] GetTextureData(Texture2DMipInfo mipToLoad, bool decompress = true)
         {
             var imagebytes = new byte[decompress ? mipToLoad.uncompressedSize : mipToLoad.compressedSize];
-
+            Debug.WriteLine("getting texture data for " + mipToLoad.Export.GetFullPath);
             if (mipToLoad.storageType == StorageTypes.pccUnc)
             {
                 Buffer.BlockCopy(mipToLoad.Export.Data, mipToLoad.localExportOffset, imagebytes, 0, mipToLoad.uncompressedSize);
