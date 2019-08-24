@@ -24,7 +24,7 @@ using System.IO;
 using StreamHelpers;
 using System.Threading.Tasks;
 
-namespace MassEffectModder
+namespace MassEffectModder.Images
 {
     public partial class Image
     {

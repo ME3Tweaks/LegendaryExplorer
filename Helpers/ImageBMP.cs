@@ -23,7 +23,7 @@ using System;
 using System.IO;
 using StreamHelpers;
 
-namespace MassEffectModder
+namespace MassEffectModder.Images
 {
     public partial class Image
     {

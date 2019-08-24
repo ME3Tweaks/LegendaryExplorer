@@ -30,7 +30,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
-namespace MassEffectModder
+namespace MassEffectModder.Images
 {
     public enum PixelFormat
     {

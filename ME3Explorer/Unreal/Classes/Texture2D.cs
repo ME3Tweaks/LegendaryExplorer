@@ -16,8 +16,9 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
 using static ME3Explorer.EmbeddedTextureViewer;
-using static MassEffectModder.Image;
+using static MassEffectModder.Images.Image;
 using System.Windows.Media.Imaging;
+using MassEffectModder.Images;
 
 namespace ME3Explorer.Unreal.Classes
 {
