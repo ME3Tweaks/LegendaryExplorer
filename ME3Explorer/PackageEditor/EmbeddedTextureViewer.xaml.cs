@@ -427,6 +427,7 @@ namespace ME3Explorer
         {
             string errors = "";
             Texture2D texture = new Texture2D(CurrentLoadedExport);
+            var textureCache = texture.GetTopMip().TextureCacheName;
             string fmt = texture.TextureFormat;
             PixelFormat pixelFormat = Image.getPixelFormatType(fmt);
             texture.RemoveEmptyMipsFromMipList();
@@ -444,11 +445,8 @@ namespace ME3Explorer
             //if (mod.markConvert)
             //    newPixelFormat = changeTextureType(pixelFormat, image.pixelFormat, ref package, ref texture);
 
-            
-            if (!image.checkDDSHaveAllMipmaps() ||
-                (texture.Mips.Count > 1 && image.mipMaps.Count() <= 1))
-            //||
-            //(image.pixelFormat != newPixelFormat) ||
+
+            if (!image.checkDDSHaveAllMipmaps() || (texture.Mips.Count > 1 && image.mipMaps.Count() <= 1) || (image.pixelFormat != newPixelFormat))
             //(!mod.markConvert && image.pixelFormat != pixelFormat))
             {
                 bool dxt1HasAlpha = false;
@@ -465,6 +463,13 @@ namespace ME3Explorer
                 }
                 //Generate lower mips
                 image.correctMips(newPixelFormat, dxt1HasAlpha, dxt1Threshold);
+            }
+
+            if (texture.Mips.Count == 1)
+            {
+                var topMip = image.mipMaps[0];
+                image.mipMaps.Clear();
+                image.mipMaps.Add(topMip);
             }
 
             // remove lower mipmaps from source image which not exist in game data
@@ -519,10 +524,11 @@ namespace ME3Explorer
                 mipmap.Export = CurrentLoadedExport;
                 mipmap.width = image.mipMaps[m].origWidth;
                 mipmap.height = image.mipMaps[m].origHeight;
-                if (texture.Mips.Exists(x => x.width == mipmap.width && x.height == mipmap.height)) {
+                mipmap.TextureCacheName = textureCache;
+                if (texture.Mips.Exists(x => x.width == mipmap.width && x.height == mipmap.height))
+                {
                     var oldMip = texture.Mips.First(x => x.width == mipmap.width && x.height == mipmap.height);
-                    mipmap.storageType = oldMip.storageType; 
-                    mipmap.TextureCacheName = oldMip.TextureCacheName;
+                    mipmap.storageType = oldMip.storageType;
                 }
                 else
                 {
@@ -571,7 +577,7 @@ namespace ME3Explorer
                         //}
                     }
                 }
-
+                //ME2,ME3: Force ZLib compression in event LZO is attempted to be used (LZO is slower in me2/me3 than zlib
                 if (texture.Export.Game != MEGame.ME1)
                 {
                     if (mipmap.storageType == StorageTypes.extLZO)
@@ -596,11 +602,6 @@ namespace ME3Explorer
                     break;
             }
 
-            bool triggerCacheArc = false;
-            bool newTfcFile = false;
-            bool oldSpace = true;
-
-            //Implement later. TFC Storage Support
 
             //if (texture.properties.exists("TextureFileCacheName"))
             //{
@@ -794,7 +795,7 @@ namespace ME3Explorer
 
                             //Check game
                             var gameFiles = MELoadedFiles.GetFilesLoadedInGame(mipmap.Export.Game);
-                            if (gameFiles.TryGetValue(tfcarchive, out string archiveFile)) 
+                            if (gameFiles.TryGetValue(tfcarchive, out string archiveFile))
                             {
                                 try
                                 {

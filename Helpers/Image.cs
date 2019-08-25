@@ -116,7 +116,7 @@ namespace MassEffectModder.Images
             Unknown, DDS, PNG, BMP, TGA, JPEG
         }
 
-        public List<MipMap> mipMaps { get; private set; }
+        public List<MipMap> mipMaps { get; set; }
         public PixelFormat pixelFormat { get; private set; } = PixelFormat.Unknown;
 
         public Image(string fileName, ImageFormat format = ImageFormat.Unknown)
