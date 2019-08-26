@@ -461,6 +461,7 @@ namespace ME3Explorer
                         errors += "Warning: Texture was converted from full alpha to binary alpha." + Environment.NewLine;
                     }
                 }
+
                 //Generate lower mips
                 image.correctMips(newPixelFormat, dxt1HasAlpha, dxt1Threshold);
             }
@@ -471,32 +472,34 @@ namespace ME3Explorer
                 image.mipMaps.Clear();
                 image.mipMaps.Add(topMip);
             }
-
-            // remove lower mipmaps from source image which not exist in game data
-            //Not sure what this does since we just generated most of these mips
-            for (int t = 0; t < image.mipMaps.Count(); t++)
+            else
             {
-                if (image.mipMaps[t].origWidth <= texture.Mips[0].width &&
-                    image.mipMaps[t].origHeight <= texture.Mips[0].height &&
-                    texture.Mips.Count > 1)
+                // remove lower mipmaps from source image which not exist in game data
+                //Not sure what this does since we just generated most of these mips
+                for (int t = 0; t < image.mipMaps.Count(); t++)
                 {
-                    if (!texture.Mips.Exists(m => m.width == image.mipMaps[t].origWidth && m.height == image.mipMaps[t].origHeight))
+                    if (image.mipMaps[t].origWidth <= texture.Mips[0].width &&
+                        image.mipMaps[t].origHeight <= texture.Mips[0].height &&
+                        texture.Mips.Count > 1)
                     {
-                        image.mipMaps.RemoveAt(t--);
+                        if (!texture.Mips.Exists(m => m.width == image.mipMaps[t].origWidth && m.height == image.mipMaps[t].origHeight))
+                        {
+                            image.mipMaps.RemoveAt(t--);
+                        }
                     }
                 }
-            }
 
-            // put empty mips if missing
-            for (int t = 0; t < texture.Mips.Count; t++)
-            {
-                if (texture.Mips[t].width <= image.mipMaps[0].origWidth &&
-                    texture.Mips[t].height <= image.mipMaps[0].origHeight)
+                // put empty mips if missing
+                for (int t = 0; t < texture.Mips.Count; t++)
                 {
-                    if (!image.mipMaps.Exists(m => m.origWidth == texture.Mips[t].width && m.origHeight == texture.Mips[t].height))
+                    if (texture.Mips[t].width <= image.mipMaps[0].origWidth &&
+                        texture.Mips[t].height <= image.mipMaps[0].origHeight)
                     {
-                        MipMap mipmap = new MipMap(texture.Mips[t].width, texture.Mips[t].height, pixelFormat);
-                        image.mipMaps.Add(mipmap);
+                        if (!image.mipMaps.Exists(m => m.origWidth == texture.Mips[t].width && m.origHeight == texture.Mips[t].height))
+                        {
+                            MipMap mipmap = new MipMap(texture.Mips[t].width, texture.Mips[t].height, pixelFormat);
+                            image.mipMaps.Add(mipmap);
+                        }
                     }
                 }
             }
