@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
 using ME3Explorer.Unreal.BinaryConverters;
@@ -10,8 +13,13 @@ namespace ME3Explorer.Unreal.Classes
 {
     public class MaterialInstanceConstant
     {
-        public ExportEntry export;
+        public ExportEntry Export;
         public List<IEntry> Textures = new List<IEntry>();
+
+        public Guid MaterialShaderMapID;
+        public MaterialShaderMap ShaderMap;
+        public List<Shader> Shaders;
+
         //public List<TextureParam> Textures = new List<TextureParam>();
 
         //public struct TextureParam
@@ -22,7 +30,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public MaterialInstanceConstant(ExportEntry export)
         {
-            this.export = export;
+            this.Export = export;
             ReadMaterial(export);
 
             //bool me1Parsed = false;
@@ -56,41 +64,19 @@ namespace ME3Explorer.Unreal.Classes
             if (export.ClassName == "Material")
             {
                 var parsedMaterial = ObjectBinary.From<Material>(export);
-                if (parsedMaterial.SM3MaterialResource.Uniform2DTextureExpressions != null)
+                MaterialShaderMapID = parsedMaterial.SM3MaterialResource.ID;
+                if (export.Game >= MEGame.ME3)
+                {
+                    foreach (var v in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
+                    {
+                        Textures.Add(export.FileRef.getEntry(v.value));
+                    }
+                }
+                else
                 {
                     foreach (var v in parsedMaterial.SM3MaterialResource.Uniform2DTextureExpressions)
                     {
                         Textures.Add(export.FileRef.getEntry(v.TextureIndex.value));
-                    }
-                }
-                if (parsedMaterial.SM3MaterialResource.Uniform2DTextureExpressions != null)
-                {
-                    foreach (var v in parsedMaterial.SM2MaterialResource.Uniform2DTextureExpressions)
-                    {
-                        Textures.Add(export.FileRef.getEntry(v.TextureIndex.value));
-                    }
-                }
-                if (parsedMaterial.SM2MaterialResource.UniformExpressionTextures != null)
-                {
-                    foreach (var v in parsedMaterial.SM2MaterialResource.UniformExpressionTextures)
-                    {
-                        var texport = export.FileRef.getEntry(v.value);
-                        if (texport.ClassName == "Texture2D")
-                        {
-                            Textures.Add(texport);
-                        }
-                    }
-                }
-                if (parsedMaterial.SM3MaterialResource.UniformExpressionTextures != null)
-                {
-                    foreach (var v in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
-                    {
-                        var texport = export.FileRef.getEntry(v.value);
-                        if (texport.ClassName == "Texture2D")
-                        {
-                            Debug.WriteLine(texport.ObjectName);
-                            Textures.Add(texport);
-                        }
                     }
                 }
             }
@@ -145,19 +131,63 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
+        //very slow for basegame files. find a way to stick shader info in a database
+        public void GetShaders()
+        {
+            ShaderCache shaderCache;
+            if (Export.FileRef.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is ExportEntry shaderCacheEntry)
+            {
+                shaderCache = ObjectBinary.From<ShaderCache>(shaderCacheEntry);
+            }
+            else
+            {
+                //Hardcode ME3 path for now.
+                string globalShaderCachPath = Path.Combine(ME3Directory.cookedPath, "RefShaderCache-PC-D3D-SM3.upk");
+                if (File.Exists(globalShaderCachPath))
+                {
+                    using (var shaderUPK = MEPackageHandler.OpenMEPackage(globalShaderCachPath))
+                    {
+                        shaderCache = ObjectBinary.From<ShaderCache>(shaderUPK.Exports.First(exp => exp.ClassName == "ShaderCache"));
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            if (shaderCache.MaterialShaderMaps.TryGetValue(MaterialShaderMapID, out ShaderMap))
+            {
+                var shaderGuids = new HashSet<Guid>(ShaderMap.Shaders);
+                foreach ((NameReference vertexFactory, List<Guid> guids) in ShaderMap.MeshShaderMaps)
+                {
+                    //No idea what all the vertex factory stuff means, so I'm just going to shove all the shaders into one big list
+                    shaderGuids.AddRange(guids);
+                }
+
+                foreach (Guid shaderGuid in shaderGuids)
+                {
+                    if (shaderCache.Shaders.TryGetValue(shaderGuid, out Shader shader))
+                    {
+                        Shaders.Add(shader);
+                    }
+                }
+            }
+        }
+
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode($"#{export.UIndex} \"{export.ObjectName}\"");
+            TreeNode res = new TreeNode($"#{Export.UIndex} \"{Export.ObjectName}\"");
             for (int i = 0; i < Textures.Count; i++)
             {
                 string s = $"{Textures[i].GetFullPath} = #{Textures[i].UIndex}";
-                s += $" \"{export.FileRef.getObjectName(Textures[i].UIndex)}\"";
+                s += $" \"{Export.FileRef.getObjectName(Textures[i].UIndex)}\"";
                 res.Nodes.Add(s);
             }
             TreeNode propsnode = new TreeNode("Properties");
             res.Nodes.Add(propsnode);
 
-            foreach (var prop in export.GetProperties())
+            foreach (var prop in Export.GetProperties())
             {
                 propsnode.Nodes.Add(new TreeNode($"{prop.Name} | {prop.PropType}"));
             }
