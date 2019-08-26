@@ -46,7 +46,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 MaterialShaderMap msm = null;
                 sc.Serialize(ref msm);
-                MaterialShaderMaps.Add(msm.ID, msm);
+                //todo: There can be multiple shadermaps with the same ID, but different static parameters.
+                //need to deal with this at some point, this is a quick fix.
+                if(!MaterialShaderMaps.ContainsKey(msm.ID)) MaterialShaderMaps.Add(msm.ID, msm);
             }
         }
 

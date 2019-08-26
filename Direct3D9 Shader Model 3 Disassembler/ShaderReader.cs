@@ -90,8 +90,7 @@ namespace Direct3D9_Shader_Model_3_Disassembler
                                                                        (D3DXPARAMETER_TYPE)type.Type,
                                                                        type.Rows,
                                                                        type.Columns,
-                                                                       type.Elements,
-                                                                       new StructMember[0]);
+                                                                       type.Elements);
 #if DEBUGGING
                                 writer?.WriteLine();
                                 writer?.WriteLine(name);

@@ -68,10 +68,9 @@ namespace Direct3D9_Shader_Model_3_Disassembler
         public readonly int Rows;
         public readonly int Columns;
         public readonly int Elements;
-        public readonly StructMember[] StructMembers;
 
         public ConstantInfo(string name, D3DXREGISTER_SET registerSet, int registerIndex, int registerCount, uint defaultValue, D3DXPARAMETER_CLASS parameterClass,
-                            D3DXPARAMETER_TYPE parameterType, int rows, int columns, int elements, StructMember[] structMembers)
+                            D3DXPARAMETER_TYPE parameterType, int rows, int columns, int elements)
         {
             Name = name;
             RegisterSet = registerSet;
@@ -83,7 +82,6 @@ namespace Direct3D9_Shader_Model_3_Disassembler
             Rows = rows;
             Columns = columns;
             Elements = elements;
-            StructMembers = structMembers;
         }
     }
 
