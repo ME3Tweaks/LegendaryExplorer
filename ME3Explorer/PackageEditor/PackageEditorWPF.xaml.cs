@@ -199,6 +199,7 @@ namespace ME3Explorer
         public ICommand TabRightCommand { get; set; }
         public ICommand TabLeftCommand { get; set; }
         public ICommand DumpAllShadersCommand { get; set; }
+        public ICommand DumpMaterialShadersCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -241,6 +242,7 @@ namespace ME3Explorer
             BulkImportSWFCommand = new GenericCommand(BulkImportSWFs, PackageIsLoaded);
 
             DumpAllShadersCommand = new GenericCommand(DumpAllShaders, () => PackageIsLoaded() && Pcc.Exports.Any(exp => exp.ClassName == "ShaderCache"));
+            DumpMaterialShadersCommand = new GenericCommand(DumpMaterialShaders, PackageIsLoaded);
         }
 
         private void ExportEmbeddedFilePrompt()
@@ -4835,11 +4837,40 @@ namespace ME3Explorer
                     {
                         string shaderType = shader.ShaderType;
                         string pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");
-                        File.WriteAllText(pathWithoutInvalids, SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderFile)).Disassemble());
+                        File.WriteAllText(pathWithoutInvalids, SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode)).Disassemble());
                     }
 
                     MessageBox.Show(this, "Done!");
                 }
+            }
+        }
+
+        private void DumpMaterialShaders()
+        {
+            if (TryGetSelectedExport(out ExportEntry matExport) && matExport.ClassName == "Material")
+            {
+                var dlg = new CommonOpenFileDialog("Pick a folder to save Shaders to.")
+                {
+                    IsFolderPicker = true,
+                    EnsurePathExists = true
+                };
+                if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    var matInst = new MaterialInstanceConstant(matExport);
+                    matInst.GetShaders();
+                    foreach (Shader shader in matInst.Shaders)
+                    {
+                        string shaderType = shader.ShaderType;
+                        string pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid} - OFFICIAL.txt");
+                        File.WriteAllText(pathWithoutInvalids, SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode)).Disassemble());
+
+                        pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid} - SirCxyrtyx.txt");
+                        File.WriteAllText(pathWithoutInvalids, shader.ShaderDisassembly);
+                    }
+
+                    MessageBox.Show(this, "Done!");
+                }
+                
             }
         }
     }

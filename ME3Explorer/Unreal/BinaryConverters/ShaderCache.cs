@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Direct3D9_Shader_Model_3_Disassembler;
 using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.Packages;
 using StreamHelpers;
@@ -69,7 +70,27 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public NameReference ShaderType;
         public Guid Guid;
         public ShaderFrequency Frequency;
-        public byte[] ShaderFile;
+        public byte[] ShaderByteCode;
+        private string dissassembly;
+        private ShaderInfo info;
+
+        public ShaderInfo ShaderInfo => info ?? DisassembleShader();
+
+        public string ShaderDisassembly
+        {
+            get {
+                if (dissassembly == null)
+                {
+                    DisassembleShader();
+                }
+                return dissassembly;
+            }
+        }
+
+        private ShaderInfo DisassembleShader()
+        {
+            return info = ShaderReader.DisassembleShader(ShaderByteCode, out dissassembly);
+        }
     }
 
     public class MaterialShaderMap
@@ -100,7 +121,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             int endOffset = sc.ms.ReadInt32();
             sc.ms.SkipByte();
             shader.Frequency = (ShaderFrequency)sc.ms.ReadByte();
-            sc.Serialize(ref shader.ShaderFile, SCExt.Serialize);
+            sc.Serialize(ref shader.ShaderByteCode, SCExt.Serialize);
             sc.ms.JumpTo(endOffset - sc.startOffset);
         }
         //only for reading
@@ -149,9 +170,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.Serialize(ref msm.UniformCubeTextureExpressions, MaterialSCExt.Serialize);
                 sc.Serialize(ref msm.UniformVertexVectorExpressions, MaterialSCExt.Serialize);
                 sc.Serialize(ref msm.UniformVertexScalarExpressions, MaterialSCExt.Serialize);
+                sc.ms.SkipInt32();
             }
-
-            sc.ms.SkipByte();
         }
     }
 }

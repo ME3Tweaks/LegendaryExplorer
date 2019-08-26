@@ -132,8 +132,9 @@ namespace ME3Explorer.Unreal.Classes
         }
 
         //very slow for basegame files. find a way to stick shader info in a database
-        public void GetShaders()
+        public void GetShaders(string vertexFactory = "FLocalVertexFactory")
         {
+            Shaders = new List<Shader>();
             ShaderCache shaderCache;
             if (Export.FileRef.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is ExportEntry shaderCacheEntry)
             {
@@ -158,11 +159,10 @@ namespace ME3Explorer.Unreal.Classes
 
             if (shaderCache.MaterialShaderMaps.TryGetValue(MaterialShaderMapID, out ShaderMap))
             {
-                var shaderGuids = new HashSet<Guid>(ShaderMap.Shaders);
-                foreach ((NameReference vertexFactory, List<Guid> guids) in ShaderMap.MeshShaderMaps)
+                if (!ShaderMap.MeshShaderMaps.TryGetValue(vertexFactory, out List<Guid> shaderGuids))
                 {
-                    //No idea what all the vertex factory stuff means, so I'm just going to shove all the shaders into one big list
-                    shaderGuids.AddRange(guids);
+                    //Can't find the vertex factory we want, so just grab the first one? I have no idea what I'm doing
+                    shaderGuids = ShaderMap.MeshShaderMaps.First().Value;
                 }
 
                 foreach (Guid shaderGuid in shaderGuids)

@@ -1301,6 +1301,10 @@
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
       <Name>Be.Windows.Forms.HexBox</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Direct3D9 Shader Model 3 Disassembler\Direct3D9 Shader Model 3 Disassembler.csproj">
+      <Project>{53AF9E1D-16BC-47A5-884E-5CE72ADCB805}</Project>
+      <Name>Direct3D9 Shader Model 3 Disassembler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gammtek.Conduit.Core\Gammtek.Conduit.Core.csproj">
       <Project>{9f364d6b-5046-4186-b684-968b52afcb81}</Project>
       <Name>Gammtek.Conduit.Core</Name>
