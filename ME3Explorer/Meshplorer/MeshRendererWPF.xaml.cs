@@ -247,7 +247,12 @@ namespace ME3Explorer.Meshplorer
             foreach (var tex in matinst.Textures)
             {
 
-                //Debug.WriteLine("Preloading " + tex.GetFullPath);
+                Debug.WriteLine("Preloading " + tex.GetFullPath);
+                if (tex.ClassName == "TextureCube")
+                {
+                    //can't deal with cubemaps yet
+                    continue;
+                }
                 if (tex is ImportEntry import)
                 {
                     var extAsset = ModelPreview.FindExternalAsset(import, texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
@@ -264,7 +269,6 @@ namespace ME3Explorer.Meshplorer
                 }
                 else
                 {
-
                     var preloadedTextureData = new ModelPreview.PreloadedTextureData();
                     Texture2D t2d = new Texture2D(tex as ExportEntry);
                     //Debug.WriteLine("Preloading local texture " + tex.ObjectName + " for material " + entry.ObjectName);

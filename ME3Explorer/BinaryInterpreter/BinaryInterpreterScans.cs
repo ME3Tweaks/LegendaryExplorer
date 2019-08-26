@@ -55,7 +55,7 @@ namespace ME3Explorer
                     NameReference shaderName = bin.ReadNameReference(Pcc);
                     var shaderNode = new BinInterpNode(bin.Position - 8, $"Shader {i} {shaderName.InstancedString}");
 
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Name: {shaderName.InstancedString}") { Length = 8 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.InstancedString}") { Length = 8 });
                     shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadValueGuid()}") { Length = 16 });
 
                     int shaderEndOffset = bin.ReadInt32();
@@ -75,7 +75,7 @@ namespace ME3Explorer
 
                     shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadValueGuid()}") { Length = 16 });
 
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader Name: {bin.ReadNameReference(Pcc)}") { Length = 8 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
 
                     shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
@@ -115,12 +115,12 @@ namespace ME3Explorer
 
                     int unkCount = bin.ReadInt32();
                     var unkNodes = new List<ITreeItem>();
-                    nodes.Add(new BinInterpNode(bin.Position - 4, $"Unknown Count {unkCount}") { Length = 4, Items = unkNodes });
+                    nodes.Add(new BinInterpNode(bin.Position - 4, $"Shaders {unkCount}") { Length = 4, Items = unkNodes });
                     for (int j = 0; j < unkCount; j++)
                     {
-                        unkNodes.Add(new BinInterpNode(bin.Position, $"Shader Name {bin.ReadNameReference(Pcc).InstancedString}") { Length = 8 });
-                        unkNodes.Add(new BinInterpNode(bin.Position, $"Unknown bytes. GUID? {bin.ReadValueGuid()}") { Length = 16 });
-                        unkNodes.Add(new BinInterpNode(bin.Position, $"None? {bin.ReadNameReference(Pcc).InstancedString}") { Length = 8 });
+                        unkNodes.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc).InstancedString}") { Length = 8 });
+                        unkNodes.Add(new BinInterpNode(bin.Position, $"GUID: {bin.ReadValueGuid()}") { Length = 16 });
+                        unkNodes.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc).InstancedString}") { Length = 8 });
                     }
 
                     int meshShaderMapsCount = bin.ReadInt32();

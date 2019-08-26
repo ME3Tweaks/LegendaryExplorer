@@ -4833,8 +4833,8 @@ namespace ME3Explorer
                     var shaderCache = ObjectBinary.From<ShaderCache>(shaderCacheExport);
                     foreach (Shader shader in shaderCache.Shaders.Values)
                     {
-                        string name = shader.Name;
-                        string pathWithoutInvalids = Path.Combine(dlg.FileName, $"{name.GetPathWithoutInvalids()} - {shader.Guid}.txt");
+                        string shaderType = shader.ShaderType;
+                        string pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");
                         File.WriteAllText(pathWithoutInvalids, SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderFile)).Disassemble());
                     }
 

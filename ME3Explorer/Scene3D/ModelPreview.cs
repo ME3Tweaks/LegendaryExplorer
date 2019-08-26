@@ -91,17 +91,17 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
-        public ModelPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null)
+        protected ModelPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null)
         {
             if (mat == null) return;
-            Properties.Add("Name", mat.export.ObjectName);
+            Properties.Add("Name", mat.Export.ObjectName);
             foreach (var textureEntry in mat.Textures)
             {
                 if (!Textures.ContainsKey(textureEntry.GetFullPath) && textureEntry.ClassName == "Texture2D")  //Apparently some assets are cubemaps, we don't want these.
                 {
                     if (preloadedTextures != null)
                     {
-                        var preloadedInfo = preloadedTextures.FirstOrDefault(x => x.MaterialExport == mat.export && x.Mip.Export.ObjectName == textureEntry.ObjectName); //i don't like matching on object name but its export vs import here.
+                        var preloadedInfo = preloadedTextures.FirstOrDefault(x => x.MaterialExport == mat.Export && x.Mip.Export.ObjectName == textureEntry.ObjectName); //i don't like matching on object name but its export vs import here.
                         if (preloadedInfo != null)
                         {
                             Textures.Add(textureEntry.GetFullPath, texcache.LoadTexture(preloadedInfo.Mip.Export, preloadedInfo.Mip, preloadedInfo.decompressedTextureData));
@@ -171,7 +171,7 @@ namespace ME3Explorer.Scene3D
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
         public TexturedPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, preloadedTextures)
         {
-            var matPackage = mat.export.Parent.GetFullPath.ToLower();
+            var matPackage = mat.Export.Parent.GetFullPath.ToLower();
             foreach (var textureEntry in mat.Textures)
             {
                 var texObjectName = textureEntry.GetFullPath.ToLower();

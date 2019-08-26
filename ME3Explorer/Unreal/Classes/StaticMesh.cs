@@ -1478,7 +1478,7 @@ namespace ME3Explorer.Unreal.Classes
             s.Name = materialname;
             Mesh.Mat.Lods[lod].Sections[section] = s;
             // Load the material if it isn't already loaded
-            bool found = Mesh.Mat.MatInst.Any(t => t.export.UIndex == materialname);
+            bool found = Mesh.Mat.MatInst.Any(t => t.Export.UIndex == materialname);
             if (!found)
             {
                 // Load the material
@@ -1498,7 +1498,7 @@ namespace ME3Explorer.Unreal.Classes
             {
                 for (int i = 0; i < Mesh.Mat.MatInst.Count; i++)
                 {
-                    if (Mesh.Mat.MatInst[i].export.UIndex == oldMaterialName)
+                    if (Mesh.Mat.MatInst[i].Export.UIndex == oldMaterialName)
                     {
                         Mesh.Mat.MatInst.RemoveAt(i);
                     }
@@ -1651,7 +1651,7 @@ namespace ME3Explorer.Unreal.Classes
                 }
                 foreach (var mat in Mesh.Mat.MatInst)
                 {
-                    mtlWriter.WriteLine($"newmtl {mat.export.ObjectName}");
+                    mtlWriter.WriteLine($"newmtl {mat.Export.ObjectName}");
                 }
 
                 for (int i = 0; i < points.Count; i++)
