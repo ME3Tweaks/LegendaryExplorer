@@ -64,7 +64,7 @@ namespace ME3Explorer
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return (exportEntry.ClassName == "Function" || exportEntry.ClassName == "State") && (exportEntry.FileRef.Game == MEGame.ME3 || exportEntry.FileRef.Game == MEGame.ME1);
+            return ((exportEntry.ClassName == "Function" || exportEntry.ClassName == "State") && exportEntry.FileRef.Game != MEGame.UDK);
         }
 
         public override void LoadExport(ExportEntry exportEntry)
@@ -138,7 +138,7 @@ namespace ME3Explorer
                 pos += 2;
                 ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{BitConverter.ToInt32(CurrentLoadedExport.Data, pos).ToString("X8")} {func.GetFlags().Substring(6)}", pos));
             }
-            else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
+            else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1 || CurrentLoadedExport.Game == MEGame.ME2)
             {
                 //Header
                 int pos = 16;

@@ -86,6 +86,7 @@ namespace ME3Explorer
 
         public BinaryInterpreterWPF()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Binary Interpreter", new WeakReference(this));
             ByteShiftUpDownValue = 0;
             InitializeComponent();
             LoadCommands();
