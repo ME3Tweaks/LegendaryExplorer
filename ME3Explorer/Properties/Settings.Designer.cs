@@ -502,5 +502,17 @@ namespace ME3Explorer.Properties {
                 this["PackageEditorWPF_ShowExportIcons"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SequenceEditor_ShowParsedInfo {
+            get {
+                return ((bool)(this["SequenceEditor_ShowParsedInfo"]));
+            }
+            set {
+                this["SequenceEditor_ShowParsedInfo"] = value;
+            }
+        }
     }
 }

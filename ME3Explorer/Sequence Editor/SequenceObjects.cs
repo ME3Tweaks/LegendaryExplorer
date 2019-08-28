@@ -107,6 +107,52 @@ namespace ME3Explorer.SequenceObjects
                     res += s + "\n";
                 }
             }
+
+            if (Properties.Settings.Default.SequenceEditor_ShowParsedInfo)
+            {
+                //Parse and show relevant info so user doesn't have to dig info file to find
+
+                //I am sure there is a more efficient way to do this we will want to move to if we expand this feature
+                var properties = export.GetProperties();
+                switch (export.ClassName)
+                {
+                    case "BioSeqAct_AreaTransition":
+                        var newMap = properties.GetProp<NameProperty>("AreaName");
+                        var startPoint = properties.GetProp<NameProperty>("startPoint");
+                        string newText = "";
+                        if (newMap != null)
+                        {
+                            newText += "Map: :" + newMap + "\n";
+                        }
+                        if (startPoint != null)
+                        {
+                            newText += "Startpoint: " + startPoint;
+                        }
+                        res += newText;
+                        break;
+                    case "SeqAct_Delay":
+                        var delayValue = properties.GetProp<FloatProperty>("Duration");
+                        res += "Delay: " + (delayValue != null ? delayValue.Value : 1) + "s";
+                        break;
+                    case "SeqAct_PlaySound":
+                        var soundObjRef = properties.GetProp<ObjectProperty>("PlaySound");
+                        if (soundObjRef != null)
+                        {
+                            res += export.FileRef.getEntry(soundObjRef.Value).GetFullPath;
+                        }
+                        break;
+                    case "BioSeqAct_SetWeapon":
+                        //This might depend on game
+
+                        //ME1:
+                        var weaponEnum = properties.GetProp<EnumProperty>("eWeapon");
+                        if (weaponEnum != null)
+                        {
+                            res += weaponEnum.Value;
+                        }
+                        break;
+                }
+            }
             return res;
         }
 
