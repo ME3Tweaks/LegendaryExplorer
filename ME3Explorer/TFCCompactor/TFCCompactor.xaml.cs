@@ -83,7 +83,7 @@ namespace ME3Explorer.TFCCompactor
 
         public ObservableCollectionExtended<GameWrapper> GameList { get; } = new ObservableCollectionExtended<GameWrapper>();
         public ObservableCollectionExtended<string> CustomDLCFolderList { get; } = new ObservableCollectionExtended<string>();
-        public ObservableCollectionExtended<string> TextureCachesToPullFromList { get; } = new ObservableCollectionExtended<string>();
+        public ObservableCollectionExtended<TFCSelector> TextureCachesToPullFromList { get; } = new ObservableCollectionExtended<TFCSelector>();
 
         public ICommand CompactTFCCommand { get; set; }
         public ICommand ScanCommand { get; set; }
@@ -104,12 +104,15 @@ namespace ME3Explorer.TFCCompactor
             ScanCommand = new GenericCommand(BeginReferencedTFCScan, DLCModFolderIsSelected);
         }
 
+        private static string[] basegameTFCs = { "CharTextures", "Movies", "Textures", "Lighting" };
         private void BeginReferencedTFCScan()
         {
             backgroundWorker = new BackgroundWorker();
             backgroundWorker.WorkerReportsProgress = true;
             var dlcDir = SelectedGame.DLCPath;
             dlcDir = Path.Combine(dlcDir, SelectedDLCModFolder);
+
+
             backgroundWorker.DoWork += (a, b) =>
             {
                 CurrentOperationText = "Getting list of files";
@@ -122,8 +125,7 @@ namespace ME3Explorer.TFCCompactor
 
                 if (files.Any())
                 {
-                    Debug.WriteLine("Many files.");
-                    SortedSet<string> referencedTFCs = new SortedSet<string>();
+                    SortedSet<TFCSelector> referencedTFCs = new SortedSet<TFCSelector>();
                     foreach (string file in files)
                     {
                         CurrentOperationText = $"Scanning {Path.GetFileName(file)}...";
@@ -134,15 +136,16 @@ namespace ME3Explorer.TFCCompactor
                             {
                                 if (texture.GetProperty<NameProperty>("TextureFileCacheName") is NameProperty tfcNameProperty)
                                 {
-                                    if (tfcNameProperty.Value == "CustTextures0" || tfcNameProperty.Value == "TEXTURES_DLC_MOD_PEOM2")
-                                        Debug.WriteLine(tfcNameProperty.Value + " referenced in " + texture.GetFullPath + " (" + texture.UIndex + ") in " + file);
-
-                                    if (referencedTFCs.Add(tfcNameProperty.Value))
+                                    string tfcname = tfcNameProperty.Value;
+                                    if (!basegameTFCs.Contains(tfcname))
                                     {
-                                        Application.Current.Dispatcher.Invoke(delegate
+                                        if (referencedTFCs.Add(new TFCSelector(tfcname, false)))
                                         {
-                                            TextureCachesToPullFromList.ReplaceAll(referencedTFCs);
-                                        });
+                                            Application.Current.Dispatcher.Invoke(delegate
+                                            {
+                                                TextureCachesToPullFromList.ReplaceAll(referencedTFCs);
+                                            });
+                                        }
                                     }
                                 }
                             }
@@ -154,8 +157,9 @@ namespace ME3Explorer.TFCCompactor
             };
             backgroundWorker.RunWorkerCompleted += (a, b) =>
             {
-                OnPropertyChanged(nameof(IsNotBusy));
                 ScanForGameCompleted = true;
+                backgroundWorker = null;
+                OnPropertyChanged(nameof(IsNotBusy));
             };
             backgroundWorker.RunWorkerAsync();
             OnPropertyChanged(nameof(IsNotBusy));
@@ -166,7 +170,7 @@ namespace ME3Explorer.TFCCompactor
             backgroundWorker = new BackgroundWorker();
             backgroundWorker.WorkerReportsProgress = true;
             string sourceGamePath = Path.GetDirectoryName(Path.GetDirectoryName(SelectedGame.DLCPath));
-            string workingGamePath = Path.Combine(Path.GetTempPath(), "TFCCompact");
+            string workingGamePath = Path.Combine(Path.GetTempPath(), "TFCCompact"); //Todo: Allow user to change this path
 
             backgroundWorker.DoWork += (a, b) =>
             {
@@ -175,9 +179,53 @@ namespace ME3Explorer.TFCCompactor
                 ProgressBarMax = 100;
                 ProgressBarIndeterminate = false;
 
-
+                var dlcTFCsToPullFrom = TextureCachesToPullFromList.Where(x => x.Selected).Select(x=>x.TFCName);
+                //Create workspace for MEM
                 var game = (int)SelectedGame.Game;
-                //get MassEffectModder.ini
+
+                //Create fake game directory
+                Directory.CreateDirectory(workingGamePath);
+                Directory.CreateDirectory(Path.Combine(workingGamePath, "Binaries"));
+                if (game == 3)
+                {
+                    Directory.CreateDirectory(Path.Combine(workingGamePath, "Binaries", "win32"));
+                    File.Create(Path.Combine(workingGamePath, "Binaries", "win32", "MassEffect3.exe"));
+                }
+                else
+                {
+                    //ME2
+                    File.Create(Path.Combine(workingGamePath, "Binaries", "MassEffect2.exe"));
+                }
+
+                string cookedDirName = game == 2 ? "CookedPC" : "CookedPCConsole";
+                Directory.CreateDirectory(Path.Combine(workingGamePath, "BioGame"));
+                var dlcDir = Path.Combine(workingGamePath, "BioGame", "DLC");
+                Directory.CreateDirectory(dlcDir);
+                var basegameCookedDir = Path.Combine(workingGamePath, "BioGame", cookedDirName);
+                Directory.CreateDirectory(basegameCookedDir);
+
+                //Copy basegame TFCs to cookedDiretory
+                var basegameDirToCopyFrom = MEDirectories.CookedPath(SelectedGame.Game);
+                var tfcs = Directory.GetFiles(basegameDirToCopyFrom, "*.tfc").ToList();
+                var currentgamefiles = MELoadedFiles.GetFilesLoadedInGame(SelectedGame.Game);
+
+                foreach (var tfc in dlcTFCsToPullFrom)
+                {
+                    var fullname = tfc + ".tfc";
+                    tfcs.Add(currentgamefiles[fullname]); //An earlier check for each TFC should ensure this can resolve... in theory
+                }
+
+                ProgressBarIndeterminate = true;
+                foreach (var tfc in tfcs)
+                {
+                    CurrentOperationText = $"Staging {Path.GetFileName(tfc)}";
+                    File.Copy(tfc, Path.Combine(basegameCookedDir, Path.GetFileName(tfc)));
+                }
+
+                //Copy DLC
+                CopyDir.CopyAll_ProgressBar()
+
+                // get MassEffectModder.ini
                 string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "MassEffectModder");
                 string _iniPath = Path.Combine(path, "MassEffectModder.ini");
@@ -185,6 +233,7 @@ namespace ME3Explorer.TFCCompactor
                 {
                     Directory.CreateDirectory(path);
                 }
+
                 if (!File.Exists(_iniPath))
                 {
                     File.Create(_iniPath);
@@ -194,13 +243,12 @@ namespace ME3Explorer.TFCCompactor
                 var oldValue = ini.ReadValue("ME" + game, "GameDataPath");
                 ini.WriteValue("ME" + game, sourceGamePath, "GameDataPath");
 
-
                 var triggers = new Dictionary<string, Action<string>> {
                     { "TASK_PROGRESS", s => ProgressBarValue = int.Parse(s)},
                     { "PROCESSING_FILE", s => CurrentOperationText = $"Processing file: {s}"}
                 };
 
-                string args = $"--compact-dlc --gameid {game} --dlc-name {SelectedDLCModFolder} --ipc"; //--pull-textures
+                string args = $"--ext--gameid {game} --dlc-name {SelectedDLCModFolder} --ipc"; //--pull-textures
                 var memProcess = MassEffectModder.MassEffectModderIPCWrapper.RunMEM(args, triggers);
                 while (memProcess.State == AppState.Running)
                 {
@@ -210,6 +258,27 @@ namespace ME3Explorer.TFCCompactor
                 if (!string.IsNullOrEmpty(oldValue))
                 {
                     ini.WriteValue("ME" + game, oldValue, "GameDataPath");
+                }
+            };
+            backgroundWorker.ProgressChanged += (a, b) =>
+            {
+                if (b.UserState is ThreadCommand tc)
+                {
+                    switch (tc.Command)
+                    {
+                        case CopyDir.UPDATE_PROGRESSBAR_VALUE:
+                            ProgressBarValue = (int)tc.Data;
+                            break;
+                        case CopyDir.UPDATE_PROGRESSBAR_MAXVALUE:
+                            ProgressBarMax = (int)tc.Data;
+                            break;
+                        case CopyDir.UPDATE_CURRENT_FILE_TEXT:
+                            CurrentOperationText = (string)tc.Data;
+                            break;
+                        case CopyDir.UPDATE_PROGRESSBAR_INDETERMINATE:
+                            ProgressBarIndeterminate = (bool)tc.Data;
+                            break;
+                    }
                 }
             };
             backgroundWorker.RunWorkerCompleted += (a, b) =>
@@ -306,6 +375,36 @@ namespace ME3Explorer.TFCCompactor
                     var DLC = MELoadedFiles.GetEnabledDLC(newItem.Game, newItem.DLCPath).Select(x => Path.GetFileName(x)).Where(x => !officialDLC.Contains(x));
                     CustomDLCFolderList.ReplaceAll(DLC);
                 }
+            }
+        }
+
+        public class TFCSelector : IComparable
+        {
+            public TFCSelector(string tfcname, bool selected)
+            {
+                TFCName = tfcname;
+                Selected = selected;
+            }
+
+            public string TFCName { get; set; }
+            public bool Selected { get; set; }
+
+            public int CompareTo(object other)
+            {
+                if (other is TFCSelector t)
+                {
+                    return TFCName.CompareTo(t.TFCName);
+                }
+                return 1;
+            }
+
+            public override bool Equals(object other)
+            {
+                if (other is TFCSelector t)
+                {
+                    return t.TFCName == TFCName;
+                }
+                return false;
             }
         }
     }
