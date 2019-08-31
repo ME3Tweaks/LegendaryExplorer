@@ -33,10 +33,23 @@ namespace ME3Explorer.SharedUI
 
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
+        public ICommand LoadFileCommand { get; set; }
         private void LoadCommands()
         {
             SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
             SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
+            LoadFileCommand = new GenericCommand(LoadFile, CanLoadFile);
+        }
+
+        private bool CanLoadFile()
+        {
+            return hostedControl is FileExportLoaderControl felc && felc.CanLoadFile();
+        }
+
+        private void LoadFile()
+        {
+            var felc = hostedControl as FileExportLoaderControl;
+            felc.OpenFile();
         }
 
         private void SavePackageAs()

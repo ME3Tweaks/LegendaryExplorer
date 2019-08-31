@@ -26,7 +26,7 @@ namespace ME3Explorer.ME1TlkEditor
     /// <summary>
     /// Interaction logic for ME1TlkEditorWPF.xaml
     /// </summary>
-    public partial class ME1TlkEditorWPF : ExportLoaderControl
+    public partial class ME1TlkEditorWPF : FileExportLoaderControl
     {
         public TLKStringRef[] StringRefs;
         public List<TLKStringRef> LoadedStrings; //Loaded TLK
@@ -57,6 +57,7 @@ namespace ME3Explorer.ME1TlkEditor
         public ICommand SetIDCommand { get; set; }
         public ICommand DeleteStringCommand { get; set; }
         public bool hasPendingChanges { get; private set; }
+        public override string LoadedFile { get; set; }
 
         private void LoadCommands()
         {
@@ -152,7 +153,7 @@ namespace ME3Explorer.ME1TlkEditor
         public override void UnloadExport()
         {
             hasPendingChanges = false;
-
+            
         }
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -360,6 +361,21 @@ namespace ME3Explorer.ME1TlkEditor
             }
             //Not found
             SystemSounds.Beep.Play();
+        }
+
+        public override void LoadFile(string filepath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool CanLoadFile()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal override void OpenFile()
+        {
+            throw new NotImplementedException();
         }
     }
 }

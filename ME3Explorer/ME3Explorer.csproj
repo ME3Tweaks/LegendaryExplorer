@@ -610,6 +610,7 @@
     <Compile Include="SharedUI\ExportScanner.xaml.cs">
       <DependentUpon>ExportScanner.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\FileExportLoaderControl.cs" />
     <Compile Include="SharedUI\InputComboBoxWPF.xaml.cs">
       <DependentUpon>InputComboBoxWPF.xaml</DependentUpon>
     </Compile>

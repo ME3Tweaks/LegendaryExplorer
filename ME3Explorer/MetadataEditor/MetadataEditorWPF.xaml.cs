@@ -175,7 +175,7 @@ namespace ME3Explorer.MetadataEditor
                 InfoTab_ExportDataSize_TextBox.Text = $"{exportEntry.DataSize} bytes ({ByteSize.FromBytes(exportEntry.DataSize)})";
                 InfoTab_ExportOffsetHex_TextBox.Text = $"0x{exportEntry.DataOffset:X8}";
                 InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
-
+                
                 if (exportEntry.HasComponentMap)
                 {
                     List<KeyValuePair<NameReference, int>> componentMap = exportEntry.ComponentMap;

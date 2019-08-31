@@ -1,4 +1,4 @@
-﻿<global:ExportLoaderControl
+﻿<SharedUI:FileExportLoaderControl
     xmlns:global="clr-namespace:ME3Explorer"
     x:Class="ME3Explorer.ME1TlkEditor.ME1TlkEditorWPF"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -69,4 +69,4 @@
             </ListBox.ItemContainerStyle>
         </ListBox>
     </DockPanel>
-</global:ExportLoaderControl>
+</SharedUI:FileExportLoaderControl>
