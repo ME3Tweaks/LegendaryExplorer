@@ -607,6 +607,7 @@
     <Compile Include="SharedUI\AttachedProperties.cs" />
     <Compile Include="SharedUI\Converters\EntryGameMatchVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeBooleanConverter.cs" />
+    <Compile Include="SharedUI\CopyDir.cs" />
     <Compile Include="SharedUI\ExportScanner.xaml.cs">
       <DependentUpon>ExportScanner.xaml</DependentUpon>
     </Compile>

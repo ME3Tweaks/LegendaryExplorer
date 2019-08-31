@@ -7,6 +7,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:ME3Explorer.Sequence_Editor"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
+        xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:grapheditor="clr-namespace:UMD.HCIL.GraphEditor"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
@@ -73,6 +74,7 @@
                 <MenuItem Name="ShowOutputNumbers_MenuItem" Header="Show Output Numbers" IsCheckable="True" Click="showOutputNumbers_Click"/>
                 <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save View" IsCheckable="True"/>
                 <MenuItem Name="GlobalSeqRefViewSavesMenuItem" Header="Use Global Sequence Ref View Saves" IsCheckable="True" Click="GlobalSeqRefViewSavesMenuItem_OnClick"/>
+                <MenuItem Name="ShowAdditionalInfoInCommentTextMenuItem" Header="Show parsed information in comments" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=SequenceEditor_ShowParsedInfo, Mode=TwoWay}" IsCheckable="True" Click="ShowAdditionalInfoInCommentTextMenuItem_OnClick"/>
             </MenuItem>
 
             <MenuItem Header="Layout" Padding="4">

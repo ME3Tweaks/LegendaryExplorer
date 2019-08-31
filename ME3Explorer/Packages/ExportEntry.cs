@@ -126,7 +126,11 @@ namespace ME3Explorer.Packages
             return _header.TypedClone();
         }
 
-        public void RegenerateHeader(List<KeyValuePair<NameReference, int>> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null)
+        public byte[] GenerateHeader(MEGame game) => GenerateHeader(null, null, game == MEGame.ME1 || game == MEGame.ME2);
+
+        public void RegenerateHeader(MEGame game) => Header = GenerateHeader(game);
+
+        private byte[] GenerateHeader(List<KeyValuePair<NameReference, int>> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null)
         {
             var bin = new MemoryStream();
             bin.WriteInt32(idxClass);
@@ -158,7 +162,12 @@ namespace ME3Explorer.Packages
             }
             bin.WriteGuid(PackageGUID);
             bin.WriteUInt32((uint)PackageFlags);
-            Header = bin.ToArray();
+            return bin.ToArray();
+        }
+
+        private void RegenerateHeader(List<KeyValuePair<NameReference, int>> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null)
+        {
+            Header = GenerateHeader(componentMap, generationNetObjectCount, hasComponentMap);
         }
 
         public uint HeaderOffset { get; set; }

@@ -7,7 +7,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:me3Explorer="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
-        Title="TFC Compactor" Height="400.416" Width="459.459">
+        Title="TFC Compactor" Height="500" Width="500">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -31,7 +31,7 @@
         <xctk:WatermarkComboBox  Grid.Row="1" Grid.Column="1" ItemsSource="{Binding CustomDLCFolderList}" Watermark="Select your DLC mod" SelectionChanged="DLCModComboBox_Changed"  IsEnabled="{Binding IsNotBusy}"/>
         <Button Grid.Row="1" Grid.Column="2" Content="Scan" Command="{Binding ScanCommand}"/>
         <TextBlock Text="TFCs referenced by files in this mod:" Grid.ColumnSpan="3"  Grid.Row="2" Margin="0,10,0,3"/>
-        <xctk:CheckListBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" MinHeight="80"  ItemsSource="{Binding TextureCachesToPullFromList}" IsEnabled="{Binding IsNotBusy}"/>
+        <xctk:CheckListBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" MinHeight="250"  ItemsSource="{Binding TextureCachesToPullFromList}" IsEnabled="{Binding IsNotBusy}" DisplayMemberPath="TFCName" SelectedMemberPath="Selected"/>
         <TextBlock Text="Select TFC files that you want to have locally stored in your mod. Do not select dependent official DLC - for example, if your mod requires Leviathan DLC, do not select the Leviathan TFC, since it will always have to be present for your mod to work."
                    TextWrapping="Wrap" Grid.ColumnSpan="3"  Grid.Row="4" Margin="0,0,0,3"/>
 
