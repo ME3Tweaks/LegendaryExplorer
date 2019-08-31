@@ -46,24 +46,24 @@ namespace ME3Explorer
 
         private List<string> relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps, List<KeyValuePair<IEntry, IEntry>> crossPCCObjectMappingList, string debugPrefix)
         {
-            List<string> relinkResults = new List<string>();
+            var relinkResults = new List<string>();
             foreach (UProperty prop in transplantProps)
             {
                 Debug.WriteLine(debugPrefix + " Relink recursive on " + prop.Name);
-                if (prop is StructProperty)
+                if (prop is StructProperty structProperty)
                 {
-                    relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, relinkingExport, (prop as StructProperty).Properties, crossPCCObjectMappingList, debugPrefix + "-"));
+                    relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, relinkingExport, structProperty.Properties, crossPCCObjectMappingList, debugPrefix + "-"));
                 }
-                else if (prop is ArrayProperty<StructProperty>)
+                else if (prop is ArrayProperty<StructProperty> structArrayProp)
                 {
-                    foreach (StructProperty arrayStructProperty in prop as ArrayProperty<StructProperty>)
+                    foreach (StructProperty arrayStructProperty in structArrayProp)
                     {
                         relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, relinkingExport, arrayStructProperty.Properties, crossPCCObjectMappingList, debugPrefix + "-"));
                     }
                 }
-                else if (prop is ArrayProperty<ObjectProperty>)
+                else if (prop is ArrayProperty<ObjectProperty> objArrayProp)
                 {
-                    foreach (ObjectProperty objProperty in prop as ArrayProperty<ObjectProperty>)
+                    foreach (ObjectProperty objProperty in objArrayProp)
                     {
                         string result = relinkObjectProperty(importingPCC, relinkingExport, objProperty, crossPCCObjectMappingList, debugPrefix);
                         if (result != null)
@@ -72,10 +72,10 @@ namespace ME3Explorer
                         }
                     }
                 }
-                if (prop is ObjectProperty)
+                else if (prop is ObjectProperty objectProperty)
                 {
                     //relink
-                    string result = relinkObjectProperty(importingPCC, relinkingExport, prop as ObjectProperty, crossPCCObjectMappingList, debugPrefix);
+                    string result = relinkObjectProperty(importingPCC, relinkingExport, objectProperty, crossPCCObjectMappingList, debugPrefix);
                     if (result != null)
                     {
                         relinkResults.Add(result);
@@ -218,7 +218,7 @@ namespace ME3Explorer
         /// <param name="importpcc">PCC being imported from</param>
         private List<string> relinkBinaryObjects(IMEPackage importpcc)
         {
-            List<string> relinkFailedReport = new List<string>();
+            var relinkFailedReport = new List<string>();
             foreach (KeyValuePair<IEntry, IEntry> mapping in crossPCCObjectMap)
             {
                 if (mapping.Key is ExportEntry sourceexp)
@@ -320,7 +320,7 @@ namespace ME3Explorer
                                             //Cannot relink against a different game.
                                             continue;
                                         }
-                                        ExportEntry importingExp = (ExportEntry)mapping.Key;
+                                        ExportEntry importingExp = sourceexp;
                                         if (importingExp.ClassName != "Class")
                                         {
                                             continue; //the class was not actually set, so this is not really class.

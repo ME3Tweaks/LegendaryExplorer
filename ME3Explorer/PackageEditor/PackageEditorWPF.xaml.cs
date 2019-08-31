@@ -2757,6 +2757,10 @@ namespace ME3Explorer
             List<string> names = Pcc.Names.ToList();
             try
             {
+                if (ex.Game != Pcc.Game)
+                {
+                    props = EntryPruner.RemoveIncompatibleProperties(ex.FileRef, props, ex.ClassName, Pcc.Game);
+                }
                 props.WriteTo(res, Pcc);
             }
             catch (Exception exception)
@@ -2768,18 +2772,8 @@ namespace ME3Explorer
                 return false;
             }
 
-            //set header so addresses are set
-            byte[] header = ex.Header.TypedClone();
-            if ((ex.FileRef.Game == MEGame.ME1 || ex.FileRef.Game == MEGame.ME2) && Pcc.Game == MEGame.ME3)
-            {
-                //we need to clip some bytes out of the header
-                var clippedHeader = new byte[header.Length - 4];
-                Buffer.BlockCopy(header, 0, clippedHeader, 0, 0x27);
-                Buffer.BlockCopy(header, 0x2B, clippedHeader, 0x27, header.Length - 0x2B);
-
-                header = clippedHeader;
-            }
-            outputEntry.Header = header;
+            //takes care of slight header differences between ME1/2 and ME3
+            outputEntry.Header = ex.GenerateHeader(Pcc.Game);
             bool dataAlreadySet = false;
 
             if (ex.FileRef.Game == MEGame.UDK)
@@ -2803,44 +2797,11 @@ namespace ME3Explorer
                         break;
                 }
             }
-            else if (ex.FileRef.Game == MEGame.ME3)
-            {
-                switch (ex.FileRef.getObjectName(ex.idxClass))
-                {
-                    //Todo: Move this to binary relinker
-                    case "SkeletalMesh":
-                        {
-                            SkeletalMesh skl = new SkeletalMesh(ex);
-                            SkeletalMesh.BoneStruct bone;
-                            for (int i = 0; i < skl.Bones.Count; i++)
-                            {
-                                bone = skl.Bones[i];
-                                string s = ex.FileRef.getNameEntry(bone.Name);
-                                bone.Name = Pcc.FindNameOrAdd(s);
-                                skl.Bones[i] = bone;
-                            }
-                            SkeletalMesh.TailNamesStruct tailName;
-                            for (int i = 0; i < skl.TailNames.Count; i++)
-                            {
-                                tailName = skl.TailNames[i];
-                                string s = ex.FileRef.getNameEntry(tailName.Name);
-                                tailName.Name = Pcc.FindNameOrAdd(s);
-                                skl.TailNames[i] = tailName;
-                            }
-                            SerializingContainer container = new SerializingContainer(res);
-                            container.isLoading = false;
-                            skl.Serialize(container);
-                            break;
-                        }
-                    default:
-                        //Write binary
-                        res.Write(idata, end, idata.Length - end);
-                        break;
-                }
-            }
             else
             {
-                res.Write(idata, end, idata.Length - end);
+                //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
+                //for unsupported classes, this will just copy over the binary
+                res.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(ex, Pcc.Game).ToArray(Pcc));
             }
 
             int classValue = 0;

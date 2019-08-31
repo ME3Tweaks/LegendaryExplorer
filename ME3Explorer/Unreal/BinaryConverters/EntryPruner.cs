@@ -134,9 +134,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
         }
 
-        public static PropertyCollection RemoveIncompatibleProperties(IMEPackage pcc, PropertyCollection props, string typeName, MEGame newGame)
+        public static PropertyCollection RemoveIncompatibleProperties(IMEPackage sourcePcc, PropertyCollection props, string typeName, MEGame newGame)
         {
-            //should never be null, since this function should not have been called if the class/struct does not exist in newGame
             var infoProps = UnrealObjectInfo.GetAllProperties(newGame, typeName);
 
             var newProps = new PropertyCollection();
@@ -173,7 +172,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         case ArrayProperty<ObjectProperty> asp:
                             for (int i = asp.Count - 1; i >= 0; i--)
                             {
-                                if (asp[i].Value == 0 || pcc.getEntry(asp[i].Value) is IEntry entry && !entry.GetFullPath.StartsWith(TrashPackageName))
+                                if (asp[i].Value == 0 || sourcePcc.getEntry(asp[i].Value) is IEntry entry && !entry.GetFullPath.StartsWith(TrashPackageName))
                                 {
                                     continue;
                                 }
@@ -187,7 +186,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                             {
                                 foreach (StructProperty structProperty in asp)
                                 {
-                                    structProperty.Properties = RemoveIncompatibleProperties(pcc, structProperty.Properties, structProperty.StructType, newGame);
+                                    structProperty.Properties = RemoveIncompatibleProperties(sourcePcc, structProperty.Properties, structProperty.StructType, newGame);
                                 }
                                 newProps.Add(asp);
                             }
@@ -207,7 +206,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                             break;
                         case ObjectProperty objectProperty:
                         {
-                            if (objectProperty.Value == 0 || pcc.getEntry(objectProperty.Value) is IEntry entry && !entry.GetFullPath.StartsWith(TrashPackageName))
+                            if (objectProperty.Value == 0 || sourcePcc.getEntry(objectProperty.Value) is IEntry entry && !entry.GetFullPath.StartsWith(TrashPackageName))
                             {
                                 newProps.Add(objectProperty);
                             }
@@ -216,7 +215,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         case StructProperty structProperty:
                             if (UnrealObjectInfo.GetStructs(newGame).ContainsKey(structProperty.StructType))
                             {
-                                structProperty.Properties = RemoveIncompatibleProperties(pcc, structProperty.Properties, structProperty.StructType, newGame);
+                                structProperty.Properties = RemoveIncompatibleProperties(sourcePcc, structProperty.Properties, structProperty.StructType, newGame);
                                 newProps.Add(structProperty);
                             }
                             break;

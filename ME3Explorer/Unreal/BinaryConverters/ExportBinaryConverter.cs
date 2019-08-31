@@ -138,7 +138,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 var storageType = (StorageTypes)bin.ReadInt32();
                 int uncompressedSize = bin.ReadInt32();
                 int compressedSize = bin.ReadInt32();
-                bin.SkipInt32();
+                int fileOffset = bin.ReadInt32();
                 byte[] texture;
                 switch (storageType)
                 {
@@ -153,8 +153,15 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         texture = new byte[0];
                         break;
                     default:
-                        storageType &= (StorageTypes)~StorageFlags.externalFile;
-                        texture = EmbeddedTextureViewer.GetTextureData(mips[i], false); //copy in external textures
+                        if (export.Game != newGame)
+                        {
+                            storageType &= (StorageTypes)~StorageFlags.externalFile;
+                            texture = EmbeddedTextureViewer.GetTextureData(mips[i], false); //copy in external textures
+                        }
+                        else
+                        {
+                            texture = new byte[0];
+                        }
                         break;
 
                 }
@@ -165,7 +172,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 os.WriteInt32((int)storageType);
                 os.WriteInt32(uncompressedSize);
                 os.WriteInt32(compressedSize);
-                os.WriteInt32(0);//fileOffset will be fixed during save
+                os.WriteInt32(fileOffset);//fileOffset will be fixed during save
                 os.WriteFromBuffer(texture);
                 os.WriteInt32(width);
                 os.WriteInt32(height);
@@ -446,6 +453,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
         {
             Serialize(new SerializingContainer2(ms, pcc, false, fileOffset));
         }
+
+        public virtual byte[] ToArray(IMEPackage pcc, int fileOffset = 0)
+        {
+            var ms = new MemoryStream();
+            WriteTo(ms, pcc, fileOffset);
+            return ms.ToArray();
+        }
     }
 
     public sealed class GenericObjectBinary : ObjectBinary
@@ -457,13 +471,20 @@ namespace ME3Explorer.Unreal.BinaryConverters
             data = buff;
         }
 
+        //should never be called
         protected override void Serialize(SerializingContainer2 sc)
         {
             data = sc.ms.ReadFully();
         }
+
         public override void WriteTo(Stream ms, IMEPackage pcc, int fileOffset)
         {
             ms.WriteFromBuffer(data);
+        }
+
+        public override byte[] ToArray(IMEPackage pcc, int fileOffset = 0)
+        {
+            return data;
         }
     }
 

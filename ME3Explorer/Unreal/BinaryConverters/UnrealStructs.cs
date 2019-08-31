@@ -16,6 +16,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
             this.value = value;
         }
 
+        public static implicit operator int(UIndex uIndex) => uIndex.value;
+
+        public static implicit operator UIndex(int uIndex) => new UIndex(uIndex);
+
         #region IEquatable
 
         public bool Equals(UIndex other)

@@ -941,7 +941,7 @@ namespace ME3Explorer.Packages
                 postPropBinary.Add(ExportBinaryConverter.ConvertPostPropBinary(export, newGame));
 
                 //writes header in whatever format is correct for newGame
-                export.RegenerateHeader(null, null, newGame == MEGame.ME1 || newGame == MEGame.ME2);
+                export.RegenerateHeader(newGame);
             }
 
             Game = newGame;
