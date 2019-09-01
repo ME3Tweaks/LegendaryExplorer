@@ -336,6 +336,10 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
         public override bool CanParse(ExportEntry export) => true;
+        public override void PoppedOut(MenuItem recentsMenuItem)
+        {
+            //throw new NotImplementedException();
+        }
 
         public override void LoadExport(ExportEntry export)
         {

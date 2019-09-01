@@ -221,6 +221,11 @@ namespace ME3Explorer
             return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.InheritsFrom("BioPawn")) && !exportEntry.IsDefaultObject);
         }
 
+        public override void PoppedOut(MenuItem recentsMenuItem)
+        {
+            //throw new NotImplementedException();
+        }
+
         public override void PopOut()
         {
             if (CurrentLoadedExport != null)

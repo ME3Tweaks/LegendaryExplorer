@@ -385,6 +385,11 @@ namespace ME3Explorer
             return !exportEntry.IsDefaultObject && (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream");
         }
 
+        public override void PoppedOut(MenuItem recentsMenuItem)
+        {
+            //todo: improve ui layout on popout
+        }
+
         /// <summary>
         /// Gets a PCM stream of data (WAV) from either teh currently loaded export or selected WEM
         /// </summary>

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
 using ME3Explorer.Unreal.BinaryConverters;
@@ -120,6 +121,11 @@ namespace ME3Explorer.Meshplorer
         public override bool CanParse(ExportEntry exportEntry)
         {
             return parsableClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith(("Default__"));
+        }
+
+        public override void PoppedOut(MenuItem recentsMenuItem)
+        {
+            //throw new NotImplementedException();
         }
 
         public override void LoadExport(ExportEntry exportEntry)

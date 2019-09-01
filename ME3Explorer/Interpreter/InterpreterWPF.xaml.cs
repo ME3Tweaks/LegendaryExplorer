@@ -1972,6 +1972,11 @@ namespace ME3Explorer
                 CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
             }
         }
+
+        public override void PoppedOut(MenuItem recentsMenuItem)
+        {
+            //throw new NotImplementedException();
+        }
     }
 
     [DebuggerDisplay("UPropertyTreeViewEntry | {" + nameof(DisplayName) + "}")]

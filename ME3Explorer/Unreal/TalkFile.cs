@@ -33,22 +33,22 @@ namespace ME3Explorer
             }
         };
 
-        public struct TLKStringRef
-        {
-            public int StringID;
-            public int BitOffset;
+        //public struct TLKStringRef
+        //{
+        //    public int StringID;
+        //    public int BitOffset;
 
-            public string Data;
-            public int StartOfString;
-            public int position;
+        //    public string Data;
+        //    public int StartOfString;
+        //    public int position;
 
-            public TLKStringRef(BinaryReader r)
-                : this()
-            {
-                StringID = r.ReadInt32();
-                BitOffset = r.ReadInt32();
-            }
-        }
+        //    public TLKStringRef(BinaryReader r)
+        //        : this()
+        //    {
+        //        StringID = r.ReadInt32();
+        //        BitOffset = r.ReadInt32();
+        //    }
+        //}
 
         public struct HuffmanNode
         {
@@ -64,7 +64,7 @@ namespace ME3Explorer
         }
 
         TLKHeader Header;
-        public List<TLKStringRef> StringRefs;
+        public List<ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef> StringRefs;
         public string name;
         public string path;
         List<HuffmanNode> CharacterTree;
@@ -150,11 +150,11 @@ namespace ME3Explorer
              * Sometimes there's no such key, in that case, our String ID is probably a substring
              * of another String present in rawStrings. 
              */
-            StringRefs = new List<TLKStringRef>();
+            StringRefs = new List<ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef>();
             for (int i = 0; i < Header.MaleEntryCount + Header.FemaleEntryCount; i++)
             {
-                TLKStringRef sref = new TLKStringRef(r);
-                sref.position = i;
+                ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef sref = new ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef(r, false);
+                sref.Index = i;
                 if (sref.BitOffset >= 0)
                 {
                     if (!rawStrings.ContainsKey(sref.BitOffset))
@@ -227,7 +227,7 @@ namespace ME3Explorer
 
             foreach (var s in StringRefs)
             {
-                if (s.position == Header.MaleEntryCount)
+                if (s.Index == Header.MaleEntryCount)
                 {
                     xr.WriteComment("Male entries section end");
                     xr.WriteComment("Female entries section begin");
@@ -321,7 +321,7 @@ namespace ME3Explorer
         }
 
         /* for sorting */
-        private static int CompareTlkStringRef(TLKStringRef strRef1, TLKStringRef strRef2)
+        private static int CompareTlkStringRef(ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef strRef1, ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef strRef2)
         {
             int result = strRef1.StringID.CompareTo(strRef2.StringID);
             return result;

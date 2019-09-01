@@ -49,6 +49,8 @@ namespace ME1Explorer.Unreal.Classes
             public string Data { get => _data; set => SetProperty(ref _data, value); }
             public int Flags { get => _flags; set => SetProperty(ref _flags, value); }
             public int Index { get => _index; set => SetProperty(ref _index, value); }
+            public int BitOffset { get => _flags; set => SetProperty(ref _flags, value); } //use same variable to save memory as flags is not used in me2/3, but bitoffset is.
+
             /// <summary>
             /// This is used by huffman compression
             /// </summary>
@@ -68,11 +70,18 @@ namespace ME1Explorer.Unreal.Classes
                 }
             }
 
-            public TLKStringRef(BinaryReader r)
+            public TLKStringRef(BinaryReader r, bool me1)
             {
                 StringID = r.ReadInt32();
-                Flags = r.ReadInt32();
-                Index = r.ReadInt32();
+                if (me1)
+                {
+                    Flags = r.ReadInt32();
+                    Index = r.ReadInt32();
+                }
+                else
+                {
+                    BitOffset = r.ReadInt32();
+                }
             }
 
             public TLKStringRef(int id, int flags, string data)
@@ -199,7 +208,7 @@ namespace ME1Explorer.Unreal.Classes
             StringRefs = new TLKStringRef[entryCount];
             for (int i = 0; i < entryCount; i++)
             {
-                StringRefs[i] = new TLKStringRef(r);
+                StringRefs[i] = new TLKStringRef(r, true);
             }
 
             //Huffman tree
