@@ -61,9 +61,9 @@ namespace ME3Explorer.SharedUI
             }
         }*/
 
-        public static int CopyAll_ProgressBar(DirectoryInfo source, DirectoryInfo target, BackgroundWorker worker, int total, int done, string[] ignoredExtensions = null)
+        public static int CopyAll_ProgressBar(DirectoryInfo source, DirectoryInfo target, BackgroundWorker worker, int total = -1, int done = 0, string[] ignoredExtensions = null)
         {
-            if (total == -1)
+            if (total < 0)
             {
                 //calculate number of files
                 total = Directory.GetFiles(source.FullName, "*.*", SearchOption.AllDirectories).Length;
@@ -93,7 +93,7 @@ namespace ME3Explorer.SharedUI
                     if (skip)
                     {
                         numdone++;
-                        worker.ReportProgress((int)((numdone * 1.0 / total) * 100.0));
+                        worker.ReportProgress(0, new ThreadCommand(UPDATE_PROGRESSBAR_VALUE, numdone));
                         continue;
                     }
                 }
@@ -118,7 +118,7 @@ namespace ME3Explorer.SharedUI
             {
                 DirectoryInfo nextTargetSubDir =
                     target.CreateSubdirectory(diSourceSubDir.Name);
-                numdone = CopyAll_ProgressBar(diSourceSubDir, nextTargetSubDir, worker, total, numdone);
+                numdone = CopyAll_ProgressBar(diSourceSubDir, nextTargetSubDir, worker, total, numdone, ignoredExtensions);
             }
             return numdone;
         }

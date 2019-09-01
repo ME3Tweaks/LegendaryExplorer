@@ -8,10 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ME3Explorer;
 using SlavaGu.ConsoleAppLauncher;
 
 namespace MassEffectModder
@@ -28,7 +30,7 @@ namespace MassEffectModder
         /// <param name="acceptedIPC"></param>
         public static ConsoleApp RunMEM(string args, Dictionary<string, Action<string>> IPCTriggers)
         {
-            string exe = @"C:\Users\Mgame\Desktop\MassEffectModderNoGui.exe";
+            string exe = Path.Combine(App.AppDataFolder, "staticexecutables", "MassEffectModderNoGui.exe");
             Debug.WriteLine("Running process: " + exe + " " + args);
             //Log.Information("Running process: " + exe + " " + args);
 

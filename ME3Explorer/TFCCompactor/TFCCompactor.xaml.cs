@@ -18,6 +18,7 @@ using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using SlavaGu.ConsoleAppLauncher;
 
@@ -137,14 +138,31 @@ namespace ME3Explorer.TFCCompactor
                                 if (texture.GetProperty<NameProperty>("TextureFileCacheName") is NameProperty tfcNameProperty)
                                 {
                                     string tfcname = tfcNameProperty.Value;
+                                    if (tfcname == "CustTextures0")
+                                    {
+                                        Debug.WriteLine($"CustTextures0 TFC Reference: {texture.GetFullPath} {texture.UIndex} in {texture.FileRef.FilePath}");
+                                    }
                                     if (!basegameTFCs.Contains(tfcname))
                                     {
-                                        if (referencedTFCs.Add(new TFCSelector(tfcname, false)))
+                                        //Check that external mips are referenced.
+                                        //some texture2d have a tfc but don't have any external mips for some reason
+                                        Texture2D texture2d = new Texture2D(texture);
+                                        var topmip = texture2d.GetTopMip();
+                                        if (topmip.storageType == StorageTypes.extLZO ||
+                                            topmip.storageType == StorageTypes.extZlib ||
+                                            topmip.storageType == StorageTypes.extUnc)
                                         {
-                                            Application.Current.Dispatcher.Invoke(delegate
+                                            if (referencedTFCs.Add(new TFCSelector(tfcname, false)))
                                             {
-                                                TextureCachesToPullFromList.ReplaceAll(referencedTFCs);
-                                            });
+                                                Application.Current.Dispatcher.Invoke(delegate
+                                                {
+                                                    TextureCachesToPullFromList.ReplaceAll(referencedTFCs);
+                                                });
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Debug.WriteLine($"Skipping Reference, no external mips defined: {texture.GetFullPath} {texture.UIndex} in {texture.FileRef.FilePath}");
                                         }
                                     }
                                 }
@@ -174,12 +192,18 @@ namespace ME3Explorer.TFCCompactor
 
             backgroundWorker.DoWork += (a, b) =>
             {
+                if (Directory.Exists(workingGamePath))
+                {
+                    //Apparently the built in delete directory can't handle there being files
+                    //even though the documentation says it can delete subfiles.
+                    DeleteDirectory(workingGamePath);
+                }
                 CurrentOperationText = "Creating compaction workspace";
                 ProgressBarValue = 0;
                 ProgressBarMax = 100;
                 ProgressBarIndeterminate = false;
 
-                var dlcTFCsToPullFrom = TextureCachesToPullFromList.Where(x => x.Selected).Select(x=>x.TFCName);
+                var dlcTFCsToPullFrom = TextureCachesToPullFromList.Where(x => x.Selected).Select(x => x.TFCName);
                 //Create workspace for MEM
                 var game = (int)SelectedGame.Game;
 
@@ -189,7 +213,7 @@ namespace ME3Explorer.TFCCompactor
                 if (game == 3)
                 {
                     Directory.CreateDirectory(Path.Combine(workingGamePath, "Binaries", "win32"));
-                    File.Create(Path.Combine(workingGamePath, "Binaries", "win32", "MassEffect3.exe"));
+                    File.Create(Path.Combine(workingGamePath, "Binaries", "win32", "MassEffect3.exe")).Close();
                 }
                 else
                 {
@@ -207,8 +231,9 @@ namespace ME3Explorer.TFCCompactor
                 //Copy basegame TFCs to cookedDiretory
                 var basegameDirToCopyFrom = MEDirectories.CookedPath(SelectedGame.Game);
                 var tfcs = Directory.GetFiles(basegameDirToCopyFrom, "*.tfc").ToList();
-                var currentgamefiles = MELoadedFiles.GetFilesLoadedInGame(SelectedGame.Game);
-
+                var currentgamefiles = MELoadedFiles.GetFilesLoadedInGame(SelectedGame.Game, forceReload: true, includeTFC: true);
+                var debug = currentgamefiles.Where(x => x.Value.Contains(".tfc")).ToList();
+                debug.ForEach(x => Debug.WriteLine(x));
                 foreach (var tfc in dlcTFCsToPullFrom)
                 {
                     var fullname = tfc + ".tfc";
@@ -223,7 +248,9 @@ namespace ME3Explorer.TFCCompactor
                 }
 
                 //Copy DLC
-                CopyDir.CopyAll_ProgressBar()
+                var destDLCDir = Path.Combine(dlcDir, SelectedDLCModFolder);
+                var sourceDLCDir = Path.Combine(SelectedGame.DLCPath, SelectedDLCModFolder);
+                CopyDir.CopyAll_ProgressBar(new DirectoryInfo(sourceDLCDir), Directory.CreateDirectory(destDLCDir), backgroundWorker, ignoredExtensions: new string[] { ".tfc" });
 
                 // get MassEffectModder.ini
                 string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -241,7 +268,7 @@ namespace ME3Explorer.TFCCompactor
 
                 Ini.IniFile ini = new Ini.IniFile(_iniPath);
                 var oldValue = ini.ReadValue("ME" + game, "GameDataPath");
-                ini.WriteValue("ME" + game, sourceGamePath, "GameDataPath");
+                ini.WriteValue("ME" + game, workingGamePath, "GameDataPath");
 
                 var triggers = new Dictionary<string, Action<string>> {
                     { "TASK_PROGRESS", s => ProgressBarValue = int.Parse(s)},
@@ -324,6 +351,32 @@ namespace ME3Explorer.TFCCompactor
             {
                 ScanForGameCompleted = false;
                 SelectedDLCModFolder = null;
+            }
+        }
+
+
+        /// <summary>
+        /// Depth-first recursive delete, with handling for descendant 
+        /// directories open in Windows Explorer.
+        /// </summary>
+        public static void DeleteDirectory(string path)
+        {
+            foreach (string directory in Directory.GetDirectories(path))
+            {
+                DeleteDirectory(directory);
+            }
+
+            try
+            {
+                Directory.Delete(path, true);
+            }
+            catch (IOException)
+            {
+                Directory.Delete(path, true);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Directory.Delete(path, true);
             }
         }
 

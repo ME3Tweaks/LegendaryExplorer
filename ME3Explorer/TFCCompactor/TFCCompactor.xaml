@@ -10,7 +10,7 @@
         Title="TFC Compactor" Height="500" Width="500">
     <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -26,7 +26,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="90"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="Install your DLC mod into a vanilla copy of the game (as an end user would do). Then select your game, and then the DLC mod below." TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="Install your DLC mod into a vanilla copy of the game (as an end user would do). Ensure your DLC is unpacked as referenced TFCs must be directly accessible. Then select your game, and then the DLC mod below." TextWrapping="Wrap"/>
         <xctk:WatermarkComboBox  Grid.Row="1" Grid.Column="0" ItemsSource="{Binding GameList}" DisplayMemberPath="DisplayName" Watermark="Select game" SelectionChanged="GameComboBox_Changed" IsEnabled="{Binding IsNotBusy}"/>
         <xctk:WatermarkComboBox  Grid.Row="1" Grid.Column="1" ItemsSource="{Binding CustomDLCFolderList}" Watermark="Select your DLC mod" SelectionChanged="DLCModComboBox_Changed"  IsEnabled="{Binding IsNotBusy}"/>
         <Button Grid.Row="1" Grid.Column="2" Content="Scan" Command="{Binding ScanCommand}"/>

@@ -15,6 +15,8 @@ namespace ME3Explorer
         private static readonly string[] ME1FilePatterns = { "*.u", "*.upk", "*.sfm" };
         private const string ME2and3FilePattern = "*.pcc";
 
+        private static readonly string[] ME2and3FilePatternIncludeTFC = { "*.pcc", "*.tfc" };
+
         private static Dictionary<string, string> cachedME1LoadedFiles;
         private static Dictionary<string, string> cachedME2LoadedFiles;
         private static Dictionary<string, string> cachedME3LoadedFiles;
@@ -23,7 +25,7 @@ namespace ME3Explorer
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public static Dictionary<string, string> GetFilesLoadedInGame(MEGame game, bool forceReload = false)
+        public static Dictionary<string, string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFC = false)
         {
             if (!forceReload)
             {
@@ -37,7 +39,7 @@ namespace ME3Explorer
 
             foreach (string directory in GetEnabledDLC(game).OrderBy(dir => GetMountPriority(dir, game)).Prepend(MEDirectories.BioGamePath(game)))
             {
-                foreach (string filePath in GetCookedFiles(game, directory))
+                foreach (string filePath in GetCookedFiles(game, directory,includeTFC))
                 {
                     string fileName = Path.GetFileName(filePath);
                     if (fileName != null) loadedFiles[fileName] = filePath;
@@ -53,11 +55,18 @@ namespace ME3Explorer
 
         public static IEnumerable<string> GetAllFiles(MEGame game) => GetEnabledDLC(game).Prepend(MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory));
 
-        private static IEnumerable<string> GetCookedFiles(MEGame game, string directory)
+        private static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false)
         {
             if (game == MEGame.ME1)
                 return ME1FilePatterns.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, "CookedPC"), pattern, SearchOption.AllDirectories));
-            return Directory.EnumerateFiles(Path.Combine(directory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC"), ME2and3FilePattern);
+            if (includeTFCs)
+            {
+                return ME2and3FilePatternIncludeTFC.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC"), pattern, SearchOption.AllDirectories));
+            }
+            else
+            {
+                return Directory.EnumerateFiles(Path.Combine(directory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC"), ME2and3FilePattern);
+            }
         }
 
         /// <summary>
