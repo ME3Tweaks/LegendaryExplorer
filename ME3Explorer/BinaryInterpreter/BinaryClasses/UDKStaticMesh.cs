@@ -4,7 +4,7 @@ using ME3Explorer.Packages;
 
 namespace ME3Explorer
 {
-    public class UDKStaticMesh : IUDKImportable
+    public class UDKStaticMesh
     {
         public UDKPackage Owner;
         public int MyIndex;
@@ -34,18 +34,6 @@ namespace ME3Explorer
             byte[] buff = udk.Exports[Index].Data;
             MemoryStream m = new MemoryStream((byte[])buff.Clone());
             Read(m);
-        }
-
-        public void PortToME1Export(ExportEntry destExport)
-        {
-            MemoryStream m = GetSTMBinaryData(destExport);
-            destExport.setBinaryData(m.ToArray());
-        }
-
-        public void PortToME2Export(ExportEntry destExport)
-        {
-            MemoryStream m = GetSTMBinaryData(destExport);
-            destExport.setBinaryData(m.ToArray());
         }
 
         public void PortToME3Export(ExportEntry destExport)

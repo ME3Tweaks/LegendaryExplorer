@@ -50,20 +50,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
         #endregion
     }
 
-    public readonly struct Vector
-    {
-        public readonly float X;
-        public readonly float Y;
-        public readonly float Z;
-
-        public Vector(float x, float y, float z)
-        {
-            X = x;
-            Y = y;
-            Z = z;
-        }
-    }
-
     public readonly struct Vector2D
     {
         public readonly float X;
@@ -148,7 +134,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         }
 
 
-        public static explicit operator PackedNormal(Vector vec)
+        public static explicit operator PackedNormal(Vector3 vec)
         {
             return new PackedNormal((byte)((int)(vec.X * 127.5f + 128.0f)).Clamp(0, 255),
                                     (byte)((int)(vec.X * 127.5f + 128.0f)).Clamp(0, 255),
@@ -159,21 +145,21 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
     public class Box
     {
-        public Vector Min;
-        public Vector Max;
+        public Vector3 Min;
+        public Vector3 Max;
         public byte IsValid;
     }
 
     public class BoxSphereBounds
     {
-        public Vector Origin;
-        public Vector BoxExtent;
+        public Vector3 Origin;
+        public Vector3 BoxExtent;
         public float SphereRadius;
     }
 
     public class Sphere
     {
-        public Vector Center;
+        public Vector3 Center;
         public float W;
     }
 
@@ -190,11 +176,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.ms.WriteInt32(uidx.value);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref Vector vec)
+        public static void Serialize(this SerializingContainer2 sc, ref Vector3 vec)
         {
             if (sc.IsLoading)
             {
-                vec = new Vector(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat());
+                vec = new Vector3(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat());
             }
             else
             {
@@ -297,13 +283,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref sphere.Center);
             sc.Serialize(ref sphere.W);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref Vector[] arr)
+        public static void Serialize(this SerializingContainer2 sc, ref Vector3[] arr)
         {
             int count = arr?.Length ?? 0;
             sc.Serialize(ref count);
             if (sc.IsLoading)
             {
-                arr = new Vector[count];
+                arr = new Vector3[count];
             }
 
             for (int i = 0; i < count; i++)

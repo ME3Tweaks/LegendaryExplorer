@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer.Packages;
+using SharpDX;
 
 namespace ME3Explorer.Unreal.BinaryConverters
 {
@@ -35,11 +36,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
     }
     public class Poly
     {
-        public Vector Base;
-        public Vector Normal;
-        public Vector TextureU;
-        public Vector TextureV;
-        public Vector[] Vertices;
+        public Vector3 Base;
+        public Vector3 Normal;
+        public Vector3 TextureU;
+        public Vector3 TextureV;
+        public Vector3[] Vertices;
         public int PolyFlags;
         public UIndex Actor;
         public NameReference ItemName;

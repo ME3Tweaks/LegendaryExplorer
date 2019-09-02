@@ -344,7 +344,6 @@
       <DependentUpon>AutoTOCWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="AutoTOC\Ini.cs" />
-    <Compile Include="BinaryInterpreter\BinaryClasses\IUDKImportable.cs" />
     <Compile Include="BinaryInterpreter\BinaryClasses\UDKStaticMesh.cs" />
     <Compile Include="BinaryInterpreter\BinaryInterpreterScans.cs" />
     <Compile Include="BinaryInterpreter\BinaryInterpreterWPF.xaml.cs">

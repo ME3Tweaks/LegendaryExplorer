@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
@@ -130,11 +131,11 @@ namespace ME3Explorer.Meshplorer
             CurrentLoadedExport = exportEntry;
 
             Preview?.Dispose();
-            bool hasWorkToDo = false;
-            BackgroundWorker bw = new BackgroundWorker();
+
+            Func<ModelPreview.PreloadedModelData> loadMesh = null;
             if (CurrentLoadedExport.ClassName == "StaticMesh")
             {
-                bw.DoWork += (a, b) =>
+                loadMesh = () =>
                 {
                     BusyText = "Fetching assets";
                     IsBusy = true;
@@ -143,19 +144,21 @@ namespace ME3Explorer.Meshplorer
                     pmd.meshObject = meshObject;
                     pmd.sections = new List<ModelPreviewSection>();
                     pmd.texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>();
+                    IMEPackage meshFile = meshObject.Export.FileRef;
                     foreach (var section in meshObject.LODModels[CurrentLOD].Elements)
                     {
-                        if (section.Material.value > 0)
+                        int matIndex = section.Material.value;
+                        if (meshFile.isUExport(matIndex))
                         {
-                            ExportEntry entry = meshObject.Export.FileRef.getUExport(section.Material.value);
+                            ExportEntry entry = meshFile.getUExport(matIndex);
                             Debug.WriteLine("Getting material assets " + entry.GetFullPath);
 
                             AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
 
                         }
-                        else if (section.Material.value < 0)
+                        else if (meshFile.isUImport(matIndex))
                         {
-                            var extMaterialExport = ModelPreview.FindExternalAsset(meshObject.Export.FileRef.getUImport(section.Material.value), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
+                            var extMaterialExport = ModelPreview.FindExternalAsset(meshFile.getUImport(matIndex), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
                             if (extMaterialExport != null)
                             {
                                 AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
@@ -164,20 +167,19 @@ namespace ME3Explorer.Meshplorer
                             {
 
                                 Debug.WriteLine("Could not find import material from section.");
-                                Debug.WriteLine("Import material: " + meshObject.Export.FileRef.GetEntryString(section.Material.value));
+                                Debug.WriteLine("Import material: " + meshFile.GetEntryString(matIndex));
                             }
                         }
 
-                        pmd.sections.Add(new ModelPreviewSection(meshObject.Export.FileRef.getObjectName(section.Material.value), section.FirstIndex, section.NumTriangles));
+                        pmd.sections.Add(new ModelPreviewSection(meshFile.getObjectName(matIndex), section.FirstIndex, section.NumTriangles));
                     }
-                    b.Result = pmd;
+                    return pmd;
                 };
-                hasWorkToDo = true;
             }
             else if (CurrentLoadedExport.ClassName == "SkeletalMesh")
             {
                 //var sm = new Unreal.Classes.SkeletalMesh(CurrentLoadedExport);
-                bw.DoWork += (a, b) =>
+                loadMesh = () =>
                 {
                     BusyText = "Fetching assets";
                     IsBusy = true;
@@ -211,33 +213,31 @@ namespace ME3Explorer.Meshplorer
                             }
                         }
                     }
-                    b.Result = pmd;
+                    return pmd;
                 };
-                hasWorkToDo = true;
             }
 
-            if (hasWorkToDo)
+            if (loadMesh != null)
             {
-                bw.RunWorkerCompleted += (a, b) =>
+                Task.Run(loadMesh).ContinueWithOnUIThread(prevTask =>
                 {
                     IsBusy = false;
-                    if (b.Result is ModelPreview.PreloadedModelData pmd)
+                    if (prevTask.Result is ModelPreview.PreloadedModelData pmd)
                     {
                         if (pmd.meshObject is StaticMesh statM)
                         {
                             Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, statM, CurrentLOD, SceneViewer.Context.TextureCache, pmd);
                             SceneViewer.Context.Camera.FocusDepth = statM.Bounds.SphereRadius * 1.2f;
                         }
-                        else
-                        if (pmd.meshObject is SkeletalMesh skm)
+                        else if (pmd.meshObject is SkeletalMesh skm)
                         {
                             Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, skm, SceneViewer.Context.TextureCache, pmd);
                             SceneViewer.Context.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
                         }
+
                         CenterView();
                     }
-                };
-                bw.RunWorkerAsync();
+                });
             }
         }
 

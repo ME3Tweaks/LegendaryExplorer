@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer.Packages;
+using SharpDX;
 using StreamHelpers;
 
 namespace ME3Explorer.Unreal.BinaryConverters
@@ -43,7 +44,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
     public class LevelViewportInfo
     {
-        public Vector CamPosition;
+        public Vector3 CamPosition;
         public Rotator CamRotation;
         public float CamOrthoZoom;
     }

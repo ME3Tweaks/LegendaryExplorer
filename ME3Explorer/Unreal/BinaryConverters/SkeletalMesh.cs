@@ -13,7 +13,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
     {
         public BoxSphereBounds Bounds;
         public UIndex[] Materials;
-        public Vector Origin;
+        public Vector3 Origin;
         public Rotator RotOrigin;
         public MeshBone[] RefSkeleton;
         public int SkeletalDepth;
@@ -46,6 +46,25 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 ClothingAssets = Array.Empty<UIndex>();
             }
         }
+
+        public IEnumerable<string> Relink(Dictionary<IEntry, IEntry> crossFileObjectMap, IMEPackage sourcePcc, ExportEntry destExport)
+        {
+            var relinkFailedReport = new List<string>();
+            for (int i = 0; i < Materials.Length; i++)
+            {
+                if (crossFileObjectMap.TryGetValue(sourcePcc.getEntry((int)Materials[i]), out IEntry mappedEntry))
+                {
+                    Materials[i] = mappedEntry.UIndex;
+                }
+                else
+                {
+                    relinkFailedReport.Add($"{destExport.UIndex} {destExport.GetFullPath} binary relink error: SkeletalMesh referenced Material #{Materials[i]} is not in the mapping tree and could not be relinked");
+                    Materials[i] = 0;
+                }
+            }
+
+            return relinkFailedReport;
+        }
     }
 
     public class MeshBone
@@ -53,7 +72,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public NameReference Name;
         public uint Flags;
         public Quat Orientation;
-        public Vector Position;
+        public Vector3 Position;
         public int NumChildren;
         public int ParentIndex;
         public Color BoneColor; //ME3 and UDK
@@ -101,7 +120,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
     public class RigidSkinVertex
     {
-        public Vector Position;
+        public Vector3 Position;
         public PackedNormal TangentX;
         public PackedNormal TangentY;
         public PackedNormal TangentZ;
@@ -115,7 +134,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
     public class SoftSkinVertex
     {
-        public Vector Position;
+        public Vector3 Position;
         public PackedNormal TangentX;
         public PackedNormal TangentY;
         public PackedNormal TangentZ;
@@ -133,8 +152,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public int NumTexCoords; //UDK
         public bool bUseFullPrecisionUVs; //should always be false
         public bool bUsePackedPosition; //ME3 or UDK
-        public Vector MeshExtension; //ME3 or UDK
-        public Vector MeshOrigin; //ME3 or UDK
+        public Vector3 MeshExtension; //ME3 or UDK
+        public Vector3 MeshOrigin; //ME3 or UDK
         public GPUSkinVertex[] VertexData; //BulkSerialized
     }
 
@@ -144,7 +163,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public PackedNormal TangentZ;
         public byte[] InfluenceBones = new byte[4];
         public byte[] InfluenceWeights = new byte[4];
-        public Vector Position; //serialized first in ME2
+        public Vector3 Position; //serialized first in ME2
         public Vector2DHalf UV;
     }
 
@@ -152,7 +171,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
     {
         public kDOPTree kDOPTreeME1ME2;
         public kDOPTreeCompact kDOPTreeME3UDK;
-        public Vector[] CollisionVerts;
+        public Vector3[] CollisionVerts;
     }
 
     public static class SkelMeshSCExt
@@ -395,7 +414,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 {
                     slm.VertexBufferGPUSkin = new SkeletalMeshVertexBuffer
                     {
-                        MeshExtension = new Vector(1,1,1),
+                        MeshExtension = new Vector3(1,1,1),
                         NumTexCoords = 1,
                         VertexData = new GPUSkinVertex[slm.ME1VertexBufferGPUSkin.Length]
                     };

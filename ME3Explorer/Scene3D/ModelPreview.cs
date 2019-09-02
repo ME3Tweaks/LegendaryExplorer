@@ -271,13 +271,13 @@ namespace ME3Explorer.Scene3D
                 {
                     var uvVector = lodModel.VertexBuffer.VertexData[i].FullPrecisionUVs;
                     //SharpDX takes items differently than unreal.
-                    vertices.Add(new Scene3D.WorldVertex(new SharpDX.Vector3(-v.X, v.Z, v.Y), SharpDX.Vector3.Zero, new SharpDX.Vector2(uvVector[0].X, uvVector[0].Y)));
+                    vertices.Add(new Scene3D.WorldVertex(new Vector3(-v.X, v.Z, v.Y), Vector3.Zero, new Vector2(uvVector[0].X, uvVector[0].Y)));
                 }
                 else
                 {
                     var uvVector = lodModel.VertexBuffer.VertexData[i].HalfPrecisionUVs;
                     //SharpDX takes items differently than unreal.
-                    vertices.Add(new Scene3D.WorldVertex(new SharpDX.Vector3(-v.X, v.Z, v.Y), SharpDX.Vector3.Zero, new SharpDX.Vector2(uvVector[0].X, uvVector[0].Y)));
+                    vertices.Add(new Scene3D.WorldVertex(new Vector3(-v.X, v.Z, v.Y), Vector3.Zero, new Vector2(uvVector[0].X, uvVector[0].Y)));
                 }
 
 
