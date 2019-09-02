@@ -1988,7 +1988,6 @@ namespace ME3Explorer
             bool exportNonDataChanges = changes.Contains(PackageChange.ExportHeader) || changes.Contains(PackageChange.ExportAdd);
             bool hasSelection = GetSelected(out int n);
 
-            //we might need to identify parent depths and add those first
             List<PackageUpdate> addedChanges = updates.Where(x => x.change == PackageChange.ExportAdd || x.change == PackageChange.ImportAdd).OrderBy(x => x.index).ToList();
             List<int> headerChanges = updates.Where(x => x.change == PackageChange.ExportHeader || x.change == PackageChange.Import).Select(x => x.change == PackageChange.ExportHeader ? x.index + 1 : -x.index - 1).OrderBy(x => x).ToList();
             if (addedChanges.Count > 0)
@@ -2010,31 +2009,38 @@ namespace ME3Explorer
                     addedChangesByUIndex.RemoveAll(x => x.index == tvi.UIndex);
                 }
 
+                List<IEntry> entriesToAdd = addedChangesByUIndex.Select(change => Pcc.getEntry(change.index)).ToList();
+
                 //Generate new nodes
                 var nodesToSortChildrenFor = new HashSet<TreeViewEntry>();
-                foreach (PackageUpdate newItem in addedChangesByUIndex)
+                //might have to loop a few times if it contains children before parents
+                while (entriesToAdd.Any())
                 {
-                    int idx = newItem.change == PackageChange.ExportAdd ? newItem.index : -newItem.index; //make UIndex based
-                    IEntry entry = Pcc.getEntry(newItem.index);
-                    if (entry == null)
+                    var orphans = new List<IEntry>();
+                    foreach (IEntry entry in entriesToAdd)
                     {
-                        Debugger.Break(); //This shouldn't occur... I hope
+
+                        TreeViewEntry parent = treeViewItems.FirstOrDefault(x => x.UIndex == entry.idxLink);
+                        if (parent != null)
+                        {
+                            TreeViewEntry newEntry = new TreeViewEntry(entry) { Parent = parent };
+                            parent.Sublinks.Add(newEntry);
+                            treeViewItems.Add(newEntry); //used to find parents
+                            nodesToSortChildrenFor.Add(parent);
+                        }
+                        else
+                        {
+                            orphans.Add(entry);
+                        }
                     }
 
-                    TreeViewEntry parent = treeViewItems.FirstOrDefault(x => x.UIndex == entry.idxLink);
-                    if (parent != null)
+                    if (orphans.Count == entriesToAdd.Count)
                     {
-                        TreeViewEntry newEntry = new TreeViewEntry(entry) { Parent = parent };
-                        parent.Sublinks.Add(newEntry);
-                        treeViewItems.Add(newEntry); //used to find parents
-                        nodesToSortChildrenFor.Add(parent);
+                        //actual orphans
+                        Debug.WriteLine("Unable to attach new items to parents.");
+                        break;
                     }
-                    else
-                    {
-                        Debug.WriteLine("Unable to attach new item to parent. Could not find parent with UIndex " + entry.idxLink);
-                    }
-                    //newItem.Parent = targetItem;
-                    //targetItem.Sublinks.Add(newItem);
+                    entriesToAdd = orphans;
                 }
                 SuppressSelectionEvent = true;
                 nodesToSortChildrenFor.ToList().ForEach(x => x.SortChildren());
@@ -2542,7 +2548,7 @@ namespace ME3Explorer
                     if (n >= 0)
                     {
                         //importing an export
-                        if (importExport(sourceEntry as ExportEntry, link, out ExportEntry newExport))
+                        if (importExport(Pcc, sourceEntry as ExportEntry, link, out ExportEntry newExport))
                         {
                             newItem = new TreeViewEntry(newExport);
                             crossPCCObjectMap[sourceEntry] = newExport; //0 based. map old index to new index
@@ -2556,7 +2562,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        ImportEntry newImport = getOrAddCrossImport(sourceEntry.GetFullPath, importpcc, Pcc,
+                        IEntry newImport = getOrAddCrossImportOrPackage(sourceEntry.GetFullPath, importpcc, Pcc,
                             sourceItem.Sublinks.Count == 0 ? link : (int?)null);
                         newItem = new TreeViewEntry(newImport);
                         crossPCCObjectMap[sourceEntry] = newImport;
@@ -2689,7 +2695,7 @@ namespace ME3Explorer
                 if (index >= 0)
                 {
                     //index--; //This was definitely wrong... probably
-                    if (importExport(node.Entry as ExportEntry, newItemParent.UIndex, out ExportEntry importedEntry))
+                    if (importExport(Pcc, node.Entry as ExportEntry, newItemParent.UIndex, out ExportEntry importedEntry))
                     {
                         newEntry = new TreeViewEntry(importedEntry);
                         crossPCCObjectMap[node.Entry] = importedEntry;
@@ -2702,7 +2708,7 @@ namespace ME3Explorer
                 else
                 {
                     //todo: ensure relink works with this
-                    ImportEntry newImport = getOrAddCrossImport(importpcc.getUImport(index).GetFullPath, importpcc, Pcc);
+                    IEntry newImport = getOrAddCrossImportOrPackage(importpcc.getUImport(index).GetFullPath, importpcc, Pcc);
 
                     newEntry = new TreeViewEntry(newImport);
                     crossPCCObjectMap[node.Entry] = newImport;
@@ -2724,13 +2730,14 @@ namespace ME3Explorer
         /// <summary>
         /// Imports an export from another package file.
         /// </summary>
+        /// <param name="mePackage"></param>
         /// <param name="ex">Export object from the other package to import</param>
         /// <param name="link">Local parent node UIndex</param>
         /// <param name="outputEntry">Newly generated export entry reference</param>
         /// <returns></returns>
-        private bool importExport(ExportEntry ex, int link, out ExportEntry outputEntry)
+        private static bool importExport(IMEPackage mePackage, ExportEntry ex, int link, out ExportEntry outputEntry)
         {
-            outputEntry = new ExportEntry(Pcc);
+            outputEntry = new ExportEntry(mePackage);
             byte[] idata = ex.Data;
             PropertyCollection props = ex.GetProperties();
             int start = ex.GetPropertyStart();
@@ -2742,7 +2749,7 @@ namespace ME3Explorer
                 byte[] stackdummy = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
 
-                if (Pcc.Game != MEGame.ME3)
+                if (mePackage.Game != MEGame.ME3)
                 {
                     stackdummy = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
@@ -2754,26 +2761,26 @@ namespace ME3Explorer
                 res.Write(new byte[start], 0, start);
             }
             //store copy of names list in case something goes wrong
-            List<string> names = Pcc.Names.ToList();
+            List<string> names = mePackage.Names.ToList();
             try
             {
-                if (ex.Game != Pcc.Game)
+                if (ex.Game != mePackage.Game)
                 {
-                    props = EntryPruner.RemoveIncompatibleProperties(ex.FileRef, props, ex.ClassName, Pcc.Game);
+                    props = EntryPruner.RemoveIncompatibleProperties(ex.FileRef, props, ex.ClassName, mePackage.Game);
                 }
-                props.WriteTo(res, Pcc);
+                props.WriteTo(res, mePackage);
             }
             catch (Exception exception)
             {
                 //restore namelist in event of failure.
-                Pcc.setNames(names);
+                mePackage.setNames(names);
                 MessageBox.Show($"Error occured while trying to import {ex.ObjectName} : {exception.Message}");
                 outputEntry = null;
                 return false;
             }
 
             //takes care of slight header differences between ME1/2 and ME3
-            outputEntry.Header = ex.GenerateHeader(Pcc.Game);
+            outputEntry.Header = ex.GenerateHeader(mePackage.Game);
             bool dataAlreadySet = false;
 
             if (ex.FileRef.Game == MEGame.UDK)
@@ -2801,7 +2808,7 @@ namespace ME3Explorer
             {
                 //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
                 //for unsupported classes, this will just copy over the binary
-                res.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(ex, Pcc.Game).ToArray(Pcc));
+                res.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(ex, mePackage.Game).ToArray(mePackage));
             }
 
             int classValue = 0;
@@ -2812,14 +2819,14 @@ namespace ME3Explorer
             {
                 //The class of the export we are importing is an import. We should attempt to relink this.
                 ImportEntry portingFromClassImport = ex.FileRef.getUImport(ex.idxClass);
-                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, ex.FileRef, Pcc);
+                IEntry newClassImport = getOrAddCrossImportOrPackage(portingFromClassImport.GetFullPath, ex.FileRef, mePackage);
                 classValue = newClassImport.UIndex;
             }
             else if (ex.idxClass > 0)
             {
                 //Todo: Add cross mapping support as multi-mode will allow this to work now
                 ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxClass);
-                ExportEntry matchingExport = Pcc.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
+                ExportEntry matchingExport = mePackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
                 if (matchingExport != null)
                 {
                     classValue = matchingExport.UIndex;
@@ -2831,14 +2838,14 @@ namespace ME3Explorer
             {
                 //The class of the export we are importing is an import. We should attempt to relink this.
                 ImportEntry portingFromClassImport = ex.FileRef.getUImport(ex.idxClassParent);
-                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, ex.FileRef, Pcc);
+                IEntry newClassImport = getOrAddCrossImportOrPackage(portingFromClassImport.GetFullPath, ex.FileRef, mePackage);
                 superclass = newClassImport.UIndex;
             }
             else if (ex.idxClassParent > 0)
             {
                 //Todo: Add cross mapping support as multi-mode will allow this to work now
                 ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxClassParent);
-                ExportEntry matchingExport = Pcc.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
+                ExportEntry matchingExport = mePackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
                 if (matchingExport != null)
                 {
                     superclass = matchingExport.UIndex;
@@ -2849,13 +2856,13 @@ namespace ME3Explorer
             if (ex.idxArchtype < 0)
             {
                 ImportEntry portingFromClassImport = ex.FileRef.getUImport(ex.idxArchtype);
-                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, ex.FileRef, Pcc);
+                IEntry newClassImport = getOrAddCrossImportOrPackage(portingFromClassImport.GetFullPath, ex.FileRef, mePackage);
                 archetype = newClassImport.UIndex;
             }
             else if (ex.idxArchtype > 0)
             {
                 ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxArchtype);
-                ExportEntry matchingExport = Pcc.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
+                ExportEntry matchingExport = mePackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
                 if (matchingExport != null)
                 {
                     archetype = matchingExport.UIndex;
@@ -2867,11 +2874,11 @@ namespace ME3Explorer
                 outputEntry.Data = res.ToArray();
             }
             outputEntry.idxClass = classValue;
-            outputEntry.idxObjectName = Pcc.FindNameOrAdd(ex.FileRef.getNameEntry(ex.idxObjectName));
+            outputEntry.idxObjectName = mePackage.FindNameOrAdd(ex.FileRef.getNameEntry(ex.idxObjectName));
             outputEntry.idxLink = link;
             outputEntry.idxClassParent = superclass;
             outputEntry.idxArchtype = archetype;
-            Pcc.addExport(outputEntry);
+            mePackage.addExport(outputEntry);
 
             return true;
         }
@@ -3361,13 +3368,13 @@ namespace ME3Explorer
                     if (export.ObjectName == "SFXOperation_ObjectiveSpawnPoint")
                     {
                         Debug.WriteLine("Porting " + export.GetFullPath + "_" + export.indexValue);
-                        importExport(export, targetPersistentLevel.UIndex, out ExportEntry portedObjective);
+                        importExport(Pcc, export, targetPersistentLevel.UIndex, out ExportEntry portedObjective);
                         crossPCCObjectMap[export] = portedObjective;
                         itemsToAddToLevel.Add(portedObjective);
                         var child = export.GetProperty<ObjectProperty>("CollisionComponent");
                         ExportEntry collCyl = sourceFile.Exports[child.Value - 1];
                         Debug.WriteLine($"Porting {collCyl.GetFullPath}_{collCyl.indexValue}");
-                        importExport(collCyl, portedObjective.UIndex, out ExportEntry portedCollisionCylinder);
+                        importExport(Pcc, collCyl, portedObjective.UIndex, out ExportEntry portedCollisionCylinder);
                         crossPCCObjectMap[collCyl] = portedCollisionCylinder;
                     }
                 }

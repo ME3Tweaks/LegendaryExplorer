@@ -18,6 +18,14 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref SM3MaterialResource);
             sc.Serialize(ref SM2MaterialResource);
         }
+
+        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        {
+            var uIndexes = new List<(UIndex, string)>();
+            uIndexes.AddRange(SM3MaterialResource.GetUIndexes(game));
+            uIndexes.AddRange(SM2MaterialResource.GetUIndexes(game));
+            return uIndexes;
+        }
     }
     public class MaterialInstance : ObjectBinary
     {
@@ -31,6 +39,14 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref SM3StaticParameterSet);
             sc.Serialize(ref SM2StaticPermutationResource);
             sc.Serialize(ref SM2StaticParameterSet);
+        }
+
+        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        {
+            var uIndexes = new List<(UIndex, string)>();
+            uIndexes.AddRange(SM3StaticPermutationResource.GetUIndexes(game));
+            uIndexes.AddRange(SM2StaticPermutationResource.GetUIndexes(game));
+            return uIndexes;
         }
     }
 
@@ -79,6 +95,25 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public int unkInt2;
         public (int, float, int)[] unkList;
         //end ME1
+
+        public List<(UIndex, string)> GetUIndexes(MEGame game)
+        {
+            List<(UIndex uIndex, string)> uIndexes = TextureDependencyLengthMap.Keys().Select((uIndex, i) => (uIndex, $"TextureDependencyLengthMap[{i}]")).ToList();
+            if (game == MEGame.ME3)
+            {
+                uIndexes.AddRange(UniformExpressionTextures.Select((uIndex, i) => (uIndex, $"UniformExpressionTextures[{i}]")));
+            }
+            else
+            {
+                uIndexes.AddRange(UniformPixelVectorExpressions.OfType<MaterialUniformExpressionFlipbookParameter>()
+                                                               .Select((flipParam, i) => (flipParam.TextureIndex, $"UniformPixelVectorExpressions[{i}]")));
+                uIndexes.AddRange(UniformPixelScalarExpressions.OfType<MaterialUniformExpressionFlipbookParameter>()
+                                                               .Select((flipParam, i) => (flipParam.TextureIndex, $"UniformPixelScalarExpressions[{i}]")));
+                uIndexes.AddRange(Uniform2DTextureExpressions.Select((texParam, i) => (texParam.TextureIndex, $"Uniform2DTextureExpressions[{i}]")));
+                uIndexes.AddRange(UniformCubeTextureExpressions.Select((texParam, i) => (texParam.TextureIndex, $"UniformCubeTextureExpressions[{i}]")));
+            }
+            return uIndexes;
+        }
     }
 
     public class ME1MaterialUniformExpressionsElement

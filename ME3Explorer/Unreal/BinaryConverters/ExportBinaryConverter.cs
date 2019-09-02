@@ -20,22 +20,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 return new GenericObjectBinary(new byte[0]);
             }
 
+            if (From(export) is ObjectBinary objbin)
+            {
+                return objbin;
+            }
+
             switch (export.ClassName)
             {
-                case "World":
-                    return From<World>(export);
-                case "Polys":
-                    return From<Polys>(export);
-                case "DecalMaterial":
-                case "Material":
-                    return From<Material>(export);
-                case "MaterialInstanceConstant":
-                case "MaterialInstanceTimeVarying":
-                    return From<MaterialInstance>(export);
-                case "StaticMesh":
-                    return From<StaticMesh>(export);
-                case "SkeletalMesh":
-                    return From<SkeletalMesh>(export);
                 case "Level":
                     return new GenericObjectBinary(ConvertLevel(export, newGame));
                 case "Model":
@@ -447,7 +438,33 @@ namespace ME3Explorer.Unreal.BinaryConverters
             t.Serialize(new SerializingContainer2(new MemoryStream(export.getBinaryData()), export.FileRef, true, export.DataOffset + export.propsEnd()));
             return t;
         }
+
+        public static ObjectBinary From(ExportEntry export)
+        {
+            switch (export.ClassName)
+            {
+                case "World":
+                    return From<World>(export);
+                case "Polys":
+                    return From<Polys>(export);
+                case "DecalMaterial":
+                case "Material":
+                    return From<Material>(export);
+                case "MaterialInstanceConstant":
+                case "MaterialInstanceTimeVarying":
+                    return From<MaterialInstance>(export);
+                case "StaticMesh":
+                    return From<StaticMesh>(export);
+                case "SkeletalMesh":
+                    return From<SkeletalMesh>(export);
+                default:
+                    return null;
+            }
+        }
+
         protected abstract void Serialize(SerializingContainer2 sc);
+
+        public virtual List<(UIndex, string)> GetUIndexes(MEGame game) => new List<(UIndex, string)>();
 
         public virtual void WriteTo(Stream ms, IMEPackage pcc, int fileOffset)
         {

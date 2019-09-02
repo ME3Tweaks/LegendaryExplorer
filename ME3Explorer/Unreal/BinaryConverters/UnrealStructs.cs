@@ -7,9 +7,9 @@ using StreamHelpers;
 namespace ME3Explorer.Unreal.BinaryConverters
 {
     [DebuggerDisplay("UIndex | {" + nameof(value) + "}")]
-    public readonly struct UIndex : IEquatable<UIndex>
+    public sealed class UIndex : IEquatable<UIndex>
     {
-        public readonly int value;
+        public int value;
 
         public UIndex(int value)
         {
@@ -24,12 +24,17 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
         public bool Equals(UIndex other)
         {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
             return value == other.value;
         }
 
         public override bool Equals(object obj)
         {
-            return obj is UIndex other && Equals(other);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((UIndex)obj);
         }
 
         public override int GetHashCode()
@@ -39,12 +44,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
         public static bool operator ==(UIndex left, UIndex right)
         {
-            return left.Equals(right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(UIndex left, UIndex right)
         {
-            return !left.Equals(right);
+            return !Equals(left, right);
         }
 
         #endregion

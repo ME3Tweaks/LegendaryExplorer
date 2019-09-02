@@ -40,6 +40,22 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
             sc.Serialize(ref ExtraReferencedObjects);
         }
+
+        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        {
+            var uIndexes = new List<(UIndex, string)> { (PersistentLevel, "PersistentLevel") };
+            if (game == MEGame.ME3)
+            {
+                uIndexes.Add((PersistentFaceFXAnimSet, "PersistentFaceFXAnimSet"));
+            }
+            else if (game == MEGame.ME1)
+            {
+                uIndexes.Add((DecalManager, "DecalManager"));
+            }
+            uIndexes.AddRange(ExtraReferencedObjects.Select((t, i) => (t, $"ExtraReferencedObjects[{i}]")));
+
+            return uIndexes;
+        }
     }
 
     public class LevelViewportInfo

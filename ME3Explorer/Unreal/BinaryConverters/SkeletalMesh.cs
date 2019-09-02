@@ -47,23 +47,15 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
         }
 
-        public IEnumerable<string> Relink(Dictionary<IEntry, IEntry> crossFileObjectMap, IMEPackage sourcePcc, ExportEntry destExport)
+        public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
-            var relinkFailedReport = new List<string>();
-            for (int i = 0; i < Materials.Length; i++)
-            {
-                if (crossFileObjectMap.TryGetValue(sourcePcc.getEntry((int)Materials[i]), out IEntry mappedEntry))
-                {
-                    Materials[i] = mappedEntry.UIndex;
-                }
-                else
-                {
-                    relinkFailedReport.Add($"{destExport.UIndex} {destExport.GetFullPath} binary relink error: SkeletalMesh referenced Material #{Materials[i]} is not in the mapping tree and could not be relinked");
-                    Materials[i] = 0;
-                }
-            }
+            List<(UIndex t, string)> uIndexes = Materials.Select((t, i) => (t, $"Materials[{i}]")).ToList();
 
-            return relinkFailedReport;
+            if (game == MEGame.ME3)
+            {
+                uIndexes.AddRange(ClothingAssets.Select((t, i) => (t, $"ClothingAssets[{i}]")));
+            }
+            return uIndexes;
         }
     }
 

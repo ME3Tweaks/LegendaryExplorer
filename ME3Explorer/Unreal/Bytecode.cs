@@ -4711,7 +4711,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        public static void RelinkFunctionForPorting(ExportEntry sourceExport, ExportEntry destinationExport, List<string> relinkFailedReport, Dictionary<IEntry, IEntry> crossFileRefObjectMap)
+        public static void RelinkFunctionForPorting(ExportEntry sourceExport, ExportEntry destinationExport, List<string> relinkFailedReport, IDictionary<IEntry, IEntry> crossFileRefObjectMap)
         {
             //Copy function bytes
             byte[] originalData = sourceExport.Data;
@@ -4786,7 +4786,7 @@ namespace ME3Explorer.Unreal
             destinationExport.Data = newExpData;
         }
 
-        private static void RelinkToken(Token t, byte[] newscript, ExportEntry sourceExport, ExportEntry destinationExport, List<string> relinkFailedReport, Dictionary<IEntry, IEntry> crossFileRefObjectMap)
+        private static void RelinkToken(Token t, byte[] newscript, ExportEntry sourceExport, ExportEntry destinationExport, List<string> relinkFailedReport, IDictionary<IEntry, IEntry> crossFileRefObjectMap)
         {
             Debug.WriteLine($"Attempting function relink on token at position {t.pos}. Number of listed relinkable items {t.inPackageReferences.Count}");
 
@@ -4819,7 +4819,7 @@ namespace ME3Explorer.Unreal
                         if (relinkItem.value < 0)
                         {
                             //Import
-                            ImportEntry newCrossImport = PackageEditorWPF.getOrAddCrossImport(sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath, sourceExport.FileRef, destinationExport.FileRef);
+                            IEntry newCrossImport = PackageEditorWPF.getOrAddCrossImportOrPackage(sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath, sourceExport.FileRef, destinationExport.FileRef);
                             if (newCrossImport == null)
                             {
                                 relinkFailedReport.Add($"0x{relinkItem.pos:X6} Function relink failed: Could not add cross referenced import: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");

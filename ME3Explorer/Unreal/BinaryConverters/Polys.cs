@@ -33,6 +33,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.Serialize(ref Elements[i]);
             }
         }
+
+        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        {
+            return new List<(UIndex, string)> { (Owner, "Owner") };
+        }
     }
     public class Poly
     {

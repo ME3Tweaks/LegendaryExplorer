@@ -85,6 +85,21 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 LightingGuid = Guid.NewGuid();
             }
         }
+
+        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        {
+            var uIndexes = new List<(UIndex, string)> {(BodySetup, "BodySetup")};
+
+            for (int i = 0; i < LODModels.Length; i++)
+            {
+                for (int j = 0; j < LODModels[i].Elements.Length; j++)
+                {
+                    uIndexes.Add((LODModels[i].Elements[j].Material, $"LODModels[{i}].Elements[{j}].Material"));
+                }
+            }
+
+            return uIndexes;
+        }
     }
 
     #region kDOPTree
