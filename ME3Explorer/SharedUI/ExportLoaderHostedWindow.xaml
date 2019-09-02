@@ -29,8 +29,11 @@
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
             <MenuItem Header="_File" Padding="4">
+                <MenuItem Header="Open" x:Name="OpenFileMenuItem" Command="{Binding OpenFileCommand}" />
                 <MenuItem Header="Save" x:Name="SaveFileMenuItem" Command="{Binding SaveCommand}" />
                 <MenuItem Header="Save As" x:Name="SaveFileAsMenuItem" Command="{Binding SaveAsCommand}" />
+                <Separator Visibility="{Binding SupportsRecents, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <MenuItem Name="Recents_MenuItem" Header="Recents" Visibility="{Binding SupportsRecents, Converter={StaticResource BoolToVisibilityConverter}}"/>
             </MenuItem>
             <MenuItem Header="Modified" IsEnabled="False" HorizontalAlignment="Right" Background="Yellow" Visibility="{Binding LoadedExport.EntryHasPendingChanges, Converter={StaticResource BoolToVisibilityConverter}}"/>
         </Menu>

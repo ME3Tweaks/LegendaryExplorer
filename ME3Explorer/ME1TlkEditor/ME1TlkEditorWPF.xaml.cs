@@ -28,6 +28,7 @@ namespace ME3Explorer.ME1TlkEditor
     /// </summary>
     public partial class ME1TlkEditorWPF : FileExportLoaderControl
     {
+        private TalkFile CurrentME2ME3TalkFile;
         public TLKStringRef[] StringRefs;
         public List<TLKStringRef> LoadedStrings; //Loaded TLK
         public ObservableCollectionExtended<TLKStringRef> CleanedStrings { get; } = new ObservableCollectionExtended<TLKStringRef>(); // Displayed
@@ -57,7 +58,6 @@ namespace ME3Explorer.ME1TlkEditor
         public ICommand SetIDCommand { get; set; }
         public ICommand DeleteStringCommand { get; set; }
         public bool hasPendingChanges { get; private set; }
-        public override string LoadedFile { get; set; }
 
         private void LoadCommands()
         {
@@ -127,6 +127,12 @@ namespace ME3Explorer.ME1TlkEditor
 
         //SirC "efficiency is next to godliness" way of Checking export is ME1/TLK
         public override bool CanParse(ExportEntry exportEntry) => exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "BioTlkFile";
+        public override void PoppedOut(MenuItem recentsMenuItem)
+        {
+            Recents_MenuItem = recentsMenuItem;
+            LoadRecentList();
+            RefreshRecent(false, null);
+        }
 
         /// <summary>
         /// Memory cleanup when this control is unloaded
@@ -365,17 +371,72 @@ namespace ME3Explorer.ME1TlkEditor
 
         public override void LoadFile(string filepath)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            UnloadExport();
+
+            TalkFile tf = new TalkFile();
+            tf.LoadTlkData(filepath);
+
+            LoadedStrings = tf.StringRefs.ToList(); //This is not binded to so reassigning is fine
+            CleanedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
+            CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //remove 0 or null strings.
+            editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
+            hasPendingChanges = false;
         }
 
         public override bool CanLoadFile()
         {
-            throw new NotImplementedException();
+            //this doesn't do any background threading so we can always load files
+            return true; 
         }
 
         internal override void OpenFile()
         {
-            throw new NotImplementedException();
+            OpenFileDialog d = new OpenFileDialog { Filter = "ME1 Package Files|*.pcc;*.u;*.upk|ME2/ME3 Talk Files|*.tlk"};
+            if (d.ShowDialog() == true)
+            {
+#if !DEBUG
+                try
+                {
+#endif
+                LoadFile(d.FileName);
+                AddRecent(d.FileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+#if !DEBUG
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+                }
+#endif
+            }
         }
+
+        public override void Save()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                CurrentLoadedExport.FileRef.save();
+            }
+            else if (CurrentME2ME3TalkFile != null)
+            {
+               // CurrentME2ME3TalkFile.
+            }
+            //throw new NotImplementedException();
+
+        }
+
+        public override void SaveAs()
+        {
+            //throw new NotImplementedException();
+        }
+
+        public override bool CanSave()
+        {
+            return true; //throw new NotImplementedException();
+        }
+
+        internal override string DataFolder { get; } = "TLKEditorWPF";
     }
 }

@@ -86,11 +86,6 @@ namespace ME3Explorer
             }
         }
 
-        private void Exit_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
-
         private void StartReadingTlkButton_Click(object sender, RoutedEventArgs e)
         {
             BusyReading(true);

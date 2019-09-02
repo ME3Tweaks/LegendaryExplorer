@@ -18,54 +18,93 @@ namespace ME3Explorer.SharedUI
     public partial class ExportLoaderHostedWindow : WPFBase
     {
         public ExportEntry LoadedExport { get; }
-        private readonly ExportLoaderControl hostedControl;
+        public readonly ExportLoaderControl HostedControl;
         public ObservableCollectionExtended<IndexedName> NamesList { get; } = new ObservableCollectionExtended<IndexedName>();
+        public bool SupportsRecents => HostedControl is FileExportLoaderControl;
         public ExportLoaderHostedWindow(ExportLoaderControl hostedControl, ExportEntry exportToLoad)
         {
             DataContext = this;
-            this.hostedControl = hostedControl;
+            this.HostedControl = hostedControl;
             this.LoadedExport = exportToLoad;
             NamesList.ReplaceAll(LoadedExport.FileRef.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
             LoadCommands();
             InitializeComponent();
+            HostedControl.PoppedOut(Recents_MenuItem);
             RootPanel.Children.Add(hostedControl);
         }
 
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
         public ICommand LoadFileCommand { get; set; }
+        public ICommand OpenFileCommand { get; set; }
         private void LoadCommands()
         {
-            SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
-            SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
+            SaveCommand = new GenericCommand(SavePackage, CanSave);
+            SaveAsCommand = new GenericCommand(SavePackageAs, CanSave);
             LoadFileCommand = new GenericCommand(LoadFile, CanLoadFile);
+            OpenFileCommand = new GenericCommand(OpenFile, CanLoadFile);
+
+        }
+
+        private bool CanSave()
+        {
+            if (HostedControl is FileExportLoaderControl felc)
+            {
+                return felc.CanSave();
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private void OpenFile()
+        {
+            if (HostedControl is FileExportLoaderControl felc)
+            {
+                felc.OpenFile();
+            }
         }
 
         private bool CanLoadFile()
         {
-            return hostedControl is FileExportLoaderControl felc && felc.CanLoadFile();
+            return HostedControl is FileExportLoaderControl felc && felc.CanLoadFile();
         }
 
         private void LoadFile()
         {
-            var felc = hostedControl as FileExportLoaderControl;
+            var felc = HostedControl as FileExportLoaderControl;
             felc.OpenFile();
         }
 
         private void SavePackageAs()
         {
-            string extension = Path.GetExtension(Pcc.FilePath);
-            SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
-            if (d.ShowDialog() == true)
+            if (HostedControl is FileExportLoaderControl felc)
             {
-                Pcc.save(d.FileName);
-                MessageBox.Show("Done");
+                felc.SaveAs();
+            }
+            else
+            {
+                string extension = Path.GetExtension(Pcc.FilePath);
+                SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
+                if (d.ShowDialog() == true)
+                {
+                    Pcc.save(d.FileName);
+                    MessageBox.Show("Done");
+                }
             }
         }
 
         private void SavePackage()
         {
-            Pcc.save();
+            if (HostedControl is FileExportLoaderControl felc)
+            {
+                felc.Save();
+            }
+            else
+            {
+                Pcc.save();
+            }
         }
 
         private bool PackageIsLoaded()
@@ -78,9 +117,9 @@ namespace ME3Explorer.SharedUI
         {
             if (updates.Any(x => x.change == PackageChange.Names))
             {
-                hostedControl.SignalNamelistAboutToUpdate();
+                HostedControl.SignalNamelistAboutToUpdate();
                 NamesList.ReplaceAll(Pcc.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
-                hostedControl.SignalNamelistChanged();
+                HostedControl.SignalNamelistChanged();
             }
 
             //Put code to reload the export here
@@ -89,7 +128,7 @@ namespace ME3Explorer.SharedUI
                 if ((update.change == PackageChange.ExportAdd || update.change == PackageChange.ExportData)
                     && update.index == LoadedExport.Index)
                 {
-                    hostedControl.LoadExport(LoadedExport); //reload export
+                    HostedControl.LoadExport(LoadedExport); //reload export
                     return;
                 }
             }
@@ -100,7 +139,7 @@ namespace ME3Explorer.SharedUI
             Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
             {
                 LoadMEPackage(LoadedExport.FileRef.FilePath); //This will register the tool and assign a reference to it. Since this export is already in memory we will just reference the existing package instead.
-                hostedControl.LoadExport(LoadedExport);
+                HostedControl.LoadExport(LoadedExport);
                 OnPropertyChanged(nameof(CurrentFile));
             }));
         }
@@ -109,7 +148,7 @@ namespace ME3Explorer.SharedUI
         {
             if (!e.Cancel)
             {
-                hostedControl.Dispose();
+                HostedControl.Dispose();
             }
         }
     }

@@ -20,6 +20,11 @@ namespace ME3Explorer
         public abstract bool CanParse(ExportEntry exportEntry);
 
         /// <summary>
+        /// Called when the control is being popped out. Allows subcontrol to updated UI to account for more space than when embedded in a tool
+        /// </summary>
+        public abstract void PoppedOut(MenuItem recentsMenuItem);
+
+        /// <summary>
         /// The list of supported games that this loader control can handle. Typically used by CanParse().
         /// </summary>
         private ExportEntry _currentLoadedExport;

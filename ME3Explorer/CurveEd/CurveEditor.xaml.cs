@@ -227,5 +227,10 @@ namespace ME3Explorer.CurveEd
                 }
             }
         }
+
+        public override void PoppedOut(MenuItem recentsMenuItem)
+        {
+            //throw new NotImplementedException();
+        }
     }
 }

@@ -708,5 +708,10 @@ namespace ME3Explorer.FaceFX
             FaceFX.Save();
             updateAnimListBox();
         }
+
+        public override void PoppedOut(MenuItem recentsMenuItem)
+        {
+            //throw new NotImplementedException();
+        }
     }
 }
