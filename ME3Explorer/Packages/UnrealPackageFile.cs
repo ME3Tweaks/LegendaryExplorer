@@ -30,7 +30,7 @@ namespace ME3Explorer.Packages
 
         #region Names
         protected uint namesAdded;
-        protected List<string> names;
+        protected List<string> names = new List<string>();
         public IReadOnlyList<string> Names => names;
 
         public bool isName(int index) => index >= 0 && index < names.Count;
@@ -96,7 +96,7 @@ namespace ME3Explorer.Packages
         #endregion
 
         #region Exports
-        protected List<ExportEntry> exports;
+        protected List<ExportEntry> exports = new List<ExportEntry>();
         public IReadOnlyList<ExportEntry> Exports => exports;
 
         public bool isUExport(int uindex) => uindex > 0 && uindex <= exports.Count;
@@ -122,7 +122,7 @@ namespace ME3Explorer.Packages
         #endregion
 
         #region Imports
-        protected List<ImportEntry> imports;
+        protected List<ImportEntry> imports = new List<ImportEntry>();
         public IReadOnlyList<ImportEntry> Imports => imports;
 
         public bool isUImport(int uindex) => (uindex < 0 && Math.Abs(uindex) <= ImportCount);

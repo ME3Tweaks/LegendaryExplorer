@@ -192,6 +192,7 @@ namespace ME3Explorer
         public ICommand BulkImportSWFCommand { get; set; }
 
         public ICommand OpenFileCommand { get; set; }
+        public ICommand NewFileCommand { get; set; }
         public ICommand SaveFileCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
         public ICommand FindCommand { get; set; }
@@ -231,6 +232,7 @@ namespace ME3Explorer
             PerformMultiRelinkCommand = new GenericCommand(PerformMultiRelink, CanPerformMultiRelink);
 
             OpenFileCommand = new GenericCommand(OpenFile);
+            NewFileCommand = new GenericCommand(NewFile);
             SaveFileCommand = new GenericCommand(SaveFile, PackageIsLoaded);
             SaveAsCommand = new GenericCommand(SaveFileAs, PackageIsLoaded);
             FindCommand = new GenericCommand(FocusSearch, PackageIsLoaded);
@@ -459,6 +461,26 @@ namespace ME3Explorer
                     MessageBox.Show("Unable to open file:\n" + ex.Message);
                 }
 #endif
+            }
+        }
+
+        private void NewFile()
+        {
+            string gameString = InputComboBoxWPF.GetValue(this, "Choose a game to create a file for:", new[] {"ME3", "ME2", "ME1"}, "ME3");
+            if (Enum.TryParse(gameString, out MEGame game))
+            {
+                var dlg = new SaveFileDialog
+                {
+                    Filter = game == MEGame.ME1 ? App.ME1FileFilter : App.ME3ME2FileFilter
+                };
+                if (dlg.ShowDialog() == true)
+                {
+                    MEPackageHandler.CreateAndSaveMePackage(dlg.FileName, game);
+                    LoadFile(dlg.FileName);
+                    AddRecent(dlg.FileName, false);
+                    SaveRecentList();
+                    RefreshRecent(true, RFiles);
+                }
             }
         }
 

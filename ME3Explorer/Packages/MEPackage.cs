@@ -99,7 +99,7 @@ namespace ME3Explorer.Packages
         #endregion
 
         static bool isInitialized;
-        public static Func<string, MEPackage> Initialize()
+        public static Func<string, MEGame, MEPackage> Initialize()
         {
             if (isInitialized)
             {
@@ -107,14 +107,23 @@ namespace ME3Explorer.Packages
             }
 
             isInitialized = true;
-            return f => new MEPackage(f);
+            return (f, g) => new MEPackage(f, g);
         }
 
-        private MEPackage(string filePath)
+        private MEPackage(string filePath, MEGame forceGame = MEGame.Unknown)
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(this));
 
             FilePath = Path.GetFullPath(filePath);
+
+            if (forceGame != MEGame.Unknown)
+            {
+                //new Package
+                Game = forceGame;
+                //reasonable defaults?
+                Flags = EPackageFlags.Cooked | EPackageFlags.AllowDownload | EPackageFlags.DisallowLazyLoading | EPackageFlags.RequireImportsAlreadyLoaded;
+                return;
+            }
 
             using (var fs = File.OpenRead(filePath))
             {
@@ -243,7 +252,6 @@ namespace ME3Explorer.Packages
                 }
 
                 //read namelist
-                names = new List<string>();
                 inStream.JumpTo(NameOffset);
                 for (int i = 0; i < NameCount; i++)
                 {
@@ -255,7 +263,6 @@ namespace ME3Explorer.Packages
                 }
 
                 //read importTable
-                imports = new List<ImportEntry>();
                 inStream.Seek(ImportOffset, SeekOrigin.Begin);
                 for (int i = 0; i < ImportCount; i++)
                 {
@@ -265,7 +272,6 @@ namespace ME3Explorer.Packages
                 }
 
                 //read exportTable (ExportEntry constructor reads export data)
-                exports = new List<ExportEntry>();
                 inStream.Seek(ExportOffset, SeekOrigin.Begin);
                 for (int i = 0; i < ExportCount; i++)
                 {

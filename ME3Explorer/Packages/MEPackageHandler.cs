@@ -18,7 +18,7 @@ namespace ME3Explorer.Packages
         public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
 
         static Func<string, UDKPackage> UDKConstructorDelegate;
-        static Func<string, MEPackage> MEConstructorDelegate;
+        static Func<string, MEGame, MEPackage> MEConstructorDelegate;
 
         public static void Initialize()
         {
@@ -47,7 +47,7 @@ namespace ME3Explorer.Packages
                     version == 512 && licenseVersion == 130 ||
                     version == 491 && licenseVersion == 1008)
                 {
-                    package = MEConstructorDelegate(pathToFile);
+                    package = MEConstructorDelegate(pathToFile, MEGame.Unknown);
                 }
                 else if (version == 868 && licenseVersion == 0)
                 {
@@ -85,6 +85,11 @@ namespace ME3Explorer.Packages
                 package.RegisterUse();
             }
             return package;
+        }
+
+        public static void CreateAndSaveMePackage(string path, MEGame game)
+        {
+            MEConstructorDelegate(path, game).save();
         }
 
         private static void Package_noLongerUsed(UnrealPackageFile sender)
