@@ -39,7 +39,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 if (sc.Game == MEGame.ME3 && kDOPTreeME3 == null)
                 {
-                    kDOPTreeME3 = KDOPTreeBuilder.ToCompact(kDOPTreeME1ME2, LODModels[0].PositionVertexBuffer);
+                    kDOPTreeME3 = KDOPTreeBuilder.ToCompact(kDOPTreeME1ME2, LODModels[0].PositionVertexBuffer.VertexData);
                 }
                 else if (sc.Game != MEGame.ME3 && kDOPTreeME1ME2 == null)
                 {
@@ -57,7 +57,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.Serialize(ref kDOPTreeME1ME2);
             }
             sc.Serialize(ref InternalVersion);
-            sc.Serialize(ref LODModels, StaticMeshSCExt.Serialize);
+            sc.Serialize(ref LODModels, SCExt.Serialize);
             if (sc.Game == MEGame.ME1)
             {
                 sc.Serialize(ref unk2);
@@ -275,7 +275,165 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public int[] Faces = new int[2];
     }
 
-    static class StaticMeshSCExt
+    public static class KDOPTreeBuilder
+    {
+        [DllImport("kDopTreeCompactor.dll")]
+        static extern void Compact(int numTriangles, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] [In, Out] kDopBuildTriangle[] tris, 
+                                  int numNodes, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] [In, Out] kDopCompressedNode[] nodes,
+                                  ref kDopUnCompressedNode rootBound);
+
+        [StructLayout(LayoutKind.Sequential, Size = 6)]
+        struct kDopCompressedNode
+        {
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 3)]
+            public byte[] Min;
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 3)]
+            public byte[] Max;
+
+            public static implicit operator kDOPCompact(kDopCompressedNode node)
+            {
+                var result = new kDOPCompact();
+                for (int i = 0; i < 3; i++)
+                {
+                    result.Min[i] = node.Min[i];
+                    result.Max[i] = node.Max[i];
+                }
+
+                return result;
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 24)]
+        struct kDopUnCompressedNode
+        {
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.R4, SizeConst = 3)]
+            public float[] Min;
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.R4, SizeConst = 3)]
+            public float[] Max;
+
+            public static implicit operator kDOP(kDopUnCompressedNode node)
+            {
+                var result = new kDOP();
+                for (int i = 0; i < 3; i++)
+                {
+                    result.Min[i] = node.Min[i];
+                    result.Max[i] = node.Max[i];
+                }
+
+                return result;
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 12)]
+        struct Vector
+        {
+            public float X;
+            public float Y;
+            public float Z;
+
+            public static implicit operator Vector(Vector3 vec) => new Vector {X = vec.X, Y = vec.Y, Z = vec.Z};
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 56)]
+        struct kDopBuildTriangle
+        {
+            public ushort Vertex1;
+            public ushort Vertex2;
+            public ushort Vertex3;
+            public ushort MaterialIndex;
+            public Vector Centroid;
+            public Vector V0;
+            public Vector V1;
+            public Vector V2;
+
+            public kDopBuildTriangle(ushort i1, ushort i2, ushort i3, ushort matIndex, Vector3 v0, Vector3 v1, Vector3 v2)
+            {
+                Vertex1 = i1;
+                Vertex2 = i2;
+                Vertex3 = i3;
+                MaterialIndex = matIndex;
+                V0 = v0;
+                V1 = v1;
+                V2 = v2;
+                Centroid = (v0 + v1 + v2) / 3f;
+            }
+            public kDopBuildTriangle(kDOPCollisionTriangle tri, Vector3 v0, Vector3 v1, Vector3 v2) 
+                : this(tri.Vertex1, tri.Vertex2, tri.Vertex3, tri.MaterialIndex, v0, v1, v2){}
+
+            public static implicit operator kDOPCollisionTriangle(kDopBuildTriangle buildTri) =>
+                new kDOPCollisionTriangle(buildTri.Vertex1, buildTri.Vertex2, buildTri.Vertex3, buildTri.MaterialIndex);
+        }
+
+        public static kDOPTreeCompact ToCompact(kDOPTree oldKDopTree, Vector3[] vertices)
+        {
+            var rootBound = new kDopUnCompressedNode
+            {
+                Min = new float[3],
+                Max = new float[3]
+            };
+            for (int i = 0; i < 3; i++)
+            {
+                rootBound.Max[i] = float.MaxValue;
+                rootBound.Min[i] = -float.MaxValue;
+            }
+
+            if (oldKDopTree.Triangles.IsEmpty())
+            {
+                return new kDOPTreeCompact
+                {
+                    RootBound = rootBound,
+                    Nodes = new kDOPCompact[0],
+                    Triangles = new kDOPCollisionTriangle[0]
+                };
+            }
+
+            var buildTriangles = new kDopBuildTriangle[oldKDopTree.Triangles.Length];
+            for (int i = 0; i < oldKDopTree.Triangles.Length; i++)
+            {
+                kDOPCollisionTriangle oldTri = oldKDopTree.Triangles[i];
+                buildTriangles[i] = new kDopBuildTriangle(oldTri, vertices[oldTri.Vertex1], vertices[oldTri.Vertex2], vertices[oldTri.Vertex3]);
+            }
+
+            int numNodes = 0;
+            if (buildTriangles.Length > 5)
+            {
+                numNodes = 1;
+                while ((buildTriangles.Length + numNodes - 1) / numNodes > 10)
+                {
+                    numNodes *= 2;
+                }
+                numNodes = 2 * numNodes;
+            }
+
+            var nodes = new kDopCompressedNode[numNodes];
+            for (int i = 0; i < numNodes; i++)
+            {
+                nodes[i].Min = new byte[3];
+                nodes[i].Max = new byte[3];
+                for (int j = 0; j < 3; j++)
+                {
+                    nodes[i].Min[j] = 0;
+                    nodes[i].Max[j] = 0;
+                }
+            }
+
+            Compact(buildTriangles.Length, buildTriangles, numNodes, nodes, ref rootBound);
+
+            return new kDOPTreeCompact
+            {
+                RootBound = rootBound,
+                Nodes = nodes.Select(node => (kDOPCompact)node).ToArray(),
+                Triangles = buildTriangles.Select(tri => (kDOPCollisionTriangle)tri).ToArray()
+            };
+        }
+    }
+}
+
+namespace ME3Explorer
+{
+    using Unreal.BinaryConverters;
+
+    public static partial class SCExt
     {
         public static void Serialize(this SerializingContainer2 sc, ref MeshEdge edge)
         {
@@ -304,7 +462,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref vBuff.NumVertices);
             int elementsize = 4;
             sc.Serialize(ref elementsize);
-            sc.Serialize(ref vBuff.VertexData, SCExt.Serialize);
+            sc.Serialize(ref vBuff.VertexData, Serialize);
         }
         public static void Serialize(this SerializingContainer2 sc, ref ColorVertexBuffer buff)
         {
@@ -323,7 +481,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 int elementsize = 4;
                 sc.Serialize(ref elementsize);
-                sc.Serialize(ref buff.VertexData, SCExt.Serialize);
+                sc.Serialize(ref buff.VertexData, Serialize);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref StaticMeshVertexBuffer buff)
@@ -418,7 +576,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
             int elementsize = 12;
             sc.Serialize(ref elementsize);
-            sc.Serialize(ref buff.VertexData, UnrealStructSCExt.Serialize);
+            sc.Serialize(ref buff.VertexData, Serialize);
         }
         public static void Serialize(this SerializingContainer2 sc, ref FragmentRange fRange)
         {
@@ -470,7 +628,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    sc.Serialize(ref tri.UVs[i,j]);
+                    sc.Serialize(ref tri.UVs[i, j]);
                 }
             }
             for (int i = 0; i < 3; i++)
@@ -541,14 +699,14 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref data.NumVertices);
             int elementSize = 2;
             sc.Serialize(ref elementSize);
-            sc.Serialize(ref data.IndexBuffer, SCExt.Serialize);
+            sc.Serialize(ref data.IndexBuffer, Serialize);
             elementSize = 2;
             sc.Serialize(ref elementSize);
-            sc.Serialize(ref data.WireframeIndexBuffer, SCExt.Serialize);
+            sc.Serialize(ref data.WireframeIndexBuffer, Serialize);
             elementSize = 16;
             sc.Serialize(ref elementSize);
             sc.Serialize(ref data.Edges, Serialize);
-            sc.Serialize(ref data.ShadowTriangleDoubleSided, SCExt.Serialize);
+            sc.Serialize(ref data.ShadowTriangleDoubleSided, Serialize);
             if (sc.Game == MEGame.ME1)
             {
                 sc.Serialize(ref data.unk1);
@@ -655,159 +813,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
             elementSize = 8;
             sc.Serialize(ref elementSize);
             sc.Serialize(ref kDopTree.Triangles, Serialize);
-        }
-    }
-
-    public static class KDOPTreeBuilder
-    {
-        [DllImport("kDopTreeCompactor.dll")]
-        static extern void Compact(int numTriangles, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] [In, Out] kDopBuildTriangle[] tris, 
-                                  int numNodes, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] [In, Out] kDopCompressedNode[] nodes,
-                                  ref kDopUnCompressedNode rootBound);
-
-        [StructLayout(LayoutKind.Sequential, Size = 6)]
-        struct kDopCompressedNode
-        {
-            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 3)]
-            public byte[] Min;
-            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 3)]
-            public byte[] Max;
-
-            public static implicit operator kDOPCompact(kDopCompressedNode node)
-            {
-                var result = new kDOPCompact();
-                for (int i = 0; i < 3; i++)
-                {
-                    result.Min[i] = node.Min[i];
-                    result.Max[i] = node.Max[i];
-                }
-
-                return result;
-            }
-        }
-
-        [StructLayout(LayoutKind.Sequential, Size = 24)]
-        struct kDopUnCompressedNode
-        {
-            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.R4, SizeConst = 3)]
-            public float[] Min;
-            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.R4, SizeConst = 3)]
-            public float[] Max;
-
-            public static implicit operator kDOP(kDopUnCompressedNode node)
-            {
-                var result = new kDOP();
-                for (int i = 0; i < 3; i++)
-                {
-                    result.Min[i] = node.Min[i];
-                    result.Max[i] = node.Max[i];
-                }
-
-                return result;
-            }
-        }
-
-        [StructLayout(LayoutKind.Sequential, Size = 12)]
-        struct Vector
-        {
-            public float X;
-            public float Y;
-            public float Z;
-
-            public static implicit operator Vector(Vector3 vec) => new Vector {X = vec.X, Y = vec.Y, Z = vec.Z};
-        }
-
-        [StructLayout(LayoutKind.Sequential, Size = 56)]
-        struct kDopBuildTriangle
-        {
-            public ushort Vertex1;
-            public ushort Vertex2;
-            public ushort Vertex3;
-            public ushort MaterialIndex;
-            public Vector Centroid;
-            public Vector V0;
-            public Vector V1;
-            public Vector V2;
-
-            public kDopBuildTriangle(ushort i1, ushort i2, ushort i3, ushort matIndex, Vector3 v0, Vector3 v1, Vector3 v2)
-            {
-                Vertex1 = i1;
-                Vertex2 = i2;
-                Vertex3 = i3;
-                MaterialIndex = matIndex;
-                V0 = v0;
-                V1 = v1;
-                V2 = v2;
-                Centroid = (v0 + v1 + v2) / 3f;
-            }
-            public kDopBuildTriangle(kDOPCollisionTriangle tri, Vector3 v0, Vector3 v1, Vector3 v2) 
-                : this(tri.Vertex1, tri.Vertex2, tri.Vertex3, tri.MaterialIndex, v0, v1, v2){}
-
-            public static implicit operator kDOPCollisionTriangle(kDopBuildTriangle buildTri) =>
-                new kDOPCollisionTriangle(buildTri.Vertex1, buildTri.Vertex2, buildTri.Vertex3, buildTri.MaterialIndex);
-        }
-
-        public static kDOPTreeCompact ToCompact(kDOPTree oldKDopTree, PositionVertexBuffer posVertBuff)
-        {
-            var rootBound = new kDopUnCompressedNode
-            {
-                Min = new float[3],
-                Max = new float[3]
-            };
-            for (int i = 0; i < 3; i++)
-            {
-                rootBound.Max[i] = float.MaxValue;
-                rootBound.Min[i] = -float.MaxValue;
-            }
-
-            if (oldKDopTree.Triangles.IsEmpty())
-            {
-                return new kDOPTreeCompact
-                {
-                    RootBound = rootBound,
-                    Nodes = new kDOPCompact[0],
-                    Triangles = new kDOPCollisionTriangle[0]
-                };
-            }
-
-            var buildTriangles = new kDopBuildTriangle[oldKDopTree.Triangles.Length];
-            for (int i = 0; i < oldKDopTree.Triangles.Length; i++)
-            {
-                kDOPCollisionTriangle oldTri = oldKDopTree.Triangles[i];
-                buildTriangles[i] = new kDopBuildTriangle(oldTri, posVertBuff.VertexData[oldTri.Vertex1], posVertBuff.VertexData[oldTri.Vertex2], posVertBuff.VertexData[oldTri.Vertex3]);
-            }
-
-            int numNodes = 0;
-            if (buildTriangles.Length > 5)
-            {
-                numNodes = 1;
-                while ((buildTriangles.Length + numNodes - 1) / numNodes > 10)
-                {
-                    numNodes *= 2;
-                }
-                numNodes = 2 * numNodes;
-            }
-
-            var nodes = new kDopCompressedNode[numNodes];
-            for (int i = 0; i < numNodes; i++)
-            {
-                nodes[i].Min = new byte[3];
-                nodes[i].Max = new byte[3];
-                for (int j = 0; j < 3; j++)
-                {
-                    nodes[i].Min[j] = 0;
-                    nodes[i].Max[j] = 0;
-                }
-            }
-
-            Compact(buildTriangles.Length, buildTriangles, numNodes, nodes, ref rootBound);
-
-            return new kDOPTreeCompact
-            {
-                RootBound = rootBound,
-                Nodes = nodes.Select(node => (kDOPCompact)node).ToArray(),
-                Triangles = buildTriangles.Select(tri => (kDOPCollisionTriangle)tri).ToArray()
-            };
         }
     }
 }

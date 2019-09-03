@@ -90,7 +90,7 @@ namespace ME3Explorer.Unreal.Classes
                     {
                         var paramValue = param.GetProp<ObjectProperty>("ParameterValue");
                         var texntry = export.FileRef.getEntry(paramValue.Value);
-                        if (texntry.ClassName == "Texture2D" && !Textures.Contains(texntry))
+                        if (texntry?.ClassName == "Texture2D" && !Textures.Contains(texntry))
                         {
                             Textures.Add(texntry);
                         }

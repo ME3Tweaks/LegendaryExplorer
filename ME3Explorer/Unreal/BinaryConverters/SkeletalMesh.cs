@@ -26,19 +26,19 @@ namespace ME3Explorer.Unreal.BinaryConverters
         protected override void Serialize(SerializingContainer2 sc)
         {
             sc.Serialize(ref Bounds);
-            sc.Serialize(ref Materials, UnrealStructSCExt.Serialize);
+            sc.Serialize(ref Materials, SCExt.Serialize);
             sc.Serialize(ref Origin);
             sc.Serialize(ref RotOrigin);
-            sc.Serialize(ref RefSkeleton, SkelMeshSCExt.Serialize);
+            sc.Serialize(ref RefSkeleton, SCExt.Serialize);
             sc.Serialize(ref SkeletalDepth);
-            sc.Serialize(ref LODModels, SkelMeshSCExt.Serialize);
+            sc.Serialize(ref LODModels, SCExt.Serialize);
             sc.Serialize(ref NameIndexMap, SCExt.Serialize, SCExt.Serialize);
-            sc.Serialize(ref PerPolyBoneKDOPs, SkelMeshSCExt.Serialize);
+            sc.Serialize(ref PerPolyBoneKDOPs, SCExt.Serialize);
 
             if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref BoneBreakNames, SCExt.Serialize);
-                sc.Serialize(ref ClothingAssets, UnrealStructSCExt.Serialize);
+                sc.Serialize(ref ClothingAssets, SCExt.Serialize);
             }
             else
             {
@@ -165,8 +165,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public kDOPTreeCompact kDOPTreeME3UDK;
         public Vector3[] CollisionVerts;
     }
+}
 
-    public static class SkelMeshSCExt
+namespace ME3Explorer
+{
+    using Unreal.BinaryConverters;
+
+    public static partial class SCExt
     {
         public static void Serialize(this SerializingContainer2 sc, ref MeshBone mb)
         {
@@ -266,7 +271,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref smc.BaseVertexIndex);
             sc.Serialize(ref smc.RigidVertices, Serialize);
             sc.Serialize(ref smc.SoftVertices, Serialize);
-            sc.Serialize(ref smc.BoneMap, SCExt.Serialize);
+            sc.Serialize(ref smc.BoneMap, Serialize);
             sc.Serialize(ref smc.NumRigidVertices);
             sc.Serialize(ref smc.NumSoftVertices);
             sc.Serialize(ref smc.MaxBoneInfluences);
@@ -342,33 +347,33 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
             int ushortSize = 2;
             sc.Serialize(ref ushortSize);
-            sc.Serialize(ref slm.IndexBuffer, SCExt.Serialize);
+            sc.Serialize(ref slm.IndexBuffer, Serialize);
             if (sc.Game != MEGame.UDK)
             {
-                sc.Serialize(ref slm.ShadowIndices, SCExt.Serialize);
+                sc.Serialize(ref slm.ShadowIndices, Serialize);
             }
-            sc.Serialize(ref slm.ActiveBoneIndices, SCExt.Serialize);
+            sc.Serialize(ref slm.ActiveBoneIndices, Serialize);
             if (sc.Game != MEGame.UDK)
             {
-                sc.Serialize(ref slm.ShadowTriangleDoubleSided, SCExt.Serialize);
+                sc.Serialize(ref slm.ShadowTriangleDoubleSided, Serialize);
             }
             sc.Serialize(ref slm.Chunks, Serialize);
             sc.Serialize(ref slm.Size);
             sc.Serialize(ref slm.NumVertices);
             if (sc.Game != MEGame.UDK)
             {
-                sc.Serialize(ref slm.Edges, StaticMeshSCExt.Serialize);
+                sc.Serialize(ref slm.Edges, Serialize);
             }
-            sc.Serialize(ref slm.RequiredBones, SCExt.Serialize);
+            sc.Serialize(ref slm.RequiredBones, Serialize);
             if (sc.Game == MEGame.UDK)
             {
                 int[] UDKRawPointIndices = sc.IsSaving ? Array.ConvertAll(slm.RawPointIndices, u => (int)u) : Array.Empty<int>();
-                sc.SerializeBulkData(ref UDKRawPointIndices, SCExt.Serialize);
+                sc.SerializeBulkData(ref UDKRawPointIndices, Serialize);
                 slm.RawPointIndices = Array.ConvertAll(UDKRawPointIndices, i => (ushort)i);
             }
             else
             {
-                sc.SerializeBulkData(ref slm.RawPointIndices, SCExt.Serialize);
+                sc.SerializeBulkData(ref slm.RawPointIndices, Serialize);
             }
             if (sc.Game == MEGame.UDK)
             {
@@ -387,7 +392,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         {
                             Position = vert.Position,
                             TangentX = vert.TangentX,
-                            TangentY = new PackedNormal(0,1,0,0), //¯\_(ツ)_/¯
+                            TangentY = new PackedNormal(0, 1, 0, 0), //¯\_(ツ)_/¯
                             TangentZ = vert.TangentZ,
                             UV = new Vector2D(vert.UV.X, vert.UV.Y),
                             InfluenceBones = vert.InfluenceBones.TypedClone(),
@@ -406,7 +411,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 {
                     slm.VertexBufferGPUSkin = new SkeletalMeshVertexBuffer
                     {
-                        MeshExtension = new Vector3(1,1,1),
+                        MeshExtension = new Vector3(1, 1, 1),
                         NumTexCoords = 1,
                         VertexData = new GPUSkinVertex[slm.ME1VertexBufferGPUSkin.Length]
                     };
@@ -444,7 +449,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 int elementSize = 2;
                 sc.Serialize(ref elementSize);
                 ushort[] secondIndexBuffer = new ushort[0];
-                sc.Serialize(ref secondIndexBuffer, SCExt.Serialize);
+                sc.Serialize(ref secondIndexBuffer, Serialize);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref PerPolyBoneCollisionData bcd)
@@ -457,8 +462,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 if (sc.Game >= MEGame.ME3 && bcd.kDOPTreeME3UDK == null)
                 {
-                    //todo: need to convert kDOPTree to kDOPTreeCompact
-                    throw new NotImplementedException("Cannot convert this SkeletalMesh to ME3 or UDK format :(");
+                    bcd.kDOPTreeME3UDK = KDOPTreeBuilder.ToCompact(bcd.kDOPTreeME1ME2, bcd.CollisionVerts);
                 }
                 else if (sc.Game <= MEGame.ME2 && bcd.kDOPTreeME1ME2 == null)
                 {
@@ -475,7 +479,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.Serialize(ref bcd.kDOPTreeME1ME2);
             }
 
-            sc.Serialize(ref bcd.CollisionVerts, UnrealStructSCExt.Serialize);
+            sc.Serialize(ref bcd.CollisionVerts, Serialize);
         }
     }
 }

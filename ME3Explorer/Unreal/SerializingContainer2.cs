@@ -33,7 +33,7 @@ namespace ME3Explorer
         }
     }
 
-    public static class SCExt
+    public static partial class SCExt
     {
         public static void Serialize(this SerializingContainer2 sc, ref int val)
         {

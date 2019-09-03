@@ -457,6 +457,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<StaticMesh>(export);
                 case "SkeletalMesh":
                     return From<SkeletalMesh>(export);
+                case "StaticMeshComponent":
+                    return From<StaticMeshComponent>(export);
                 default:
                     return null;
             }

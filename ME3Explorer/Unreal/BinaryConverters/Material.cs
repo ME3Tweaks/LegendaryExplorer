@@ -401,8 +401,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
         }
     }
     #endregion
+}
 
-    public static class MaterialSCExt
+namespace ME3Explorer
+{
+    using Unreal.BinaryConverters;
+
+    public static partial class SCExt
     {
         public static void Serialize(this SerializingContainer2 sc, ref MaterialResource mres)
         {
@@ -410,8 +415,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 mres = new MaterialResource();
             }
-            sc.Serialize(ref mres.CompileErrors, SCExt.Serialize);
-            sc.Serialize(ref mres.TextureDependencyLengthMap, UnrealStructSCExt.Serialize, SCExt.Serialize);
+            sc.Serialize(ref mres.CompileErrors, Serialize);
+            sc.Serialize(ref mres.TextureDependencyLengthMap, Serialize, Serialize);
             sc.Serialize(ref mres.MaxTextureDependencyLength);
             sc.Serialize(ref mres.ID);
             sc.Serialize(ref mres.NumUserTexCoords);

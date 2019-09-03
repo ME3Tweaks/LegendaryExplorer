@@ -64,8 +64,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public Rotator CamRotation;
         public float CamOrthoZoom;
     }
+}
 
-    static class WorldSCExt
+namespace ME3Explorer
+{
+    using Unreal.BinaryConverters;
+
+    public static partial class SCExt
     {
         public static void Serialize(this SerializingContainer2 sc, ref LevelViewportInfo info)
         {

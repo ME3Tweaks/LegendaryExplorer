@@ -166,12 +166,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
             if (sc.Game == MEGame.ME3)
             {
-                sc.Serialize(ref msm.UniformPixelVectorExpressions, MaterialSCExt.Serialize);
-                sc.Serialize(ref msm.UniformPixelScalarExpressions, MaterialSCExt.Serialize);
-                sc.Serialize(ref msm.Uniform2DTextureExpressions, MaterialSCExt.Serialize);
-                sc.Serialize(ref msm.UniformCubeTextureExpressions, MaterialSCExt.Serialize);
-                sc.Serialize(ref msm.UniformVertexVectorExpressions, MaterialSCExt.Serialize);
-                sc.Serialize(ref msm.UniformVertexScalarExpressions, MaterialSCExt.Serialize);
+                sc.Serialize(ref msm.UniformPixelVectorExpressions, SCExt.Serialize);
+                sc.Serialize(ref msm.UniformPixelScalarExpressions, SCExt.Serialize);
+                sc.Serialize(ref msm.Uniform2DTextureExpressions, SCExt.Serialize);
+                sc.Serialize(ref msm.UniformCubeTextureExpressions, SCExt.Serialize);
+                sc.Serialize(ref msm.UniformVertexVectorExpressions, SCExt.Serialize);
+                sc.Serialize(ref msm.UniformVertexScalarExpressions, SCExt.Serialize);
                 sc.ms.SkipInt32();
             }
         }

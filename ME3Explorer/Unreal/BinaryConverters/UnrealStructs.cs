@@ -167,8 +167,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public Vector3 Center;
         public float W;
     }
+}
 
-    public static class UnrealStructSCExt
+namespace ME3Explorer
+{
+    using Unreal.BinaryConverters;
+
+    public static partial class SCExt
     {
         public static void Serialize(this SerializingContainer2 sc, ref UIndex uidx)
         {

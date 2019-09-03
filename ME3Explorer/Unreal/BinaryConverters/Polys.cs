@@ -70,8 +70,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public float DiffuseBoost;
         public float SpecularBoost;
     }
+}
 
-    static class PolysSCExt
+namespace ME3Explorer
+{
+    using Unreal.BinaryConverters;
+
+    public static partial class SCExt
     {
         public static void Serialize(this SerializingContainer2 sc, ref LightmassPrimitiveSettings lps)
         {

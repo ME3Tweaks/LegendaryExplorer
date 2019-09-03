@@ -13,6 +13,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 using ME3Explorer.Scene3D;
+using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.ME3Enums;
 using StreamHelpers;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
@@ -378,17 +379,6 @@ namespace ME3Explorer
             }
 
             return subnodes;
-        }
-
-        enum ELightMapType
-        {
-            LMT_None,
-            LMT_1D,
-            LMT_2D,
-            LMT_3, //speculative name. No idea what the ones after LMT_2D are actually called 
-            LMT_4,
-            LMT_5,
-            LMT_6
         }
 
         private List<ITreeItem> StartFluidSurfaceComponentScan(byte[] data, ref int binarystart)
@@ -6445,11 +6435,12 @@ namespace ME3Explorer
 
         }
 
-        private List<ITreeItem> StartStaticMeshScan(byte[] data, ref int binarystart)
+        private IEnumerable<ITreeItem> StartStaticMeshScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
             try
             {
+                var matOffsets = new List<long>();
                 var bin = new MemoryStream(data);
                 bin.JumpTo(binarystart);
 
@@ -6473,75 +6464,79 @@ namespace ME3Explorer
                         MakeInt32Node(bin, "BulkDataOffsetInFile"),
                         new BinInterpNode(bin.Position, $"RawTriangles ({count})")
                         {
-                            Items = ReadList(count, j => new BinInterpNode(bin.Position, $"{j}")
+                            Items = ReadList(count, j =>
                             {
-                                Items =
+                                matOffsets.Add(bin.Position);
+                                return new BinInterpNode(bin.Position, $"{j}")
                                 {
-                                    new BinInterpNode(bin.Position, "Vertices")
+                                    Items =
                                     {
-                                        Items = ReadList(3, k => MakeVectorNode(bin, $"{k}"))
-                                    },
-                                    new BinInterpNode(bin.Position, "UVs")
-                                    {
-                                        Items = ReadList(3, k => new BinInterpNode(bin.Position, $"UV[{k}]")
+                                        new BinInterpNode(bin.Position, "Vertices")
                                         {
-                                            Items = ReadList(8, l => MakeVector2DNode(bin, $"{l}"))
+                                            Items = ReadList(3, k => MakeVectorNode(bin, $"{k}"))
+                                        },
+                                        new BinInterpNode(bin.Position, "UVs")
+                                        {
+                                            Items = ReadList(3, k => new BinInterpNode(bin.Position, $"UV[{k}]")
+                                            {
+                                                Items = ReadList(8, l => MakeVector2DNode(bin, $"{l}"))
+                                            })
+                                        },
+                                        new BinInterpNode(bin.Position, "Colors")
+                                        {
+                                            Items = ReadList(3, k => MakeColorNode(bin, $"{k}"))
+                                        },
+                                        MakeInt32Node(bin, "MaterialIndex"),
+                                        ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[] {MakeInt32Node(bin, "FragmentIndex")}),
+                                        MakeUInt32Node(bin, "SmoothingMask"),
+                                        MakeInt32Node(bin, "NumUVs"),
+                                        ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                                        {
+                                            new BinInterpNode(bin.Position, "TangentX")
+                                            {
+                                                Items = ReadList(3, k => MakeVectorNode(bin, $"{k}"))
+                                            },
+                                            new BinInterpNode(bin.Position, "TangentY")
+                                            {
+                                                Items = ReadList(3, k => MakeVectorNode(bin, $"{k}"))
+                                            },
+                                            new BinInterpNode(bin.Position, "TangentZ")
+                                            {
+                                                Items = ReadList(3, k => MakeVectorNode(bin, $"{k}"))
+                                            },
+                                            MakeBoolIntNode(bin, "bOverrideTangentBasis")
                                         })
-                                    },
-                                    new BinInterpNode(bin.Position, "Colors")
-                                    {
-                                        Items = ReadList(3, k => MakeColorNode(bin, $"{k}"))
-                                    },
-                                    MakeInt32Node(bin, "MaterialIndex"),
-                                    ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]{MakeInt32Node(bin, "FragmentIndex")}),
-                                    MakeUInt32Node(bin, "SmoothingMask"),
-                                    MakeInt32Node(bin, "NumUVs"),
-                                    ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
-                                    {
-                                        new BinInterpNode(bin.Position, "TangentX")
-                                        {
-                                            Items = ReadList(3, k => MakeVectorNode(bin, $"{k}"))
-                                        },
-                                        new BinInterpNode(bin.Position, "TangentY")
-                                        {
-                                            Items = ReadList(3, k => MakeVectorNode(bin, $"{k}"))
-                                        },
-                                        new BinInterpNode(bin.Position, "TangentZ")
-                                        {
-                                            Items = ReadList(3, k => MakeVectorNode(bin, $"{k}"))
-                                        },
-                                        MakeBoolIntNode(bin, "bOverrideTangentBasis")
-                                    })
-                                }
+                                    }
+                                };
                             })
                         },
-                        MakeArrayNode(bin, "Elements", j => new BinInterpNode(bin.Position, $"{j}")
+                        MakeArrayNode(bin, "Elements", j =>
                         {
-                            Items =
+                            matOffsets.Add(bin.Position);
+                            BinInterpNode node = new BinInterpNode(bin.Position, $"{j}");
+                            node.Items.Add(MakeEntryNode(bin, "Material"));
+                            node.Items.Add(MakeBoolIntNode(bin, "EnableCollision"));
+                            node.Items.Add(MakeBoolIntNode(bin, "OldEnableCollision"));
+                            node.Items.Add(MakeBoolIntNode(bin, "bEnableShadowCasting"));
+                            node.Items.Add(MakeUInt32Node(bin, "FirstIndex"));
+                            node.Items.Add(MakeUInt32Node(bin, "NumTriangles"));
+                            node.Items.Add(MakeUInt32Node(bin, "MinVertexIndex"));
+                            node.Items.Add(MakeUInt32Node(bin, "MaxVertexIndex"));
+                            node.Items.Add(MakeInt32Node(bin, "MaterialIndex"));
+                            node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
                             {
-                                MakeEntryNode(bin, "Material"),
-                                MakeBoolIntNode(bin, "EnableCollision"),
-                                MakeBoolIntNode(bin, "OldEnableCollision"),
-                                MakeBoolIntNode(bin, "bEnableShadowCasting"),
-                                MakeUInt32Node(bin, "FirstIndex"),
-                                MakeUInt32Node(bin, "NumTriangles"),
-                                MakeUInt32Node(bin, "MinVertexIndex"),
-                                MakeUInt32Node(bin, "MaxVertexIndex"),
-                                MakeInt32Node(bin, "MaterialIndex"),
-                                ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                                MakeArrayNode(bin, "Fragments", k => new BinInterpNode(bin.Position, $"{k}")
                                 {
-                                    MakeArrayNode(bin, "Fragments", k => new BinInterpNode(bin.Position, $"{k}")
+                                    Items =
                                     {
-                                        Items =
-                                        {
-                                            MakeInt32Node(bin, "BaseIndex"),
-                                            MakeInt32Node(bin, "NumPrimitives")
-                                        }
-                                    }),
-                                    MakeBoolByteNode(bin, "LoadPlatformData")
-                                    //More stuff here if LoadPlatformData is true, but I don't think it ever is in ME3
-                                })
-                            }
+                                        MakeInt32Node(bin, "BaseIndex"),
+                                        MakeInt32Node(bin, "NumPrimitives")
+                                    }
+                                }),
+                                MakeBoolByteNode(bin, "LoadPlatformData")
+                                //More stuff here if LoadPlatformData is true, but I don't think it ever is in ME3
+                            }));
+                            return node;
                         }),
                         new BinInterpNode(bin.Position, "PositionVertexBuffer")
                         {
@@ -6666,6 +6661,16 @@ namespace ME3Explorer
                         subnodes.Add(MakeGuidNode(bin, "LightingGuid"));
                     }
                 }
+
+                return subnodes.Prepend(new BinInterpNode("Materials")
+                {
+                    IsExpanded = true,
+                    Items = ReadList(matOffsets.Count, i =>
+                    {
+                        bin.JumpTo(matOffsets[i]);
+                        return MakeEntryNode(bin, $"Material[{i}]");
+                    })
+                });
             }
             catch (Exception ex)
             {
