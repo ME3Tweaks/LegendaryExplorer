@@ -56,6 +56,14 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 sc.Serialize(ref kDOPTreeME1ME2);
             }
+
+            if (sc.IsSaving)
+            {
+                //This will improve loading times by preventing the engine from rebuilding the mesh
+                if (sc.Game == MEGame.ME1) InternalVersion = 15;
+                if (sc.Game == MEGame.ME2) InternalVersion = 16;
+                if (sc.Game == MEGame.ME3) InternalVersion = 18;
+            }
             sc.Serialize(ref InternalVersion);
             sc.Serialize(ref LODModels, SCExt.Serialize);
             if (sc.Game == MEGame.ME1)

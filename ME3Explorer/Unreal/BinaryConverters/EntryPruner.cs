@@ -14,11 +14,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
 {
     public static class EntryPruner
     {
-        public const string TrashPackageName = "ME3ExplorerTrashPackage";
-
         public static void TrashEntries(IMEPackage pcc, IEnumerable<IEntry> itemsToTrash)
         {
-            ExportEntry trashTopLevel = pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == TrashPackageName);
+            ExportEntry trashTopLevel = pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == UnrealPackageFile.TrashPackageName);
             ImportEntry packageImport = pcc.Imports.FirstOrDefault(x => x.GetFullPath == "Core.Package");
             if (packageImport == null)
             {
@@ -55,6 +53,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 }
                 trashTopLevel = TrashEntry(entry, trashTopLevel, packageImport.UIndex);
             }
+            pcc.RemoveTrailingTrash();
         }
 
         /// <summary>
@@ -95,13 +94,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 exp.ObjectFlags &= ~UnrealFlags.EObjectFlags.HasStack;
                 if (trashContainer == null)
                 {
-                    exp.idxObjectName = pcc.FindNameOrAdd(TrashPackageName);
+                    exp.idxObjectName = pcc.FindNameOrAdd(UnrealPackageFile.TrashPackageName);
                     exp.idxLink = 0;
                     if (exp.idxLink == exp.UIndex)
                     {
                         Debugger.Break();
                     }
-                    exp.PackageGUID = "ME3ExpTrashPackage".ToGuid(); //DO NOT EDIT THIS!!
+                    exp.PackageGUID = UnrealPackageFile.TrashPackageGuid;
                     trashContainer = exp;
                 }
                 else
@@ -172,7 +171,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         case ArrayProperty<ObjectProperty> asp:
                             for (int i = asp.Count - 1; i >= 0; i--)
                             {
-                                if (asp[i].Value == 0 || sourcePcc.getEntry(asp[i].Value) is IEntry entry && !entry.GetFullPath.StartsWith(TrashPackageName))
+                                if (asp[i].Value == 0 || sourcePcc.getEntry(asp[i].Value) is IEntry entry && !entry.GetFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
                                 {
                                     continue;
                                 }
@@ -206,7 +205,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                             break;
                         case ObjectProperty objectProperty:
                         {
-                            if (objectProperty.Value == 0 || sourcePcc.getEntry(objectProperty.Value) is IEntry entry && !entry.GetFullPath.StartsWith(TrashPackageName))
+                            if (objectProperty.Value == 0 || sourcePcc.getEntry(objectProperty.Value) is IEntry entry && !entry.GetFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
                             {
                                 newProps.Add(objectProperty);
                             }

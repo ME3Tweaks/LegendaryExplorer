@@ -332,7 +332,11 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public string ObjectName => FileRef.Names[idxObjectName];
+        public string ObjectName
+        {
+            get => FileRef.Names[idxObjectName];
+            set => idxObjectName = FileRef.FindNameOrAdd(value);
+        }
 
         public string ClassName
         {

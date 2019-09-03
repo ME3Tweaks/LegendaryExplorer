@@ -173,6 +173,12 @@ namespace ME3Explorer.Packages
         /// </summary>
         void setNames(List<string> list);
 
+        /// <summary>
+        /// Removes trashed imports and exports if they are at the end of their respective lists
+        /// can only remove from the end because doing otherwise would mess up the indexing
+        /// </summary>
+        void RemoveTrailingTrash();
+
         //saving
         void save();
         void save(string path);

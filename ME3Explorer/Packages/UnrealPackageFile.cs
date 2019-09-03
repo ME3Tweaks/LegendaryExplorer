@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms;
 
 namespace ME3Explorer.Packages
 {
@@ -83,7 +85,7 @@ namespace ME3Explorer.Packages
         {
             for (int i = 0; i < names.Count; i++)
             {
-                if (string.Compare(nameToFind, getNameEntry(i)) == 0)
+                if (String.Compare(nameToFind, getNameEntry(i)) == 0)
                     return i;
             }
             return -1;
@@ -183,6 +185,98 @@ namespace ME3Explorer.Packages
         }
         public bool isEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (uindex < 0 && -uindex <= ImportCount);
 
+        public void RemoveTrailingTrash()
+        {
+            ExportEntry trashPackage = exports.FirstOrDefault(exp => exp.ObjectName == TrashPackageName);
+            if (trashPackage == null)
+            {
+                return;
+            }
+            int trashPackageUIndex = trashPackage.UIndex;
+            //make sure the first trashed export is the trashpackage
+            foreach (ExportEntry exp in exports)
+            {
+                if (exp == trashPackage)
+                {
+                    //trashpackage is the first trashed export, so we're good
+                    break;
+                }
+                if (exp.idxLink == trashPackageUIndex)
+                {
+                    //turn this into trashpackage, turn old trashpackage into regular Trash, and point all trash entries to the new trashpackage
+                    exp.ObjectName = TrashPackageName;
+                    exp.idxLink = 0;
+                    exp.PackageGUID = TrashPackageGuid;
+
+                    trashPackage.ObjectName = "Trash";
+                    trashPackage.idxLink = exp.UIndex;
+                    trashPackage.PackageGUID = Guid.Empty;
+
+                    foreach (IEntry entry in trashPackage.GetChildren())
+                    {
+                        entry.idxLink = exp.UIndex;
+                    }
+
+                    trashPackage = exp;
+                    trashPackageUIndex = trashPackage.UIndex;
+                    break;
+                }
+            }
+
+
+            //remove imports
+            for (int i = ImportCount - 1; i >= 0; i--)
+            {
+                ImportEntry lastImport = imports[i];
+                if (lastImport.idxLink != trashPackageUIndex)
+                {
+                    //non-trash import, so stop removing
+                    break;
+                }
+
+                lastImport.PropertyChanged -= importChanged;
+                imports.RemoveAt(i);
+                updateTools(PackageChange.ImportRemove, i);
+            }
+            if (ImportCount != imports.Count)
+            {
+                ImportCount = imports.Count;
+                OnPropertyChanged(nameof(ImportCount));
+            }
+
+            //remove exports
+            for (int i = ExportCount - 1; i >= 0; i--)
+            {
+                ExportEntry lastExport = exports[i];
+                if (lastExport.idxLink != trashPackageUIndex)
+                {
+                    //non-trash export, so stop removing
+                    break;
+                }
+
+                lastExport.PropertyChanged -= importChanged;
+                exports.RemoveAt(i);
+                updateTools(PackageChange.ExportRemove, i);
+            }
+            if (ExportCount != exports.Count)
+            {
+                ExportCount = exports.Count;
+                OnPropertyChanged(nameof(ExportCount));
+            }
+            //if there are no more trashed imports or exports, and if the TrashPackage is the last export, remove it
+            if (exports.LastOrDefault() is ExportEntry finalExport && finalExport == trashPackage && trashPackage.GetChildren().IsEmpty())
+            {
+                trashPackage.PropertyChanged -= importChanged;
+                exports.Remove(trashPackage);
+                updateTools(PackageChange.ExportRemove, ExportCount - 1);
+            }
+            if (ExportCount != exports.Count)
+            {
+                ExportCount = exports.Count;
+                OnPropertyChanged(nameof(ExportCount));
+            }
+        }
+
         #endregion
 
         private DateTime? lastSaved;
@@ -258,7 +352,7 @@ namespace ME3Explorer.Packages
             });
         }
 
-        public void Release(System.Windows.Window wpfWindow = null, System.Windows.Forms.Form winForm = null)
+        public void Release(Window wpfWindow = null, Form winForm = null)
         {
             if (wpfWindow != null)
             {
@@ -375,5 +469,8 @@ namespace ME3Explorer.Packages
             }
         }
         #endregion
+
+        public const string TrashPackageName = "ME3ExplorerTrashPackage";
+        public static Guid TrashPackageGuid = "ME3ExpTrashPackage".ToGuid(); //DO NOT EDIT!!
     }
 }

@@ -716,7 +716,7 @@ namespace ME3Explorer
 
                 var itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex).Select(tvEntry => tvEntry.Entry);
 
-                if (selected.Entry is IEntry ent && ent.GetFullPath.StartsWith("ME3ExplorerTrashPackage"))
+                if (selected.Entry is IEntry ent && ent.GetFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
                 {
                     MessageBox.Show("Cannot trash an already trashed item.");
                     return;
@@ -729,7 +729,7 @@ namespace ME3Explorer
         private void ReindexObjectByName()
         {
             if (!TryGetSelectedExport(out ExportEntry export)) return;
-            if (export.GetFullPath.StartsWith("ME3ExplorerTrashPackage"))
+            if (export.GetFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
             {
                 MessageBox.Show("Cannot reindex exports that are part of ME3ExplorerTrashPackage. All items in this package should have an object index of 0.");
                 return;
@@ -1084,7 +1084,7 @@ namespace ME3Explorer
             foreach (ExportEntry exp in Pcc.Exports)
             {
                 string key = exp.GetInstancedFullPath;
-                if (key.StartsWith("ME3ExplorerTrashPackage")) continue; //Do not report these as requiring re-indexing.
+                if (key.StartsWith(UnrealPackageFile.TrashPackageName)) continue; //Do not report these as requiring re-indexing.
                 if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<int> indexList))
                 {
                     indexList = new List<int>();
@@ -1567,12 +1567,10 @@ namespace ME3Explorer
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
                 Title = $"Package Editor WPF - {s}";
                 InterpreterTab_Interpreter.UnloadExport();
-                //InitializeTreeView();
 
                 QueuedGotoNumber = goToIndex;
 
-                Task.Run(InitializeTreeViewBackground)
-                    .ContinueWithOnUIThread(InitializeTreeViewBackground_Completed);
+                InitializeTreeView();
 
                 AddRecent(s, false);
                 SaveRecentList();
@@ -1668,56 +1666,12 @@ namespace ME3Explorer
         {
 
             IsBusy = true;
-            //IsBusyText = "Loading " + System.IO.Path.GetFileName(Pcc.FileName);
             if (Pcc == null)
             {
                 return;
             }
-            IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
-            IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
-            AllEntriesList = new List<string>();
-            int importsOffset = Exports.Count;
-
-            TreeViewEntry rootEntry = new TreeViewEntry(null, Path.GetFileName(Pcc.FilePath)) { IsExpanded = true };
-            AllTreeViewNodesX.Add(rootEntry);
-
-            foreach (ExportEntry exp in Exports)
-            {
-                AllTreeViewNodesX.Add(new TreeViewEntry(exp));
-            }
-
-            foreach (ImportEntry imp in Imports)
-            {
-                AllTreeViewNodesX.Add(new TreeViewEntry(imp));
-            }
-
-            //configure links
-            //Order: 0 = Root, [Exports], [Imports], <extra, new stuff>
-            var itemsToRemove = new List<TreeViewEntry>();
-            foreach (TreeViewEntry entry in AllTreeViewNodesX)
-            {
-                if (entry.Entry != null)
-                {
-                    int tvLink = entry.Entry.idxLink;
-                    if (tvLink < 0)
-                    {
-                        //import
-                        //Debug.WriteLine("import tvlink " + tvLink);
-
-                        tvLink = Exports.Count + Math.Abs(tvLink);
-                        //Debug.WriteLine("Linking " + entry.Entry.GetFullPath + " to index " + tvLink);
-                    }
-
-                    TreeViewEntry parent = AllTreeViewNodesX[tvLink];
-                    parent.Sublinks.Add(entry);
-                    entry.Parent = parent;
-                    itemsToRemove.Add(entry); //remove from this level as we have added it to another already
-                }
-            }
-            var rootNodes = new ObservableCollectionExtended<TreeViewEntry>(AllTreeViewNodesX.Except(itemsToRemove).ToList());
-            AllTreeViewNodesX.ClearEx();
-            AllTreeViewNodesX.AddRange(rootNodes);
-            IsBusy = false;
+            Task.Run(InitializeTreeViewBackground)
+                .ContinueWithOnUIThread(InitializeTreeViewBackground_Completed);
         }
 
         #region Recents
@@ -1984,6 +1938,28 @@ namespace ME3Explorer
         public override void handleUpdate(List<PackageUpdate> updates)
         {
             List<PackageChange> changes = updates.Select(x => x.change).ToList();
+            if (changes.Contains(PackageChange.Names))
+            {
+                foreach (ExportLoaderControl elc in ExportLoaders.Keys)
+                {
+                    elc.SignalNamelistAboutToUpdate();
+                }
+                RefreshNames(updates.Where(x => x.change == PackageChange.Names).ToList());
+                foreach (ExportLoaderControl elc in ExportLoaders.Keys)
+                {
+                    elc.SignalNamelistChanged();
+                }
+            }
+            List<PackageUpdate> removeChanges = updates.Where(x => x.change == PackageChange.ExportRemove || x.change == PackageChange.ImportRemove).OrderBy(x => x.index).ToList();
+            if (removeChanges.Any())
+            {
+                InitializeTreeView();
+                ClassDropdownList.ReplaceAll(Pcc.Exports.Select(x => x.idxClass).Distinct().Select(Pcc.getObjectName).ToList().OrderBy(p => p));
+                MetadataTab_MetadataEditor.RefreshAllEntriesList(Pcc);
+                Preview();
+                return;
+            }
+
             bool importChanges = changes.Contains(PackageChange.Import) || changes.Contains(PackageChange.ImportAdd);
             bool exportNonDataChanges = changes.Contains(PackageChange.ExportHeader) || changes.Contains(PackageChange.ExportAdd);
             bool hasSelection = GetSelected(out int n);
@@ -2102,18 +2078,6 @@ namespace ME3Explorer
                 SuppressSelectionEvent = false;
             }
 
-            if (changes.Contains(PackageChange.Names))
-            {
-                foreach (ExportLoaderControl elc in ExportLoaders.Keys)
-                {
-                    elc.SignalNamelistAboutToUpdate();
-                }
-                RefreshNames(updates.Where(x => x.change == PackageChange.Names).ToList());
-                foreach (ExportLoaderControl elc in ExportLoaders.Keys)
-                {
-                    elc.SignalNamelistChanged();
-                }
-            }
 
             if (CurrentView == CurrentViewMode.Imports && importChanges ||
                 CurrentView == CurrentViewMode.Exports && exportNonDataChanges ||
@@ -2188,14 +2152,6 @@ namespace ME3Explorer
         private void Preview(bool isRefresh = false)
         {
             if (!TryGetSelectedEntry(out IEntry selectedEntry))
-            {
-                foreach(var ex in ExportLoaders.Keys)
-                {
-                    ex.UnloadExport();
-                }
-                return;
-            }
-            if (selectedEntry == null)
             {
                 foreach ((ExportLoaderControl exportLoader, TabItem tab) in ExportLoaders)
                 {
@@ -3966,7 +3922,7 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            var filePaths = /*MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Concat(*/MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values/*)*/.Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
+            var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);

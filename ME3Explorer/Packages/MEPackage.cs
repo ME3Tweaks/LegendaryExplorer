@@ -27,6 +27,8 @@ namespace ME3Explorer.Packages
         Names,
         ExportAdd,
         ImportAdd,
+        ExportRemove,
+        ImportRemove
     }
 
     [DebuggerDisplay("PackageUpdate | {change} on index {index}")]
@@ -959,9 +961,51 @@ namespace ME3Explorer.Packages
                 exports[i].Data = newData.ToArray();
             }
 
-            foreach (ExportEntry texport in exports.Where(exp => exp.IsTexture()))
+            if (newGame != MEGame.ME3)
             {
-                texport.WriteProperty(new BoolProperty(true, "NeverStream"));
+                foreach (ExportEntry texport in exports.Where(exp => exp.IsTexture()))
+                {
+                    texport.WriteProperty(new BoolProperty(true, "NeverStream"));
+                }
+            }
+            else if (exports.Any(exp => exp.IsTexture() && EmbeddedTextureViewer.GetTexture2DMipInfos(exp, null)
+                                                                                .Any(mip => mip.storageType == StorageTypes.pccLZO
+                                                                                         || mip.storageType == StorageTypes.pccZlib)))
+            {
+                //ME3 can't deal with compressed textures in a pcc, so we'll need to stuff them into a tfc
+                string tfcName = Path.GetFileNameWithoutExtension(FilePath);
+                using (var tfc = File.OpenWrite(Path.ChangeExtension(FilePath, "tfc")))
+                {
+                    Guid tfcGuid = Guid.NewGuid();
+                    tfc.WriteGuid(tfcGuid);
+
+                    foreach (ExportEntry texport in exports.Where(exp => exp.IsTexture()))
+                    {
+                        var mips = EmbeddedTextureViewer.GetTexture2DMipInfos(texport, null);
+                        var offsets = new List<int>();
+                        foreach (EmbeddedTextureViewer.Texture2DMipInfo mipInfo in mips)
+                        {
+                            if (mipInfo.storageType == StorageTypes.pccLZO || mipInfo.storageType == StorageTypes.pccZlib)
+                            {
+                                offsets.Add((int)tfc.Position);
+                                byte[] mip;
+                                if (mipInfo.storageType == StorageTypes.pccLZO)
+                                {
+                                    mip = TextureCompression.CompressTexture(EmbeddedTextureViewer.GetTextureData(mipInfo), StorageTypes.extZlib);
+                                }
+                                else
+                                {
+                                    mip = EmbeddedTextureViewer.GetTextureData(mipInfo, false);
+                                }
+                                tfc.WriteFromBuffer(mip);
+                            }
+                        }
+                        offsets.Add((int)tfc.Position);
+                        texport.setBinaryData(ExportBinaryConverter.ConvertTexture2D(texport, Game, offsets, StorageTypes.extZlib));
+                        texport.WriteProperty(new NameProperty(tfcName, "TextureFileCacheName"));
+                        texport.WriteProperty(tfcGuid.ToGuidStructProp("TFCFileGuid"));
+                    }
+                }
             }
 
             if (oldGame == MEGame.ME1 && newGame != MEGame.ME1)

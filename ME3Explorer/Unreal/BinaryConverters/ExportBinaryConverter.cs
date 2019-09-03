@@ -103,7 +103,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             return export.Data.Slice(0, export.GetPropertyStart());
         }
 
-        public static byte[] ConvertTexture2D(ExportEntry export, MEGame newGame)
+        public static byte[] ConvertTexture2D(ExportEntry export, MEGame newGame, List<int> offsets = null, StorageTypes newStorageType = StorageTypes.empty)
         {
             MemoryStream bin = new MemoryStream(export.getBinaryData());
             if (bin.Length == 0)
@@ -124,6 +124,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             int mipCount = bin.ReadInt32();
             os.WriteInt32(mipCount);
             List<EmbeddedTextureViewer.Texture2DMipInfo> mips = EmbeddedTextureViewer.GetTexture2DMipInfos(export, export.GetProperty<NameProperty>("TextureFileCacheName")?.Value);
+            int offsetIdx = 0;
             for (int i = 0; i < mipCount; i++)
             {
                 var storageType = (StorageTypes)bin.ReadInt32();
@@ -139,6 +140,16 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     case StorageTypes.pccLZO:
                     case StorageTypes.pccZlib:
                         texture = bin.ReadToBuffer(compressedSize);
+                        if (offsets != null)
+                        {
+                            texture = Array.Empty<byte>();
+                            fileOffset = offsets[offsetIdx++];
+                            compressedSize = offsets[offsetIdx] - fileOffset;
+                            if (newStorageType != StorageTypes.empty)
+                            {
+                                storageType = newStorageType;
+                            }
+                        }
                         break;
                     case StorageTypes.empty:
                         texture = new byte[0];
@@ -151,7 +162,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         }
                         else
                         {
-                            texture = new byte[0];
+                            texture = Array.Empty<byte>();
                         }
                         break;
 

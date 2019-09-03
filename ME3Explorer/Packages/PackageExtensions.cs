@@ -80,30 +80,46 @@ namespace ME3Explorer.Packages
 
             return false;
         }
+    }
 
-        public static bool IsTexture(this ExportEntry exportEntry)
+    public static class IEntryExtensions
+    {
+        public static bool IsTexture(this IEntry entry)
         {
-            return exportEntry.ClassName == "Texture2D" ||
-                   exportEntry.ClassName == "LightMapTexture2D" ||
-                   exportEntry.ClassName == "ShadowMapTexture2D" ||
-                   exportEntry.ClassName == "TerrainWeightMapTexture" ||
-                   exportEntry.ClassName == "TextureFlipBook";
+            return entry.ClassName == "Texture2D" ||
+                   entry.ClassName == "LightMapTexture2D" ||
+                   entry.ClassName == "ShadowMapTexture2D" ||
+                   entry.ClassName == "TerrainWeightMapTexture" ||
+                   entry.ClassName == "TextureFlipBook";
         }
 
-
-
-        public static bool IsDescendantOf(this ExportEntry export, ExportEntry ancestor)
+        public static bool IsDescendantOf(this IEntry entry, IEntry ancestor)
         {
-            IEntry exp = export;
-            while (exp.HasParent)
+            while (entry.HasParent)
             {
-                exp = exp.Parent;
-                if (exp == ancestor)
+                entry = entry.Parent;
+                if (entry == ancestor)
                 {
                     return true;
                 }
             }
             return false;
+        }
+
+        public static List<IEntry> GetChildren(this IEntry entry)
+        {
+            var kids = new List<IEntry>();
+            kids.AddRange(entry.FileRef.Exports.Where(export => export.idxLink == entry.UIndex));
+            kids.AddRange(entry.FileRef.Imports.Where(import => import.idxLink == entry.UIndex));
+            return kids;
+        }
+
+        public static List<IEntry> GetAllDescendants(this IEntry entry)
+        {
+            var kids = new List<IEntry>();
+            kids.AddRange(entry.FileRef.Exports.Where(export => export.IsDescendantOf(entry)));
+            kids.AddRange(entry.FileRef.Imports.Where(import => import.IsDescendantOf(entry)));
+            return kids;
         }
     }
 }

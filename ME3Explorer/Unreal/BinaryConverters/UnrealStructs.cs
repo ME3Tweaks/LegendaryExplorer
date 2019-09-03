@@ -183,7 +183,7 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteInt32(uidx.value);
+                sc.ms.WriteInt32(uidx?.value ?? 0);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Vector3 vec)

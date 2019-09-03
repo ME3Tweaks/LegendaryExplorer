@@ -25,6 +25,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 sc.Serialize(ref PersistentFaceFXAnimSet);
             }
+            else if (sc.IsLoading)
+            {
+                PersistentFaceFXAnimSet = new UIndex(0);
+            }
 
             for (int i = 0; i < 4; i++)
             {
@@ -36,6 +40,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
             if (sc.Game == MEGame.ME1)
             {
                 sc.Serialize(ref DecalManager);
+            }
+            else if (sc.IsLoading)
+            {
+                DecalManager = new UIndex(0);
             }
 
             sc.Serialize(ref ExtraReferencedObjects);

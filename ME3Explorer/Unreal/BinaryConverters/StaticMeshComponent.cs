@@ -274,6 +274,10 @@ namespace ME3Explorer
                 sc.Serialize(ref lmap.Texture4);
                 sc.Serialize(ref lmap.ScaleVector4);
             }
+            else if (sc.IsLoading)
+            {
+                lmap.Texture4 = new UIndex(0);
+            }
             sc.Serialize(ref lmap.CoordinateScale);
             sc.Serialize(ref lmap.CoordinateBias);
         }

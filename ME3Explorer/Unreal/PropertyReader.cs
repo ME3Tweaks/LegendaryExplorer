@@ -634,5 +634,17 @@ namespace ME3Explorer.Unreal
             stream.WriteInt32(pcc.FindNameOrAdd(value.FunctionName.Name));
             stream.WriteInt32(value.FunctionName.Number);
         }
+
+        public static StructProperty ToGuidStructProp(this Guid guid, NameReference propName)
+        {
+            byte[] guidBytes = guid.ToByteArray();
+            return new StructProperty("Guid", new PropertyCollection
+            {
+                new IntProperty(BitConverter.ToInt32(guidBytes, 0)),
+                new IntProperty(BitConverter.ToInt32(guidBytes, 4)),
+                new IntProperty(BitConverter.ToInt32(guidBytes, 8)),
+                new IntProperty(BitConverter.ToInt32(guidBytes, 12))
+            }, propName, true);
+        }
     }
 }
