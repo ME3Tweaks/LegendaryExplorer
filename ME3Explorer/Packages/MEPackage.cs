@@ -1014,6 +1014,8 @@ namespace ME3Explorer.Packages
                 }
             }
 
+
+
             if (oldGame == MEGame.ME1 && newGame != MEGame.ME1)
             {
                 int idx = names.IndexOf("BIOC_Base");

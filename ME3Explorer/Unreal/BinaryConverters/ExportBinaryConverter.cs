@@ -463,7 +463,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<Material>(export);
                 case "MaterialInstanceConstant":
                 case "MaterialInstanceTimeVarying":
-                    return From<MaterialInstance>(export);
+                    if (export.GetProperty<BoolProperty>("bHasStaticPermutationResource")?.Value == true)
+                    {
+                        return From<MaterialInstance>(export);
+                    }
+                    return new GenericObjectBinary(Array.Empty<byte>());
                 case "StaticMesh":
                     return From<StaticMesh>(export);
                 case "SkeletalMesh":

@@ -598,7 +598,7 @@ namespace ME3Explorer.PackageDumper
                                 stringoutput.Write($" (Index: {ival}) ");
 
                             }
-                            stringoutput.WriteLine($"(Superclass: {exp.ClassParent}) (Data Offset: 0x {exp.DataOffset:X5})");
+                            stringoutput.WriteLine($"(Superclass: {exp.SuperClassName}) (Data Offset: 0x {exp.DataOffset:X5})");
 
                             if (isScript)
                             {

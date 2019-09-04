@@ -240,9 +240,9 @@ namespace ME3Explorer.MetadataEditor
                 }
 
                 //InfoTab_Superclass_ComboBox.ItemsSource = AllEntriesList;
-                if (exportEntry.idxClassParent != 0)
+                if (exportEntry.idxSuperClass != 0)
                 {
-                    InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.idxClassParent + exportEntry.FileRef.Imports.Count; //make positive
+                    InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.idxSuperClass + exportEntry.FileRef.Imports.Count; //make positive
                 }
                 else
                 {

@@ -430,7 +430,7 @@ namespace ME3Explorer.Unreal
                 if (export.ClassName == "Class")
                 {
                     ClassInfo currentInfo = generateClassInfo(export);
-                    currentInfo.baseClass = export.ClassParent;
+                    currentInfo.baseClass = export.SuperClassName;
                     p = getPropertyInfo(className, propName, false, currentInfo, containingExport: export);
                     if (p == null)
                     {
@@ -546,11 +546,11 @@ namespace ME3Explorer.Unreal
                 else
                 {
                     //Baseclass may be modified as well...
-                    if (containingExport != null && containingExport.idxClassParent > 0)
+                    if (containingExport != null && containingExport.idxSuperClass > 0)
                     {
                         //Class parent is in this file. Generate class parent info and attempt refetch
-                        ExportEntry parentExport = containingExport.FileRef.getUExport(containingExport.idxClassParent);
-                        return getPropertyInfo(parentExport.ClassParent, propName, inStruct, generateClassInfo(parentExport), reSearch: true, parentExport);
+                        ExportEntry parentExport = containingExport.FileRef.getUExport(containingExport.idxSuperClass);
+                        return getPropertyInfo(parentExport.SuperClassName, propName, inStruct, generateClassInfo(parentExport), reSearch: true, parentExport);
                     }
                 }
             }
@@ -856,7 +856,7 @@ namespace ME3Explorer.Unreal
             IMEPackage pcc = export.FileRef;
             ClassInfo info = new ClassInfo
             {
-                baseClass = export.ClassParent,
+                baseClass = export.SuperClassName,
                 exportIndex = export.UIndex
             };
             if (pcc.FilePath.Contains("BIOGame"))

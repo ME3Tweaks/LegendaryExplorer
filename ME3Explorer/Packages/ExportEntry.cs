@@ -134,7 +134,7 @@ namespace ME3Explorer.Packages
         {
             var bin = new MemoryStream();
             bin.WriteInt32(idxClass);
-            bin.WriteInt32(idxClassParent);
+            bin.WriteInt32(idxSuperClass);
             bin.WriteInt32(idxLink);
             bin.WriteInt32(idxObjectName);
             bin.WriteInt32(indexValue);
@@ -182,7 +182,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public int idxClassParent
+        public int idxSuperClass
         {
             get => BitConverter.ToInt32(_header, 4);
             set
@@ -348,11 +348,11 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public string ClassParent
+        public string SuperClassName
         {
             get
             {
-                int val = idxClassParent;
+                int val = idxSuperClass;
                 if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName];
                 else return "Class";
             }

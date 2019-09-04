@@ -144,9 +144,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
     public class QuantizedDirectionalLightSample
     {
-        public Color Coefficient1;
+        public Color Coefficient1;//not ME3
         public Color Coefficient2;
-        public Color Coefficient3;//not ME3
+        public Color Coefficient3;
     }
 
     public class QuantizedSimpleLightSample
@@ -177,12 +177,12 @@ namespace ME3Explorer
                 samp = new QuantizedDirectionalLightSample();
             }
 
-            sc.Serialize(ref samp.Coefficient1);
-            sc.Serialize(ref samp.Coefficient2);
             if (sc.Game != MEGame.ME3)
             {
-                sc.Serialize(ref samp.Coefficient3);
+                sc.Serialize(ref samp.Coefficient1);
             }
+            sc.Serialize(ref samp.Coefficient2);
+            sc.Serialize(ref samp.Coefficient3);
         }
         public static void Serialize(this SerializingContainer2 sc, ref LightMap lmap)
         {

@@ -550,7 +550,7 @@ namespace ME3Explorer.Unreal
                                     currentInfo = ME3UnrealObjectInfo.generateClassInfo(parsingEntry as ExportEntry);
                                     break;
                             }
-                            currentInfo.baseClass = ((ExportEntry)parsingEntry).ClassParent;
+                            currentInfo.baseClass = ((ExportEntry)parsingEntry).SuperClassName;
                             propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo);
                         }
 
@@ -739,7 +739,7 @@ namespace ME3Explorer.Unreal
     {
         public override PropertyType PropType => PropertyType.StructProperty ;
 
-        public readonly bool IsImmutable;
+        public bool IsImmutable;
 
         public string StructType { get; }
         public PropertyCollection Properties { get; set; }

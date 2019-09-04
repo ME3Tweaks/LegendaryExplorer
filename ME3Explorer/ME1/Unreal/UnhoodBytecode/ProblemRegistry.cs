@@ -110,7 +110,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         private static void WriteFunctionName(StreamWriter writer, UnBytecodeOwner function)
         {
-            int classParentIdx = function.Export.idxClassParent;
+            int classParentIdx = function.Export.idxSuperClass;
             if (classParentIdx != 0)
             {
                 IEntry parent = function.Export.FileRef.getEntry(classParentIdx);

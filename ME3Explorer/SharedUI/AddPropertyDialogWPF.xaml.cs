@@ -88,7 +88,7 @@ namespace ME3Explorer.SharedUI
             if (!classList.ContainsKey(temp) && export.idxClass < 0)
             {
                 //lookup import parent info
-                temp = export.ClassParent;
+                temp = export.SuperClassName;
             }
             else if (!classList.ContainsKey(temp) && export.idxClass > 0)
             {
@@ -108,7 +108,7 @@ namespace ME3Explorer.SharedUI
                         currentInfo = ME3UnrealObjectInfo.generateClassInfo(export);
                         break;
                 }
-                currentInfo.baseClass = export.ClassParent;
+                currentInfo.baseClass = export.SuperClassName;
                 classList = classList.ToDictionary(entry => entry.Key, entry => entry.Value);
                 classList[temp] = currentInfo;
             }

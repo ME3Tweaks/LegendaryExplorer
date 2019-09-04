@@ -88,7 +88,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 trashData.WriteInt32(0);
                 exp.Data = trashData.ToArray();
                 exp.idxArchtype = 0;
-                exp.idxClassParent = 0;
+                exp.idxSuperClass = 0;
                 exp.indexValue = 0;
                 exp.idxClass = packageClassIdx;
                 exp.ObjectFlags &= ~UnrealFlags.EObjectFlags.HasStack;
@@ -144,14 +144,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 {
                     switch (prop)
                     {
-                        //don't touch immutable structs
-                        case StructProperty sp when sp.IsImmutable:
-                            newProps.Add(sp);
-                            break;
-                        //don't touch immutable structs
-                        case ArrayProperty<StructProperty> iasp when UnrealObjectInfo.IsImmutable(iasp.Reference, newGame):
-                            newProps.Add(iasp);
-                            break;
                         case ArrayProperty<DelegateProperty> adp:
                             //don't think these exist? if they do, delete them
                             break;
@@ -183,9 +175,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         case ArrayProperty<StructProperty> asp:
                             if (UnrealObjectInfo.GetStructs(newGame).ContainsKey(asp.Reference))
                             {
+                                if (HasIncompatibleImmutabilities(asp.Reference, out bool newImmutability)) break;
                                 foreach (StructProperty structProperty in asp)
                                 {
                                     structProperty.Properties = RemoveIncompatibleProperties(sourcePcc, structProperty.Properties, structProperty.StructType, newGame);
+                                    structProperty.IsImmutable = newImmutability;
                                 }
                                 newProps.Add(asp);
                             }
@@ -212,9 +206,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
                             break;
                         }
                         case StructProperty structProperty:
-                            if (UnrealObjectInfo.GetStructs(newGame).ContainsKey(structProperty.StructType))
+                            string structType = structProperty.StructType;
+                            if (UnrealObjectInfo.GetStructs(newGame).ContainsKey(structType))
                             {
-                                structProperty.Properties = RemoveIncompatibleProperties(sourcePcc, structProperty.Properties, structProperty.StructType, newGame);
+                                if (HasIncompatibleImmutabilities(structType, out bool newImmutability)) break;
+                                structProperty.Properties = RemoveIncompatibleProperties(sourcePcc, structProperty.Properties, structType, newGame);
+                                structProperty.IsImmutable = newImmutability;
                                 newProps.Add(structProperty);
                             }
                             break;
@@ -226,6 +223,27 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
 
             return newProps;
+
+            bool HasIncompatibleImmutabilities(string structType, out bool newImmutability)
+            {
+                bool sourceIsImmutable = UnrealObjectInfo.IsImmutable(structType, sourcePcc.Game);
+                newImmutability = UnrealObjectInfo.IsImmutable(structType, newGame);
+                
+                if (sourceIsImmutable && newImmutability && !UnrealObjectInfo.GetClassOrStructInfo(sourcePcc.Game, structType).properties
+                                                                             .SequenceEqual(UnrealObjectInfo.GetClassOrStructInfo(newGame, structType).properties))
+                {
+                    //both immutable, but have different properties
+                    return true;
+                }
+
+                if (!sourceIsImmutable && newImmutability)
+                {
+                    //can't easily guarantee it will have have all neccesary properties
+                    return true;
+                }
+
+                return false;
+            }
         }
     }
 

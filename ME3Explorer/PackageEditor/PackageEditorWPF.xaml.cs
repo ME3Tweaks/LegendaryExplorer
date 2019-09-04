@@ -201,6 +201,7 @@ namespace ME3Explorer
         public ICommand TabLeftCommand { get; set; }
         public ICommand DumpAllShadersCommand { get; set; }
         public ICommand DumpMaterialShadersCommand { get; set; }
+        public ICommand FindReferencesCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -220,6 +221,7 @@ namespace ME3Explorer
             RebuildStreamingLevelsCommand = new GenericCommand(RebuildStreamingLevels, PackageIsLoaded);
             ExportEmbeddedFileCommand = new GenericCommand(ExportEmbeddedFilePrompt, DoesSelectedItemHaveEmbeddedFile);
             ImportEmbeddedFileCommand = new GenericCommand(ImportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
+            FindReferencesCommand = new GenericCommand(FindReferencesToObject, EntryIsSelected);
             ReindexCommand = new GenericCommand(ReindexObjectByName, ExportIsSelected);
             TrashCommand = new GenericCommand(TrashEntryAndChildren, TreeEntryIsSelected);
             PackageHeaderViewerCommand = new GenericCommand(ViewPackageInfo, PackageIsLoaded);
@@ -745,6 +747,25 @@ namespace ME3Explorer
                 }
 
                 EntryPruner.TrashEntries(Pcc, itemsToTrash);
+            }
+        }
+
+        private void FindReferencesToObject()
+        {
+            if (TryGetSelectedEntry(out IEntry entry))
+            {
+                BusyText = "Finding references...";
+                IsBusy = true;
+                Task.Run(() => entry.GetEntriesThatReferenceThisOne()).ContinueWithOnUIThread(prevTask =>
+                {
+                    IsBusy = false;
+                    var dlg = new ListDialog(prevTask.Result.SelectMany(kvp => kvp.Value.Select(refName => $"#{kvp.Key.UIndex} {kvp.Key.ObjectName}: {refName}")).ToList(),
+                                             $"{prevTask.Result.Count} Objects that reference #{entry.UIndex} {entry.GetFullPath}", 
+                                             "There may be additional references to this object in the unparsed binary of some objects", this);
+                    dlg.Show();
+                });
+
+
             }
         }
 
@@ -2812,17 +2833,17 @@ namespace ME3Explorer
             }
 
             //Set superclass
-            if (ex.idxClassParent < 0)
+            if (ex.idxSuperClass < 0)
             {
                 //The class of the export we are importing is an import. We should attempt to relink this.
-                ImportEntry portingFromClassImport = ex.FileRef.getUImport(ex.idxClassParent);
+                ImportEntry portingFromClassImport = ex.FileRef.getUImport(ex.idxSuperClass);
                 IEntry newClassImport = getOrAddCrossImportOrPackage(portingFromClassImport.GetFullPath, ex.FileRef, mePackage);
                 superclass = newClassImport.UIndex;
             }
-            else if (ex.idxClassParent > 0)
+            else if (ex.idxSuperClass > 0)
             {
                 //Todo: Add cross mapping support as multi-mode will allow this to work now
-                ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxClassParent);
+                ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxSuperClass);
                 ExportEntry matchingExport = mePackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
                 if (matchingExport != null)
                 {
@@ -2854,7 +2875,7 @@ namespace ME3Explorer
             outputEntry.idxClass = classValue;
             outputEntry.idxObjectName = mePackage.FindNameOrAdd(ex.FileRef.getNameEntry(ex.idxObjectName));
             outputEntry.idxLink = link;
-            outputEntry.idxClassParent = superclass;
+            outputEntry.idxSuperClass = superclass;
             outputEntry.idxArchtype = archetype;
             mePackage.addExport(outputEntry);
 
@@ -3679,7 +3700,7 @@ namespace ME3Explorer
                     {
                         foreach (ExportEntry export in package.Exports)
                         {
-                            if (export.ClassParent == "SFXPowerCustomAction")
+                            if (export.SuperClassName == "SFXPowerCustomAction")
                             {
                                 Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
                                 if (newCachedInfo.TryGetValue(export.ObjectName, out List<string> instances))
@@ -3726,7 +3747,7 @@ namespace ME3Explorer
                     {
                         foreach (ExportEntry export in package.Exports)
                         {
-                            if (export.ClassParent == "SFXPower")
+                            if (export.SuperClassName == "SFXPower")
                             {
                                 Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
                                 if (newCachedInfo.TryGetValue(export.ObjectName, out List<string> instances))
