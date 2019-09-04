@@ -25,12 +25,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 return objbin;
             }
 
-            switch (export.ClassName)
+            if (export.ClassName == "Model")
             {
-                case "Level":
-                    return new GenericObjectBinary(ConvertLevel(export, newGame));
-                case "Model":
-                    return new GenericObjectBinary(ConvertModel(export, newGame));
+                return new GenericObjectBinary(ConvertModel(export, newGame));
             }
 
             if (export.IsTexture())
@@ -200,129 +197,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
             return os.ToArray();
         }
 
-        private static byte[] ConvertLevel(ExportEntry export, MEGame newGame)
-        {
-            MemoryStream bin = new MemoryStream(export.getBinaryData());
-            var os = new MemoryStream();
-
-            os.WriteInt32(bin.ReadInt32());//self
-            int count = bin.ReadInt32();
-            os.WriteInt32(count);
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 4));//Actors
-            os.WriteUnrealString(bin.ReadUnrealString(), newGame);//URL
-            os.WriteUnrealString(bin.ReadUnrealString(), newGame);
-            os.WriteUnrealString(bin.ReadUnrealString(), newGame);
-            os.WriteUnrealString(bin.ReadUnrealString(), newGame);
-            os.WriteInt32(count = bin.ReadInt32());
-            for (int i = 0; i < count; i--)
-            {
-                os.WriteUnrealString(bin.ReadUnrealString(), newGame);
-            }
-
-            os.WriteFromBuffer(bin.ReadToBuffer(12));
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 4));//ModelComponents
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 4));//GameSequences
-            os.WriteInt32(count = bin.ReadInt32());
-            for (int i = count; i > 0; i--)//TextureToInstancesMap
-            {
-                os.WriteInt32(bin.ReadInt32());
-                os.WriteInt32(count = bin.ReadInt32());
-                for (int j = count; j > 0; j--)
-                {
-                    os.WriteFromBuffer(bin.ReadToBuffer(20));
-                }
-            }
-
-            //APEX
-            if (export.Game == MEGame.ME3)
-            {
-                bin.Skip(bin.ReadInt32());
-            }
-            if (newGame == MEGame.ME3)
-            {
-                os.WriteInt32(0);//hopefully the Apex stuff isn't neccesary 
-            }
-
-            os.WriteInt32(bin.ReadInt32());//CachedPhysBSPData
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count));
-            os.WriteInt32(count = bin.ReadInt32());//CachedPhysSMDataMap
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 20));
-            os.WriteInt32(count = bin.ReadInt32());
-            for (int i = count; i > 0; i--)//CachedPhysSMDataStore
-            {
-                os.WriteInt32(count = bin.ReadInt32());
-                for (int j = count; j > 0; j--)
-                {
-                    os.WriteInt32(bin.ReadInt32());
-                    os.WriteInt32(count = bin.ReadInt32());
-                    os.WriteFromBuffer(bin.ReadToBuffer(count));
-                }
-            }
-            os.WriteInt32(count = bin.ReadInt32());//CachedPhysPerTriSMDataMap
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 20));
-            os.WriteInt32(count = bin.ReadInt32());
-            for (int i = count; i > 0; i--)//CachedPhysPerTriSMDataStore
-            {
-                os.WriteInt32(bin.ReadInt32());
-                os.WriteInt32(count = bin.ReadInt32());
-                os.WriteFromBuffer(bin.ReadToBuffer(count));
-            }
-
-            os.WriteFromBuffer(bin.ReadToBuffer(8)); //CachedPhysBSPDataVersion //CachedPhysSMDataVersion
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 8));//ForceStreamTextures
-            os.WriteFromBuffer(bin.ReadToBuffer(16)); //NavListStart
-            //NavListEnd
-            //CoverListStart
-            //CoverListEnd
-            if (export.Game == MEGame.ME3)
-            {
-                bin.SkipInt32(); //PylonListStart
-                bin.SkipInt32(); //PylonListEnd
-                bin.Skip(bin.ReadInt32() * 20);//guidToIntMap
-                bin.Skip(bin.ReadInt32() * 4);//CoverLinks
-                bin.Skip(bin.ReadInt32() * 5);//IntToByteMap
-                bin.Skip(bin.ReadInt32() * 20);//guidToIntMap
-                bin.Skip(bin.ReadInt32() * 4);//NavPoints
-                bin.Skip(bin.ReadInt32() * 4);//Numbers
-            }
-
-            if (newGame == MEGame.ME3) //hope it can do without this info
-            {
-                os.WriteInt32(0);//PylonListStart
-                os.WriteInt32(0);//PylonListEnd
-                os.WriteInt32(0);//guidToIntMap
-                os.WriteInt32(0);//CoverLinks
-                os.WriteInt32(0);//IntToByteMap
-                os.WriteInt32(0);//guidToIntMap
-                os.WriteInt32(0);//NavPoints
-                os.WriteInt32(0);//Numbers
-            }
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 4));//CrossLevelActors
-            if (export.Game == MEGame.ME1)
-            {
-                bin.SkipInt32();
-                bin.SkipInt32();
-            }
-
-            if (newGame == MEGame.ME1)
-            {
-                os.WriteInt32(0);
-                os.WriteInt32(0);
-            }
-
-            if (newGame == MEGame.ME3)
-            {
-                os.WriteBoolInt(false);
-            }
-
-            return os.ToArray();
-        }
-
         private static byte[] ConvertModel(ExportEntry export, MEGame newGame)
         {
             MemoryStream bin = new MemoryStream(export.getBinaryData());
@@ -454,6 +328,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
         {
             switch (export.ClassName)
             {
+                case "Level":
+                    return From<Level>(export);
                 case "World":
                     return From<World>(export);
                 case "Polys":

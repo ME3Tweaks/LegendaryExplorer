@@ -145,6 +145,30 @@ namespace ME3Explorer
 
         public delegate void SerializeDelegate<T>(SerializingContainer2 sc, ref T item);
 
+        public static void Serialize<T>(this SerializingContainer2 sc, ref List<T> arr, SerializeDelegate<T> serialize)
+        {
+            int count = arr?.Count ?? 0;
+            sc.Serialize(ref count);
+            if (sc.IsLoading)
+            {
+                arr = new List<T>(count);
+                for (int i = 0; i < count; i++)
+                {
+                    T tmp = default;
+                    serialize(sc, ref tmp);
+                    arr.Add(tmp);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    T tmp = arr[i];
+                    serialize(sc, ref tmp);
+                }
+            }
+        }
+
         public static void Serialize<T>(this SerializingContainer2 sc, ref T[] arr, SerializeDelegate<T> serialize)
         {
             int count = arr?.Length ?? 0;

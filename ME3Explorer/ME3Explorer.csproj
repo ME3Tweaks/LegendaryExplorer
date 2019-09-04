@@ -819,6 +819,7 @@
     </Compile>
     <Compile Include="Unreal\BinaryConverters\EntryPruner.cs" />
     <Compile Include="Unreal\BinaryConverters\ExportBinaryConverter.cs" />
+    <Compile Include="Unreal\BinaryConverters\Level.cs" />
     <Compile Include="Unreal\BinaryConverters\Material.cs" />
     <Compile Include="OrderedDictionary.cs" />
     <Compile Include="Unreal\BinaryConverters\Polys.cs" />

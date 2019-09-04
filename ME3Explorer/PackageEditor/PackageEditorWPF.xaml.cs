@@ -3965,8 +3965,8 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
-            //var filePaths = MELoadedFiles.GetAllFiles(game);
+            //var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
+            var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             var foundProps = new Dictionary<string, string>();
@@ -4005,9 +4005,12 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "StaticMeshComponent", true)) break;
+                    if (findClass(filePath, "Level", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
+
+                    #region Header Scan
+
                     try
                     {
                         using (var fs = File.OpenRead(filePath))
@@ -4130,6 +4133,8 @@ namespace ME3Explorer
                         interestingExports.Add($"{filePath}\n{exception}");
                         break;
                     }
+
+                    #endregion
                 }
                 return;
                 interestingExports.Add($"unknown4 ME2: {string.Join(", ", unknown4ME2Set)}");
@@ -4148,30 +4153,6 @@ namespace ME3Explorer
                 var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
                 listDlg.Show();
             });
-            
-
-            void findClassesWithBinary(string filePath)
-            {
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
-                {
-                    foreach (ExportEntry exp in pcc.Exports.Where(exp => !exp.IsDefaultObject))
-                    {
-                        try
-                        {
-                            if (!foundClasses.Contains(exp.ClassName) && exp.propsEnd() < exp.DataSize)
-                            {
-                                foundClasses.Add(exp.ClassName);
-                                interestingExports.Add($"{exp.ClassName.PadRight(30)} #{exp.UIndex}: {filePath}");
-                            }
-                        }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception);
-                            interestingExports.Add($"{exp.UIndex}: {filePath}\n{exception}");
-                        }
-                    }
-                }
-            }
 
             bool findClass(string filePath, string className, bool withBinary = false)
             {
@@ -4187,15 +4168,15 @@ namespace ME3Explorer
                     {
                         try
                         {
-                            var smc = ObjectBinary.From<StaticMeshComponent>(exp);
+                            var lev = ObjectBinary.From<Level>(exp);
                             var ms = new MemoryStream();
-                            smc.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
+                            lev.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
                             var buff = ms.ToArray();
 
                             if (!buff.SequenceEqual(exp.getBinaryData()))
                             {
-                                File.WriteAllBytes(@"C:\Users\Image 17\convertedsmc", buff);
-                                File.WriteAllBytes(@"C:\Users\Image 17\originalsmc", exp.getBinaryData());
+                                File.WriteAllBytes(@"C:\Users\Image 17\convertedLevel", buff);
+                                File.WriteAllBytes(@"C:\Users\Image 17\originalLevel", exp.getBinaryData());
                                 interestingExports.Add($"{exp.UIndex}: {filePath}");
                                 return true;
                             }
@@ -4219,97 +4200,27 @@ namespace ME3Explorer
                 return false;
             }
 
-            bool ScanLevel(string filePath)
+            void findClassesWithBinary(string filePath)
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
-                    var exports = pcc.Exports.Where(exp => exp.ClassName == "Level" && !exp.IsDefaultObject);
-                    foreach (ExportEntry exp in exports)
+                    foreach (ExportEntry exp in pcc.Exports.Where(exp => !exp.IsDefaultObject))
                     {
                         try
                         {
-                            MemoryStream bin = new MemoryStream(exp.Data);
-                            bin.JumpTo(exp.propsEnd());
-
-                            bin.SkipInt32();//self
-                            bin.Skip(bin.ReadInt32() * 4);//Actors
-                            bin.SkipString(game == MEGame.ME3);//URL
-                            bin.SkipString(game == MEGame.ME3);
-                            bin.SkipString(game == MEGame.ME3);
-                            bin.SkipString(game == MEGame.ME3);
-                            for (int i = bin.ReadInt32(); i > 0; i--)
+                            if (!foundClasses.Contains(exp.ClassName) && exp.propsEnd() < exp.DataSize)
                             {
-                                bin.SkipString(game == MEGame.ME3);
+                                foundClasses.Add(exp.ClassName);
+                                interestingExports.Add($"{exp.ClassName.PadRight(30)} #{exp.UIndex}: {filePath}");
                             }
-
-                            bin.Skip(8);
-                            bin.SkipInt32();//Model
-                            bin.Skip(bin.ReadInt32() * 4);//ModelComponents
-                            bin.Skip(bin.ReadInt32() * 4);//GameSequences
-                            for (int i = bin.ReadInt32(); i > 0; i--)//TextureToInstancesMap
-                            {
-                                bin.SkipInt32();
-                                for (int j = bin.ReadInt32(); j > 0; j--)
-                                {
-                                    bin.Skip(20);
-                                }
-                            }
-                            if(game == MEGame.ME3) bin.Skip(bin.ReadInt32()); //APEX
-                            bin.SkipInt32();//CachedPhysBSPData
-                            bin.Skip(bin.ReadInt32());
-                            bin.Skip(bin.ReadInt32() * 20);//CachedPhysSMDataMap
-                            for (int i = bin.ReadInt32(); i > 0; i--)//CachedPhysSMDataStore
-                            {
-                                for (int j = bin.ReadInt32(); j > 0; j--)
-                                {
-                                    bin.SkipInt32();
-                                    bin.Skip(bin.ReadInt32());
-                                }
-                            }
-                            bin.Skip(bin.ReadInt32() * 20);//CachedPhysPerTriSMDataMap
-                            for (int i = bin.ReadInt32(); i > 0; i--)//CachedPhysPerTriSMDataStore
-                            {
-                                bin.SkipInt32();
-                                bin.Skip(bin.ReadInt32());
-                            }
-                            bin.SkipInt32(); //CachedPhysBSPDataVersion
-                            bin.SkipInt32(); //CachedPhysSMDataVersion
-                            bin.Skip(bin.ReadInt32() * 8);//ForceStreamTextures
-                            bin.SkipInt32(); //NavListStart
-                            bin.SkipInt32(); //NavListEnd
-                            bin.SkipInt32(); //CoverListStart
-                            bin.SkipInt32(); //CoverListEnd
-                            if (game == MEGame.ME3)
-                            {
-                                bin.SkipInt32(); //PylonListStart
-                                bin.SkipInt32(); //PylonListEnd
-                                bin.Skip(bin.ReadInt32() * 20);//guidToIntMap
-                                bin.Skip(bin.ReadInt32() * 4);//CoverLinks
-                                bin.Skip(bin.ReadInt32() * 5);//IntToByteMap
-                                bin.Skip(bin.ReadInt32() * 20);//guidToIntMap
-                                bin.Skip(bin.ReadInt32() * 4);//NavPoints
-                                bin.Skip(bin.ReadInt32() * 4);//Numbers
-                            }
-                            bin.Skip(bin.ReadInt32() * 4);//CrossLevelActors
-                            int bioInert1 = bin.ReadInt32();
-                            int bioInert2 = bin.ReadInt32();
-                            if (bioInert1 != 0 && !pcc.getUExport(bioInert1).InheritsFrom("BioArtPlaceable") || bioInert2 != 0 && !pcc.getUExport(bioInert2).InheritsFrom("BioArtPlaceable"))
-                            {
-                                interestingExports.Add($"{exp.UIndex}: {filePath}");
-                                return true;
-                            }
-
                         }
                         catch (Exception exception)
                         {
                             Console.WriteLine(exception);
                             interestingExports.Add($"{exp.UIndex}: {filePath}\n{exception}");
-                            return true;
                         }
                     }
                 }
-
-                return false;
             }
 
             bool ScanLightComponents(string filePath)
@@ -4343,133 +4254,6 @@ namespace ME3Explorer
                 }
 
                 return false;
-            }
-
-            void ScanStaticMeshComponents(string filePath)
-            {
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
-                {
-                    var exports = pcc.Exports.Where(exp => exp.ClassName == "StaticMeshComponent");
-
-                    foreach (ExportEntry exp in exports)
-                    {
-                        try
-                        {
-                            MemoryStream bin = new MemoryStream(exp.Data);
-                            bin.JumpTo(exp.propsEnd());
-
-                            int lodDataCount = bin.ReadInt32();
-                            for (int i = 0; i < lodDataCount; i++)
-                            {
-                                int shadowMapCount = bin.ReadInt32();
-                                bin.Skip(shadowMapCount * 4);
-                                int shadowVertCount = bin.ReadInt32();
-                                bin.Skip(shadowVertCount * 4);
-                                int lightMapType = bin.ReadInt32();
-                                if (lightMapType == 0) continue;
-                                int lightGUIDsCount = bin.ReadInt32();
-                                bin.Skip(lightGUIDsCount * 16);
-                                int bulkDataSize;
-                                switch (lightMapType)
-                                {
-                                    case 1:
-                                        bin.Skip(4);
-                                        if (bin.ReadUInt32() > 0)
-                                        {
-                                            interestingExports.Add($"{exp.UIndex}: {filePath}");
-                                        }
-                                        bin.Skip(4);
-                                        bulkDataSize = bin.ReadInt32();
-                                        bin.Skip(4);
-                                        bin.Skip(bulkDataSize);
-                                        bin.Skip(12 * 4);
-                                        if (bin.ReadUInt32() > 0)
-                                        {
-                                            interestingExports.Add($"{exp.UIndex}: {filePath}");
-                                        }
-                                        bin.Skip(4);
-                                        bulkDataSize = bin.ReadInt32();
-                                        bin.Skip(4);
-                                        bin.Skip(bulkDataSize);
-                                        break;
-                                    case 2:
-                                        bin.Skip((16) * 4 + 16);
-                                        break;
-                                    case 3:
-                                        if (bin.ReadUInt32() > 0)
-                                        {
-                                            interestingExports.Add($"{exp.UIndex}: {filePath}");
-                                        }
-                                        bin.Skip(4);
-                                        bulkDataSize = bin.ReadInt32();
-                                        bin.Skip(4);
-                                        bin.Skip(bulkDataSize);
-                                        bin.Skip(24);
-                                        break;
-                                    case 4:
-                                    case 6:
-                                        bin.Skip(124);
-                                        break;
-                                    case 5:
-                                        bin.Skip(4);
-                                        if (bin.ReadUInt32() > 0)
-                                        {
-                                            interestingExports.Add($"{exp.UIndex}: {filePath}");
-                                        }
-                                        bin.Skip(4);
-                                        bulkDataSize = bin.ReadInt32();
-                                        bin.Skip(4);
-                                        bin.Skip(bulkDataSize);
-                                        bin.Skip(12);
-                                        break;
-                                }
-                            }
-                        }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception);
-                            interestingExports.Add($"{exp.UIndex}: {filePath}\n{exception}");
-                        }
-                    }
-                }
-            }
-
-            void ScanMaterials(string filePath)
-            {
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
-                {
-                    var materials = pcc.Exports.Where(exp => exp.ClassName == "Material");
-
-                    foreach (ExportEntry material in materials)
-                    {
-                        try
-                        {
-                            MemoryStream binData = new MemoryStream(material.Data);
-                            binData.JumpTo(material.propsEnd());
-                            int compileErrrorsCount = binData.ReadInt32();
-                            for (int i = 0; i < compileErrrorsCount; i++)
-                            {
-                                int stringLen = binData.ReadInt32() * -2;
-                                binData.Skip(stringLen);
-                            }
-                            binData.Skip(28);
-                            int textureCount = binData.ReadInt32();
-                            binData.Skip(textureCount * 4);
-                            binData.Skip(20);
-                            int candidate1 = binData.ReadInt32();
-                            int candidate2 = binData.ReadInt32();
-                            if (candidate1 > 1)
-                            {
-                                interestingExports.Add($"{material.UIndex}: {filePath}");
-                            }
-                        }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception);
-                            interestingExports.Add($"{material.UIndex}: {filePath}\n{exception}");
-                        }
-                    }
-                }
             }
 
             void ScanShaderCache(string filePath)
