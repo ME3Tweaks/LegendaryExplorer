@@ -224,7 +224,7 @@
 						<Label Content="Description:" Grid.Column="0" Grid.Row="2" />
 						<xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
 							Text="{Binding Path=SelectedCodexSection.Value.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" ValueChanged="txt_ValueChanged"/>
-                        <TextBlock Name="txt_cdxSecDesc" Grid.Column="2" Grid.Row="1"  Text="Title String" Padding="3" VerticalAlignment="Top"/>
+                        <TextBlock Name="txt_cdxSecDesc" Grid.Column="2" Grid.Row="2"  Text="Description String" Padding="3" Grid.RowSpan="5" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top"/>
 
 						<!-- Is Primary -->
 						<Label Content="Is Primary:" Grid.Column="0" Grid.Row="5" />
