@@ -2940,7 +2940,7 @@ namespace ME3Explorer.Pathfinding_Editor
             public StaticMeshCollection(ExportEntry smac)
             {
                 export = smac;
-                var smacItems = smac.GetProperty<ArrayProperty<ObjectProperty>>(export.ClassName == "StaticMeshActorCollection" ? "StaticMeshComponents" : "LightComponents");
+                var smacItems = smac.GetProperty<ArrayProperty<ObjectProperty>>(export.ClassName == "StaticMeshCollectionActor" ? "StaticMeshComponents" : "LightComponents");
                 if (smacItems != null)
                 {
                     //Read exports...
