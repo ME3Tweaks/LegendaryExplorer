@@ -261,7 +261,8 @@
 									<Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="Auto" />
-											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
 										</Grid.ColumnDefinitions>
 										<Grid.RowDefinitions>
 											<RowDefinition Height="Auto" />
@@ -294,9 +295,11 @@
 
 										<xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
 											Text="{Binding Path=SelectedQuestPlotItem.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-											Width="100" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
+											Width="100" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" ValueChanged="txt_ValueChanged" />
 
-										<!-- Quest Plot Items State -->
+                                        <TextBlock Name="txt_PlotitmDesc" Margin="0,5" Grid.Column="2" Grid.Row="2" Text="Description String" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center"/>
+
+                                        <!-- Quest Plot Items State -->
 										<Label Grid.Column="0" Grid.Row="3" Content="State"
 											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
@@ -468,7 +471,7 @@
 										<Label Grid.Column="0" Grid.Row="5" Content="Waypoint Tag"
 											Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-										<TextBox Grid.Column="1" Grid.Row="5"
+										<TextBox Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="2"
 											Text="{Binding Path=SelectedQuestTask.WaypointTag, Mode=TwoWay}"
 											Width="250" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
