@@ -2609,12 +2609,8 @@ namespace ME3Explorer
             }
         }
 
-        private bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport)
+        public static bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport)
         {
-            byte[] idata = incomingExport.Data;
-            PropertyCollection props = incomingExport.GetProperties();
-            int start = incomingExport.GetPropertyStart();
-            int end = props.endOffset;
 
             MemoryStream res = new MemoryStream();
             if (incomingExport.HasStack)
@@ -2623,7 +2619,7 @@ namespace ME3Explorer
                 byte[] stackdummy = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
 
-                if (Pcc.Game != MEGame.ME3)
+                if (targetExport.Game != MEGame.ME3)
                 {
                     //TODO: Find a unique NetIndex instead of writing a blank... don't know if that will fix multiplayer sync issues
                     stackdummy = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -2633,22 +2629,23 @@ namespace ME3Explorer
             }
             else
             {
+                int start = incomingExport.GetPropertyStart();
                 res.Write(new byte[start], 0, start);
             }
             //store copy of names list in case something goes wrong
-            List<string> names = Pcc.Names.ToList();
+            List<string> names = targetExport.FileRef.Names.ToList();
             try
             {
-                props.WriteTo(res, Pcc);
+                incomingExport.GetProperties().WriteTo(res, targetExport.FileRef);
             }
             catch (Exception exception)
             {
                 //restore namelist in event of failure.
-                Pcc.setNames(names);
+                targetExport.FileRef.setNames(names);
                 MessageBox.Show($"Error occured while replacing data in {incomingExport.ObjectName} : {exception.Message}");
                 return false;
             }
-            res.Write(idata, end, idata.Length - end);
+            res.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game).ToArray(targetExport.FileRef));
             targetExport.Data = res.ToArray();
             return true;
         }
@@ -3965,8 +3962,8 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            //var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
-            var filePaths = MELoadedFiles.GetAllFiles(game);
+            var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
+            //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             var foundProps = new Dictionary<string, string>();
@@ -4005,7 +4002,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "Level", true)) break;
+                    if (findClass(filePath, "Model", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
 
@@ -4168,15 +4165,15 @@ namespace ME3Explorer
                     {
                         try
                         {
-                            var lev = ObjectBinary.From<Level>(exp);
+                            var lev = ObjectBinary.From<Model>(exp);
                             var ms = new MemoryStream();
                             lev.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
                             var buff = ms.ToArray();
 
                             if (!buff.SequenceEqual(exp.getBinaryData()))
                             {
-                                File.WriteAllBytes(@"C:\Users\Image 17\convertedLevel", buff);
-                                File.WriteAllBytes(@"C:\Users\Image 17\originalLevel", exp.getBinaryData());
+                                File.WriteAllBytes(@"C:\Users\Image 17\convertedModel", buff);
+                                File.WriteAllBytes(@"C:\Users\Image 17\originalModel", exp.getBinaryData());
                                 interestingExports.Add($"{exp.UIndex}: {filePath}");
                                 return true;
                             }
@@ -4424,24 +4421,25 @@ namespace ME3Explorer
             foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.InheritsFrom("MeshComponent") || exp.InheritsFrom("BrushComponent")))
             {
                 PropertyCollection props = exp.GetProperties();
-                if (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false || props.GetProp<BoolProperty>("CastShadow")?.Value == false)
+                if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 && (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false || props.GetProp<BoolProperty>("CastShadow")?.Value == false))
                 {
                     // shadows/lighting has been explicitly forbidden, don't mess with it.
                     continue;
                 }
                 props.AddOrReplaceProp(new BoolProperty(false, "bUsePreComputedShadows"));
                 props.AddOrReplaceProp(new BoolProperty(false, "bBioForcePreComputedShadows"));
-                props.AddOrReplaceProp(new BoolProperty(true, "bCastDynamicShadow"));
-                props.AddOrReplaceProp(new BoolProperty(true, "CastShadow"));
-                props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicDominantLightShadows"));
+                //props.AddOrReplaceProp(new BoolProperty(true, "bCastDynamicShadow"));
+                //props.AddOrReplaceProp(new BoolProperty(true, "CastShadow"));
+                //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicDominantLightShadows"));
                 props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsLights"));
-                props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicLights"));
+                //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicLights"));
 
                 var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
                                        new StructProperty("LightingChannelContainer", false, new BoolProperty(true, "bIsInitialized"))
                                        {
                                            Name = "LightingChannels"
                                        };
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Static"));
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
                 props.AddOrReplaceProp(lightingChannels);
@@ -4452,14 +4450,15 @@ namespace ME3Explorer
             foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.InheritsFrom("LightComponent")))
             {
                 PropertyCollection props = exp.GetProperties();
-                props.AddOrReplaceProp(new BoolProperty(true, "bCanAffectDynamicPrimitivesOutsideDynamicChannel"));
-                props.AddOrReplaceProp(new BoolProperty(true, "bForceDynamicLight"));
+                //props.AddOrReplaceProp(new BoolProperty(true, "bCanAffectDynamicPrimitivesOutsideDynamicChannel"));
+                //props.AddOrReplaceProp(new BoolProperty(true, "bForceDynamicLight"));
 
                 var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
                                        new StructProperty("LightingChannelContainer", false, new BoolProperty(true, "bIsInitialized"))
                                        {
                                            Name = "LightingChannels"
                                        };
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Static"));
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
                 props.AddOrReplaceProp(lightingChannels);

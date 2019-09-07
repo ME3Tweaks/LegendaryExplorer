@@ -39,7 +39,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 if (sc.Game == MEGame.ME3 && kDOPTreeME3 == null)
                 {
-                    kDOPTreeME3 = KDOPTreeBuilder.ToCompact(kDOPTreeME1ME2, LODModels[0].PositionVertexBuffer.VertexData);
+                    kDOPTreeME3 = KDOPTreeBuilder.ToCompact(kDOPTreeME1ME2.Triangles, LODModels[0].PositionVertexBuffer.VertexData);
                 }
                 else if (sc.Game != MEGame.ME3 && kDOPTreeME1ME2 == null)
                 {
@@ -372,7 +372,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 new kDOPCollisionTriangle(buildTri.Vertex1, buildTri.Vertex2, buildTri.Vertex3, buildTri.MaterialIndex);
         }
 
-        public static kDOPTreeCompact ToCompact(kDOPTree oldKDopTree, Vector3[] vertices)
+        public static kDOPTreeCompact ToCompact(kDOPCollisionTriangle[] oldTriangles, Vector3[] vertices)
         {
             var rootBound = new kDopUnCompressedNode
             {
@@ -385,7 +385,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 rootBound.Min[i] = -float.MaxValue;
             }
 
-            if (oldKDopTree.Triangles.IsEmpty())
+            if (oldTriangles.IsEmpty())
             {
                 return new kDOPTreeCompact
                 {
@@ -395,10 +395,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 };
             }
 
-            var buildTriangles = new kDopBuildTriangle[oldKDopTree.Triangles.Length];
-            for (int i = 0; i < oldKDopTree.Triangles.Length; i++)
+            var buildTriangles = new kDopBuildTriangle[oldTriangles.Length];
+            for (int i = 0; i < oldTriangles.Length; i++)
             {
-                kDOPCollisionTriangle oldTri = oldKDopTree.Triangles[i];
+                kDOPCollisionTriangle oldTri = oldTriangles[i];
                 buildTriangles[i] = new kDopBuildTriangle(oldTri, vertices[oldTri.Vertex1], vertices[oldTri.Vertex2], vertices[oldTri.Vertex3]);
             }
 

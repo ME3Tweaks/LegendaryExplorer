@@ -15,6 +15,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using StreamHelpers;
+using UsefulThings;
 using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
@@ -928,6 +929,76 @@ namespace ME3Explorer.Packages
             var propCollections = new List<PropertyCollection>(ExportCount);
             var postPropBinary = new List<ObjectBinary>(ExportCount);
 
+            if (oldGame == MEGame.ME1 && newGame != MEGame.ME1)
+            {
+                int idx = names.IndexOf("BIOC_Base");
+                if (idx >= 0)
+                {
+                    names[idx] = "SFXGame";
+                }
+            }
+            else if (newGame == MEGame.ME1)
+            {
+                int idx = names.IndexOf("SFXGame");
+                if (idx >= 0)
+                {
+                    names[idx] = "BIOC_Base";
+                }
+            }
+
+            //fix up Default_ imports
+            if (newGame == MEGame.ME3)
+            {
+                using (IMEPackage core = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "Core.pcc")))
+                using (IMEPackage engine = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "Engine.pcc")))
+                using (IMEPackage sfxGame = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "SFXGame.pcc")))
+                {
+                    foreach (ImportEntry defImp in imports.Where(imp => imp.ObjectName.StartsWith("Default_")).ToList())
+                    {
+                        string packageName = defImp.GetFullPath.Split('.')[0];
+                        IMEPackage pck = packageName == "Core" ? core : packageName == "Engine" ? engine : packageName == "SFXGame" ? sfxGame : null;
+                        if (pck != null && pck.Exports.FirstOrDefault(exp => exp.ObjectName == defImp.ObjectName) is ExportEntry defExp)
+                        {
+                            var impChildren = defImp.GetChildren();
+                            var expChildren = defExp.GetChildren();
+                            foreach (IEntry expChild in expChildren)
+                            {
+                                if (impChildren.FirstOrDefault(imp => imp.ObjectName == expChild.ObjectName) is ImportEntry matchingImp)
+                                {
+                                    impChildren.Remove(matchingImp);
+                                }
+                                else
+                                {
+                                    addImport(new ImportEntry(this)
+                                    {
+                                        idxLink = defImp.UIndex,
+                                        idxClassName = FindNameOrAdd(expChild.ClassName),
+                                        idxObjectName = FindNameOrAdd(expChild.ObjectName),
+                                        idxPackageFile = FindNameOrAdd(defImp.PackageFile)
+                                    });
+                                }
+                            }
+
+                            foreach (IEntry impChild in impChildren)
+                            {
+                                EntryPruner.TrashEntries(this, impChild.GetAllDescendants().Prepend(impChild));
+                            }
+                        }
+                    }
+                }
+            }
+
+            //purge MaterialExpressions
+            if (newGame == MEGame.ME3)
+            {
+                var entriesToTrash = new List<IEntry>();
+                foreach (ExportEntry mat in exports.Where(exp => exp.ClassName == "Material").ToList())
+                {
+                    entriesToTrash.AddRange(mat.GetAllDescendants());
+                }
+                EntryPruner.TrashEntries(this, entriesToTrash.ToHashSet());
+            }
+
             EntryPruner.TrashIncompatibleEntries(this, oldGame, newGame);
 
             foreach (ExportEntry export in exports)
@@ -965,6 +1036,63 @@ namespace ME3Explorer.Packages
                                                                                                                       //might not matter though
 
                 exports[i].Data = newData.ToArray();
+            }
+
+            if (newGame == MEGame.ME3)
+            {
+                //change all materials to default material, but try to preserve diff and norm textures
+                using (var resourcePCC = MEPackageHandler.OpenME3Package(Path.Combine(App.ExecFolder, "ME3Resources.pcc")))
+                {
+                    var normDiffMat = resourcePCC.Exports.First(exp => exp.ObjectName == "NormDiffMaterial");
+
+                    foreach (ExportEntry mat in exports.Where(exp => exp.ClassName == "Material" || exp.ClassName  == "MaterialInstanceConstant"))
+                    {
+                        UIndex[] textures = Array.Empty<UIndex>();
+                        if (mat.ClassName == "Material")
+                        {
+                            textures = ObjectBinary.From<Material>(mat).SM3MaterialResource.UniformExpressionTextures;
+                        }
+                        else if(mat.GetProperty<BoolProperty>("bHasStaticPermutationResource")?.Value == true)
+                        {
+                            textures = ObjectBinary.From<MaterialInstance>(mat).SM3StaticPermutationResource.UniformExpressionTextures;
+                        }
+                        else if (mat.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> texParams)
+                        {
+                            textures = texParams.Select(structProp => new UIndex(structProp.GetProp<ObjectProperty>("ParameterValue")?.Value ?? 0)).ToArray();
+                        }
+                        else if(mat.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentProp && getEntry(parentProp.Value) is ExportEntry parent && parent.ClassName == "Material")
+                        {
+                            textures = ObjectBinary.From<Material>(parent).SM3MaterialResource.UniformExpressionTextures;
+                        }
+
+                        PackageEditorWPF.ReplaceExportDataWithAnother(normDiffMat, mat);
+                        int norm = 0;
+                        int diff = 0;
+                        foreach (UIndex texture in textures)
+                        {
+                            if (getEntry(texture) is IEntry tex)
+                            {
+                                if (diff == 0 && tex.ObjectName.Contains("diff", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    diff = texture;
+                                }
+                                else if (norm == 0 && tex.ObjectName.Contains("norm", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    norm = texture;
+                                }
+                            }
+                        }
+                        if (diff == 0)
+                        {
+                            diff = PackageEditorWPF.getOrAddCrossImportOrPackage("EngineMaterials.DefaultDiffuse", resourcePCC, this).UIndex;
+                        }
+
+                        var matBin = ObjectBinary.From<Material>(mat);
+                        matBin.SM3MaterialResource.UniformExpressionTextures = new UIndex[] { norm, diff };
+                        mat.setBinaryData(matBin.ToArray(this));
+                        mat.idxClass = imports.First(imp => imp.ObjectName == "Material").UIndex;
+                    }
+                }
             }
 
             if (newGame != MEGame.ME3)
@@ -1011,25 +1139,6 @@ namespace ME3Explorer.Packages
                         texport.WriteProperty(new NameProperty(tfcName, "TextureFileCacheName"));
                         texport.WriteProperty(tfcGuid.ToGuidStructProp("TFCFileGuid"));
                     }
-                }
-            }
-
-
-
-            if (oldGame == MEGame.ME1 && newGame != MEGame.ME1)
-            {
-                int idx = names.IndexOf("BIOC_Base");
-                if (idx >= 0)
-                {
-                    names[idx] = "SFXGame";
-                }
-            }
-            else if(newGame == MEGame.ME1)
-            {
-                int idx = names.IndexOf("SFXGame");
-                if (idx >= 0)
-                {
-                    names[idx] = "BIOC_Base";
                 }
             }
         }

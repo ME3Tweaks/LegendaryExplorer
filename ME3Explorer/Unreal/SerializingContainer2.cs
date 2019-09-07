@@ -211,6 +211,21 @@ namespace ME3Explorer
             }
 
         }
+        public static void BulkSerialize<T>(this SerializingContainer2 sc, ref T[] arr, SerializeDelegate<T> serialize, int elementSize)
+        {
+            sc.Serialize(ref elementSize);
+            int count = arr?.Length ?? 0;
+            sc.Serialize(ref count);
+            if (sc.IsLoading)
+            {
+                arr = new T[count];
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                serialize(sc, ref arr[i]);
+            }
+        }
         public static void SerializeBulkData<T>(this SerializingContainer2 sc, ref T[] arr, SerializeDelegate<T> serialize)
         {
             int bulkdataflags = 0;

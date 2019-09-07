@@ -46,7 +46,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 DecalManager = new UIndex(0);
             }
 
-            sc.Serialize(ref ExtraReferencedObjects);
+            sc.Serialize(ref ExtraReferencedObjects, SCExt.Serialize);
         }
 
         public override List<(UIndex, string)> GetUIndexes(MEGame game)

@@ -584,7 +584,7 @@ namespace ME3Explorer
                 {
                     (new Soundplorer.SoundplorerWPF()).Show();
                 },
-                tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
+                tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound", "afc" },
                 subCategory = "Scene Shop",
                 description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
             });

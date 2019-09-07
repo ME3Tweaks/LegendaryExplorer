@@ -129,7 +129,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         {
             var uIndexes = new List<(UIndex, string)>();
 
-            uIndexes.Add((Self, nameof(Model)));
+            uIndexes.Add((Self, nameof(Self)));
             uIndexes.AddRange(Actors.Select((u, i) => (u, $"{nameof(Actors)}[{i}]")));
             uIndexes.Add((Model, nameof(Model)));
             uIndexes.AddRange(ModelComponents.Select((u, i) => (u, $"{nameof(ModelComponents)}[{i}]")));

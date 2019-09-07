@@ -65,18 +65,12 @@ namespace ME3Explorer.Unreal.Classes
             {
                 var parsedMaterial = ObjectBinary.From<Material>(export);
                 MaterialShaderMapID = parsedMaterial.SM3MaterialResource.ID;
-                if (export.Game >= MEGame.ME3)
+                foreach (var v in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
                 {
-                    foreach (var v in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
+                    IEntry tex = export.FileRef.getEntry(v.value);
+                    if (tex != null)
                     {
-                        Textures.Add(export.FileRef.getEntry(v.value));
-                    }
-                }
-                else
-                {
-                    foreach (var v in parsedMaterial.SM3MaterialResource.Uniform2DTextureExpressions)
-                    {
-                        Textures.Add(export.FileRef.getEntry(v.TextureIndex.value));
+                        Textures.Add(tex);
                     }
                 }
             }

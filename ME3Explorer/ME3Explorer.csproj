@@ -822,6 +822,7 @@
     <Compile Include="Unreal\BinaryConverters\Level.cs" />
     <Compile Include="Unreal\BinaryConverters\Material.cs" />
     <Compile Include="OrderedDictionary.cs" />
+    <Compile Include="Unreal\BinaryConverters\Model.cs" />
     <Compile Include="Unreal\BinaryConverters\Polys.cs" />
     <Compile Include="Unreal\BinaryConverters\ShaderCache.cs" />
     <Compile Include="Unreal\BinaryConverters\SkeletalMesh.cs" />

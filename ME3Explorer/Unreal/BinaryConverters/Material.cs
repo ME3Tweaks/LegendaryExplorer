@@ -67,7 +67,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public int MaxTextureDependencyLength;
         public Guid ID;
         public uint NumUserTexCoords;
-        public UIndex[] UniformExpressionTextures; //ME3
+        public UIndex[] UniformExpressionTextures; //serialized for ME3, but will be set here for ME1 and ME2 as well
         //begin Not ME3
         public MaterialUniformExpression[] UniformPixelVectorExpressions;
         public MaterialUniformExpression[] UniformPixelScalarExpressions;
@@ -422,7 +422,7 @@ namespace ME3Explorer
             sc.Serialize(ref mres.NumUserTexCoords);
             if (sc.Game == MEGame.ME3)
             {
-                sc.Serialize(ref mres.UniformExpressionTextures);
+                sc.Serialize(ref mres.UniformExpressionTextures, Serialize);
             }
             else
             {
@@ -430,6 +430,11 @@ namespace ME3Explorer
                 sc.Serialize(ref mres.UniformPixelScalarExpressions, Serialize);
                 sc.Serialize(ref mres.Uniform2DTextureExpressions, Serialize);
                 sc.Serialize(ref mres.UniformCubeTextureExpressions, Serialize);
+
+                if (sc.IsLoading)
+                {
+                    mres.UniformExpressionTextures = mres.Uniform2DTextureExpressions.Select(texExpr => texExpr.TextureIndex).ToArray();
+                }
             }
             sc.Serialize(ref mres.bUsesSceneColor);
             sc.Serialize(ref mres.bUsesSceneDepth);

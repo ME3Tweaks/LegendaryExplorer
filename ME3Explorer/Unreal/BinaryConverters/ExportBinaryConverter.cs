@@ -25,11 +25,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 return objbin;
             }
 
-            if (export.ClassName == "Model")
-            {
-                return new GenericObjectBinary(ConvertModel(export, newGame));
-            }
-
             if (export.IsTexture())
             {
                 return new GenericObjectBinary(ConvertTexture2D(export, newGame));
@@ -196,122 +191,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
             return os.ToArray();
         }
-
-        private static byte[] ConvertModel(ExportEntry export, MEGame newGame)
-        {
-            MemoryStream bin = new MemoryStream(export.getBinaryData());
-            var os = new MemoryStream();
-
-            int count;
-            os.WriteFromBuffer(bin.ReadToBuffer(28));
-            os.WriteInt32(bin.ReadInt32());
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 12));//Vectors
-            os.WriteInt32(bin.ReadInt32());
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 12));//Points
-            os.WriteInt32(bin.ReadInt32());
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 64));//Nodes
-            os.WriteInt32(bin.ReadInt32());
-            os.WriteInt32(count = bin.ReadInt32());
-            for (int i = count; i > 0; i--)//surfs
-            {
-                os.WriteFromBuffer(bin.ReadToBuffer(56));
-                if (export.Game == MEGame.ME3)
-                {
-                    bin.SkipInt32();
-                }
-                if (newGame == MEGame.ME3)
-                {
-                    os.WriteInt32(1);//iLightmassIndex 
-                }
-            }
-
-            int size = bin.ReadInt32();
-            os.WriteInt32(newGame == MEGame.ME3 ? 16 : 24);
-            os.WriteInt32(count = bin.ReadInt32());
-            for (int i = count; i > 0; i--) //verts
-            {
-                os.WriteFromBuffer(bin.ReadToBuffer(8));
-                int shadowX = bin.ReadInt32();
-                int shadowY = bin.ReadInt32();
-                os.WriteInt32(shadowX);
-                os.WriteInt32(shadowY);
-
-                int backShadowX;
-                int backShadowY;
-                if (size == 24)
-                {
-                    backShadowX = bin.ReadInt32();
-                    backShadowY = bin.ReadInt32();
-                }
-                else
-                {   //best guess for how to handle this
-                    backShadowX = shadowY;
-                    backShadowY = shadowX;
-                }
-
-                if (newGame != MEGame.ME3)
-                {
-                    os.WriteInt32(backShadowX);
-                    os.WriteInt32(backShadowY);
-                }
-            }
-
-            os.WriteInt32(bin.ReadInt32());
-
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 24));//NumZones
-
-            os.WriteInt32(bin.ReadInt32());
-
-            os.WriteInt32(bin.ReadInt32());
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 4)); //LeafHulls
-            os.WriteInt32(bin.ReadInt32());
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 4)); //Leaves
-            os.WriteInt32(bin.ReadInt32());
-            os.WriteInt32(bin.ReadInt32());
-
-            os.WriteInt32(bin.ReadInt32());
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 4)); //PortalNodes
-            os.WriteInt32(bin.ReadInt32());
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 16)); //ShadowVolume
-
-            os.WriteInt32(bin.ReadInt32());
-
-            os.WriteInt32(bin.ReadInt32());
-            os.WriteInt32(count = bin.ReadInt32());
-            os.WriteFromBuffer(bin.ReadToBuffer(count * 36)); //VertexBuffer
-
-            if (export.Game == MEGame.ME3)
-            {
-                bin.Skip(16);
-                bin.Skip(bin.ReadInt32() * 36);
-            }
-
-            if (newGame == MEGame.ME3)
-            {
-                //this is probably important. user may have to fix manually
-                os.WriteGuid(Guid.NewGuid());
-                os.WriteInt32(1);//count
-                os.WriteBoolInt(false);
-                os.WriteBoolInt(false);
-                os.WriteFloat(1);
-                os.WriteBoolInt(false);
-                os.WriteFloat(2);
-                os.WriteFloat(0);
-                os.WriteFloat(1);
-                os.WriteFloat(1);
-                os.WriteFloat(1);
-            }
-
-            return os.ToArray();
-        }
     }
 
     public abstract class ObjectBinary
@@ -332,6 +211,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<Level>(export);
                 case "World":
                     return From<World>(export);
+                case "Model":
+                    return From<Model>(export);
                 case "Polys":
                     return From<Polys>(export);
                 case "DecalMaterial":

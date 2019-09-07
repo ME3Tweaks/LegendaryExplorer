@@ -86,6 +86,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
             Xbits = x.ToFloat16bits();
             Ybits = y.ToFloat16bits();
         }
+
+        public static implicit operator Vector2DHalf(Vector2D vec2D)
+        {
+            return new Vector2DHalf(vec2D.X, vec2D.Y);
+        }
     }
     public readonly struct Rotator
     {
@@ -138,13 +143,25 @@ namespace ME3Explorer.Unreal.BinaryConverters
             return new Vector3(packedNormal.X / 127.5f - 1, packedNormal.Y / 127.5f - 1, packedNormal.Z / 127.5f - 1);
         }
 
+        public static explicit operator Vector4(PackedNormal packedNormal)
+        {
+            return new Vector4(packedNormal.X / 127.5f - 1, packedNormal.Y / 127.5f - 1, packedNormal.Z / 127.5f - 1, packedNormal.W / 127.5f - 1);
+        }
 
         public static explicit operator PackedNormal(Vector3 vec)
         {
             return new PackedNormal((byte)((int)(vec.X * 127.5f + 128.0f)).Clamp(0, 255),
-                                    (byte)((int)(vec.X * 127.5f + 128.0f)).Clamp(0, 255),
-                                    (byte)((int)(vec.X * 127.5f + 128.0f)).Clamp(0, 255),
+                                    (byte)((int)(vec.Y * 127.5f + 128.0f)).Clamp(0, 255),
+                                    (byte)((int)(vec.Z * 127.5f + 128.0f)).Clamp(0, 255),
                                     128);
+        }
+
+        public static explicit operator PackedNormal(Vector4 vec)
+        {
+            return new PackedNormal((byte)((int)(vec.X * 127.5f + 128.0f)).Clamp(0, 255),
+                                    (byte)((int)(vec.Y * 127.5f + 128.0f)).Clamp(0, 255),
+                                    (byte)((int)(vec.Z * 127.5f + 128.0f)).Clamp(0, 255),
+                                    (byte)((int)(vec.W * 127.5f + 128.0f)).Clamp(0, 255));
         }
     }
 
@@ -197,6 +214,20 @@ namespace ME3Explorer
                 sc.ms.WriteFloat(vec.X);
                 sc.ms.WriteFloat(vec.Y);
                 sc.ms.WriteFloat(vec.Z);
+            }
+        }
+        public static void Serialize(this SerializingContainer2 sc, ref Plane plane)
+        {
+            if (sc.IsLoading)
+            {
+                plane = new Plane(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat());
+            }
+            else
+            {
+                sc.ms.WriteFloat(plane.Normal.X);
+                sc.ms.WriteFloat(plane.Normal.Y);
+                sc.ms.WriteFloat(plane.Normal.Z);
+                sc.ms.WriteFloat(plane.D);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Rotator rot)
@@ -292,36 +323,6 @@ namespace ME3Explorer
             }
             sc.Serialize(ref sphere.Center);
             sc.Serialize(ref sphere.W);
-        }
-        public static void Serialize(this SerializingContainer2 sc, ref Vector3[] arr)
-        {
-            int count = arr?.Length ?? 0;
-            sc.Serialize(ref count);
-            if (sc.IsLoading)
-            {
-                arr = new Vector3[count];
-            }
-
-            for (int i = 0; i < count; i++)
-            {
-                sc.Serialize(ref arr[i]);
-            }
-
-        }
-        public static void Serialize(this SerializingContainer2 sc, ref UIndex[] arr)
-        {
-            int count = arr?.Length ?? 0;
-            sc.Serialize(ref count);
-            if (sc.IsLoading)
-            {
-                arr = new UIndex[count];
-            }
-
-            for (int i = 0; i < count; i++)
-            {
-                sc.Serialize(ref arr[i]);
-            }
-
         }
     }
 }

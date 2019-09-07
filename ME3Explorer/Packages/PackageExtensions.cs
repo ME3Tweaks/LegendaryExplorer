@@ -85,6 +85,11 @@ namespace ME3Explorer.Packages
 
     public static class IEntryExtensions
     {
+        public static bool IsTrash(this IEntry entry)
+        {
+            return entry.ObjectName == UnrealPackageFile.TrashPackageName || entry.Parent?.ObjectName == UnrealPackageFile.TrashPackageName;
+        }
+
         public static bool IsTexture(this IEntry entry)
         {
             return entry.ClassName == "Texture2D" ||
@@ -134,10 +139,21 @@ namespace ME3Explorer.Packages
                     continue;
                 }
                 //find header references
-                if (exp.idxLink == baseUIndex || exp.idxArchtype == baseUIndex || exp.idxClass == baseUIndex || exp.idxSuperClass == baseUIndex 
-                  || (exp.HasComponentMap && exp.ComponentMap.Any(kvp => kvp.Value == baseUIndex)))
+                if (exp.idxArchtype == baseUIndex)
                 {
-                    result.AddToListAt(exp, "Header");
+                    result.AddToListAt(exp, "Header: Archetype");
+                }
+                if (exp.idxClass == baseUIndex)
+                {
+                    result.AddToListAt(exp, "Header: Class");
+                }
+                if (exp.idxSuperClass == baseUIndex)
+                {
+                    result.AddToListAt(exp, "Header: SuperClass");
+                }
+                if (exp.HasComponentMap && exp.ComponentMap.Any(kvp => kvp.Value == baseUIndex))
+                {
+                    result.AddToListAt(exp, "Header: ComponentMap");
                 }
 
                 //find stack references
@@ -162,18 +178,6 @@ namespace ME3Explorer.Packages
                             result.AddToListAt(exp, $"(Binary prop: {propName})");
                         }
                     }
-                }
-            }
-
-            foreach (ImportEntry imp in baseEntry.FileRef.Imports)
-            {
-                if (imp == baseEntry)
-                {
-                    continue;
-                }
-                if (imp.idxLink == baseUIndex)
-                {
-                    result.AddToListAt(imp, "Child");
                 }
             }
 

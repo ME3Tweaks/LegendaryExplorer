@@ -126,7 +126,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
             var classesToRemove = oldClasses.Keys.Except(newClasses.Keys).ToHashSet();
             foreach (IEntry entry in entries)
             {
-                if (classesToRemove.Contains(entry.ClassName) || (entry.ClassName == "Class" && classesToRemove.Contains(entry.ObjectName)))
+                if (classesToRemove.Contains(entry.ClassName) || (entry.ClassName == "Class" && classesToRemove.Contains(entry.ObjectName))
+                    || entry is ExportEntry exp && (pcc.getEntry(exp.idxArchtype)?.IsTrash() ?? false))
                 {
                     TrashEntries(pcc, entries.FlattenTree(entry.UIndex));
                 }
