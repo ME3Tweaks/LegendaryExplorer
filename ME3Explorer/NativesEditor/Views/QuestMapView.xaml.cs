@@ -712,6 +712,12 @@ namespace MassEffect.NativesEditor.Views
                 {
                     txt_taskName.Text = GlobalFindStrRefbyID(SelectedQuestTask.Name, CodexMapView.package);
                 }
+
+                if(SelectedQuestPlotItem != null)
+                {
+                    txt_PlotitmDesc.Text = GlobalFindStrRefbyID(SelectedQuestPlotItem.Name, CodexMapView.package);
+                }
+                
             }
         }
     }
