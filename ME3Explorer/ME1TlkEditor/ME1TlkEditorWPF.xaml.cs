@@ -392,7 +392,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         internal override void OpenFile()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = "ME1 Package Files|*.pcc;*.u;*.upk|ME2/ME3 Talk Files|*.tlk"};
+            OpenFileDialog d = new OpenFileDialog { Filter = "ME1 Package Files|*.sfm;*.u;*.upk|ME2/ME3 Talk Files|*.tlk"};
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -403,6 +403,7 @@ namespace ME3Explorer.ME1TlkEditor
                 AddRecent(d.FileName, false);
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
+                Window.GetWindow(this).Title = "TLK Editor - " + d.FileName;
 #if !DEBUG
                 }
                 catch (Exception ex)
