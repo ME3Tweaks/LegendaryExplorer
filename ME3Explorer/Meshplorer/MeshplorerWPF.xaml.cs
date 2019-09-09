@@ -88,7 +88,7 @@ namespace ME3Explorer
             if (CurrentExport.ClassName == "SkeletalMesh")
             {
                 StaticMesh stm = ObjectBinary.From<SkeletalMesh>(CurrentExport).ConvertToME3StaticMesh();
-                CurrentExport.WriteProperties(new PropertyCollection()
+                CurrentExport.WriteProperties(new PropertyCollection
                 {
                     new BoolProperty(true, "UseSimpleBoxCollision"),
                     new NoneProperty()
@@ -334,7 +334,6 @@ namespace ME3Explorer
             {
                 CurrentExport = CurrentExport;//trigger propertyset stuff
             }
-            //todo: update Mesh list when neccesary
         }
 
         private void Window_DragOver(object sender, DragEventArgs e)

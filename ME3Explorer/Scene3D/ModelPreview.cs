@@ -235,7 +235,7 @@ namespace ME3Explorer.Scene3D
     }
 
     /// <summary>
-    /// Contains all the necessary resources (minus textures, which are cached in a <see cref="PreviewTextureCache"/>) needed to render a static preview of <see cref="Unreal.Classes.SkeletalMesh"/> or <see cref="Unreal.Classes.StaticMesh"/> instances.  
+    /// Contains all the necessary resources (minus textures, which are cached in a <see cref="PreviewTextureCache"/>) needed to render a static preview of <see cref="Unreal.BinaryConverters.SkeletalMesh"/> or <see cref="StaticMesh"/> instances.  
     /// </summary>
     public class ModelPreview : IDisposable
     {

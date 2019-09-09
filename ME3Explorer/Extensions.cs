@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using Gammtek.Conduit;
 using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
@@ -868,6 +869,14 @@ namespace ME3Explorer
             ushort mantissaBits = (ushort)(mantissa >> 42);
             ushort signBits = (ushort)(sign >> 48);
             return (ushort)(exponentBits | mantissaBits | signBits);
+        }
+
+        /// <summary>
+        /// expects a float in range -1 to 1, anything outside that will be clamped to it.
+        /// </summary>
+        public static byte PackToByte(this float f)
+        {
+            return (byte)((int)(f * 127.5f + 128.0f)).Clamp(0, 255);
         }
     }
 
