@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ConvexDecomposition">
+      <UniqueIdentifier>{81e11a9d-c90c-45d8-ab65-5f088c72e062}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ConvexDecomposition\bestfit.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexDecomposition\bestfitobb.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexDecomposition\cd_hull.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexDecomposition\cd_wavefront.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexDecomposition\concavity.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexDecomposition\ConvexDecomposition.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexDecomposition\fitsphere.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexDecomposition\float_math.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexDecomposition\meshvolume.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexDecomposition\planetri.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexDecomposition\raytri.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexDecomposition\splitplane.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexDecomposition\triangulate.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvexDecomposition\vlookup.cpp">
+      <Filter>ConvexDecomposition</Filter>
+    </ClCompile>
+    <ClCompile Include="PInvokeWrapper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ConvexDecomposition\bestfit.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\bestfitobb.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\cd_hull.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\cd_vector.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\cd_wavefront.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\concavity.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\ConvexDecomposition.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\fitsphere.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\float_math.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\meshvolume.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\planetri.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\raytri.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\splitplane.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\triangulate.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexDecomposition\vlookup.h">
+      <Filter>ConvexDecomposition</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

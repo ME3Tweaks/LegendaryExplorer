@@ -27,6 +27,7 @@ namespace ME3Explorer.Packages
             FileRef = file;
             OriginalDataSize = 0;
             Header = new byte[HasComponentMap ? 72 : 68];
+            ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
         }
 
         public ExportEntry(IMEPackage file, Stream stream)
@@ -647,6 +648,11 @@ namespace ME3Explorer.Packages
             //            return 0x10;
             //    }
             //}
+            if (_data.Length == 4)
+            {
+                return 4;
+            }
+
             int result = 8;
             int test0 = BitConverter.ToInt32(_data, 0);
             int test1 = BitConverter.ToInt32(_data, 4);

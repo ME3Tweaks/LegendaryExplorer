@@ -170,6 +170,25 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public Vector3 Min;
         public Vector3 Max;
         public byte IsValid;
+
+        public void Add(Vector3 vec)
+        {
+            if (IsValid > 0)
+            {
+                Min.X = Math.Min(Min.X, vec.X);
+                Min.Y = Math.Min(Min.Y, vec.Y);
+                Min.Z = Math.Min(Min.Z, vec.Z);
+
+                Max.X = Math.Max(Max.X, vec.X);
+                Max.Y = Math.Max(Max.Y, vec.Y);
+                Max.Z = Math.Max(Max.Z, vec.Z);
+            }
+            else
+            {
+                Max = Min = vec;
+                IsValid = 1;
+            }
+        }
     }
 
     public class BoxSphereBounds

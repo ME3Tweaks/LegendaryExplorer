@@ -1305,6 +1305,10 @@
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
       <Name>Be.Windows.Forms.HexBox</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ConvexDecomposition\DecomposeSample.vcxproj">
+      <Project>{0282d4e2-da97-437d-9bde-1c9f5e56f6f8}</Project>
+      <Name>DecomposeSample</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Direct3D9 Shader Model 3 Disassembler\Direct3D9 Shader Model 3 Disassembler.csproj">
       <Project>{53AF9E1D-16BC-47A5-884E-5CE72ADCB805}</Project>
       <Name>Direct3D9 Shader Model 3 Disassembler</Name>
@@ -1482,6 +1486,8 @@
 
 xcopy /f /e /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 
+xcopy /f /e /y "$(SolutionDir)ConvexDecomposition\$(OutDir)DecomposeSample.dll" "$(ProjectDir)$(OutDir)lib\"
+
 rmdir /s /q "$(ProjectDir)$(OutDir)fr-CA"
 rmdir /s /q "$(ProjectDir)$(OutDir)zh-CN"
 rmdir /s /q "$(ProjectDir)$(OutDir)es"
@@ -1498,6 +1504,8 @@ rmdir /s /q "$(ProjectDir)$(OutDir)zh-Hans"
 del /s "$(TargetDir)*.xml"
 
 move /y "$(ProjectDir)$(OutDir)CSharpImageLibrary.exe" "$(ProjectDir)$(OutDir)lib\"
+move /y "$(ProjectDir)$(OutDir)Shader3DeComp.exe" "$(ProjectDir)$(OutDir)lib\"
+move /y "$(ProjectDir)$(OutDir)Shader3DeComp.exe.config" "$(ProjectDir)$(OutDir)lib\"
 del "$(ProjectDir)$(OutDir)HexConverter.exe.config"
 if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBuilder.cmd" "$(TargetDir)..\ReleaseBuilder.bat" /y)
 

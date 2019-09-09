@@ -37,7 +37,7 @@ namespace ME3Explorer
             return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
         }
 
-        //argument passed to continuationn>
+        //argument passed to continuation
         public static Task ContinueWithOnUIThread<TResult>(this Task<TResult> task, Action<Task<TResult>> continuationAction)
         {
             return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
@@ -224,6 +224,13 @@ namespace ME3Explorer
         {
             var slice = new byte[length];
             Buffer.BlockCopy(src, start, slice, 0, length);
+            return slice;
+        }
+
+        public static T[] Slice<T>(this T[] src, int start, int length)
+        {
+            var slice = new T[length];
+            Array.Copy(src, start, slice, 0, length);
             return slice;
         }
 
