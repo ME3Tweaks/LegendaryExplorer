@@ -145,6 +145,13 @@ namespace ME3Explorer.Meshplorer
             set => SetProperty(ref _isSkeletalMesh, value);
         }
 
+        private bool _isBrush;
+        public bool IsBrush
+        {
+            get => _isBrush;
+            set => SetProperty(ref _isBrush, value);
+        }
+
         public MeshRendererWPF()
         {
             DataContext = this;
@@ -180,7 +187,6 @@ namespace ME3Explorer.Meshplorer
                     BusyText = "Fetching assets";
                     IsBusy = true;
                     var meshObject = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
-                    GetCollisionMesh(meshObject.GetCollisionMeshProperty(Pcc));
                     ModelPreview.PreloadedModelData pmd = new ModelPreview.PreloadedModelData
                     {
                         meshObject = meshObject,
@@ -262,6 +268,20 @@ namespace ME3Explorer.Meshplorer
                     return pmd;
                 };
             }
+            else if (CurrentLoadedExport.ClassName == "BrushComponent")
+            {
+                IsBrush = true;
+                loadMesh = () =>
+                {
+                    ModelPreview.PreloadedModelData pmd = new ModelPreview.PreloadedModelData
+                    {
+                        meshObject = CurrentLoadedExport.GetProperty<StructProperty>("BrushAggGeom"),
+                        sections = new List<ModelPreviewSection>(),
+                        texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>(),
+                    };
+                    return pmd;
+                };
+            }
 
             if (loadMesh != null)
             {
@@ -273,6 +293,7 @@ namespace ME3Explorer.Meshplorer
                         switch (pmd.meshObject)
                         {
                             case StaticMesh statM:
+                                STMCollisionMesh = GetMeshFromAggGeom(statM.GetCollisionMeshProperty(Pcc));
                                 Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, statM, CurrentLOD, SceneViewer.Context.TextureCache, pmd);
                                 SceneViewer.Context.Camera.FocusDepth = statM.Bounds.SphereRadius * 1.2f;
                                 break;
@@ -280,12 +301,48 @@ namespace ME3Explorer.Meshplorer
                                 Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, skm, SceneViewer.Context.TextureCache, pmd);
                                 SceneViewer.Context.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
                                 break;
+                            case StructProperty structProp: //BrushComponent
+                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromAggGeom(structProp));
+                                SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
+                                break;
                         }
 
                         CenterView();
                     }
                 });
             }
+        }
+
+        private WorldMesh GetMeshFromAggGeom(StructProperty aggGeom)
+        {
+            if (aggGeom?.GetProp<ArrayProperty<StructProperty>>("ConvexElems") is ArrayProperty<StructProperty> convexElems)
+            {
+                var vertices = new List<WorldVertex>();
+                var triangles = new List<Triangle>();
+                int vertTotal = 0;
+                foreach (StructProperty convexElem in convexElems)
+                {
+                    var faceTriData = convexElem.GetProp<ArrayProperty<IntProperty>>("FaceTriData");
+                    for (int i = 0; i < faceTriData.Count; i += 3)
+                    {
+                        triangles.Add(new Triangle((uint)(faceTriData[i].Value + vertTotal), (uint)(faceTriData[i + 1].Value + vertTotal), (uint)(faceTriData[i + 2].Value + vertTotal)));
+                    }
+
+                    var vertexData = convexElem.GetProp<ArrayProperty<StructProperty>>("VertexData");
+                    foreach (StructProperty vertex in vertexData)
+                    {
+                        float x = vertex.GetProp<FloatProperty>("X").Value;
+                        float y = vertex.GetProp<FloatProperty>("Y").Value;
+                        float z = vertex.GetProp<FloatProperty>("Z").Value;
+                        vertices.Add(new WorldVertex(new Vector3(-x, z, y), Vector3.Zero, Vector2.Zero));
+                        ++vertTotal;
+                    }
+                }
+
+                return new WorldMesh(SceneViewer.Context.Device, triangles, vertices);
+            }
+
+            return null;
         }
 
         #region CollisionMesh
@@ -323,37 +380,8 @@ namespace ME3Explorer.Meshplorer
 
         private StructProperty aggGeomProp;
 
-        private void GetCollisionMesh(StructProperty aggGeom)
-        {
-            if (aggGeom?.GetProp<ArrayProperty<StructProperty>>("ConvexElems") is ArrayProperty<StructProperty> convexElems)
-            {
-                var vertices = new List<WorldVertex>();
-                var triangles = new List<Triangle>();
-                int vertTotal = 0;
-                foreach (StructProperty convexElem in convexElems)
-                {
-                    var faceTriData = convexElem.GetProp<ArrayProperty<IntProperty>>("FaceTriData");
-                    for (int i = 0; i < faceTriData.Count; i += 3)
-                    {
-                        triangles.Add(new Triangle((uint)(faceTriData[i].Value + vertTotal), (uint)(faceTriData[i + 1].Value + vertTotal), (uint)(faceTriData[i + 2].Value + vertTotal)));
-                    }
 
-                    var vertexData = convexElem.GetProp<ArrayProperty<StructProperty>>("VertexData");
-                    foreach (StructProperty vertex in vertexData)
-                    {
-                        float x = vertex.GetProp<FloatProperty>("X").Value;
-                        float y = vertex.GetProp<FloatProperty>("Y").Value;
-                        float z = vertex.GetProp<FloatProperty>("Z").Value;
-                        vertices.Add(new WorldVertex(new Vector3(-x, z, y), Vector3.Zero, Vector2.Zero));
-                        ++vertTotal;
-                    }
-                }
-
-                STMCollisionMesh = new WorldMesh(SceneViewer.Context.Device, triangles, vertices);
-            }
-        }
-
-        private void GenerateCollisionMesh()
+        private void GenerateCollisionMesh(object sender, RoutedEventArgs e)
         {
             if (IsStaticMesh && (Preview?.LODs.Any() ?? false))
             {
@@ -363,20 +391,15 @@ namespace ME3Explorer.Meshplorer
                 {
                     var mesh = Preview.LODs[0].Mesh;
                     return AggGeomBuilder.CreateAggGeom(mesh.Vertices.Select(vert => new Vector3(-vert.Position.X, vert.Position.Z, vert.Position.Y)).ToArray(),
-                                                        mesh.Triangles.SelectMany(tri => new[] {tri.Vertex1, tri.Vertex2, tri.Vertex3}).ToArray(),
+                                                        mesh.Triangles.SelectMany(tri => new[] { tri.Vertex1, tri.Vertex2, tri.Vertex3 }).ToArray(),
                                                         Depth, ConservationThreshold, MaxVerts);
                 }).ContinueWithOnUIThread(prevTask =>
                 {
                     aggGeomProp = prevTask.Result;
-                    GetCollisionMesh(aggGeomProp);
+                    STMCollisionMesh = GetMeshFromAggGeom(aggGeomProp);
                     IsBusy = false;
                 });
             }
-        }
-
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
-            GenerateCollisionMesh();
         }
 
         private void SaveGeneratedMesh(object sender, RoutedEventArgs e)
@@ -478,6 +501,7 @@ namespace ME3Explorer.Meshplorer
 
         public override void UnloadExport()
         {
+            IsBrush = false;
             IsSkeletalMesh = false;
             IsStaticMesh = false;
             Preview?.Dispose();

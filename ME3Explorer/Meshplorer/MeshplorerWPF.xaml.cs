@@ -334,6 +334,32 @@ namespace ME3Explorer
             {
                 CurrentExport = CurrentExport;//trigger propertyset stuff
             }
+
+            List<PackageUpdate> exportUpdates = updates.Where(upd => upd.change == PackageChange.ExportData || upd.change == PackageChange.ExportHeader ||
+                                                                     upd.change == PackageChange.ExportRemove || upd.change == PackageChange.ExportAdd).ToList();
+            bool shouldUpdateList = false;
+            foreach (ExportEntry meshExport in MeshExports)
+            {
+                if (exportUpdates.Any(upd => upd.index == meshExport.Index))
+                {
+                    shouldUpdateList = true;
+                    break;
+                }
+            }
+
+            foreach (PackageUpdate update in exportUpdates)
+            {
+                if (!MeshExports.Contains(Pcc.getEntry(update.index)))
+                {
+                    shouldUpdateList = true;
+                    break;
+                }
+            }
+
+            if (shouldUpdateList)
+            {
+                MeshExports.ReplaceAll(Pcc.Exports.Where(Mesh3DViewer.CanParse));
+            }
         }
 
         private void Window_DragOver(object sender, DragEventArgs e)
