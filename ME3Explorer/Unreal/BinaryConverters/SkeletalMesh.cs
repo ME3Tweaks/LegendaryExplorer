@@ -145,7 +145,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     };
                 }
             }
-            kDOPCollisionTriangle[] oldTriangles = new kDOPCollisionTriangle[lodModel.IndexBuffer.Length / 3];
+            var tris = new kDOPCollisionTriangle[lodModel.IndexBuffer.Length / 3];
             for (int i = 0, elIdx = 0, triCount = 0; i < lodModel.IndexBuffer.Length; i += 3, ++triCount)
             {
                 if (triCount > lodModel.Sections[elIdx].NumTriangles)
@@ -153,11 +153,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     triCount = 0;
                     ++elIdx;
                 }
-                oldTriangles[i] = new kDOPCollisionTriangle(lodModel.IndexBuffer[i], lodModel.IndexBuffer[i + 1], lodModel.IndexBuffer[i + 2],
+                tris[i / 3] = new kDOPCollisionTriangle(lodModel.IndexBuffer[i], lodModel.IndexBuffer[i + 1], lodModel.IndexBuffer[i + 2],
                                                             lodModel.Sections[elIdx].MaterialIndex);
             }
 
-            stm.kDOPTreeME3 = KDOPTreeBuilder.ToCompact(oldTriangles, stm.LODModels[0].PositionVertexBuffer.VertexData);
+            stm.kDOPTreeME3 = KDOPTreeBuilder.ToCompact(tris, stm.LODModels[0].PositionVertexBuffer.VertexData);
 
             return stm;
         }

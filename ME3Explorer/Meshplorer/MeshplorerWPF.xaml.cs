@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using ByteSizeLib;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using Microsoft.Win32;
 
@@ -26,7 +27,28 @@ namespace ME3Explorer
         public List<string> RFiles;
         readonly List<Button> RecentButtons = new List<Button>();
         public ObservableCollectionExtended<ExportEntry> MeshExports { get; } = new ObservableCollectionExtended<ExportEntry>();
-        private ExportEntry CurrentExport;
+        private ExportEntry _currentExport;
+        public ExportEntry CurrentExport
+        {
+            get => _currentExport;
+            set
+            {
+                SetProperty(ref _currentExport, value);
+                if (value == null)
+                {
+                    BinaryInterpreterTab_BinaryInterpreter.UnloadExport();
+                    InterpreterTab_Interpreter.UnloadExport();
+                    Mesh3DViewer.UnloadExport();
+
+                }
+                else
+                {
+                    BinaryInterpreterTab_BinaryInterpreter.LoadExport(CurrentExport);
+                    InterpreterTab_Interpreter.LoadExport(CurrentExport);
+                    Mesh3DViewer.LoadExport(CurrentExport);
+                }
+            }
+        }
 
 
 
@@ -48,6 +70,7 @@ namespace ME3Explorer
         public ICommand SaveAsCommand { get; set; }
         public ICommand FindCommand { get; set; }
         public ICommand GotoCommand { get; set; }
+        public ICommand ConvertToStaticMeshCommand { get; set; }
         private void LoadCommands()
         {
             OpenFileCommand = new GenericCommand(OpenFile);
@@ -55,7 +78,26 @@ namespace ME3Explorer
             SaveAsCommand = new GenericCommand(SaveFileAs, PackageIsLoaded);
             //FindCommand = new GenericCommand(FocusSearch, PackageIsLoaded);
             //GotoCommand = new GenericCommand(FocusGoto, PackageIsLoaded);
+            ConvertToStaticMeshCommand = new GenericCommand(ConvertToStaticMesh, CanConvertToStaticMesh);
         }
+
+        private bool CanConvertToStaticMesh() => Mesh3DViewer.IsSkeletalMesh && Pcc.Game == MEGame.ME3;
+
+        private void ConvertToStaticMesh()
+        {
+            if (CurrentExport.ClassName == "SkeletalMesh")
+            {
+                StaticMesh stm = ObjectBinary.From<SkeletalMesh>(CurrentExport).ConvertToME3StaticMesh();
+                CurrentExport.WriteProperties(new PropertyCollection()
+                {
+                    new BoolProperty(true, "UseSimpleBoxCollision"),
+                    new NoneProperty()
+                });
+                CurrentExport.setBinaryData(stm.ToArray(Pcc));
+                CurrentExport.idxClass = Pcc.getEntryOrAddImport("Engine.StaticMesh").UIndex;
+            }
+        }
+
         private bool PackageIsLoaded() => Pcc != null;
 
 
@@ -253,6 +295,7 @@ namespace ME3Explorer
             get => _busyText;
             set => SetProperty(ref _busyText, value);
         }
+
         #endregion
 
         public void LoadFile(string s, int goToIndex = 0)
@@ -265,7 +308,7 @@ namespace ME3Explorer
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(s);
 
-                MeshExports.ReplaceAll(Pcc.Exports.Where(x => (x.ClassName == "SkeletalMesh" || x.ClassName == "StaticMesh") && !x.ObjectName.StartsWith("Default__")));
+                MeshExports.ReplaceAll(Pcc.Exports.Where(Mesh3DViewer.CanParse));
 
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
                 Title = $"Meshplorer WPF - {s}";
@@ -286,7 +329,12 @@ namespace ME3Explorer
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            // Not implemented yet
+            if (updates.Any(update => update.change == PackageChange.ExportData && update.index == CurrentExport.Index)
+             && Mesh3DViewer.CanParse(CurrentExport))
+            {
+                CurrentExport = CurrentExport;//trigger propertyset stuff
+            }
+            //todo: update Mesh list when neccesary
         }
 
         private void Window_DragOver(object sender, DragEventArgs e)
@@ -329,25 +377,6 @@ namespace ME3Explorer
             BinaryInterpreterTab_BinaryInterpreter.Dispose();
             InterpreterTab_Interpreter.Dispose();
             Mesh3DViewer.Dispose();
-        }
-
-        private void MeshExportsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (MeshExportsList.SelectedIndex < 0)
-            {
-                CurrentExport = null;
-                BinaryInterpreterTab_BinaryInterpreter.UnloadExport();
-                InterpreterTab_Interpreter.UnloadExport();
-                Mesh3DViewer.UnloadExport();
-
-            }
-            else
-            {
-                CurrentExport = (ExportEntry)MeshExportsList.SelectedItem;
-                BinaryInterpreterTab_BinaryInterpreter.LoadExport(CurrentExport);
-                InterpreterTab_Interpreter.LoadExport(CurrentExport);
-                Mesh3DViewer.LoadExport(CurrentExport);
-            }
         }
 
         private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)

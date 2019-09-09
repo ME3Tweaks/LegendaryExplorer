@@ -131,6 +131,20 @@ namespace ME3Explorer.Meshplorer
         }
         #endregion
 
+        private bool _isStaticMesh;
+        public bool IsStaticMesh
+        {
+            get => _isStaticMesh;
+            set => SetProperty(ref _isStaticMesh, value);
+        }
+
+        private bool _isSkeletalMesh;
+        public bool IsSkeletalMesh
+        {
+            get => _isSkeletalMesh;
+            set => SetProperty(ref _isSkeletalMesh, value);
+        }
+
         public MeshRendererWPF()
         {
             DataContext = this;
@@ -139,7 +153,8 @@ namespace ME3Explorer.Meshplorer
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return parsableClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__");
+            return parsableClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__") 
+                || (exportEntry.ClassName == "BrushComponent" && exportEntry.GetProperty<StructProperty>("BrushAggGeom") != null);
         }
 
         public override void PoppedOut(MenuItem recentsMenuItem)
@@ -206,6 +221,7 @@ namespace ME3Explorer.Meshplorer
             }
             else if (CurrentLoadedExport.ClassName == "SkeletalMesh")
             {
+                IsSkeletalMesh = true;
                 //var sm = new Unreal.Classes.SkeletalMesh(CurrentLoadedExport);
                 loadMesh = () =>
                 {
@@ -279,14 +295,6 @@ namespace ME3Explorer.Meshplorer
         {
             get => _showCollisionMesh;
             set => SetProperty(ref _showCollisionMesh, value);
-        }
-
-        private bool _isStaticMesh;
-
-        public bool IsStaticMesh
-        {
-            get => _isStaticMesh;
-            set => SetProperty(ref _isStaticMesh, value);
         }
 
         private int _maxVerts = 12;
@@ -470,6 +478,7 @@ namespace ME3Explorer.Meshplorer
 
         public override void UnloadExport()
         {
+            IsSkeletalMesh = false;
             IsStaticMesh = false;
             Preview?.Dispose();
             CurrentLoadedExport = null;
