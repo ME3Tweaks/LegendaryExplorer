@@ -254,6 +254,21 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "TLK Editor",
+                type = typeof(ExportLoaderHostedWindow),
+                icon = Application.Current.FindResource("iconTLKEditorME23") as ImageSource,
+                open = () =>
+                {
+                    ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditor.ME1TlkEditorWPF());
+                    elhw.Title = $"TLK Editor";
+                    elhw.Show();
+                },
+                tags = new List<string> { "utility", "dialogue", "subtitle", "text", "strin'" },
+                subCategory = "Extractors + Repackers",
+                description = "TLK Editor is an editor for localized text, located in TLK files. These files are embedded into UPK files in Mass Effect 1 and stored externally in Mass Effect 2 and 3.",
+            });
+            set.Add(new Tool
+            {
                 name = "ME3 + ME2 TLK Editor",
                 type = typeof(TLKEditor),
                 icon = Application.Current.FindResource("iconTLKEditorME23") as ImageSource,

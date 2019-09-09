@@ -33,6 +33,21 @@ namespace ME3Explorer.SharedUI
             RootPanel.Children.Add(hostedControl);
         }
 
+        public ExportLoaderHostedWindow(FileExportLoaderControl hostedControl, string file = null)
+        {
+            DataContext = this;
+            this.HostedControl = hostedControl;
+            //NamesList.ReplaceAll(LoadedExport.FileRef.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
+            LoadCommands();
+            InitializeComponent();
+            HostedControl.PoppedOut(Recents_MenuItem);
+            RootPanel.Children.Add(hostedControl);
+            if (file != null)
+            {
+                hostedControl.LoadFile(file);
+            }
+        }
+
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
         public ICommand LoadFileCommand { get; set; }
@@ -138,9 +153,12 @@ namespace ME3Explorer.SharedUI
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
             {
-                LoadMEPackage(LoadedExport.FileRef.FilePath); //This will register the tool and assign a reference to it. Since this export is already in memory we will just reference the existing package instead.
-                HostedControl.LoadExport(LoadedExport);
-                OnPropertyChanged(nameof(CurrentFile));
+                if (LoadedExport != null)
+                {
+                    LoadMEPackage(LoadedExport.FileRef.FilePath); //This will register the tool and assign a reference to it. Since this export is already in memory we will just reference the existing package instead.
+                    HostedControl.LoadExport(LoadedExport);
+                    OnPropertyChanged(nameof(CurrentFile));
+                }
             }));
         }
 
