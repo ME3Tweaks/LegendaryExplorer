@@ -43,7 +43,10 @@ namespace ME3Explorer.ASI
         }
         #endregion
         public static readonly string ASIManagerDataFolder = Path.Combine(App.AppDataFolder, @"ASIManager\");
+        public static readonly string CachedASIsFolder = Path.Combine(ASIManagerDataFolder, "CachedASIs");
+
         public static readonly string ManifestLocation = Path.Combine(ASIManagerDataFolder, "manifest.xml");
+        public static readonly string StagedManifestLocation = Path.Combine(ASIManagerDataFolder, "manifest_staged.xml");
         private List<ASIModUpdateGroup> ASIModUpdateGroups = new List<ASIModUpdateGroup>();
         private bool DeselectingDueToOtherList;
         private string _selectedASIDescription = "Select an ASI";
@@ -196,6 +199,22 @@ namespace ME3Explorer.ASI
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (a, b) =>
             {
+                ASIModUpdateGroup g = getUpdateGroupByMod(asiToInstall);
+                string destinationFilename = $"{asiToInstall.InstalledPrefix}-v{asiToInstall.Version}.asi";
+                string cachedPath = Path.Combine(CachedASIsFolder, destinationFilename);
+                string destinationDirectory = getASIDirectoryForGame(g.Game);
+                string finalPath = Path.Combine(destinationDirectory, destinationFilename);
+
+                if (File.Exists(cachedPath))
+                {
+                    //Check hash first
+                    var md5 = BitConverter.ToString(System.Security.Cryptography.MD5.Create().ComputeHash(File.ReadAllBytes(cachedPath))).Replace("-", "").ToLower();
+                    if (md5 == asiToInstall.Hash)
+                    {
+                        File.Copy(cachedPath, finalPath);
+                        return;
+                    }
+                }
                 WebRequest request = WebRequest.Create(asiToInstall.DownloadLink);
 
                 using (WebResponse response = request.GetResponse())
@@ -211,12 +230,13 @@ namespace ME3Explorer.ASI
                     }
                     else
                     {
-                        ASIModUpdateGroup g = getUpdateGroupByMod(asiToInstall);
-                        string destinationDirectory = getASIDirectoryForGame(g.Game);
-                        string destiantionFilename = $"{asiToInstall.InstalledPrefix}-v{asiToInstall.Version}.asi";
-                        string finalPath = Path.Combine(destinationDirectory, destiantionFilename);
-                        File.WriteAllBytes(finalPath, memoryStream.ToArray());
 
+                        File.WriteAllBytes(finalPath, memoryStream.ToArray());
+                        if (!Directory.Exists(CachedASIsFolder))
+                        {
+                            Directory.CreateDirectory(CachedASIsFolder);
+                        }
+                        File.WriteAllBytes(cachedPath, memoryStream.ToArray()); //cache it
                         if (oldASIToRemoveOnSuccess != null)
                         {
                             File.Delete(oldASIToRemoveOnSuccess.InstalledPath);
@@ -288,46 +308,6 @@ namespace ME3Explorer.ASI
                     ME3LoaderInstalled = hashStr == ME3ASILoaderHash;
                 }
             }
-        }
-
-        private void wc_DownloadCompleted(object sender, AsyncCompletedEventArgs eventargs)
-        {
-            IsBusy = false;
-            XElement rootElement = XElement.Load(ManifestLocation);
-            /*
-             *       <name>Mouse Disabler</name>
-      <installedname>MouseDisabler</installedname>
-      <author>Erik JS</author>
-      <description>Makes Mass Effect 3 not respond to mouse input. It's very useful with the controller mods because the interfaces for some reason respond to mouse input on the first frame and can interfere with scrolling.</description>
-      <version>2</version>
-      <hash>fe33ab85c79875e2deb0df6ca3e7c232</hash>
-      <sourcecode>https://github.com/Erik-JS/ME3-ASI/tree/master/ME3MouseDisabler</sourcecode>
-      <downloadlink>https://me3tweaks.com/mods/asi/MouseDisabler-v2.asi</downloadlink>*/
-
-            //I Love Linq
-            ASIModUpdateGroups = (from e in rootElement.Elements("updategroup")
-                                  select new ASIModUpdateGroup
-                                  {
-                                      UpdateGroupId = (int)e.Attribute("groupid"),
-                                      Game = intToGame((int)e.Attribute("game")),
-                                      ASIModVersions = e.Elements("asimod").Select(z => new ASIMod
-                                      {
-                                          Name = (string)z.Element("name"),
-                                          InstalledPrefix = (string)z.Element("installedname"),
-                                          Author = (string)z.Element("author"),
-                                          Version = (string)z.Element("version"),
-                                          Description = (string)z.Element("description"),
-                                          Hash = (string)z.Element("hash"),
-                                          SourceCodeLink = (string)z.Element("sourcecode"),
-                                          DownloadLink = (string)z.Element("downloadlink"),
-                                      }).ToList()
-                                  }).ToList();
-
-            ME1DisplayedASIMods.ReplaceAll(ASIModUpdateGroups.Where(x => x.Game == MEGame.ME1).Select(x => x.ASIModVersions.MaxBy(y => y.Version)).OrderBy(x => x.Name)); //latest
-            ME2DisplayedASIMods.ReplaceAll(ASIModUpdateGroups.Where(x => x.Game == MEGame.ME2).Select(x => x.ASIModVersions.MaxBy(y => y.Version)).OrderBy(x => x.Name)); //latest
-            ME3DisplayedASIMods.ReplaceAll(ASIModUpdateGroups.Where(x => x.Game == MEGame.ME3).Select(x => x.ASIModVersions.MaxBy(y => y.Version)).OrderBy(x => x.Name)); //latest
-
-            RefreshASIStates();
         }
 
         private void RefreshASIStates()
@@ -415,13 +395,63 @@ namespace ME3Explorer.ASI
             using (WebClient wc = new WebClient())
             {
                 IsBusy = true;
-                wc.DownloadFileCompleted += wc_DownloadCompleted;
+                wc.DownloadFileCompleted += (a, b) => LoadManifest(StagedManifestLocation, true);
                 wc.DownloadFileAsync(
                     // Param1 = Link of file
                     new System.Uri("https://me3tweaks.com/mods/asi/getmanifest?AllGames=1"),
                     // Param2 = Path to save
-                    ManifestLocation);
+                    StagedManifestLocation);
             }
+        }
+
+        private void LoadManifest(string manifestToLoad, bool isStaged = false)
+        {
+            IsBusy = false;
+            try
+            {
+                XElement rootElement = XElement.Load(manifestToLoad);
+
+                //I Love Linq
+                ASIModUpdateGroups = (from e in rootElement.Elements("updategroup")
+                                      select new ASIModUpdateGroup
+                                      {
+                                          UpdateGroupId = (int)e.Attribute("groupid"),
+                                          Game = intToGame((int)e.Attribute("game")),
+                                          ASIModVersions = e.Elements("asimod").Select(z => new ASIMod
+                                          {
+                                              Name = (string)z.Element("name"),
+                                              InstalledPrefix = (string)z.Element("installedname"),
+                                              Author = (string)z.Element("author"),
+                                              Version = (string)z.Element("version"),
+                                              Description = (string)z.Element("description"),
+                                              Hash = (string)z.Element("hash"),
+                                              SourceCodeLink = (string)z.Element("sourcecode"),
+                                              DownloadLink = (string)z.Element("downloadlink"),
+                                          }).ToList()
+                                      }).ToList();
+
+                ME1DisplayedASIMods.ReplaceAll(ASIModUpdateGroups.Where(x => x.Game == MEGame.ME1).Select(x => x.ASIModVersions.MaxBy(y => y.Version)).OrderBy(x => x.Name)); //latest
+                ME2DisplayedASIMods.ReplaceAll(ASIModUpdateGroups.Where(x => x.Game == MEGame.ME2).Select(x => x.ASIModVersions.MaxBy(y => y.Version)).OrderBy(x => x.Name)); //latest
+                ME3DisplayedASIMods.ReplaceAll(ASIModUpdateGroups.Where(x => x.Game == MEGame.ME3).Select(x => x.ASIModVersions.MaxBy(y => y.Version)).OrderBy(x => x.Name)); //latest
+
+                RefreshASIStates();
+                if (isStaged)
+                {
+                    File.Copy(StagedManifestLocation, ManifestLocation, true); //this will make sure cached manifest is parsable.
+                }
+            }
+            catch (Exception e)
+            {
+                if (isStaged && File.Exists(ManifestLocation))
+                {
+                    //try cached instead
+                    LoadManifest(ManifestLocation, false);
+                    return;
+                }
+                RefreshASIStates();
+                throw new Exception("Error parsing the ASI Manifest: " + e.Message);
+            }
+
         }
 
         /// <summary>
