@@ -17,7 +17,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public BoxSphereBounds Bounds;
         public UIndex BodySetup;
         public kDOPTree kDOPTreeME1ME2;
-        public kDOPTreeCompact kDOPTreeME3;
+        public kDOPTreeCompact kDOPTreeME3UDK;
         public int InternalVersion;
         public StaticMeshRenderData[] LODModels;
         public uint unk2; //ME1
@@ -25,13 +25,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public uint unk4; //ME1
         public uint unk5; //ME1
         public uint unk6; //ME1
-        public uint unk1; //ME2/3
-        public Rotator ThumbnailAngle; //ME2/3
-        public float ThumbnailDistance; //ME2/3
+        public uint unk1; //ME2/3/UDK
+        public Rotator ThumbnailAngle; //ME2/3/UDK
+        public float ThumbnailDistance; //ME2/3/UDK
         public uint unk7; //ME2/3
-        public string HighResSourceMeshName; //ME3
-        public uint HighResSourceMeshCRC; //ME3
-        public Guid LightingGuid; //ME3
+        public string HighResSourceMeshName; //ME3/UDK
+        public uint HighResSourceMeshCRC; //ME3/UDK
+        public Guid LightingGuid; //ME3/UDK
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -39,20 +39,20 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref BodySetup);
             if (sc.IsSaving)
             {
-                if (sc.Game == MEGame.ME3 && kDOPTreeME3 == null)
+                if (sc.Game >= MEGame.ME3 && kDOPTreeME3UDK == null)
                 {
-                    kDOPTreeME3 = KDOPTreeBuilder.ToCompact(kDOPTreeME1ME2.Triangles, LODModels[0].PositionVertexBuffer.VertexData);
+                    kDOPTreeME3UDK = KDOPTreeBuilder.ToCompact(kDOPTreeME1ME2.Triangles, LODModels[0].PositionVertexBuffer.VertexData);
                 }
-                else if (sc.Game != MEGame.ME3 && kDOPTreeME1ME2 == null)
+                else if (sc.Game < MEGame.ME3 && kDOPTreeME1ME2 == null)
                 {
                     //todo: need to convert kDOPTreeCompact to kDOPTree
                     throw new NotImplementedException("Cannot convert ME3 StaticMeshes to ME1 or ME2 format :(");
                 }
             }
 
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
-                sc.Serialize(ref kDOPTreeME3);
+                sc.Serialize(ref kDOPTreeME3UDK);
             }
             else
             {
@@ -65,8 +65,17 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 if (sc.Game == MEGame.ME1) InternalVersion = 15;
                 if (sc.Game == MEGame.ME2) InternalVersion = 16;
                 if (sc.Game == MEGame.ME3) InternalVersion = 18;
+                if (sc.Game == MEGame.UDK) InternalVersion = 18;
             }
             sc.Serialize(ref InternalVersion);
+            if (sc.Game == MEGame.UDK)
+            {
+                int dummy = 0;
+                sc.Serialize(ref dummy);
+                sc.Serialize(ref dummy);
+                sc.Serialize(ref dummy);
+                sc.Serialize(ref dummy);
+            }
             sc.Serialize(ref LODModels, SCExt.Serialize);
             if (sc.Game == MEGame.ME1)
             {
@@ -81,8 +90,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.Serialize(ref unk1);
                 sc.Serialize(ref ThumbnailAngle);
                 sc.Serialize(ref ThumbnailDistance);
-                sc.Serialize(ref unk7);
-                if (sc.Game == MEGame.ME3)
+                if (sc.Game != MEGame.UDK)
+                {
+                    sc.Serialize(ref unk7);
+                }
+                if (sc.Game >= MEGame.ME3)
                 {
                     sc.Serialize(ref HighResSourceMeshName);
                     sc.Serialize(ref HighResSourceMeshCRC);
@@ -90,7 +102,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 }
             }
 
-            if (sc.IsLoading && sc.Game != MEGame.ME3)
+            if (sc.IsLoading && sc.Game < MEGame.ME3)
             {
                 LightingGuid = Guid.NewGuid();
             }
@@ -195,13 +207,14 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public StaticMeshElement[] Elements;
         public PositionVertexBuffer PositionVertexBuffer;
         public StaticMeshVertexBuffer VertexBuffer;
-        public ColorVertexBuffer ColorVertexBuffer; //ME3
-        public ExtrusionVertexBuffer ShadowExtrusionVertexBuffer;
+        public ColorVertexBuffer ColorVertexBuffer; //ME3/UDK
+        public ExtrusionVertexBuffer ShadowExtrusionVertexBuffer; //not UDK
         public uint NumVertices;
         public ushort[] IndexBuffer; //BulkSerialize
         public ushort[] WireframeIndexBuffer; //BulkSerialize
-        public MeshEdge[] Edges; //BulkSerialize
-        public byte[] ShadowTriangleDoubleSided;
+        public MeshEdge[] Edges; //BulkSerialize //not UDK
+        public byte[] ShadowTriangleDoubleSided; //not UDK
+        public ushort[] unkBuffer; //UDK
         public uint unk1; //ME1
         public byte[] xmlFile; //ME1 BulkData
     }
@@ -212,13 +225,14 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public Vector2D[,] UVs = new Vector2D[3,8];
         public Color[] Colors = new Color[3];
         public int MaterialIndex;
-        public int FragmentIndex; //ME3
+        public int FragmentIndex; //ME3/UDK
         public uint SmoothingMask;
         public int NumUVs;
-        public Vector3[] TangentX = new Vector3[3]; //ME3
-        public Vector3[] TangentY = new Vector3[3]; //ME3
-        public Vector3[] TangentZ = new Vector3[3]; //ME3
-        public bool bOverrideTangentBasis; //ME3
+        public bool bExplicitNormals; //UDK
+        public Vector3[] TangentX = new Vector3[3]; //ME3/UDK
+        public Vector3[] TangentY = new Vector3[3]; //ME3/UDK
+        public Vector3[] TangentZ = new Vector3[3]; //ME3/UDK
+        public bool bOverrideTangentBasis; //ME3/UDK
     }
 
     public class StaticMeshElement
@@ -232,8 +246,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public uint MinVertexIndex;
         public uint MaxVertexIndex;
         public int MaterialIndex;
-        public FragmentRange[] Fragments; //ME3
-        //byte LoadPlatformData; //ME3, always false
+        public FragmentRange[] Fragments; //ME3/UDK
+        //byte LoadPlatformData; //ME3/UDK, always false
     }
 
     public readonly struct FragmentRange
@@ -720,7 +734,7 @@ namespace ME3Explorer
             else
             {
                 elementSize = 8u + buff.NumTexCoords * (buff.bUseFullPrecisionUVs ? 8u : 4u);
-                if (sc.Game != MEGame.ME3)
+                if (sc.Game < MEGame.ME3)
                 {
                     elementSize += 4;
                 }
@@ -752,7 +766,7 @@ namespace ME3Explorer
                 }
                 sc.Serialize(ref buff.VertexData[i].TangentX);
                 sc.Serialize(ref buff.VertexData[i].TangentZ);
-                if (sc.Game != MEGame.ME3)
+                if (sc.Game < MEGame.ME3)
                 {
                     sc.Serialize(ref buff.VertexData[i].Color);
                 }
@@ -832,7 +846,7 @@ namespace ME3Explorer
             sc.Serialize(ref meshElement.MinVertexIndex);
             sc.Serialize(ref meshElement.MaxVertexIndex);
             sc.Serialize(ref meshElement.MaterialIndex);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref meshElement.Fragments, Serialize);
                 byte dummy = 0;
@@ -862,13 +876,17 @@ namespace ME3Explorer
                 sc.Serialize(ref tri.Colors[i]);
             }
             sc.Serialize(ref tri.MaterialIndex);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref tri.FragmentIndex);
             }
             sc.Serialize(ref tri.SmoothingMask);
             sc.Serialize(ref tri.NumUVs);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game == MEGame.UDK)
+            {
+                sc.Serialize(ref tri.bExplicitNormals);
+            }
+            if (sc.Game >= MEGame.ME3)
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -897,7 +915,7 @@ namespace ME3Explorer
             sc.Serialize(ref data.PositionVertexBuffer);
             if (sc.IsSaving)
             {
-                if (sc.Game == MEGame.ME3 && data.ColorVertexBuffer == null)
+                if (sc.Game >= MEGame.ME3 && data.ColorVertexBuffer == null)
                 {
                     //this was read in from ME1 or ME2, we need to seperate out the color data
                     data.ColorVertexBuffer = new ColorVertexBuffer
@@ -907,9 +925,9 @@ namespace ME3Explorer
                         Stride = 4
                     };
                 }
-                else if (sc.Game != MEGame.ME3 && data.ColorVertexBuffer != null)
+                else if (sc.Game < MEGame.ME3 && data.ColorVertexBuffer != null)
                 {
-                    //this was read in from ME3, we need to integrate the color data
+                    //this was read in from ME3 or UDK, we need to integrate the color data
                     for (int i = data.VertexBuffer.VertexData.Length - 1; i >= 0; i--)
                     {
                         data.VertexBuffer.VertexData[i].Color = data.ColorVertexBuffer.VertexData[i];
@@ -917,11 +935,23 @@ namespace ME3Explorer
                 }
             }
             sc.Serialize(ref data.VertexBuffer);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref data.ColorVertexBuffer);
             }
-            sc.Serialize(ref data.ShadowExtrusionVertexBuffer);
+
+            if (sc.Game < MEGame.UDK)
+            {
+                sc.Serialize(ref data.ShadowExtrusionVertexBuffer);
+            }
+            else if (sc.IsLoading)
+            {
+                data.ShadowExtrusionVertexBuffer = new ExtrusionVertexBuffer
+                {
+                    Stride = 4,
+                    VertexData = Array.Empty<float>()
+                };
+            }
             sc.Serialize(ref data.NumVertices);
             int elementSize = 2;
             sc.Serialize(ref elementSize);
@@ -929,10 +959,22 @@ namespace ME3Explorer
             elementSize = 2;
             sc.Serialize(ref elementSize);
             sc.Serialize(ref data.WireframeIndexBuffer, Serialize);
-            elementSize = 16;
-            sc.Serialize(ref elementSize);
-            sc.Serialize(ref data.Edges, Serialize);
-            sc.Serialize(ref data.ShadowTriangleDoubleSided, Serialize);
+            if (sc.Game != MEGame.UDK)
+            {
+                elementSize = 16;
+                sc.Serialize(ref elementSize);
+                sc.Serialize(ref data.Edges, Serialize);
+                sc.Serialize(ref data.ShadowTriangleDoubleSided, Serialize);
+            }
+            else if (sc.IsLoading)
+            {
+                data.Edges = Array.Empty<MeshEdge>();
+                data.ShadowTriangleDoubleSided = Array.Empty<byte>();
+            }
+            if (sc.Game == MEGame.UDK)
+            {
+                sc.BulkSerialize(ref data.unkBuffer, Serialize, 2);
+            }
             if (sc.Game == MEGame.ME1)
             {
                 sc.Serialize(ref data.unk1);

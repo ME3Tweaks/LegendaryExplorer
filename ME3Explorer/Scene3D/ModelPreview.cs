@@ -315,7 +315,7 @@ namespace ME3Explorer.Scene3D
             else
             {
                 // Gather all the vertex data from the raw triangles, not the Mesh.Vertices.Point list.
-                if (m.Export.Game == MEGame.ME1)
+                if (m.Export.Game <= MEGame.ME2)
                 {
                     var kdop = m.kDOPTreeME1ME2;
                     for (int i = 0; i < kdop.Triangles.Length; i++)
@@ -325,7 +325,7 @@ namespace ME3Explorer.Scene3D
                 }
                 else
                 {
-                    var kdop = m.kDOPTreeME3;
+                    var kdop = m.kDOPTreeME3UDK;
                     for (int i = 0; i < kdop.Triangles.Length; i++)
                     {
                         triangles.Add(new Triangle(kdop.Triangles[i].Vertex1, kdop.Triangles[i].Vertex2, kdop.Triangles[i].Vertex3));

@@ -113,7 +113,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                                                             lodModel.Sections[elIdx].MaterialIndex);
             }
 
-            stm.kDOPTreeME3 = KDOPTreeBuilder.ToCompact(tris, stm.LODModels[0].PositionVertexBuffer.VertexData);
+            stm.kDOPTreeME3UDK = KDOPTreeBuilder.ToCompact(tris, stm.LODModels[0].PositionVertexBuffer.VertexData);
 
             return stm;
         }
