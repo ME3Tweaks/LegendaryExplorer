@@ -35,6 +35,8 @@ namespace ME3Explorer
         public static string cookedPath => gamePath != null ? Path.Combine(gamePath, @"BIOGame\CookedPCConsole\") : "Not Found";
         public static string DLCPath => gamePath != null ? Path.Combine(gamePath , @"BIOGame\DLC\") : "Not Found";
 
+        public static string ExecutablePath => gamePath != null ? Path.Combine(gamePath, @"Binaries\Win32\MassEffect3.exe") : null;
+
         // "C:\...\MyDocuments\BioWare\Mass Effect 3\" folder
         public static string BioWareDocPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"\BioWare\Mass Effect 3\");
         public static string GamerSettingsIniFile => Path.Combine(BioWareDocPath, @"BIOGame\Config\GamerSettings.ini");

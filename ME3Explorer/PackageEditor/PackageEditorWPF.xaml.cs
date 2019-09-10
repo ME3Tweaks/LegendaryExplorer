@@ -203,6 +203,8 @@ namespace ME3Explorer
         public ICommand DumpMaterialShadersCommand { get; set; }
         public ICommand FindReferencesCommand { get; set; }
 
+        public ICommand OpenMapInGameCommand { get; set; }
+
         private void LoadCommands()
         {
             CompareToUnmoddedCommand = new GenericCommand(CompareUnmodded, CanCompareToUnmodded);
@@ -247,6 +249,8 @@ namespace ME3Explorer
 
             DumpAllShadersCommand = new GenericCommand(DumpAllShaders, () => PackageIsLoaded() && Pcc.Exports.Any(exp => exp.ClassName == "ShaderCache"));
             DumpMaterialShadersCommand = new GenericCommand(DumpMaterialShaders, PackageIsLoaded);
+
+            OpenMapInGameCommand = new GenericCommand(OpenMapInGame, () => PackageIsLoaded() && Pcc.Game != MEGame.UDK && Pcc.Exports.Any(exp => exp.ClassName == "Level"));
         }
 
         private void ExportEmbeddedFilePrompt()
@@ -4622,6 +4626,13 @@ namespace ME3Explorer
                 }
                 
             }
+        }
+
+        void OpenMapInGame()
+        {
+            //only works for ME3?
+            string mapName = Path.GetFileNameWithoutExtension(Pcc.FilePath);
+            Process.Start(MEDirectories.ExecutablePath(Pcc.Game), $"{mapName} -nostartupmovies");
         }
     }
 }
