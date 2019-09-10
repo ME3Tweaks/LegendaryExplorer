@@ -175,7 +175,7 @@ namespace ME3Explorer
             //Do not remove - used by Mass Effect Mod Manager to boot the tool
             if (arg == "JUMPLIST_PACKAGEDUMPER")
             {
-                PackageDumper.PackageDumper packageDumper = new PackageDumper.PackageDumper(); ();
+                PackageDumper.PackageDumper packageDumper = new PackageDumper.PackageDumper();
                 packageDumper.Show();
                 packageDumper.Activate();
                 exitCode = 0;
