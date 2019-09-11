@@ -1,0 +1,57 @@
+﻿using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace ME3Explorer.PropertyDatabase
+{
+    /// <summary>
+    /// Interaction logic for Page1.xaml
+    /// </summary>
+    public partial class PropertyDB : WPFBase
+    {
+        #region Declarations
+
+        public ICommand GenerateDBCommand { get; set; }
+        public ICommand SaveDBCommand { get; set; }
+        public ICommand switchME1Command { get; set; }
+        public ICommand switchME2Command { get; set; }
+        public ICommand switchME3Command { get; set; }
+
+        #endregion
+
+
+        public PropertyDB()
+        {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Property Database", new WeakReference(this));
+            LoadCommands();
+            InitializeComponent();
+        }
+
+        private void LoadCommands()
+        {
+            //GenerateDBCommand = new GenericCommand();
+            //SaveDBCommand = new GenericCommand();
+            //switchME1Command = new GenericCommand();
+            //switchME2Command = new GenericCommand();
+            //switchME3Command = new GenericCommand();
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
