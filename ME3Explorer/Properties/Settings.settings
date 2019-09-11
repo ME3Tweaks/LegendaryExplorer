@@ -125,5 +125,8 @@
     <Setting Name="SequenceEditor_ShowParsedInfo" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="SequenceEditor_MaxVarStringLength" Type="System.UInt16" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

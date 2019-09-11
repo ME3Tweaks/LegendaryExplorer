@@ -42,6 +42,47 @@ namespace ME3Explorer.Packages
             return "";
         }
 
+        //if neccessary, will fill in parents as Package Imports (if the import you need has non-Package parents, don't use this method)
+        public static IEntry getEntryOrAddImport(this IMEPackage pcc, string fullPath, string className = "Class", string packageFile = "Core")
+        {
+            if (string.IsNullOrEmpty(fullPath))
+            {
+                return null;
+            }
+
+            //see if this import exists locally
+            foreach (ImportEntry imp in pcc.Imports)
+            {
+                if (imp.GetFullPath == fullPath)
+                {
+                    return imp;
+                }
+            }
+
+            //see if this is an export and exists locally
+            foreach (ExportEntry exp in pcc.Exports)
+            {
+                if (exp.GetFullPath == fullPath)
+                {
+                    return exp;
+                }
+            }
+
+            string[] pathParts = fullPath.Split('.');
+
+            IEntry parent = pcc.getEntryOrAddImport(string.Join(".", pathParts.Take(pathParts.Length - 1)), "Package");
+
+            var import = new ImportEntry(pcc)
+            {
+                idxLink = parent?.UIndex ?? 0,
+                idxClassName = pcc.FindNameOrAdd(className),
+                idxObjectName = pcc.FindNameOrAdd(pathParts.Last()),
+                idxPackageFile = pcc.FindNameOrAdd(packageFile)
+            };
+            pcc.addImport(import);
+            return import;
+        }
+
     }
     public static class ExportEntryExtensions
     {

@@ -235,19 +235,29 @@ namespace ME3Explorer.Scene3D
     }
 
     /// <summary>
-    /// Contains all the necessary resources (minus textures, which are cached in a <see cref="PreviewTextureCache"/>) needed to render a static preview of <see cref="Unreal.Classes.SkeletalMesh"/> or <see cref="Unreal.Classes.StaticMesh"/> instances.  
+    /// Contains all the necessary resources (minus textures, which are cached in a <see cref="PreviewTextureCache"/>) needed to render a static preview of <see cref="Unreal.BinaryConverters.SkeletalMesh"/> or <see cref="StaticMesh"/> instances.  
     /// </summary>
     public class ModelPreview : IDisposable
     {
         /// <summary>
         /// Contains the geometry and section information for each level-of-detail in the model.
         /// </summary>
-        public List<ModelPreviewLOD> LODs;
+        public List<ModelPreviewLOD> LODs = new List<ModelPreviewLOD>();
 
         /// <summary>
         /// Stores materials for this preview, stored by material name.
         /// </summary>
-        public Dictionary<string, ModelPreviewMaterial> Materials;
+        public Dictionary<string, ModelPreviewMaterial> Materials = new Dictionary<string, ModelPreviewMaterial>();
+
+        /// <summary>
+        /// Creates a preview of a generic untextured mesh
+        /// </summary>
+        /// <param name="device"></param>
+        /// <param name="mesh"></param>
+        public ModelPreview(Device device, WorldMesh mesh)
+        {
+            LODs.Add(new ModelPreviewLOD(mesh, new List<ModelPreviewSection>()));
+        }
 
         /// <summary>
         /// Creates a preview of the given <see cref="StaticMesh"/>.
@@ -305,7 +315,7 @@ namespace ME3Explorer.Scene3D
             else
             {
                 // Gather all the vertex data from the raw triangles, not the Mesh.Vertices.Point list.
-                if (m.Export.Game == MEGame.ME1)
+                if (m.Export.Game <= MEGame.ME2)
                 {
                     var kdop = m.kDOPTreeME1ME2;
                     for (int i = 0; i < kdop.Triangles.Length; i++)
@@ -315,7 +325,7 @@ namespace ME3Explorer.Scene3D
                 }
                 else
                 {
-                    var kdop = m.kDOPTreeME3;
+                    var kdop = m.kDOPTreeME3UDK;
                     for (int i = 0; i < kdop.Triangles.Length; i++)
                     {
                         triangles.Add(new Triangle(kdop.Triangles[i].Vertex1, kdop.Triangles[i].Vertex2, kdop.Triangles[i].Vertex3));
@@ -364,7 +374,6 @@ namespace ME3Explorer.Scene3D
                         }*/
 
             // STEP 2: MATERIALS
-            Materials = new Dictionary<string, ModelPreviewMaterial>();
             //foreach (var v in lodModel.Elements)
 
 
@@ -436,7 +445,6 @@ namespace ME3Explorer.Scene3D
             //{
             //    sections.Add(new ModelPreviewSection(m.Export.FileRef.getObjectName(section.Material.value), section.FirstIndex, section.NumTriangles));
             //}
-            LODs = new List<ModelPreviewLOD>();
             LODs.Add(new ModelPreviewLOD(new WorldMesh(Device, triangles, vertices), sections));
         }
 
@@ -614,7 +622,6 @@ namespace ME3Explorer.Scene3D
         public ModelPreview(Device Device, Unreal.BinaryConverters.SkeletalMesh m, PreviewTextureCache texcache, PreloadedModelData preloadedData = null)
         {
             // STEP 1: MATERIALS
-            Materials = new Dictionary<string, ModelPreviewMaterial>();
             if (preloadedData == null)
             {
                 for (int i = 0; i < m.Materials.Length; i++)
@@ -661,7 +668,6 @@ namespace ME3Explorer.Scene3D
             }
 
             // STEP 2: LODS
-            LODs = new List<ModelPreviewLOD>();
             foreach (var lodmodel in m.LODModels)
             {
                 // Vertices
@@ -709,7 +715,6 @@ namespace ME3Explorer.Scene3D
         public ModelPreview(Device Device, Unreal.Classes.SkeletalMesh m, PreviewTextureCache texcache)
         {
             // STEP 1: MATERIALS
-            Materials = new Dictionary<string, ModelPreviewMaterial>();
             for (int i = 0; i < m.Materials.Count; i++)
             {
                 Unreal.Classes.MaterialInstanceConstant mat = m.MatInsts[i];
@@ -736,7 +741,6 @@ namespace ME3Explorer.Scene3D
             }
 
             // STEP 2: LODS
-            LODs = new List<ModelPreviewLOD>();
             foreach (Unreal.Classes.SkeletalMesh.LODModelStruct lodmodel in m.LODModels)
             {
                 // Vertices

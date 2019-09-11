@@ -14,6 +14,7 @@ using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
 using System.Runtime.InteropServices;
+using Gammtek.Conduit.Extensions;
 using ME1Explorer;
 
 namespace ME3Explorer.SequenceObjects
@@ -235,7 +236,7 @@ namespace ME3Explorer.SequenceObjects
             shape.Pickable = false;
             AddChild(shape);
             Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(GetValue());
+            val = new SText(GetValue().Truncate(Properties.Settings.Default.SequenceEditor_MaxVarStringLength, true));
             val.Pickable = false;
             val.TextAlignment = StringAlignment.Center;
             val.X = w / 2 - val.Width / 2;

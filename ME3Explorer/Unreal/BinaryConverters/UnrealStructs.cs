@@ -106,22 +106,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
         }
     }
 
-    public readonly struct Quat
-    {
-        public readonly float X;
-        public readonly float Y;
-        public readonly float Z;
-        public readonly float W;
-
-        public Quat(float x, float y, float z, float w)
-        {
-            X = x;
-            Y = y;
-            Z = z;
-            W = w;
-        }
-    }
-
     // -1 to 1 converted to 0-255
     public readonly struct PackedNormal
     {
@@ -150,18 +134,18 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
         public static explicit operator PackedNormal(Vector3 vec)
         {
-            return new PackedNormal((byte)((int)(vec.X * 127.5f + 128.0f)).Clamp(0, 255),
-                                    (byte)((int)(vec.Y * 127.5f + 128.0f)).Clamp(0, 255),
-                                    (byte)((int)(vec.Z * 127.5f + 128.0f)).Clamp(0, 255),
+            return new PackedNormal(vec.X.PackToByte(),
+                                    vec.Y.PackToByte(),
+                                    vec.Z.PackToByte(),
                                     128);
         }
 
         public static explicit operator PackedNormal(Vector4 vec)
         {
-            return new PackedNormal((byte)((int)(vec.X * 127.5f + 128.0f)).Clamp(0, 255),
-                                    (byte)((int)(vec.Y * 127.5f + 128.0f)).Clamp(0, 255),
-                                    (byte)((int)(vec.Z * 127.5f + 128.0f)).Clamp(0, 255),
-                                    (byte)((int)(vec.W * 127.5f + 128.0f)).Clamp(0, 255));
+            return new PackedNormal(vec.X.PackToByte(),
+                                    vec.Y.PackToByte(),
+                                    vec.Z.PackToByte(),
+                                    vec.W.PackToByte());
         }
     }
 
@@ -170,6 +154,25 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public Vector3 Min;
         public Vector3 Max;
         public byte IsValid;
+
+        public void Add(Vector3 vec)
+        {
+            if (IsValid > 0)
+            {
+                Min.X = Math.Min(Min.X, vec.X);
+                Min.Y = Math.Min(Min.Y, vec.Y);
+                Min.Z = Math.Min(Min.Z, vec.Z);
+
+                Max.X = Math.Max(Max.X, vec.X);
+                Max.Y = Math.Max(Max.Y, vec.Y);
+                Max.Z = Math.Max(Max.Z, vec.Z);
+            }
+            else
+            {
+                Max = Min = vec;
+                IsValid = 1;
+            }
+        }
     }
 
     public class BoxSphereBounds
@@ -243,11 +246,11 @@ namespace ME3Explorer
                 sc.ms.WriteInt32(rot.Roll);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref Quat quat)
+        public static void Serialize(this SerializingContainer2 sc, ref Quaternion quat)
         {
             if (sc.IsLoading)
             {
-                quat = new Quat(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat());
+                quat = new Quaternion(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat());
             }
             else
             {

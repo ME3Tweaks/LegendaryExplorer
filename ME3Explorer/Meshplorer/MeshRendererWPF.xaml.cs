@@ -6,10 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
+using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
+using SharpDX;
 using SkeletalMesh = ME3Explorer.Unreal.BinaryConverters.SkeletalMesh;
 using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
 
@@ -47,13 +51,20 @@ namespace ME3Explorer.Meshplorer
         public bool FirstPerson
         {
             get => _firstperson;
-            set => SetProperty(ref _firstperson, value);
+            set
+            {
+                if (SetProperty(ref _firstperson, value))
+                {
+                    SceneViewer.Context.Camera.FirstPerson = value;
+                }
+            }
         }
 
         private ModelPreview Preview;
         private int CurrentLOD = 0;
-        private float PreviewRotation = 0.0f;
+        private float PreviewRotation;
         private bool HasLoaded;
+        private WorldMesh STMCollisionMesh;
 
         private void SceneViewer_Render(object sender, EventArgs e)
         {
@@ -63,14 +74,21 @@ namespace ME3Explorer.Meshplorer
                 if (Solid && CurrentLOD < Preview.LODs.Count)
                 {
                     SceneViewer.Context.Wireframe = false;
-                    Preview.Render(SceneViewer.Context, CurrentLOD, SharpDX.Matrix.RotationY(PreviewRotation));
+                    Preview.Render(SceneViewer.Context, CurrentLOD, Matrix.RotationY(PreviewRotation));
                 }
                 if (Wireframe)
                 {
                     SceneViewer.Context.Wireframe = true;
-                    SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(SharpDX.Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
+                    SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
                     SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
                     SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, Preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+                }
+                if (IsStaticMesh && ShowCollisionMesh && STMCollisionMesh != null)
+                {
+                    SceneViewer.Context.Wireframe = true;
+                    SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
+                    SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
+                    SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, STMCollisionMesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
             }
         }
@@ -89,7 +107,7 @@ namespace ME3Explorer.Meshplorer
             }
             else
             {
-                SceneViewer.Context.Camera.Position = SharpDX.Vector3.Zero;
+                SceneViewer.Context.Camera.Position = Vector3.Zero;
                 SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 5.0f;
                 SceneViewer.Context.Camera.Yaw = (float)Math.PI / 4.0f;
             }
@@ -113,6 +131,27 @@ namespace ME3Explorer.Meshplorer
         }
         #endregion
 
+        private bool _isStaticMesh;
+        public bool IsStaticMesh
+        {
+            get => _isStaticMesh;
+            set => SetProperty(ref _isStaticMesh, value);
+        }
+
+        private bool _isSkeletalMesh;
+        public bool IsSkeletalMesh
+        {
+            get => _isSkeletalMesh;
+            set => SetProperty(ref _isSkeletalMesh, value);
+        }
+
+        private bool _isBrush;
+        public bool IsBrush
+        {
+            get => _isBrush;
+            set => SetProperty(ref _isBrush, value);
+        }
+
         public MeshRendererWPF()
         {
             DataContext = this;
@@ -121,7 +160,8 @@ namespace ME3Explorer.Meshplorer
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return parsableClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith(("Default__"));
+            return parsableClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__") 
+                || (exportEntry.ClassName == "BrushComponent" && exportEntry.GetProperty<StructProperty>("BrushAggGeom") != null);
         }
 
         public override void PoppedOut(MenuItem recentsMenuItem)
@@ -131,25 +171,28 @@ namespace ME3Explorer.Meshplorer
 
         public override void LoadExport(ExportEntry exportEntry)
         {
+            UnloadExport();
             SceneViewer.InitializeD3D();
             SceneViewer.Context.BackgroundColor = new SharpDX.Color(128, 128, 128);
 
             CurrentLoadedExport = exportEntry;
 
-            Preview?.Dispose();
 
             Func<ModelPreview.PreloadedModelData> loadMesh = null;
             if (CurrentLoadedExport.ClassName == "StaticMesh")
             {
+                IsStaticMesh = true;
                 loadMesh = () =>
                 {
                     BusyText = "Fetching assets";
                     IsBusy = true;
                     var meshObject = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
-                    ModelPreview.PreloadedModelData pmd = new ModelPreview.PreloadedModelData();
-                    pmd.meshObject = meshObject;
-                    pmd.sections = new List<ModelPreviewSection>();
-                    pmd.texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>();
+                    ModelPreview.PreloadedModelData pmd = new ModelPreview.PreloadedModelData
+                    {
+                        meshObject = meshObject,
+                        sections = new List<ModelPreviewSection>(),
+                        texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>()
+                    };
                     IMEPackage meshFile = meshObject.Export.FileRef;
                     foreach (var section in meshObject.LODModels[CurrentLOD].Elements)
                     {
@@ -184,16 +227,19 @@ namespace ME3Explorer.Meshplorer
             }
             else if (CurrentLoadedExport.ClassName == "SkeletalMesh")
             {
+                IsSkeletalMesh = true;
                 //var sm = new Unreal.Classes.SkeletalMesh(CurrentLoadedExport);
                 loadMesh = () =>
                 {
                     BusyText = "Fetching assets";
                     IsBusy = true;
                     var meshObject = ObjectBinary.From<SkeletalMesh>(CurrentLoadedExport);
-                    ModelPreview.PreloadedModelData pmd = new ModelPreview.PreloadedModelData();
-                    pmd.meshObject = meshObject;
-                    pmd.sections = new List<ModelPreviewSection>();
-                    pmd.texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>();
+                    ModelPreview.PreloadedModelData pmd = new ModelPreview.PreloadedModelData
+                    {
+                        meshObject = meshObject,
+                        sections = new List<ModelPreviewSection>(),
+                        texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>()
+                    };
                     foreach (var material in meshObject.Materials)
                     {
                         if (material.value > 0)
@@ -222,6 +268,20 @@ namespace ME3Explorer.Meshplorer
                     return pmd;
                 };
             }
+            else if (CurrentLoadedExport.ClassName == "BrushComponent")
+            {
+                IsBrush = true;
+                loadMesh = () =>
+                {
+                    ModelPreview.PreloadedModelData pmd = new ModelPreview.PreloadedModelData
+                    {
+                        meshObject = CurrentLoadedExport.GetProperty<StructProperty>("BrushAggGeom"),
+                        sections = new List<ModelPreviewSection>(),
+                        texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>(),
+                    };
+                    return pmd;
+                };
+            }
 
             if (loadMesh != null)
             {
@@ -230,15 +290,21 @@ namespace ME3Explorer.Meshplorer
                     IsBusy = false;
                     if (prevTask.Result is ModelPreview.PreloadedModelData pmd)
                     {
-                        if (pmd.meshObject is StaticMesh statM)
+                        switch (pmd.meshObject)
                         {
-                            Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, statM, CurrentLOD, SceneViewer.Context.TextureCache, pmd);
-                            SceneViewer.Context.Camera.FocusDepth = statM.Bounds.SphereRadius * 1.2f;
-                        }
-                        else if (pmd.meshObject is SkeletalMesh skm)
-                        {
-                            Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, skm, SceneViewer.Context.TextureCache, pmd);
-                            SceneViewer.Context.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
+                            case StaticMesh statM:
+                                STMCollisionMesh = GetMeshFromAggGeom(statM.GetCollisionMeshProperty(Pcc));
+                                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, statM, CurrentLOD, SceneViewer.Context.TextureCache, pmd);
+                                SceneViewer.Context.Camera.FocusDepth = statM.Bounds.SphereRadius * 1.2f;
+                                break;
+                            case SkeletalMesh skm:
+                                Preview = new Scene3D.ModelPreview(SceneViewer.Context.Device, skm, SceneViewer.Context.TextureCache, pmd);
+                                SceneViewer.Context.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
+                                break;
+                            case StructProperty structProp: //BrushComponent
+                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromAggGeom(structProp));
+                                SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
+                                break;
                         }
 
                         CenterView();
@@ -247,7 +313,131 @@ namespace ME3Explorer.Meshplorer
             }
         }
 
-        private void AddMaterialBackgroundThreadTextures(List<ModelPreview.PreloadedTextureData> texturePreviewMaterials, ExportEntry entry)
+        private WorldMesh GetMeshFromAggGeom(StructProperty aggGeom)
+        {
+            if (aggGeom?.GetProp<ArrayProperty<StructProperty>>("ConvexElems") is ArrayProperty<StructProperty> convexElems)
+            {
+                var vertices = new List<WorldVertex>();
+                var triangles = new List<Triangle>();
+                int vertTotal = 0;
+                foreach (StructProperty convexElem in convexElems)
+                {
+                    var faceTriData = convexElem.GetProp<ArrayProperty<IntProperty>>("FaceTriData");
+                    for (int i = 0; i < faceTriData.Count; i += 3)
+                    {
+                        triangles.Add(new Triangle((uint)(faceTriData[i].Value + vertTotal), (uint)(faceTriData[i + 1].Value + vertTotal), (uint)(faceTriData[i + 2].Value + vertTotal)));
+                    }
+
+                    var vertexData = convexElem.GetProp<ArrayProperty<StructProperty>>("VertexData");
+                    foreach (StructProperty vertex in vertexData)
+                    {
+                        float x = vertex.GetProp<FloatProperty>("X").Value;
+                        float y = vertex.GetProp<FloatProperty>("Y").Value;
+                        float z = vertex.GetProp<FloatProperty>("Z").Value;
+                        vertices.Add(new WorldVertex(new Vector3(-x, z, y), Vector3.Zero, Vector2.Zero));
+                        ++vertTotal;
+                    }
+                }
+
+                return new WorldMesh(SceneViewer.Context.Device, triangles, vertices);
+            }
+
+            return null;
+        }
+
+        #region CollisionMesh
+
+        private bool _showCollisionMesh;
+        public bool ShowCollisionMesh
+        {
+            get => _showCollisionMesh;
+            set => SetProperty(ref _showCollisionMesh, value);
+        }
+
+        private int _maxVerts = 12;
+
+        public int MaxVerts
+        {
+            get => _maxVerts;
+            set => SetProperty(ref _maxVerts, value);
+        }
+
+        private uint _depth = 4;
+
+        public uint Depth
+        {
+            get => _depth;
+            set => SetProperty(ref _depth, value);
+        }
+
+        private double _conservationThreshold = 24.0;
+
+        public double ConservationThreshold
+        {
+            get => _conservationThreshold;
+            set => SetProperty(ref _conservationThreshold, value);
+        }
+
+        private StructProperty aggGeomProp;
+
+
+        private void GenerateCollisionMesh(object sender, RoutedEventArgs e)
+        {
+            if (IsStaticMesh && (Preview?.LODs.Any() ?? false))
+            {
+                BusyText = "Generating Collision Mesh";
+                IsBusy = true;
+                Task.Run(() =>
+                {
+                    var mesh = Preview.LODs[0].Mesh;
+                    return AggGeomBuilder.CreateAggGeom(mesh.Vertices.Select(vert => new Vector3(-vert.Position.X, vert.Position.Z, vert.Position.Y)).ToArray(),
+                                                        mesh.Triangles.SelectMany(tri => new[] { tri.Vertex1, tri.Vertex2, tri.Vertex3 }).ToArray(),
+                                                        Depth, ConservationThreshold, MaxVerts);
+                }).ContinueWithOnUIThread(prevTask =>
+                {
+                    aggGeomProp = prevTask.Result;
+                    STMCollisionMesh = GetMeshFromAggGeom(aggGeomProp);
+                    IsBusy = false;
+                });
+            }
+        }
+
+        private void SaveGeneratedMesh(object sender, RoutedEventArgs e)
+        {
+            if (aggGeomProp == null)
+            {
+                MessageBox.Show("You must generate collision mesh before you can save it!");
+                return;
+            }
+            ExportEntry rb_BodySetup;
+            if (CurrentLoadedExport.GetProperty<ObjectProperty>("BodySetup")?.Value is int bodySetupUIndex && Pcc.isUExport(bodySetupUIndex))
+            {
+                rb_BodySetup = Pcc.getUExport(bodySetupUIndex);
+            }
+            else
+            {
+                rb_BodySetup = new ExportEntry(Pcc)
+                {
+                    Parent = CurrentLoadedExport,
+                    ObjectName = "RB_BodySetup",
+                    idxClass = Pcc.getEntryOrAddImport("Engine.RB_BodySetup").UIndex,
+                    Data = BitConverter.GetBytes(0)
+                };
+                rb_BodySetup.WriteProperty(new IntProperty(34013709, "PreCachedPhysDataVersion"));
+                rb_BodySetup.setBinaryData(BitConverter.GetBytes(0));
+                Pcc.addExport(rb_BodySetup);
+                var stm = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
+                stm.BodySetup = rb_BodySetup.UIndex;
+                CurrentLoadedExport.setBinaryData(stm.ToArray(Pcc));
+                CurrentLoadedExport.WriteProperty(new ObjectProperty(rb_BodySetup, "BodySetup"));
+            }
+
+            rb_BodySetup.WriteProperty(aggGeomProp);
+        }
+
+        #endregion
+
+        private static void AddMaterialBackgroundThreadTextures(List<ModelPreview.PreloadedTextureData> texturePreviewMaterials, ExportEntry entry)
         {
             var matinst = new Unreal.Classes.MaterialInstanceConstant(entry);
             foreach (var tex in matinst.Textures)
@@ -311,8 +501,13 @@ namespace ME3Explorer.Meshplorer
 
         public override void UnloadExport()
         {
+            IsBrush = false;
+            IsSkeletalMesh = false;
+            IsStaticMesh = false;
             Preview?.Dispose();
             CurrentLoadedExport = null;
+            STMCollisionMesh = null;
+            aggGeomProp = null;
         }
 
         public override void PopOut()

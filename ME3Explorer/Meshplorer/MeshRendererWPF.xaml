@@ -7,9 +7,13 @@
              xmlns:me3Explorer="clr-namespace:ME3Explorer"
              xmlns:scene3D="clr-namespace:ME3Explorer.Scene3D"
                                  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                                 xmlns:converters="clr-namespace:ME3Explorer.SharedUI.Converters"
                                  mc:Ignorable="d" 
              Loaded="MeshRenderer_Loaded"
              d:DesignHeight="450" d:DesignWidth="800">
+    <Control.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Control.Resources>
     <xctk:BusyIndicator IsBusy="{Binding IsBusy}" BusyContent="{Binding BusyText}">
 
         <DockPanel>
@@ -20,7 +24,37 @@
                 <CheckBox Name="Rotating_Checkbox" IsChecked="{Binding Rotating}"  Content="Rotating"/>
                 <TextBlock Text="Background color:"/>
                 <xctk:ColorPicker Name="Background_ColorPicker" Width="40" UsingAlphaChannel="False" xctk:ColorPicker.SelectedColorChanged="BackgroundColorPicker_Changed"/>
+
             </StatusBar>
+            <Expander DockPanel.Dock="Right" Name="CombatZonesSMC_Expander" ExpandDirection="Left" IsExpanded="{Binding ShowCollisionMesh}" Background="Orange" Padding="2" MaxWidth="310"
+                      Visibility="{Binding IsStaticMesh, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Expander.Header>
+                    <TextBlock Text="Collision Mesh Generation (EXPERIMENTAL)" VerticalAlignment="Center" Margin="0,0,4,0">
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="90"/>
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </Expander.Header>
+                <StackPanel Background="White"  Margin="0,3,4,3">
+                    <Label Content="Max vertices"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding MaxVerts}" Width="20" Margin="10,3,0,5"/>
+                        <Slider Minimum="6" Maximum="32" SmallChange="1" Value="{Binding MaxVerts}" Width="150"/>
+                    </StackPanel>
+                    <Label Content="Depth"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Depth}" Width="20" Margin="10,3,0,5"/>
+                        <Slider Minimum="1" Maximum="7" SmallChange="1" Value="{Binding Depth}" Width="150"/>
+                    </StackPanel>
+                    <Label Content="Conservation Threshold"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding ConservationThreshold}" Width="30" Margin="0,3,0,5"/>
+                        <Slider Minimum="0" Maximum="40" Value="{Binding ConservationThreshold}" Width="150"/>
+                    </StackPanel>
+                    <Button Content="Generate new Collision Mesh" Click="GenerateCollisionMesh" Margin="0,10,0,0"/>
+                    <Button Content="Save Changes" Margin="0,20,0,0" Click="SaveGeneratedMesh"/>
+                </StackPanel>
+            </Expander>
             <scene3D:SceneRenderControlWPF x:Name="SceneViewer" Render="SceneViewer_Render" />
         </DockPanel>
     </xctk:BusyIndicator>

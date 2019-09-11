@@ -70,6 +70,21 @@ namespace ME3Explorer
             }
         }
 
+        public static string ExecutablePath(MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return ME1Directory.ExecutablePath;
+                case MEGame.ME2:
+                    return ME2Directory.ExecutablePath;
+                case MEGame.ME3:
+                    return ME3Directory.ExecutablePath;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
+            }
+        }
+
         public static List<string> OfficialDLC(MEGame game)
         {
             switch (game)

@@ -347,19 +347,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "PSK Viewer",
-                type = typeof(PSKViewer.PSKViewer),
-                icon = Application.Current.FindResource("iconPSKViewer") as ImageSource,
-                open = () =>
-                {
-                    (new PSKViewer.PSKViewer()).Show();
-                },
-                tags = new List<string> { "utility", "mesh" },
-                subCategory = "Explorers",
-                description = "View the data contained in a PSK skeletal mesh file extracted using Gildor's umodel toolkit."
-            });
-            set.Add(new Tool
-            {
                 name = "Script Database",
                 type = typeof(ScriptDB.ScriptDB),
                 icon = Application.Current.FindResource("iconScriptDatabase") as ImageSource,

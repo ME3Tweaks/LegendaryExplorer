@@ -720,12 +720,6 @@
     <Compile Include="PSAViewer\PSAViewer.Designer.cs">
       <DependentUpon>PSAViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="PSKViewer\PSKViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PSKViewer\PSKViewer.Designer.cs">
-      <DependentUpon>PSKViewer.cs</DependentUpon>
-    </Compile>
     <Compile Include="Scene3D\Effect.cs" />
     <Compile Include="Scene3D\Mesh.cs" />
     <Compile Include="Scene3D\ModelPreview.cs" />
@@ -819,6 +813,7 @@
     </Compile>
     <Compile Include="Unreal\BinaryConverters\EntryPruner.cs" />
     <Compile Include="Unreal\BinaryConverters\ExportBinaryConverter.cs" />
+    <Compile Include="Unreal\BinaryConverters\ImportExtensions.cs" />
     <Compile Include="Unreal\BinaryConverters\Level.cs" />
     <Compile Include="Unreal\BinaryConverters\Material.cs" />
     <Compile Include="OrderedDictionary.cs" />
@@ -842,14 +837,12 @@
     <Compile Include="Unreal\Classes\Function.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\SkeletalMesh.cs" />
-    <Compile Include="Unreal\Classes\StaticMesh.cs" />
     <Compile Include="Unreal\Classes\Texture2D.cs" />
     <Compile Include="Unreal\BinaryConverters\World.cs" />
     <Compile Include="Unreal\Classes\WwiseBank.cs" />
     <Compile Include="Unreal\Classes\WwiseStream.cs" />
     <Compile Include="Unreal\DLCPackage.cs" />
     <Compile Include="Unreal\DLCUnpacker.cs" />
-    <Compile Include="Unreal\Helper3DS.cs" />
     <Compile Include="Unreal\HuffmanCompression.cs" />
     <Compile Include="Packages\MEPackageHandler.cs" />
     <Compile Include="Unreal\ME3Classes.cs" />
@@ -858,7 +851,6 @@
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropertyCollection.cs" />
     <Compile Include="Unreal\PSAFile.cs" />
-    <Compile Include="Unreal\PSKFile.cs" />
     <Compile Include="Unreal\SerializingContainer.cs" />
     <Compile Include="Unreal\TalkFile.cs" />
     <Compile Include="Unreal\TextureCompression.cs" />
@@ -1260,9 +1252,6 @@
     <EmbeddedResource Include="PSAViewer\PSAViewer.resx">
       <DependentUpon>PSAViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PSKViewer\PSKViewer.resx">
-      <DependentUpon>PSKViewer.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ScriptDB\ScriptDB.resx">
       <DependentUpon>ScriptDB.cs</DependentUpon>
     </EmbeddedResource>
@@ -1304,6 +1293,10 @@
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
       <Name>Be.Windows.Forms.HexBox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ConvexDecomposition\DecomposeSample.vcxproj">
+      <Project>{0282d4e2-da97-437d-9bde-1c9f5e56f6f8}</Project>
+      <Name>DecomposeSample</Name>
     </ProjectReference>
     <ProjectReference Include="..\Direct3D9 Shader Model 3 Disassembler\Direct3D9 Shader Model 3 Disassembler.csproj">
       <Project>{53AF9E1D-16BC-47A5-884E-5CE72ADCB805}</Project>
@@ -1482,6 +1475,8 @@
 
 xcopy /f /e /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 
+xcopy /f /e /y "$(SolutionDir)ConvexDecomposition\$(OutDir)DecomposeSample.dll" "$(ProjectDir)$(OutDir)lib\"
+
 rmdir /s /q "$(ProjectDir)$(OutDir)fr-CA"
 rmdir /s /q "$(ProjectDir)$(OutDir)zh-CN"
 rmdir /s /q "$(ProjectDir)$(OutDir)es"
@@ -1498,6 +1493,8 @@ rmdir /s /q "$(ProjectDir)$(OutDir)zh-Hans"
 del /s "$(TargetDir)*.xml"
 
 move /y "$(ProjectDir)$(OutDir)CSharpImageLibrary.exe" "$(ProjectDir)$(OutDir)lib\"
+move /y "$(ProjectDir)$(OutDir)Shader3DeComp.exe" "$(ProjectDir)$(OutDir)lib\"
+move /y "$(ProjectDir)$(OutDir)Shader3DeComp.exe.config" "$(ProjectDir)$(OutDir)lib\"
 del "$(ProjectDir)$(OutDir)HexConverter.exe.config"
 if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBuilder.cmd" "$(TargetDir)..\ReleaseBuilder.bat" /y)
 

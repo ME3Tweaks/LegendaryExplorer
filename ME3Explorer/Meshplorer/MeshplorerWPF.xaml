@@ -48,7 +48,7 @@
                 </MenuItem>
 
                 <MenuItem Header="Tools" Padding="4">
-
+                    <MenuItem Header="Convert ME3 Skeletal Mesh to ME3 Static Mesh" Command="{Binding ConvertToStaticMeshCommand}"/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -130,7 +130,7 @@
                     </Grid>
                 </StackPanel>
 
-                <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectionChanged="MeshExportsList_SelectionChanged" ItemContainerStyle="{StaticResource MeshExports_ListboxItemStyle}">
+                <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectedItem="{Binding CurrentExport}" ItemContainerStyle="{StaticResource MeshExports_ListboxItemStyle}">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type packages:ExportEntry}">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
@@ -149,6 +149,9 @@
                                     <Setter Property="Icon" Value="Solid_Skull" TargetName="FAImageIcon"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=ClassName}" Value="StaticMesh">
+                                    <Setter Property="Icon" Value="Solid_Archway" TargetName="FAImageIcon"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=ClassName}" Value="BrushComponent">
                                     <Setter Property="Icon" Value="Solid_Archway" TargetName="FAImageIcon"/>
                                 </DataTrigger>
                             </DataTemplate.Triggers>

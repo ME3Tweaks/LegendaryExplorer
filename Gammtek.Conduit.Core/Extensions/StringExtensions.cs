@@ -119,8 +119,9 @@ namespace Gammtek.Conduit.Extensions
         /// </summary>
         /// <param name="str">String to truncate.</param>
         /// <param name="length">Maximum string length.</param>
+        /// <param name="ellipsis">Whether an ellipsis should be appended if truncated. (this will take up three of the allowed characters)</param>
         /// <returns>Original string or a truncated one if the original was too long.</returns>
-        public static string Truncate(this string str, int length)
+        public static string Truncate(this string str, int length, bool ellipsis = false)
         {
             if (length < 0)
             {
@@ -130,6 +131,11 @@ namespace Gammtek.Conduit.Extensions
             if (str == null)
             {
                 return null;
+            }
+
+            if (ellipsis && length > 4 && length < str.Length)
+            {
+                return $"{str.Substring(0, length - 3)}...";
             }
 
             int maxLength = Math.Min(str.Length, length);

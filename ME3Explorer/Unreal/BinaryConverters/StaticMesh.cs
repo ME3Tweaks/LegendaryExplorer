@@ -4,7 +4,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Packages;
+using ME3Explorer.Scene3D;
 using SharpDX;
 using StreamHelpers;
 
@@ -15,7 +17,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public BoxSphereBounds Bounds;
         public UIndex BodySetup;
         public kDOPTree kDOPTreeME1ME2;
-        public kDOPTreeCompact kDOPTreeME3;
+        public kDOPTreeCompact kDOPTreeME3UDK;
         public int InternalVersion;
         public StaticMeshRenderData[] LODModels;
         public uint unk2; //ME1
@@ -23,13 +25,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public uint unk4; //ME1
         public uint unk5; //ME1
         public uint unk6; //ME1
-        public uint unk1; //ME2/3
-        public Rotator ThumbnailAngle; //ME2/3
-        public float ThumbnailDistance; //ME2/3
+        public uint unk1; //ME2/3/UDK
+        public Rotator ThumbnailAngle; //ME2/3/UDK
+        public float ThumbnailDistance; //ME2/3/UDK
         public uint unk7; //ME2/3
-        public string HighResSourceMeshName; //ME3
-        public uint HighResSourceMeshCRC; //ME3
-        public Guid LightingGuid; //ME3
+        public string HighResSourceMeshName; //ME3/UDK
+        public uint HighResSourceMeshCRC; //ME3/UDK
+        public Guid LightingGuid; //ME3/UDK
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -37,20 +39,20 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref BodySetup);
             if (sc.IsSaving)
             {
-                if (sc.Game == MEGame.ME3 && kDOPTreeME3 == null)
+                if (sc.Game >= MEGame.ME3 && kDOPTreeME3UDK == null)
                 {
-                    kDOPTreeME3 = KDOPTreeBuilder.ToCompact(kDOPTreeME1ME2.Triangles, LODModels[0].PositionVertexBuffer.VertexData);
+                    kDOPTreeME3UDK = KDOPTreeBuilder.ToCompact(kDOPTreeME1ME2.Triangles, LODModels[0].PositionVertexBuffer.VertexData);
                 }
-                else if (sc.Game != MEGame.ME3 && kDOPTreeME1ME2 == null)
+                else if (sc.Game < MEGame.ME3 && kDOPTreeME1ME2 == null)
                 {
                     //todo: need to convert kDOPTreeCompact to kDOPTree
                     throw new NotImplementedException("Cannot convert ME3 StaticMeshes to ME1 or ME2 format :(");
                 }
             }
 
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
-                sc.Serialize(ref kDOPTreeME3);
+                sc.Serialize(ref kDOPTreeME3UDK);
             }
             else
             {
@@ -63,8 +65,17 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 if (sc.Game == MEGame.ME1) InternalVersion = 15;
                 if (sc.Game == MEGame.ME2) InternalVersion = 16;
                 if (sc.Game == MEGame.ME3) InternalVersion = 18;
+                if (sc.Game == MEGame.UDK) InternalVersion = 18;
             }
             sc.Serialize(ref InternalVersion);
+            if (sc.Game == MEGame.UDK)
+            {
+                int dummy = 0;
+                sc.Serialize(ref dummy);
+                sc.Serialize(ref dummy);
+                sc.Serialize(ref dummy);
+                sc.Serialize(ref dummy);
+            }
             sc.Serialize(ref LODModels, SCExt.Serialize);
             if (sc.Game == MEGame.ME1)
             {
@@ -79,8 +90,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.Serialize(ref unk1);
                 sc.Serialize(ref ThumbnailAngle);
                 sc.Serialize(ref ThumbnailDistance);
-                sc.Serialize(ref unk7);
-                if (sc.Game == MEGame.ME3)
+                if (sc.Game != MEGame.UDK)
+                {
+                    sc.Serialize(ref unk7);
+                }
+                if (sc.Game >= MEGame.ME3)
                 {
                     sc.Serialize(ref HighResSourceMeshName);
                     sc.Serialize(ref HighResSourceMeshCRC);
@@ -88,7 +102,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 }
             }
 
-            if (sc.IsLoading && sc.Game != MEGame.ME3)
+            if (sc.IsLoading && sc.Game < MEGame.ME3)
             {
                 LightingGuid = Guid.NewGuid();
             }
@@ -107,6 +121,16 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
 
             return uIndexes;
+        }
+
+        public StructProperty GetCollisionMeshProperty(IMEPackage pcc)
+        {
+            if (pcc.isUExport(BodySetup))
+            {
+                ExportEntry rb_BodySetup = pcc.getUExport(BodySetup);
+                return rb_BodySetup.GetProperty<StructProperty>("AggGeom");
+            }
+            return null;
         }
     }
 
@@ -183,13 +207,14 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public StaticMeshElement[] Elements;
         public PositionVertexBuffer PositionVertexBuffer;
         public StaticMeshVertexBuffer VertexBuffer;
-        public ColorVertexBuffer ColorVertexBuffer; //ME3
-        public ExtrusionVertexBuffer ShadowExtrusionVertexBuffer;
+        public ColorVertexBuffer ColorVertexBuffer; //ME3/UDK
+        public ExtrusionVertexBuffer ShadowExtrusionVertexBuffer; //not UDK
         public uint NumVertices;
         public ushort[] IndexBuffer; //BulkSerialize
         public ushort[] WireframeIndexBuffer; //BulkSerialize
-        public MeshEdge[] Edges; //BulkSerialize
-        public byte[] ShadowTriangleDoubleSided;
+        public MeshEdge[] Edges; //BulkSerialize //not UDK
+        public byte[] ShadowTriangleDoubleSided; //not UDK
+        public ushort[] unkBuffer; //UDK
         public uint unk1; //ME1
         public byte[] xmlFile; //ME1 BulkData
     }
@@ -200,13 +225,14 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public Vector2D[,] UVs = new Vector2D[3,8];
         public Color[] Colors = new Color[3];
         public int MaterialIndex;
-        public int FragmentIndex; //ME3
+        public int FragmentIndex; //ME3/UDK
         public uint SmoothingMask;
         public int NumUVs;
-        public Vector3[] TangentX = new Vector3[3]; //ME3
-        public Vector3[] TangentY = new Vector3[3]; //ME3
-        public Vector3[] TangentZ = new Vector3[3]; //ME3
-        public bool bOverrideTangentBasis; //ME3
+        public bool bExplicitNormals; //UDK
+        public Vector3[] TangentX = new Vector3[3]; //ME3/UDK
+        public Vector3[] TangentY = new Vector3[3]; //ME3/UDK
+        public Vector3[] TangentZ = new Vector3[3]; //ME3/UDK
+        public bool bOverrideTangentBasis; //ME3/UDK
     }
 
     public class StaticMeshElement
@@ -220,8 +246,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public uint MinVertexIndex;
         public uint MaxVertexIndex;
         public int MaterialIndex;
-        public FragmentRange[] Fragments; //ME3
-        //byte LoadPlatformData; //ME3, always false
+        public FragmentRange[] Fragments; //ME3/UDK
+        //byte LoadPlatformData; //ME3/UDK, always false
     }
 
     public readonly struct FragmentRange
@@ -435,6 +461,212 @@ namespace ME3Explorer.Unreal.BinaryConverters
             };
         }
     }
+
+    public static class AggGeomBuilder
+    {
+        delegate void convexDecompCallback(uint vertsLength, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] double[] verts,
+                                           uint trisLength, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] int[] tris);
+
+        [DllImport("DecomposeSample.dll")]
+        static extern void CreateConvexHull(int vertexCount, [MarshalAs(UnmanagedType.LPArray)] double[] vertices,
+                                            int triangleCount, [MarshalAs(UnmanagedType.LPArray)] uint[] indices, 
+                                            uint depth, double conservationThreshold, int maxVerts,
+                                            [MarshalAs(UnmanagedType.FunctionPtr)] convexDecompCallback callback);
+
+        public static StructProperty CreateAggGeom(ICollection<Vector3> vertexBuffer, ICollection<uint> indexBuffer, uint depth = 4, double conservationThreshold = 24, int maxVerts = 12)
+        {
+            double[] vertices = vertexBuffer.SelectMany(vert => vert.ToArray().Select(v => (double)v)).ToArray();
+            uint[] indices = indexBuffer.ToArray();
+            var convexElems = new ArrayProperty<StructProperty>("ConvexElems") { Reference = "KConvexElem" };
+
+            #region Callback
+
+            void DecompCallback(uint vertsLength, double[] verts, uint trisLength, int[] tris)
+            {
+                PropertyCollection props = new PropertyCollection();
+                var convexElem = new StructProperty("KConvexElem", props);
+                convexElems.Add(convexElem);
+
+                Box box = new Box();
+
+                //VertexData
+                var vertexData = new ArrayProperty<StructProperty>("VertexData") {Reference = "Vector"};
+                var vertexes = new Vector3[vertsLength / 3];
+                for (int i = 0; i < vertsLength; i += 3)
+                {
+                    var vert = new Vector3((float)verts[i], (float)verts[i + 1], (float)verts[i + 2]);
+                    vertexes[i / 3] = vert;
+                    vertexData.Add(new StructProperty("Vector", true, new FloatProperty(vert.X, "X"), new FloatProperty(vert.Y, "Y"), new FloatProperty(vert.Z, "Z")));
+                    box.Add(vert);
+                }
+
+                //PermutedVertexData
+                int leftover = vertexes.Length % 4;
+                int numPlanes = vertexes.Length / 4;
+                var permutedVertexData = new ArrayProperty<StructProperty>("PermutedVertexData") {Reference = "Plane"};
+                for (int i = 0; i < numPlanes; i++)
+                {
+                    permutedVertexData.Add(new StructProperty("Plane", true, new FloatProperty(vertexes[i * 4 + 3].X, "W"), new FloatProperty(vertexes[i * 4 + 0].X, "X"), new FloatProperty(vertexes[i * 4 + 1].X, "Y"), new FloatProperty(vertexes[i * 4 + 2].X, "Z")));
+                    permutedVertexData.Add(new StructProperty("Plane", true, new FloatProperty(vertexes[i * 4 + 3].Y, "W"), new FloatProperty(vertexes[i * 4 + 0].Y, "X"), new FloatProperty(vertexes[i * 4 + 1].Y, "Y"), new FloatProperty(vertexes[i * 4 + 2].Y, "Z")));
+                    permutedVertexData.Add(new StructProperty("Plane", true, new FloatProperty(vertexes[i * 4 + 3].Z, "W"), new FloatProperty(vertexes[i * 4 + 0].Z, "X"), new FloatProperty(vertexes[i * 4 + 1].Z, "Y"), new FloatProperty(vertexes[i * 4 + 2].Z, "Z")));
+                }
+
+                if (leftover > 0)
+                {
+                    Vector3 vec1 = vertexes[numPlanes * 4], vec2 = vec1, vec3 = vec1, vec4 = vec1;
+                    switch (leftover)
+                    {
+                        case 3:
+                            vec3 = vertexes[numPlanes * 4 + 2];
+                            goto case 2; //fallthrough!
+                        case 2:
+                            vec2 = vertexes[numPlanes * 4 + 1];
+                            break;
+                    }
+
+                    permutedVertexData.Add(new StructProperty("Plane", true, new FloatProperty(vec1.X, "W"), new FloatProperty(vec2.X, "X"), new FloatProperty(vec3.X, "Y"), new FloatProperty(vec4.X, "Z")));
+                    permutedVertexData.Add(new StructProperty("Plane", true, new FloatProperty(vec1.Y, "W"), new FloatProperty(vec2.Y, "X"), new FloatProperty(vec3.Y, "Y"), new FloatProperty(vec4.Y, "Z")));
+                    permutedVertexData.Add(new StructProperty("Plane", true, new FloatProperty(vec1.Z, "W"), new FloatProperty(vec2.Z, "X"), new FloatProperty(vec3.Z, "Y"), new FloatProperty(vec4.Z, "Z")));
+                }
+
+                //FaceTriData
+                var faceTriData = new ArrayProperty<IntProperty>("FaceTriData");
+                faceTriData.AddRange(tris.Select(idx => new IntProperty(idx)));
+
+
+                var allEdges = new List<(int edge0, int edge1)>();
+                var edgeDirs = new List<Vector3>();
+                var allNormals = new List<Vector3>();
+                var uniqueNormals = new List<Vector3>();
+                var planes = new List<Plane>();
+                for (int i = 0; i < trisLength; i += 3)
+                {
+                    int idx0 = tris[i], idx1 = tris[i + 1], idx2 = tris[i + 2];
+
+                    if (!allEdges.Contains((idx0, idx1))) allEdges.Add((idx0, idx1));
+                    if (!allEdges.Contains((idx1, idx2))) allEdges.Add((idx1, idx2));
+                    if (!allEdges.Contains((idx2, idx0))) allEdges.Add((idx2, idx0));
+
+                    Vector3 vert0 = vertexes[idx0];
+                    Vector3 vert1 = vertexes[idx1];
+                    Vector3 vert2 = vertexes[idx2];
+
+                    Vector3 normal = Vector3.Normalize(Vector3.Cross(vert2 - vert0, vert1 - vert0));
+                    allNormals.Add(normal);
+                    AddVec(normal, uniqueNormals);
+                    AddPlane(new Plane(vert0, normal));
+                }
+
+                //FacePlaneData
+                var facePlaneData = new ArrayProperty<StructProperty>("FacePlaneData") {Reference = "Plane"};
+                foreach (Plane plane in planes)
+                {
+                    facePlaneData.Add(new StructProperty("Plane", true, new FloatProperty(plane.D, "W"), new FloatProperty(plane.Normal.X, "X"), new FloatProperty(plane.Normal.Y, "Y"), new FloatProperty(plane.Normal.Z, "Z")));
+                }
+
+                //FaceNormalDirections
+                var faceNormalDirections = new ArrayProperty<StructProperty>("FaceNormalDirections") {Reference = "Vector"};
+                foreach (Vector3 normal in uniqueNormals)
+                {
+                    faceNormalDirections.Add(new StructProperty("Vector", true, new FloatProperty(normal.X, "X"), new FloatProperty(normal.Y, "Y"), new FloatProperty(normal.Z, "Z")));
+                }
+
+
+                //EdgeDirections
+                var edgeDirections = new ArrayProperty<StructProperty>("EdgeDirections") {Reference = "Vector"};
+                foreach ((int edge0, int edge1) in allEdges)
+                {
+                    int triIdx0 = -1, triIdx1 = -1;
+                    for (int i = 0; i < trisLength; i += 3)
+                    {
+                        int idx0 = tris[i], idx1 = tris[i + 1], idx2 = tris[i + 2];
+                        if (idx0 == edge0 && idx1 == edge1 || idx0 == edge0 && idx2 == edge1 || idx1 == edge0 && idx0 == edge1 || idx1 == edge0 && idx2 == edge1 || idx2 == edge0 && idx0 == edge1 || idx2 == edge0 && idx1 == edge1)
+                        {
+                            if (triIdx0 == -1)
+                            {
+                                triIdx0 = i / 3;
+                            }
+                            else if (triIdx1 == -1)
+                            {
+                                triIdx1 = i / 3;
+                            }
+                        }
+                    }
+
+                    if (triIdx0 != -1 && triIdx1 != -1 && Vector3.Dot(allNormals[triIdx0], allNormals[triIdx1]) < 1f - 0.0003)
+                    {
+                        AddVec(Vector3.Normalize(vertexes[edge0] - vertexes[edge1]), edgeDirs);
+                    }
+                }
+
+                foreach (Vector3 edgeDir in edgeDirs)
+                {
+                    edgeDirections.Add(new StructProperty("Vector", true, new FloatProperty(edgeDir.X, "X"), new FloatProperty(edgeDir.Y, "Y"), new FloatProperty(edgeDir.Z, "Z")));
+                }
+
+                //ElemBox
+                var elemBox = new StructProperty("Box", true, 
+                                                 new StructProperty("Vector", true, 
+                                                                    new FloatProperty(box.Min.X, "X"), 
+                                                                    new FloatProperty(box.Min.Y, "Y"), 
+                                                                    new FloatProperty(box.Min.Z, "Z")) {Name = "Min"}, 
+                                                 new StructProperty("Vector", true, 
+                                                                    new FloatProperty(box.Max.X, "X"), 
+                                                                    new FloatProperty(box.Max.Y, "Y"), 
+                                                                    new FloatProperty(box.Max.Z, "Z")) {Name = "Max"}, 
+                                                 new ByteProperty(box.IsValid, "IsValid")
+                                                 ) { Name = "ElemBox" };
+
+
+                props.Add(vertexData);
+                props.Add(permutedVertexData);
+                props.Add(faceTriData);
+                props.Add(edgeDirections);
+                props.Add(faceNormalDirections);
+                props.Add(facePlaneData);
+                props.Add(elemBox);
+                props.Add(new NoneProperty());
+
+                void AddVec(Vector3 vec, List<Vector3> vecs)
+                {
+                    foreach (Vector3 uniqueVec in vecs)
+                    {
+                        float dot = Math.Abs(Vector3.Dot(uniqueVec, vec));
+                        if (Math.Abs(dot - 1) < 0.0003)
+                        {
+                            return;
+                        }
+                    }
+
+                    vecs.Add(vec);
+                }
+
+                void AddPlane(Plane plane)
+                {
+                    foreach (Plane uniquePlane in planes)
+                    {
+                        float dot = Vector3.Dot(uniquePlane.Normal, plane.Normal);
+                        if (Math.Abs(dot - 1) < 0.0003 && Math.Abs(uniquePlane.D - plane.D) < 0.1)
+                        {
+                            return;
+                        }
+                    }
+
+                    planes.Add(plane);
+                }
+            }
+
+            #endregion
+
+            CreateConvexHull(vertexBuffer.Count, vertices, indices.Length / 3, indices, depth, conservationThreshold, maxVerts, DecompCallback);
+
+            return new StructProperty("KAggregateGeom", new PropertyCollection
+            {
+                convexElems,
+                new NoneProperty()
+            }, "AggGeom");
+        }
+    }
 }
 
 namespace ME3Explorer
@@ -502,7 +734,7 @@ namespace ME3Explorer
             else
             {
                 elementSize = 8u + buff.NumTexCoords * (buff.bUseFullPrecisionUVs ? 8u : 4u);
-                if (sc.Game != MEGame.ME3)
+                if (sc.Game < MEGame.ME3)
                 {
                     elementSize += 4;
                 }
@@ -534,7 +766,7 @@ namespace ME3Explorer
                 }
                 sc.Serialize(ref buff.VertexData[i].TangentX);
                 sc.Serialize(ref buff.VertexData[i].TangentZ);
-                if (sc.Game != MEGame.ME3)
+                if (sc.Game < MEGame.ME3)
                 {
                     sc.Serialize(ref buff.VertexData[i].Color);
                 }
@@ -614,7 +846,7 @@ namespace ME3Explorer
             sc.Serialize(ref meshElement.MinVertexIndex);
             sc.Serialize(ref meshElement.MaxVertexIndex);
             sc.Serialize(ref meshElement.MaterialIndex);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref meshElement.Fragments, Serialize);
                 byte dummy = 0;
@@ -644,13 +876,17 @@ namespace ME3Explorer
                 sc.Serialize(ref tri.Colors[i]);
             }
             sc.Serialize(ref tri.MaterialIndex);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref tri.FragmentIndex);
             }
             sc.Serialize(ref tri.SmoothingMask);
             sc.Serialize(ref tri.NumUVs);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game == MEGame.UDK)
+            {
+                sc.Serialize(ref tri.bExplicitNormals);
+            }
+            if (sc.Game >= MEGame.ME3)
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -679,7 +915,7 @@ namespace ME3Explorer
             sc.Serialize(ref data.PositionVertexBuffer);
             if (sc.IsSaving)
             {
-                if (sc.Game == MEGame.ME3 && data.ColorVertexBuffer == null)
+                if (sc.Game >= MEGame.ME3 && data.ColorVertexBuffer == null)
                 {
                     //this was read in from ME1 or ME2, we need to seperate out the color data
                     data.ColorVertexBuffer = new ColorVertexBuffer
@@ -689,9 +925,9 @@ namespace ME3Explorer
                         Stride = 4
                     };
                 }
-                else if (sc.Game != MEGame.ME3 && data.ColorVertexBuffer != null)
+                else if (sc.Game < MEGame.ME3 && data.ColorVertexBuffer != null)
                 {
-                    //this was read in from ME3, we need to integrate the color data
+                    //this was read in from ME3 or UDK, we need to integrate the color data
                     for (int i = data.VertexBuffer.VertexData.Length - 1; i >= 0; i--)
                     {
                         data.VertexBuffer.VertexData[i].Color = data.ColorVertexBuffer.VertexData[i];
@@ -699,11 +935,23 @@ namespace ME3Explorer
                 }
             }
             sc.Serialize(ref data.VertexBuffer);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref data.ColorVertexBuffer);
             }
-            sc.Serialize(ref data.ShadowExtrusionVertexBuffer);
+
+            if (sc.Game < MEGame.UDK)
+            {
+                sc.Serialize(ref data.ShadowExtrusionVertexBuffer);
+            }
+            else if (sc.IsLoading)
+            {
+                data.ShadowExtrusionVertexBuffer = new ExtrusionVertexBuffer
+                {
+                    Stride = 4,
+                    VertexData = Array.Empty<float>()
+                };
+            }
             sc.Serialize(ref data.NumVertices);
             int elementSize = 2;
             sc.Serialize(ref elementSize);
@@ -711,10 +959,22 @@ namespace ME3Explorer
             elementSize = 2;
             sc.Serialize(ref elementSize);
             sc.Serialize(ref data.WireframeIndexBuffer, Serialize);
-            elementSize = 16;
-            sc.Serialize(ref elementSize);
-            sc.Serialize(ref data.Edges, Serialize);
-            sc.Serialize(ref data.ShadowTriangleDoubleSided, Serialize);
+            if (sc.Game != MEGame.UDK)
+            {
+                elementSize = 16;
+                sc.Serialize(ref elementSize);
+                sc.Serialize(ref data.Edges, Serialize);
+                sc.Serialize(ref data.ShadowTriangleDoubleSided, Serialize);
+            }
+            else if (sc.IsLoading)
+            {
+                data.Edges = Array.Empty<MeshEdge>();
+                data.ShadowTriangleDoubleSided = Array.Empty<byte>();
+            }
+            if (sc.Game == MEGame.UDK)
+            {
+                sc.BulkSerialize(ref data.unkBuffer, Serialize, 2);
+            }
             if (sc.Game == MEGame.ME1)
             {
                 sc.Serialize(ref data.unk1);

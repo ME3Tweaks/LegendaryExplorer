@@ -202,3 +202,7 @@ FakesAssemblies/
 
 # Generated xml for HexBox:
 Be.Windows.Forms.HexBox/Be.Windows.Forms.HexBox.xml
+
+# C++ Generated Files
+Debug_x64/
+Release_x64/
