@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
+using ME3Explorer.ASI;
+using ME3Explorer.Dialogue_Editor;
+using ME3Explorer.MountEditor;
 using ME3Explorer.Packages;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.Pathfinding_Editor;
@@ -123,7 +126,7 @@ namespace ME3Explorer
             {
                 PackageEditorWPF editor = new PackageEditorWPF();
                 editor.Show();
-                editor.Focus();
+                editor.Activate();
                 exitCode = 0;
                 return 1;
             }
@@ -131,7 +134,7 @@ namespace ME3Explorer
             {
                 var editor = new SequenceEditorWPF();
                 editor.Show();
-                editor.Focus();
+                editor.Activate();
                 exitCode = 0;
                 return 1;
             }
@@ -145,13 +148,66 @@ namespace ME3Explorer
             }
             if (arg == "JUMPLIST_SOUNDPLORER")
             {
-                SoundplorerWPF editor = new SoundplorerWPF();
-                editor.Show();
-                editor.RestoreAndBringToFront();
+                SoundplorerWPF soundplorerWpf = new SoundplorerWPF();
+                soundplorerWpf.Show();
+                soundplorerWpf.Activate();
+                exitCode = 0;
+                return 1;
+            }
+            //Do not remove - used by Mass Effect Mod Manager to boot the tool
+            if (arg == "JUMPLIST_ASIMANAGER")
+            {
+                ASIManager asiManager = new ASIManager();
+                asiManager.Show();
+                asiManager.Activate();
+                exitCode = 0;
+                return 1;
+            }
+            //Do not remove - used by Mass Effect Mod Manager to boot the tool
+            if (arg == "JUMPLIST_MOUNTEDITOR")
+            {
+                MountEditorWPF mountEditorWpf = new MountEditorWPF();
+                mountEditorWpf.Show();
+                mountEditorWpf.Activate();
+                exitCode = 0;
+                return 1;
+            }
+            //Do not remove - used by Mass Effect Mod Manager to boot the tool
+            if (arg == "JUMPLIST_PACKAGEDUMPER")
+            {
+                PackageDumper.PackageDumper packageDumper = new PackageDumper.PackageDumper();
+                packageDumper.Show();
+                packageDumper.Activate();
+                exitCode = 0;
+                return 1;
+            }
+            //Do not remove - used by Mass Effect Mod Manager to boot the tool
+            if (arg == "JUMPLIST_DLCUNPACKER")
+            {
+                DLCUnpacker.DLCUnpacker dlcUnpacker = new DLCUnpacker.DLCUnpacker();
+                dlcUnpacker.Show();
+                dlcUnpacker.Activate();
                 exitCode = 0;
                 return 1;
             }
 
+            if (arg == "JUMPLIST_DIALOGUEEDITOR")
+            {
+                DialogueEditorWPF editor = new DialogueEditorWPF();
+                editor.Show();
+                editor.Activate();
+                exitCode = 0;
+                return 1;
+            }
+            if (arg == "JUMPLIST_MESHPLORER")
+            {
+                MeshplorerWPF meshplorerWpf = new MeshplorerWPF();
+                meshplorerWpf.Show();
+                meshplorerWpf.Activate();
+                exitCode = 0;
+                return 1;
+            }
+                
             string ending = Path.GetExtension(args[1]).ToLower();
             switch (ending)
             {

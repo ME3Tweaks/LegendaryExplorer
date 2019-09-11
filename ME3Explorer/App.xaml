@@ -196,9 +196,14 @@
     </Application.Resources>
     <JumpList.JumpList>
         <JumpList >
-            
+            <JumpTask Title="Dialogue Editor" 
+                      Description="Opens a new instance of Dialogue Editor" 
+                      Arguments="JUMPLIST_DIALOGUEEDITOR"/>
+            <JumpTask Title="Meshplorer" 
+                      Description="Opens a new instance of Meshplorer WPF" 
+                      Arguments="JUMPLIST_MESHPLORER"/>
             <JumpTask Title="Package Editor" 
-                      Description="Opens a new instance of Package Editor WPF" 
+                      Description="Opens a new instance of Package Editor" 
                       Arguments="JUMPLIST_PACKAGE_EDITOR"/>
             <JumpTask Title="Pathfinding Editor" 
                       Description="Opens a new instance of Pathfinding Editor" 
@@ -207,7 +212,7 @@
                       Description="Opens a new instance of Sequence Editor" 
                       Arguments="JUMPLIST_SEQUENCE_EDITOR"/>
             <JumpTask Title="Soundplorer" 
-                      Description="Opens a new instance of Soundplorer WPF" 
+                      Description="Opens a new instance of Soundplorer" 
                       Arguments="JUMPLIST_SOUNDPLORER"/>
         </JumpList>
     </JumpList.JumpList>
