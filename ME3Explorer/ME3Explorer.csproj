@@ -1148,6 +1148,37 @@
     <Compile Include="Meshplorer2\Meshplorer2.Designer.cs">
       <DependentUpon>Meshplorer2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Meshplorer\ImportOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Meshplorer\ImportOptions.Designer.cs">
+      <DependentUpon>ImportOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Meshplorer\MeshDatabase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Meshplorer\MeshDatabase.Designer.cs">
+      <DependentUpon>MeshDatabase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Meshplorer\Meshplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Meshplorer\Meshplorer.Designer.cs">
+      <DependentUpon>Meshplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Meshplorer\MeshPlorerOptions.cs" />
+    <Compile Include="Meshplorer\Select Material.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Meshplorer\Select Material.Designer.cs">
+      <DependentUpon>Select Material.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Meshplorer\UDKCopy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Meshplorer\UDKCopy.Designer.cs">
+      <DependentUpon>UDKCopy.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlotVarDB\PlotVarDB.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1192,6 +1223,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Meshplorer2\Meshplorer2.resx">
       <DependentUpon>Meshplorer2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Meshplorer\ImportOptions.resx">
+      <DependentUpon>ImportOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Meshplorer\MeshDatabase.resx">
+      <DependentUpon>MeshDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Meshplorer\Meshplorer.resx">
+      <DependentUpon>Meshplorer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Meshplorer\Select Material.resx">
+      <DependentUpon>Select Material.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Meshplorer\UDKCopy.resx">
+      <DependentUpon>UDKCopy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlotVarDB\PlotVarDB.resx">
       <DependentUpon>PlotVarDB.cs</DependentUpon>

@@ -152,7 +152,7 @@
                                     <Setter Property="Icon" Value="Solid_Archway" TargetName="FAImageIcon"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=ClassName}" Value="BrushComponent">
-                                    <Setter Property="Icon" Value="Brands_Codepen" TargetName="FAImageIcon"/>
+                                    <Setter Property="Icon" Value="Solid_Archway" TargetName="FAImageIcon"/>
                                 </DataTrigger>
                             </DataTemplate.Triggers>
                         </DataTemplate>
