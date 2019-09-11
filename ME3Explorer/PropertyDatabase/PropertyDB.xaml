@@ -10,6 +10,7 @@
         xmlns:facefx="clr-namespace:ME3Explorer.FaceFX"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        Closing="PropertyDB_Closing"
         AllowDrop="True"
         Icon="/Resources/propertydatabase_256x256.ico"
         Title="Property Database WPF" Height="450" Width="900">
