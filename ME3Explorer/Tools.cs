@@ -228,21 +228,8 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Meshplorer",
-                type = typeof(Meshplorer.Meshplorer),
-                icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
-                open = () =>
-                {
-                    (new Meshplorer.Meshplorer()).Show();
-                },
-                tags = new List<string> { "developer", "mesh" },
-                subCategory = "Meshes + Textures",
-                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool only works with Mass Effect 3.",
-            });
-            set.Add(new Tool
-            {
                 name = "Meshplorer WPF",
-                type = typeof(Meshplorer.Meshplorer),
+                type = typeof(MeshplorerWPF),
                 icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
                 open = () =>
                 {
@@ -250,7 +237,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "mesh" },
                 subCategory = "Meshes + Textures",
-                description = "Meshplorer WPF loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
+                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
             });
             set.Add(new Tool
             {
