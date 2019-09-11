@@ -274,45 +274,6 @@ namespace ME3Explorer.Meshplorer
             }
         }
 
-        private void exportToPSKToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int n;
-            if (stm != null)
-            {
-                n = stm.Export.UIndex;
-            }
-            else if (skm != null)
-            {
-                n = skm.Export.UIndex;
-            }
-            else
-            {
-                return;
-            }
-            if (Pcc.getUExport(n).ClassName == "StaticMesh")
-            {
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "*.psk|*.psk";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    //DISABLED TEMP
-                    //stm.ExportPSK(d.FileName);
-                    MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-                }
-            }
-            if (Pcc.getUExport(n).ClassName == "SkeletalMesh")
-            {
-                /*SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "*.psk|*.psk";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    skmold.ExportToPsk(d.FileName, getLOD());
-                    MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-                }*/
-                MessageBox.Show("benji: Sorry, skeletal PSK export isn't available for the time being.");
-            }
-        }
-
         public int getLOD()
         {
             int res = 0;
@@ -365,60 +326,6 @@ namespace ME3Explorer.Meshplorer
                     fs.Close();
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
-            }
-        }
-
-        private void importFromPSKToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int n;
-            if (stm != null)
-            {
-                n = stm.Export.UIndex;
-            }
-            else if (skm != null)
-            {
-                n = skm.Export.UIndex;
-            }
-            else
-            {
-                return;
-            }
-            if (Pcc.getUExport(n).ClassName == "StaticMesh")
-            {
-                OpenFileDialog d = new OpenFileDialog();
-                d.Filter = "*.psk|*.psk;*.pskx";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    timer1.Enabled = false;
-                    //DISABLED TEMP
-
-                    //stm.ImportPSK(d.FileName);
-                    //byte[] buff = stm.SerializeToBuffer();
-                    //int idx = n;
-                    //ExportEntry en = Pcc.getUExport(idx);
-                    //en.Data = buff;
-                    MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-                    timer1.Enabled = true;
-                }
-            }
-            if (Pcc.getUExport(n).ClassName == "SkeletalMesh")
-            {
-                /*OpenFileDialog d = new OpenFileDialog();
-                d.Filter = "*.psk|*.psk;*.pskx";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    timer1.Enabled = false;
-                    rtb1.Visible = true;
-                    skmold.ImportFromPsk(d.FileName, getLOD());
-                    byte[] buff = skmold.Serialize();
-                    int idx = n;
-                    ExportEntry en = pcc.Exports[idx];
-                    en.Data = buff;
-                    MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-                    rtb1.Visible = false;
-                    timer1.Enabled = true;
-                }*/
-                MessageBox.Show("benji: Sorry, skeletal PSK export is unavailable for the time being.");
             }
         }
 
@@ -499,54 +406,6 @@ namespace ME3Explorer.Meshplorer
         {
             for (int i = 0; i < s.Length; i++)
                 fs.WriteByte((byte)s[i]);
-        }
-
-        private void importOptionsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ImportOptions im = new ImportOptions();
-            im.MdiParent = this.MdiParent;
-            im.Show();
-            im.WindowState = FormWindowState.Maximized;
-        }
-
-        private void loadFromDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MeshDatabase db = new MeshDatabase();
-            db.MdiParent = this.MdiParent;
-            db.Show();
-            db.WindowState = FormWindowState.Maximized;
-            db.MyParent = this;
-        }
-
-        private void exportTo3DSToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ExportEntry export = null;
-            if (stm != null)
-            {
-                export = Pcc.getUExport(stm.Export.UIndex); //TODO: CHANGE THIS TO JUST INDEX ONCE REFACTORING STM TO UINDEXING
-            }
-            else if (skm != null)
-            {
-                //Not sure why we have this condition if we can never do it since it's a staticmesh only?
-                export = skm.Export;
-            }
-            else
-            {
-                return;
-            }
-            if (export.ClassName == "StaticMesh")
-            {
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "*.3ds|*.3ds";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    if (File.Exists(d.FileName))
-                        File.Delete(d.FileName);
-                    //DISABLED TEMP
-                    // stm.ExportPSK(d.FileName);
-                    MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-                }
-            }
         }
 
         private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
@@ -677,74 +536,6 @@ namespace ME3Explorer.Meshplorer
 
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
-            }
-        }
-
-        private void importFromUDKToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int uindex;
-            if (stm != null)
-            {
-                uindex = stm.Export.UIndex; //TODO: CHANGE FOR UINDEXING
-            }
-            else if (skm != null)
-            {
-                uindex = skm.Export.UIndex;
-            }
-            else
-            {
-                return;
-            }
-            UDKCopy u = new UDKCopy(Pcc, uindex, getLOD());
-            u.Show();
-        }
-
-        private void selectMatForSectionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int n;
-            if (stm != null)
-            {
-                n = stm.Export.UIndex;
-            }
-            else if (skm != null)
-            {
-                n = skm.Export.UIndex;
-            }
-            else
-            {
-                return;
-            }
-            int exp = n;
-            TreeNode t = treeView1.SelectedNode;
-            if (t == null || t.Parent == null || t.Index != 0)
-                return;
-            TreeNode t2 = t.Parent; //SectionN
-            if (t2.Parent == null) return;
-            TreeNode t3 = t2.Parent; //Sections
-            if (t3.Text != "Sections")
-                return;
-            TreeNode t4 = t3.Parent;
-            int lod = t4.Index;
-            int sec = t2.Index;
-            int currmat = skm.LODModels[lod].Sections[sec].MaterialIndex;
-            string result = PromptDialog.Prompt(null, "Please enter new ID", "ME3Explorer", currmat.ToString(), true);
-            int newmat = currmat;
-            if (Int32.TryParse(result, out newmat))
-            {
-                SkeletalMesh.SectionStruct s = skm.LODModels[lod].Sections[sec];
-                s.MaterialIndex = (short)newmat;
-                skm.LODModels[lod].Sections[sec] = s;
-                SerializingContainer con = new SerializingContainer();
-                con.Memory = new MemoryStream();
-                con.isLoading = false;
-                skm.Serialize(con);
-                skm.Export.setBinaryData(con.Memory.ToArray());
-                //old binary setting
-                //int end = skm.Export.propsEnd();
-                //MemoryStream mem = new MemoryStream();
-                //mem.Write(Pcc.Exports[exp].Data, 0, end);
-                //mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
-                //Pcc.Exports[exp].Data = mem.ToArray();
             }
         }
 
@@ -1124,24 +915,6 @@ namespace ME3Explorer.Meshplorer
                 MessageBox.Show("OBJ import complete.");
                 timer1.Enabled = true;
             }
-        }
-
-        /// <summary>
-        /// Internal method for decoding UV values.
-        /// </summary>
-        /// <param name="val">The <see cref="Single"/> encoded as a <see cref="UInt16"/>.</param>
-        /// <returns>The decoded <see cref="Single"/>.</returns>
-        private float HalfToFloat(ushort val)
-        {
-
-            UInt16 u = val;
-            int sign = (u >> 15) & 0x00000001;
-            int exp = (u >> 10) & 0x0000001F;
-            int mant = u & 0x000003FF;
-            exp = exp + (127 - 15);
-            int i = (sign << 31) | (exp << 23) | (mant << 13);
-            byte[] buff = BitConverter.GetBytes(i);
-            return BitConverter.ToSingle(buff, 0);
         }
     }
 }
