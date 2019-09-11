@@ -122,10 +122,10 @@ namespace ME3Explorer
                 int n = uIndex;
                 int origvalue = n;
                 //Debug.WriteLine("Relink miss, attempting JIT relink on " + n + " " + rootNode.Text);
-                if (importingPCC.isUImport(n))
+                if (importingPCC.isImport(n))
                 {
                     //Get the original import
-                    ImportEntry origImport = importingPCC.getUImport(n);
+                    ImportEntry origImport = importingPCC.getImport(n);
                     string origImportFullName = origImport.GetFullPath;
                     //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
@@ -348,7 +348,7 @@ namespace ME3Explorer
                                         if (superclassIndex < 0)
                                         {
                                             //its an import
-                                            ImportEntry superclassImportEntry = importpcc.getUImport(superclassIndex);
+                                            ImportEntry superclassImportEntry = importpcc.getImport(superclassIndex);
                                             IEntry newSuperclassValue = getOrAddCrossImportOrPackage(superclassImportEntry.GetFullPath, importpcc, exp.FileRef);
                                             WriteMem(offset, newdata, BitConverter.GetBytes(newSuperclassValue.UIndex));
                                         }
@@ -520,7 +520,7 @@ namespace ME3Explorer
                                                 {
                                                     if (functionsTableIndex < 0)
                                                     {
-                                                        ImportEntry functionObjIndex = importpcc.getUImport(functionsTableIndex);
+                                                        ImportEntry functionObjIndex = importpcc.getImport(functionsTableIndex);
                                                         IEntry newFunctionObjIndex = getOrAddCrossImportOrPackage(functionObjIndex.GetFullPath, importpcc, exp.FileRef);
                                                         WriteMem(offset, newdata, BitConverter.GetBytes(newFunctionObjIndex.UIndex));
                                                     }
@@ -650,7 +650,7 @@ namespace ME3Explorer
                         {
                             if (componentObjectIndex < 0)
                             {
-                                ImportEntry componentObjectImport = importpcc.getUImport(componentObjectIndex);
+                                ImportEntry componentObjectImport = importpcc.getImport(componentObjectIndex);
                                 IEntry newComponentObjectImport = getOrAddCrossImportOrPackage(componentObjectImport.GetFullPath, importpcc, exp.FileRef);
                                 WriteMem(offset, data, BitConverter.GetBytes(newComponentObjectImport.UIndex));
                             }

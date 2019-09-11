@@ -344,7 +344,6 @@
       <DependentUpon>AutoTOCWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="AutoTOC\Ini.cs" />
-    <Compile Include="BinaryInterpreter\BinaryClasses\UDKStaticMesh.cs" />
     <Compile Include="BinaryInterpreter\BinaryInterpreterScans.cs" />
     <Compile Include="BinaryInterpreter\BinaryInterpreterWPF.xaml.cs">
       <DependentUpon>BinaryInterpreterWPF.xaml</DependentUpon>
@@ -355,6 +354,7 @@
     <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Deconstructors.cs" />
     <Compile Include="Dialogue Editor\DialogueObjects.cs" />
     <Compile Include="MassEffectModder\MassEffectModderIPCWrapper.cs" />
     <Compile Include="Meshplorer\MeshplorerWPF.xaml.cs">
@@ -823,6 +823,7 @@
     <Compile Include="Unreal\BinaryConverters\SkeletalMesh.cs" />
     <Compile Include="Unreal\BinaryConverters\StaticMesh.cs" />
     <Compile Include="Unreal\BinaryConverters\StaticMeshComponent.cs" />
+    <Compile Include="Unreal\CommonStructs.cs" />
     <Compile Include="Unreal\SerializingContainer2.cs" />
     <Compile Include="Unreal\BinaryConverters\TreeNode.cs" />
     <Compile Include="Unreal\BinaryConverters\UnrealStructs.cs" />

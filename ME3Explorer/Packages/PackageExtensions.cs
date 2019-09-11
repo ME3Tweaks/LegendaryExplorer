@@ -34,9 +34,9 @@ namespace ME3Explorer.Packages
                 ExportEntry parent = pcc.getUExport(uIndex);
                 return pcc.FollowLink(parent.idxLink) + parent.ObjectName + ".";
             }
-            if (pcc.isUImport(uIndex))
+            if (pcc.isImport(uIndex))
             {
-                ImportEntry parent = pcc.getUImport(uIndex);
+                ImportEntry parent = pcc.getImport(uIndex);
                 return pcc.FollowLink(parent.idxLink) + parent.ObjectName + ".";
             }
             return "";

@@ -12,7 +12,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
     public class Level : ObjectBinary
     {
         public UIndex Self;
-        public UIndex[] Actors;
+        public List<UIndex> Actors;
         public URL URL;
         public UIndex Model;
         public UIndex[] ModelComponents;

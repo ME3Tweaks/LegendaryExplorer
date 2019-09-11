@@ -771,7 +771,7 @@ namespace ME3Explorer.DialogueDumper
                                     int iconv = oconv.Value;
                                     if (iconv < 0)
                                     {
-                                        convo = pcc.getUImport(iconv).ObjectName;
+                                        convo = pcc.getImport(iconv).ObjectName;
                                     }
                                     else
                                     {

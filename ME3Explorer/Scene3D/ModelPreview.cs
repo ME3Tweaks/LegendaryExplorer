@@ -407,7 +407,7 @@ namespace ME3Explorer.Scene3D
                     }
                     else if (section.Material.value < 0)
                     {
-                        var extMaterialExport = FindExternalAsset(m.Export.FileRef.getUImport(section.Material.value), texcache.cache.Select(x => x.TextureExport).ToList());
+                        var extMaterialExport = FindExternalAsset(m.Export.FileRef.getImport(section.Material.value), texcache.cache.Select(x => x.TextureExport).ToList());
                         if (extMaterialExport != null)
                         {
                             ModelPreviewMaterial material;
@@ -635,7 +635,7 @@ namespace ME3Explorer.Scene3D
                     else if (materialUIndex.value < 0)
                     {
                         // The material instance is an import!
-                        ImportEntry matImport = m.Export.FileRef.getUImport(materialUIndex.value);
+                        ImportEntry matImport = m.Export.FileRef.getImport(materialUIndex.value);
                         var externalAsset = FindExternalAsset(matImport, texcache.cache.Select(x => x.TextureExport).ToList());
                         if (externalAsset != null)
                         {
@@ -721,7 +721,7 @@ namespace ME3Explorer.Scene3D
                 if (mat == null && m.Materials[i] < 0)
                 {
                     // The material instance is an import!
-                    ImportEntry matImport = m.Export.FileRef.getUImport(m.Materials[i]);
+                    ImportEntry matImport = m.Export.FileRef.getImport(m.Materials[i]);
                     var externalAsset = FindExternalAsset(matImport, texcache.cache.Select(x => x.TextureExport).ToList());
                     if (externalAsset != null)
                     {

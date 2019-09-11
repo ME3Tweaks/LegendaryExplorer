@@ -205,9 +205,9 @@ namespace ME3Explorer.Meshplorer
                             AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
 
                         }
-                        else if (meshFile.isUImport(matIndex))
+                        else if (meshFile.isImport(matIndex))
                         {
-                            var extMaterialExport = ModelPreview.FindExternalAsset(meshFile.getUImport(matIndex), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
+                            var extMaterialExport = ModelPreview.FindExternalAsset(meshFile.getImport(matIndex), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
                             if (extMaterialExport != null)
                             {
                                 AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
@@ -252,7 +252,7 @@ namespace ME3Explorer.Meshplorer
                         }
                         else if (material.value < 0)
                         {
-                            var extMaterialExport = ModelPreview.FindExternalAsset(meshObject.Export.FileRef.getUImport(material.value), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
+                            var extMaterialExport = ModelPreview.FindExternalAsset(meshObject.Export.FileRef.getImport(material.value), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
                             if (extMaterialExport != null)
                             {
                                 AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
@@ -416,15 +416,12 @@ namespace ME3Explorer.Meshplorer
             }
             else
             {
-                rb_BodySetup = new ExportEntry(Pcc)
+                rb_BodySetup = new ExportEntry(Pcc, properties:new PropertyCollection{ new IntProperty(34013709, "PreCachedPhysDataVersion") }, binary: new byte[4])
                 {
                     Parent = CurrentLoadedExport,
                     ObjectName = "RB_BodySetup",
-                    idxClass = Pcc.getEntryOrAddImport("Engine.RB_BodySetup").UIndex,
-                    Data = BitConverter.GetBytes(0)
+                    idxClass = Pcc.getEntryOrAddImport("Engine.RB_BodySetup").UIndex
                 };
-                rb_BodySetup.WriteProperty(new IntProperty(34013709, "PreCachedPhysDataVersion"));
-                rb_BodySetup.setBinaryData(BitConverter.GetBytes(0));
                 Pcc.addExport(rb_BodySetup);
                 var stm = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
                 stm.BodySetup = rb_BodySetup.UIndex;

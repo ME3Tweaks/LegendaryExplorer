@@ -15,7 +15,7 @@ namespace ME3Explorer.Packages
     public abstract class UnrealPackageFile : NotifyPropertyChangedBase
     {
         protected const uint packageTag = 0x9E2A83C1;
-        public string FilePath { get; protected set; }
+        public string FilePath { get; }
 
         public bool IsModified
         {
@@ -119,13 +119,24 @@ namespace ME3Explorer.Packages
         public ExportEntry getExport(int index) => exports[index];
         public ExportEntry getUExport(int uindex) => exports[uindex - 1];
 
+        public bool TryGetUExport(int uIndex, out ExportEntry export)
+        {
+            if (isUExport(uIndex))
+            {
+                export = getUExport(uIndex);
+                return true;
+            }
+
+            export = null;
+            return false;
+        }
         #endregion
 
         #region Imports
         protected List<ImportEntry> imports = new List<ImportEntry>();
         public IReadOnlyList<ImportEntry> Imports => imports;
 
-        public bool isUImport(int uindex) => (uindex < 0 && Math.Abs(uindex) <= ImportCount);
+        public bool isImport(int uindex) => (uindex < 0 && Math.Abs(uindex) <= ImportCount);
 
         public void addImport(ImportEntry importEntry)
         {
@@ -142,7 +153,18 @@ namespace ME3Explorer.Packages
             OnPropertyChanged(nameof(ImportCount));
         }
 
-        public ImportEntry getUImport(int uindex) => imports[Math.Abs(uindex) - 1];
+        public ImportEntry getImport(int uIndex) => imports[Math.Abs(uIndex) - 1];
+        public bool TryGetImport(int uIndex, out ImportEntry import)
+        {
+            if (isImport(uIndex))
+            {
+                import = getImport(uIndex);
+                return true;
+            }
+
+            import = null;
+            return false;
+        }
 
         #endregion
 
@@ -179,11 +201,22 @@ namespace ME3Explorer.Packages
         {
             if (isUExport(uindex))
                 return exports[uindex - 1];
-            if (isUImport(uindex))
+            if (isImport(uindex))
                 return imports[-uindex - 1];
             return null;
         }
         public bool isEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (uindex < 0 && -uindex <= ImportCount);
+        public bool TryGetEntry(int uIndex, out IEntry entry)
+        {
+            if (isEntry(uIndex))
+            {
+                entry = getEntry(uIndex);
+                return true;
+            }
+
+            entry = null;
+            return false;
+        }
 
         public void RemoveTrailingTrash()
         {
@@ -472,5 +505,10 @@ namespace ME3Explorer.Packages
 
         public const string TrashPackageName = "ME3ExplorerTrashPackage";
         public static Guid TrashPackageGuid = "ME3ExpTrashPackage".ToGuid(); //DO NOT EDIT!!
+
+        protected UnrealPackageFile(string filePath)
+        {
+            FilePath = filePath;
+        }
     }
 }

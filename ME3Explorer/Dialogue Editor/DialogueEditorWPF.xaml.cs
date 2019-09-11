@@ -3918,7 +3918,7 @@ namespace ME3Explorer.Dialogue_Editor
                     OpenInToolkit("FaceFXEditor", SelectedConv.NonSpkrFFX.UIndex);
                     break;
                 case "FaceFXSpkrM":
-                    if (Pcc.isUImport(SelectedSpeaker.FaceFX_Male.UIndex))
+                    if (Pcc.isImport(SelectedSpeaker.FaceFX_Male.UIndex))
                     {
                         OpenInToolkit("FaceFXEditor", 0, Level); //CAN SEND TO THE CORRECT EXPORT IN THE NEW FILE LOAD?
                     }
@@ -3928,7 +3928,7 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                     break;
                 case "FaceFXSpkrF":
-                    if (Pcc.isUImport(SelectedSpeaker.FaceFX_Female.UIndex))
+                    if (Pcc.isImport(SelectedSpeaker.FaceFX_Female.UIndex))
                     {
                         OpenInToolkit("FaceFXEditor", 0, Level);
                     }

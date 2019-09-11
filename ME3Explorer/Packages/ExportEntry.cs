@@ -22,12 +22,31 @@ namespace ME3Explorer.Packages
         public int Index { get; set; }
         public int UIndex => Index + 1;
 
-        public ExportEntry(IMEPackage file)
+        public ExportEntry(IMEPackage file, byte[] prePropBinary = null, PropertyCollection properties = null, byte[] binary = null)
         {
             FileRef = file;
             OriginalDataSize = 0;
-            Header = new byte[HasComponentMap ? 72 : 68];
+            _header = new byte[HasComponentMap ? 72 : 68];
             ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
+
+            var ms = new MemoryStream();
+            if (prePropBinary == null)
+            {
+                prePropBinary = new byte[4];
+            }
+            ms.WriteFromBuffer(prePropBinary);
+            if (properties == null)
+            {
+                properties = new PropertyCollection();
+            }
+            properties.WriteTo(ms, file);
+            if (binary != null)
+            {
+                ms.WriteFromBuffer(binary);
+            }
+
+            _data = ms.ToArray();
+            DataSize = _data.Length;
         }
 
         public ExportEntry(IMEPackage file, Stream stream)
@@ -51,8 +70,8 @@ namespace ME3Explorer.Packages
                     long end = stream.Position;
                     stream.Seek(start, SeekOrigin.Begin);
 
-                    //read header
-                    Header = stream.ReadToBuffer((int)(end - start));
+                        //read header
+                        _header = stream.ReadToBuffer((int)(end - start));
                         break;
                 }
                 case MEGame.ME3:
@@ -63,7 +82,7 @@ namespace ME3Explorer.Packages
                     stream.Seek(-48, SeekOrigin.Current);
 
                     int expInfoSize = 68 + (count * 4);
-                    Header = stream.ReadToBuffer(expInfoSize);
+                    _header = stream.ReadToBuffer(expInfoSize);
                     break;
                 }
                 default:
@@ -89,9 +108,6 @@ namespace ME3Explorer.Packages
 
         public bool IsDefaultObject => ObjectFlags.HasFlag(EObjectFlags.ClassDefaultObject);
 
-        /// <summary>
-        /// NEVER DIRECTLY SET THIS OUTSIDE OF Header setter!
-        /// </summary>
         private byte[] _header;
 
         /// <summary>
@@ -108,13 +124,9 @@ namespace ME3Explorer.Packages
                     return; //if the data is the same don't write it and trigger the side effects
                 }
 
-                bool isFirstLoad = _header == null;
+                int dataSize = _header != null ? DataSize : (_data?.Length ?? 0);
                 _header = value;
-                if (!isFirstLoad)
-                {
-                    HeaderChanged = true;
-                    EntryHasPendingChanges = true;
-                }
+                DataSize = dataSize; //should never be altered by Header overwrite
             }
         }
 
@@ -249,7 +261,7 @@ namespace ME3Explorer.Packages
         public int DataSize
         {
             get => BitConverter.ToInt32(_header, 32);
-            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 32, sizeof(int));
+            private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 32, sizeof(int));
         }
 
         public int DataOffset
@@ -733,7 +745,7 @@ namespace ME3Explorer.Packages
             index++;
             return new ExportEntry(FileRef)
             {
-                Header = this.Header.TypedClone(),
+                _header = _header.TypedClone(),
                 HeaderOffset = 0,
                 Data = this.Data,
                 indexValue = index
