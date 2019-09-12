@@ -7,6 +7,9 @@
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:me3Explorer="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
+        DragOver="Window_DragOver"
+        Drop="Window_Drop"
+        AllowDrop="True"
         Closing="FileHexViewerWPF_OnClosing"
         Loaded="FileHexViewerWPF_OnLoaded"
         Title="{Binding WindowTitle, FallbackValue=FileHexViewerWPF}" Height="450" Width="800">

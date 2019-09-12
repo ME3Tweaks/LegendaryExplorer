@@ -146,7 +146,8 @@ namespace ME3Explorer.FileHexViewer
                     {
                         UsedFor = $"Export {exp.UIndex}",
                         UsedSpaceStart = exp.DataOffset,
-                        UsedSpaceEnd = exp.DataOffset + exp.DataSize
+                        UsedSpaceEnd = exp.DataOffset + exp.DataSize,
+                        Export = exp
                     });
                 }
 
@@ -154,9 +155,10 @@ namespace ME3Explorer.FileHexViewer
                 List<UsedSpace> continuousBlocks = new List<UsedSpace>();
                 UsedSpace continuous = new UsedSpace
                 {
-                    UsedFor = "Continuous Export Data",
+                    UsedFor = $"Continuous Export Data {usedExportsSpaces[0].Export.UIndex} {usedExportsSpaces[0].Export.ObjectName} ({usedExportsSpaces[0].Export.ClassName})",
                     UsedSpaceStart = usedExportsSpaces[0].UsedSpaceStart,
-                    UsedSpaceEnd = usedExportsSpaces[0].UsedSpaceEnd
+                    UsedSpaceEnd = usedExportsSpaces[0].UsedSpaceEnd,
+                    Export = usedExportsSpaces[0].Export
                 };
 
                 for (int i = 1; i < usedExportsSpaces.Count; i++)
@@ -184,9 +186,10 @@ namespace ME3Explorer.FileHexViewer
 
                         continuous = new UsedSpace
                         {
-                            UsedFor = "Continuous Export Data",
+                            UsedFor = $"Continuous Export Data {u.Export.UIndex} {u.Export.ObjectName} ({u.Export.ClassName})",
                             UsedSpaceStart = u.UsedSpaceStart,
-                            UsedSpaceEnd = u.UsedSpaceEnd
+                            UsedSpaceEnd = u.UsedSpaceEnd,
+                            Export = u.Export
                         };
                     }
 
@@ -351,6 +354,8 @@ namespace ME3Explorer.FileHexViewer
 
         public class UsedSpace
         {
+            internal ExportEntry Export;
+
             public int UsedSpaceStart { get; set; }
             public int UsedSpaceEnd { get; set; }
             public string UsedFor { get; set; }
@@ -364,9 +369,31 @@ namespace ME3Explorer.FileHexViewer
         {
             if (e.AddedItems.Count > 0)
             {
-                var space = ((UsedSpace) e.AddedItems[0]);
+                var space = ((UsedSpace)e.AddedItems[0]);
                 Interpreter_Hexbox.SelectionStart = space.UsedSpaceStart;
                 Interpreter_Hexbox.SelectionLength = space.Length;
+            }
+        }
+
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                // Assuming you have one file that you care about, pass it off to whatever
+                // handling code you have defined.
+                LoadFile(files[0]);
+            }
+        }
+
+        private void Window_DragOver(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effects = DragDropEffects.None;
+                e.Handled = true;
             }
         }
     }
