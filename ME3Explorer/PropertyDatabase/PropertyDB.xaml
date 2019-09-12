@@ -5,15 +5,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:local="clr-namespace:ME3Explorer.Dialogue_Editor"
+        xmlns:local="clr-namespace:ME3Explorer.PropertyDatabase"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
-        xmlns:facefx="clr-namespace:ME3Explorer.FaceFX"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         Closing="PropertyDB_Closing"
         AllowDrop="True"
         Icon="/Resources/propertydatabase_256x256.ico"
-        Title="Property Database WPF" Height="450" Width="900">
+        Title="Property Database WPF" Height="450" Width="900"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
@@ -32,11 +32,11 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Database" Padding="4" >
                 <MenuItem Header="Generate" Command="{Binding GenerateDBCommand}" InputGestureText="Ctrl+G" ToolTip="Scan Game Properties"/>
-                <MenuItem Header="Save"  Command="{Binding SaveDBCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <MenuItem Header="Save"  Command="{Binding SaveDBCommand}" InputGestureText="Ctrl+S" ToolTip="Save database in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                 <Separator />
-                <MenuItem Header="ME1 Properties" Command="{Binding switchME1Command}"/>
-                <MenuItem Header="ME2 Properties" Command="{Binding switchME2Command}"/>
-                <MenuItem Header="ME3 Properties" Command="{Binding switchME3Command}"/>
+                <MenuItem Name="switchME1_menu" Header="ME1 Properties" Command="{Binding SwitchMECommand}" CommandParameter="ME1" InputGestureText="Ctrl+1" ToolTip="Switch to ME1 Properties"/>
+                <MenuItem Name="switchME2_menu" Header="ME2 Properties" Command="{Binding SwitchMECommand}" CommandParameter="ME2" InputGestureText="Ctrl+2" ToolTip="Switch to ME2 Properties"/>
+                <MenuItem Name="switchME3_menu" Header="ME3 Properties" Command="{Binding SwitchMECommand}" CommandParameter="ME3" InputGestureText="Ctrl+3" ToolTip="Switch to ME3 Properties"/>
             </MenuItem>
 
             <MenuItem Header="Tools" Padding="4">
@@ -44,24 +44,27 @@
             </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
-            <SharedUI:StatusBarGameIDIndicator GameType="ME3" Margin="0,-4"/>
+            <StatusBarItem VerticalContentAlignment="Center" x:Name="StatusBar_GameID_Container" Visibility="Visible" Margin="0,0,0,0">
+                <Border BorderBrush="Gray" BorderThickness="2,2,2,2" CornerRadius="3,3,3,3" VerticalAlignment="Center">
+                    <TextBlock x:Name="StatusBar_GameID_Text" Background="DarkSeaGreen" Text="{Binding currentGame}" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
+                </Border>
+            </StatusBarItem>
             <StatusBarItem>
                 <TextBlock x:Name="StatusBar_LeftMostText" Text="Currently looking at ME3 Properties"/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding Pcc.LastSaved, StringFormat='Last saved at {0}'}" Foreground="Gray"/>
+                    <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding CurrentDatabase.GenerationDate, StringFormat='Generated at {0}'}" Foreground="Gray"/>
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
         <DockPanel>
-            <SharedUI:ListBoxScroll x:Name="Classes" DockPanel.Dock="Left" MinWidth="200">
+            <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="200" ItemsSource="{Binding Path=CurrentDataBase.Class}">
+            </SharedUI:ListBoxScroll>
+            <SharedUI:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200">
 
             </SharedUI:ListBoxScroll>
-            <SharedUI:ListBoxScroll x:Name="Properties" MinWidth="200">
-
-            </SharedUI:ListBoxScroll>
-            <SharedUI:ListBoxScroll x:Name="Values" DockPanel.Dock="Right" MinWidth="200">
+            <SharedUI:ListBoxScroll x:Name="lstbx_Values" DockPanel.Dock="Right" MinWidth="200">
 
             </SharedUI:ListBoxScroll>
         </DockPanel>
