@@ -80,7 +80,7 @@
                         <Span>
                             <Run>Maximum Var String Length</Run>
                             <xctk:IntegerUpDown Value="{Binding Source={x:Static properties:Settings.Default}, Path=SequenceEditor_MaxVarStringLength, Mode=TwoWay}"
-                                                ClipValueToMinMax="True" Minimum="5" Maximum="1000"/>
+                                                ClipValueToMinMax="True" Minimum="5" Maximum="1000" ValueChanged="IntegerUpDown_ValueChanged"/>
                         </Span>
                     </MenuItem.Header>
                 </MenuItem>

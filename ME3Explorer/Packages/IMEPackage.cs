@@ -122,7 +122,7 @@ namespace ME3Explorer.Packages
         //reading
         bool isUExport(int index);
         bool isName(int index);
-        bool isUImport(int index);
+        bool isImport(int index);
         bool isEntry(int uindex);
         /// <summary>
         ///     gets Export or Import entry, from unreal index
@@ -146,7 +146,12 @@ namespace ME3Explorer.Packages
         /// Gets an import based on it's unreal based index.
         /// </summary>
         /// <param name="uIndex">unreal-based index</param>
-        ImportEntry getUImport(int uIndex);
+        ImportEntry getImport(int uIndex);
+
+        bool TryGetUExport(int uIndex, out ExportEntry export);
+        bool TryGetImport(int uIndex, out ImportEntry import);
+        bool TryGetEntry(int uIndex, out IEntry entry);
+
         int findName(string nameToFind);
         /// <summary>
         ///     gets Export or Import name, from unreal index

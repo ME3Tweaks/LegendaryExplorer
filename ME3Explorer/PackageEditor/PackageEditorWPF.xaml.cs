@@ -1623,7 +1623,7 @@ namespace ME3Explorer
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
             }
-            catch (Exception e)
+            catch (Exception e) when (!App.IsDebug)
             {
                 StatusBar_LeftMostText.Text = "Failed to load " + Path.GetFileName(s);
                 MessageBox.Show($"Error loading {Path.GetFileName(s)}:\n{e.Message}");
@@ -1973,9 +1973,9 @@ namespace ME3Explorer
         }
         private bool TryGetSelectedImport(out ImportEntry import)
         {
-            if (GetSelected(out int uIndex) && Pcc.isUImport(uIndex))
+            if (GetSelected(out int uIndex) && Pcc.isImport(uIndex))
             {
-                import = Pcc.getUImport(uIndex);
+                import = Pcc.getImport(uIndex);
                 return true;
             }
             import = null;
@@ -2708,7 +2708,7 @@ namespace ME3Explorer
                 else
                 {
                     //todo: ensure relink works with this
-                    IEntry newImport = getOrAddCrossImportOrPackage(importpcc.getUImport(index).GetFullPath, importpcc, Pcc);
+                    IEntry newImport = getOrAddCrossImportOrPackage(importpcc.getImport(index).GetFullPath, importpcc, Pcc);
 
                     newEntry = new TreeViewEntry(newImport);
                     crossPCCObjectMap[node.Entry] = newImport;
@@ -2737,29 +2737,26 @@ namespace ME3Explorer
         /// <returns></returns>
         private static bool importExport(IMEPackage mePackage, ExportEntry ex, int link, out ExportEntry outputEntry)
         {
-            outputEntry = new ExportEntry(mePackage);
-            byte[] idata = ex.Data;
-            PropertyCollection props = ex.GetProperties();
-            int start = ex.GetPropertyStart();
-            int end = props.endOffset;
-            MemoryStream res = new MemoryStream();
+            byte[] prePropBinary;
             if (ex.HasStack)
             {
-                //ME1, ME2 stack
-                byte[] stackdummy = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
-                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
-
-                if (mePackage.Game != MEGame.ME3)
+                if (mePackage.Game < MEGame.ME3)
                 {
-                    stackdummy = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                    prePropBinary = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
                 }
-                res.Write(stackdummy, 0, stackdummy.Length);
+                else
+                {
+                    prePropBinary = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
+                }
             }
             else
             {
-                res.Write(new byte[start], 0, start);
+                int start = ex.GetPropertyStart();
+                prePropBinary = new byte[start];
             }
+            PropertyCollection props = ex.GetProperties();
             //store copy of names list in case something goes wrong
             List<string> names = mePackage.Names.ToList();
             try
@@ -2768,7 +2765,6 @@ namespace ME3Explorer
                 {
                     props = EntryPruner.RemoveIncompatibleProperties(ex.FileRef, props, ex.ClassName, mePackage.Game);
                 }
-                props.WriteTo(res, mePackage);
             }
             catch (Exception exception)
             {
@@ -2780,36 +2776,11 @@ namespace ME3Explorer
             }
 
             //takes care of slight header differences between ME1/2 and ME3
-            outputEntry.Header = ex.GenerateHeader(mePackage.Game);
-            bool dataAlreadySet = false;
+            byte[] newHeader = ex.GenerateHeader(mePackage.Game);
 
-            if (ex.FileRef.Game == MEGame.UDK)
-            {
-                //todo: move to binary relinker
-                switch (ex.FileRef.getObjectName(ex.idxClass))
-                {
-                    case "StaticMesh":
-                        {
-                            //res.Write(idata, end, idata.Length - end);
-                            //rewrite data
-                            outputEntry.Data = res.ToArray();
-                            UDKStaticMesh usm = new UDKStaticMesh(ex.FileRef as UDKPackage, ex.Index);
-                            usm.PortToME3Export(outputEntry);
-                            dataAlreadySet = true;
-                            break;
-                        }
-                    default:
-                        //Write binary
-                        res.Write(idata, end, idata.Length - end);
-                        break;
-                }
-            }
-            else
-            {
-                //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
-                //for unsupported classes, this will just copy over the binary
-                res.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(ex, mePackage.Game).ToArray(mePackage));
-            }
+            //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
+            //for unsupported classes, this will just copy over the binary
+            byte[] binaryData = ExportBinaryConverter.ConvertPostPropBinary(ex, mePackage.Game).ToArray(mePackage);
 
             int classValue = 0;
             int archetype = 0;
@@ -2818,7 +2789,7 @@ namespace ME3Explorer
             if (ex.idxClass < 0)
             {
                 //The class of the export we are importing is an import. We should attempt to relink this.
-                ImportEntry portingFromClassImport = ex.FileRef.getUImport(ex.idxClass);
+                ImportEntry portingFromClassImport = ex.FileRef.getImport(ex.idxClass);
                 IEntry newClassImport = getOrAddCrossImportOrPackage(portingFromClassImport.GetFullPath, ex.FileRef, mePackage);
                 classValue = newClassImport.UIndex;
             }
@@ -2837,7 +2808,7 @@ namespace ME3Explorer
             if (ex.idxSuperClass < 0)
             {
                 //The class of the export we are importing is an import. We should attempt to relink this.
-                ImportEntry portingFromClassImport = ex.FileRef.getUImport(ex.idxSuperClass);
+                ImportEntry portingFromClassImport = ex.FileRef.getImport(ex.idxSuperClass);
                 IEntry newClassImport = getOrAddCrossImportOrPackage(portingFromClassImport.GetFullPath, ex.FileRef, mePackage);
                 superclass = newClassImport.UIndex;
             }
@@ -2855,7 +2826,7 @@ namespace ME3Explorer
             //Check archetype.
             if (ex.idxArchtype < 0)
             {
-                ImportEntry portingFromClassImport = ex.FileRef.getUImport(ex.idxArchtype);
+                ImportEntry portingFromClassImport = ex.FileRef.getImport(ex.idxArchtype);
                 IEntry newClassImport = getOrAddCrossImportOrPackage(portingFromClassImport.GetFullPath, ex.FileRef, mePackage);
                 archetype = newClassImport.UIndex;
             }
@@ -2869,15 +2840,15 @@ namespace ME3Explorer
                 }
             }
 
-            if (!dataAlreadySet)
+            outputEntry = new ExportEntry(mePackage, prePropBinary, props, binaryData)
             {
-                outputEntry.Data = res.ToArray();
-            }
-            outputEntry.idxClass = classValue;
-            outputEntry.idxObjectName = mePackage.FindNameOrAdd(ex.FileRef.getNameEntry(ex.idxObjectName));
-            outputEntry.idxLink = link;
-            outputEntry.idxSuperClass = superclass;
-            outputEntry.idxArchtype = archetype;
+                Header = newHeader,
+                idxClass = classValue,
+                idxObjectName = mePackage.FindNameOrAdd(ex.FileRef.getNameEntry(ex.idxObjectName)),
+                idxLink = link,
+                idxSuperClass = superclass,
+                idxArchtype = archetype
+            };
             mePackage.addExport(outputEntry);
 
             return true;
@@ -4630,9 +4601,58 @@ namespace ME3Explorer
 
         void OpenMapInGame()
         {
+            const string tempMapName = "__ME3EXPDEBUGLOAD";
+
+            if (Pcc.Exports.All(exp => exp.ClassName != "Level"))
+            {
+                MessageBox.Show(this, "This file is not a map file!");
+            }
             //only works for ME3?
             string mapName = Path.GetFileNameWithoutExtension(Pcc.FilePath);
-            Process.Start(MEDirectories.ExecutablePath(Pcc.Game), $"{mapName} -nostartupmovies");
+
+            string tempDir = MEDirectories.CookedPath(Pcc.Game);
+            tempDir = Pcc.Game == MEGame.ME1 ? Path.Combine(tempDir, "Maps") : tempDir;
+            string tempFilePath = Path.Combine(tempDir, $"{tempMapName}.{(Pcc.Game == MEGame.ME1 ? "SFM" : "pcc")}");
+
+            Pcc.save(tempFilePath);
+
+            using (var tempPcc = MEPackageHandler.OpenMEPackage(tempFilePath, forceLoadFromDisk:true))
+            {
+                //insert PlayerStart if neccesary
+                if (!(tempPcc.Exports.FirstOrDefault(exp => exp.ClassName == "PlayerStart") is ExportEntry playerStart))
+                {
+                    var levelExport = tempPcc.Exports.First(exp => exp.ClassName == "Level");
+                    Level level = ObjectBinary.From<Level>(levelExport);
+                    float x = 0, y = 0, z = 0;
+                    if (tempPcc.TryGetUExport(level.NavListStart, out ExportEntry firstNavPoint))
+                    {
+                        if (firstNavPoint.GetProperty<StructProperty>("Location") is StructProperty locProp)
+                        {
+                            (x, y, z) = CommonStructs.GetVector(locProp);
+                        }
+                        else if (firstNavPoint.GetProperty<StructProperty>("location") is StructProperty locProp2)
+                        {
+                            (x, y, z) = CommonStructs.GetVector(locProp2);
+                        }
+                    }
+                    playerStart = new ExportEntry(tempPcc, properties:new PropertyCollection
+                    {
+                        CommonStructs.Vector(x, y, z, "location")
+                    })
+                    {
+                        Parent = levelExport,
+                        ObjectName = "PlayerStart",
+                        idxClass = tempPcc.getEntryOrAddImport("Engine.PlayerStart").UIndex
+                    };
+                    tempPcc.addExport(playerStart);
+                    level.Actors.Add(playerStart.UIndex);
+                    levelExport.setBinaryData(level.ToArray(tempPcc));
+                }
+                tempPcc.save();
+            }
+
+
+            Process.Start(MEDirectories.ExecutablePath(Pcc.Game), $"{tempMapName} -nostartupmovies");
         }
     }
 }

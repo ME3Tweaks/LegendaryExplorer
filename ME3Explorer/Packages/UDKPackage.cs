@@ -117,10 +117,8 @@ namespace ME3Explorer.Packages
         ///     UDKPackage class constructor. It also load namelist, importlist and exportinfo (not exportdata) from udk file
         /// </summary>
         /// <param name="UDKPackagePath">full path + file name of desired udk file.</param>
-        public UDKPackage(string UDKPackagePath)
+        public UDKPackage(string UDKPackagePath) : base(Path.GetFullPath(UDKPackagePath))
         {
-            string path = UDKPackagePath;
-            FilePath = Path.GetFullPath(path);
             MemoryStream tempStream = new MemoryStream();
             if (!File.Exists(FilePath))
                 throw new FileNotFoundException("UPK file not found");

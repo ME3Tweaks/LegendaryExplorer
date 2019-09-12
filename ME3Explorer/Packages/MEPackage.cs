@@ -111,11 +111,9 @@ namespace ME3Explorer.Packages
             return (f, g) => new MEPackage(f, g);
         }
 
-        private MEPackage(string filePath, MEGame forceGame = MEGame.Unknown)
+        private MEPackage(string filePath, MEGame forceGame = MEGame.Unknown) : base(Path.GetFullPath(filePath))
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(this));
-
-            FilePath = Path.GetFullPath(filePath);
 
             if (forceGame != MEGame.Unknown)
             {
@@ -287,6 +285,7 @@ namespace ME3Explorer.Packages
                 }
             }
         }
+
         public void save()
         {
             save(FilePath);
@@ -296,11 +295,12 @@ namespace ME3Explorer.Packages
         {
             bool compressed = IsCompressed;
             Flags &= ~EPackageFlags.Compressed;
+            bool isSaveAs = path != FilePath;
             try
             {
                 if (CanReconstruct)
                 {
-                    saveByReconstructing(path);
+                    saveByReconstructing(path, isSaveAs);
                 }
                 else
                 {
@@ -310,14 +310,14 @@ namespace ME3Explorer.Packages
             finally
             {
                 //If we're doing save as, reset compressed flag to reflect file on disk
-                if (path != FilePath && compressed)
+                if (isSaveAs && compressed)
                 {
                     Flags |= EPackageFlags.Compressed;
                 }
             }
         }
 
-        private void saveByReconstructing(string path)
+        private void saveByReconstructing(string path, bool isSaveAs)
         {
             try
             {
@@ -403,9 +403,12 @@ namespace ME3Explorer.Packages
 
 
                 File.WriteAllBytes(path, ms.ToArray());
-                AfterSave();
+                if (!isSaveAs)
+                {
+                    AfterSave();
+                }
             }
-            catch (Exception ex)
+            catch (Exception ex) when(!App.IsDebug)
             {
                 MessageBox.Show($"Error saving {FilePath}:\n{ExceptionHandlerDialogWPF.FlattenException(ex)}");
             }

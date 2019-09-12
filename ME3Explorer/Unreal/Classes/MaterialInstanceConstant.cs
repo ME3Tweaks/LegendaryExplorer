@@ -114,7 +114,7 @@ namespace ME3Explorer.Unreal.Classes
                     }
                     else
                     {
-                        ImportEntry ie = export.FileRef.getUImport(parentObjProp.Value);
+                        ImportEntry ie = export.FileRef.getImport(parentObjProp.Value);
                         var externalEntry = ModelPreview.FindExternalAsset(ie, null);
                         if (externalEntry != null)
                         {

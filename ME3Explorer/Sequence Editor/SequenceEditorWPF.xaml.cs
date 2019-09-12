@@ -1876,9 +1876,9 @@ namespace ME3Explorer.Sequence_Editor
                     return;
                 }
 
-                if (Pcc.isUImport(conv.Value))
+                if (Pcc.isImport(conv.Value))
                 {
-                    ImportEntry convImport = Pcc.getUImport(conv.Value);
+                    ImportEntry convImport = Pcc.getImport(conv.Value);
                     string extension = Path.GetExtension(Pcc.FilePath);
                     string noExtensionPath = Path.ChangeExtension(Pcc.FilePath, null);
                     string loc_int = Pcc.Game == MEGame.ME1 ? "_LOC_int" : "_LOC_INT";
@@ -2073,6 +2073,14 @@ namespace ME3Explorer.Sequence_Editor
         {
             Properties.Settings.Default.SequenceEditor_ShowParsedInfo = !Properties.Settings.Default.SequenceEditor_ShowParsedInfo;
             Properties.Settings.Default.Save();
+        }
+
+        private void IntegerUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (CurrentObjects.Any())
+            {
+                RefreshView();
+            }
         }
     }
     static class SequenceEditorExtensions
