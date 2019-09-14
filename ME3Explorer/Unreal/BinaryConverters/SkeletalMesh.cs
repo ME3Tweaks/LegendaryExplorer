@@ -116,10 +116,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public PackedNormal TangentX;
         public PackedNormal TangentY;
         public PackedNormal TangentZ;
-        public Vector2D UV;
-        public Vector2D UV2; //UDK
-        public Vector2D UV3; //UDK
-        public Vector2D UV4; //UDK
+        public Vector2 UV;
+        public Vector2 UV2; //UDK
+        public Vector2 UV3; //UDK
+        public Vector2 UV4; //UDK
         public Color BoneColor; //UDK
         public byte Bone;
     }
@@ -130,10 +130,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public PackedNormal TangentX;
         public PackedNormal TangentY;
         public PackedNormal TangentZ;
-        public Vector2D UV;
-        public Vector2D UV2; //UDK
-        public Vector2D UV3; //UDK
-        public Vector2D UV4; //UDK
+        public Vector2 UV;
+        public Vector2 UV2; //UDK
+        public Vector2 UV3; //UDK
+        public Vector2 UV4; //UDK
         public Color BoneColor; //UDK
         public byte[] InfluenceBones = new byte[4];
         public byte[] InfluenceWeights = new byte[4];
@@ -394,7 +394,7 @@ namespace ME3Explorer
                             TangentX = vert.TangentX,
                             TangentY = new PackedNormal(0, 1, 0, 0), //¯\_(ツ)_/¯
                             TangentZ = vert.TangentZ,
-                            UV = new Vector2D(vert.UV.X, vert.UV.Y),
+                            UV = new Vector2(vert.UV.X, vert.UV.Y),
                             InfluenceBones = vert.InfluenceBones.TypedClone(),
                             InfluenceWeights = vert.InfluenceWeights.TypedClone()
                         };

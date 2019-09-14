@@ -222,7 +222,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
     public class StaticMeshTriangle
     {
         public Vector3[] Vertices = new Vector3[3];
-        public Vector2D[,] UVs = new Vector2D[3,8];
+        public Vector2[,] UVs = new Vector2[3,8];
         public Color[] Colors = new Color[3];
         public int MaterialIndex;
         public int FragmentIndex; //ME3/UDK
@@ -277,7 +277,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             public PackedNormal TangentX;
             public PackedNormal TangentZ;
             public Color Color; //ME1/2
-            public Vector2D[] FullPrecisionUVs;
+            public Vector2[] FullPrecisionUVs;
             public Vector2DHalf[] HalfPrecisionUVs;
         }
 
@@ -776,9 +776,9 @@ namespace ME3Explorer
                     if (buff.VertexData[i].FullPrecisionUVs == null)
                     {
                         buff.VertexData[i].FullPrecisionUVs = sc.IsLoading
-                            ? new Vector2D[buff.NumTexCoords]
+                            ? new Vector2[buff.NumTexCoords]
                             //bUseFullPrecisionUVs was changed, copy data from the other one
-                            : Array.ConvertAll(buff.VertexData[i].HalfPrecisionUVs, v2dHalf => new Vector2D(v2dHalf.X, v2dHalf.Y));
+                            : Array.ConvertAll(buff.VertexData[i].HalfPrecisionUVs, v2dHalf => new Vector2(v2dHalf.X, v2dHalf.Y));
                     }
                     for (int j = 0; j < buff.NumTexCoords; j++)
                     {

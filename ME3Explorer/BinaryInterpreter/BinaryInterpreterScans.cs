@@ -1296,7 +1296,7 @@ namespace ME3Explorer
                                     {
                                         MakeVectorNode(bin, "Position"),
                                         MakePackedNormalNode(bin, "TangentX"),
-                                        MakePackedNormalNode(bin, "TangentY"),
+                                        MakePackedNormalNode(bin, "TangentZ"),
                                         ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
                                         {
                                             MakeVector2DNode(bin, "LegacyProjectedUVs")
@@ -3991,78 +3991,53 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                int offset = binarystart;
-                int count = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"{offset:X4} Count: {count}",
-                    Name = "_" + offset.ToString()
-                });
-                offset += 4;
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+                subnodes.Add(MakeArrayNode(bin, "AnimToPackageMap?", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)} => {bin.ReadNameReference(Pcc)}")));
+
+                int count;
+                var propDataNode = new BinInterpNode(bin.Position, $"PropData? ({count = bin.ReadInt32()} items)");
+                subnodes.Add(propDataNode);
                 for (int i = 0; i < count; i++)
                 {
-                    int name1 = BitConverter.ToInt32(data, offset);
-                    int name2 = BitConverter.ToInt32(data, offset + 8);
-                    string text = $"{offset:X4} Item {i}: {CurrentLoadedExport.FileRef.getNameEntry(name1)} => {CurrentLoadedExport.FileRef.getNameEntry(name2)}";
-                    subnodes.Add(new BinInterpNode
+                    BinInterpNode node = new BinInterpNode(bin.Position, $"{i}")
                     {
-                        Header = text,
-                        Name = "_" + offset.ToString()
-                    });
-                    offset += 16;
-                }
-
-                int idx = 0;
-                MemoryStream dataAsStream = new MemoryStream(data);
-                while (offset < data.Length)
-                {
-                    var node = new BinInterpNode
-                    {
-                        Header = $"{offset:X4} Item {idx}",
-                        Name = "_" + offset.ToString()
+                        IsExpanded = true
                     };
-                    subnodes.Add(node);
-
-                    int unk1 = BitConverter.ToInt32(data, offset);
-                    node.Items.Add(new BinInterpNode
+                    propDataNode.Items.Add(node);
+                    node.Items.Add(MakeNameNode(bin, "Name1"));
+                    node.Items.Add(MakeNameNode(bin, "Name2"));
+                    node.Items.Add(MakeStringNode(bin, "Model Path?"));
+                    node.Items.Add(MakeNameNode(bin, "Name3"));
+                    node.Items.Add(MakeVectorNode(bin, "Position?"));
+                    node.Items.Add(MakeRotatorNode(bin, "Rotation?"));
+                    node.Items.Add(MakeVectorNode(bin, "Scale3D?"));
+                    int count2;
+                    var propActionsNode = new BinInterpNode(bin.Position, $"prop actions? ({count2 = bin.ReadInt32()} items)");
+                    node.Items.Add(propActionsNode);
+                    for (int j = 0; j < count2; j++)
                     {
-                        Header = $"{offset:X4} Unk1: {unk1}",
-                        Name = "_" + offset.ToString()
-                    });
-                    offset += 4;
-                    int unk2 = BitConverter.ToInt32(data, offset);
-                    node.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{offset:X4} Name Unk2: {unk2} {CurrentLoadedExport.FileRef.getNameEntry(unk2)}",
-                        Name = "_" + offset.ToString()
-                    });
-                    offset += 8;
-                    int unk3 = BitConverter.ToInt32(data, offset);
-                    node.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{offset:X4} Name Unk3: {unk3} {CurrentLoadedExport.FileRef.getNameEntry(unk3)}",
-                        Name = "_" + offset.ToString()
-                    });
-                    offset += 8;
-
-                    dataAsStream.Position = offset;
-                    int strLength = dataAsStream.ReadValueS32();
-                    string str = Gibbed.IO.StreamHelpers.ReadString(dataAsStream, strLength * -2, true, Encoding.Unicode);
-                    node.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{offset:X4}: {str}",
-                        Name = "_" + offset.ToString()
-                    });
-                    offset = (int)dataAsStream.Position;
-                    int unk4 = BitConverter.ToInt32(data, offset);
-                    node.Items.Add(new BinInterpNode
-                    {
-                        Header = $"{offset:X4} Name Unk4: {unk4} {CurrentLoadedExport.FileRef.getNameEntry(unk4)}",
-                        Name = "_" + offset.ToString()
-                    });
-                    offset += 8;
-                    idx++;
-                    break;
+                        BinInterpNode node2 = new BinInterpNode(bin.Position, $"{j}")
+                        {
+                            IsExpanded = true
+                        };
+                        propActionsNode.Items.Add(node2);
+                        node2.Items.Add(MakeNameNode(bin, "Name1"));
+                        node2.Items.Add(MakeNameNode(bin, "Name2"));
+                        node2.Items.Add(MakeInt32Node(bin, "unk"));
+                        node2.Items.Add(MakeNameNode(bin, "Name3"));
+                        node2.Items.Add(MakeVectorNode(bin, "Position?"));
+                        node2.Items.Add(MakeRotatorNode(bin, "Rotation?"));
+                        node2.Items.Add(MakeVectorNode(bin, "Scale3D?"));
+                        node2.Items.Add(MakeStringNode(bin, "Model Path?"));
+                        node2.Items.Add(MakeInt32Node(bin, "unk"));
+                        node2.Items.Add(MakeInt32Node(bin, "unk"));
+                        node2.Items.Add(MakeVectorNode(bin, "unk?"));
+                        node2.Items.Add(MakeVectorNode(bin, "unk?"));
+                        node2.Items.Add(MakeNameNode(bin, "Name?"));
+                        node2.Items.Add(MakeVectorNode(bin, "unk?"));
+                        node2.Items.Add(MakeVectorNode(bin, "unk?"));
+                    }
                 }
             }
             catch (Exception ex)
@@ -4399,7 +4374,6 @@ namespace ME3Explorer
                     int nameIndexNum = BitConverter.ToInt32(data, binarypos + 4);
                     int shouldBe1 = BitConverter.ToInt32(data, binarypos + 8);
 
-                    //TODO: Relink this property on package porting!
                     var name = CurrentLoadedExport.FileRef.getNameEntry(nameIndex);
                     string nodeValue = $"{(name == "INVALID NAME VALUE " + nameIndex ? "" : name)}_{nameIndexNum}";
                     if (shouldBe1 != 1)
@@ -4419,7 +4393,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -5822,56 +5796,30 @@ namespace ME3Explorer
 
             try
             {
-                int pos = binarystart;
-                int count = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new BinInterpNode
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+                subnodes.Add(MakeArrayNode(bin, "ArchetypeToInstanceMap", i => new BinInterpNode(bin.Position, $"{i}")
                 {
-                    Header = $"{(pos - binarystart):X4} Count: {count}",
-                    Name = "_" + pos
-
-                });
-                pos += 4;
-                while (pos + 8 <= data.Length && count > 0)
+                    IsExpanded = true,
+                    Items =
+                    {
+                        MakeEntryNode(bin, "Archetype"),
+                        MakeEntryNode(bin, "Instance")
+                    }
+                }, true));
+                subnodes.Add(MakeArrayNode(bin, "PrefabInstance_ObjectMap", i => new BinInterpNode(bin.Position, $"{i}")
                 {
-                    var exportRef = BitConverter.ToInt32(data, pos);
-                    subnodes.Add(new BinInterpNode
+                    IsExpanded = true,
+                    Items =
                     {
-                        Header = $"{(pos - binarystart):X4}: {exportRef} Prefab: {CurrentLoadedExport.FileRef.getEntry(exportRef).GetFullPath}",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.StructLeafObject
-                    });
-                    pos += 4;
-                    exportRef = BitConverter.ToInt32(data, pos);
-                    if (exportRef == 0)
-                    {
-                        (subnodes.Last() as BinInterpNode).Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4}: {exportRef} Level Object: Null",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafObject
-                        });
+                        MakeEntryNode(bin, "Object:"),
+                        MakeInt32Node(bin, "int")
                     }
-                    else
-                    {
-                        (subnodes.Last() as BinInterpNode).Items.Add(new BinInterpNode
-                        {
-                            Header = $"{(pos - binarystart):X4}: {exportRef} Level Object: {CurrentLoadedExport.FileRef.getEntry(exportRef).GetFullPath}",
-                            Name = "_" + pos,
-
-                            Tag = NodeType.StructLeafObject
-                        });
-                    }
-
-                    pos += 4;
-                    count--;
-                }
-
+                }, true));
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }

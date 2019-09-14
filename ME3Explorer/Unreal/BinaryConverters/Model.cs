@@ -133,8 +133,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
     {
         public int pVertex;
         public int iSide;
-        public Vector2D ShadowTexCoord;
-        public Vector2D BackfaceShadowTexCoord; //not ME3
+        public Vector2 ShadowTexCoord;
+        public Vector2 BackfaceShadowTexCoord; //not ME3
     }
 
     public class ZoneProperties
@@ -150,8 +150,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public Vector3 Position;
         public PackedNormal TangentX;
         public PackedNormal TangentZ;
-        public Vector2D TexCoord;
-        public Vector2D ShadowTexCoord;
+        public Vector2 TexCoord;
+        public Vector2 ShadowTexCoord;
     }
 }
 
@@ -227,7 +227,7 @@ namespace ME3Explorer
             else if (sc.IsLoading)
             {
                 //probably wrong
-                vert.BackfaceShadowTexCoord = new Vector2D(vert.ShadowTexCoord.Y, vert.BackfaceShadowTexCoord.X);
+                vert.BackfaceShadowTexCoord = new Vector2(vert.ShadowTexCoord.Y, vert.BackfaceShadowTexCoord.X);
             }
         }
         public static void Serialize(SerializingContainer2 sc, ref ZoneProperties zone)

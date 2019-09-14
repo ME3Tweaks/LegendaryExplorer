@@ -40,9 +40,6 @@ using static ME3Explorer.Packages.MEPackage;
 using static ME3Explorer.Unreal.UnrealFlags;
 using Guid = System.Guid;
 
-//todo: switch this to new SkeletalMesh class
-using SkeletalMesh = ME3Explorer.Unreal.Classes.SkeletalMesh;
-
 namespace ME3Explorer
 {
     /// <summary>
@@ -2649,7 +2646,7 @@ namespace ME3Explorer
                 MessageBox.Show($"Error occured while replacing data in {incomingExport.ObjectName} : {exception.Message}");
                 return false;
             }
-            res.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game).ToArray(targetExport.FileRef));
+            res.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game).ToBytes(targetExport.FileRef));
             targetExport.Data = res.ToArray();
             return true;
         }
@@ -2780,7 +2777,7 @@ namespace ME3Explorer
 
             //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
             //for unsupported classes, this will just copy over the binary
-            byte[] binaryData = ExportBinaryConverter.ConvertPostPropBinary(ex, mePackage.Game).ToArray(mePackage);
+            byte[] binaryData = ExportBinaryConverter.ConvertPostPropBinary(ex, mePackage.Game).ToBytes(mePackage);
 
             int classValue = 0;
             int archetype = 0;
@@ -3977,7 +3974,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "Model", true)) break;
+                    if (findClass(filePath, "PrefabInstance", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
 
@@ -4140,15 +4137,16 @@ namespace ME3Explorer
                     {
                         try
                         {
-                            var lev = ObjectBinary.From<Model>(exp);
+                            var obj = ObjectBinary.From<PrefabInstance>(exp);
                             var ms = new MemoryStream();
-                            lev.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
-                            var buff = ms.ToArray();
+                            obj.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
+                            byte[] buff = ms.ToArray();
 
                             if (!buff.SequenceEqual(exp.getBinaryData()))
                             {
-                                File.WriteAllBytes(@"C:\Users\Image 17\convertedModel", buff);
-                                File.WriteAllBytes(@"C:\Users\Image 17\originalModel", exp.getBinaryData());
+                                string userFolder =  Path.Combine(@"C:\Users", Environment.UserName);
+                                File.WriteAllBytes(Path.Combine(userFolder, "converted{className}"), buff);
+                                File.WriteAllBytes(Path.Combine(userFolder, "original{className}"), exp.getBinaryData());
                                 interestingExports.Add($"{exp.UIndex}: {filePath}");
                                 return true;
                             }
@@ -4646,7 +4644,7 @@ namespace ME3Explorer
                     };
                     tempPcc.addExport(playerStart);
                     level.Actors.Add(playerStart.UIndex);
-                    levelExport.setBinaryData(level.ToArray(tempPcc));
+                    levelExport.setBinaryData(level.ToBytes(tempPcc));
                 }
                 tempPcc.save();
             }

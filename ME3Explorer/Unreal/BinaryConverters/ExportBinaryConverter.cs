@@ -205,7 +205,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
         public static ObjectBinary From(ExportEntry export)
         {
-            switch (export.ClassName)
+            string className = export.ClassName;
+            if (export.InheritsFrom("BioPawn"))
+            {
+                //way, waaay too many subclasses of BioPawn to put in the switch statement, so we take care of it here
+                className = "BioPawn";
+            }
+            switch (className)
             {
                 case "Level":
                     return From<Level>(export);
@@ -231,6 +237,22 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<SkeletalMesh>(export);
                 case "StaticMeshComponent":
                     return From<StaticMeshComponent>(export);
+                case "DecalComponent":
+                    return From<DecalComponent>(export);
+                case "Terrain":
+                    return From<Terrain>(export);
+                case "TerrainComponent":
+                    return From<TerrainComponent>(export);
+                case "FluidSurfaceComponent":
+                    return From<FluidSurfaceComponent>(export);
+                case "ModelComponent":
+                    return From<ModelComponent>(export);
+                case "BioDynamicAnimSet":
+                    return From<BioDynamicAnimSet>(export);
+                case "BioPawn":
+                    return From<BioPawn>(export);
+                case "PrefabInstance":
+                    return From<PrefabInstance>(export);
                 default:
                     return null;
             }
@@ -245,7 +267,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             Serialize(new SerializingContainer2(ms, pcc, false, fileOffset));
         }
 
-        public virtual byte[] ToArray(IMEPackage pcc, int fileOffset = 0)
+        public virtual byte[] ToBytes(IMEPackage pcc, int fileOffset = 0)
         {
             var ms = new MemoryStream();
             WriteTo(ms, pcc, fileOffset);
@@ -273,7 +295,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             ms.WriteFromBuffer(data);
         }
 
-        public override byte[] ToArray(IMEPackage pcc, int fileOffset = 0)
+        public override byte[] ToBytes(IMEPackage pcc, int fileOffset = 0)
         {
             return data;
         }

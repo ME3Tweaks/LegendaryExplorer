@@ -811,18 +811,26 @@
     <Compile Include="UnrealScriptControl\UnrealScriptWPF.xaml.cs">
       <DependentUpon>UnrealScriptWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Unreal\BinaryConverters\BioDynamicAnimSet.cs" />
+    <Compile Include="Unreal\BinaryConverters\BioPawn.cs" />
+    <Compile Include="Unreal\BinaryConverters\DecalComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\EntryPruner.cs" />
     <Compile Include="Unreal\BinaryConverters\ExportBinaryConverter.cs" />
-    <Compile Include="Unreal\BinaryConverters\ImportExtensions.cs" />
+    <Compile Include="Unreal\BinaryConverters\ConvertExtensions.cs" />
+    <Compile Include="Unreal\BinaryConverters\FluidSurfaceComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\Level.cs" />
     <Compile Include="Unreal\BinaryConverters\Material.cs" />
     <Compile Include="OrderedDictionary.cs" />
     <Compile Include="Unreal\BinaryConverters\Model.cs" />
+    <Compile Include="Unreal\BinaryConverters\ModelComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\Polys.cs" />
+    <Compile Include="Unreal\BinaryConverters\PrefabInstance.cs" />
     <Compile Include="Unreal\BinaryConverters\ShaderCache.cs" />
     <Compile Include="Unreal\BinaryConverters\SkeletalMesh.cs" />
     <Compile Include="Unreal\BinaryConverters\StaticMesh.cs" />
     <Compile Include="Unreal\BinaryConverters\StaticMeshComponent.cs" />
+    <Compile Include="Unreal\BinaryConverters\Terrain.cs" />
+    <Compile Include="Unreal\BinaryConverters\TerrainComponent.cs" />
     <Compile Include="Unreal\CommonStructs.cs" />
     <Compile Include="Unreal\SerializingContainer2.cs" />
     <Compile Include="Unreal\BinaryConverters\TreeNode.cs" />
@@ -856,7 +864,6 @@
     <Compile Include="Unreal\TalkFile.cs" />
     <Compile Include="Unreal\TextureCompression.cs" />
     <Compile Include="Unreal\TOCBinFile.cs" />
-    <Compile Include="Unreal\UDKExplorer\SkeletalMesh.cs" />
     <Compile Include="Unreal\UDKUnrealObjectInfo.cs" />
     <Compile Include="Unreal\UnrealFlags.cs" />
     <Compile Include="Unreal\ME3UnrealObjectInfo.cs" />

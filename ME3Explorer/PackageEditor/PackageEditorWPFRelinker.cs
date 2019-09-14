@@ -227,7 +227,7 @@ namespace ME3Explorer
                                 }
                             }
 
-                            exp.setBinaryData(objBin.ToArray(exp.FileRef));
+                            exp.setBinaryData(objBin.ToBytes(exp.FileRef));
                             continue;
                         }
 

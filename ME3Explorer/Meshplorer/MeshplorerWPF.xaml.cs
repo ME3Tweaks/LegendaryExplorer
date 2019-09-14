@@ -93,7 +93,7 @@ namespace ME3Explorer
                     new BoolProperty(true, "UseSimpleBoxCollision"),
                     new NoneProperty()
                 });
-                CurrentExport.setBinaryData(stm.ToArray(Pcc));
+                CurrentExport.setBinaryData(stm.ToBytes(Pcc));
                 CurrentExport.idxClass = Pcc.getEntryOrAddImport("Engine.StaticMesh").UIndex;
             }
         }

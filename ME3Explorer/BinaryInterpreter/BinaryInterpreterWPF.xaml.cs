@@ -158,7 +158,6 @@ namespace ME3Explorer
             "DominantPointLightComponent",
             "DominantSpotLightComponent",
             "Enum",
-            "Enum",
             "FaceFXAnimSet",
             "FaceFXAsset",
             "FloatProperty",
