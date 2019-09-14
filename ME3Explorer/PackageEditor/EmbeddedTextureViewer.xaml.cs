@@ -268,6 +268,13 @@ namespace ME3Explorer
                 CannotShowTextureTextVisibility = Visibility.Visible;
                 return;
             }
+            if (mipToLoad.width == 1 && mipToLoad.height == 1)
+            {
+                TextureImage.Source = null;
+                CannotShowTextureText = "Selected mip too small to display";
+                CannotShowTextureTextVisibility = Visibility.Visible;
+                return;
+            }
             TextureImage.Source = null;
             var imagebytes = GetTextureData(mipToLoad);
 

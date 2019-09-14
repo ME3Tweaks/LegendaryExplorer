@@ -7,12 +7,18 @@
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:me3Explorer="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
+        DragOver="Window_DragOver"
+        Drop="Window_Drop"
+        AllowDrop="True"
         Closing="FileHexViewerWPF_OnClosing"
         Loaded="FileHexViewerWPF_OnLoaded"
-        Title="FileHexViewerWPF" Height="450" Width="800">
+        Title="{Binding WindowTitle, FallbackValue=FileHexViewerWPF}" Height="450" Width="800">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="Open File" Click="OpenFile_Click" Padding="4"/>
+            <MenuItem Header="File" Padding  ="4">
+                <MenuItem Header="Open File" Click="OpenFile_Click"/>
+                <MenuItem Name="Recents_MenuItem" Header="Recent"/>
+            </MenuItem>
             <MenuItem Header="Go to offset" Click="GotoOffset_Click" Padding="4"/>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -20,7 +26,21 @@
                 <TextBlock Name="StatusBar_LeftMostText" Text="Nothing selected"/>
             </StatusBarItem>
         </StatusBar>
-        <ListView Name="UsedSpace_ListBox" ItemsSource="{Binding UnusedSpaceList}" DockPanel.Dock="Right" MinWidth="100"/>
+        <ListView Name="UsedSpace_ListBox" ItemsSource="{Binding UnusedSpaceList}" DockPanel.Dock="Right" MinWidth="100" SelectionChanged="FileHexViewer_SelectionChanged">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Unused}" Value="True">
+                            <Setter Property="Background" Value="PaleVioletRed"  />
+                            <Setter Property="Foreground" Value="White"  />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=Unused}" Value="False">
+                            <Setter Property="Background" Value="LightGreen"  />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
         <WindowsFormsHost Name="Interpreter_Hexbox_Host" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
             </hb1:HexBox>
