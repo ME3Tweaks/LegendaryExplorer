@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using Gammtek.Conduit;
 using SharpDX;
 using StreamHelpers;
 

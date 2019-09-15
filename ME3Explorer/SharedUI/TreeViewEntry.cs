@@ -187,7 +187,7 @@ namespace ME3Explorer
         internal void SortChildren()
         {
             var exportNodes = Sublinks.Where(x => x.Entry.UIndex > 0).OrderBy(x => x.UIndex).ToList();
-            var importNodes = Sublinks.Where(x => x.Entry.UIndex < 0).OrderBy(x => x.UIndex).Reverse().ToList(); //we want this in descending order
+            var importNodes = Sublinks.Where(x => x.Entry.UIndex < 0).OrderByDescending(x => x.UIndex).ToList();
 
             exportNodes.AddRange(importNodes);
             Sublinks.ClearEx();

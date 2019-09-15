@@ -829,6 +829,28 @@ namespace ME3Explorer.Unreal
                 }
             };
 
+            NewClasses["FracturedStaticMesh"] = new ClassInfo
+            {
+                baseClass = "StaticMesh",
+                exportIndex = 0,
+                pccPath = "ME3Explorer_CustomNativeAdditions",
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("LoseChunkOutsideMaterial", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface")),
+                    new KeyValuePair<string, PropertyInfo>("bSpawnPhysicsChunks", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("bCompositeChunksExplodeOnImpact", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("ExplosionVelScale", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("FragmentMinHealth", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("FragmentDestroyEffects", new PropertyInfo(PropertyType.ArrayProperty, "ParticleSystem")),
+                    new KeyValuePair<string, PropertyInfo>("FragmentMaxHealth", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("bAlwaysBreakOffIsolatedIslands", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("DynamicOutsideMaterial", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface")),
+                    new KeyValuePair<string, PropertyInfo>("ChunkLinVel", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("ChunkAngVel", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<string, PropertyInfo>("ChunkLinHorizontalScale", new PropertyInfo(PropertyType.FloatProperty)),
+                }
+            };
+
             #endregion
 
             File.WriteAllText(jsonPath,

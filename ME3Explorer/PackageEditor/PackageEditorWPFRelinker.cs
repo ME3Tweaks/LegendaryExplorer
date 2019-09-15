@@ -95,7 +95,7 @@ namespace ME3Explorer
             return relinkResults;
         }
 
-        private string relinkObjectProperty(IMEPackage importingPCC, ExportEntry relinkingExport, ref int uIndex, string propertyName, OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, string debugPrefix)
+        private static string relinkObjectProperty(IMEPackage importingPCC, ExportEntry relinkingExport, ref int uIndex, string propertyName, OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, string debugPrefix)
         {
             if (uIndex == 0)
             {
