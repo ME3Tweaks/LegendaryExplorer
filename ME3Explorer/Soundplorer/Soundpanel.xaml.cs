@@ -420,7 +420,7 @@ namespace ME3Explorer
                         }
                         else
                         {
-                            path = wwiseStream.getPathToAFC(); // only to check if AFC exists.
+                            path = wwiseStream.GetPathToAFC(); // only to check if AFC exists.
                         }
                         if (path != "")
                         {
@@ -1148,7 +1148,7 @@ namespace ME3Explorer
                     if (d.ShowDialog().Value)
                     {
                         WwiseStream w = new WwiseStream(CurrentLoadedExport);
-                        string wavPath = w.CreateWave(w.getPathToAFC());
+                        string wavPath = w.CreateWave(w.GetPathToAFC());
                         if (wavPath != null && File.Exists(wavPath))
                         {
                             File.Copy(wavPath, d.FileName, true);
@@ -1555,7 +1555,7 @@ namespace ME3Explorer
                         return;
                     }
                 }
-                w.ImportFromFile(oggPath, w.getPathToAFC());
+                w.ImportFromFile(oggPath, w.GetPathToAFC());
                 CurrentLoadedExport.Data = w.memory.TypedClone();
                 if (HostingControl != null)
                 {

@@ -833,6 +833,7 @@
     <Compile Include="Unreal\BinaryConverters\Terrain.cs" />
     <Compile Include="Unreal\BinaryConverters\TerrainComponent.cs" />
     <Compile Include="Unreal\CommonStructs.cs" />
+    <Compile Include="Unreal\DLCPackage2.cs" />
     <Compile Include="Unreal\SerializingContainer2.cs" />
     <Compile Include="Unreal\BinaryConverters\TreeNode.cs" />
     <Compile Include="Unreal\BinaryConverters\UnrealStructs.cs" />

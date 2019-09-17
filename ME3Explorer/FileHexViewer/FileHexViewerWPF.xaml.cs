@@ -20,6 +20,7 @@ using Gibbed.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using Microsoft.Win32;
+using StreamHelpers;
 using Path = System.IO.Path;
 
 namespace ME3Explorer.FileHexViewer
@@ -95,7 +96,19 @@ namespace ME3Explorer.FileHexViewer
                 for (int i = 0; i < pcc.NameCount; i++)
                 {
                     int strLength = inStream.ReadValueS32();
-                    inStream.ReadString(strLength * -2, true, Encoding.Unicode);
+                    if (strLength < 0)
+                    {
+                        inStream.ReadString(strLength * -2, true, Encoding.Unicode);
+                        if (pcc.Game == MEGame.ME2)
+                        {
+                            inStream.ReadValueS32();
+                        }
+                    }
+                    else if (strLength > 0)
+                    {
+                        inStream.ReadString(strLength, true, Encoding.ASCII); //-1 cause we also read trailing null.
+                        inStream.ReadValueS64(); //Read 8 bytes
+                    }
                 }
 
                 used.Add(new UsedSpace

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal.Classes;
 using StreamHelpers;
 using static ME3Explorer.Unreal.BinaryConverters.ObjectBinary;
 
@@ -115,7 +116,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
             int mipCount = bin.ReadInt32();
             os.WriteInt32(mipCount);
-            List<EmbeddedTextureViewer.Texture2DMipInfo> mips = EmbeddedTextureViewer.GetTexture2DMipInfos(export, export.GetProperty<NameProperty>("TextureFileCacheName")?.Value);
+            List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, export.GetProperty<NameProperty>("TextureFileCacheName")?.Value);
             int offsetIdx = 0;
             for (int i = 0; i < mipCount; i++)
             {
@@ -150,7 +151,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         if (export.Game != newGame)
                         {
                             storageType &= (StorageTypes)~StorageFlags.externalFile;
-                            texture = EmbeddedTextureViewer.GetTextureData(mips[i], false); //copy in external textures
+                            texture = Texture2D.GetTextureData(mips[i], false); //copy in external textures
                         }
                         else
                         {

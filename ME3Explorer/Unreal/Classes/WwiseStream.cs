@@ -104,7 +104,7 @@ namespace ME3Explorer.Unreal.Classes
             }
             else
             {
-                path = getPathToAFC();
+                path = GetPathToAFC();
             }
 
             Stream waveStream = CreateWaveStream(path);
@@ -124,7 +124,7 @@ namespace ME3Explorer.Unreal.Classes
             return null;
         }
 
-        public string getPathToAFC()
+        public string GetPathToAFC()
         {
             //Check if pcc-stored
             if (FileName == null)
@@ -141,38 +141,7 @@ namespace ME3Explorer.Unreal.Classes
                 return path; //in current directory of this pcc file
             }
 
-            switch (export.FileRef.Game)
-            {
-                case MEGame.ME2:
-                    path = ME2Directory.cookedPath;
-                    break;
-                case MEGame.ME3:
-                    path = ME3Directory.cookedPath;
-                    break;
-            }
-            path += FileName + ".afc";
-
-            if (File.Exists(path))
-            {
-                return path; //in main CookedPCConsoleDirectory
-            }
-
-            //Todo: Look in DLC directories, though this might be pretty slow if DLC is all unpacked.
-
-            //Todo: Figure out how to do this on UI thread as this method will be called from both UI and non-UI threads.
-            /*
-                OpenFileDialog d = new OpenFileDialog();
-                d.Filter = w.FileName + ".afc|" + w.FileName + ".afc";
-                if (d.ShowDialog().Value)
-                {
-                    afcPath = System.IO.Path.GetDirectoryName(d.FileName) + '\\';
-                }
-                else
-                {
-                    return "";
-                }
-            }*/
-            return "";
+            return MELoadedFiles.GetFilesLoadedInGame(export.FileRef.Game).TryGetValue(FileName + ".afc", out string afcPath) ? afcPath : "";
         }
 
         /// <summary>
@@ -183,7 +152,7 @@ namespace ME3Explorer.Unreal.Classes
         public string CreateWave(string afcPath)
         {
             string basePath = GetTempSoundPath();
-            if (ExtractRawFromSource(basePath + ".dat", getPathToAFC(), DataSize, DataOffset))
+            if (ExtractRawFromSource(basePath + ".dat", GetPathToAFC(), DataSize, DataOffset))
             {
                 MemoryStream dataStream = ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
                 File.WriteAllBytes(basePath + ".wav", dataStream.ToArray());
