@@ -41,9 +41,6 @@ using static ME3Explorer.Packages.MEPackage;
 using static ME3Explorer.Unreal.UnrealFlags;
 using Guid = System.Guid;
 
-//todo: switch this to new SkeletalMesh class
-using SkeletalMesh = ME3Explorer.Unreal.Classes.SkeletalMesh;
-
 namespace ME3Explorer
 {
     /// <summary>
@@ -1293,33 +1290,30 @@ namespace ME3Explorer
         {
             if (CurrentView == CurrentViewMode.Tree && TryGetSelectedEntry(out IEntry entry))
             {
-                int nextIndex; //used to select the final node
                 crossPCCObjectMap.Clear();
-                TreeViewEntry newEntry;
+                IEntry newEntry;
                 if (entry is ExportEntry exp)
                 {
 
                     ExportEntry ent = exp.Clone();
                     Pcc.addExport(ent);
-                    newEntry = new TreeViewEntry(ent);
+                    newEntry = ent;
                     crossPCCObjectMap[exp] = ent;
+                    if (ent?.Parent.ClassName == "Level" && ent.InheritsFrom("Actor") && Pcc.AddToLevelActors(ent))
+                    {
+                        MessageBox.Show(this, $"Added {ent.ObjectName} to PersistentLevel's Actor list!");
+                    }
                 }
                 else
                 {
                     ImportEntry imp = ((ImportEntry) entry).Clone();
                     Pcc.addImport(imp);
-                    newEntry = new TreeViewEntry(imp);
+                    newEntry = imp;
                     //Imports are not relinked when locally cloning a tree
                 }
 
-                nextIndex = newEntry.UIndex;
-                TreeViewEntry selected = (TreeViewEntry) LeftSide_TreeView.SelectedItem;
-                newEntry.Parent = selected.Parent;
-                selected.Parent.Sublinks.Add(newEntry);
-                SuppressSelectionEvent = true;
-                selected.Parent.SortChildren();
-                SuppressSelectionEvent = false;
-                cloneTree(selected, newEntry);
+                int nextIndex = newEntry.UIndex; //used to select the final node
+                cloneTree(entry, newEntry);
                 relinkObjects2(Pcc);
                 relinkBinaryObjects(Pcc);
                 crossPCCObjectMap.Clear(); //Don't support keeping things in memory
@@ -1332,91 +1326,52 @@ namespace ME3Explorer
         {
             if (TryGetSelectedEntry(out IEntry entry))
             {
-                TreeViewEntry newEntry;
+                IEntry newEntry;
                 if (entry is ExportEntry export)
                 {
 
                     ExportEntry ent = export.Clone();
                     Pcc.addExport(ent);
-                    newEntry = new TreeViewEntry(ent);
+                    newEntry = ent;
+                    if (ent?.Parent.ClassName == "Level" && ent.InheritsFrom("Actor") && Pcc.AddToLevelActors(ent))
+                    {
+                        MessageBox.Show(this, $"Added {ent.ObjectName} to PersistentLevel's Actor list!");
+                    }
                 }
                 else
                 {
-                    ImportEntry imp = ((ImportEntry) entry).Clone();
+                    ImportEntry imp = ((ImportEntry)entry).Clone();
                     Pcc.addImport(imp);
-                    newEntry = new TreeViewEntry(imp);
+                    newEntry = imp;
                 }
-
-                TreeViewEntry selected;
-                if (CurrentView == CurrentViewMode.Tree)
-                {
-                    selected = (TreeViewEntry) LeftSide_TreeView.SelectedItem;
-                }
-                else
-                {
-                    selected = GetTreeViewEntryByUIndex(entry.UIndex);
-                }
-
-                newEntry.Parent = selected.Parent;
-                selected.Parent.Sublinks.Add(newEntry);
-                SuppressSelectionEvent = true;
-                selected.Parent.SortChildren();
-                SuppressSelectionEvent = false;
                 GoToNumber(newEntry.UIndex);
             }
         }
 
-        private void cloneTree(TreeViewEntry originalRootNode, TreeViewEntry newRootNode)
+        private void cloneTree(IEntry originalRootNode, IEntry newRootNode)
         {
-            if (originalRootNode.Sublinks.Count > 0)
+            foreach (IEntry node in originalRootNode.GetChildren())
             {
-                foreach (TreeViewEntry node in originalRootNode.Sublinks)
+                IEntry newEntry = null;
+                switch (node)
                 {
-                    TreeViewEntry newEntry = null;
-                    if (node.UIndex > 0)
-                    {
-                        ExportEntry ent = (node.Entry as ExportEntry).Clone();
+                    case ExportEntry exportEntry:
+                        ExportEntry ent = exportEntry.Clone();
                         Pcc.addExport(ent);
-                        newEntry = new TreeViewEntry(ent);
-                        crossPCCObjectMap[node.Entry] = ent;
-                    }
-                    else if (node.UIndex < 0)
-                    {
-                        ImportEntry imp = (node.Entry as ImportEntry).Clone();
+                        newEntry = ent;
+                        crossPCCObjectMap[exportEntry] = ent;
+                        break;
+                    case ImportEntry importEntry:
+                        ImportEntry imp = importEntry.Clone();
                         Pcc.addImport(imp);
-                        newEntry = new TreeViewEntry(imp);
-                    }
-
-                    newEntry.Entry.idxLink = newRootNode.Entry.UIndex;
-                    newEntry.Parent = newRootNode;
-                    newRootNode.Sublinks.Add(newEntry);
-
-                    /*if (node.UIndex > 0)
-                    {
-                        nextIndex = Pcc.ExportCount + 1;
-                        ExportEntry exp = (node.Entry as ExportEntry).Clone();
-                        exp.idxLink = link;
-                        Pcc.addExport(exp);
-                        crossPCCObjectMap[node.UIndex - 1] = Pcc.ExportCount - 1; //0 based. Just how the code was written.
-                    }
-                    else if (node.UIndex < 0)
-                    {
-                        nextIndex = -Pcc.ImportCount - 1;
-                        ImportEntry imp = (node.Entry as ImportEntry).Clone();
-                        imp.idxLink = link;
-                        Pcc.addImport(imp);
-                        //we do not relink imports in same-pcc
-                    }*/
-                    if (node.Sublinks.Count > 0)
-                    {
-                        cloneTree(node, newEntry);
-                    }
+                        newEntry = imp;
+                        break;
                 }
-            }
 
-            SuppressSelectionEvent = true;
-            newRootNode.SortChildren();
-            SuppressSelectionEvent = false;
+                newEntry.Parent = newRootNode;
+
+                cloneTree(node, newEntry);
+            }
         }
 
         private void ImportBinaryData() => ImportExpData(true);
@@ -2224,7 +2179,11 @@ namespace ME3Explorer
                 CurrentView == CurrentViewMode.Tree && (importChanges || exportNonDataChanges))
             {
                 RefreshView();
-                if (hasSelection)
+                if (QueuedGotoNumber != 0 && GoToNumber(QueuedGotoNumber))
+                {
+                    QueuedGotoNumber = 0;
+                }
+                else if (hasSelection)
                 {
                     GoToNumber(n);
                 }
@@ -2398,17 +2357,17 @@ namespace ME3Explorer
         /// Selects the entry that corresponds to the given index
         /// </summary>
         /// <param name="entryIndex">Unreal-indexed entry number</param>
-        public void GoToNumber(int entryIndex)
+        public bool GoToNumber(int entryIndex)
         {
             if (entryIndex == 0)
             {
-                return; //PackageEditorWPF uses Unreal Indexing for entries
+                return false; //PackageEditorWPF uses Unreal Indexing for entries
             }
 
             if (IsLoadingFile)
             {
                 QueuedGotoNumber = entryIndex;
-                return;
+                return false;
             }
 
             switch (CurrentView)
@@ -2437,12 +2396,10 @@ namespace ME3Explorer
                         //FocusTreeViewNodeOld(selectNode[0]);
 
                         //selectNode[0].Focus(LeftSide_TreeView);
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Could not find node");
+                        return true;
                     }
 
+                    QueuedGotoNumber = entryIndex; //May be trying to select node that doesn't exist yet
                     break;
                 }
                 case CurrentViewMode.Exports:
@@ -2463,21 +2420,16 @@ namespace ME3Explorer
                         }
 
                         LeftSide_ListView.SelectedIndex = Math.Abs(entryIndex) - 1;
+                        return true;
                     }
-
                     break;
                 }
                 case CurrentViewMode.Names when entryIndex >= 0 && entryIndex < LeftSide_ListView.Items.Count:
                     //Names
                     LeftSide_ListView.SelectedIndex = entryIndex;
-                    break;
+                    return true;
             }
-        }
-
-        private TreeViewEntry GetTreeViewEntryByUIndex(int uindex)
-        {
-            var nodes = AllTreeViewNodesX[0].FlattenTree();
-            return nodes.FirstOrDefault(x => x.UIndex == uindex);
+            return false;
         }
 
         /// <summary>
@@ -2660,7 +2612,11 @@ namespace ME3Explorer
                         if (importExport(Pcc, sourceEntry as ExportEntry, link, out ExportEntry newExport))
                         {
                             newItem = new TreeViewEntry(newExport);
-                            crossPCCObjectMap[sourceEntry] = newExport; //0 based. map old index to new index
+                            crossPCCObjectMap[sourceEntry] = newExport; //map old index to new index
+                            if (newExport?.Parent.ClassName == "Level" && newExport.InheritsFrom("Actor") && Pcc.AddToLevelActors(newExport))
+                            {
+                                MessageBox.Show(this, $"Added {newExport.ObjectName} to PersistenLevel's Actor list!");
+                            }
                         }
                         else
                         {
@@ -2678,7 +2634,6 @@ namespace ME3Explorer
                     }
 
                     newItem.Parent = targetItem;
-                    targetItem.Sublinks.Add(newItem);
                 }
                 else
                 {
@@ -2691,10 +2646,6 @@ namespace ME3Explorer
                 {
                     importTree(sourceItem, importpcc, newItem, portingOption);
                 }
-
-                SuppressSelectionEvent = true;
-                targetItem.SortChildren();
-                SuppressSelectionEvent = false;
 
                 //relinkObjects(importpcc);
                 if (!MultiRelinkingModeActive)
@@ -2765,8 +2716,7 @@ namespace ME3Explorer
                 MessageBox.Show($"Error occured while replacing data in {incomingExport.ObjectName} : {exception.Message}");
                 return false;
             }
-
-            res.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game).ToArray(targetExport.FileRef));
+            res.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game).ToBytes(targetExport.FileRef));
             targetExport.Data = res.ToArray();
             return true;
         }
@@ -2825,7 +2775,6 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    //todo: ensure relink works with this
                     IEntry newImport = getOrAddCrossImportOrPackage(importpcc.getImport(index).GetFullPath, importpcc, Pcc);
 
                     newEntry = new TreeViewEntry(newImport);
@@ -2907,7 +2856,7 @@ namespace ME3Explorer
 
             //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
             //for unsupported classes, this will just copy over the binary
-            byte[] binaryData = ExportBinaryConverter.ConvertPostPropBinary(ex, mePackage.Game).ToArray(mePackage);
+            byte[] binaryData = ExportBinaryConverter.ConvertPostPropBinary(ex, mePackage.Game).ToBytes(mePackage);
 
             int classValue = 0;
             int archetype = 0;
@@ -4152,7 +4101,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "Model", true)) break;
+                    if (findClass(filePath, "PrefabInstance", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
 
@@ -4319,15 +4268,16 @@ namespace ME3Explorer
                     {
                         try
                         {
-                            var lev = ObjectBinary.From<Model>(exp);
+                            var obj = ObjectBinary.From<PrefabInstance>(exp);
                             var ms = new MemoryStream();
-                            lev.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
-                            var buff = ms.ToArray();
+                            obj.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
+                            byte[] buff = ms.ToArray();
 
                             if (!buff.SequenceEqual(exp.getBinaryData()))
                             {
-                                File.WriteAllBytes(@"C:\Users\Image 17\convertedModel", buff);
-                                File.WriteAllBytes(@"C:\Users\Image 17\originalModel", exp.getBinaryData());
+                                string userFolder =  Path.Combine(@"C:\Users", Environment.UserName);
+                                File.WriteAllBytes(Path.Combine(userFolder, "converted{className}"), buff);
+                                File.WriteAllBytes(Path.Combine(userFolder, "original{className}"), exp.getBinaryData());
                                 interestingExports.Add($"{exp.UIndex}: {filePath}");
                                 return true;
                             }
@@ -4830,7 +4780,7 @@ namespace ME3Explorer
                     };
                     tempPcc.addExport(playerStart);
                     level.Actors.Add(playerStart.UIndex);
-                    levelExport.setBinaryData(level.ToArray(tempPcc));
+                    levelExport.setBinaryData(level.ToBytes(tempPcc));
                 }
 
                 tempPcc.save();

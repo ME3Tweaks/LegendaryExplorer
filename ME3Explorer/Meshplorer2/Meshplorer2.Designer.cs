@@ -38,12 +38,6 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previewWithTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rotateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importBonesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.transferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromUDKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openUPKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importLODToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -56,7 +50,6 @@
             this.pbar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
-            this.listBox1 = new System.Windows.Forms.ListBox();
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -79,10 +72,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.globalTreeToolStripMenuItem,
-            this.optionsToolStripMenuItem,
-            this.transferToolStripMenuItem,
-            this.fileToolStripMenuItem,
-            this.importLODToolStripMenuItem});
+            this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(653, 24);
@@ -124,8 +114,7 @@
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.previewWithTreeToolStripMenuItem,
-            this.rotateToolStripMenuItem,
-            this.importBonesToolStripMenuItem});
+            this.rotateToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -147,52 +136,6 @@
             this.rotateToolStripMenuItem.Name = "rotateToolStripMenuItem";
             this.rotateToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.rotateToolStripMenuItem.Text = "Rotate";
-            // 
-            // importBonesToolStripMenuItem
-            // 
-            this.importBonesToolStripMenuItem.Name = "importBonesToolStripMenuItem";
-            this.importBonesToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-            this.importBonesToolStripMenuItem.Text = "Import Bones";
-            this.importBonesToolStripMenuItem.Click += new System.EventHandler(this.importBonesToolStripMenuItem_Click);
-            // 
-            // transferToolStripMenuItem
-            // 
-            this.transferToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importFromUDKToolStripMenuItem});
-            this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
-            this.transferToolStripMenuItem.Text = "Transfer";
-            // 
-            // importFromUDKToolStripMenuItem
-            // 
-            this.importFromUDKToolStripMenuItem.Name = "importFromUDKToolStripMenuItem";
-            this.importFromUDKToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.importFromUDKToolStripMenuItem.Text = "Import from UDK...";
-            this.importFromUDKToolStripMenuItem.Click += new System.EventHandler(this.importFromUDKToolStripMenuItem_Click);
-            // 
-            // fileToolStripMenuItem
-            // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openUPKToolStripMenuItem});
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
-            this.fileToolStripMenuItem.Visible = false;
-            // 
-            // openUPKToolStripMenuItem
-            // 
-            this.openUPKToolStripMenuItem.Name = "openUPKToolStripMenuItem";
-            this.openUPKToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
-            this.openUPKToolStripMenuItem.Text = "Open UPK...";
-            this.openUPKToolStripMenuItem.Click += new System.EventHandler(this.openUPKToolStripMenuItem_Click);
-            // 
-            // importLODToolStripMenuItem
-            // 
-            this.importLODToolStripMenuItem.Name = "importLODToolStripMenuItem";
-            this.importLODToolStripMenuItem.Size = new System.Drawing.Size(90, 20);
-            this.importLODToolStripMenuItem.Text = "Import LOD...";
-            this.importLODToolStripMenuItem.Visible = false;
-            this.importLODToolStripMenuItem.Click += new System.EventHandler(this.importLODToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -314,10 +257,6 @@
             this.splitContainer3.Location = new System.Drawing.Point(0, 49);
             this.splitContainer3.Name = "splitContainer3";
             // 
-            // splitContainer3.Panel1
-            // 
-            this.splitContainer3.Panel1.Controls.Add(this.listBox1);
-            // 
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.listBox2);
@@ -325,19 +264,6 @@
             this.splitContainer3.SplitterDistance = 217;
             this.splitContainer3.TabIndex = 4;
             this.splitContainer3.Visible = false;
-            // 
-            // listBox1
-            // 
-            this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.IntegralHeight = false;
-            this.listBox1.ItemHeight = 16;
-            this.listBox1.Location = new System.Drawing.Point(0, 0);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(217, 344);
-            this.listBox1.TabIndex = 0;
-            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
             // listBox2
             // 
@@ -408,15 +334,8 @@
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem previewWithTreeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rotateToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem transferToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importFromUDKToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openUPKToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importLODToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer3;
-        private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.ListBox listBox2;
-        private System.Windows.Forms.ToolStripMenuItem importBonesToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private Scene3D.SceneRenderControl view;

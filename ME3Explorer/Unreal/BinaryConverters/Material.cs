@@ -96,7 +96,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public (int, float, int)[] unkList;
         //end ME1
 
-        public List<(UIndex, string)> GetUIndexes(MEGame game)
+        public virtual List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             List<(UIndex uIndex, string)> uIndexes = TextureDependencyLengthMap.Keys().Select((uIndex, i) => (uIndex, $"TextureDependencyLengthMap[{i}]")).ToList();
             if (game == MEGame.ME3)
@@ -411,7 +411,7 @@ namespace ME3Explorer
     {
         public static void Serialize(this SerializingContainer2 sc, ref MaterialResource mres)
         {
-            if (sc.IsLoading)
+            if (sc.IsLoading && mres == null)
             {
                 mres = new MaterialResource();
             }

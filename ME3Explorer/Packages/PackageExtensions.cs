@@ -83,6 +83,18 @@ namespace ME3Explorer.Packages
             return import;
         }
 
+        public static bool AddToLevelActors(this IMEPackage pcc, ExportEntry actor)
+        {
+            if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
+            {
+                Level level = ObjectBinary.From<Level>(levelExport);
+                level.Actors.Add(actor.UIndex);
+                levelExport.setBinaryData(level.ToBytes(pcc));
+                return true;
+            }
+            return false;
+        }
+
     }
     public static class ExportEntryExtensions
     {
@@ -209,7 +221,7 @@ namespace ME3Explorer.Packages
                 findPropertyReferences(exp.GetProperties(), exp, "Property:");
 
                 //find binary references
-                if (ObjectBinary.From(exp) is ObjectBinary objBin)
+                if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
                 {
                     List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
                     foreach ((UIndex uIndex, string propName) in indices)

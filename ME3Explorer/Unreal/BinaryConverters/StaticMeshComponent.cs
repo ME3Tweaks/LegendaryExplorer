@@ -21,11 +21,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)>();
-            foreach (StaticMeshComponentLODInfo lodInfo in LODData)
+            for (int i = 0; i < LODData.Length; i++)
             {
-                uIndexes.AddRange(lodInfo.ShadowMaps.Select((uIndex, i) => (uIndex, $"ShadowMaps[{i}]")));
-                uIndexes.AddRange(lodInfo.ShadowMaps.Select((uIndex, i) => (uIndex, $"ShadowVertexBuffers[{i}]")));
-                uIndexes.AddRange(lodInfo.LightMap.GetUIndexes(game));
+                StaticMeshComponentLODInfo lodInfo = LODData[i];
+                uIndexes.AddRange(lodInfo.ShadowMaps.Select((uIndex, j) => (uIndex, $"LODData[{i}].ShadowMaps[{j}]")));
+                uIndexes.AddRange(lodInfo.ShadowMaps.Select((uIndex, j) => (uIndex, $"LODData[{i}].ShadowVertexBuffers[{j}]")));
+                uIndexes.AddRange(lodInfo.LightMap.GetUIndexes(game, $"LODData[{i}]."));
             }
 
             return uIndexes;
@@ -57,27 +58,27 @@ namespace ME3Explorer.Unreal.BinaryConverters
     {
         public ELightMapType LightMapType;
 
-        public List<(UIndex, string)> GetUIndexes(MEGame game)
+        public List<(UIndex, string)> GetUIndexes(MEGame game, string prefix = "")
         {
             var uIndexes = new List<(UIndex, string)>();
             switch (this)
             {
                 case LightMap_1D lightMap_1D:
-                    uIndexes.Add((lightMap_1D.Owner, "LightMap Owner"));
+                    uIndexes.Add((lightMap_1D.Owner, $"{prefix}LightMap.Owner"));
                     break;
                 case LightMap_2D lightMap2D:
-                    uIndexes.Add((lightMap2D.Texture1, "LightMap Texture1"));
-                    uIndexes.Add((lightMap2D.Texture2, "LightMap Texture2"));
-                    uIndexes.Add((lightMap2D.Texture3, "LightMap Texture3"));
+                    uIndexes.Add((lightMap2D.Texture1, $"{prefix}LightMap.Texture1"));
+                    uIndexes.Add((lightMap2D.Texture2, $"{prefix}LightMap.Texture2"));
+                    uIndexes.Add((lightMap2D.Texture3, $"{prefix}LightMap.Texture3"));
                     if (game != MEGame.ME3)
                     {
-                        uIndexes.Add((lightMap2D.Texture4, "LightMap Texture4"));
+                        uIndexes.Add((lightMap2D.Texture4, $"{prefix}LightMap.Texture4"));
                     }
                     break;
                 case LightMap_4or6 lightMap4Or6:
-                    uIndexes.Add((lightMap4Or6.Texture1, "LightMap Texture1"));
-                    uIndexes.Add((lightMap4Or6.Texture2, "LightMap Texture2"));
-                    uIndexes.Add((lightMap4Or6.Texture3, "LightMap Texture3"));
+                    uIndexes.Add((lightMap4Or6.Texture1, $"{prefix}LightMap.Texture1"));
+                    uIndexes.Add((lightMap4Or6.Texture2, $"{prefix}LightMap.Texture2"));
+                    uIndexes.Add((lightMap4Or6.Texture3, $"{prefix}LightMap.Texture3"));
                     break;
             }
 
@@ -108,8 +109,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public Vector3 ScaleVector3;
         public UIndex Texture4;//not ME3
         public Vector3 ScaleVector4;//not ME3
-        public Vector2D CoordinateScale;
-        public Vector2D CoordinateBias;
+        public Vector2 CoordinateScale;
+        public Vector2 CoordinateBias;
     }
 
     public class LightMap_3 : LightMap
@@ -130,8 +131,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public float[] unkFloats2 = new float[8];
         public UIndex Texture3;
         public float[] unkFloats3 = new float[8];
-        public Vector2D CoordinateScale;
-        public Vector2D CoordinateBias;
+        public Vector2 CoordinateScale;
+        public Vector2 CoordinateBias;
     }
 
     public class LightMap_5 : LightMap

@@ -2900,22 +2900,9 @@ namespace ME3Explorer.Pathfinding_Editor
 
                     SharedPathfinding.GenerateNewRandomGUID(newNodeEntry);
                     //Add cloned node to persistentlevel
-                    //Read persistent level binary
-                    byte[] data = PersistentLevelExport.Data;
-
-                    //find start of class binary (end of props)
-                    int start = PersistentLevelExport.propsEnd();
-
-                    uint exportid = BitConverter.ToUInt32(data, start);
-                    start += 4;
-                    uint numberofitems = BitConverter.ToUInt32(data, start);
-                    numberofitems++;
-                    SharedPathfinding.WriteMem(data, start, BitConverter.GetBytes(numberofitems));
-                    int insertoffset = (int)(numberofitems * 4) + start;
-                    List<byte> memList = data.ToList();
-                    memList.InsertRange(insertoffset, BitConverter.GetBytes(newNodeEntry.UIndex));
-                    data = memList.ToArray();
-                    PersistentLevelExport.Data = data;
+                    var level = Unreal.BinaryConverters.ObjectBinary.From<Unreal.BinaryConverters.Level>(PersistentLevelExport);
+                    level.Actors.Add(newNodeEntry.UIndex);
+                    PersistentLevelExport.Data = level.ToBytes(Pcc);
 
                     SharedPathfinding.ReindexMatchingObjects(newNodeEntry);
                     SharedPathfinding.ReindexMatchingObjects(newSubcomponent);

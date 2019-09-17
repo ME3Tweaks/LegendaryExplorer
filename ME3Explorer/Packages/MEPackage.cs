@@ -1092,7 +1092,7 @@ namespace ME3Explorer.Packages
 
                         var matBin = ObjectBinary.From<Material>(mat);
                         matBin.SM3MaterialResource.UniformExpressionTextures = new UIndex[] { norm, diff };
-                        mat.setBinaryData(matBin.ToArray(this));
+                        mat.setBinaryData(matBin.ToBytes(this));
                         mat.idxClass = imports.First(imp => imp.ObjectName == "Material").UIndex;
                     }
                 }

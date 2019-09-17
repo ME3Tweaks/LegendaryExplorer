@@ -425,7 +425,7 @@ namespace ME3Explorer.Meshplorer
                 Pcc.addExport(rb_BodySetup);
                 var stm = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
                 stm.BodySetup = rb_BodySetup.UIndex;
-                CurrentLoadedExport.setBinaryData(stm.ToArray(Pcc));
+                CurrentLoadedExport.setBinaryData(stm.ToBytes(Pcc));
                 CurrentLoadedExport.WriteProperty(new ObjectProperty(rb_BodySetup, "BodySetup"));
             }
 

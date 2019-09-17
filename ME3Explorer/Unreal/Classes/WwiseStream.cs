@@ -16,9 +16,6 @@ namespace ME3Explorer.Unreal.Classes
     public class WwiseStream
     {
         public byte[] memory;
-        public int memsize;
-        int Index;
-        public SoundPlayer sp;
 
         public int DataSize;
         public int DataOffset;
@@ -27,7 +24,7 @@ namespace ME3Explorer.Unreal.Classes
         public string FileName;
         ExportEntry export;
 
-        public bool IsPCCStored { get { return FileName == null; } }
+        public bool IsPCCStored => FileName == null;
 
         public WwiseStream()
         {
@@ -36,77 +33,31 @@ namespace ME3Explorer.Unreal.Classes
         public WwiseStream(ExportEntry export)
         {
             this.export = export;
-            Index = export.Index;
             memory = export.Data;
-            memsize = memory.Length;
             Deserialize(export.FileRef);
-        }
-
-        public WwiseStream(IMEPackage pcc, int index)
-        {
-            Index = index;
-            export = pcc.Exports[Index];
-            memory = pcc.Exports[Index].Data;
-            memsize = memory.Length;
-            Deserialize(pcc);
         }
 
         public void Deserialize(IMEPackage pcc)
         {
-            PropertyCollection properties = pcc.Exports[Index].GetProperties();
-            if (pcc.Game == MEGame.ME3)
+            PropertyCollection properties = export.GetProperties();
+            int off;
+            switch (pcc.Game)
             {
-                int off = pcc.Exports[Index].propsEnd() + 8;
-                ValueOffset = off;
-                DataSize = BitConverter.ToInt32(memory, off);
-                DataOffset = BitConverter.ToInt32(memory, off + 4);
+                case MEGame.ME3:
+                    off = export.propsEnd() + 8;
+                    break;
+                case MEGame.ME2:
+                    off = export.propsEnd() + 0x28;
+                    break;
+                default:
+                    throw new Exception("Can oly read WwiseStreams for ME3 and ME2!");
             }
-            else if (pcc.Game == MEGame.ME2)
-            {
-                int off = pcc.Exports[Index].propsEnd() + 0x28;
-                ValueOffset = off;
-                DataSize = BitConverter.ToInt32(memory, off);
-                DataOffset = BitConverter.ToInt32(memory, off + 4);
-            }
+            ValueOffset = off;
+            DataSize = BitConverter.ToInt32(memory, off);
+            DataOffset = BitConverter.ToInt32(memory, off + 4);
             NameProperty nameProp = properties.GetProp<NameProperty>("Filename");
-            FileName = nameProp != null ? nameProp.Value : null;
+            FileName = nameProp?.Value;
             Id = properties.GetProp<IntProperty>("Id");
-            /*for (int i = 0; i < props.Count; i++)
-            {
-                if (pcc.Names[props[i].Name] == "Filename")
-                    FileName = pcc.Names[props[i].Value.IntValue];
-                if (pcc.Names[props[i].Name] == "Id")
-                    Id = props[i].Value.IntValue;
-            }*/
-        }
-
-        public void ExtractToFile(string pathtoafc = "", string name = "", bool askSaveLoc = true)
-        {
-            if (FileName == "")
-                return;
-            if (FileName == null)
-            {
-                ExtractWav(pathtoafc, name, askSaveLoc);
-            }
-            else if (pathtoafc != "")
-            {
-                if (File.Exists(pathtoafc + FileName + ".afc"))
-                    ExtractWav(pathtoafc + FileName + ".afc", name, askSaveLoc);
-                else
-                {
-                    OpenFileDialog d = new OpenFileDialog();
-                    d.Filter = FileName + ".afc|" + FileName + ".afc";
-                    if (d.ShowDialog() == DialogResult.OK)
-                        ExtractWav(d.FileName, name, askSaveLoc);
-                }
-            }
-            else
-            {
-                OpenFileDialog d = new OpenFileDialog();
-                d.Filter = FileName + ".afc|" + FileName + ".afc";
-                if (d.ShowDialog() == DialogResult.OK)
-                    ExtractWav(d.FileName, name, askSaveLoc);
-            }
         }
 
         /// <summary>
@@ -123,15 +74,15 @@ namespace ME3Explorer.Unreal.Classes
                 if (pathtoafc != "")
                 {
                     if (File.Exists(pathtoafc))
-                        ImportWwiseOgg(pathtoafc, stream, DataOffset);
+                        ImportWwiseOgg(pathtoafc, stream);
                     else if (File.Exists(pathtoafc + FileName + ".afc")) //legacy code for old soundplorer
-                        ImportWwiseOgg(pathtoafc + FileName + ".afc", stream, DataOffset);
+                        ImportWwiseOgg(pathtoafc + FileName + ".afc", stream);
                     else
                     {
                         OpenFileDialog d = new OpenFileDialog();
                         d.Filter = FileName + ".afc|" + FileName + ".afc";
                         if (d.ShowDialog() == DialogResult.OK)
-                            ImportWwiseOgg(d.FileName, stream, DataOffset);
+                            ImportWwiseOgg(d.FileName, stream);
                     }
                 }
                 else
@@ -139,46 +90,8 @@ namespace ME3Explorer.Unreal.Classes
                     OpenFileDialog d = new OpenFileDialog();
                     d.Filter = FileName + ".afc|" + FileName + ".afc";
                     if (d.ShowDialog() == DialogResult.OK)
-                        ImportWwiseOgg(d.FileName, stream, DataOffset);
+                        ImportWwiseOgg(d.FileName, stream);
                 }
-            }
-        }
-
-        public Stream GetPCMStream(string path)
-        {
-            return CreateWaveStream(path);
-        }
-
-        /// <summary>
-        /// This method is deprecated.
-        /// </summary>
-        /// <param name="afcPath"></param>
-        public void Play(string afcPath = "")
-        {
-            if (FileName == "")
-                return;
-            if (FileName == null)
-            {
-                PlayWave(afcPath);
-            }
-            else if (afcPath != "")
-            {
-                if (File.Exists(afcPath + FileName + ".afc"))
-                    PlayWave(afcPath + FileName + ".afc");
-                else
-                {
-                    OpenFileDialog d = new OpenFileDialog();
-                    d.Filter = FileName + ".afc|" + FileName + ".afc";
-                    if (d.ShowDialog() == DialogResult.OK)
-                        PlayWave(d.FileName);
-                }
-            }
-            else
-            {
-                OpenFileDialog d = new OpenFileDialog();
-                d.Filter = FileName + ".afc|" + FileName + ".afc";
-                if (d.ShowDialog() == DialogResult.OK)
-                    PlayWave(d.FileName);
             }
         }
 
@@ -238,8 +151,8 @@ namespace ME3Explorer.Unreal.Classes
         /// <returns></returns>
         public string CreateWave(string afcPath)
         {
-            string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
-            if (ExtractRawFromSource(basePath + ".dat", GetPathToAFC(), DataSize, DataOffset))
+            string basePath = GetTempSoundPath();
+            if (ExtractRawFromSource(basePath + ".dat", getPathToAFC(), DataSize, DataOffset))
             {
                 MemoryStream dataStream = ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
                 File.WriteAllBytes(basePath + ".wav", dataStream.ToArray());
@@ -254,7 +167,7 @@ namespace ME3Explorer.Unreal.Classes
         /// <returns></returns>
         public Stream CreateWaveStream(string afcPath)
         {
-            string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
+            string basePath = GetTempSoundPath();
             if (ExtractRawFromSource(basePath + ".dat", afcPath, DataSize, DataOffset))
             {
                 return ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
@@ -269,7 +182,7 @@ namespace ME3Explorer.Unreal.Classes
         /// <returns></returns>
         public static Stream CreateWaveStreamFromRaw(string afcPath, int offset, int datasize, bool ME2)
         {
-            string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
+            string basePath = GetTempSoundPath();
             if (ExtractRawFromSource(basePath + ".dat", afcPath, datasize, offset))
             {
                 return ConvertRiffToWav(basePath + ".dat", ME2);
@@ -277,39 +190,7 @@ namespace ME3Explorer.Unreal.Classes
             return null;
         }
 
-        private void PlayWave(string path)
-        {
-            Stream waveStream = CreateWaveStream(path);
-            if (waveStream != null)
-            {
-                sp = new SoundPlayer(waveStream);
-                sp.PlaySync();
-                while (!sp.IsLoadCompleted)
-                    Application.DoEvents();
-            }
-        }
-
-        private void ExtractWav(string path, string name = "", bool askSave = true)
-        {
-            string wavPath = CreateWave(path);
-            if (wavPath != null && File.Exists(wavPath))
-            {
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "Wave Files(*.wav)|*.wav";
-                d.FileName = name + ".wav";
-                if (askSave)
-                {
-                    if (d.ShowDialog() == DialogResult.OK)
-                        File.Copy(wavPath, d.FileName);
-                }
-                else
-                {
-                    File.Copy(wavPath, name, true);
-                }
-                if (askSave)
-                    MessageBox.Show("Done.");
-            }
-        }
+        private static string GetTempSoundPath() => $"{Path.GetTempPath()}ME3EXP_SOUND_{Guid.NewGuid()}";
 
         /// <summary>
         /// Converts a RAW RIFF from game data to a playable WAV stream. This can be written to disk as a playable WAV file.
@@ -345,14 +226,18 @@ namespace ME3Explorer.Unreal.Classes
             //convert OGG to WAV
             MemoryStream outputData = new MemoryStream();
 
-            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(Path.Combine(App.ExecFolder, "oggdec.exe"), $"--stdout \"{oggPath}\"");
-            procStartInfo.WorkingDirectory = App.ExecFolder;
-            procStartInfo.RedirectStandardOutput = true;
-            procStartInfo.UseShellExecute = false;
-            procStartInfo.CreateNoWindow = true;
+            ProcessStartInfo procStartInfo = new ProcessStartInfo(Path.Combine(App.ExecFolder, "oggdec.exe"), $"--stdout \"{oggPath}\"")
+            {
+                WorkingDirectory = App.ExecFolder,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
             //procStartInfo.StandardOutputEncoding = Encoding.GetEncoding(850); //standard cmd-page
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            proc.StartInfo = procStartInfo;
+            Process proc = new Process
+            {
+                StartInfo = procStartInfo
+            };
 
             // Set our event handler to asynchronously read the sort output.
             proc.Start();
@@ -391,17 +276,17 @@ namespace ME3Explorer.Unreal.Classes
             //System.Diagnostics.Debug.WriteLine("ww2ogg: " + riffPath);
             if (!File.Exists(riffPath))
             {
-                System.Diagnostics.Debug.WriteLine("Error: input file does not exist");
+                Debug.WriteLine("Error: input file does not exist");
             }
 
-            System.Diagnostics.ProcessStartInfo procStartInfo = null;
+            ProcessStartInfo procStartInfo = null;
             if (!fullSetup)
             {
-                procStartInfo = new System.Diagnostics.ProcessStartInfo(Path.Combine(App.ExecFolder, "ww2ogg.exe"), "--stdout \"" + riffPath + "\"");
+                procStartInfo = new ProcessStartInfo(Path.Combine(App.ExecFolder, "ww2ogg.exe"), "--stdout \"" + riffPath + "\"");
             }
             else
             {
-                procStartInfo = new System.Diagnostics.ProcessStartInfo(Path.Combine(App.ExecFolder, "ww2ogg.exe"), "--stdout --full-setup \"" + riffPath + "\"");
+                procStartInfo = new ProcessStartInfo(Path.Combine(App.ExecFolder, "ww2ogg.exe"), "--stdout --full-setup \"" + riffPath + "\"");
             }
             procStartInfo.WorkingDirectory = App.ExecFolder;
             procStartInfo.RedirectStandardOutput = true;
@@ -409,8 +294,7 @@ namespace ME3Explorer.Unreal.Classes
 
             procStartInfo.UseShellExecute = false;
             procStartInfo.CreateNoWindow = true;
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            proc.StartInfo = procStartInfo;
+            Process proc = new Process {StartInfo = procStartInfo};
             proc.Start();
 
             MemoryStream outputData = new MemoryStream();
@@ -470,7 +354,7 @@ namespace ME3Explorer.Unreal.Classes
                     fs.Seek(DataOffset, SeekOrigin.Begin);
                     //for (int i = 0; i < DataSize; i++)
                     //    fs2.WriteByte((byte)fs.ReadByte());
-                    byte[] dataToCopy = new byte[DataSize];
+                    var dataToCopy = new byte[DataSize];
                     fs.Read(dataToCopy, 0, DataSize);
                     fs2.Write(dataToCopy, 0, DataSize);
                 }
@@ -478,32 +362,22 @@ namespace ME3Explorer.Unreal.Classes
             return true;
         }
 
-        private MemoryStream ExtractRiffFromStream(Stream fs)
-        {
-            MemoryStream fs2 = new MemoryStream();
-            fs.Seek(DataOffset, SeekOrigin.Begin);
-            for (int i = 0; i < DataSize; i++)
-                fs2.WriteByte((byte)fs.ReadByte());
-            fs.Close();
-            return fs2;
-        }
-
         /// <summary>
         /// Converts a Wwise-genreated ogg to the format usable by ME3.
         /// This effectivey replaces the need for afc_creator.exe
         /// </summary>
-        /// <param name="memory">Stream containing wwiseogg</param>
+        /// <param name="stream">Stream containing wwiseogg</param>
         /// <returns>ME3 AFC ready stream, at position 0</returns>
-        public static MemoryStream ConvertWwiseOggToME3Ogg(Stream memory)
+        public static MemoryStream ConvertWwiseOggToME3Ogg(Stream stream)
         {
-            memory.Position = 0;
+            stream.Position = 0;
             MemoryStream convertedStream = new MemoryStream();
-            memory.CopyToEx(convertedStream, 4);
-            convertedStream.Write(BitConverter.GetBytes((int)memory.Length - 16), 0, 4);
-            memory.Position += 4; //skip over size
-            memory.CopyToEx(convertedStream, 0x24); //up to VORB
-            memory.Position += 8; //skip vorb
-            memory.CopyTo(convertedStream); //copy remaining data
+            stream.CopyToEx(convertedStream, 4);
+            convertedStream.Write(BitConverter.GetBytes((int)stream.Length - 16), 0, 4);
+            stream.Position += 4; //skip over size
+            stream.CopyToEx(convertedStream, 0x24); //up to VORB
+            stream.Position += 8; //skip vorb
+            stream.CopyTo(convertedStream); //copy remaining data
 
             //update format bytes
             convertedStream.Seek(0x10, SeekOrigin.Begin);
@@ -519,44 +393,28 @@ namespace ME3Explorer.Unreal.Classes
             return convertedStream;
         }
 
-        private void ImportWwiseOgg(string pathafc, Stream wwiseOggStream, int off)
+        private void ImportWwiseOgg(string pathafc, Stream wwiseOggStream)
         {
             if (!File.Exists(pathafc) || wwiseOggStream == null)
                 return;
             //Convert wwiseoggstream
             MemoryStream convertedStream = ConvertWwiseOggToME3Ogg(wwiseOggStream);
+            byte[] newWavfile = convertedStream.ToArray();
             //Open AFC
             FileStream fs = new FileStream(pathafc, FileMode.Open, FileAccess.Read);
-            byte[] Header = new byte[94];
+            var Header = new byte[94];
 
             //Seek to data we are replacing and read header
             fs.Seek(DataOffset, SeekOrigin.Begin);
             fs.Read(Header, 0, 94);
-
-            //for (int i = 0; i < 94; i++)
-            //    Header[i] = (byte)fs.Read();
             fs.Close();
 
-            //read wave file into memory
-            //fs = new FileStream(pathwav, FileMode.Open, FileAccess.Read);
-            MemoryStream tempStream = new MemoryStream();
-            byte[] newWavfile = convertedStream.ToArray();
-            /*byte[] newfile = new byte[fs.Length];
-            for (int i = 0; i < fs.Length; i++)
-                newfile[i] = (byte)fs.ReadByte();
-            fs.Close();*/
-
-            //tweak new wav header
-            //newWavfile = ModifyHeader(newWavfile, Header);
 
             //append new wav
             fs = new FileStream(pathafc, FileMode.Append, FileAccess.Write, FileShare.Write);
             int newWavDataOffset = (int)fs.Length;
             int newWavSize = newWavfile.Length;
             fs.Write(newWavfile, 0, newWavSize);
-            //for (int i = 0; i < newWavSize; i++)
-            //    fs.WriteByte(newWavfile[i]);
-            //uint newafcsize = (uint)fs.Length;
             fs.Close();
 
             //update memory in this export (clone of memory)

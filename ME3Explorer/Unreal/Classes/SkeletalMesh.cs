@@ -25,13 +25,6 @@ namespace ME3Explorer.Unreal.Classes
                 this.size = size;
                 this.r = radius;
             }
-
-            public BoundingStruct(UDKExplorer.UDK.Classes.SkeletalMesh.BoundingStruct udkBounds)
-            {
-                this.origin = udkBounds.origin;
-                this.size = udkBounds.size;
-                this.r = udkBounds.r;
-            }
         }
 
         public struct BoneStruct
@@ -56,14 +49,6 @@ namespace ME3Explorer.Unreal.Classes
                 NumChildren = numChildren;
                 Parent = parent;
                 BoneColor = boneColor;
-            }
-
-            public static BoneStruct ImportFromUDK(UDKExplorer.UDK.Classes.SkeletalMesh.BoneStruct udkBone, UDKPackage udkPackage, ME3Explorer.Packages.MEPackage mePackage)
-            {
-                BoneStruct result = new BoneStruct(0, udkBone.Flags, udkBone.Unk1, udkBone.Orientation, udkBone.Position, udkBone.NumChildren, udkBone.Parent, udkBone.BoneColor);
-                string name = udkPackage.getNameEntry(udkBone.Name);
-                result.Name = mePackage.FindNameOrAdd(name);
-                return result;
             }
         }
 

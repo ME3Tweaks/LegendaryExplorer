@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using Gammtek.Conduit;
 using SharpDX;
 using StreamHelpers;
 
@@ -55,18 +54,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
         #endregion
     }
 
-    public readonly struct Vector2D
-    {
-        public readonly float X;
-        public readonly float Y;
-
-        public Vector2D(float x, float y)
-        {
-            X = x;
-            Y = y;
-        }
-    }
-
     public readonly struct Vector2DHalf
     {
         public readonly ushort Xbits;
@@ -87,7 +74,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             Ybits = y.ToFloat16bits();
         }
 
-        public static implicit operator Vector2DHalf(Vector2D vec2D)
+        public static implicit operator Vector2DHalf(Vector2 vec2D)
         {
             return new Vector2DHalf(vec2D.X, vec2D.Y);
         }
@@ -260,11 +247,11 @@ namespace ME3Explorer
                 sc.ms.WriteFloat(quat.W);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref Vector2D vec)
+        public static void Serialize(this SerializingContainer2 sc, ref Vector2 vec)
         {
             if (sc.IsLoading)
             {
-                vec = new Vector2D(sc.ms.ReadFloat(), sc.ms.ReadFloat());
+                vec = new Vector2(sc.ms.ReadFloat(), sc.ms.ReadFloat());
             }
             else
             {
