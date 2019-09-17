@@ -931,7 +931,7 @@ namespace ME3Explorer.Soundplorer
                 }
 
                 WwiseStream w = new WwiseStream(spExport.Export);
-                Stream source = w.CreateWaveStream(w.getPathToAFC());
+                Stream source = w.CreateWaveStream(w.GetPathToAFC());
                 if (source != null)
                 {
                     using (var fileStream = File.Create(outputLocation))
@@ -970,7 +970,7 @@ namespace ME3Explorer.Soundplorer
                         if (res.HasValue && res.Value)
                         {
                             WwiseStream w = new WwiseStream(spExport.Export);
-                            if (w.ExtractRawFromSource(d.FileName, w.getPathToAFC()))
+                            if (w.ExtractRawFromSource(d.FileName, w.GetPathToAFC()))
                             {
                                 MessageBox.Show("Done.");
                             }
@@ -1022,7 +1022,7 @@ namespace ME3Explorer.Soundplorer
                     WwiseStream w = new WwiseStream(spExport.Export);
                     string riffOutputFile = System.IO.Path.Combine(Directory.GetParent(d.FileName).FullName, System.IO.Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
 
-                    if (w.ExtractRawFromSource(riffOutputFile, w.getPathToAFC()))
+                    if (w.ExtractRawFromSource(riffOutputFile, w.GetPathToAFC()))
                     {
                         MemoryStream oggStream = WwiseStream.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
                         //string outputOggPath = 
@@ -1591,7 +1591,7 @@ namespace ME3Explorer.Soundplorer
             if (Export.ClassName == "WwiseStream")
             {
                 WwiseStream w = new WwiseStream(Export);
-                string afcPath = w.getPathToAFC();
+                string afcPath = w.GetPathToAFC();
                 if (afcPath == "")
                 {
                     SubText = "Could not find AFC";

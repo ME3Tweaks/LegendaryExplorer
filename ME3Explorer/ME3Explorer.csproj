@@ -824,6 +824,7 @@
     <Compile Include="Unreal\BinaryConverters\StaticMesh.cs" />
     <Compile Include="Unreal\BinaryConverters\StaticMeshComponent.cs" />
     <Compile Include="Unreal\CommonStructs.cs" />
+    <Compile Include="Unreal\DLCPackage2.cs" />
     <Compile Include="Unreal\SerializingContainer2.cs" />
     <Compile Include="Unreal\BinaryConverters\TreeNode.cs" />
     <Compile Include="Unreal\BinaryConverters\UnrealStructs.cs" />

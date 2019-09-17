@@ -52,9 +52,8 @@ namespace ME3Explorer.Packages
         public bool CanReconstruct =>
             Game == MEGame.ME3 ||
             Game == MEGame.ME2 ||
-            Game == MEGame.ME1 && !exports.Any(x => x.IsTexture() && EmbeddedTextureViewer.GetTexture2DMipInfos(x,null).Any(mip => mip.storageType == StorageTypes.pccLZO || 
-                                                                                                                                            mip.storageType == StorageTypes.pccZlib));
-
+            Game == MEGame.ME1 && !exports.Any(x => x.IsTexture() && x.idxLink == 0 && Texture2D.GetTexture2DMipInfos(x, null).Any(mip => mip.storageType == StorageTypes.pccLZO ||
+                                                                                                                                          mip.storageType == StorageTypes.pccZlib));
         public int FullHeaderSize { get; private set; }
         public EPackageFlags Flags { get; private set; }
 
@@ -1106,7 +1105,7 @@ namespace ME3Explorer.Packages
                     texport.WriteProperty(new BoolProperty(true, "NeverStream"));
                 }
             }
-            else if (exports.Any(exp => exp.IsTexture() && EmbeddedTextureViewer.GetTexture2DMipInfos(exp, null)
+            else if (exports.Any(exp => exp.IsTexture() && Texture2D.GetTexture2DMipInfos(exp, null)
                                                                                 .Any(mip => mip.storageType == StorageTypes.pccLZO
                                                                                          || mip.storageType == StorageTypes.pccZlib)))
             {
@@ -1119,9 +1118,9 @@ namespace ME3Explorer.Packages
 
                     foreach (ExportEntry texport in exports.Where(exp => exp.IsTexture()))
                     {
-                        var mips = EmbeddedTextureViewer.GetTexture2DMipInfos(texport, null);
+                        var mips = Texture2D.GetTexture2DMipInfos(texport, null);
                         var offsets = new List<int>();
-                        foreach (EmbeddedTextureViewer.Texture2DMipInfo mipInfo in mips)
+                        foreach (Texture2DMipInfo mipInfo in mips)
                         {
                             if (mipInfo.storageType == StorageTypes.pccLZO || mipInfo.storageType == StorageTypes.pccZlib)
                             {
@@ -1129,11 +1128,11 @@ namespace ME3Explorer.Packages
                                 byte[] mip;
                                 if (mipInfo.storageType == StorageTypes.pccLZO)
                                 {
-                                    mip = TextureCompression.CompressTexture(EmbeddedTextureViewer.GetTextureData(mipInfo), StorageTypes.extZlib);
+                                    mip = TextureCompression.CompressTexture(Texture2D.GetTextureData(mipInfo), StorageTypes.extZlib);
                                 }
                                 else
                                 {
-                                    mip = EmbeddedTextureViewer.GetTextureData(mipInfo, false);
+                                    mip = Texture2D.GetTextureData(mipInfo, false);
                                 }
                                 tfc.WriteFromBuffer(mip);
                             }

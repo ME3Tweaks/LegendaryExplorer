@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using SharpDX;
 using SharpDX.Direct3D11;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal.Classes;
 using static ME3Explorer.EmbeddedTextureViewer;
+using Texture2D = SharpDX.Direct3D11.Texture2D;
 
 namespace ME3Explorer.Scene3D
 {
