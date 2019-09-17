@@ -152,7 +152,7 @@ namespace ME3Explorer.Unreal.Classes
         public string CreateWave(string afcPath)
         {
             string basePath = GetTempSoundPath();
-            if (ExtractRawFromSource(basePath + ".dat", getPathToAFC(), DataSize, DataOffset))
+            if (ExtractRawFromSource(basePath + ".dat", GetPathToAFC(), DataSize, DataOffset))
             {
                 MemoryStream dataStream = ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
                 File.WriteAllBytes(basePath + ".wav", dataStream.ToArray());
