@@ -354,6 +354,9 @@
     <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CloningImportingAndRelinking\EntryCloner.cs" />
+    <Compile Include="CloningImportingAndRelinking\EntryImporter.cs" />
+    <Compile Include="CloningImportingAndRelinking\Relinker.cs" />
     <Compile Include="Deconstructors.cs" />
     <Compile Include="Dialogue Editor\DialogueObjects.cs" />
     <Compile Include="MassEffectModder\MassEffectModderIPCWrapper.cs" />
@@ -363,6 +366,7 @@
     <Compile Include="Meshplorer\MeshRendererWPF.xaml.cs">
       <DependentUpon>MeshRendererWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Packages\EntryTree.cs" />
     <Compile Include="Packages\PackageExtensions.cs" />
     <Compile Include="Packages\UnrealPackageFile.cs" />
     <Compile Include="Scene3D\SceneRenderContext.cs" />
@@ -590,7 +594,6 @@
     <Compile Include="PackageEditor\JPEXSWFExportLoader.xaml.cs">
       <DependentUpon>JPEXSWFExportLoader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PackageEditor\PackageEditorWPFRelinker.cs" />
     <Compile Include="PackageEditor\PackageEditorWPF.xaml.cs">
       <DependentUpon>PackageEditorWPF.xaml</DependentUpon>
     </Compile>

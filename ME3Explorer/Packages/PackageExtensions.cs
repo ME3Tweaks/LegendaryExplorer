@@ -83,11 +83,15 @@ namespace ME3Explorer.Packages
             return import;
         }
 
-        public static bool AddToLevelActors(this IMEPackage pcc, ExportEntry actor)
+        public static bool AddToLevelActorsIfNotThere(this IMEPackage pcc, ExportEntry actor)
         {
             if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
             {
                 Level level = ObjectBinary.From<Level>(levelExport);
+                if (level.Actors.Contains(actor.UIndex))
+                {
+                    return false;
+                }
                 level.Actors.Add(actor.UIndex);
                 levelExport.setBinaryData(level.ToBytes(pcc));
                 return true;
@@ -165,6 +169,12 @@ namespace ME3Explorer.Packages
             return false;
         }
 
+        /// <summary>
+        /// Gets direct children of <paramref name="entry"/>. O(n) over all IEntrys in the file,
+        /// so if you will be calling this multiple times, consider using an <see cref="EntryTree"/> instead.
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         public static List<IEntry> GetChildren(this IEntry entry)
         {
             var kids = new List<IEntry>();
@@ -173,6 +183,12 @@ namespace ME3Explorer.Packages
             return kids;
         }
 
+        /// <summary>
+        /// Gets all descendents of <paramref name="entry"/>. O(nk) where n is exports + imports, and k is average tree depth,
+        /// so consider using an <see cref="EntryTree"/> instead.
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         public static List<IEntry> GetAllDescendants(this IEntry entry)
         {
             var kids = new List<IEntry>();

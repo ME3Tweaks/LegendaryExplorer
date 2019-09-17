@@ -34,7 +34,6 @@ using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Gammtek.Conduit.Extensions.IO;
 using ME2Explorer.Unreal;
-using ME3Explorer.CurveEd;
 using ME3Explorer.Unreal.BinaryConverters;
 using UsefulThings;
 using static ME3Explorer.Packages.MEPackage;
@@ -136,7 +135,6 @@ namespace ME3Explorer
         /// </summary>
         private readonly Dictionary<IEntry, IEntry> crossPCCObjectMap = new Dictionary<IEntry, IEntry>();
 
-        private string currentFile;
         private int QueuedGotoNumber;
         private bool IsLoadingFile;
 
@@ -534,9 +532,7 @@ namespace ME3Explorer
         {
             Debug.WriteLine("Performing multi-relink");
             var entry = crossPCCObjectMap.Keys.FirstOrDefault();
-            var relinkResults = new List<string>();
-            relinkResults.AddRange(relinkObjects2(entry.FileRef));
-            relinkResults.AddRange(relinkBinaryObjects(entry.FileRef));
+            var relinkResults = Relinker.RelinkAll(crossPCCObjectMap, entry.FileRef);
             crossPCCObjectMap.Clear();
 
 
@@ -1293,35 +1289,9 @@ namespace ME3Explorer
         {
             if (CurrentView == CurrentViewMode.Tree && TryGetSelectedEntry(out IEntry entry))
             {
-                crossPCCObjectMap.Clear();
-                IEntry newEntry;
-                if (entry is ExportEntry exp)
-                {
-
-                    ExportEntry ent = exp.Clone();
-                    Pcc.addExport(ent);
-                    newEntry = ent;
-                    crossPCCObjectMap[exp] = ent;
-                    if (ent?.Parent?.ClassName == "Level" && ent.InheritsFrom("Actor") && Pcc.AddToLevelActors(ent))
-                    {
-                        MessageBox.Show(this, $"Added {ent.ObjectName} to PersistentLevel's Actor list!");
-                    }
-                }
-                else
-                {
-                    ImportEntry imp = ((ImportEntry) entry).Clone();
-                    Pcc.addImport(imp);
-                    newEntry = imp;
-                    //Imports are not relinked when locally cloning a tree
-                }
-
-                int nextIndex = newEntry.UIndex; //used to select the final node
-                cloneTree(entry, newEntry);
-                relinkObjects2(Pcc);
-                relinkBinaryObjects(Pcc);
-                crossPCCObjectMap.Clear(); //Don't support keeping things in memory
-                RefreshView();
-                GoToNumber(nextIndex);
+                IEntry newTreeRoot = EntryCloner.cloneTree(entry);
+                TryAddToPersistentLevel(newTreeRoot);
+                GoToNumber(newTreeRoot.UIndex);
             }
         }
 
@@ -1329,52 +1299,22 @@ namespace ME3Explorer
         {
             if (TryGetSelectedEntry(out IEntry entry))
             {
-                IEntry newEntry;
-                if (entry is ExportEntry export)
-                {
-
-                    ExportEntry ent = export.Clone();
-                    Pcc.addExport(ent);
-                    newEntry = ent;
-                    if (ent?.Parent?.ClassName == "Level" && ent.InheritsFrom("Actor") && Pcc.AddToLevelActors(ent))
-                    {
-                        MessageBox.Show(this, $"Added {ent.ObjectName} to PersistentLevel's Actor list!");
-                    }
-                }
-                else
-                {
-                    ImportEntry imp = ((ImportEntry)entry).Clone();
-                    Pcc.addImport(imp);
-                    newEntry = imp;
-                }
+                IEntry newEntry = EntryCloner.cloneEntry(entry);
+                TryAddToPersistentLevel(newEntry);
                 GoToNumber(newEntry.UIndex);
             }
         }
 
-        private void cloneTree(IEntry originalRootNode, IEntry newRootNode)
+        private bool TryAddToPersistentLevel(IEntry newEntry)
         {
-            foreach (IEntry node in originalRootNode.GetChildren())
+            if (newEntry is ExportEntry ent && ent?.Parent?.ClassName == "Level" && ent.InheritsFrom("Actor")
+             && Pcc.AddToLevelActorsIfNotThere(ent))
             {
-                IEntry newEntry = null;
-                switch (node)
-                {
-                    case ExportEntry exportEntry:
-                        ExportEntry ent = exportEntry.Clone();
-                        Pcc.addExport(ent);
-                        newEntry = ent;
-                        crossPCCObjectMap[exportEntry] = ent;
-                        break;
-                    case ImportEntry importEntry:
-                        ImportEntry imp = importEntry.Clone();
-                        Pcc.addImport(imp);
-                        newEntry = imp;
-                        break;
-                }
-
-                newEntry.Parent = newRootNode;
-
-                cloneTree(node, newEntry);
+                MessageBox.Show(this, $"Added {ent.ObjectName} to PersistentLevel's Actor list!");
+                return true;
             }
+
+            return false;
         }
 
         private void ImportBinaryData() => ImportExpData(true);
@@ -1628,8 +1568,8 @@ namespace ME3Explorer
                 AllTreeViewNodesX.ClearEx();
                 NamesList.ClearEx();
                 ClassDropdownList.ClearEx();
+                crossPCCObjectMap.Clear();
 
-                currentFile = s;
                 StatusBar_LeftMostText.Text = $"Loading {Path.GetFileName(s)} ({ByteSize.FromBytes(new FileInfo(s).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(s);
@@ -2515,15 +2455,13 @@ namespace ME3Explorer
         /// <param name="dropInfo"></param>
         void IDropTarget.Drop(IDropInfo dropInfo)
         {
-            if (dropInfo.TargetItem is TreeViewEntry targetItem && (dropInfo.Data as TreeViewEntry)?.Parent != null)
+            if (dropInfo.TargetItem is TreeViewEntry targetItem && dropInfo.Data is TreeViewEntry sourceItem && sourceItem.Parent != null)
             {
                 //Check if the path of the target and the source is the same. If so, offer to merge instead
                 if (!MultiRelinkingModeActive)
                 {
                     crossPCCObjectMap.Clear();
                 }
-
-                TreeViewEntry sourceItem = (TreeViewEntry) dropInfo.Data;
 
                 if (sourceItem == targetItem || (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
                 {
@@ -2563,103 +2501,24 @@ namespace ME3Explorer
                     MultiRelinkingModeActive = false;
                 }
 
-                //Debug.WriteLine("Adding source item: " + sourceItem.TagzToString());
-
-                //if (DestinationNode.TreeView != sourceNode.TreeView)
-                //{
-                IEntry sourceEntry = sourceItem.Entry;
-                IEntry targetLinkEntry = targetItem.Entry;
-
-                IMEPackage importpcc = sourceEntry.FileRef;
-                if (importpcc == null)
+                if (sourceItem.Entry.FileRef == null)
                 {
                     return;
                 }
 
-                if (portingOption == TreeMergeDialog.PortingOption.ReplaceSingular)
-                {
-                    //replace data only
-                    if (sourceEntry is ExportEntry entry)
-                    {
-                        crossPCCObjectMap.Add(entry, targetLinkEntry);
-                        ReplaceExportDataWithAnother(entry, targetLinkEntry as ExportEntry);
-                        //if (successful)
-                        //{
-                        //    relinkObjects2(sourceEntry.FileRef);
-                        //    relinkBinaryObjects(sourceEntry.FileRef);
-                        //}
-                    }
+                bool shouldRelink = !MultiRelinkingModeActive;
+                IEntry sourceEntry = sourceItem.Entry;
+                IEntry targetLinkEntry = targetItem.Entry;
 
-                    //return;
-                }
+                //Import!
+                List<string> relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption, sourceEntry, Pcc, targetLinkEntry, shouldRelink, out IEntry newEntry, crossPCCObjectMap);
 
-                int n = sourceEntry.UIndex;
-                int link;
-                if (targetItem.Parent == null) //dropped on a first level node (root)
-                {
-                    link = 0;
-                }
-                else
-                {
-                    link = targetLinkEntry.UIndex;
-                    //link = link >= 0 ? link + 1 : link;
-                }
+                TryAddToPersistentLevel(newEntry);
 
-                TreeViewEntry newItem = null;
-                //Don't clone the root element into this item since this is a merge
-                if (portingOption != TreeMergeDialog.PortingOption.MergeTreeChildren && portingOption != TreeMergeDialog.PortingOption.ReplaceSingular)
-                {
-                    if (n >= 0)
-                    {
-                        //importing an export
-                        if (importExport(Pcc, sourceEntry as ExportEntry, link, out ExportEntry newExport))
-                        {
-                            newItem = new TreeViewEntry(newExport);
-                            crossPCCObjectMap[sourceEntry] = newExport; //map old index to new index
-                            if (newExport?.Parent?.ClassName == "Level" && newExport.InheritsFrom("Actor") && Pcc.AddToLevelActors(newExport))
-                            {
-                                MessageBox.Show(this, $"Added {newExport.ObjectName} to PersistentLevel's Actor list!");
-                            }
-                        }
-                        else
-                        {
-                            //import failed!
-                            //Todo: Throw error message or something
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        IEntry newImport = getOrAddCrossImportOrPackage(sourceEntry.GetFullPath, importpcc, Pcc,
-                            sourceItem.Sublinks.Count == 0 ? link : (int?) null);
-                        newItem = new TreeViewEntry(newImport);
-                        crossPCCObjectMap[sourceEntry] = newImport;
-                    }
-
-                    newItem.Parent = targetItem;
-                }
-                else
-                {
-                    newItem = targetItem; //Root item is the one we just dropped. Use that as the root.
-                }
-
-
-                //if this node has children
-                if (sourceItem.Sublinks.Count > 0 && portingOption == TreeMergeDialog.PortingOption.CloneTreeAsChild || portingOption == TreeMergeDialog.PortingOption.MergeTreeChildren)
-                {
-                    importTree(sourceItem, importpcc, newItem, portingOption);
-                }
-
-                //relinkObjects(importpcc);
                 if (!MultiRelinkingModeActive)
                 {
-                    var relinkResults = new List<string>();
-                    relinkResults.AddRange(relinkObjects2(importpcc));
-                    relinkResults.AddRange(relinkBinaryObjects(importpcc));
                     crossPCCObjectMap.Clear();
-
-
-                    if (relinkResults.Count > 0)
+                    if ((relinkResults?.Count ?? 0) > 0)
                     {
                         ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", this);
                         ld.Show();
@@ -2671,266 +2530,8 @@ namespace ME3Explorer
                 }
 
                 RefreshView();
-                GoToNumber(n >= 0 ? Pcc.ExportCount : -Pcc.ImportCount);
+                GoToNumber(newEntry.UIndex);
             }
-        }
-
-        public static bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport)
-        {
-
-            MemoryStream res = new MemoryStream();
-            if (incomingExport.HasStack)
-            {
-                //ME1, ME2 stack
-                byte[] stackdummy =
-                {
-                    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
-                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00
-                };
-
-                if (targetExport.Game != MEGame.ME3)
-                {
-                    //TODO: Find a unique NetIndex instead of writing a blank... don't know if that will fix multiplayer sync issues
-                    stackdummy = new byte[]
-                    {
-                        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00
-                    };
-                }
-
-                res.Write(stackdummy, 0, stackdummy.Length);
-            }
-            else
-            {
-                int start = incomingExport.GetPropertyStart();
-                res.Write(new byte[start], 0, start);
-            }
-
-            //store copy of names list in case something goes wrong
-            List<string> names = targetExport.FileRef.Names.ToList();
-            try
-            {
-                incomingExport.GetProperties().WriteTo(res, targetExport.FileRef);
-            }
-            catch (Exception exception)
-            {
-                //restore namelist in event of failure.
-                targetExport.FileRef.setNames(names);
-                MessageBox.Show($"Error occured while replacing data in {incomingExport.ObjectName} : {exception.Message}");
-                return false;
-            }
-            res.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game).ToBytes(targetExport.FileRef));
-            targetExport.Data = res.ToArray();
-            return true;
-        }
-
-
-        /// <summary>
-        /// Recursive importing function for importing items from another PCC.
-        /// </summary>
-        /// <param name="sourceNode">Source node from the importing instance of PackageEditorWPF</param>
-        /// <param name="importpcc">PCC to import from</param>
-        /// <param name="newItemParent">The new parent node for the tree</param>
-        /// <param name="portingOption">"The importing strtegy"</param>
-        /// <returns></returns>
-        private bool importTree(TreeViewEntry sourceNode, IMEPackage importpcc, TreeViewEntry newItemParent, TreeMergeDialog.PortingOption portingOption)
-        {
-            foreach (TreeViewEntry node in sourceNode.Sublinks)
-            {
-                int index = node.Entry.UIndex;
-                TreeViewEntry newEntry = null;
-
-                if (portingOption == TreeMergeDialog.PortingOption.MergeTreeChildren)
-                {
-                    //we must check to see if there is an item already matching what we are trying to port.
-
-                    //Todo: We may need to enhance target checking here as getfullpath may not be reliable enough. Maybe have to do indexing, or something.
-                    TreeViewEntry sameObjInTarget = newItemParent.Sublinks.FirstOrDefault(x => node.Entry.GetFullPath == x.Entry.GetFullPath);
-                    if (sameObjInTarget != null)
-                    {
-                        crossPCCObjectMap[node.Entry] = sameObjInTarget.Entry;
-
-                        //merge children to this node instead
-                        if (node.Sublinks.Count > 0)
-                        {
-                            if (!importTree(node, importpcc, sameObjInTarget, portingOption))
-                            {
-                                return false;
-                            }
-                        }
-
-                        continue;
-                    }
-                }
-
-                if (index >= 0)
-                {
-                    //index--; //This was definitely wrong... probably
-                    if (importExport(Pcc, node.Entry as ExportEntry, newItemParent.UIndex, out ExportEntry importedEntry))
-                    {
-                        newEntry = new TreeViewEntry(importedEntry);
-                        crossPCCObjectMap[node.Entry] = importedEntry;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    IEntry newImport = getOrAddCrossImportOrPackage(importpcc.getImport(index).GetFullPath, importpcc, Pcc);
-
-                    newEntry = new TreeViewEntry(newImport);
-                    crossPCCObjectMap[node.Entry] = newImport;
-                }
-
-                newEntry.Parent = newItemParent;
-                newItemParent.Sublinks.Add(newEntry);
-
-                if (node.Sublinks.Count > 0)
-                {
-                    if (!importTree(node, importpcc, newEntry, portingOption))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Imports an export from another package file.
-        /// </summary>
-        /// <param name="mePackage"></param>
-        /// <param name="ex">Export object from the other package to import</param>
-        /// <param name="link">Local parent node UIndex</param>
-        /// <param name="outputEntry">Newly generated export entry reference</param>
-        /// <returns></returns>
-        private static bool importExport(IMEPackage mePackage, ExportEntry ex, int link, out ExportEntry outputEntry)
-        {
-            byte[] prePropBinary;
-            if (ex.HasStack)
-            {
-                if (mePackage.Game < MEGame.ME3)
-                {
-                    prePropBinary = new byte[]
-                    {
-                        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00
-                    };
-                }
-                else
-                {
-                    prePropBinary = new byte[]
-                    {
-                        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00
-                    };
-                }
-            }
-            else
-            {
-                int start = ex.GetPropertyStart();
-                prePropBinary = new byte[start];
-            }
-
-            PropertyCollection props = ex.GetProperties();
-            //store copy of names list in case something goes wrong
-            List<string> names = mePackage.Names.ToList();
-            try
-            {
-                if (ex.Game != mePackage.Game)
-                {
-                    props = EntryPruner.RemoveIncompatibleProperties(ex.FileRef, props, ex.ClassName, mePackage.Game);
-                }
-            }
-            catch (Exception exception)
-            {
-                //restore namelist in event of failure.
-                mePackage.setNames(names);
-                MessageBox.Show($"Error occured while trying to import {ex.ObjectName} : {exception.Message}");
-                outputEntry = null;
-                return false;
-            }
-
-            //takes care of slight header differences between ME1/2 and ME3
-            byte[] newHeader = ex.GenerateHeader(mePackage.Game);
-
-            //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
-            //for unsupported classes, this will just copy over the binary
-            byte[] binaryData = ExportBinaryConverter.ConvertPostPropBinary(ex, mePackage.Game).ToBytes(mePackage);
-
-            int classValue = 0;
-            int archetype = 0;
-            int superclass = 0;
-            //Set class. This will only work if the class is an import, as we can't reliably pull in exports without lots of other stuff.
-            if (ex.idxClass < 0)
-            {
-                //The class of the export we are importing is an import. We should attempt to relink this.
-                ImportEntry portingFromClassImport = ex.FileRef.getImport(ex.idxClass);
-                IEntry newClassImport = getOrAddCrossImportOrPackage(portingFromClassImport.GetFullPath, ex.FileRef, mePackage);
-                classValue = newClassImport.UIndex;
-            }
-            else if (ex.idxClass > 0)
-            {
-                //Todo: Add cross mapping support as multi-mode will allow this to work now
-                ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxClass);
-                ExportEntry matchingExport = mePackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
-                if (matchingExport != null)
-                {
-                    classValue = matchingExport.UIndex;
-                }
-            }
-
-            //Set superclass
-            if (ex.idxSuperClass < 0)
-            {
-                //The class of the export we are importing is an import. We should attempt to relink this.
-                ImportEntry portingFromClassImport = ex.FileRef.getImport(ex.idxSuperClass);
-                IEntry newClassImport = getOrAddCrossImportOrPackage(portingFromClassImport.GetFullPath, ex.FileRef, mePackage);
-                superclass = newClassImport.UIndex;
-            }
-            else if (ex.idxSuperClass > 0)
-            {
-                //Todo: Add cross mapping support as multi-mode will allow this to work now
-                ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxSuperClass);
-                ExportEntry matchingExport = mePackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
-                if (matchingExport != null)
-                {
-                    superclass = matchingExport.UIndex;
-                }
-            }
-
-            //Check archetype.
-            if (ex.idxArchtype < 0)
-            {
-                ImportEntry portingFromClassImport = ex.FileRef.getImport(ex.idxArchtype);
-                IEntry newClassImport = getOrAddCrossImportOrPackage(portingFromClassImport.GetFullPath, ex.FileRef, mePackage);
-                archetype = newClassImport.UIndex;
-            }
-            else if (ex.idxArchtype > 0)
-            {
-                ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxArchtype);
-                ExportEntry matchingExport = mePackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
-                if (matchingExport != null)
-                {
-                    archetype = matchingExport.UIndex;
-                }
-            }
-
-            outputEntry = new ExportEntry(mePackage, prePropBinary, props, binaryData)
-            {
-                Header = newHeader,
-                idxClass = classValue,
-                idxObjectName = mePackage.FindNameOrAdd(ex.FileRef.getNameEntry(ex.idxObjectName)),
-                idxLink = link,
-                idxSuperClass = superclass,
-                idxArchtype = archetype
-            };
-            mePackage.addExport(outputEntry);
-
-            return true;
         }
 
         /// <summary>
@@ -3378,6 +2979,7 @@ namespace ME3Explorer
         }
 
         //To be moved to Pathinding Editor WPF. will take some re-architecting though for relinking
+        //todo: this should be possible to move now
         private void Port_SFXObjectives_Click(object sender, RoutedEventArgs e)
         {
             if (Pcc == null)
@@ -3425,7 +3027,7 @@ namespace ME3Explorer
 
                 Debug.WriteLine($"Base coordinate for positioning: {xPos},{y},{z}");
 
-                crossPCCObjectMap.Clear();
+                var objectMap = new Dictionary<IEntry, IEntry>();
 
                 var itemsToAddToLevel = new List<ExportEntry>();
                 foreach (ExportEntry export in sourceFile.Exports)
@@ -3433,18 +3035,18 @@ namespace ME3Explorer
                     if (export.ObjectName == "SFXOperation_ObjectiveSpawnPoint")
                     {
                         Debug.WriteLine("Porting " + export.GetFullPath + "_" + export.indexValue);
-                        importExport(Pcc, export, targetPersistentLevel.UIndex, out ExportEntry portedObjective);
-                        crossPCCObjectMap[export] = portedObjective;
+                        ExportEntry portedObjective = EntryImporter.importExport(Pcc, export, targetPersistentLevel.UIndex);
+                        objectMap[export] = portedObjective;
                         itemsToAddToLevel.Add(portedObjective);
                         var child = export.GetProperty<ObjectProperty>("CollisionComponent");
                         ExportEntry collCyl = sourceFile.Exports[child.Value - 1];
                         Debug.WriteLine($"Porting {collCyl.GetFullPath}_{collCyl.indexValue}");
-                        importExport(Pcc, collCyl, portedObjective.UIndex, out ExportEntry portedCollisionCylinder);
-                        crossPCCObjectMap[collCyl] = portedCollisionCylinder;
+                        ExportEntry portedCollisionCylinder = EntryImporter.importExport(Pcc, collCyl, portedObjective.UIndex);
+                        objectMap[collCyl] = portedCollisionCylinder;
                     }
                 }
 
-                relinkObjects2(sourceFile);
+                Relinker.RelinkAll(objectMap, sourceFile);
 
                 xPos -= (itemsToAddToLevel.Count / 2) * 55.0f;
                 foreach (ExportEntry addingExport in itemsToAddToLevel)
@@ -3468,32 +3070,15 @@ namespace ME3Explorer
                     }
                 }
 
-                byte[] leveldata = targetPersistentLevel.Data;
-                int start = targetPersistentLevel.propsEnd();
-                //Console.WriteLine("Found start of binary at {start.ToString("X8"));
-
-                uint exportid = BitConverter.ToUInt32(leveldata, start);
-                start += 4;
-                uint numberofitems = BitConverter.ToUInt32(leveldata, start);
-                leveldata.OverwriteRange(start, BitConverter.GetBytes(numberofitems + (uint) itemsToAddToLevel.Count));
-                var readback = BitConverter.ToUInt32(leveldata, start);
-
-                //Debug.WriteLine("Size before: {memory.Length);
-                //memory = RemoveIndices(memory, offset, size);
-                int offset = (int) (start + (numberofitems + 1) * 4); //will be at the very end of the list as it is now +1
-
-                List<byte> memList = leveldata.ToList();
-                foreach (ExportEntry addingExport in itemsToAddToLevel)
+                Level level = ObjectBinary.From<Level>(targetPersistentLevel);
+                foreach (ExportEntry actorExport in itemsToAddToLevel)
                 {
-                    memList.InsertRange(offset, BitConverter.GetBytes(addingExport.UIndex));
-                    offset += 4;
+                    level.Actors.Add(actorExport.UIndex);
                 }
-
-                leveldata = memList.ToArray();
-                targetPersistentLevel.Data = leveldata;
+                targetPersistentLevel.setBinaryData(level.ToBytes(targetPersistentLevel.FileRef));
             }
 
-            crossPCCObjectMap.Clear();
+
             GoToNumber(targetPersistentLevel.UIndex);
             Debug.WriteLine("Done");
         }

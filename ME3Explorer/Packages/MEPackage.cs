@@ -1068,7 +1068,7 @@ namespace ME3Explorer.Packages
                             textures = ObjectBinary.From<Material>(parent).SM3MaterialResource.UniformExpressionTextures;
                         }
 
-                        PackageEditorWPF.ReplaceExportDataWithAnother(normDiffMat, mat);
+                        EntryImporter.ReplaceExportDataWithAnother(normDiffMat, mat);
                         int norm = 0;
                         int diff = 0;
                         foreach (UIndex texture in textures)
@@ -1087,7 +1087,7 @@ namespace ME3Explorer.Packages
                         }
                         if (diff == 0)
                         {
-                            diff = PackageEditorWPF.getOrAddCrossImportOrPackage("EngineMaterials.DefaultDiffuse", resourcePCC, this).UIndex;
+                            diff = EntryImporter.getOrAddCrossImportOrPackage("EngineMaterials.DefaultDiffuse", resourcePCC, this).UIndex;
                         }
 
                         var matBin = ObjectBinary.From<Material>(mat);

@@ -4819,7 +4819,7 @@ namespace ME3Explorer.Unreal
                         if (relinkItem.value < 0)
                         {
                             //Import
-                            IEntry newCrossImport = PackageEditorWPF.getOrAddCrossImportOrPackage(sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath, sourceExport.FileRef, destinationExport.FileRef);
+                            IEntry newCrossImport = EntryImporter.getOrAddCrossImportOrPackage(sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath, sourceExport.FileRef, destinationExport.FileRef);
                             if (newCrossImport == null)
                             {
                                 relinkFailedReport.Add($"0x{relinkItem.pos:X6} Function relink failed: Could not add cross referenced import: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");
