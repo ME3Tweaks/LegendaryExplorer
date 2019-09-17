@@ -24,7 +24,7 @@ namespace ME3Explorer.Meshplorer
     /// </summary>
     public partial class MeshRendererWPF : ExportLoaderControl
     {
-        private static readonly string[] parsableClasses = { "SkeletalMesh", "StaticMesh" };
+        private static readonly string[] parsableClasses = { "SkeletalMesh", "StaticMesh", "FracturedStaticMesh" };
 
         #region 3D
 
@@ -179,7 +179,7 @@ namespace ME3Explorer.Meshplorer
 
 
             Func<ModelPreview.PreloadedModelData> loadMesh = null;
-            if (CurrentLoadedExport.ClassName == "StaticMesh")
+            if (CurrentLoadedExport.ClassName == "StaticMesh" || CurrentLoadedExport.ClassName == "FracturedStaticMesh")
             {
                 IsStaticMesh = true;
                 loadMesh = () =>
@@ -194,33 +194,36 @@ namespace ME3Explorer.Meshplorer
                         texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>()
                     };
                     IMEPackage meshFile = meshObject.Export.FileRef;
-                    foreach (var section in meshObject.LODModels[CurrentLOD].Elements)
+                    if (meshFile.Game != MEGame.UDK)
                     {
-                        int matIndex = section.Material.value;
-                        if (meshFile.isUExport(matIndex))
+                        foreach (var section in meshObject.LODModels[CurrentLOD].Elements)
                         {
-                            ExportEntry entry = meshFile.getUExport(matIndex);
-                            Debug.WriteLine("Getting material assets " + entry.GetFullPath);
-
-                            AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
-
-                        }
-                        else if (meshFile.isImport(matIndex))
-                        {
-                            var extMaterialExport = ModelPreview.FindExternalAsset(meshFile.getImport(matIndex), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
-                            if (extMaterialExport != null)
+                            int matIndex = section.Material.value;
+                            if (meshFile.isUExport(matIndex))
                             {
-                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
+                                ExportEntry entry = meshFile.getUExport(matIndex);
+                                Debug.WriteLine("Getting material assets " + entry.GetFullPath);
+
+                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
+
                             }
-                            else
+                            else if (meshFile.isImport(matIndex))
                             {
+                                var extMaterialExport = ModelPreview.FindExternalAsset(meshFile.getImport(matIndex), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
+                                if (extMaterialExport != null)
+                                {
+                                    AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
+                                }
+                                else
+                                {
 
-                                Debug.WriteLine("Could not find import material from section.");
-                                Debug.WriteLine("Import material: " + meshFile.GetEntryString(matIndex));
+                                    Debug.WriteLine("Could not find import material from section.");
+                                    Debug.WriteLine("Import material: " + meshFile.GetEntryString(matIndex));
+                                }
                             }
-                        }
 
-                        pmd.sections.Add(new ModelPreviewSection(meshFile.getObjectName(matIndex), section.FirstIndex, section.NumTriangles));
+                            pmd.sections.Add(new ModelPreviewSection(meshFile.getObjectName(matIndex), section.FirstIndex, section.NumTriangles));
+                        }
                     }
                     return pmd;
                 };
@@ -240,28 +243,32 @@ namespace ME3Explorer.Meshplorer
                         sections = new List<ModelPreviewSection>(),
                         texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>()
                     };
-                    foreach (var material in meshObject.Materials)
+                    IMEPackage package = meshObject.Export.FileRef;
+                    if (package.Game != MEGame.UDK)
                     {
-                        if (material.value > 0)
+                        foreach (var material in meshObject.Materials)
                         {
-                            ExportEntry entry = meshObject.Export.FileRef.getUExport(material.value);
-                            Debug.WriteLine("Getting material assets " + entry.GetFullPath);
-
-                            AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
-
-                        }
-                        else if (material.value < 0)
-                        {
-                            var extMaterialExport = ModelPreview.FindExternalAsset(meshObject.Export.FileRef.getImport(material.value), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
-                            if (extMaterialExport != null)
+                            if (package.isUExport(material.value))
                             {
-                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
+                                ExportEntry entry = package.getUExport(material.value);
+                                Debug.WriteLine("Getting material assets " + entry.GetFullPath);
+
+                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
+
                             }
-                            else
+                            else if (package.isImport(material.value))
                             {
+                                var extMaterialExport = ModelPreview.FindExternalAsset(package.getImport(material.value), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
+                                if (extMaterialExport != null)
+                                {
+                                    AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
+                                }
+                                else
+                                {
 
-                                Debug.WriteLine("Could not find import material from materials list.");
-                                Debug.WriteLine("Import material: " + meshObject.Export.FileRef.GetEntryString(material.value));
+                                    Debug.WriteLine("Could not find import material from materials list.");
+                                    Debug.WriteLine("Import material: " + package.GetEntryString(material.value));
+                                }
                             }
                         }
                     }

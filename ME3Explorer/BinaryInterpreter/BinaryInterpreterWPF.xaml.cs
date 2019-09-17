@@ -162,6 +162,7 @@ namespace ME3Explorer
             "FaceFXAsset",
             "FloatProperty",
             "FluidSurfaceComponent",
+            "FracturedStaticMesh",
             "GuidCache",
             "InteractiveFoliageComponent",
             "IntProperty",
@@ -462,6 +463,9 @@ namespace ME3Explorer
                         break;
                     case "StaticMeshCollectionActor":
                         subNodes.AddRange(StartStaticMeshCollectionActorScan(data, ref binarystart));
+                        break;
+                    case "FracturedStaticMesh":
+                        subNodes.AddRange(StartFracturedStaticMeshScan(data, ref binarystart));
                         break;
                     case "StaticMesh":
                         subNodes.AddRange(StartStaticMeshScan(data, ref binarystart));

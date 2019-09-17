@@ -231,6 +231,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         return From<MaterialInstance>(export);
                     }
                     return new GenericObjectBinary(Array.Empty<byte>());
+                case "FracturedStaticMesh":
+                    return From<FracturedStaticMesh>(export);
                 case "StaticMesh":
                     return From<StaticMesh>(export);
                 case "SkeletalMesh":

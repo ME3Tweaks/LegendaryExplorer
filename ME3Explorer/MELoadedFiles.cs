@@ -36,6 +36,10 @@ namespace ME3Explorer
 
             //make dictionary from basegame files
             var loadedFiles = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            if (game == MEGame.UDK)
+            {
+                return loadedFiles;
+            }
 
             foreach (string directory in GetEnabledDLC(game).OrderBy(dir => GetMountPriority(dir, game)).Prepend(MEDirectories.BioGamePath(game)))
             {

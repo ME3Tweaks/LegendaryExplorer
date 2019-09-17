@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Gammtek.Conduit;
+using Gammtek.Conduit.Extensions;
 using ME3Explorer.Packages;
 using SharpDX;
 using StreamHelpers;
@@ -22,6 +24,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public PerPolyBoneCollisionData[] PerPolyBoneKDOPs;
         public string[] BoneBreakNames; //ME3 and UDK
         public UIndex[] ClothingAssets; //ME3 and UDK
+        public uint unk1; //UDK
+        public uint unk2; //UDK
+        public float[] unkFloats; //UDK
+        public uint unk3; //UDK
+
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -37,6 +44,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
             if (sc.Game >= MEGame.ME3)
             {
+                if (sc.IsSaving && sc.Game == MEGame.UDK)
+                {
+                    ClothingAssets = new UIndex[0];
+                }
                 sc.Serialize(ref BoneBreakNames, SCExt.Serialize);
                 sc.Serialize(ref ClothingAssets, SCExt.Serialize);
             }
@@ -44,6 +55,19 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 BoneBreakNames = Array.Empty<string>();
                 ClothingAssets = Array.Empty<UIndex>();
+            }
+
+            if (sc.Game == MEGame.UDK)
+            {
+                sc.Serialize(ref unk1);
+                sc.Serialize(ref unk2);
+                sc.Serialize(ref unkFloats, SCExt.Serialize);
+                sc.Serialize(ref unk3);
+            }
+            else if (sc.IsLoading)
+            {
+                unk1 = 1;
+                unkFloats = new []{1f, 0f, 0f, 0f};
             }
         }
 
@@ -189,6 +213,10 @@ namespace ME3Explorer
             {
                 sc.Serialize(ref mb.BoneColor);
             }
+            else if (sc.IsLoading)
+            {
+                mb.BoneColor = new Color(255, 255, 255, 255);
+            }
         }
         public static void Serialize(this SerializingContainer2 sc, ref SkelMeshSection sms)
         {
@@ -233,6 +261,10 @@ namespace ME3Explorer
                 sc.Serialize(ref rsv.UV4);
                 sc.Serialize(ref rsv.BoneColor);
             }
+            else if (sc.IsLoading)
+            {
+                rsv.BoneColor = new Color(255,255,255,255);
+            }
             sc.Serialize(ref rsv.Bone);
         }
         public static void Serialize(this SerializingContainer2 sc, ref SoftSkinVertex ssv)
@@ -252,6 +284,10 @@ namespace ME3Explorer
                 sc.Serialize(ref ssv.UV3);
                 sc.Serialize(ref ssv.UV4);
                 sc.Serialize(ref ssv.BoneColor);
+            }
+            else if (sc.IsLoading)
+            {
+                ssv.BoneColor = new Color(255, 255, 255, 255);
             }
             for (int i = 0; i < 4; i++)
             {
@@ -312,26 +348,118 @@ namespace ME3Explorer
 
             if (sc.Game == MEGame.UDK)
             {
+                svb.bUsePackedPosition = true;
+            }
+            else
+            {
+                svb.bUsePackedPosition = false;
+                svb.bUseFullPrecisionUVs = false;
+            }
+
+            if (sc.Game == MEGame.UDK)
+            {
+                svb.NumTexCoords = 1;
                 sc.Serialize(ref svb.NumTexCoords);
             }
-            sc.Serialize(ref svb.bUseFullPrecisionUVs);
-            if (svb.bUseFullPrecisionUVs)
+            else if (sc.IsLoading)
             {
-                throw new Exception($"SkeletalMesh is using Full precision UVs! Mesh in: {sc.Pcc.FilePath}");
+                svb.NumTexCoords = 1;
             }
+            sc.Serialize(ref svb.bUseFullPrecisionUVs);
             if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref svb.bUsePackedPosition);
-                if (svb.bUseFullPrecisionUVs)
-                {
-                    throw new Exception($"SkeletalMesh is using PackedPosition vertices! Mesh in: {sc.Pcc.FilePath}");
-                }
                 sc.Serialize(ref svb.MeshExtension);
                 sc.Serialize(ref svb.MeshOrigin);
             }
             int elementSize = 32;
             sc.Serialize(ref elementSize);
-            sc.Serialize(ref svb.VertexData, Serialize);
+
+            //vertexData
+            int count = svb.VertexData?.Length ?? 0;
+            sc.Serialize(ref count);
+            if (sc.IsLoading)
+            {
+                svb.VertexData = new GPUSkinVertex[count];
+            }
+
+            for (int j = 0; j < count; j++)
+            {
+                ref GPUSkinVertex gsv = ref svb.VertexData[j];
+                if (sc.IsLoading)
+                {
+                    gsv = new GPUSkinVertex();
+                }
+
+                if (sc.Game == MEGame.ME2)
+                {
+                    sc.Serialize(ref gsv.Position);
+                }
+                sc.Serialize(ref gsv.TangentX);
+                sc.Serialize(ref gsv.TangentZ);
+                for (int i = 0; i < 4; i++)
+                {
+                    sc.Serialize(ref gsv.InfluenceBones[i]);
+                }
+                for (int i = 0; i < 4; i++)
+                {
+                    sc.Serialize(ref gsv.InfluenceWeights[i]);
+                }
+                if (sc.Game >= MEGame.ME3)
+                {
+                    if (false)
+                    {
+                        if (sc.IsLoading)
+                        {
+                            uint packedPos = sc.ms.ReadUInt32();
+                            gsv.Position = new Vector3(packedPos.bits(31, 21) / 1023f,
+                                                       packedPos.bits(20, 10) / 1023f,
+                                                       packedPos.bits(9, 0) / 1023f) * svb.MeshExtension + svb.MeshOrigin;
+                        }
+                        else
+                        {
+                            Vector3 pos = (gsv.Position - svb.MeshOrigin) - svb.MeshExtension; //puts values in -1.0 to 1.0 range
+                            uint x;
+                            uint y;
+                            uint z;
+                            unchecked
+                            {
+                                x = (uint)Math.Truncate(pos.X * 1023.0).ToInt32().Clamp(-1023, 1023) << 21;
+                                y = (uint)Math.Truncate(pos.Y * 1023.0).ToInt32().Clamp(-1023, 1023) << 21 >> 11;
+                                z = (uint)Math.Truncate(pos.Z * 1023.0).ToInt32().Clamp(-1023, 1023) << 22 >> 22;
+                            }
+                            sc.ms.WriteUInt32(x | y | z);
+                        }
+                    }
+                    else
+                    {
+                        sc.Serialize(ref gsv.Position);
+                    }
+                }
+
+                if (svb.bUseFullPrecisionUVs)
+                {
+                    Vector2 fullUV = gsv.UV;
+                    sc.Serialize(ref fullUV);
+                    gsv.UV = fullUV;
+                }
+                else
+                {
+                    sc.Serialize(ref gsv.UV);
+                }
+
+                if (svb.NumTexCoords > 1)
+                {
+                    if (sc.IsLoading)
+                    {
+                        sc.ms.Skip((svb.NumTexCoords - 1) * (svb.bUseFullPrecisionUVs ? 8 : 4));
+                    }
+                    else
+                    {
+                        throw new Exception("Should never be saing more than one UV!");
+                    }
+                }
+            }
         }
         public static void Serialize(this SerializingContainer2 sc, ref StaticLODModel slm)
         {
@@ -342,8 +470,13 @@ namespace ME3Explorer
             sc.Serialize(ref slm.Sections, Serialize);
             if (sc.Game == MEGame.UDK)
             {
+                slm.NeedsCPUAccess = true;
                 sc.Serialize(ref slm.NeedsCPUAccess);
                 sc.Serialize(ref slm.DataTypeSize);
+            }
+            else if (sc.IsLoading)
+            {
+                slm.DataTypeSize = 2;
             }
             int ushortSize = 2;
             sc.Serialize(ref ushortSize);
@@ -378,6 +511,10 @@ namespace ME3Explorer
             if (sc.Game == MEGame.UDK)
             {
                 sc.Serialize(ref slm.NumTexCoords);
+            }
+            else if (sc.IsLoading)
+            {
+                slm.NumTexCoords = 1;
             }
             if (sc.Game == MEGame.ME1)
             {

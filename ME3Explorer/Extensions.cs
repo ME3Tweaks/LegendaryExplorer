@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -871,6 +872,15 @@ namespace ME3Explorer
         public static byte PackToByte(this float f)
         {
             return (byte)((int)(f * 127.5f + 128.0f)).Clamp(0, 255);
+        }
+
+        public static uint bits(this uint word, byte from, byte to)
+        {
+            Contract.Assert(from < 32);
+            Contract.Assert(to < 32);
+            Contract.Assert(to < from);
+
+            return (word << (31 - from)) >> (31 - from + to);
         }
     }
 

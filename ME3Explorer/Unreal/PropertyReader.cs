@@ -553,7 +553,7 @@ namespace ME3Explorer.Unreal
             //Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
             stream.WritePropHeader(pcc, propName, PropertyType.BoolProperty, 0);
-            if (pcc.Game == MEGame.ME3)
+            if (pcc.Game >= MEGame.ME3)
             {
                 stream.WriteBoolByte(value);
             }

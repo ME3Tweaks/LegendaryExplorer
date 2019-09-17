@@ -262,7 +262,7 @@ namespace ME3Explorer.Packages
                 }
 
                 //read importTable
-                inStream.Seek(ImportOffset, SeekOrigin.Begin);
+                inStream.JumpTo(ImportOffset);
                 for (int i = 0; i < ImportCount; i++)
                 {
                     ImportEntry imp = new ImportEntry(this, inStream) { Index = i };
@@ -271,7 +271,7 @@ namespace ME3Explorer.Packages
                 }
 
                 //read exportTable (ExportEntry constructor reads export data)
-                inStream.Seek(ExportOffset, SeekOrigin.Begin);
+                inStream.JumpTo(ExportOffset);
                 for (int i = 0; i < ExportCount; i++)
                 {
                     ExportEntry e = new ExportEntry(this, inStream) { Index = i };

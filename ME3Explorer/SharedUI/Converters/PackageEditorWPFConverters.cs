@@ -110,6 +110,7 @@ namespace ME3Explorer.SharedUI.Converters
                         return fname.Equals(exp.ObjectName, StringComparison.InvariantCultureIgnoreCase) ? "/PackageEditor/EntryIcons/icon_package_fileroot.png" :  "/PackageEditor/EntryIcons/icon_package.png";
                     case "SkeletalMesh":
                     case "StaticMesh":
+                    case "FracturedStaticMesh":
                         return "/PackageEditor/EntryIcons/icon_mesh.png";
                     case "Sequence":
                         return "/PackageEditor/EntryIcons/icon_sequence.png";

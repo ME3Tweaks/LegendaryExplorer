@@ -697,7 +697,7 @@ namespace ME3Explorer
                 uint dependencyTableOffset = ms.ReadUInt32();
                 items.Add($"0x{ms.Position - 4:X2} Dependency Table Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
 
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game >= MEGame.ME3)
                 {
                     uint importExportGuidsOffset = ms.ReadUInt32();
                     items.Add($"0x{ms.Position - 4:X2} ImportExportGuidsOffset: 0x{importExportGuidsOffset:X8} (Not used in Mass Effect games)");
@@ -750,11 +750,14 @@ namespace ME3Explorer
                     items.Add($"0x{ms.Position - 4:X2} Unknown 4: {unknown4} (0x{unknown4:X8})");
                 }
 
-                int unknown5 = ms.ReadInt32();
-                items.Add($"0x{ms.Position - 4:X2} Unknown 5: {unknown5} (0x{unknown5:X8})");
+                if (Pcc.Game != MEGame.UDK)
+                {
+                    int unknown5 = ms.ReadInt32();
+                    items.Add($"0x{ms.Position - 4:X2} Unknown 5: {unknown5} (0x{unknown5:X8})");
 
-                int unknown6 = ms.ReadInt32();
-                items.Add($"0x{ms.Position - 4:X2} Unknown 6: {unknown6} (0x{unknown6:X8})");
+                    int unknown6 = ms.ReadInt32();
+                    items.Add($"0x{ms.Position - 4:X2} Unknown 6: {unknown6} (0x{unknown6:X8})");
+                }
 
                 if (Pcc.Game == MEGame.ME1)
                 {
@@ -1299,7 +1302,7 @@ namespace ME3Explorer
                     Pcc.addExport(ent);
                     newEntry = ent;
                     crossPCCObjectMap[exp] = ent;
-                    if (ent?.Parent.ClassName == "Level" && ent.InheritsFrom("Actor") && Pcc.AddToLevelActors(ent))
+                    if (ent?.Parent?.ClassName == "Level" && ent.InheritsFrom("Actor") && Pcc.AddToLevelActors(ent))
                     {
                         MessageBox.Show(this, $"Added {ent.ObjectName} to PersistentLevel's Actor list!");
                     }
@@ -1333,7 +1336,7 @@ namespace ME3Explorer
                     ExportEntry ent = export.Clone();
                     Pcc.addExport(ent);
                     newEntry = ent;
-                    if (ent?.Parent.ClassName == "Level" && ent.InheritsFrom("Actor") && Pcc.AddToLevelActors(ent))
+                    if (ent?.Parent?.ClassName == "Level" && ent.InheritsFrom("Actor") && Pcc.AddToLevelActors(ent))
                     {
                         MessageBox.Show(this, $"Added {ent.ObjectName} to PersistentLevel's Actor list!");
                     }
@@ -2613,9 +2616,9 @@ namespace ME3Explorer
                         {
                             newItem = new TreeViewEntry(newExport);
                             crossPCCObjectMap[sourceEntry] = newExport; //map old index to new index
-                            if (newExport?.Parent.ClassName == "Level" && newExport.InheritsFrom("Actor") && Pcc.AddToLevelActors(newExport))
+                            if (newExport?.Parent?.ClassName == "Level" && newExport.InheritsFrom("Actor") && Pcc.AddToLevelActors(newExport))
                             {
-                                MessageBox.Show(this, $"Added {newExport.ObjectName} to PersistenLevel's Actor list!");
+                                MessageBox.Show(this, $"Added {newExport.ObjectName} to PersistentLevel's Actor list!");
                             }
                         }
                         else
@@ -4101,7 +4104,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "PrefabInstance", true)) break;
+                    if (findClass(filePath, "FracturedStaticMesh", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
 
@@ -4268,7 +4271,8 @@ namespace ME3Explorer
                     {
                         try
                         {
-                            var obj = ObjectBinary.From<PrefabInstance>(exp);
+                            Debug.WriteLine($"{exp.UIndex}: {filePath}");
+                            var obj = ObjectBinary.From<FracturedStaticMesh>(exp);
                             var ms = new MemoryStream();
                             obj.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
                             byte[] buff = ms.ToArray();

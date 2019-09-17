@@ -71,6 +71,9 @@ namespace ME3Explorer
         public ICommand FindCommand { get; set; }
         public ICommand GotoCommand { get; set; }
         public ICommand ConvertToStaticMeshCommand { get; set; }
+        public ICommand ImportFromUDKCommand { get; set; }
+        public ICommand ReplaceFromUDKCommand { get; set; }
+        public ICommand ExportToUDKCommand { get; set; }
         private void LoadCommands()
         {
             OpenFileCommand = new GenericCommand(OpenFile);
@@ -79,7 +82,36 @@ namespace ME3Explorer
             //FindCommand = new GenericCommand(FocusSearch, PackageIsLoaded);
             //GotoCommand = new GenericCommand(FocusGoto, PackageIsLoaded);
             ConvertToStaticMeshCommand = new GenericCommand(ConvertToStaticMesh, CanConvertToStaticMesh);
+            ImportFromUDKCommand = new GenericCommand(ImportFromUDK, PackageIsLoaded);
+
+            //todo: write these methods
+            //ReplaceFromUDKCommand = new GenericCommand(ReplaceFromUDK, IsMeshSelected);
+            //ExportToUDKCommand = new GenericCommand(ExportToUDK, IsMeshSelected);
         }
+
+        private void ImportFromUDK()
+        {
+            //todo: finish this
+            return;
+            OpenFileDialog d = new OpenFileDialog { Filter = App.UDKFileFilter };
+            if (d.ShowDialog() == true)
+            {
+                try
+                {
+                    using (IMEPackage udk = MEPackageHandler.OpenUDKPackage(d.FileName))
+                    {
+                        var meshes = new List<ExportEntry>();
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    new ExceptionHandlerDialogWPF(e).ShowDialog();
+                }
+            }
+        }
+
+        private bool IsMeshSelected() => Mesh3DViewer.IsStaticMesh || Mesh3DViewer.IsSkeletalMesh;
 
         private bool CanConvertToStaticMesh() => Mesh3DViewer.IsSkeletalMesh && Pcc.Game == MEGame.ME3;
 

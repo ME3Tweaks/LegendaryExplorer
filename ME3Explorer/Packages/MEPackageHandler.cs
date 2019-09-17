@@ -118,6 +118,18 @@ namespace ME3Explorer.Packages
 
         }
 
+        public static IMEPackage OpenUDKPackage(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        {
+            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
+            if (pck.Game == MEGame.UDK)
+            {
+                return pck;
+            }
+
+            pck.Release(wpfWindow, winForm);
+            throw new FormatException("Not a UDK package file.");
+        }
+
         public static IMEPackage OpenME3Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);

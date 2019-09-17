@@ -78,6 +78,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
         {
             return new Vector2DHalf(vec2D.X, vec2D.Y);
         }
+
+        public static implicit operator Vector2(Vector2DHalf vec2DHalf)
+        {
+            return new Vector2(vec2DHalf.X, vec2DHalf.Y);
+        }
     }
     public readonly struct Rotator
     {

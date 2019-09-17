@@ -351,6 +351,7 @@ namespace ME3Explorer.Unreal
             switch (pcc.Game)
             {
                 case MEGame.ME3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                case MEGame.UDK when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
                     defaultStructDict = defaultStructValuesME3;
                     getDefaultStructValueFunc = ME3UnrealObjectInfo.getDefaultStructValue;
                     break;
@@ -1285,7 +1286,7 @@ namespace ME3Explorer.Unreal
         public BoolProperty(MemoryStream stream, MEGame game, NameReference? name = null, bool isArrayContained = false) : base(name)
         {
             ValueOffset = stream.Position;
-            if (game != MEGame.ME3 && game != MEGame.UDK && isArrayContained)
+            if (game < MEGame.ME3 && isArrayContained)
             {
                 //ME2 seems to read 1 byte... sometimes...
                 //ME1 as well
@@ -1293,7 +1294,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                Value = (game == MEGame.ME3 || game == MEGame.UDK) ? stream.ReadBoolByte() : stream.ReadBoolInt();
+                Value = (game >= MEGame.ME3) ? stream.ReadBoolByte() : stream.ReadBoolInt();
             }
         }
 

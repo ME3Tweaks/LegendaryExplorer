@@ -6638,8 +6638,17 @@ namespace ME3Explorer
                         subnodes.Add(MakeUInt32Node(bin, "HighResSourceMeshCRC"));
                         subnodes.Add(MakeGuidNode(bin, "LightingGuid"));
                     }
+                    if (Pcc.Game == MEGame.UDK)
+                    {
+                        subnodes.Add(MakeUInt32Node(bin, "unk"));
+                        subnodes.Add(MakeArrayNode(bin, "unk float list", j => MakeFloatNode(bin, $"{j}")));
+                        subnodes.Add(MakeUInt32Node(bin, "unk"));
+                        subnodes.Add(MakeUInt32Node(bin, "unk"));
+                        subnodes.Add(MakeUInt32Node(bin, "unk"));
+                    }
                 }
 
+                binarystart = (int)bin.Position;
                 return subnodes.Prepend(new BinInterpNode("Materials")
                 {
                     IsExpanded = true,
@@ -6649,6 +6658,66 @@ namespace ME3Explorer
                         return MakeEntryNode(bin, $"Material[{i}]");
                     })
                 });
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+        private IEnumerable<ITreeItem> StartFracturedStaticMeshScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                subnodes.AddRange(StartStaticMeshScan(data, ref binarystart));
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+
+                subnodes.Add(MakeEntryNode(bin, "SourceStaticMesh"));
+                subnodes.Add(MakeArrayNode(bin, "Fragments", i => new BinInterpNode(bin.Position, $"{i}")
+                {
+                    Items =
+                    {
+                        MakeVectorNode(bin, "Center"),
+                        new BinInterpNode(bin.Position, "ConvexElem")
+                        {
+                            Items =
+                            {
+                                MakeArrayNode(bin, "VertexData", j => MakeVectorNode(bin, $"{j}")),
+                                MakeArrayNode(bin, "PermutedVertexData", j => MakeQuatNode(bin, $"{j}")), //actually planes, not quats
+                                MakeArrayNode(bin, "FaceTriData", j => MakeInt32Node(bin, $"{j}")),
+                                MakeArrayNode(bin, "EdgeDirections", j => MakeVectorNode(bin, $"{j}")),
+                                MakeArrayNode(bin, "FaceNormalDirections", j => MakeVectorNode(bin, $"{j}")),
+                                MakeArrayNode(bin, "FacePlaneData", j => MakeQuatNode(bin, $"{j}")), //actually planes, not quats
+                                MakeBoxNode(bin, "ElemBox")
+                            }
+                        },
+                        MakeBoxSphereBoundsNode(bin, "Bounds"),
+                        ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new ITreeItem[]
+                        {
+                            MakeArrayNode(bin, "Neighbours", j => MakeByteNode(bin, $"{j}")),
+                            MakeBoolIntNode(bin, "bCanBeDestroyed"),
+                            MakeBoolIntNode(bin, "bRootFragment"),
+                            MakeBoolIntNode(bin, "bNeverSpawnPhysicsChunk"),
+                            MakeVectorNode(bin, "AverageExteriorNormal"),
+                            MakeArrayNode(bin, "NeighbourDims", j => MakeFloatNode(bin, $"{j}")),
+                        })
+                    }
+                }));
+                subnodes.Add(MakeInt32Node(bin, "CoreFragmentIndex"));
+                if (Pcc.Game >= MEGame.ME3)
+                {
+                    subnodes.Add(MakeInt32Node(bin, "InteriorElementIndex"));
+                    subnodes.Add(MakeVectorNode(bin, "CoreMeshScale3D"));
+                    subnodes.Add(MakeVectorNode(bin, "CoreMeshOffset"));
+                    subnodes.Add(MakeRotatorNode(bin, "CoreMeshRotation"));
+                    subnodes.Add(MakeVectorNode(bin, "PlaneBias"));
+                    subnodes.Add(MakeUInt16Node(bin, "NonCriticalBuildVersion"));
+                    subnodes.Add(MakeUInt16Node(bin, "LicenseeNonCriticalBuildVersion"));
+                }
+
             }
             catch (Exception ex)
             {

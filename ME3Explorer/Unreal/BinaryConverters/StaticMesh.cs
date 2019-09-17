@@ -32,6 +32,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public string HighResSourceMeshName; //ME3/UDK
         public uint HighResSourceMeshCRC; //ME3/UDK
         public Guid LightingGuid; //ME3/UDK
+        public uint unk8; //UDK
+        public float[] unkFloats; //UDK
+        public uint unk9; //UDK
+        public uint unk10; //UDK
+        public uint unk11; //UDK
+
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -87,6 +93,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
             else
             {
+                if (sc.IsSaving && sc.Game == MEGame.UDK)
+                {
+                    unk1 = 1; //no clue why, but UDK will crash if this isn't 1
+                }
                 sc.Serialize(ref unk1);
                 sc.Serialize(ref ThumbnailAngle);
                 sc.Serialize(ref ThumbnailDistance);
@@ -105,6 +115,20 @@ namespace ME3Explorer.Unreal.BinaryConverters
             if (sc.IsLoading && sc.Game < MEGame.ME3)
             {
                 LightingGuid = Guid.NewGuid();
+            }
+            if (sc.Game == MEGame.UDK)
+            {
+                sc.Serialize(ref unk8);
+                sc.Serialize(ref unkFloats, SCExt.Serialize);
+                sc.Serialize(ref unk9);
+                sc.Serialize(ref unk10);
+                sc.Serialize(ref unk11);
+            }
+            else if (sc.IsLoading)
+            {
+                unk8 = 1;
+                unkFloats = Array.Empty<float>();
+                unk9 = 1;
             }
         }
 

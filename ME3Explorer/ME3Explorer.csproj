@@ -818,6 +818,7 @@
     <Compile Include="Unreal\BinaryConverters\ExportBinaryConverter.cs" />
     <Compile Include="Unreal\BinaryConverters\ConvertExtensions.cs" />
     <Compile Include="Unreal\BinaryConverters\FluidSurfaceComponent.cs" />
+    <Compile Include="Unreal\BinaryConverters\FracturedStaticMesh.cs" />
     <Compile Include="Unreal\BinaryConverters\Level.cs" />
     <Compile Include="Unreal\BinaryConverters\Material.cs" />
     <Compile Include="OrderedDictionary.cs" />
