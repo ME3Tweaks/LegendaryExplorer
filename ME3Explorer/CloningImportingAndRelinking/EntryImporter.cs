@@ -37,8 +37,8 @@ namespace ME3Explorer
         /// <param name="newEntry"></param>
         /// <param name="relinkMap"></param>
         /// <returns></returns>
-        public static List<string> ImportAndRelinkEntries(TreeMergeDialog.PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink, out IEntry newEntry,
-                                                          Dictionary<IEntry, IEntry> relinkMap = null)
+        public static List<string> ImportAndRelinkEntries(TreeMergeDialog.PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink,
+                                                          out IEntry newEntry, Dictionary<IEntry, IEntry> relinkMap = null)
         {
             relinkMap = relinkMap ?? new Dictionary<IEntry, IEntry>();
             IMEPackage sourcePcc = sourceEntry.FileRef;

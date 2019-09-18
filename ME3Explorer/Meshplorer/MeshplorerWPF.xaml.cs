@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ByteSizeLib;
+using ME3Explorer.PackageEditorWPFControls;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -83,16 +84,48 @@ namespace ME3Explorer
             //GotoCommand = new GenericCommand(FocusGoto, PackageIsLoaded);
             ConvertToStaticMeshCommand = new GenericCommand(ConvertToStaticMesh, CanConvertToStaticMesh);
             ImportFromUDKCommand = new GenericCommand(ImportFromUDK, PackageIsLoaded);
-
-            //todo: write these methods
-            //ReplaceFromUDKCommand = new GenericCommand(ReplaceFromUDK, IsMeshSelected);
-            //ExportToUDKCommand = new GenericCommand(ExportToUDK, IsMeshSelected);
+            ReplaceFromUDKCommand = new GenericCommand(ReplaceFromUDK, IsMeshSelected);
+            ExportToUDKCommand = new GenericCommand(ExportToUDK, IsMeshSelected);
         }
 
-        private void ImportFromUDK()
+        private void ExportToUDK()
         {
-            //todo: finish this
-            return;
+            SaveFileDialog d = new SaveFileDialog {Filter = App.UDKFileFilter};
+            if (d.ShowDialog() == true)
+            {
+                try
+                {
+
+                    MEPackageHandler.CreateAndSaveUDKPackage(d.FileName);
+                    using (IMEPackage upk = MEPackageHandler.OpenUDKPackage(d.FileName))
+                    {
+                        byte[] dataBackup = CurrentExport.Data;
+                        ObjectBinary objBin = ObjectBinary.From(CurrentExport);
+                        foreach ((UIndex uIndex, var _) in objBin.GetUIndexes(CurrentExport.Game))
+                        {
+                            uIndex.value = 0;
+                        }
+                        CurrentExport.setBinaryData(objBin.ToBytes(CurrentExport.FileRef));
+                        CurrentExport.WriteProperties(new PropertyCollection());
+
+                        EntryImporter.ImportAndRelinkEntries(TreeMergeDialog.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true,
+                                                             out IEntry newEntry);
+                        CurrentExport.Data = dataBackup;
+                        ExportEntry newExport = (ExportEntry)newEntry;
+
+                        upk.save();
+                    }
+                    MessageBox.Show(this, "Done!");
+                }
+                catch (Exception e)
+                {
+                    new ExceptionHandlerDialogWPF(e).ShowDialog();
+                }
+            }
+        }
+
+        private void ReplaceFromUDK()
+        {
             OpenFileDialog d = new OpenFileDialog { Filter = App.UDKFileFilter };
             if (d.ShowDialog() == true)
             {
@@ -100,8 +133,100 @@ namespace ME3Explorer
                 {
                     using (IMEPackage udk = MEPackageHandler.OpenUDKPackage(d.FileName))
                     {
-                        var meshes = new List<ExportEntry>();
+                        string className = CurrentExport.ClassName;
+                        if (EntrySelector.GetEntry<ExportEntry>(this, udk, $"Select {className} to import:", exp => exp.ClassName == className) is ExportEntry meshExport)
+                        {
+                            if (className == "SkeletalMesh")
+                            {
+                                SkeletalMesh newMesh = ObjectBinary.From<SkeletalMesh>(meshExport);
+                                SkeletalMesh originalMesh = ObjectBinary.From<SkeletalMesh>(CurrentExport);
+                                if (newMesh.RefSkeleton.Length != originalMesh.RefSkeleton.Length)
+                                {
+                                    MessageBox.Show(this, "Cannot replace a SkeletalMesh with one that has a different number of bones!");
+                                    return;
+                                }
 
+                                newMesh.Materials = originalMesh.Materials.TypedClone();
+                                CurrentExport.setBinaryData(newMesh.ToBytes(Pcc));
+                            }
+                            else
+                            {
+                                StaticMesh newMesh;
+                                StaticMesh originalMesh;
+                                if (className == "FracturedStaticMesh")
+                                {
+                                    newMesh = ObjectBinary.From<FracturedStaticMesh>(meshExport);
+                                    originalMesh = ObjectBinary.From<FracturedStaticMesh>(CurrentExport);
+                                }
+                                else
+                                {
+                                    newMesh = ObjectBinary.From<StaticMesh>(meshExport);
+                                    originalMesh = ObjectBinary.From<StaticMesh>(CurrentExport);
+                                }
+
+                                newMesh.BodySetup = 0;
+                                if (originalMesh.LODModels.Any())
+                                {
+                                    UIndex[] mats = originalMesh.LODModels[0].Elements.Select(el => el.Material).ToArray();
+                                    foreach (StaticMeshRenderData lodModel in newMesh.LODModels)
+                                    {
+                                        for (int i = 0; i < lodModel.Elements.Length; i++)
+                                        {
+                                            UIndex matIndex = 0;
+                                            if (i < mats.Length)
+                                            {
+                                                matIndex = mats[i];
+                                            }
+                                            lodModel.Elements[i].Material = matIndex;
+                                        }
+                                    }
+                                }
+                                CurrentExport.setBinaryData(newMesh.ToBytes(Pcc));
+                            }
+                            MessageBox.Show(this, "Done!");
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    new ExceptionHandlerDialogWPF(e).ShowDialog();
+                }
+            }
+        }
+
+        private void ImportFromUDK()
+        {
+            OpenFileDialog d = new OpenFileDialog { Filter = App.UDKFileFilter };
+            if (d.ShowDialog() == true)
+            {
+                try
+                {
+                    using (IMEPackage udk = MEPackageHandler.OpenUDKPackage(d.FileName))
+                    {
+                        string[] meshClasses = { "StaticMesh", "FracturedStaticMesh", "SkeletalMesh" };
+                        if (EntrySelector.GetEntry<ExportEntry>(this, udk, "Select mesh to import:", exp => meshClasses.Contains(exp.ClassName)) is ExportEntry meshExport)
+                        {
+                            ObjectBinary objBin = ObjectBinary.From(meshExport);
+                            foreach ((UIndex uIndex, var _) in objBin.GetUIndexes(MEGame.UDK))
+                            {
+                                uIndex.value = 0;
+                            }
+                            meshExport.setBinaryData(objBin.ToBytes(udk));
+                            meshExport.WriteProperties(new PropertyCollection());
+                            var results = EntryImporter.ImportAndRelinkEntries(TreeMergeDialog.PortingOption.AddSingularAsChild, meshExport, Pcc,
+                                                                               null, true, out _);
+                            if (results.Any())
+                            {
+                                ListDialog ld = new ListDialog(results, "Relink report",
+                                                               "The following items failed to relink.(This does not mean the import was unsuccesful, " +
+                                                               "just that the listed values will have to be corrected in the Interpreter and BinaryInterpreter)", this);
+                                ld.Show();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Mesh has been imported with no reported issues.");
+                            }
+                        }
                     }
                 }
                 catch (Exception e)

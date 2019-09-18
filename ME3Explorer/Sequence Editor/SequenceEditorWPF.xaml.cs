@@ -171,7 +171,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private void GoTo()
         {
-            if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is ExportEntry export)
+            if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry export)
             {
                 GoToExport(export);
             }
@@ -1802,7 +1802,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private void AddObject_Clicked(object sender, RoutedEventArgs e)
         {
-            if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is ExportEntry exportToAdd)
+            if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry exportToAdd)
             {
                 if (!exportToAdd.InheritsFrom("SequenceObject"))
                 {
@@ -2024,7 +2024,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (CurrentObjects_ListBox.SelectedItem is SVar sVar)
             {
-                if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is ExportEntry export)
+                if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry export)
                 {
                     if (CurrentObjects.All(x => x.Export != export))
                     {

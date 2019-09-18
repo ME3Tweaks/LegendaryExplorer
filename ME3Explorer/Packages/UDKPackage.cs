@@ -55,7 +55,7 @@ namespace ME3Explorer.Packages
         #endregion
 
         static bool isInitialized;
-        internal static Func<string, UDKPackage> Initialize()
+        internal static Func<string, bool, UDKPackage> Initialize()
         {
             if (isInitialized)
             {
@@ -64,7 +64,7 @@ namespace ME3Explorer.Packages
             else
             {
                 isInitialized = true;
-                return f => new UDKPackage(f);
+                return (fileName, shouldCreate) => new UDKPackage(fileName, shouldCreate);
             }
         }
         /// <summary>

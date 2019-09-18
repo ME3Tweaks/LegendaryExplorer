@@ -17,7 +17,7 @@ namespace ME3Explorer.Packages
         static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new ConcurrentDictionary<string, IMEPackage>();
         public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
 
-        static Func<string, UDKPackage> UDKConstructorDelegate;
+        static Func<string, bool, UDKPackage> UDKConstructorDelegate;
         static Func<string, MEGame, MEPackage> MEConstructorDelegate;
 
         public static void Initialize()
@@ -52,7 +52,7 @@ namespace ME3Explorer.Packages
                 else if (version == 868 && licenseVersion == 0)
                 {
                     //UDK
-                    package = UDKConstructorDelegate(pathToFile);
+                    package = UDKConstructorDelegate(pathToFile, false);
                 }
                 else
                 {
@@ -90,6 +90,11 @@ namespace ME3Explorer.Packages
         public static void CreateAndSaveMePackage(string path, MEGame game)
         {
             MEConstructorDelegate(path, game).save();
+        }
+
+        public static void CreateAndSaveUDKPackage(string path)
+        {
+            UDKConstructorDelegate(path, true).save();
         }
 
         private static void Package_noLongerUsed(UnrealPackageFile sender)

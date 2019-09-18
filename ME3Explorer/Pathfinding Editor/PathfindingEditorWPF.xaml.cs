@@ -308,12 +308,12 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             if (ActiveNodes_ListBox.SelectedItem is ExportEntry targetpointAnchorEnd && targetpointAnchorEnd.ClassName == "TargetPoint")
             {
-                var movingObject = EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports, "Select a level object that will be moved along the curve. This will be the starting point.");
+                var movingObject = EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Select a level object that will be moved along the curve. This will be the starting point.");
                 if (movingObject == null) return;
 
                 ActiveNodes_ListBox.SelectedItem = movingObject as ExportEntry;
 
-                var interpTrack = (ExportEntry)EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports, "Select the interptrackmove data that we will modify for these points.");
+                var interpTrack = (ExportEntry)EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Select the interptrackmove data that we will modify for these points.");
                 if (interpTrack == null) return;
 
                 var locationTarget = SharedPathfinding.GetLocation(targetpointAnchorEnd);
@@ -973,7 +973,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void AddExportToLevel()
         {
-            if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is ExportEntry selectedEntry)
+            if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry selectedEntry)
             {
 
                 if (!AllLevelObjects.Contains(selectedEntry))
