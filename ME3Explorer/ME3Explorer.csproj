@@ -827,6 +827,7 @@
     <Compile Include="OrderedDictionary.cs" />
     <Compile Include="Unreal\BinaryConverters\Model.cs" />
     <Compile Include="Unreal\BinaryConverters\ModelComponent.cs" />
+    <Compile Include="Unreal\BinaryConverters\ObjectBinary.cs" />
     <Compile Include="Unreal\BinaryConverters\Polys.cs" />
     <Compile Include="Unreal\BinaryConverters\PrefabInstance.cs" />
     <Compile Include="Unreal\BinaryConverters\ShaderCache.cs" />

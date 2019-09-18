@@ -61,7 +61,7 @@ namespace ME3Explorer
             }
             else
             {
-                int link = targetLinkEntry?.idxLink ?? 0;
+                int link = targetLinkEntry?.UIndex ?? 0;
                 if (sourceEntry is ExportEntry sourceExport)
                 {
                     //importing an export

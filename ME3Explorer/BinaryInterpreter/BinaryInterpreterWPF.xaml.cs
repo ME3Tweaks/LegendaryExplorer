@@ -163,6 +163,7 @@ namespace ME3Explorer
             "FloatProperty",
             "FluidSurfaceComponent",
             "FracturedStaticMesh",
+            "FracturedStaticMeshComponent",
             "GuidCache",
             "InteractiveFoliageComponent",
             "IntProperty",
@@ -473,6 +474,7 @@ namespace ME3Explorer
                     case "CoverMeshComponent":
                     case "InteractiveFoliageComponent":
                     case "SplineMeshComponent":
+                    case "FracturedStaticMeshComponent":
                     case "StaticMeshComponent":
                         subNodes.AddRange(StartStaticMeshComponentScan(data, ref binarystart));
                         break;
