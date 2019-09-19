@@ -96,14 +96,14 @@ namespace ME3Explorer.Matinee
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
-                Pcc.save(d.FileName);
+                Pcc.Save(d.FileName);
                 MessageBox.Show("Done.");
             }
         }
 
         private void SavePackage()
         {
-            Pcc.save();
+            Pcc.Save();
         }
 
         private void OpenPackage()

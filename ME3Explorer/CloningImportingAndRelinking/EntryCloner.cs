@@ -37,7 +37,7 @@ namespace ME3Explorer
             if (entry is ExportEntry export)
             {
                 ExportEntry ent = export.Clone();
-                entry.FileRef.addExport(ent);
+                entry.FileRef.AddExport(ent);
                 newEntry = ent;
                 if (objectMap != null)
                 {
@@ -47,7 +47,7 @@ namespace ME3Explorer
             else
             {
                 ImportEntry imp = ((ImportEntry)entry).Clone();
-                entry.FileRef.addImport(imp);
+                entry.FileRef.AddImport(imp);
                 newEntry = imp;
                 //Imports are not relinked when cloning
             }

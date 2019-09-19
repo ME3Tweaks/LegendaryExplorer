@@ -67,7 +67,7 @@ namespace ME3Explorer.Unreal.Classes
                 MaterialShaderMapID = parsedMaterial.SM3MaterialResource.ID;
                 foreach (var v in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
                 {
-                    IEntry tex = export.FileRef.getEntry(v.value);
+                    IEntry tex = export.FileRef.GetEntry(v.value);
                     if (tex != null)
                     {
                         Textures.Add(tex);
@@ -83,7 +83,7 @@ namespace ME3Explorer.Unreal.Classes
                     foreach (var param in textureparams)
                     {
                         var paramValue = param.GetProp<ObjectProperty>("ParameterValue");
-                        var texntry = export.FileRef.getEntry(paramValue.Value);
+                        var texntry = export.FileRef.GetEntry(paramValue.Value);
                         if (texntry?.ClassName == "Texture2D" && !Textures.Contains(texntry))
                         {
                             Textures.Add(texntry);
@@ -95,7 +95,7 @@ namespace ME3Explorer.Unreal.Classes
                 {
                     foreach (var obj in textures)
                     {
-                        var texntry = export.FileRef.getEntry(obj.Value);
+                        var texntry = export.FileRef.GetEntry(obj.Value);
                         if (texntry.ClassName == "Texture2D" && !Textures.Contains(texntry))
                         {
                             Textures.Add(texntry);
@@ -110,11 +110,11 @@ namespace ME3Explorer.Unreal.Classes
                     if (parentObjProp.Value > 0)
                     {
                         // Local export
-                        ReadMaterial(export.FileRef.getUExport(parentObjProp.Value));
+                        ReadMaterial(export.FileRef.GetUExport(parentObjProp.Value));
                     }
                     else
                     {
-                        ImportEntry ie = export.FileRef.getImport(parentObjProp.Value);
+                        ImportEntry ie = export.FileRef.GetImport(parentObjProp.Value);
                         var externalEntry = ModelPreview.FindExternalAsset(ie, null);
                         if (externalEntry != null)
                         {

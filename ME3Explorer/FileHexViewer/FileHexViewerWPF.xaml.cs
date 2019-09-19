@@ -131,9 +131,9 @@ namespace ME3Explorer.FileHexViewer
                 });
 
                 inStream.Seek(pcc.ExportOffset, SeekOrigin.Begin);
-                for (int i = 0; i < pcc.ExportCount; i++)
+                foreach (ExportEntry exp in pcc.Exports)
                 {
-                    inStream.Position += pcc.Exports[i].Header.Length;
+                    inStream.Position += exp.Header.Length;
                 }
 
                 used.Add(new UsedSpace
@@ -152,9 +152,8 @@ namespace ME3Explorer.FileHexViewer
 
                 List<UsedSpace> usedExportsSpaces = new List<UsedSpace>();
                 inStream.Seek(pcc.ExportOffset, SeekOrigin.Begin);
-                for (int i = 0; i < pcc.ExportCount; i++)
+                foreach (ExportEntry exp in pcc.Exports)
                 {
-                    ExportEntry exp = pcc.Exports[i];
                     usedExportsSpaces.Add(new UsedSpace
                     {
                         UsedFor = $"Export {exp.UIndex}",
@@ -243,16 +242,16 @@ namespace ME3Explorer.FileHexViewer
                         s += $", Float: {BitConverter.ToSingle(bytes, start)}";
                         if (pcc != null)
                         {
-                            if (pcc.isName(val))
+                            if (pcc.IsName(val))
                             {
-                                s += $", Name: {pcc.getNameEntry(val)}";
+                                s += $", Name: {pcc.GetNameEntry(val)}";
                             }
 
-                            if (pcc.getEntry(val) is ExportEntry exp)
+                            if (pcc.GetEntry(val) is ExportEntry exp)
                             {
                                 s += $", Export: {exp.ObjectName}";
                             }
-                            else if (pcc.getEntry(val) is ImportEntry imp)
+                            else if (pcc.GetEntry(val) is ImportEntry imp)
                             {
                                 s += $", Import: {imp.ObjectName}";
                             }

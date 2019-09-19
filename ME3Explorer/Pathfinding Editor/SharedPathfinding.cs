@@ -85,12 +85,12 @@ namespace ME3Explorer.Pathfinding_Editor
                 if (reachSpectoClone != null)
                 {
                     ExportEntry outgoingSpec = reachSpectoClone.Clone();
-                    Pcc.addExport(outgoingSpec);
+                    Pcc.AddExport(outgoingSpec);
 
                     IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.
 
-                    outgoingSpec.idxClass = reachSpecClassImp.UIndex;
-                    outgoingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
+                    outgoingSpec.Class = reachSpecClassImp;
+                    outgoingSpec.ObjectName = reachSpecClassImp.ObjectName;
 
                     var properties = outgoingSpec.GetProperties();
                     ObjectProperty outgoingSpecStartProp = properties.GetProp<ObjectProperty>("Start"); //START
@@ -128,18 +128,18 @@ namespace ME3Explorer.Pathfinding_Editor
                 if (reachSpectoClone != null)
                 {
                     ExportEntry outgoingSpec = reachSpectoClone.Clone();
-                    Pcc.addExport(outgoingSpec);
+                    Pcc.AddExport(outgoingSpec);
                     ExportEntry incomingSpec = null;
                     if (createTwoWay)
                     {
                         incomingSpec = reachSpectoClone.Clone();
-                        Pcc.addExport(incomingSpec);
+                        Pcc.AddExport(incomingSpec);
                     }
 
                     IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.
 
-                    outgoingSpec.idxClass = reachSpecClassImp.UIndex;
-                    outgoingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
+                    outgoingSpec.Class = reachSpecClassImp;
+                    outgoingSpec.ObjectName = reachSpecClassImp.ObjectName;
 
                     var outgoingSpecProperties = outgoingSpec.GetProperties();
                     if (reachSpecClass == "Engine.SlotToSlotReachSpec")
@@ -166,8 +166,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
                     if (createTwoWay)
                     {
-                        incomingSpec.idxClass = reachSpecClassImp.UIndex;
-                        incomingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
+                        incomingSpec.Class = reachSpecClassImp;
+                        incomingSpec.ObjectName = reachSpecClassImp.ObjectName;
                         var incomingSpecProperties = incomingSpec.GetProperties();
                         if (reachSpecClass == "Engine.SlotToSlotReachSpec")
                         {
@@ -323,12 +323,12 @@ namespace ME3Explorer.Pathfinding_Editor
                 string fullobjectname = String.Join(".", importParts, 0, importParts.Length - upstreamCount);
                 Dictionary<string, string> importdbinfo = ImportClassDB[fullobjectname];
 
-                int downstreamName = Pcc.FindNameOrAdd(importParts[importParts.Length - upstreamCount - 1]);
-                Debug.WriteLine(Pcc.Names[downstreamName]);
+                var downstreamName = importParts[importParts.Length - upstreamCount - 1];
+                Debug.WriteLine(downstreamName);
                 int downstreamLinkIdx = upstreamEntryToAttachTo.UIndex;
                 Debug.WriteLine(upstreamEntryToAttachTo.GetFullPath);
 
-                int downstreamPackageName = Pcc.FindNameOrAdd(importdbinfo["packagefile"]);
+                var downstreamPackageName = importdbinfo["packagefile"];
                 string downstreamClassName = importdbinfo["fullclasspath"];
                 int lastPeriodIndex = downstreamClassName.LastIndexOf(".");
                 if (lastPeriodIndex > 0)
@@ -337,8 +337,6 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 }
 
-                int downstreamClassNameIdx = Pcc.FindNameOrAdd(downstreamClassName);
-                Debug.WriteLine("Finding name " + downstreamClassName);
                 //ImportEntry classImport = getOrAddImport();
                 //int downstreamClass = 0;
                 //if (classImport != null) {
@@ -351,11 +349,11 @@ namespace ME3Explorer.Pathfinding_Editor
                 mostdownstreamimport = new ImportEntry(Pcc)
                 {
                     idxLink = downstreamLinkIdx,
-                    idxClassName = downstreamClassNameIdx,
-                    idxObjectName = downstreamName,
-                    idxPackageFile = downstreamPackageName
+                    ClassName = downstreamClassName,
+                    ObjectName = downstreamName,
+                    PackageFile = downstreamPackageName
                 };
-                Pcc.addImport(mostdownstreamimport);
+                Pcc.AddImport(mostdownstreamimport);
                 upstreamEntryToAttachTo = mostdownstreamimport;
             }
             return mostdownstreamimport;
@@ -468,7 +466,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 if (prop.Value > 0)
                 {
-                    returnlist.Add(export.FileRef.getUExport(prop.Value));
+                    returnlist.Add(export.FileRef.GetUExport(prop.Value));
                 }
             }
 
@@ -484,9 +482,9 @@ namespace ME3Explorer.Pathfinding_Editor
 
             if (props.GetProp<StructProperty>("End") is StructProperty endProperty &&
                 endProperty.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(reachSpec)) is ObjectProperty otherNodeValue
-                && reachSpec.FileRef.isUExport(otherNodeValue.Value))
+                && reachSpec.FileRef.IsUExport(otherNodeValue.Value))
             {
-                return reachSpec.FileRef.getUExport(otherNodeValue.Value);
+                return reachSpec.FileRef.GetUExport(otherNodeValue.Value);
             }
 
             return null; //can't get end, or is external

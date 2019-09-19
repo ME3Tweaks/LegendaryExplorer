@@ -97,7 +97,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         protected UnContainer(ExportEntry self, int superIndex, byte[] bytecode)
             : base(self, bytecode)
         {
-            _super = superIndex == 0 ? null : _self.FileRef.getEntry(superIndex);
+            _super = superIndex == 0 ? null : _self.FileRef.GetEntry(superIndex);
         }
 
         //protected void DecompileChildren(TextBuilder result, bool reverse)

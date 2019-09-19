@@ -1466,7 +1466,7 @@ namespace ME3Explorer
                     {
                         var postint = ms.ReadInt32();
                         var nameIdx = ms.ReadInt32();
-                        label = CurrentLoadedExport.FileRef.getNameEntry(nameIdx);
+                        label = CurrentLoadedExport.FileRef.GetNameEntry(nameIdx);
                         ms.ReadInt32();
                     }
 
@@ -1539,7 +1539,7 @@ namespace ME3Explorer
                         int langTlkCount = BitConverter.ToInt32(data, offset + 8);
                         var languageNode = new BinInterpNode
                         {
-                            Header = $"0x{offset:X4} {CurrentLoadedExport.FileRef.getNameEntry(langRef)} - {langTlkCount} entries",
+                            Header = $"0x{offset:X4} {CurrentLoadedExport.FileRef.GetNameEntry(langRef)} - {langTlkCount} entries",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafName,
                             IsExpanded = true
@@ -1916,7 +1916,7 @@ namespace ME3Explorer
                             int PackageIdx = BitConverter.ToInt32(data, offset);  //Package name idx
                             nTransition.Items.Add(new BinInterpNode
                             {
-                                Header = $"0x{offset:X5} Package Name: {CurrentLoadedExport.FileRef.getNameEntry(PackageName)}_{PackageIdx}",
+                                Header = $"0x{offset:X5} Package Name: {CurrentLoadedExport.FileRef.GetNameEntry(PackageName)}_{PackageIdx}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafName
                             });
@@ -1927,7 +1927,7 @@ namespace ME3Explorer
                             int ClassIdx = BitConverter.ToInt32(data, offset);  //Class name idx
                             nTransition.Items.Add(new BinInterpNode
                             {
-                                Header = $"0x{offset:X5} Class Name: {CurrentLoadedExport.FileRef.getNameEntry(ClassName)}_{ClassIdx}",
+                                Header = $"0x{offset:X5} Class Name: {CurrentLoadedExport.FileRef.GetNameEntry(ClassName)}_{ClassIdx}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafName
                             });
@@ -1938,7 +1938,7 @@ namespace ME3Explorer
                             int FunctionIdx = BitConverter.ToInt32(data, offset);  //Function name idx
                             nTransition.Items.Add(new BinInterpNode
                             {
-                                Header = $"0x{offset:X5} Function Name: {CurrentLoadedExport.FileRef.getNameEntry(FunctionName)}_{FunctionIdx}",
+                                Header = $"0x{offset:X5} Function Name: {CurrentLoadedExport.FileRef.GetNameEntry(FunctionName)}_{FunctionIdx}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafName
                             });
@@ -2076,7 +2076,7 @@ namespace ME3Explorer
                             int FunctionIdx = BitConverter.ToInt32(data, offset);  //Function name
                             nTransition.Items.Add(new BinInterpNode
                             {
-                                Header = $"0x{offset:X5} Function Name: {CurrentLoadedExport.FileRef.getNameEntry(FunctionName)}_{FunctionIdx}",
+                                Header = $"0x{offset:X5} Function Name: {CurrentLoadedExport.FileRef.GetNameEntry(FunctionName)}_{FunctionIdx}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafName
                             });
@@ -2087,7 +2087,7 @@ namespace ME3Explorer
                             int TagIdx = BitConverter.ToInt32(data, offset);  //Object idx
                             nTransition.Items.Add(new BinInterpNode
                             {
-                                Header = $"0x{offset:X5} Object Name: {CurrentLoadedExport.FileRef.getNameEntry(TagName)}_{TagIdx}",
+                                Header = $"0x{offset:X5} Object Name: {CurrentLoadedExport.FileRef.GetNameEntry(TagName)}_{TagIdx}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafName
                             });
@@ -2444,7 +2444,7 @@ namespace ME3Explorer
                         offset -= 4;
                         nTaskIDs.Items.Add(new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} Planet Name: {CurrentLoadedExport.FileRef.getNameEntry(planetName)}_{planetIdx} ",
+                            Header = $"0x{offset:X5} Planet Name: {CurrentLoadedExport.FileRef.GetNameEntry(planetName)}_{planetIdx} ",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafName
                         });
@@ -3112,7 +3112,7 @@ namespace ME3Explorer
             {
                 var TrackOffsets = CurrentLoadedExport.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets");
                 var animsetData = CurrentLoadedExport.GetProperty<ObjectProperty>("m_pBioAnimSetData");
-                var boneList = Pcc.getUExport(animsetData.Value).GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames");
+                var boneList = Pcc.GetUExport(animsetData.Value).GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames");
                 Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("RotationCompressionFormat").Value.Name, out AnimationCompressionFormat rotCompression);
                 int offset = binarystart;
 
@@ -4053,7 +4053,7 @@ namespace ME3Explorer
             int redirnum = BitConverter.ToInt32(data, binarystart);
             subnodes.Add(new BinInterpNode
             {
-                Header = $"{binarystart:X4} Redirect references to this export to: {redirnum} {CurrentLoadedExport.FileRef.getEntry(redirnum).GetFullPath}",
+                Header = $"{binarystart:X4} Redirect references to this export to: {redirnum} {CurrentLoadedExport.FileRef.GetEntry(redirnum).GetFullPath}",
                 Name = "_" + binarystart.ToString()
             });
             return subnodes;
@@ -4250,15 +4250,12 @@ namespace ME3Explorer
                         string nodeText = $"0x{binarystart:X4} ";
                         int val = BitConverter.ToInt32(data, binarystart);
                         string name = val.ToString();
-                        if (val > 0 && val <= CurrentLoadedExport.FileRef.Exports.Count)
+                        if (Pcc.GetEntry(val) is ExportEntry exp)
                         {
-                            ExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
                             nodeText += $"{i}: {name} {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
                         }
-                        else if (val < 0 && val != int.MinValue && Math.Abs(val) <= CurrentLoadedExport.FileRef.Imports.Count)
+                        else if (Pcc.GetEntry(val) is ImportEntry imp)
                         {
-                            int csImportVal = Math.Abs(val) - 1;
-                            ImportEntry imp = CurrentLoadedExport.FileRef.Imports[csImportVal];
                             nodeText += $"{i}: {name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
                         }
 
@@ -4374,7 +4371,7 @@ namespace ME3Explorer
                     int nameIndexNum = BitConverter.ToInt32(data, binarypos + 4);
                     int shouldBe1 = BitConverter.ToInt32(data, binarypos + 8);
 
-                    var name = CurrentLoadedExport.FileRef.getNameEntry(nameIndex);
+                    var name = CurrentLoadedExport.FileRef.GetNameEntry(nameIndex);
                     string nodeValue = $"{(name == "INVALID NAME VALUE " + nameIndex ? "" : name)}_{nameIndexNum}";
                     if (shouldBe1 != 1)
                     {
@@ -4427,7 +4424,7 @@ namespace ME3Explorer
                         int nameindex = BitConverter.ToInt32(data, pos);
                         int nameindexunreal = BitConverter.ToInt32(data, pos + 4);
 
-                        string name = CurrentLoadedExport.FileRef.getNameEntry(nameindex);
+                        string name = CurrentLoadedExport.FileRef.GetNameEntry(nameindex);
                         subnodes.Add(new BinInterpNode
                         {
                             Header = $"{(pos - binarystart):X4} Camera: {name}_{nameindexunreal}",
@@ -4466,7 +4463,7 @@ namespace ME3Explorer
                                 nameindexunreal = BitConverter.ToInt32(data, pos + 4);
                                 BinInterpNode parentnode = new BinInterpNode
                                 {
-                                    Header = $"{(pos - binarystart):X4} Camera {i + 1}: {CurrentLoadedExport.FileRef.getNameEntry(nameindex)}_{nameindexunreal}",
+                                    Header = $"{(pos - binarystart):X4} Camera {i + 1}: {CurrentLoadedExport.FileRef.GetNameEntry(nameindex)}_{nameindexunreal}",
                                     Tag = NodeType.StructLeafName,
                                     Name = $"_{pos.ToString()}"
                                 };
@@ -4665,7 +4662,7 @@ namespace ME3Explorer
                     offset += 4;
                     (subnodes.Last() as BinInterpNode).Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}() = {functionObjectIndex} ({CurrentLoadedExport.FileRef.GetEntryString(functionObjectIndex)})",
+                        Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.GetNameEntry(nameTableIndex)}() = {functionObjectIndex} ({CurrentLoadedExport.FileRef.GetEntryString(functionObjectIndex)})",
                         Name = "_" + (offset - 12),
                         Tag = NodeType.StructLeafName //might need to add a subnode for the 3rd int
                     });
@@ -4720,7 +4717,7 @@ namespace ME3Explorer
                     offset = ClassParser_ReadImplementsTable(subnodes, data, offset);
                     int postComponentsNoneNameIndex = BitConverter.ToInt32(data, offset);
                     //int postComponentNoneIndex = BitConverter.ToInt32(data, offset + 4);
-                    string postCompName = CurrentLoadedExport.FileRef.getNameEntry(postComponentsNoneNameIndex); //This appears to be unused in ME#, it is always None it seems.
+                    string postCompName = CurrentLoadedExport.FileRef.GetNameEntry(postComponentsNoneNameIndex); //This appears to be unused in ME#, it is always None it seems.
                                                                                                                  /*if (postCompName != "None")
                                                                                                                  {
                                                                                                                      Debugger.Break();
@@ -4865,7 +4862,7 @@ namespace ME3Explorer
 
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"0x{offset - 8:X5} Components Table ({CurrentLoadedExport.FileRef.getNameEntry(componentTableNameIndex)})",
+                    Header = $"0x{offset - 8:X5} Components Table ({CurrentLoadedExport.FileRef.GetNameEntry(componentTableNameIndex)})",
                     Name = "_" + (offset - 8),
 
                     Tag = NodeType.StructLeafName
@@ -4883,7 +4880,7 @@ namespace ME3Explorer
                     string objectName = CurrentLoadedExport.FileRef.GetEntryString(componentObjectIndex);
                     (subnodes.Last() as BinInterpNode).Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}({objectName})",
+                        Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.GetNameEntry(nameTableIndex)}({objectName})",
                         Name = "_" + (offset - 12),
 
                         Tag = NodeType.StructLeafName
@@ -4916,7 +4913,7 @@ namespace ME3Explorer
                     }
                     (subnodes.Last() as BinInterpNode).Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{offset - 8:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}({objName})",
+                        Header = $"0x{offset - 8:X5}  {CurrentLoadedExport.FileRef.GetNameEntry(nameTableIndex)}({objName})",
                         Name = "_" + (offset - 8),
 
                         Tag = NodeType.StructLeafName
@@ -4977,7 +4974,7 @@ namespace ME3Explorer
                 int interfaceCount = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"0x{offset - 8:X5} Implemented Interfaces Table Count: {interfaceCount} ({CurrentLoadedExport.FileRef.getNameEntry(interfaceTableName)})",
+                    Header = $"0x{offset - 8:X5} Implemented Interfaces Table Count: {interfaceCount} ({CurrentLoadedExport.FileRef.GetNameEntry(interfaceTableName)})",
                     Name = "_" + (offset - 8),
 
                     Tag = NodeType.StructLeafInt
@@ -4990,7 +4987,7 @@ namespace ME3Explorer
 
                     BinInterpNode subnode = new BinInterpNode
                     {
-                        Header = $"0x{offset - 8:X5}  {CurrentLoadedExport.FileRef.getNameEntry(interfaceNameIndex)}",
+                        Header = $"0x{offset - 8:X5}  {CurrentLoadedExport.FileRef.GetNameEntry(interfaceNameIndex)}",
                         Name = "_" + (offset - 8),
 
                         Tag = NodeType.StructLeafName
@@ -5032,7 +5029,7 @@ namespace ME3Explorer
                 //int noneUnrealPropertyIndex = BitConverter.ToInt32(data, offset + 4);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"0x{offset:X5} Unreal property None Name: {CurrentLoadedExport.FileRef.getNameEntry(noneUnrealProperty)}",
+                    Header = $"0x{offset:X5} Unreal property None Name: {CurrentLoadedExport.FileRef.GetNameEntry(noneUnrealProperty)}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafName
                 });
@@ -5075,7 +5072,7 @@ namespace ME3Explorer
                         //int enumNameIndex = BitConverter.ToInt32(data, offset + 4);
                         subnodes.Add(new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} EnumName[{i}]: {CurrentLoadedExport.FileRef.getNameEntry(enumName)}",
+                            Header = $"0x{offset:X5} EnumName[{i}]: {CurrentLoadedExport.FileRef.GetNameEntry(enumName)}",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafName
                         });
@@ -5154,7 +5151,7 @@ namespace ME3Explorer
                     Guid guid = new Guid(data.Skip(pos + 8).Take(16).ToArray());
                     subnodes.Add(new BinInterpNode
                     {
-                        Header = $"{(pos - binarystart):X4} {CurrentLoadedExport.FileRef.getNameEntry(nameRef)}_{nameIdx}: {{{guid}}}",
+                        Header = $"{(pos - binarystart):X4} {CurrentLoadedExport.FileRef.GetNameEntry(nameRef)}_{nameIdx}: {{{guid}}}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafName
@@ -6137,7 +6134,7 @@ namespace ME3Explorer
                 {
                     if (prop.Value > 0)
                     {
-                        smacitems.Add(Pcc.getUExport(prop.Value));
+                        smacitems.Add(Pcc.GetUExport(prop.Value));
                     }
                     else
                     {
@@ -6199,7 +6196,7 @@ namespace ME3Explorer
                             int staticmeshexp = BitConverter.ToInt32(smc_data, staticmeshstart + 0x18);
                             if (staticmeshexp > 0 && staticmeshexp < CurrentLoadedExport.FileRef.ExportCount)
                             {
-                                staticmesh = CurrentLoadedExport.FileRef.getEntry(staticmeshexp).ObjectName;
+                                staticmesh = CurrentLoadedExport.FileRef.GetEntry(staticmeshexp).ObjectName;
                             }
                         }
                     }
@@ -6274,7 +6271,7 @@ namespace ME3Explorer
                 {
                     if (prop.Value > 0)
                     {
-                        slcaitems.Add(CurrentLoadedExport.FileRef.getEntry(prop.Value) as ExportEntry);
+                        slcaitems.Add(CurrentLoadedExport.FileRef.GetEntry(prop.Value) as ExportEntry);
                     }
                     else
                     {
@@ -7109,7 +7106,7 @@ namespace ME3Explorer
                             {
                                 int val = BitConverter.ToInt32(data, binarypos);
                                 string name = $"0x{binarypos:X6}: {val}";
-                                if (CurrentLoadedExport.FileRef.isEntry(val) && CurrentLoadedExport.FileRef.getEntry(val) is IEntry ent)
+                                if (CurrentLoadedExport.FileRef.IsEntry(val) && CurrentLoadedExport.FileRef.GetEntry(val) is IEntry ent)
                                 {
                                     name += " " + CurrentLoadedExport.FileRef.GetEntryString(val);
                                 }
@@ -7123,7 +7120,7 @@ namespace ME3Explorer
                                 int val = BitConverter.ToInt32(data, binarypos);
                                 if (val > 0 && val <= CurrentLoadedExport.FileRef.NameCount)
                                 {
-                                    nodeText += $"{val.ToString().PadRight(14, ' ')}{CurrentLoadedExport.FileRef.getNameEntry(val)}";
+                                    nodeText += $"{val.ToString().PadRight(14, ' ')}{CurrentLoadedExport.FileRef.GetNameEntry(val)}";
                                 }
                                 else
                                 {

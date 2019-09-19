@@ -204,7 +204,7 @@ namespace ME3Explorer.Propertydb
                             foreach (PropertyReader.Property p in props)
                             {
                                 int f2 = -1;
-                                string name = pcc.getNameEntry(p.Name);
+                                string name = pcc.GetNameEntry(p.Name);
                                 for (int k = 0; k < res.props.Count; k++)
                                     if (res.props[k].name == name)
                                     {

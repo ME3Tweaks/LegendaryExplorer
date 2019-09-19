@@ -110,10 +110,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         private static void WriteFunctionName(StreamWriter writer, UnBytecodeOwner function)
         {
-            int classParentIdx = function.Export.idxSuperClass;
-            if (classParentIdx != 0)
+            if (function.Export.SuperClass is IEntry parent)
             {
-                IEntry parent = function.Export.FileRef.getEntry(classParentIdx);
                 if (parent.ClassName == "State")
                 {
                     writer.Write("!!!STATE PARENT -- FIX ME IN CODE!!!.");
@@ -131,7 +129,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 stream.Position = startOffset;
                 using (var reader = new BinaryReader(stream))
                 {
-                    var name = function.Package.getNameEntry(reader.ReadInt32());
+                    var name = function.Package.GetNameEntry(reader.ReadInt32());
                     writer.WriteLine("      " + name);
                 }
             }

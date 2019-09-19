@@ -33,9 +33,9 @@ namespace ME3Explorer.Packages
         protected List<string> names = new List<string>();
         public IReadOnlyList<string> Names => names;
 
-        public bool isName(int index) => index >= 0 && index < names.Count;
+        public bool IsName(int index) => index >= 0 && index < names.Count;
 
-        public string getNameEntry(int index) => isName(index) ? names[index] : "";
+        public string GetNameEntry(int index) => IsName(index) ? names[index] : "";
 
         public int FindNameOrAdd(string name)
         {
@@ -68,7 +68,7 @@ namespace ME3Explorer.Packages
 
         public void replaceName(int idx, string newName)
         {
-            if (isName(idx))
+            if (IsName(idx))
             {
                 names[idx] = newName;
                 updateTools(PackageChange.Names, idx);
@@ -85,7 +85,7 @@ namespace ME3Explorer.Packages
         {
             for (int i = 0; i < names.Count; i++)
             {
-                if (String.Compare(nameToFind, getNameEntry(i)) == 0)
+                if (String.Compare(nameToFind, GetNameEntry(i)) == 0)
                     return i;
             }
             return -1;
@@ -99,9 +99,9 @@ namespace ME3Explorer.Packages
         protected List<ExportEntry> exports = new List<ExportEntry>();
         public IReadOnlyList<ExportEntry> Exports => exports;
 
-        public bool isUExport(int uindex) => uindex > 0 && uindex <= exports.Count;
+        public bool IsUExport(int uindex) => uindex > 0 && uindex <= exports.Count;
 
-        public void addExport(ExportEntry exportEntry)
+        public void AddExport(ExportEntry exportEntry)
         {
             if (exportEntry.FileRef != this)
                 throw new Exception("Cannot add an export entry from another package file");
@@ -117,13 +117,13 @@ namespace ME3Explorer.Packages
         }
 
         public ExportEntry getExport(int index) => exports[index];
-        public ExportEntry getUExport(int uindex) => exports[uindex - 1];
+        public ExportEntry GetUExport(int uindex) => exports[uindex - 1];
 
         public bool TryGetUExport(int uIndex, out ExportEntry export)
         {
-            if (isUExport(uIndex))
+            if (IsUExport(uIndex))
             {
-                export = getUExport(uIndex);
+                export = GetUExport(uIndex);
                 return true;
             }
 
@@ -136,9 +136,9 @@ namespace ME3Explorer.Packages
         protected List<ImportEntry> imports = new List<ImportEntry>();
         public IReadOnlyList<ImportEntry> Imports => imports;
 
-        public bool isImport(int uindex) => (uindex < 0 && Math.Abs(uindex) <= ImportCount);
+        public bool IsImport(int uindex) => (uindex < 0 && Math.Abs(uindex) <= ImportCount);
 
-        public void addImport(ImportEntry importEntry)
+        public void AddImport(ImportEntry importEntry)
         {
             if (importEntry.FileRef != this)
                 throw new Exception("you cannot add a new import entry from another package file, it has invalid references!");
@@ -153,12 +153,12 @@ namespace ME3Explorer.Packages
             OnPropertyChanged(nameof(ImportCount));
         }
 
-        public ImportEntry getImport(int uIndex) => imports[Math.Abs(uIndex) - 1];
+        public ImportEntry GetImport(int uIndex) => imports[Math.Abs(uIndex) - 1];
         public bool TryGetImport(int uIndex, out ImportEntry import)
         {
-            if (isImport(uIndex))
+            if (IsImport(uIndex))
             {
-                import = getImport(uIndex);
+                import = GetImport(uIndex);
                 return true;
             }
 
@@ -175,21 +175,10 @@ namespace ME3Explorer.Packages
         /// <param name="uIndex">unreal index</param>
         public string getObjectName(int uIndex)
         {
-            if (isEntry(uIndex))
-                return getEntry(uIndex).ObjectName;
+            if (IsEntry(uIndex))
+                return GetEntry(uIndex).ObjectName;
             if (uIndex == 0)
                 return "Class";
-            return "";
-        }
-
-        /// <summary>
-        ///     gets Export or Import class
-        /// </summary>
-        /// <param name="uIndex">unreal index</param>
-        public string getObjectClass(int uIndex)
-        {
-            if (isEntry(uIndex))
-                return getEntry(uIndex).ClassName;
             return "";
         }
 
@@ -197,20 +186,20 @@ namespace ME3Explorer.Packages
         ///     gets Export or Import entry
         /// </summary>
         /// <param name="uindex">unreal index</param>
-        public IEntry getEntry(int uindex)
+        public IEntry GetEntry(int uindex)
         {
-            if (isUExport(uindex))
+            if (IsUExport(uindex))
                 return exports[uindex - 1];
-            if (isImport(uindex))
+            if (IsImport(uindex))
                 return imports[-uindex - 1];
             return null;
         }
-        public bool isEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (uindex < 0 && -uindex <= ImportCount);
+        public bool IsEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (uindex < 0 && -uindex <= ImportCount);
         public bool TryGetEntry(int uIndex, out IEntry entry)
         {
-            if (isEntry(uIndex))
+            if (IsEntry(uIndex))
             {
-                entry = getEntry(uIndex);
+                entry = GetEntry(uIndex);
                 return true;
             }
 

@@ -121,7 +121,7 @@ namespace ME3Explorer
                 int pos = 12;
 
                 var functionSuperclass = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Function superclass", functionSuperclass, pos, functionSuperclass != 0 ? CurrentLoadedExport.FileRef.getEntry(functionSuperclass) : null));
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Function superclass", functionSuperclass, pos, functionSuperclass != 0 ? CurrentLoadedExport.FileRef.GetEntry(functionSuperclass) : null));
 
                 pos += 4;
                 var nextItemCompilingChain = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
@@ -216,7 +216,7 @@ namespace ME3Explorer
                 //}
 
                 int friendlyNameIndex = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Friendly Name Table Index", $"0x{friendlyNameIndex.ToString("X8")} {CurrentLoadedExport.FileRef.getNameEntry(friendlyNameIndex)}", pos));
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Friendly Name Table Index", $"0x{friendlyNameIndex.ToString("X8")} {CurrentLoadedExport.FileRef.GetNameEntry(friendlyNameIndex)}", pos));
                 pos += 4;
 
                 ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2", $"0x{BitConverter.ToInt16(CurrentLoadedExport.Data, pos).ToString("X4")}", pos));
@@ -277,9 +277,9 @@ namespace ME3Explorer
                             int val = BitConverter.ToInt32(currentData, start);
                             s += $", Int: {val}";
                             s += $", Float: {BitConverter.ToSingle(currentData, start)}";
-                            if (CurrentLoadedExport.FileRef.isName(val))
+                            if (CurrentLoadedExport.FileRef.IsName(val))
                             {
-                                s += $", Name: {CurrentLoadedExport.FileRef.getNameEntry(val)}";
+                                s += $", Name: {CurrentLoadedExport.FileRef.GetNameEntry(val)}";
                             }
                             if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
                             {
@@ -287,7 +287,7 @@ namespace ME3Explorer
                                 s += $", OpCode: {m}";
                             }
 
-                            if (CurrentLoadedExport.FileRef.getEntry(val) is IEntry ent)
+                            if (CurrentLoadedExport.FileRef.GetEntry(val) is IEntry ent)
                             {
                                 string type = ent is ExportEntry ? "Export" : "Import";
                                 if (ent.ObjectName == CurrentLoadedExport.ObjectName)
@@ -425,7 +425,7 @@ namespace ME3Explorer
                 this.value = $"{value}";
                 if (callingEntry != null)
                 {
-                    this.value += $" ({ callingEntry.FileRef.getEntry(value).GetFullPath})";
+                    this.value += $" ({ callingEntry.FileRef.GetEntry(value).GetFullPath})";
                 }
                 else
                 {

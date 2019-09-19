@@ -501,7 +501,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 //Change collision cylinder
                 ObjectProperty cylindercomponent = nodeProperties.GetProp<ObjectProperty>("CollisionComponent");
-                ExportEntry cylindercomponentexp = Pcc.getUExport(cylindercomponent.Value);
+                ExportEntry cylindercomponentexp = Pcc.GetUExport(cylindercomponent.Value);
 
                 //Ensure all classes are imported.
                 IEntry newnodeclassimp = SharedPathfinding.GetEntryOrAddImport(Pcc, exportTypeInfo.fullclasspath);
@@ -509,10 +509,10 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 if (newnodeclassimp != null)
                 {
-                    nodeEntry.idxClass = newnodeclassimp.UIndex;
-                    nodeEntry.idxObjectName = Pcc.FindNameOrAdd(exportTypeInfo.nodetypename);
+                    nodeEntry.Class = newnodeclassimp;
+                    nodeEntry.ObjectName = exportTypeInfo.nodetypename;
                     SharedPathfinding.ReindexMatchingObjects(nodeEntry);
-                    cylindercomponentexp.idxArchtype = newcylindercomponentimp.UIndex;
+                    cylindercomponentexp.Archetype = newcylindercomponentimp;
                 }
 
                 if (exportTypeInfo.upgradetomaxpathsize)
@@ -543,7 +543,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         foreach (ObjectProperty pathObj in pathList)
                         {
-                            ExportEntry spec = Pcc.getUExport(pathObj.Value);
+                            ExportEntry spec = Pcc.GetUExport(pathObj.Value);
                             EnsureLargeAndReturning(spec, exportTypeInfo);
                         }
                     }
@@ -914,8 +914,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     int othernodeidx = otherNodeIdxProp.Value;
 
-                    if (!Pcc.isUExport(othernodeidx)) return; //skip as this is not proper data
-                    ExportEntry specDest = Pcc.getUExport(othernodeidx);
+                    if (!Pcc.IsUExport(othernodeidx)) return; //skip as this is not proper data
+                    ExportEntry specDest = Pcc.GetUExport(othernodeidx);
 
                     //Check for same as changing to type, ensure spec type is correct
                     if (specDest.ClassName == exportTypeInfo.nodetypename && spec.ClassName != exportTypeInfo.inboundspectype)
@@ -925,8 +925,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
                         if (newReachSpecClass != null)
                         {
-                            spec.idxClass = newReachSpecClass.UIndex;
-                            spec.idxObjectName = Pcc.FindNameOrAdd(exportTypeInfo.nodetypename);
+                            spec.Class = newReachSpecClass;
+                            spec.ObjectName = exportTypeInfo.nodetypename;
                             //set spec to banshee sized
                             SharedPathfinding.SetReachSpecSize(spec,
                                 ReachSpecSize.BANSHEE_RADIUS,
@@ -942,7 +942,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 {
                                     if (pathObj.Value == start)
                                     {
-                                        spec = Pcc.getUExport(pathObj.Value);
+                                        spec = Pcc.GetUExport(pathObj.Value);
                                         EnsureLargeAndReturning(spec, exportTypeInfo, false);
                                         break; //this will only need to run once since there is only 1:1 reach specs
                                     }
@@ -1108,7 +1108,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 int entryval = BitConverter.ToInt32(data, offset);
                                 if (entryval > 0 && entryval < Pcc.ExportCount)
                                 {
-                                    ExportEntry export = (ExportEntry)Pcc.getEntry(entryval);
+                                    ExportEntry export = (ExportEntry)Pcc.GetEntry(entryval);
                                     smacitems.Add(export);
                                 }
                                 else if (entryval == 0)
@@ -1299,7 +1299,7 @@ namespace ME3Explorer.Pathfinding_Editor
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
-                Pcc.save(d.FileName);
+                Pcc.Save(d.FileName);
                 MessageBox.Show("Done.");
             }
         }
@@ -1325,7 +1325,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        private void SavePackage() => Pcc.save();
+        private void SavePackage() => Pcc.Save();
 
         private void OpenPackage()
         {
@@ -1555,7 +1555,7 @@ namespace ME3Explorer.Pathfinding_Editor
             start += 4;
             int bioworldinfoexportid = BitConverter.ToInt32(data, start);
 
-            ExportEntry bioworldinfo = levelToRead.FileRef.getUExport(bioworldinfoexportid);
+            ExportEntry bioworldinfo = levelToRead.FileRef.GetUExport(bioworldinfoexportid);
             if (bioworldinfo.ObjectName != "BioWorldInfo")
             {
                 //INVALID!!
@@ -1589,9 +1589,9 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 //get header.
                 int itemexportid = BitConverter.ToInt32(data, start);
-                if (levelToRead.FileRef.isUExport(itemexportid))
+                if (levelToRead.FileRef.IsUExport(itemexportid))
                 {
-                    ExportEntry exportEntry = levelToRead.FileRef.getUExport(itemexportid);
+                    ExportEntry exportEntry = levelToRead.FileRef.GetUExport(itemexportid);
                     AllObjectsList.Add(exportEntry);
 
                     if (ignoredobjectnames.Contains(exportEntry.ObjectName))
@@ -1634,7 +1634,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 foreach (StructProperty connectionProp in connectionsProp)
                                 {
                                     ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
-                                    bulkActiveNodes.Add(levelToRead.FileRef.getUExport(splinecomponentprop.Value));
+                                    bulkActiveNodes.Add(levelToRead.FileRef.GetUExport(splinecomponentprop.Value));
                                 }
                             }
                         }
@@ -2014,9 +2014,9 @@ namespace ME3Explorer.Pathfinding_Editor
                         //Create annex node if required
                         if (props.GetProp<ObjectProperty>("AnnexZoneLocation") is ObjectProperty annexZoneLocProp)
                         {
-                            if (exportToLoad.FileRef.isUExport(annexZoneLocProp.Value))
+                            if (exportToLoad.FileRef.IsUExport(annexZoneLocProp.Value))
                             {
-                                ExportEntry targetPoint = exportToLoad.FileRef.getUExport(annexZoneLocProp.Value);
+                                ExportEntry targetPoint = exportToLoad.FileRef.GetUExport(annexZoneLocProp.Value);
                                 if (targetPoint.ClassName != "TargetPoint")
                                 {
                                     actorNode.comment.Text += "\nAnnex Zone Location not a target point!";
@@ -2031,9 +2031,9 @@ namespace ME3Explorer.Pathfinding_Editor
                         }
                         if (props.GetProp<ObjectProperty>("CombatZone") is ObjectProperty combatZoneProp)
                         {
-                            if (exportToLoad.FileRef.isUExport(combatZoneProp.Value))
+                            if (exportToLoad.FileRef.IsUExport(combatZoneProp.Value))
                             {
-                                ExportEntry combatZoneExp = exportToLoad.FileRef.getUExport(combatZoneProp.Value);
+                                ExportEntry combatZoneExp = exportToLoad.FileRef.GetUExport(combatZoneProp.Value);
                                 if (combatZoneExp.ClassName != "SFXCombatZone")
                                 {
                                     actorNode.comment.Text += "\nAnnex Zone combat zone not a combat zone!";
@@ -2078,7 +2078,7 @@ namespace ME3Explorer.Pathfinding_Editor
                             foreach (StructProperty connectionProp in connectionsProp)
                             {
                                 ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
-                                ExportEntry splineComponentExport = Pcc.getUExport(splinecomponentprop.Value);
+                                ExportEntry splineComponentExport = Pcc.GetUExport(splinecomponentprop.Value);
                                 //Debug.WriteLine(splineComponentExport.GetFullPath + " " + splinecomponentprop.Value);
                                 StructProperty splineInfo = splineComponentExport.GetProperty<StructProperty>("SplineInfo");
                                 if (splineInfo != null)
@@ -2533,7 +2533,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 ObjectProperty op = sp.GetProp<ObjectProperty>("Link");
                                 if (op != null && op.Value - 1 < Pcc.ExportCount)
                                 {
-                                    HighlightCoverlinkSlots(Pcc.getUExport(op.Value));
+                                    HighlightCoverlinkSlots(Pcc.GetUExport(op.Value));
                                 }
                             }
                             break;
@@ -2680,9 +2680,9 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void FindByNumber()
         {
-            if (int.TryParse(FindByNumber_TextBox.Text, out int result) && Pcc.isUExport(result))
+            if (int.TryParse(FindByNumber_TextBox.Text, out int result) && Pcc.IsUExport(result))
             {
-                var export = Pcc.getUExport(result);
+                var export = Pcc.GetUExport(result);
                 int index = ActiveNodes.IndexOf(export);
                 if (index >= 0)
                 {
@@ -2850,19 +2850,19 @@ namespace ME3Explorer.Pathfinding_Editor
                 ExportEntry subComponentEntry = null;
                 if (nodeEntry.GetProperty<ObjectProperty>("CollisionComponent") is ObjectProperty collisionComponentProperty)
                 {
-                    subComponentEntry = nodeEntry.FileRef.getUExport(collisionComponentProperty.Value);
+                    subComponentEntry = nodeEntry.FileRef.GetUExport(collisionComponentProperty.Value);
                 }
                 else if (nodeEntry.GetProperty<ObjectProperty>("ParticleSystemComponent") is ObjectProperty psComponentProperty)
                 {
-                    subComponentEntry = nodeEntry.FileRef.getUExport(psComponentProperty.Value);
+                    subComponentEntry = nodeEntry.FileRef.GetUExport(psComponentProperty.Value);
                 }
 
                 if (subComponentEntry != null)
                 {
                     ExportEntry newNodeEntry = nodeEntry.Clone();
-                    nodeEntry.FileRef.addExport(newNodeEntry);
+                    nodeEntry.FileRef.AddExport(newNodeEntry);
                     ExportEntry newSubcomponent = subComponentEntry.Clone();
-                    nodeEntry.FileRef.addExport(newSubcomponent);
+                    nodeEntry.FileRef.AddExport(newSubcomponent);
                     newSubcomponent.idxLink = newNodeEntry.UIndex;
 
                     //Update the cloned nodes to be new items
@@ -2935,7 +2935,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         if (obj.Value > 0)
                         {
-                            ExportEntry item = smac.FileRef.getUExport(obj.Value);
+                            ExportEntry item = smac.FileRef.GetUExport(obj.Value);
                             CollectionItems.Add(item);
                         }
                         else
@@ -3531,7 +3531,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                         start += 4;
                         int bioworldinfoexportid = BitConverter.ToInt32(data, start);
-                        ExportEntry bioworldinfo = package.getUExport(bioworldinfoexportid);
+                        ExportEntry bioworldinfo = package.GetUExport(bioworldinfoexportid);
                         if (bioworldinfo.ObjectName != "BioWorldInfo")
                         {
                             //INVALID!!
@@ -3557,9 +3557,9 @@ namespace ME3Explorer.Pathfinding_Editor
                         {
                             //get header.
                             int itemexportid = BitConverter.ToInt32(data, start);
-                            if (package.isUExport(itemexportid))
+                            if (package.IsUExport(itemexportid))
                             {
-                                ExportEntry exportEntry = package.getUExport(itemexportid);
+                                ExportEntry exportEntry = package.GetUExport(itemexportid);
                                 //AllLevelObjects.Add(exportEntry);
 
                                 if (ignoredobjectnames.Contains(exportEntry.ObjectName))

@@ -692,7 +692,7 @@ namespace ME3Explorer
 
         public static NameReference ReadNameReference(this Stream stream, IMEPackage pcc)
         {
-            return new NameReference(pcc.getNameEntry(stream.ReadInt32()), stream.ReadInt32());
+            return new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32());
         }
 
         public static void WriteNameReference(this Stream stream, NameReference name, IMEPackage pcc)

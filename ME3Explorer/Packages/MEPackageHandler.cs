@@ -89,12 +89,12 @@ namespace ME3Explorer.Packages
 
         public static void CreateAndSaveMePackage(string path, MEGame game)
         {
-            MEConstructorDelegate(path, game).save();
+            MEConstructorDelegate(path, game).Save();
         }
 
         public static void CreateAndSaveUDKPackage(string path)
         {
-            UDKConstructorDelegate(path, true).save();
+            UDKConstructorDelegate(path, true).Save();
         }
 
         private static void Package_noLongerUsed(UnrealPackageFile sender)

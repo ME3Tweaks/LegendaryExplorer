@@ -143,7 +143,7 @@ namespace ME3Explorer.Packages
 
         public void RegenerateHeader(MEGame game) => Header = GenerateHeader(game);
 
-        private byte[] GenerateHeader(List<KeyValuePair<NameReference, int>> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null)
+        private byte[] GenerateHeader(OrderedMultiValueDictionary<NameReference, int> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null)
         {
             var bin = new MemoryStream();
             bin.WriteInt32(idxClass);
@@ -151,13 +151,13 @@ namespace ME3Explorer.Packages
             bin.WriteInt32(idxLink);
             bin.WriteInt32(idxObjectName);
             bin.WriteInt32(indexValue);
-            bin.WriteInt32(idxArchtype);
+            bin.WriteInt32(idxArchetype);
             bin.WriteUInt64((ulong)ObjectFlags);
             bin.WriteInt32(DataSize);
             bin.WriteInt32(DataOffset);
             if (hasComponentMap ?? HasComponentMap)
             {
-                List<KeyValuePair<NameReference, int>> cmpMap = componentMap ?? ComponentMap;
+                OrderedMultiValueDictionary<NameReference, int> cmpMap = componentMap ?? ComponentMap;
                 bin.WriteInt32(cmpMap.Count);
                 foreach ((NameReference name, int uIndex) in cmpMap)
                 {
@@ -178,14 +178,14 @@ namespace ME3Explorer.Packages
             return bin.ToArray();
         }
 
-        private void RegenerateHeader(List<KeyValuePair<NameReference, int>> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null)
+        private void RegenerateHeader(OrderedMultiValueDictionary<NameReference, int> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null)
         {
             Header = GenerateHeader(componentMap, generationNetObjectCount, hasComponentMap);
         }
 
         public uint HeaderOffset { get; set; }
 
-        public int idxClass
+        private int idxClass
         {
             get => BitConverter.ToInt32(_header, 0);
             set
@@ -195,7 +195,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public int idxSuperClass
+        private int idxSuperClass
         {
             get => BitConverter.ToInt32(_header, 4);
             set
@@ -215,7 +215,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public int idxObjectName
+        private int idxObjectName
         {
             get => BitConverter.ToInt32(_header, 12);
             set
@@ -238,7 +238,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public int idxArchtype
+        private int idxArchetype
         {
             get => BitConverter.ToInt32(_header, 20);
             set
@@ -273,19 +273,19 @@ namespace ME3Explorer.Packages
         public bool HasComponentMap => FileRef.Game == MEGame.ME1 || FileRef.Game == MEGame.ME2;
 
         //me1 and me2 only
-        public List<KeyValuePair<NameReference, int>> ComponentMap
+        public OrderedMultiValueDictionary<NameReference, int> ComponentMap
         {
             get
             {
-                var componentMap = new List<KeyValuePair<NameReference, int>>();
+                var componentMap = new OrderedMultiValueDictionary<NameReference, int>();
                 if (!HasComponentMap) return componentMap;
                 int count = BitConverter.ToInt32(_header, 40);
                 for (int i = 0; i < count; i++)
                 {
                     int pairIndex = 44 + i * 12;
-                    string name = FileRef.getNameEntry(BitConverter.ToInt32(_header, pairIndex));
-                    componentMap.Add(new KeyValuePair<NameReference, int>(new NameReference(name, BitConverter.ToInt32(_header, pairIndex + 4)),
-                                                                          BitConverter.ToInt32(_header, pairIndex + 8)));
+                    string name = FileRef.GetNameEntry(BitConverter.ToInt32(_header, pairIndex));
+                    componentMap.Add(new NameReference(name, BitConverter.ToInt32(_header, pairIndex + 4)),
+                                                                          BitConverter.ToInt32(_header, pairIndex + 8));
                 }
                 return componentMap;
             }
@@ -351,35 +351,9 @@ namespace ME3Explorer.Packages
             set => idxObjectName = FileRef.FindNameOrAdd(value);
         }
 
-        public string ClassName
-        {
-            get
-            {
-                int val = idxClass;
-                if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName];
-                else return "Class";
-            }
-        }
+        public string ClassName => Class?.ObjectName ?? "Class";
 
-        public string SuperClassName
-        {
-            get
-            {
-                int val = idxSuperClass;
-                if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName];
-                else return "Class";
-            }
-        }
-
-        public string ArchtypeName
-        {
-            get
-            {
-                int val = idxArchtype;
-                if (val != 0) return FileRef.getNameEntry(FileRef.getEntry(val).idxObjectName);
-                else return "None";
-            }
-        }
+        public string SuperClassName => SuperClass?.ObjectName ?? "Class";
 
         public string PackageName
         {
@@ -388,8 +362,8 @@ namespace ME3Explorer.Packages
                 int val = idxLink;
                 if (val != 0)
                 {
-                    IEntry entry = FileRef.getEntry(val);
-                    return FileRef.Names[entry.idxObjectName];
+                    IEntry entry = FileRef.GetEntry(val);
+                    return entry.ObjectName;
                 }
                 else return "Package";
             }
@@ -402,8 +376,8 @@ namespace ME3Explorer.Packages
                 int val = idxLink;
                 if (val != 0)
                 {
-                    IEntry entry = FileRef.getEntry(val);
-                    string result =  FileRef.Names[entry.idxObjectName];
+                    IEntry entry = FileRef.GetEntry(val);
+                    string result =  entry.ObjectName;
                     if (entry.indexValue > 0)
                     {
                         return result + "_" + entry.indexValue; //Should be -1 for 4.1, will remain as-is for 4.0
@@ -423,10 +397,10 @@ namespace ME3Explorer.Packages
 
                 while (idxNewPackName != 0)
                 {
-                    string newPackageName = FileRef.getEntry(idxNewPackName).PackageName;
+                    string newPackageName = FileRef.GetEntry(idxNewPackName).PackageName;
                     if (newPackageName != "Package")
                         result = newPackageName + "." + result;
-                    idxNewPackName = FileRef.getEntry(idxNewPackName).idxLink;
+                    idxNewPackName = FileRef.GetEntry(idxNewPackName).idxLink;
                 }
 
                 return result;
@@ -456,11 +430,11 @@ namespace ME3Explorer.Packages
 
                 while (idxNewPackName != 0)
                 {
-                    IEntry e = FileRef.getEntry(idxNewPackName);
+                    IEntry e = FileRef.GetEntry(idxNewPackName);
                     string newPackageName = e.PackageNameInstanced;
                     if (newPackageName != "Package")
                         result = newPackageName + "." + result;
-                    idxNewPackName = FileRef.getEntry(idxNewPackName).idxLink;
+                    idxNewPackName = FileRef.GetEntry(idxNewPackName).idxLink;
                 }
                 return result;
             }
@@ -482,12 +456,36 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public bool HasParent => FileRef.isEntry(idxLink);
+        public bool HasParent => FileRef.IsEntry(idxLink);
 
         public IEntry Parent
         {
-            get => FileRef.getEntry(idxLink);
-            set => idxLink = value.UIndex;
+            get => FileRef.GetEntry(idxLink);
+            set => idxLink = value?.UIndex ?? 0;
+        }
+
+        public bool HasArchetype => FileRef.IsEntry(idxArchetype);
+
+        public IEntry Archetype
+        {
+            get => FileRef.GetEntry(idxArchetype);
+            set => idxArchetype = value?.UIndex ?? 0;
+        }
+
+        public bool HasSuperClass => FileRef.IsEntry(idxSuperClass);
+
+        public IEntry SuperClass
+        {
+            get => FileRef.GetEntry(idxSuperClass);
+            set => idxSuperClass = value?.UIndex ?? 0;
+        }
+
+        public bool IsClass => idxClass == 0;
+
+        public IEntry Class
+        {
+            get => FileRef.GetEntry(idxClass);
+            set => idxClass = value?.UIndex ?? 0;
         }
 
         //NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
@@ -611,7 +609,7 @@ namespace ME3Explorer.Packages
             IEntry parsingClass = this;
             if (IsDefaultObject)
             {
-                parsingClass = FileRef.getEntry(idxClass); //class we are defaults of
+                parsingClass = Class; //class we are defaults of
             }
 
             return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
@@ -669,15 +667,15 @@ namespace ME3Explorer.Packages
             int test0 = BitConverter.ToInt32(_data, 0);
             int test1 = BitConverter.ToInt32(_data, 4);
             int test2 = BitConverter.ToInt32(_data, 8); //Name index if Test1 is actually a name. Should be 0 since we wouldn't have indexes here
-            if (pcc.isName(test1) && test2 == 0) //is 0x4 a proper 8 byte name?
+            if (pcc.IsName(test1) && test2 == 0) //is 0x4 a proper 8 byte name?
                 result = 4;
-            if (pcc.isName(test1) && pcc.isName(test2) && test2 != 0)
+            if (pcc.IsName(test1) && pcc.IsName(test2) && test2 != 0)
                 result = 8;
 
-            if (_data.Length > 0x10 && pcc.isName(test1) && pcc.getNameEntry(test1) == ObjectName && test0 == 0 && test2 == indexValue) //!= UIndex will cover more cases, but there's still the very tiny case where they line up
+            if (_data.Length > 0x10 && pcc.IsName(test1) && pcc.GetNameEntry(test1) == ObjectName && test0 == 0 && test2 == indexValue) //!= UIndex will cover more cases, but there's still the very tiny case where they line up
             {
                 int test3 = BitConverter.ToInt32(_data, 0x10);
-                string namev = pcc.getNameEntry(test3);
+                string namev = pcc.GetNameEntry(test3);
                 //Debug.WriteLine("Reading " + name + " (" + namev + ") at 0x" + (stream.Position - 24).ToString("X8"));
                 if (namev != null && Enum.IsDefined(typeof(PropertyType), namev) && Enum.TryParse(namev, out PropertyType propertyType))
                 {

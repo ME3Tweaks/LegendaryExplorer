@@ -138,7 +138,7 @@ namespace ME3Explorer.FaceFX
         {
             if (Pcc == null)
                 return;
-            Pcc.save();
+            Pcc.Save();
             MessageBox.Show("Done.");
         }
 

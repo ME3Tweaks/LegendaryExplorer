@@ -276,7 +276,7 @@ namespace ME3Explorer.Meshplorer2
                             {
                                 if (en.isSkeletal)
                                 {
-                                    SkeletalMesh skmesh = new SkeletalMesh(pcc.getUExport(en.UIndex)); // TODO: pass device
+                                    SkeletalMesh skmesh = new SkeletalMesh(pcc.GetUExport(en.UIndex)); // TODO: pass device
                                     preview = new ModelPreview(view.Context.Device, skmesh, view.Context.TextureCache);
                                     CenterView();
                                     treeView2.Nodes.Clear();

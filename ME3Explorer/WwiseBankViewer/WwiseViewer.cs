@@ -86,15 +86,15 @@ namespace ME3Explorer.WwiseBankEditor
                     {
                         int val = BitConverter.ToInt32(memory, start);
                         s += $", Int: {val} (0x{val.ToString("X8")})";
-                        if (Pcc.isName(val))
+                        if (Pcc.IsName(val))
                         {
-                            s += $", Name: {Pcc.getNameEntry(val)}";
+                            s += $", Name: {Pcc.GetNameEntry(val)}";
                         }
-                        if (Pcc.getEntry(val) is ExportEntry exp)
+                        if (Pcc.GetEntry(val) is ExportEntry exp)
                         {
                             s += $", Export: {exp.ObjectName}";
                         }
-                        else if (Pcc.getEntry(val) is ImportEntry imp)
+                        else if (Pcc.GetEntry(val) is ImportEntry imp)
                         {
                             s += $", Import: {imp.ObjectName}";
                         }
@@ -275,7 +275,7 @@ namespace ME3Explorer.WwiseBankEditor
             SaveFileDialog d = new SaveFileDialog { Filter = "*.pcc|*.pcc" };
             if (d.ShowDialog() == DialogResult.OK)
             {
-                Pcc.save(d.FileName);
+                Pcc.Save(d.FileName);
                 MessageBox.Show("Done.");
             }
         }

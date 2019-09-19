@@ -412,13 +412,13 @@ namespace ME3Explorer.Dialogue_Editor
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
-                Pcc.save(d.FileName);
+                Pcc.Save(d.FileName);
                 MessageBox.Show("Done.");
             }
         }
         private void SavePackage()
         {
-            Pcc.save();
+            Pcc.Save();
         }
         private void DialogueEditorWPF_Closing(object sender, CancelEventArgs e)
         {
@@ -914,7 +914,7 @@ namespace ME3Explorer.Dialogue_Editor
                 var convStarts = new Dictionary<int, ExportEntry>();
                 foreach (var prop in seqobjs)
                 {
-                    var seqobj = Pcc.getUExport(prop.Value);
+                    var seqobj = Pcc.GetUExport(prop.Value);
                     if (seqobj.ClassName == "BioSeqEvt_ConvNode")
                     {
                         int key = seqobj.GetProperty<IntProperty>("m_nNodeID"); //ME3
@@ -942,7 +942,7 @@ namespace ME3Explorer.Dialogue_Editor
                                     if (linksProp != null)
                                     {
                                         var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                        var interpseqact = Pcc.getUExport(link);
+                                        var interpseqact = Pcc.GetUExport(link);
                                         if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
                                         {
                                             var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
@@ -952,7 +952,7 @@ namespace ME3Explorer.Dialogue_Editor
                                                 if (linksProp2 != null && linksProp2.Count > 0)
                                                 {
                                                     var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                                    interpseqact = Pcc.getUExport(link2);
+                                                    interpseqact = Pcc.GetUExport(link2);
                                                     if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
                                                     {
                                                         var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
@@ -962,7 +962,7 @@ namespace ME3Explorer.Dialogue_Editor
                                                             if (linksProp3 != null)
                                                             {
                                                                 var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                                                interpseqact = Pcc.getUExport(link3);
+                                                                interpseqact = Pcc.GetUExport(link3);
                                                             }
                                                         }
                                                     }
@@ -982,7 +982,7 @@ namespace ME3Explorer.Dialogue_Editor
                                                     if (linkedVars != null && linkedVars.Count > 0)
                                                     {
                                                         var datalink = linkedVars[0].Value;
-                                                        entry.Interpdata = Pcc.getUExport(datalink);
+                                                        entry.Interpdata = Pcc.GetUExport(datalink);
 
                                                     }
 
@@ -1020,7 +1020,7 @@ namespace ME3Explorer.Dialogue_Editor
                                     if (linksProp != null && linksProp.Count > 0)
                                     {
                                         var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                        var interpseqact = Pcc.getUExport(link);
+                                        var interpseqact = Pcc.GetUExport(link);
                                         if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / SFXSeqAct_SetFaceFX"
                                         {
                                             var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
@@ -1030,7 +1030,7 @@ namespace ME3Explorer.Dialogue_Editor
                                                 if (linksProp2 != null && linksProp2.Count > 0)
                                                 {
                                                     var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                                    interpseqact = Pcc.getUExport(link2);
+                                                    interpseqact = Pcc.GetUExport(link2);
                                                     if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / SFXSeqAct_SetFaceFX"
                                                     {
                                                         var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
@@ -1040,7 +1040,7 @@ namespace ME3Explorer.Dialogue_Editor
                                                             if (linksProp3 != null && linksProp3.Count > 0)
                                                             {
                                                                 var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                                                interpseqact = Pcc.getUExport(link3);
+                                                                interpseqact = Pcc.GetUExport(link3);
                                                             }
                                                         }
                                                     }
@@ -1060,7 +1060,7 @@ namespace ME3Explorer.Dialogue_Editor
                                                     if (linkedVars != null && linkedVars.Count > 0)
                                                     {
                                                         var datalink = linkedVars[0].Value;
-                                                        reply.Interpdata = Pcc.getUExport(datalink);
+                                                        reply.Interpdata = Pcc.GetUExport(datalink);
                                                     }
 
                                                     break;
@@ -1237,7 +1237,7 @@ namespace ME3Explorer.Dialogue_Editor
             var ffxList = conv.BioConvo.GetProp<ArrayProperty<ObjectProperty>>(ffxPropName);
             if (ffxList != null && ffxList.Count > speakerID + 2)
             {
-                return Pcc.getEntry(ffxList[speakerID + 2].Value);
+                return Pcc.GetEntry(ffxList[speakerID + 2].Value);
             }
 
             return null;
@@ -1256,7 +1256,7 @@ namespace ME3Explorer.Dialogue_Editor
             var seq = conv.BioConvo.GetProp<ObjectProperty>(propname);
             if (seq != null)
             {
-                conv.Sequence = Pcc.getEntry(seq.Value);
+                conv.Sequence = Pcc.GetEntry(seq.Value);
             }
             else
             {
@@ -1277,7 +1277,7 @@ namespace ME3Explorer.Dialogue_Editor
             var seq = conv.BioConvo.GetProp<ObjectProperty>(propname);
             if (seq != null)
             {
-                conv.NonSpkrFFX = Pcc.getEntry(seq.Value);
+                conv.NonSpkrFFX = Pcc.GetEntry(seq.Value);
             }
             else
             {
@@ -1310,7 +1310,7 @@ namespace ME3Explorer.Dialogue_Editor
                         if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
                         {
                             IEntry ffxp = GetFaceFX(conv, -2, true); //find player as alternative
-                            if (!Pcc.isUExport(ffxp.UIndex))
+                            if (!Pcc.IsUExport(ffxp.UIndex))
                                 return;
                             ExportEntry ffxpExport = (ExportEntry)ffxp;
                             wwevents = ffxpExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
@@ -1318,7 +1318,7 @@ namespace ME3Explorer.Dialogue_Editor
                         if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
                         {
                             IEntry ffxS = GetFaceFX(conv, 0, true); //find speaker 1 as alternative
-                            if (ffxS == null || !Pcc.isUExport(ffxS.UIndex))
+                            if (ffxS == null || !Pcc.IsUExport(ffxS.UIndex))
                                 return;
                             ExportEntry ffxSExport = (ExportEntry)ffxS;
                             wwevents = ffxSExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
@@ -1333,13 +1333,13 @@ namespace ME3Explorer.Dialogue_Editor
 
                     if (Pcc.Game == MEGame.ME3)
                     {
-                        StructProperty r = Pcc.getUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
+                        StructProperty r = Pcc.GetUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
                         var bank = r.GetProp<ObjectProperty>("Bank");
-                        conv.WwiseBank = Pcc.getUExport(bank.Value);
+                        conv.WwiseBank = Pcc.GetUExport(bank.Value);
                     }
                     else if (Pcc.Game == MEGame.ME2) //Game is ME2.  Wwisebank ref in Binary.
                     {
-                        byte[] data = Pcc.getUExport(wwevents[0].Value).getBinaryData();
+                        byte[] data = Pcc.GetUExport(wwevents[0].Value).getBinaryData();
                         int binarypos = 4;
                         int count = BitConverter.ToInt32(data, binarypos);
                         if (count > 0)
@@ -1350,7 +1350,7 @@ namespace ME3Explorer.Dialogue_Editor
                             {
                                 binarypos += 4;
                                 int bank = BitConverter.ToInt32(data, binarypos);
-                                conv.WwiseBank = Pcc.getUExport(bank);
+                                conv.WwiseBank = Pcc.GetUExport(bank);
                             }
                         }
                     }
@@ -1372,8 +1372,8 @@ namespace ME3Explorer.Dialogue_Editor
                     var actors = Pcc.Exports.Where(xp => xp.ClassName == "BioPawn");
                     ExportEntry actor = actors.First(a => a.GetProperty<NameProperty>("Tag").ToString() == tag);
                     var behav = actor.GetProperty<ObjectProperty>("m_oBehavior");
-                    var set = Pcc.getUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
-                    var strrefprop = Pcc.getUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
+                    var set = Pcc.GetUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
+                    var strrefprop = Pcc.GetUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
                     if (strrefprop != null)
                     {
                         return strrefprop.Value;
@@ -3918,7 +3918,7 @@ namespace ME3Explorer.Dialogue_Editor
                     OpenInToolkit("FaceFXEditor", SelectedConv.NonSpkrFFX.UIndex);
                     break;
                 case "FaceFXSpkrM":
-                    if (Pcc.isImport(SelectedSpeaker.FaceFX_Male.UIndex))
+                    if (Pcc.IsImport(SelectedSpeaker.FaceFX_Male.UIndex))
                     {
                         OpenInToolkit("FaceFXEditor", 0, Level); //CAN SEND TO THE CORRECT EXPORT IN THE NEW FILE LOAD?
                     }
@@ -3928,7 +3928,7 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                     break;
                 case "FaceFXSpkrF":
-                    if (Pcc.isImport(SelectedSpeaker.FaceFX_Female.UIndex))
+                    if (Pcc.IsImport(SelectedSpeaker.FaceFX_Female.UIndex))
                     {
                         OpenInToolkit("FaceFXEditor", 0, Level);
                     }
@@ -4017,13 +4017,13 @@ namespace ME3Explorer.Dialogue_Editor
             {
 
                 case "FaceFXEditor":
-                    if (Pcc.isUExport(export) && param != null)
+                    if (Pcc.IsUExport(export) && param != null)
                     {
-                        new FaceFX.FaceFXEditor(Pcc.getUExport(export), param).Show();
+                        new FaceFX.FaceFXEditor(Pcc.GetUExport(export), param).Show();
                     }
-                    else if (Pcc.isUExport(export))
+                    else if (Pcc.IsUExport(export))
                     {
-                        new FaceFX.FaceFXEditor(Pcc.getUExport(export)).Show();
+                        new FaceFX.FaceFXEditor(Pcc.GetUExport(export)).Show();
                     }
                     else
                     {
@@ -4035,7 +4035,7 @@ namespace ME3Explorer.Dialogue_Editor
                 case "PackageEditor":
                     var packEditor = new PackageEditorWPF();
                     packEditor.Show();
-                    if (Pcc.isUExport(export))
+                    if (Pcc.IsUExport(export))
                     {
                         packEditor.LoadFile(Pcc.FilePath, export);
                     }
@@ -4048,15 +4048,15 @@ namespace ME3Explorer.Dialogue_Editor
                     var soundplorerWPF = new Soundplorer.SoundplorerWPF();
                     soundplorerWPF.LoadFile(Pcc.FilePath);
                     soundplorerWPF.Show();
-                    if (Pcc.isUExport(export))
+                    if (Pcc.IsUExport(export))
                     {
-                        soundplorerWPF.soundPanel.LoadExport(Pcc.getUExport(export));
+                        soundplorerWPF.soundPanel.LoadExport(Pcc.GetUExport(export));
                     }
                     break;
                 case "SequenceEditor":
-                    if (Pcc.isUExport(export))
+                    if (Pcc.IsUExport(export))
                     {
-                        new SequenceEditorWPF(Pcc.getUExport(export)).Show();
+                        new SequenceEditorWPF(Pcc.GetUExport(export)).Show();
                     }
                     else
                     {

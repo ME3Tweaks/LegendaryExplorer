@@ -71,9 +71,9 @@ namespace ME3Explorer.Unreal
             }
             //dynamic lookup
             ExportEntry exportToBuildFor = _export;
-            if (_export.ClassName != "Class" && _export.idxClass > 0)
+            if (!_export.IsClass && _export.Class is ExportEntry classExport)
             {
-                exportToBuildFor = _export.FileRef.getUExport(_export.idxClass);
+                exportToBuildFor = classExport;
             }
             ClassInfo classInfo = UnrealObjectInfo.generateClassInfo(exportToBuildFor);
             if (classInfo.TryGetPropInfo(name, game, out propInfo))
@@ -147,12 +147,12 @@ namespace ME3Explorer.Unreal
                 {
                     long propertyStartPosition = stream.Position;
                     int nameIdx = stream.ReadInt32();
-                    if (!pcc.isName(nameIdx))
+                    if (!pcc.IsName(nameIdx))
                     {
                         stream.Seek(-4, SeekOrigin.Current);
                         break;
                     }
-                    string name = pcc.getNameEntry(nameIdx);
+                    string name = pcc.GetNameEntry(nameIdx);
                     if (name == "None")
                     {
                         props.Add(new NoneProperty(stream) { StartOffset = propertyStartPosition, ValueOffset = propertyStartPosition });
@@ -163,14 +163,14 @@ namespace ME3Explorer.Unreal
                     int typeIdx = stream.ReadInt32();
                     stream.Seek(4, SeekOrigin.Current);
                     int size = stream.ReadInt32();
-                    if (!pcc.isName(typeIdx) || size < 0 || size > stream.Length - stream.Position)
+                    if (!pcc.IsName(typeIdx) || size < 0 || size > stream.Length - stream.Position)
                     {
                         stream.Seek(-16, SeekOrigin.Current);
                         break;
                     }
                     stream.Seek(4, SeekOrigin.Current);
                     PropertyType type;
-                    string namev = pcc.getNameEntry(typeIdx);
+                    string namev = pcc.GetNameEntry(typeIdx);
                     //Debug.WriteLine("Reading " + name + " (" + namev + ") at 0x" + (stream.Position - 24).ToString("X8"));
                     if (Enum.IsDefined(typeof(PropertyType), namev))
                     {
@@ -183,7 +183,7 @@ namespace ME3Explorer.Unreal
                     switch (type)
                     {
                         case PropertyType.StructProperty:
-                            string structType = pcc.getNameEntry(stream.ReadInt32());
+                            string structType = pcc.GetNameEntry(stream.ReadInt32());
                             stream.Seek(4, SeekOrigin.Current);
                             long valOffset = stream.Position;
                             if (UnrealObjectInfo.IsImmutable(structType, pcc.Game))
@@ -224,7 +224,7 @@ namespace ME3Explorer.Unreal
                                     NameReference enumType;
                                     if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                                     {
-                                        enumType = new NameReference(pcc.getNameEntry(stream.ReadInt32()), stream.ReadInt32());
+                                        enumType = new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32());
                                     }
                                     else
                                     {
@@ -295,7 +295,7 @@ namespace ME3Explorer.Unreal
                         case PropertyType.Unknown:
                             {
                                 // Debugger.Break();
-                                props.Add(new UnknownProperty(stream, size, pcc.getNameEntry(typeIdx), nameRef) { StartOffset = propertyStartPosition });
+                                props.Add(new UnknownProperty(stream, size, pcc.GetNameEntry(typeIdx), nameRef) { StartOffset = propertyStartPosition });
                             }
                             break;
                         case PropertyType.None:
@@ -1213,7 +1213,7 @@ namespace ME3Explorer.Unreal
         public NameProperty(MemoryStream stream, IMEPackage pcc, NameReference? propertyName = null) : base(propertyName)
         {
             ValueOffset = stream.Position;
-            Value = new NameReference(pcc.getNameEntry(stream.ReadInt32()), stream.ReadInt32());
+            Value = new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32());
         }
 
         public NameProperty()
@@ -1424,7 +1424,7 @@ namespace ME3Explorer.Unreal
             ValueOffset = stream.Position;
             EnumType = enumType;
             var eNameIdx = stream.ReadInt32();
-            var eName = pcc.getNameEntry(eNameIdx);
+            var eName = pcc.GetNameEntry(eNameIdx);
             var eNameNumber = stream.ReadInt32();
 
             Value = new NameReference(eName, eNameNumber);
@@ -1765,7 +1765,7 @@ namespace ME3Explorer.Unreal
         public DelegateProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = new ScriptDelegate(stream.ReadInt32(), new NameReference(pcc.getNameEntry(stream.ReadInt32()), stream.ReadInt32()));
+            Value = new ScriptDelegate(stream.ReadInt32(), new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32()));
         }
 
         public DelegateProperty(int _object, NameReference functionName, NameReference? name = null) : base(name)

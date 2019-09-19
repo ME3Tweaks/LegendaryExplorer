@@ -25,7 +25,7 @@ namespace ME3Explorer.ActorNodes
             pcc = p;
             g = grapheditor;
             index = idx;
-            export = pcc.getUExport(index);
+            export = pcc.GetUExport(index);
             comment = new SText(GetComment(), commentColor, false)
             {
                 X = 0
@@ -453,12 +453,12 @@ namespace ME3Explorer.ActorNodes
             ObjectProperty smc = export.GetProperty<ObjectProperty>("StaticMeshComponent");
             if (smc != null)
             {
-                ExportEntry smce = pcc.Exports[smc.Value - 1];
+                ExportEntry smce = pcc.GetUExport(smc.Value);
                 //smce.GetProperty<ObjectProperty>("St")
                 var meshObj = smce.GetProperty<ObjectProperty>("StaticMesh");
                 if (meshObj != null)
                 {
-                    ExportEntry sme = pcc.Exports[meshObj.Value - 1];
+                    ExportEntry sme = pcc.GetUExport(meshObj.Value);
                     comment.Text = sme.ObjectName;
                 }
             }
@@ -637,7 +637,7 @@ namespace ME3Explorer.ActorNodes
             ObjectProperty sm = export.GetProperty<ObjectProperty>("StaticMesh");
             if (sm != null)
             {
-                IEntry meshexp = pcc.getEntry(sm.Value);
+                IEntry meshexp = pcc.GetEntry(sm.Value);
                 string text = comment.Text;
                 if (text != "")
                 {

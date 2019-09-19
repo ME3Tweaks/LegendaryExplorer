@@ -125,7 +125,7 @@ namespace ME3Explorer.Pathfinding_Editor
             //HashSet<string> names = new HashSet<string>();
 
             int numRecalculated = 0;
-            for (int i = 0; i < Pcc.ExportCount; i++)
+            for (int i = 0; i < Pcc.Exports.Count; i++)
             {
                 ExportEntry exp = Pcc.Exports[i];
                 var pathList = exp.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
@@ -139,7 +139,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         //reachSpecExportIndexes.Add(reachSpecObj.Value - 1);
                         bool isBad = false;
-                        ExportEntry spec = Pcc.getUExport(reachSpecObj.Value);
+                        ExportEntry spec = Pcc.GetUExport(reachSpecObj.Value);
                         var specProps = spec.GetProperties();
                         ObjectProperty start = specProps.GetProp<ObjectProperty>("Start");
                         if (start.Value != exp.UIndex)
@@ -202,8 +202,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
             //We should capture GUID here
 
-            ExportEntry startNode = reachSpecExport.FileRef.getUExport(start.Value);
-            ExportEntry endNode = reachSpecExport.FileRef.getUExport(endActorObj.Value);
+            ExportEntry startNode = reachSpecExport.FileRef.GetUExport(start.Value);
+            ExportEntry endNode = reachSpecExport.FileRef.GetUExport(endActorObj.Value);
 
             if (startNodeExport != null && startNode.UIndex != startNodeExport.UIndex)
             {
@@ -360,7 +360,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     int classId2 = BitConverter.ToInt32(exportData, 4);
                     //Debug.WriteLine(maybe_MPID);
 
-                    int metadataClass = exportEntry.idxClass;
+                    int metadataClass = exportEntry.IsClass ? 0 : exportEntry.Class.UIndex;
                     if (classId1 != metadataClass || classId2 != metadataClass)
                     {
                         Debug.WriteLine($"Updating class type at start of export data {exportEntry.UIndex} {exportEntry.ClassName}");
@@ -399,9 +399,9 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 //get header.
                 int itemexportid = BitConverter.ToInt32(data, start);
-                if (Pcc.isUExport(itemexportid))
+                if (Pcc.IsUExport(itemexportid))
                 {
-                    ExportEntry exportEntry = Pcc.getUExport(itemexportid);
+                    ExportEntry exportEntry = Pcc.GetUExport(itemexportid);
                     StructProperty navGuid = exportEntry.GetProperty<StructProperty>("NavGuid");
                     if (navGuid != null)
                     {
@@ -440,7 +440,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 while (nextNavPoint != null)
                 {
-                    nodeEntry = Pcc.getUExport(nextNavPoint.Value);
+                    nodeEntry = Pcc.GetUExport(nextNavPoint.Value);
                     nextNavPoint = nodeEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
                 }
 
@@ -494,9 +494,9 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 //get header.
                 int itemexportid = BitConverter.ToInt32(data, start);
-                if (Pcc.isUExport(itemexportid) && itemexportid > 0)
+                if (Pcc.IsUExport(itemexportid) && itemexportid > 0)
                 {
-                    ExportEntry exportEntry = Pcc.getUExport(itemexportid);
+                    ExportEntry exportEntry = Pcc.GetUExport(itemexportid);
                     StructProperty navguid = exportEntry.GetProperty<StructProperty>("NavGuid");
                     if (navguid != null)
                     {

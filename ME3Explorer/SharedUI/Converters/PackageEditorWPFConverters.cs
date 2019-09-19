@@ -54,29 +54,17 @@ namespace ME3Explorer.SharedUI.Converters
             }
 
             //attempt to find type
-            string s = "";
             byte[] data = export.Data;
             int importindex = BitConverter.ToInt32(data, data.Length - 4);
-            if (importindex < 0)
+            if (export.FileRef.GetEntry(importindex) is ImportEntry imp)
             {
-                //import
-                importindex *= -1;
-                if (importindex > 0) importindex--;
-                if (importindex <= export.FileRef.Imports.Count)
-                {
-                    s += " (" + export.FileRef.Imports[importindex].ObjectName + ")";
-                }
+                return $" ({imp.ObjectName})";
             }
-            else
+            if (export.FileRef.GetEntry(importindex) is ExportEntry exp)
             {
-                //export
-                if (importindex > 0) importindex--;
-                if (importindex <= export.FileRef.Exports.Count)
-                {
-                    s += " [" + export.FileRef.Exports[importindex].ObjectName + "]";
-                }
+                return $" [{exp.ObjectName}]";
             }
-            return s;
+            return "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

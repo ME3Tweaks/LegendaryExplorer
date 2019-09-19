@@ -207,9 +207,9 @@ namespace ME3Explorer.Unreal
             //int name = (int)BitConverter.ToInt64(raw, pos);
             int name = (int)BitConverter.ToInt32(raw, pos);
 
-            if (!pcc.isName(name))
+            if (!pcc.IsName(name))
                 return result;
-            string t = pcc.getNameEntry(name);
+            string t = pcc.GetNameEntry(name);
             p = new Property();
             p.Name = name;
             //Debug.WriteLine(t +" at "+start);
@@ -226,7 +226,7 @@ namespace ME3Explorer.Unreal
             }
             //int type = (int)BitConverter.ToInt64(raw, pos + 8);            
             int type = (int)BitConverter.ToInt32(raw, pos + 8);
-            if (!pcc.isName(type))
+            if (!pcc.IsName(type))
             {
                 return result;
             }
@@ -235,7 +235,7 @@ namespace ME3Explorer.Unreal
             {
                 return result;
             }
-            string tp = pcc.getNameEntry(type);
+            string tp = pcc.GetNameEntry(type);
             switch (tp)
             {
 
@@ -345,7 +345,7 @@ namespace ME3Explorer.Unreal
                     if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                     {
                         p.offsetval = pos + 32;
-                        v.StringValue = pcc.getNameEntry(sname);
+                        v.StringValue = pcc.GetNameEntry(sname);
                         pos += 32;
                         if (p.Size == 8)
                         {
@@ -362,7 +362,7 @@ namespace ME3Explorer.Unreal
                         p.offsetval = pos + 24;
                         if (p.Size != 1)
                         {
-                            v.StringValue = pcc.getNameEntry(sname);
+                            v.StringValue = pcc.GetNameEntry(sname);
                             v.IntValue = sname;
                             pos += 32;
                         }
@@ -422,7 +422,7 @@ namespace ME3Explorer.Unreal
 
         static PropertyType getType(IMEPackage pcc, int type)
         {
-            switch (pcc.getNameEntry(type))
+            switch (pcc.GetNameEntry(type))
             {
                 case "None": return PropertyType.None;
                 case "StructProperty": return PropertyType.StructProperty;
@@ -444,7 +444,7 @@ namespace ME3Explorer.Unreal
         static PropertyValue ReadValue(IMEPackage pcc, byte[] raw, int start, int type)
         {
             PropertyValue v = new PropertyValue();
-            switch (pcc.getNameEntry(type))
+            switch (pcc.GetNameEntry(type))
             {
                 case "IntProperty":
                 case "ObjectProperty":
@@ -454,7 +454,7 @@ namespace ME3Explorer.Unreal
                     break;
                 case "NameProperty":
                     v.IntValue = BitConverter.ToInt32(raw, start);
-                    v.NameValue = new NameReference(pcc.getNameEntry(v.IntValue), BitConverter.ToInt32(raw, start + 4));
+                    v.NameValue = new NameReference(pcc.GetNameEntry(v.IntValue), BitConverter.ToInt32(raw, start + 4));
                     v.StringValue = v.NameValue.InstancedString;
                     v.len = 8;
                     break;
@@ -475,9 +475,9 @@ namespace ME3Explorer.Unreal
             int result = 8;
             int test1 = BitConverter.ToInt32(raw, 4);
             int test2 = BitConverter.ToInt32(raw, 8);
-            if (pcc.isName(test1) && test2 == 0)
+            if (pcc.IsName(test1) && test2 == 0)
                 result = 4;
-            if (pcc.isName(test1) && pcc.isName(test2) && test2 != 0)
+            if (pcc.IsName(test1) && pcc.IsName(test2) && test2 != 0)
                 result = 8;
             return result;
         }

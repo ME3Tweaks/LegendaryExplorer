@@ -62,23 +62,23 @@ namespace ME3Explorer.Packages
             return _header.TypedClone();
         }
 
-        public bool HasParent => FileRef.isEntry(idxLink);
+        public bool HasParent => FileRef.IsEntry(idxLink);
 
         public IEntry Parent
         {
-            get => FileRef.getEntry(idxLink);
-            set => idxLink = value.UIndex;
+            get => FileRef.GetEntry(idxLink);
+            set => idxLink = value?.UIndex ?? 0;
         }
 
-        public int idxPackageFile { get => BitConverter.ToInt32(_header, 0);
+        private int idxPackageFile { get => BitConverter.ToInt32(_header, 0);
             set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 0, sizeof(int)); HeaderChanged = true; } }
         //int PackageNameNumber
-        public int idxClassName { get => BitConverter.ToInt32(_header, 8);
+        private int idxClassName { get => BitConverter.ToInt32(_header, 8);
             set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 8, sizeof(int)); HeaderChanged = true; } }
         //int ClassNameNumber
         public int idxLink { get => BitConverter.ToInt32(_header, 16);
             set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 16, sizeof(int)); HeaderChanged = true; } }
-        public int idxObjectName { get => BitConverter.ToInt32(_header, 20);
+        private int idxObjectName { get => BitConverter.ToInt32(_header, 20);
             set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 20, sizeof(int)); HeaderChanged = true; } }
         public int indexValue { get => BitConverter.ToInt32(_header, 24);
             set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 24, sizeof(int)); HeaderChanged = true; } }
@@ -86,9 +86,23 @@ namespace ME3Explorer.Packages
 
 
 
-        public string ClassName => FileRef.Names[idxClassName];
-        public string ObjectName => FileRef.Names[idxObjectName];
-        public string PackageFile => FileRef.Names[idxPackageFile];
+        public string ClassName
+        {
+            get => FileRef.Names[idxClassName];
+            set => idxClassName = FileRef.FindNameOrAdd(value);
+        }
+
+        public string ObjectName
+        {
+            get => FileRef.Names[idxObjectName];
+            set => idxObjectName = FileRef.FindNameOrAdd(value);
+        }
+
+        public string PackageFile
+        {
+            get => FileRef.Names[idxPackageFile];
+            set => idxPackageFile = FileRef.FindNameOrAdd(value);
+        }
 
 
         public string PackageName
@@ -98,8 +112,8 @@ namespace ME3Explorer.Packages
                 int val = idxLink;
                 if (val != 0)
                 {
-                    IEntry entry = FileRef.getEntry(val);
-                    return FileRef.Names[entry.idxObjectName];
+                    IEntry entry = FileRef.GetEntry(val);
+                    return entry.ObjectName;
                 }
                 else return "Package";
             }
@@ -112,8 +126,8 @@ namespace ME3Explorer.Packages
                 int val = idxLink;
                 if (val != 0)
                 {
-                    IEntry entry = FileRef.getEntry(val);
-                    string result = FileRef.Names[entry.idxObjectName];
+                    IEntry entry = FileRef.GetEntry(val);
+                    string result = entry.ObjectName;
                     if (entry.indexValue > 0)
                     {
                         return result + "_" + entry.indexValue; //Should be -1 for 4.1, will remain as-is for 4.0
@@ -133,10 +147,10 @@ namespace ME3Explorer.Packages
 
                 while (idxNewPackName != 0)
                 {
-                    string newPackageName = FileRef.getEntry(idxNewPackName).PackageName;
+                    string newPackageName = FileRef.GetEntry(idxNewPackName).PackageName;
                     if (newPackageName != "Package")
                         result = newPackageName + "." + result;
-                    idxNewPackName = FileRef.getEntry(idxNewPackName).idxLink;
+                    idxNewPackName = FileRef.GetEntry(idxNewPackName).idxLink;
                 }
                 return result;
             }
@@ -164,7 +178,7 @@ namespace ME3Explorer.Packages
 
                 while (idxNewPackName != 0)
                 {
-                    IEntry e = FileRef.getEntry(idxNewPackName);
+                    IEntry e = FileRef.GetEntry(idxNewPackName);
                     string newPackageName = e.PackageName;
                     if (e.indexValue > 0)
                     {
@@ -172,7 +186,7 @@ namespace ME3Explorer.Packages
                     }
                     if (newPackageName != "Package")
                         result = newPackageName + "." + result;
-                    idxNewPackName = FileRef.getEntry(idxNewPackName).idxLink;
+                    idxNewPackName = FileRef.GetEntry(idxNewPackName).idxLink;
                 }
                 return result;
             }

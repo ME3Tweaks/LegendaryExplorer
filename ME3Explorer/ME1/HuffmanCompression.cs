@@ -163,7 +163,7 @@ namespace ME1Explorer
             export.setBinaryData(buff);
             if (savePackage)
             {
-                export.FileRef.save(export.FileRef.FilePath);
+                export.FileRef.Save(export.FileRef.FilePath);
             }
         }
 

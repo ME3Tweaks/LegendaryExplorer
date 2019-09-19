@@ -109,7 +109,7 @@ namespace ME3Explorer
                                             int originalValue = BitConverter.ToInt32(binarydata, 4 + (i * 4));
 
                                             //This might throw an exception if it was invalid in the original file...
-                                            bool isMapped = crossPCCObjectMappingList.TryGetValue(importpcc.getEntry(originalValue), out IEntry mappedValueInThisPackage);
+                                            bool isMapped = crossPCCObjectMappingList.TryGetValue(importpcc.GetEntry(originalValue), out IEntry mappedValueInThisPackage);
                                             if (isMapped)
                                             {
                                                 Debug.WriteLine("Binary relink hit for ME3 WwiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue + " -> " + (mappedValueInThisPackage.UIndex));
@@ -138,7 +138,7 @@ namespace ME3Explorer
                                             for (int j = 0; j < bankcount; j++)
                                             {
                                                 int bankRef = BitConverter.ToInt32(binarydata, parsingPos);
-                                                bool isMapped = crossPCCObjectMappingList.TryGetValue(importpcc.getEntry(bankRef), out IEntry mappedValueInThisPackage);
+                                                bool isMapped = crossPCCObjectMappingList.TryGetValue(importpcc.GetEntry(bankRef), out IEntry mappedValueInThisPackage);
                                                 if (isMapped)
                                                 {
                                                     Debug.WriteLine("Binary relink hit for ME2 WwiseEvent Bank Entry " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + bankRef + " -> " + (mappedValueInThisPackage.UIndex));
@@ -160,7 +160,7 @@ namespace ME3Explorer
                                             for (int j = 0; j < wwisestreamcount; j++)
                                             {
                                                 int wwiseStreamRef = BitConverter.ToInt32(binarydata, parsingPos);
-                                                bool isMapped = crossPCCObjectMappingList.TryGetValue(importpcc.getEntry(wwiseStreamRef), out IEntry mappedValueInThisPackage);
+                                                bool isMapped = crossPCCObjectMappingList.TryGetValue(importpcc.GetEntry(wwiseStreamRef), out IEntry mappedValueInThisPackage);
                                                 if (isMapped)
                                                 {
                                                     Debug.WriteLine("Binary relink hit for ME2 WwiseEvent WwiseStream Entry " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + wwiseStreamRef + " -> " + (mappedValueInThisPackage.UIndex));
@@ -211,7 +211,7 @@ namespace ME3Explorer
                                         if (superclassIndex < 0)
                                         {
                                             //its an import
-                                            ImportEntry superclassImportEntry = importpcc.getImport(superclassIndex);
+                                            ImportEntry superclassImportEntry = importpcc.GetImport(superclassIndex);
                                             IEntry newSuperclassValue = EntryImporter.getOrAddCrossImportOrPackage(superclassImportEntry.GetFullPath, importpcc, exp.FileRef);
                                             newdata.OverwriteRange(offset, BitConverter.GetBytes(newSuperclassValue.UIndex));
                                         }
@@ -227,7 +227,7 @@ namespace ME3Explorer
                                         int childProbeUIndex = BitConverter.ToInt32(data, offset);
                                         if (childProbeUIndex != 0)
                                         { //Scoped
-                                            if (crossPCCObjectMappingList.TryGetValue(importpcc.getEntry(childProbeUIndex), out IEntry mapped))
+                                            if (crossPCCObjectMappingList.TryGetValue(importpcc.GetEntry(childProbeUIndex), out IEntry mapped))
                                             {
                                                 newdata.OverwriteRange(offset, BitConverter.GetBytes(mapped.UIndex));
                                             }
@@ -284,7 +284,7 @@ namespace ME3Explorer
                                         {
                                             int nameTableIndex = BitConverter.ToInt32(data, offset);
                                             int nameIndex = BitConverter.ToInt32(data, offset + 4);
-                                            NameReference importingName = importpcc.getNameEntry(nameTableIndex);
+                                            NameReference importingName = importpcc.GetNameEntry(nameTableIndex);
                                             int newFuncName = exp.FileRef.FindNameOrAdd(importingName);
                                             newdata.OverwriteRange(offset, BitConverter.GetBytes(newFuncName)); //Need to convert to SirC way of doing it
                                             offset += 8;
@@ -292,7 +292,7 @@ namespace ME3Explorer
                                             int functionObjectIndex = BitConverter.ToInt32(data, offset);
 
                                             //TODO: Add lookup
-                                            if (crossPCCObjectMappingList.TryGetValue(importpcc.getEntry(functionObjectIndex), out IEntry mapped))
+                                            if (crossPCCObjectMappingList.TryGetValue(importpcc.GetEntry(functionObjectIndex), out IEntry mapped))
                                             {
                                                 newdata.OverwriteRange(offset, BitConverter.GetBytes(mapped.UIndex));
                                             }
@@ -315,7 +315,7 @@ namespace ME3Explorer
                                         if (coreReference < 0)
                                         {
                                             //its an import
-                                            ImportEntry outerclassReferenceImport = importpcc.getImport(coreReference);
+                                            ImportEntry outerclassReferenceImport = importpcc.GetImport(coreReference);
                                             IEntry outerclassNewImport = EntryImporter.getOrAddCrossImportOrPackage(outerclassReferenceImport.GetFullPath, importpcc, exp.FileRef);
                                             newdata.OverwriteRange(offset, BitConverter.GetBytes(outerclassNewImport.UIndex));
                                         }
@@ -333,7 +333,7 @@ namespace ME3Explorer
                                             offset = ClassParser_ReadImplementsTable(importpcc, exp, relinkFailedReport, ref newdata, offset, crossPccObjectMap);
                                             int postComponentsNoneNameIndex = BitConverter.ToInt32(data, offset);
                                             int postComponentNoneIndex = BitConverter.ToInt32(data, offset + 4);
-                                            string postCompName = importpcc.getNameEntry(postComponentsNoneNameIndex); //This appears to be unused in ME3, it is always None it seems.
+                                            string postCompName = importpcc.GetNameEntry(postComponentsNoneNameIndex); //This appears to be unused in ME3, it is always None it seems.
                                             int newFuncName = exp.FileRef.FindNameOrAdd(postCompName);
                                             newdata.OverwriteRange(offset, BitConverter.GetBytes(newFuncName));
                                             offset += 8;
@@ -355,7 +355,7 @@ namespace ME3Explorer
 
                                         int defaultsClassLink = BitConverter.ToInt32(data, offset);
 
-                                        isMapped = crossPCCObjectMappingList.TryGetValue(importpcc.getEntry(defaultsClassLink), out IEntry defClassLink);
+                                        isMapped = crossPCCObjectMappingList.TryGetValue(importpcc.GetEntry(defaultsClassLink), out IEntry defClassLink);
                                         if (isMapped)
                                         {
                                             newdata.OverwriteRange(offset, BitConverter.GetBytes(defClassLink.UIndex));
@@ -375,7 +375,7 @@ namespace ME3Explorer
                                             for (int i = 0; i < functionsTableCount; i++)
                                             {
                                                 int functionsTableIndex = BitConverter.ToInt32(data, offset);
-                                                if (crossPCCObjectMappingList.TryGetValue(importpcc.getEntry(functionsTableIndex), out IEntry mapped))
+                                                if (crossPCCObjectMappingList.TryGetValue(importpcc.GetEntry(functionsTableIndex), out IEntry mapped))
                                                 {
                                                     newdata.OverwriteRange(offset, BitConverter.GetBytes(mapped.UIndex));
                                                 }
@@ -383,7 +383,7 @@ namespace ME3Explorer
                                                 {
                                                     if (functionsTableIndex < 0)
                                                     {
-                                                        ImportEntry functionObjIndex = importpcc.getImport(functionsTableIndex);
+                                                        ImportEntry functionObjIndex = importpcc.GetImport(functionsTableIndex);
                                                         IEntry newFunctionObjIndex = EntryImporter.getOrAddCrossImportOrPackage(functionObjIndex.GetFullPath, importpcc, exp.FileRef);
                                                         newdata.OverwriteRange(offset, BitConverter.GetBytes(newFunctionObjIndex.UIndex));
                                                     }
@@ -501,10 +501,10 @@ namespace ME3Explorer
                 int n = uIndex;
                 int origvalue = n;
                 //Debug.WriteLine("Relink miss, attempting JIT relink on " + n + " " + rootNode.Text);
-                if (importingPCC.isImport(n))
+                if (importingPCC.IsImport(n))
                 {
                     //Get the original import
-                    ImportEntry origImport = importingPCC.getImport(n);
+                    ImportEntry origImport = importingPCC.GetImport(n);
                     string origImportFullName = origImport.GetFullPath;
                     //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
@@ -528,23 +528,23 @@ namespace ME3Explorer
                     {
                         crossPCCObjectMappingList.Add(origImport, crossImport); //add to mapping to speed up future relinks
                         uIndex = crossImport.UIndex;
-                        Debug.WriteLine($"Relink hit: Dynamic CrossImport for {origvalue} {importingPCC.getEntry(origvalue).GetFullPath} -> {uIndex}");
+                        Debug.WriteLine($"Relink hit: Dynamic CrossImport for {origvalue} {importingPCC.GetEntry(origvalue).GetFullPath} -> {uIndex}");
 
                     }
                     else
                     {
-                        string path = importingPCC.getEntry(uIndex) != null ? importingPCC.getEntry(uIndex).GetFullPath : "Entry not found: " + uIndex;
+                        string path = importingPCC.GetEntry(uIndex) != null ? importingPCC.GetEntry(uIndex).GetFullPath : "Entry not found: " + uIndex;
 
                         if (linkFailedDueToError != null)
                         {
-                            Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.getEntry(origvalue).GetFullPath}");
+                            Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.GetEntry(origvalue).GetFullPath}");
                             return $"Relink failed for {propertyName} {uIndex} in export {path}({relinkingExport.UIndex}): {linkFailedDueToError}";
                         }
 
-                        if (relinkingExport.FileRef.getEntry(uIndex) != null)
+                        if (relinkingExport.FileRef.GetEntry(uIndex) != null)
                         {
-                            Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.getEntry(origvalue).GetFullPath}");
-                            return $"Relink failed: CrossImport porting failed for {propertyName} {uIndex} {relinkingExport.FileRef.getEntry(uIndex).GetFullPath} in export {relinkingExport.GetFullPath}({relinkingExport.UIndex})";
+                            Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.GetEntry(origvalue).GetFullPath}");
+                            return $"Relink failed: CrossImport porting failed for {propertyName} {uIndex} {relinkingExport.FileRef.GetEntry(uIndex).GetFullPath} in export {relinkingExport.GetFullPath}({relinkingExport.UIndex})";
                         }
 
                         return $"Relink failed: New export does not exist - this is probably a bug in cross import code for {propertyName} {uIndex} in export {relinkingExport.GetFullPath}({relinkingExport.UIndex})";
@@ -555,7 +555,7 @@ namespace ME3Explorer
             {
                 //It's an export
                 //Attempt lookup
-                string indexedFullPath = importingPCC.getUExport(uIndex).GetIndexedFullPath;
+                string indexedFullPath = importingPCC.GetUExport(uIndex).GetIndexedFullPath;
                 var existingExport = relinkingExport.FileRef.Exports.FirstOrDefault(x => x.GetIndexedFullPath == indexedFullPath);
                 if (existingExport != null)
                 {
@@ -565,7 +565,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    string path = importingPCC.getEntry(uIndex) != null ? importingPCC.getEntry(uIndex).GetFullPath : $"Entry not found: {uIndex}";
+                    string path = importingPCC.GetEntry(uIndex) != null ? importingPCC.GetEntry(uIndex).GetFullPath : $"Entry not found: {uIndex}";
                     Debug.WriteLine($"Relink failed in {relinkingExport.ObjectName} {relinkingExport.UIndex}: {propertyName} {uIndex} {path}");
                     return $"Relink failed: {propertyName} {uIndex} in export {relinkingExport.GetFullPath}({relinkingExport.UIndex})";
                 }
@@ -580,7 +580,7 @@ namespace ME3Explorer
             {
                 int componentTableNameIndex = BitConverter.ToInt32(data, offset);
                 int componentTableIndex = BitConverter.ToInt32(data, offset + 4);
-                NameReference importingName = importpcc.getNameEntry(componentTableNameIndex);
+                NameReference importingName = importpcc.GetNameEntry(componentTableNameIndex);
                 int newComponentTableName = exp.FileRef.FindNameOrAdd(importingName);
                 data.OverwriteRange(offset, BitConverter.GetBytes(newComponentTableName));
                 offset += 8;
@@ -592,7 +592,7 @@ namespace ME3Explorer
                 {
                     int nameTableIndex = BitConverter.ToInt32(data, offset);
                     int nameIndex = BitConverter.ToInt32(data, offset + 4);
-                    importingName = importpcc.getNameEntry(nameTableIndex);
+                    importingName = importpcc.GetNameEntry(nameTableIndex);
                     int componentName = exp.FileRef.FindNameOrAdd(importingName);
                     data.OverwriteRange(offset, BitConverter.GetBytes(componentName));
                     offset += 8;
@@ -600,7 +600,7 @@ namespace ME3Explorer
                     int componentObjectIndex = BitConverter.ToInt32(data, offset);
 
                     //TODO: Add lookup
-                    if (crossPccObjectMap.TryGetValue(importpcc.getEntry(componentObjectIndex), out IEntry mapped))
+                    if (crossPccObjectMap.TryGetValue(importpcc.GetEntry(componentObjectIndex), out IEntry mapped))
                     {
                         data.OverwriteRange(offset, BitConverter.GetBytes(mapped.UIndex));
                     }
@@ -608,7 +608,7 @@ namespace ME3Explorer
                     {
                         if (componentObjectIndex < 0)
                         {
-                            ImportEntry componentObjectImport = importpcc.getImport(componentObjectIndex);
+                            ImportEntry componentObjectImport = importpcc.GetImport(componentObjectIndex);
                             IEntry newComponentObjectImport = EntryImporter.getOrAddCrossImportOrPackage(componentObjectImport.GetFullPath, importpcc, exp.FileRef);
                             data.OverwriteRange(offset, BitConverter.GetBytes(newComponentObjectImport.UIndex));
                         }
@@ -635,7 +635,7 @@ namespace ME3Explorer
                     int componentObjectIndex = BitConverter.ToInt32(data, offset);
                     if (componentObjectIndex != 0)
                     {
-                        if (crossPccObjectMap.TryGetValue(importpcc.getEntry(componentObjectIndex), out IEntry mapped))
+                        if (crossPccObjectMap.TryGetValue(importpcc.GetEntry(componentObjectIndex), out IEntry mapped))
                         {
                             data.OverwriteRange(offset, BitConverter.GetBytes(mapped.UIndex));
                         }
@@ -643,7 +643,7 @@ namespace ME3Explorer
                         {
                             if (componentObjectIndex < 0)
                             {
-                                ImportEntry componentObjectImport = importpcc.getImport(componentObjectIndex);
+                                ImportEntry componentObjectImport = importpcc.GetImport(componentObjectIndex);
                                 IEntry newComponentObjectImport = EntryImporter.getOrAddCrossImportOrPackage(componentObjectImport.GetFullPath, importpcc, exp.FileRef);
                                 data.OverwriteRange(offset, BitConverter.GetBytes(newComponentObjectImport.UIndex));
                             }
@@ -669,7 +669,7 @@ namespace ME3Explorer
                 {
                     { //scoped
                         int interfaceIndex = BitConverter.ToInt32(data, offset);
-                        if (crossPccObjectMap.TryGetValue(importpcc.getEntry(interfaceIndex), out IEntry mapped))
+                        if (crossPccObjectMap.TryGetValue(importpcc.GetEntry(interfaceIndex), out IEntry mapped))
                         {
                             data.OverwriteRange(offset, BitConverter.GetBytes(mapped.UIndex));
                         }
@@ -687,7 +687,7 @@ namespace ME3Explorer
                     {
                         int propertyPointerIndex = BitConverter.ToInt32(data, offset);
 
-                        if (crossPccObjectMap.TryGetValue(importpcc.getEntry(propertyPointerIndex), out IEntry mapped))
+                        if (crossPccObjectMap.TryGetValue(importpcc.GetEntry(propertyPointerIndex), out IEntry mapped))
                         {
                             data.OverwriteRange(offset, BitConverter.GetBytes(mapped.UIndex));
                         }
@@ -704,7 +704,7 @@ namespace ME3Explorer
             else
             {
                 int interfaceTableName = BitConverter.ToInt32(data, offset); //????
-                NameReference importingName = importpcc.getNameEntry(interfaceTableName);
+                NameReference importingName = importpcc.GetNameEntry(interfaceTableName);
                 int interfaceName = exp.FileRef.FindNameOrAdd(importingName);
                 data.OverwriteRange(offset, BitConverter.GetBytes(interfaceName));
                 offset += 8;
@@ -714,7 +714,7 @@ namespace ME3Explorer
                 for (int i = 0; i < interfaceCount; i++)
                 {
                     int interfaceNameIndex = BitConverter.ToInt32(data, offset);
-                    importingName = importpcc.getNameEntry(interfaceNameIndex);
+                    importingName = importpcc.GetNameEntry(interfaceNameIndex);
                     interfaceName = exp.FileRef.FindNameOrAdd(importingName);
                     data.OverwriteRange(offset, BitConverter.GetBytes(interfaceName));
                     offset += 8;

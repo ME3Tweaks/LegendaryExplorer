@@ -71,7 +71,7 @@ namespace ME3Explorer.Matinee
             var groupsProp = InterpDataExport.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups");
             if (groupsProp != null)
             {
-                var groupExports = groupsProp.Where(prop => Pcc.isUExport(prop.Value)).Select(prop => Pcc.getUExport(prop.Value));
+                var groupExports = groupsProp.Where(prop => Pcc.IsUExport(prop.Value)).Select(prop => Pcc.GetUExport(prop.Value));
                 InterpGroups.AddRange(groupExports.Select(exp => new InterpGroup(exp)));
             }
         }

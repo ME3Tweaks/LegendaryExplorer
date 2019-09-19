@@ -418,7 +418,7 @@ namespace ME3Explorer.ME1TlkEditor
         {
             if (CurrentLoadedExport != null)
             {
-                CurrentLoadedExport.FileRef.save();
+                CurrentLoadedExport.FileRef.Save();
             }
             else if (CurrentME2ME3TalkFile != null)
             {

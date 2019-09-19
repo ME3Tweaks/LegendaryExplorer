@@ -199,17 +199,17 @@ namespace ME3Explorer.Meshplorer
                         foreach (var section in meshObject.LODModels[CurrentLOD].Elements)
                         {
                             int matIndex = section.Material.value;
-                            if (meshFile.isUExport(matIndex))
+                            if (meshFile.IsUExport(matIndex))
                             {
-                                ExportEntry entry = meshFile.getUExport(matIndex);
+                                ExportEntry entry = meshFile.GetUExport(matIndex);
                                 Debug.WriteLine("Getting material assets " + entry.GetFullPath);
 
                                 AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
 
                             }
-                            else if (meshFile.isImport(matIndex))
+                            else if (meshFile.IsImport(matIndex))
                             {
-                                var extMaterialExport = ModelPreview.FindExternalAsset(meshFile.getImport(matIndex), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
+                                var extMaterialExport = ModelPreview.FindExternalAsset(meshFile.GetImport(matIndex), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
                                 if (extMaterialExport != null)
                                 {
                                     AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
@@ -248,17 +248,17 @@ namespace ME3Explorer.Meshplorer
                     {
                         foreach (var material in meshObject.Materials)
                         {
-                            if (package.isUExport(material.value))
+                            if (package.IsUExport(material.value))
                             {
-                                ExportEntry entry = package.getUExport(material.value);
+                                ExportEntry entry = package.GetUExport(material.value);
                                 Debug.WriteLine("Getting material assets " + entry.GetFullPath);
 
                                 AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
 
                             }
-                            else if (package.isImport(material.value))
+                            else if (package.IsImport(material.value))
                             {
-                                var extMaterialExport = ModelPreview.FindExternalAsset(package.getImport(material.value), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
+                                var extMaterialExport = ModelPreview.FindExternalAsset(package.GetImport(material.value), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
                                 if (extMaterialExport != null)
                                 {
                                     AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
@@ -295,6 +295,11 @@ namespace ME3Explorer.Meshplorer
                 Task.Run(loadMesh).ContinueWithOnUIThread(prevTask =>
                 {
                     IsBusy = false;
+                    if (CurrentLoadedExport == null)
+                    {
+                        //in the time since the previous task was started, the export has been unloaded
+                        return;
+                    }
                     if (prevTask.Result is ModelPreview.PreloadedModelData pmd)
                     {
                         switch (pmd.meshObject)
@@ -417,9 +422,9 @@ namespace ME3Explorer.Meshplorer
                 return;
             }
             ExportEntry rb_BodySetup;
-            if (CurrentLoadedExport.GetProperty<ObjectProperty>("BodySetup")?.Value is int bodySetupUIndex && Pcc.isUExport(bodySetupUIndex))
+            if (CurrentLoadedExport.GetProperty<ObjectProperty>("BodySetup")?.Value is int bodySetupUIndex && Pcc.IsUExport(bodySetupUIndex))
             {
-                rb_BodySetup = Pcc.getUExport(bodySetupUIndex);
+                rb_BodySetup = Pcc.GetUExport(bodySetupUIndex);
             }
             else
             {
@@ -427,9 +432,9 @@ namespace ME3Explorer.Meshplorer
                 {
                     Parent = CurrentLoadedExport,
                     ObjectName = "RB_BodySetup",
-                    idxClass = Pcc.getEntryOrAddImport("Engine.RB_BodySetup").UIndex
+                    Class = Pcc.getEntryOrAddImport("Engine.RB_BodySetup")
                 };
-                Pcc.addExport(rb_BodySetup);
+                Pcc.AddExport(rb_BodySetup);
                 var stm = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
                 stm.BodySetup = rb_BodySetup.UIndex;
                 CurrentLoadedExport.setBinaryData(stm.ToBytes(Pcc));

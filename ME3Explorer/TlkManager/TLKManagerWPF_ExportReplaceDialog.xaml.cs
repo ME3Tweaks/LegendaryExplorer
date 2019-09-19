@@ -69,7 +69,7 @@ namespace ME3Explorer.TlkManagerNS
             {
                 //Need to find a way for the export loader to register usage of the pcc.
                 IMEPackage pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath);
-                var export = pcc.getUExport(tlk.exportNumber);
+                var export = pcc.GetUExport(tlk.exportNumber);
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditor.ME1TlkEditorWPF(), export);
                 elhw.Title = $"TLK Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FilePath}";
                 elhw.Show();
@@ -151,7 +151,7 @@ namespace ME3Explorer.TlkManagerNS
                             compressor.LoadInputData(openFileDialog.FileName);
                             using (IMEPackage pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath))
                             {
-                                compressor.serializeTalkfileToExport(pcc.getUExport(tlk.exportNumber), true); 
+                                compressor.serializeTalkfileToExport(pcc.GetUExport(tlk.exportNumber), true); 
                             };
                         };
                     }

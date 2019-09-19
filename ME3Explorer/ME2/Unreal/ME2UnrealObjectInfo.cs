@@ -111,11 +111,11 @@ namespace ME2Explorer.Unreal
                           ?? getPropertyInfo(className, propName, !inStruct, containingExport: export);
             if (p == null && export != null)
             {
-                if (export.ClassName != "Class" && export.idxClass > 0)
+                if (export.Class is ExportEntry classExport)
                 {
-                    export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
+                    export = classExport;
                 }
-                if (export.ClassName == "Class")
+                if (export.IsClass)
                 {
                     ClassInfo currentInfo = generateClassInfo(export);
                     currentInfo.baseClass = export.SuperClassName;
@@ -221,10 +221,9 @@ namespace ME2Explorer.Unreal
                 else
                 {
                     //Baseclass may be modified as well...
-                    if (containingExport != null && containingExport.idxSuperClass > 0)
+                    if (containingExport?.SuperClass is ExportEntry parentExport)
                     {
                         //Class parent is in this file. Generate class parent info and attempt refetch
-                        ExportEntry parentExport = containingExport.FileRef.getUExport(containingExport.idxSuperClass);
                         return getPropertyInfo(parentExport.SuperClassName, propName, inStruct, generateClassInfo(parentExport), reSearch: true, parentExport);
                     }
                 }
@@ -300,7 +299,7 @@ namespace ME2Explorer.Unreal
                     {
                         using (IMEPackage importPCC = MEPackageHandler.OpenME2Package(filepath))
                         {
-                            var exportToRead = importPCC.getUExport(info.exportIndex);
+                            var exportToRead = importPCC.GetUExport(info.exportIndex);
                             byte[] buff = exportToRead.Data.Skip(0x30).ToArray();
                             PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), className);
                             foreach (var prop in defaults)
@@ -398,7 +397,7 @@ namespace ME2Explorer.Unreal
                     {
                         for (int j = 1; j <= pcc.ExportCount; j++)
                         {
-                            ExportEntry exportEntry = pcc.getUExport(j);
+                            ExportEntry exportEntry = pcc.GetUExport(j);
                             if (exportEntry.ClassName == "Enum")
                             {
                                 generateEnumValues(exportEntry, NewEnums);
@@ -493,7 +492,7 @@ namespace ME2Explorer.Unreal
             int nextExport = BitConverter.ToInt32(export.Data, isStruct ? 0x18 : 0x10);
             while (nextExport > 0)
             {
-                var entry = pcc.getUExport(nextExport);
+                var entry = pcc.GetUExport(nextExport);
                 if (entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
                 {
@@ -576,7 +575,7 @@ namespace ME2Explorer.Unreal
                     break;
                 case "ArrayProperty":
                     type = PropertyType.ArrayProperty;
-                    PropertyInfo arrayTypeProp = getProperty(pcc.getUExport(BitConverter.ToInt32(entry.Data, 44)));
+                    PropertyInfo arrayTypeProp = getProperty(pcc.GetUExport(BitConverter.ToInt32(entry.Data, 44)));
                     if (arrayTypeProp != null)
                     {
                         switch (arrayTypeProp.Type)

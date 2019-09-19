@@ -561,7 +561,6 @@ namespace ME3Explorer.PackageDumper
                         stringoutput.WriteLine("Exports starting with [C] can be overriden from the configuration file");
 
                         int numDone = 1;
-                        int numTotal = pcc.Exports.Count;
                         //writeVerboseLine("Enumerating exports");
                         string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(File) + "\\";
                         foreach (ExportEntry exp in pcc.Exports)

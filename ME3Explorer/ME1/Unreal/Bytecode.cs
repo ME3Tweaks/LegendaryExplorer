@@ -2396,7 +2396,7 @@ namespace ME1Explorer.Unreal
             pos += a.raw.Length;
             int index = (Int32)BitConverter.ToInt64(memory, pos);
             pos += 8;
-            string s = pcc.getNameEntry(index);
+            string s = pcc.GetNameEntry(index);
             t.text = a.text + "." + s + "(";
             int count = 0;
             while (pos < memsize - 6)
@@ -2424,7 +2424,7 @@ namespace ME1Explorer.Unreal
         {
             Token t = new Token();
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.text = "Global." + pcc.getNameEntry(index) + "(";
+            t.text = "Global." + pcc.GetNameEntry(index) + "(";
             int pos = start + 9;
             int count = 0;
             while (pos < memsize - 6)
@@ -2507,7 +2507,7 @@ namespace ME1Explorer.Unreal
             pos += c.raw.Length;
             Token d = ReadToken(pos);
             pos += d.raw.Length;
-            t.text = "new(" + a.text + "," + b.text + "," + c.text + "," + d.text + ")";
+            t.text = $"new({a.text},{b.text},{c.text},{d.text})";
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -2528,7 +2528,7 @@ namespace ME1Explorer.Unreal
             pos += b.raw.Length;
             Token c = ReadToken(pos);
             pos += c.raw.Length;
-            t.text = a.text + "." + arg + "(" + b.text + "," + c.text + ")";
+            t.text = $"{a.text}.{arg}({b.text},{c.text})";
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -2548,7 +2548,7 @@ namespace ME1Explorer.Unreal
             pos += b.raw.Length;
             Token c = ReadToken(pos);
             pos += c.raw.Length;
-            t.text = a.text + "." + arg + "(" + b.text + ")";
+            t.text = $"{a.text}.{arg}({b.text})";
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -2587,7 +2587,7 @@ namespace ME1Explorer.Unreal
             pos += 2;
             Token a = ReadToken(pos);
             pos += a.raw.Length;
-            t.text = "Case " + a.text + ":";
+            t.text = $"Case {a.text}:";
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -2601,16 +2601,14 @@ namespace ME1Explorer.Unreal
             Token t = new Token();
             
             int pos = start + 1;
-            int index = BitConverter.ToInt32(memory, pos);
+            int uIndex = BitConverter.ToInt32(memory, pos);
             string s = "";
-            if (index > 0 && index <= pcc.Exports.Count)
-                s = pcc.Exports[index - 1].ObjectName;
-            if (index * -1 > 0 && index * -1 <= pcc.Imports.Count)
-                s = pcc.Imports[index * -1 - 1].ObjectName;
+            if (pcc.IsEntry(uIndex))
+                s = pcc.getObjectName(uIndex);
             pos += 4;
             Token a = ReadToken(pos);
             pos += a.raw.Length;
-            t.text = "Class<" + s + ">(" + a.text + ")";
+            t.text = $"Class<{s}>({a.text})";
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -2627,7 +2625,7 @@ namespace ME1Explorer.Unreal
             float f1 = BitConverter.ToSingle(memory, pos);
             float f2 = BitConverter.ToSingle(memory, pos + 4);
             float f3 = BitConverter.ToSingle(memory, pos + 8);
-            t.text = "vect(" + f1 + ", " + f2 + ", " + f3 + ")";
+            t.text = $"vect({f1}, {f2}, {f3})";
             int len = 13;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -2644,7 +2642,7 @@ namespace ME1Explorer.Unreal
             int i1 = BitConverter.ToInt32(memory, pos);
             int i2 = BitConverter.ToInt32(memory, pos + 4);
             int i3 = BitConverter.ToInt32(memory, pos + 8);
-            t.text = "rot(" + i1 + ", " + i2 + ", " + i3 + ")";
+            t.text = $"rot({i1}, {i2}, {i3})";
             int len = 13;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -2668,7 +2666,7 @@ namespace ME1Explorer.Unreal
             pos += c.raw.Length;
             //Token d = ReadToken(pos);
             //pos += d.raw.Length;
-            t.text = "(" + a.text + ") ? " + b.text + " : " + c.text;
+            t.text = $"({a.text}) ? {b.text} : {c.text}";
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -2694,7 +2692,7 @@ namespace ME1Explorer.Unreal
             Token t = new Token();
             
             int index = BitConverter.ToInt32(memory, start + 1);
-            t.text = "If(" + pcc.getObjectName(index) + "){";
+            t.text = $"If({pcc.getObjectName(index)}){{";
             int pos = start + 8;
             Token a = ReadToken(pos);
             t.text += a.text + "}";
@@ -2721,7 +2719,7 @@ namespace ME1Explorer.Unreal
             Token t = new Token();
             
             int index = BitConverter.ToInt32(memory, start + 1);
-            t.text = "If(" + pcc.getObjectName(index) + ")\n\t{\n";
+            t.text = $"If({pcc.getObjectName(index)})\n\t{{\n";
             int pos = start + 8;
             Token a = ReadToken(pos);
             pos += a.raw.Length;
@@ -2730,7 +2728,7 @@ namespace ME1Explorer.Unreal
             if (memory[pos] == 0x06) //jump
             {
                 int offset = BitConverter.ToInt16(memory, pos + 1);
-                t.text += "\nelse\\\\Jump 0x" + offset.ToString("X") + "\n{\n";
+                t.text += $"\nelse\\\\Jump 0x{offset:X}\n{{\n";
                 pos += 3;
                 Token t2 = ReadToken(pos);
                 pos += t2.raw.Length;
@@ -2825,7 +2823,7 @@ namespace ME1Explorer.Unreal
             Token t = new Token();
             
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.text = pcc.getNameEntry(index);
+            t.text = pcc.GetNameEntry(index);
             int pos = start + 11;
             t.text += "(";
             int count = 0;
@@ -3089,7 +3087,7 @@ namespace ME1Explorer.Unreal
             Token t = new Token();
             
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.text = pcc.getNameEntry(index);
+            t.text = pcc.GetNameEntry(index);
             t.raw = new byte[13];
             for (int i = 0; i < 13; i++)
                 t.raw[i] = memory[start + i];
@@ -3101,7 +3099,7 @@ namespace ME1Explorer.Unreal
             Token t = new Token();
             
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.text = pcc.getNameEntry(index);
+            t.text = pcc.GetNameEntry(index);
             t.raw = new byte[9];
             for (int i = 0; i < 9; i++)
                 t.raw[i] = memory[start + i];
@@ -3112,12 +3110,12 @@ namespace ME1Explorer.Unreal
         {
             Token t = new Token();
             
-            int index = BitConverter.ToInt32(memory, start + 1);
-            t.text = " '" + pcc.getObjectName(index) + "'";
-            if (index > 0 && index <= pcc.Exports.Count)
-                t.text = pcc.Exports[index - 1].ClassName + t.text;
-            if (index * -1 > 0 && index * -1 <= pcc.Imports.Count)
-                t.text = pcc.Imports[index * -1 - 1].ClassName + t.text;
+            int uIndex = BitConverter.ToInt32(memory, start + 1);
+            t.text = " '" + pcc.getObjectName(uIndex) + "'";
+            if (pcc.IsUExport(uIndex))
+                t.text = pcc.GetUExport(uIndex).ClassName + t.text;
+            if (pcc.IsImport(uIndex))
+                t.text = pcc.GetImport(uIndex).ClassName + t.text;
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
                 t.raw[i] = memory[start + i];
@@ -3169,7 +3167,7 @@ namespace ME1Explorer.Unreal
             Token t = new Token();
             
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.text = "'" + pcc.getNameEntry(index) + "'";
+            t.text = "'" + pcc.GetNameEntry(index) + "'";
             t.raw = new byte[9];
             for (int i = 0; i < 9; i++)
                 t.raw[i] = memory[start + i];
@@ -3198,7 +3196,7 @@ namespace ME1Explorer.Unreal
         {
             Token t = new Token();
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
-            t.text = pcc.getNameEntry(index) + "(";
+            t.text = pcc.GetNameEntry(index) + "(";
             int pos = start + 9;
             int count = 0;
             while (pos < memsize - 6)
@@ -3404,20 +3402,20 @@ namespace ME1Explorer.Unreal
         {
             Token t = new Token();
             t.text = "";
-            int index = BitConverter.ToInt32(memory, start + 1);
-            if (index > 0 && index <= pcc.Exports.Count)
+            int uIndex = BitConverter.ToInt32(memory, start + 1);
+            if (pcc.GetEntry(uIndex) is ExportEntry exp)
             {
-                string name = pcc.getObjectName(index);
-                string clas = pcc.Exports[index - 1].ClassName;
+                string name = exp.ObjectName;
+                string clas = exp.ClassName;
                 clas = clas.Replace("Property", "");
-                t.text += clas + " " + name + ";";
+                t.text += $"{clas} {name};";
             }
-            if (index * -1 > 0 && index * -1 <= pcc.Exports.Count)
+            if (pcc.GetEntry(uIndex) is ImportEntry imp)
             {
-                string name = pcc.getObjectName(index);
-                string clas = pcc.Imports[index * -1 - 1].ClassName;
+                string name = imp.ObjectName;
+                string clas = imp.ClassName;
                 clas = clas.Replace("Property", "");
-                t.text += clas + " " + name + ";";
+                t.text += $"{clas} {name};";
             }
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
@@ -3471,7 +3469,7 @@ namespace ME1Explorer.Unreal
             int index = ME3Explorer.EndianBitConverter.ToInt32(memory, start + 1);
             ME3Explorer.EndianBitConverter.IsLittleEndian = false;
             if (index >= 0 && index < pcc.Names.Count)
-                t.text = pcc.getNameEntry(index);
+                t.text = pcc.GetNameEntry(index);
             else
                 t.text = "Label (" + index.ToString("X2") + ");";
             t.raw = new byte[5];

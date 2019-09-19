@@ -16,12 +16,11 @@ namespace ME3Explorer.Packages
         IMEPackage FileRef { get; }
         MEGame Game { get; }
         int idxLink { get; set; }
-        int idxObjectName { get; set; }
         string ClassName { get; }
         string GetFullPath { get; }
         string GetInstancedFullPath { get; }
         string GetIndexedFullPath { get; }
-        string ObjectName { get; }
+        string ObjectName { get; set; }
         string PackageFullName { get; }
         string PackageFullNameInstanced { get; }
         string PackageName { get; }

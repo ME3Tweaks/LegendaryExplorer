@@ -18,7 +18,7 @@ namespace ME3Explorer.Packages
                 return "Null";
             }
             string retStr = "Entry not found";
-            IEntry coreRefEntry = pcc.getEntry(index);
+            IEntry coreRefEntry = pcc.GetEntry(index);
             if (coreRefEntry != null)
             {
                 retStr = coreRefEntry is ImportEntry ? "[I] " : "[E] ";
@@ -29,14 +29,14 @@ namespace ME3Explorer.Packages
 
         public static string FollowLink(this IMEPackage pcc, int uIndex)
         {
-            if (pcc.isUExport(uIndex))
+            if (pcc.IsUExport(uIndex))
             {
-                ExportEntry parent = pcc.getUExport(uIndex);
+                ExportEntry parent = pcc.GetUExport(uIndex);
                 return pcc.FollowLink(parent.idxLink) + parent.ObjectName + ".";
             }
-            if (pcc.isImport(uIndex))
+            if (pcc.IsImport(uIndex))
             {
-                ImportEntry parent = pcc.getImport(uIndex);
+                ImportEntry parent = pcc.GetImport(uIndex);
                 return pcc.FollowLink(parent.idxLink) + parent.ObjectName + ".";
             }
             return "";
@@ -75,11 +75,11 @@ namespace ME3Explorer.Packages
             var import = new ImportEntry(pcc)
             {
                 idxLink = parent?.UIndex ?? 0,
-                idxClassName = pcc.FindNameOrAdd(className),
-                idxObjectName = pcc.FindNameOrAdd(pathParts.Last()),
-                idxPackageFile = pcc.FindNameOrAdd(packageFile)
+                ClassName = className,
+                ObjectName = pathParts.Last(),
+                PackageFile = packageFile
             };
-            pcc.addImport(import);
+            pcc.AddImport(import);
             return import;
         }
 
@@ -208,15 +208,15 @@ namespace ME3Explorer.Packages
                     continue;
                 }
                 //find header references
-                if (exp.idxArchtype == baseUIndex)
+                if (exp.Archetype == baseEntry)
                 {
                     result.AddToListAt(exp, "Header: Archetype");
                 }
-                if (exp.idxClass == baseUIndex)
+                if (exp.Class == baseEntry)
                 {
                     result.AddToListAt(exp, "Header: Class");
                 }
-                if (exp.idxSuperClass == baseUIndex)
+                if (exp.SuperClass == baseEntry)
                 {
                     result.AddToListAt(exp, "Header: SuperClass");
                 }

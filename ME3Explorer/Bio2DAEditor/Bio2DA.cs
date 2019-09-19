@@ -103,7 +103,7 @@ namespace ME3Explorer
                 int colindex = BitConverter.ToInt32(data, data.Length - currentcoloffset);
                 currentcoloffset += 8; //names in this case don't use nameindex values.
                 int nameindex = BitConverter.ToInt32(data, data.Length - currentcoloffset);
-                string name = pcc.getNameEntry(nameindex);
+                string name = pcc.GetNameEntry(nameindex);
                 ColumnNames.Insert(0, name);
                 colcount--;
             }

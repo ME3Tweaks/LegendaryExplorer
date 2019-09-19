@@ -133,7 +133,7 @@ namespace MassEffect.NativesEditor.Views
                 }
             }
 
-            Pcc.save();
+            Pcc.Save();
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)

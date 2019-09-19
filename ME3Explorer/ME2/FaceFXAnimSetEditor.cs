@@ -131,7 +131,7 @@ namespace ME2Explorer
         {
             if (Pcc == null)
                 return;
-            Pcc.save();
+            Pcc.Save();
             MessageBox.Show("Done.");
         }
 

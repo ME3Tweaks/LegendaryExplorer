@@ -120,15 +120,15 @@ namespace ME3Explorer.Packages
         long FileSize { get; }
 
         //reading
-        bool isUExport(int index);
-        bool isName(int index);
-        bool isImport(int index);
-        bool isEntry(int uindex);
+        bool IsUExport(int index);
+        bool IsName(int index);
+        bool IsImport(int index);
+        bool IsEntry(int uindex);
         /// <summary>
         ///     gets Export or Import entry, from unreal index
         /// </summary>
         /// <param name="index">unreal index</param>
-        IEntry getEntry(int index);
+        IEntry GetEntry(int index);
         /// <summary>
         /// Gets an export based on it's 0 based index in the export list. (Not unreal indexing)
         /// </summary>
@@ -140,13 +140,13 @@ namespace ME3Explorer.Packages
         /// Gets an export based on it's unreal based index in the export list.
         /// </summary>
         /// <param name="uIndex">unreal-based index in the export list</param>
-        ExportEntry getUExport(int uIndex);
+        ExportEntry GetUExport(int uIndex);
 
         /// <summary>
         /// Gets an import based on it's unreal based index.
         /// </summary>
         /// <param name="uIndex">unreal-based index</param>
-        ImportEntry getImport(int uIndex);
+        ImportEntry GetImport(int uIndex);
 
         bool TryGetUExport(int uIndex, out ExportEntry export);
         bool TryGetImport(int uIndex, out ImportEntry import);
@@ -158,20 +158,14 @@ namespace ME3Explorer.Packages
         /// </summary>
         /// <param name="index">unreal index</param>
         string getObjectName(int index);
-        string getNameEntry(int index);
-
-        /// <summary>
-        ///     gets Export or Import class, from unreal index
-        /// </summary>
-        /// <param name="index">unreal index</param>
-        string getObjectClass(int index);
+        string GetNameEntry(int index);
 
         //editing
         void addName(string name);
         int FindNameOrAdd(string name);
         void replaceName(int index, string newName);
-        void addExport(ExportEntry exportEntry);
-        void addImport(ImportEntry importEntry);
+        void AddExport(ExportEntry exportEntry);
+        void AddImport(ImportEntry importEntry);
         /// <summary>
         ///     exposed so that the property import function can restore the namelist after a failure.
         ///     please don't use it anywhere else.
@@ -185,8 +179,8 @@ namespace ME3Explorer.Packages
         void RemoveTrailingTrash();
 
         //saving
-        void save();
-        void save(string path);
+        void Save();
+        void Save(string path);
         byte[] getHeader();
         ObservableCollection<GenericWindow> Tools { get; }
         void RegisterTool(GenericWindow tool);

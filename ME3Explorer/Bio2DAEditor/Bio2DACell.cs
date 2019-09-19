@@ -104,7 +104,7 @@ namespace ME3Explorer
                         return BitConverter.ToInt32(Data, 0).ToString();
                     case Bio2DADataType.TYPE_NAME:
                         int name = BitConverter.ToInt32(Data, 0);
-                        var nameVal = Pcc.getNameEntry(name);
+                        var nameVal = Pcc.GetNameEntry(name);
                         int index = BitConverter.ToInt32(Data, 4);
                         if (index > 0)
                         {
@@ -136,7 +136,7 @@ namespace ME3Explorer
                             {
                                 Data = new byte[8];
                             }
-                            if (int.TryParse(value, out int parsed) && Pcc.isName(parsed) && !Data.SequenceEqual(BitConverter.GetBytes((long)parsed))) //has to be cast as long as 4 vs 8 bytes will never be equal
+                            if (int.TryParse(value, out int parsed) && Pcc.IsName(parsed) && !Data.SequenceEqual(BitConverter.GetBytes((long)parsed))) //has to be cast as long as 4 vs 8 bytes will never be equal
                             {
                                 
                                 BitConverter.GetBytes(parsed).CopyTo(Data,0);

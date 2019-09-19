@@ -503,7 +503,7 @@ namespace ME3Explorer.Soundplorer
 
         private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Pcc.save();
+            Pcc.Save();
         }
 
         private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -514,7 +514,7 @@ namespace ME3Explorer.Soundplorer
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {
-                Pcc.save(d.FileName);
+                Pcc.Save(d.FileName);
                 MessageBox.Show("Done");
             }
         }
@@ -850,7 +850,7 @@ namespace ME3Explorer.Soundplorer
                     {
                         // Must run on the UI thread or the tool interop will throw an exception
                         // because we are on a background thread.
-                        Application.Current.Dispatcher.Invoke(pack.save);
+                        Application.Current.Dispatcher.Invoke(pack.Save);
                     }
                 }
                 i++;
@@ -1097,8 +1097,8 @@ namespace ME3Explorer.Soundplorer
                 if (spExport != null && spExport.Export.ClassName == "WwiseStream")
                 {
                     ExportEntry clone = spExport.Export.Clone();
-                    clone.idxObjectName = clone.FileRef.FindNameOrAdd(result);
-                    spExport.Export.FileRef.addExport(clone);
+                    clone.ObjectName = result;
+                    spExport.Export.FileRef.AddExport(clone);
                     SoundplorerExport newExport = new SoundplorerExport(clone);
                     BindedItemsList.Add(newExport);
                     var reloadList = new List<SoundplorerExport> { newExport };

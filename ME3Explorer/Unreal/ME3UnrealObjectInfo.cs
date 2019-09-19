@@ -427,11 +427,11 @@ namespace ME3Explorer.Unreal
             }
             if (p == null && export != null)
             {
-                if (export.ClassName != "Class" && export.idxClass > 0)
+                if (!export.IsClass && export.Class is ExportEntry classExport)
                 {
-                    export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
+                    export = classExport;
                 }
-                if (export.ClassName == "Class")
+                if (export.IsClass)
                 {
                     ClassInfo currentInfo = generateClassInfo(export);
                     currentInfo.baseClass = export.SuperClassName;
@@ -550,10 +550,9 @@ namespace ME3Explorer.Unreal
                 else
                 {
                     //Baseclass may be modified as well...
-                    if (containingExport != null && containingExport.idxSuperClass > 0)
+                    if (containingExport?.SuperClass is ExportEntry parentExport)
                     {
                         //Class parent is in this file. Generate class parent info and attempt refetch
-                        ExportEntry parentExport = containingExport.FileRef.getUExport(containingExport.idxSuperClass);
                         return getPropertyInfo(parentExport.SuperClassName, propName, inStruct, generateClassInfo(parentExport), reSearch: true, parentExport);
                     }
                 }
@@ -598,7 +597,7 @@ namespace ME3Explorer.Unreal
                         {
                             using (IMEPackage importPCC = MEPackageHandler.OpenME3Package(filepath))
                             {
-                                var exportToRead = importPCC.getUExport(info.exportIndex);
+                                var exportToRead = importPCC.GetUExport(info.exportIndex);
                                 byte[] buff = exportToRead.Data.Skip(0x24).ToArray();
                                 PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), structName);
                                 foreach (var prop in defaults)
@@ -718,7 +717,7 @@ namespace ME3Explorer.Unreal
                     {
                         for (int j = 1; j <= pcc.ExportCount; j++)
                         {
-                            ExportEntry exportEntry = pcc.getUExport(j);
+                            ExportEntry exportEntry = pcc.GetUExport(j);
                             if (exportEntry.ClassName == "Enum")
                             {
                                 generateEnumValues(exportEntry, NewEnums);
@@ -866,7 +865,7 @@ namespace ME3Explorer.Unreal
         {
             SequenceObjectInfo info = new SequenceObjectInfo();
             //+1 to get the Default__ instance
-            var inLinks = pcc.getUExport(i + 1).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+            var inLinks = pcc.GetUExport(i + 1).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
             if (inLinks != null)
             {
                 foreach (var seqOpInputLink in inLinks)
@@ -896,7 +895,7 @@ namespace ME3Explorer.Unreal
             int nextExport = BitConverter.ToInt32(export.Data, isStruct ? 0x14 : 0xC);
             while (nextExport > 0)
             {
-                var entry = pcc.getUExport(nextExport);
+                var entry = pcc.GetUExport(nextExport);
                 if (entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
                 {
@@ -979,7 +978,7 @@ namespace ME3Explorer.Unreal
                     break;
                 case "ArrayProperty":
                     type = PropertyType.ArrayProperty;
-                    PropertyInfo arrayTypeProp = getProperty(pcc.getUExport(BitConverter.ToInt32(entry.Data, 44)));
+                    PropertyInfo arrayTypeProp = getProperty(pcc.GetUExport(BitConverter.ToInt32(entry.Data, 44)));
                     if (arrayTypeProp != null)
                     {
                         switch (arrayTypeProp.Type)

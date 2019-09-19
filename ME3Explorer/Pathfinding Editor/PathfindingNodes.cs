@@ -37,7 +37,7 @@ namespace ME3Explorer.PathfindingNodes
                 pcc = p;
                 g = grapheditor;
                 index = idx;
-                export = pcc.getUExport(index);
+                export = pcc.GetUExport(index);
                 comment = new SText(GetComment(), commentColor, false);
                 comment.X = 0;
                 comment.Y = 65 - comment.Height;

@@ -44,9 +44,9 @@ namespace ME3Explorer.Unreal.Classes
 
             PropertyCollection props = export.GetProperties();
             m_pBioAnimSetData = props.GetPropOrDefault<ObjectProperty>("m_pBioAnimSetData").Value;
-            if (pcc.isUExport(m_pBioAnimSetData))
+            if (pcc.IsUExport(m_pBioAnimSetData))
             {
-                SetData = new BioAnimSetData(pcc.getUExport(m_pBioAnimSetData));
+                SetData = new BioAnimSetData(pcc.GetUExport(m_pBioAnimSetData));
             }
             PreviewSkelMeshName = props.GetPropOrDefault<NameProperty>("PreviewSkelMeshName").Value.InstancedString;
             Sequences = props.GetPropOrDefault<ArrayProperty<ObjectProperty>>("Sequences").Select(prop => prop.Value).ToList();
@@ -68,9 +68,9 @@ namespace ME3Explorer.Unreal.Classes
             TreeNode res = new TreeNode("Sequences");
             foreach (int idx in Sequences)
             {
-                if (pcc.isUExport(idx) && pcc.getUExport(idx).ClassName == "AnimSequence")
+                if (pcc.IsUExport(idx) && pcc.GetUExport(idx).ClassName == "AnimSequence")
                 {
-                    var ans = new AnimSequence(pcc.getUExport(idx));
+                    var ans = new AnimSequence(pcc.GetUExport(idx));
                     res.Nodes.Add(ans.ToTree());
                 }
                 else                    
@@ -103,8 +103,8 @@ namespace ME3Explorer.Unreal.Classes
             {
                 int idx = Sequences[i];
                 int idxn = Sequences[i + 1];
-                AnimSequence seq = new AnimSequence(pcc.getUExport(idx));
-                AnimSequence seqn = new AnimSequence(pcc.getUExport(idxn));
+                AnimSequence seq = new AnimSequence(pcc.GetUExport(idx));
+                AnimSequence seqn = new AnimSequence(pcc.GetUExport(idxn));
                 PSAFile.PSAAnimInfo inf = new PSAFile.PSAAnimInfo();
                 inf.AnimRate = 30;
                 inf.TotalBones = d.Bones.Count;
@@ -136,12 +136,12 @@ namespace ME3Explorer.Unreal.Classes
                     }
                 currframe += seq.NumFrames;
             }
-            AnimSequence s1 = new AnimSequence(pcc.getUExport(Sequences[Sequences.Count-1]));
+            AnimSequence s1 = new AnimSequence(pcc.GetUExport(Sequences[Sequences.Count-1]));
             AnimSequence s2;
             if (s1.bNoLoopingInterpolation)
-                s2 = new AnimSequence(pcc.getUExport(Sequences[Sequences.Count - 1]));
+                s2 = new AnimSequence(pcc.GetUExport(Sequences[Sequences.Count - 1]));
             else
-                s2 = new AnimSequence(pcc.getUExport(Sequences[0]));
+                s2 = new AnimSequence(pcc.GetUExport(Sequences[0]));
             PSAFile.PSAAnimInfo inf2 = new PSAFile.PSAAnimInfo();
             inf2.AnimRate = 30;
             inf2.TotalBones = d.Bones.Count;
@@ -199,7 +199,7 @@ namespace ME3Explorer.Unreal.Classes
             }
             for (int i = 0; i < Sequences.Count; i++)
             {
-                AnimSequence ans = new AnimSequence(pcc.getUExport(Sequences[i]));
+                AnimSequence ans = new AnimSequence(pcc.GetUExport(Sequences[i]));
                 if (d.Infos[i].name != ans.SequenceName)
                 {
                     MessageBox.Show("Cant import: couldnt match all sequences");
@@ -211,7 +211,7 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 0; i < Sequences.Count; i++)
             {
                 DebugOutput.PrintLn($"Importing into AnimSequence #{Sequences[i]} ...");
-                AnimSequence ans = new AnimSequence(pcc.getUExport(Sequences[i]));
+                AnimSequence ans = new AnimSequence(pcc.GetUExport(Sequences[i]));
                 PSAFile.PSAAnimInfo inf = d.Infos[i];
                 var loc = new List<Vector3>();
                 for (int j = 0; j < inf.TotalBones; j++)
@@ -224,7 +224,7 @@ namespace ME3Explorer.Unreal.Classes
                 ans.SaveChanges();
                 pos += inf.KeyQuotum;
             }
-            pcc.save();
+            pcc.Save();
             return true;
         }
 

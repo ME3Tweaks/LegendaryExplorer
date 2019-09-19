@@ -104,7 +104,7 @@ namespace ME3Explorer.SharedUI
                 SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
                 if (d.ShowDialog() == true)
                 {
-                    Pcc.save(d.FileName);
+                    Pcc.Save(d.FileName);
                     MessageBox.Show("Done");
                 }
             }
@@ -118,7 +118,7 @@ namespace ME3Explorer.SharedUI
             }
             else
             {
-                Pcc.save();
+                Pcc.Save();
             }
         }
 

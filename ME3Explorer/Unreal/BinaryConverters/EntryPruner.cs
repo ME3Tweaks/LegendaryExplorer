@@ -25,23 +25,23 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     //really small file
                     coreImport = new ImportEntry(pcc)
                     {
-                        idxObjectName = pcc.FindNameOrAdd("Core"),
-                        idxClassName = pcc.FindNameOrAdd("Package"),
+                        ObjectName = "Core",
+                        ClassName = "Package",
                         idxLink = 0,
-                        idxPackageFile = pcc.FindNameOrAdd("Core")
+                        PackageFile = "Core"
                     };
-                    pcc.addImport(coreImport);
+                    pcc.AddImport(coreImport);
                 }
 
                 //Package isn't an import, could be one of the 2DA files or other small ones
                 packageImport = new ImportEntry(pcc)
                 {
-                    idxObjectName = pcc.FindNameOrAdd("Package"),
-                    idxClassName = pcc.FindNameOrAdd("Class"),
+                    ObjectName = "Package",
+                    ClassName = "Class",
                     idxLink = coreImport.UIndex,
-                    idxPackageFile = pcc.FindNameOrAdd("Core")
+                    PackageFile = "Core"
                 };
-                pcc.addImport(packageImport);
+                pcc.AddImport(packageImport);
             }
 
             foreach (IEntry entry in itemsToTrash)
@@ -50,7 +50,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 {
                     continue;
                 }
-                trashTopLevel = TrashEntry(entry, trashTopLevel, packageImport.UIndex);
+                trashTopLevel = TrashEntry(entry, trashTopLevel, packageImport);
             }
             pcc.RemoveTrailingTrash();
         }
@@ -60,40 +60,40 @@ namespace ME3Explorer.Unreal.BinaryConverters
         /// </summary>
         /// <param name="entry">Entry to trash</param>
         /// <param name="trashContainer">Container for trash. Pass null if you want to create the trash container from the passed in value.</param>
-        /// <param name="packageClassIdx">Idx for package class. Prevents multiple calls to find it</param>
+        /// <param name="packageClass">Package class. Prevents multiple calls to find it</param>
         /// <returns>New trash container, otherwise will be null</returns>
-        public static ExportEntry TrashEntry(IEntry entry, ExportEntry trashContainer, int packageClassIdx)
+        public static ExportEntry TrashEntry(IEntry entry, ExportEntry trashContainer, IEntry packageClass)
         {
             IMEPackage pcc = entry.FileRef;
             if (entry is ImportEntry imp)
             {
                 if (trashContainer == null)
                 {
-                    trashContainer = TrashEntry(new ExportEntry(pcc), null, packageClassIdx);
-                    pcc.addExport(trashContainer);
+                    trashContainer = TrashEntry(new ExportEntry(pcc), null, packageClass);
+                    pcc.AddExport(trashContainer);
                     trashContainer.indexValue = 0;
                 }
-                imp.idxClassName = pcc.FindNameOrAdd("Package");
-                imp.idxPackageFile = pcc.FindNameOrAdd("Core");
+                imp.ClassName = "Package";
+                imp.PackageFile = "Core";
                 imp.idxLink = trashContainer.UIndex;
-                imp.idxObjectName = pcc.FindNameOrAdd("Trash");
+                imp.ObjectName = "Trash";
                 imp.indexValue = 0;
             }
             else if (entry is ExportEntry exp)
             {
                 MemoryStream trashData = new MemoryStream();
                 trashData.WriteInt32(-1);
-                trashData.WriteInt32(pcc.findName("None"));
+                trashData.WriteInt32(pcc.FindNameOrAdd("None"));
                 trashData.WriteInt32(0);
                 exp.Data = trashData.ToArray();
-                exp.idxArchtype = 0;
-                exp.idxSuperClass = 0;
+                exp.Archetype = null;
+                exp.SuperClass = null;
                 exp.indexValue = 0;
-                exp.idxClass = packageClassIdx;
+                exp.Class = packageClass;
                 exp.ObjectFlags &= ~UnrealFlags.EObjectFlags.HasStack;
                 if (trashContainer == null)
                 {
-                    exp.idxObjectName = pcc.FindNameOrAdd(UnrealPackageFile.TrashPackageName);
+                    exp.ObjectName = UnrealPackageFile.TrashPackageName;
                     exp.idxLink = 0;
                     if (exp.idxLink == exp.UIndex)
                     {
@@ -110,7 +110,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         //This should not occur
                         Debugger.Break();
                     }
-                    exp.idxObjectName = pcc.FindNameOrAdd("Trash");
+                    exp.ObjectName = "Trash";
                     exp.PackageGUID = Guid.Empty;
                 }
             }
@@ -126,7 +126,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             foreach (IEntry entry in entries)
             {
                 if (classesToRemove.Contains(entry.ClassName) || (entry.ClassName == "Class" && classesToRemove.Contains(entry.ObjectName))
-                    || entry is ExportEntry exp && (pcc.getEntry(exp.idxArchtype)?.IsTrash() ?? false))
+                    || entry is ExportEntry exp && (exp.Archetype?.IsTrash() ?? false))
                 {
                     TrashEntries(pcc, entries.FlattenTreeOf(entry.UIndex));
                 }
@@ -163,7 +163,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         case ArrayProperty<ObjectProperty> asp:
                             for (int i = asp.Count - 1; i >= 0; i--)
                             {
-                                if (asp[i].Value == 0 || sourcePcc.getEntry(asp[i].Value) is IEntry entry && !entry.GetFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
+                                if (asp[i].Value == 0 || sourcePcc.GetEntry(asp[i].Value) is IEntry entry && !entry.GetFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
                                 {
                                     continue;
                                 }
@@ -199,7 +199,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                             break;
                         case ObjectProperty objectProperty:
                         {
-                            if (objectProperty.Value == 0 || sourcePcc.getEntry(objectProperty.Value) is IEntry entry && !entry.GetFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
+                            if (objectProperty.Value == 0 || sourcePcc.GetEntry(objectProperty.Value) is IEntry entry && !entry.GetFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
                             {
                                 newProps.Add(objectProperty);
                             }

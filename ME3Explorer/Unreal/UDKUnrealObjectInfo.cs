@@ -77,11 +77,11 @@ namespace ME3Explorer.Unreal
             }
             if (p == null && export != null)
             {
-                if (export.ClassName != "Class" && export.idxClass > 0)
+                if (!export.IsClass && export.Class is ExportEntry classExport)
                 {
-                    export = export.FileRef.getUExport(export.idxClass); //make sure you get actual class
+                    export = classExport;
                 }
-                if (export.ClassName == "Class")
+                if (export.IsClass)
                 {
                     ClassInfo currentInfo = generateClassInfo(export);
                     currentInfo.baseClass = export.SuperClassName;
@@ -201,10 +201,9 @@ namespace ME3Explorer.Unreal
                 else
                 {
                     //Baseclass may be modified as well...
-                    if (containingExport != null && containingExport.idxSuperClass > 0)
+                    if (containingExport?.SuperClass is ExportEntry parentExport)
                     {
                         //Class parent is in this file. Generate class parent info and attempt refetch
-                        ExportEntry parentExport = containingExport.FileRef.getUExport(containingExport.idxSuperClass);
                         return getPropertyInfo(parentExport.SuperClassName, propName, inStruct, generateClassInfo(parentExport), reSearch: true, parentExport);
                     }
                 }

@@ -103,7 +103,7 @@ namespace ME3Explorer
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            ((sender as Button)?.DataContext as IMEPackage)?.save();
+            ((sender as Button)?.DataContext as IMEPackage)?.Save();
         }
     }
 }

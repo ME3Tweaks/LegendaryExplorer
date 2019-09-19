@@ -102,7 +102,7 @@ namespace ME1Explorer.Unreal.Classes
         private List<HuffmanNode> nodes;
         private BitArray Bits;
         private int langRef;
-        private readonly int tlkSetIndex;
+        private readonly int tlkSetUIndex;
 
         public TLKStringRef[] StringRefs;
         public IMEPackage pcc;
@@ -112,14 +112,14 @@ namespace ME1Explorer.Unreal.Classes
         public int LangRef
         {
             get => langRef;
-            set { langRef = value; language = pcc.getNameEntry(value); }
+            set { langRef = value; language = pcc.GetNameEntry(value); }
         }
 
         public string language;
         public bool male;
 
-        public string Name => pcc.getUExport(uindex).ObjectName;
-        public string BioTlkSetName => tlkSetIndex != -1 ? (pcc.Exports[tlkSetIndex].ObjectName + ".") : null;
+        public string Name => pcc.GetUExport(uindex).ObjectName;
+        public string BioTlkSetName => tlkSetUIndex != 0 ? pcc.getObjectName(tlkSetUIndex) : null;
 
 
         #region Constructors
@@ -128,7 +128,7 @@ namespace ME1Explorer.Unreal.Classes
             pcc = _pcc;
             //index = _index;
             this.uindex = uindex;
-            tlkSetIndex = -1;
+            tlkSetUIndex = 0;
             LoadTlkData();
         }
 
@@ -140,18 +140,18 @@ namespace ME1Explorer.Unreal.Classes
             }
             pcc = export.FileRef;
             uindex = export.UIndex;
-            tlkSetIndex = -1;
+            tlkSetUIndex = 0;
             LoadTlkData();
         }
         
-        public TalkFile(IMEPackage _pcc, int uindex, bool _male, int _langRef, int _tlkSetIndex)
+        public TalkFile(IMEPackage _pcc, int uindex, bool _male, int _langRef, int _tlkSetUIndex)
         {
             pcc = _pcc;
             //index = _index;
             this.uindex = uindex;
             LangRef = _langRef;
             male = _male;
-            tlkSetIndex = _tlkSetIndex;
+            tlkSetUIndex = _tlkSetUIndex;
             LoadTlkData();
         }
         #endregion
@@ -160,14 +160,14 @@ namespace ME1Explorer.Unreal.Classes
         public string findDataById(int strRefID, bool withFileName = false)
         {
             string data = "No Data";
-            for (int i = 0; i < StringRefs.Length; i++)
+            foreach (TLKStringRef tlkStringRef in StringRefs)
             {
-                if (StringRefs[i].StringID == strRefID)
+                if (tlkStringRef.StringID == strRefID)
                 {
-                    data = "\"" + StringRefs[i].Data + "\"";
+                    data = $"\"{tlkStringRef.Data}\"";
                     if (withFileName)
                     {
-                        data += " (" + Path.GetFileName(pcc.FilePath) + " -> " + BioTlkSetName + Name + ")";
+                        data += $" ({Path.GetFileName(pcc.FilePath)} -> {BioTlkSetName}.{Name})";
                     }
                     break;
                 }
@@ -201,7 +201,7 @@ namespace ME1Explorer.Unreal.Classes
         {
             if (r == null)
             {
-                r = new BinaryReader(new MemoryStream(pcc.getUExport(uindex).getBinaryData()), Encoding.Unicode);
+                r = new BinaryReader(new MemoryStream(pcc.GetUExport(uindex).getBinaryData()), Encoding.Unicode);
             }
             //hashtable
             int entryCount = r.ReadInt32();
@@ -352,26 +352,25 @@ namespace ME1Explorer.Unreal.Classes
             xr.WriteStartElement("tlkFile");
             xr.WriteAttributeString("Name", Name);
 
-            for (int i = 0; i < StringRefs.Length; i++)
+            foreach (TLKStringRef tlkStringRef in StringRefs)
             {
                 xr.WriteStartElement("string");
 
                 xr.WriteStartElement("id");
-                xr.WriteValue(StringRefs[i].StringID);
+                xr.WriteValue(tlkStringRef.StringID);
                 xr.WriteEndElement(); // </id>
                 xr.WriteStartElement("flags");
-                xr.WriteValue(StringRefs[i].Flags);
+                xr.WriteValue(tlkStringRef.Flags);
                 xr.WriteEndElement(); // </flags>
 
                 //if (i == StringRefs.Length - 1)
                 //{
                 //    Debugger.Break();
                 //}
-                TLKStringRef tref = StringRefs[i];
-                if (StringRefs[i].Flags != 1)
+                if (tlkStringRef.Flags != 1)
                     xr.WriteElementString("data", "-1");
                 else
-                    xr.WriteElementString("data", StringRefs[i].Data);
+                    xr.WriteElementString("data", tlkStringRef.Data);
 
                 xr.WriteEndElement(); // </string>
             }
@@ -394,19 +393,19 @@ namespace ME1Explorer.Unreal.Classes
                     writer.WriteStartElement("tlkFile");
                     writer.WriteAttributeString("Name", Name);
 
-                    for (int i = 0; i < StringRefs.Length; i++)
+                    foreach (TLKStringRef tlkStringRef in StringRefs)
                     {
                         writer.WriteStartElement("string");
                         writer.WriteStartElement("id");
-                        writer.WriteValue(StringRefs[i].StringID);
+                        writer.WriteValue(tlkStringRef.StringID);
                         writer.WriteEndElement(); // </id>
                         writer.WriteStartElement("flags");
-                        writer.WriteValue(StringRefs[i].Flags);
+                        writer.WriteValue(tlkStringRef.Flags);
                         writer.WriteEndElement(); // </flags>
-                        if (StringRefs[i].Flags != 1)
+                        if (tlkStringRef.Flags != 1)
                             writer.WriteElementString("data", "-1");
                         else
-                            writer.WriteElementString("data", StringRefs[i].Data);
+                            writer.WriteElementString("data", tlkStringRef.Data);
                         writer.WriteEndElement(); // </string>
                     }
                     writer.WriteEndElement(); // </tlkFile>

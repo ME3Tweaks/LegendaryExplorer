@@ -3444,7 +3444,7 @@ namespace ME3Explorer.Unreal
             int index = (Int32)BitConverter.ToInt64(memory, pos);
             t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_NAME, index));
             pos += 8;
-            string s = export.FileRef.getNameEntry(index);
+            string s = export.FileRef.GetNameEntry(index);
             t.text = a.text + "." + s + "(";
             int count = 0;
             while (pos < memsize - 6)
@@ -3476,7 +3476,7 @@ namespace ME3Explorer.Unreal
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = "Global." + export.FileRef.getNameEntry(index) + "(";
+            t.text = "Global." + export.FileRef.GetNameEntry(index) + "(";
             int pos = start + 9;
             int count = 0;
             while (pos < memsize - 6)
@@ -3930,7 +3930,7 @@ namespace ME3Explorer.Unreal
 
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
-            t.text = export.FileRef.getNameEntry(index);
+            t.text = export.FileRef.GetNameEntry(index);
             int pos = start + 11;
             t.text += "(";
             int count = 0;
@@ -4234,7 +4234,7 @@ namespace ME3Explorer.Unreal
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = export.FileRef.getNameEntry(index);
+            t.text = export.FileRef.GetNameEntry(index);
             t.raw = new byte[13];
             for (int i = 0; i < 13; i++)
                 t.raw[i] = memory[start + i];
@@ -4248,7 +4248,7 @@ namespace ME3Explorer.Unreal
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = export.FileRef.getNameEntry(index);
+            t.text = export.FileRef.GetNameEntry(index);
             t.raw = new byte[9];
             for (int i = 0; i < 9; i++)
                 t.raw[i] = memory[start + i];
@@ -4279,7 +4279,7 @@ namespace ME3Explorer.Unreal
 
             int index = (Int32)BitConverter.ToInt32(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
-            IEntry referenced = export.FileRef.getEntry(index);
+            IEntry referenced = export.FileRef.GetEntry(index);
             if (referenced.ObjectName == export.ObjectName && referenced != export)
             {
                 t.text = referenced.GetFullPath + "(";
@@ -4333,7 +4333,7 @@ namespace ME3Explorer.Unreal
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = "'" + export.FileRef.getNameEntry(index) + "'";
+            t.text = "'" + export.FileRef.GetNameEntry(index) + "'";
             t.raw = new byte[9];
             for (int i = 0; i < 9; i++)
                 t.raw[i] = memory[start + i];
@@ -4364,7 +4364,7 @@ namespace ME3Explorer.Unreal
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = export.FileRef.getNameEntry(index) + "(";
+            t.text = export.FileRef.GetNameEntry(index) + "(";
             int pos = start + 9;
             int count = 0;
             while (pos < memsize - 6)
@@ -4673,7 +4673,7 @@ namespace ME3Explorer.Unreal
 
             if (index >= 0 && index < export.FileRef.Names.Count)
             {
-                t.text = export.FileRef.getNameEntry(index);
+                t.text = export.FileRef.GetNameEntry(index);
                 t.inPackageReferences.Add((position: start + 1, type: Token.INPACKAGEREFTYPE_NAME, value: index));
             }
             else
@@ -4739,14 +4739,14 @@ namespace ME3Explorer.Unreal
             int functionSuperclass = BitConverter.ToInt32(originalData, 0x0C);
             if (functionSuperclass != 0)
             {
-                if (crossFileRefObjectMap.TryGetValue(sourceExport.FileRef.getEntry(functionSuperclass), out IEntry relinkedValue))
+                if (crossFileRefObjectMap.TryGetValue(sourceExport.FileRef.GetEntry(functionSuperclass), out IEntry relinkedValue))
                 {
                     Debug.WriteLine($"Function superclass relink hit @ 0x0C, new value {relinkedValue.GetFullPath}");
                     newscript.OverwriteRange(0x0C, BitConverter.GetBytes(relinkedValue.UIndex));
                 }
                 else if (functionSuperclass < 0)
                 {
-                    var sourceEntry = sourceExport.FileRef.getEntry(functionSuperclass);
+                    var sourceEntry = sourceExport.FileRef.GetEntry(functionSuperclass);
                     if (SharedPathfinding.GetEntryOrAddImport(destinationExport.FileRef, sourceEntry.GetFullPath) is IEntry ent)
                     {
                         //Todo: Add to relink map
@@ -4768,7 +4768,7 @@ namespace ME3Explorer.Unreal
             {
                 //Scoped
                 int childProbeUIndex = BitConverter.ToInt32(originalData, 0x14);
-                if (crossFileRefObjectMap.TryGetValue(sourceExport.FileRef.getEntry(childProbeUIndex), out IEntry relinkedValue))
+                if (crossFileRefObjectMap.TryGetValue(sourceExport.FileRef.GetEntry(childProbeUIndex), out IEntry relinkedValue))
                 {
                     Debug.WriteLine($"Function child probe start relink hit @ 0x14, new value {relinkedValue.GetFullPath}");
                     newExpData.OverwriteRange(0x14, BitConverter.GetBytes(relinkedValue.UIndex));
@@ -4795,8 +4795,8 @@ namespace ME3Explorer.Unreal
                 switch (relinkItem.type)
                 {
                     case Token.INPACKAGEREFTYPE_NAME:
-                        int newValue = destinationExport.FileRef.FindNameOrAdd(sourceExport.FileRef.getNameEntry(relinkItem.value));
-                        Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported a name: {sourceExport.FileRef.getNameEntry(relinkItem.value)}");
+                        int newValue = destinationExport.FileRef.FindNameOrAdd(sourceExport.FileRef.GetNameEntry(relinkItem.value));
+                        Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported a name: {sourceExport.FileRef.GetNameEntry(relinkItem.value)}");
 
                         newscript.OverwriteRange(relinkItem.pos, BitConverter.GetBytes(newValue));
                         break;
@@ -4805,9 +4805,9 @@ namespace ME3Explorer.Unreal
                         {
                             //Export
 
-                            if (crossFileRefObjectMap.TryGetValue(sourceExport.FileRef.getEntry(relinkItem.value), out IEntry relinkedValue))
+                            if (crossFileRefObjectMap.TryGetValue(sourceExport.FileRef.GetEntry(relinkItem.value), out IEntry relinkedValue))
                             {
-                                Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported a sub export: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");
+                                Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported a sub export: {sourceExport.FileRef.GetEntry(relinkItem.value).GetFullPath}");
                                 newscript.OverwriteRange(relinkItem.pos, BitConverter.GetBytes(relinkedValue.UIndex));
                             }
                             else
@@ -4819,13 +4819,13 @@ namespace ME3Explorer.Unreal
                         if (relinkItem.value < 0)
                         {
                             //Import
-                            IEntry newCrossImport = EntryImporter.getOrAddCrossImportOrPackage(sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath, sourceExport.FileRef, destinationExport.FileRef);
+                            IEntry newCrossImport = EntryImporter.getOrAddCrossImportOrPackage(sourceExport.FileRef.GetEntry(relinkItem.value).GetFullPath, sourceExport.FileRef, destinationExport.FileRef);
                             if (newCrossImport == null)
                             {
-                                relinkFailedReport.Add($"0x{relinkItem.pos:X6} Function relink failed: Could not add cross referenced import: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");
+                                relinkFailedReport.Add($"0x{relinkItem.pos:X6} Function relink failed: Could not add cross referenced import: {sourceExport.FileRef.GetEntry(relinkItem.value).GetFullPath}");
                                 continue;
                             }
-                            Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported an import: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");
+                            Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported an import: {sourceExport.FileRef.GetEntry(relinkItem.value).GetFullPath}");
                             newscript.OverwriteRange(relinkItem.pos, BitConverter.GetBytes(newCrossImport.UIndex));
                         }
                         break;

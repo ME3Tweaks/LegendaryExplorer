@@ -468,14 +468,14 @@ namespace ME3Explorer
             SaveFileDialog d = new SaveFileDialog {Filter = fileFilter};
             if (d.ShowDialog() == true)
             {
-                Pcc.save(d.FileName);
+                Pcc.Save(d.FileName);
                 MessageBox.Show("Done");
             }
         }
 
         private void SaveFile()
         {
-            Pcc.save();
+            Pcc.Save();
         }
 
         private void OpenFile()
@@ -615,7 +615,7 @@ namespace ME3Explorer
 
             export.PackageGUID = export.FileRef.PackageGuid;
 
-            export.idxObjectName = export.FileRef.FindNameOrAdd(Path.GetFileNameWithoutExtension(export.FileRef.FilePath));
+            export.ObjectName = Path.GetFileNameWithoutExtension(export.FileRef.FilePath);
         }
 
         private void GenerateNewGUIDForSelected()
@@ -1242,9 +1242,8 @@ namespace ME3Explorer
                         }
                     }
 
-                    for (int i = 0; i < Pcc.ExportCount; i++)
+                    foreach (ExportEntry exp in Pcc.Exports)
                     {
-                        ExportEntry exp = Pcc.Exports[i];
                         //header
                         if (offsetDec >= exp.HeaderOffset && offsetDec < exp.HeaderOffset + exp.Header.Length)
                         {
@@ -1641,7 +1640,6 @@ namespace ME3Explorer
 
             IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
             IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
-            int importsOffset = Exports.Count;
 
             var rootEntry = new TreeViewEntry(null, Path.GetFileName(Pcc.FilePath)) {IsExpanded = true};
 
@@ -1869,7 +1867,7 @@ namespace ME3Explorer
             //Filter out duplicates
             //Get their objectnames from the name list
             //Order it ascending
-            ClassDropdownList.ReplaceAll(Pcc.Exports.Select(x => x.idxClass).Distinct().Select(Pcc.getObjectName).ToList().OrderBy(p => p));
+            InitClassDropDown();
             MetadataTab_MetadataEditor.LoadPccData(Pcc);
             RefreshNames();
             if (CurrentView != CurrentViewMode.Tree)
@@ -1877,6 +1875,8 @@ namespace ME3Explorer
                 RefreshView(); //Tree will initialize itself in thread
             }
         }
+
+        private void InitClassDropDown() => ClassDropdownList.ReplaceAll(Pcc.Exports.Select(x => x.ClassName).NonNull().Distinct().ToList().OrderBy(p => p));
 
         private void TreeView_Click(object sender, RoutedEventArgs e)
         {
@@ -1932,9 +1932,9 @@ namespace ME3Explorer
 
         private bool TryGetSelectedEntry(out IEntry entry)
         {
-            if (GetSelected(out int uIndex) && Pcc.isEntry(uIndex))
+            if (GetSelected(out int uIndex) && Pcc.IsEntry(uIndex))
             {
-                entry = Pcc.getEntry(uIndex);
+                entry = Pcc.GetEntry(uIndex);
                 return true;
             }
 
@@ -1944,9 +1944,9 @@ namespace ME3Explorer
 
         private bool TryGetSelectedExport(out ExportEntry export)
         {
-            if (GetSelected(out int uIndex) && Pcc.isUExport(uIndex))
+            if (GetSelected(out int uIndex) && Pcc.IsUExport(uIndex))
             {
-                export = Pcc.getUExport(uIndex);
+                export = Pcc.GetUExport(uIndex);
                 return true;
             }
 
@@ -1956,9 +1956,9 @@ namespace ME3Explorer
 
         private bool TryGetSelectedImport(out ImportEntry import)
         {
-            if (GetSelected(out int uIndex) && Pcc.isImport(uIndex))
+            if (GetSelected(out int uIndex) && Pcc.IsImport(uIndex))
             {
-                import = Pcc.getImport(uIndex);
+                import = Pcc.GetImport(uIndex);
                 return true;
             }
 
@@ -1987,7 +1987,7 @@ namespace ME3Explorer
             if (removeChanges.Any())
             {
                 InitializeTreeView();
-                ClassDropdownList.ReplaceAll(Pcc.Exports.Select(x => x.idxClass).Distinct().Select(Pcc.getObjectName).ToList().OrderBy(p => p));
+                InitClassDropDown();
                 MetadataTab_MetadataEditor.RefreshAllEntriesList(Pcc);
                 Preview();
                 return;
@@ -2001,7 +2001,7 @@ namespace ME3Explorer
             List<int> headerChanges = updates.Where(x => x.change == PackageChange.ExportHeader || x.change == PackageChange.Import).Select(x => x.change == PackageChange.ExportHeader ? x.index + 1 : -x.index - 1).OrderBy(x => x).ToList();
             if (addedChanges.Count > 0)
             {
-                ClassDropdownList.ReplaceAll(Pcc.Exports.Select(x => x.idxClass).Distinct().Select(Pcc.getObjectName).ToList().OrderBy(p => p));
+                InitClassDropDown();
                 MetadataTab_MetadataEditor.RefreshAllEntriesList(Pcc);
                 //Find nodes that haven't been generated and added yet
                 var addedChangesByUIndex = new List<PackageUpdate>();
@@ -2019,7 +2019,7 @@ namespace ME3Explorer
                     addedChangesByUIndex.RemoveAll(x => x.index == tvi.UIndex);
                 }
 
-                List<IEntry> entriesToAdd = addedChangesByUIndex.Select(change => Pcc.getEntry(change.index)).ToList();
+                List<IEntry> entriesToAdd = addedChangesByUIndex.Select(change => Pcc.GetEntry(change.index)).ToList();
 
                 //Generate new nodes
                 var nodesToSortChildrenFor = new HashSet<TreeViewEntry>();
@@ -2065,7 +2065,7 @@ namespace ME3Explorer
                     {
                         if (update.index < 0)
                         {
-                            LeftSideList_ItemsSource.Add(Pcc.getEntry(update.index));
+                            LeftSideList_ItemsSource.Add(Pcc.GetEntry(update.index));
                         }
                     }
                 }
@@ -2078,7 +2078,7 @@ namespace ME3Explorer
                     {
                         if (update.index > 0)
                         {
-                            LeftSideList_ItemsSource.Add(Pcc.getEntry(update.index));
+                            LeftSideList_ItemsSource.Add(Pcc.GetEntry(update.index));
                         }
                     }
                 }
@@ -2138,8 +2138,6 @@ namespace ME3Explorer
                 Preview(true);
             }
         }
-
-
 
         private void RefreshNames(List<PackageUpdate> updates = null)
         {
@@ -2349,7 +2347,7 @@ namespace ME3Explorer
                 case CurrentViewMode.Imports:
                 {
                     //Check bounds
-                    var entry = Pcc.getEntry(entryIndex);
+                    var entry = Pcc.GetEntry(entryIndex);
                     if (entry != null)
                     {
                         //UI switch
@@ -2400,7 +2398,7 @@ namespace ME3Explorer
                     {
                         if (index >= 0 && index < Pcc.NameCount)
                         {
-                            Goto_Preview_TextBox.Text = Pcc.getNameEntry(index);
+                            Goto_Preview_TextBox.Text = Pcc.GetNameEntry(index);
                         }
                         else
                         {
@@ -2415,7 +2413,7 @@ namespace ME3Explorer
                         }
                         else
                         {
-                            var entry = Pcc.getEntry(index);
+                            var entry = Pcc.GetEntry(index);
                             if (entry != null)
                             {
                                 Goto_Preview_TextBox.Text = entry.GetFullPath + "_" + entry.indexValue;
@@ -2592,23 +2590,25 @@ namespace ME3Explorer
                     start = n + 1;
                 if (CurrentView == CurrentViewMode.Exports)
                 {
-                    IReadOnlyList<ExportEntry> pccObjectList = Pcc.Exports;
-                    for (int i = start; i < pccObjectList.Count; i++)
-                        if (pccObjectList[i].ClassName == searchClass)
+                    for (int i = start; i < Pcc.Exports.Count; i++)
+                    {
+                        if (Pcc.Exports[i].ClassName == searchClass)
                         {
                             LeftSide_ListView.SelectedIndex = i;
                             break;
                         }
+                    }
                 }
                 else if (CurrentView == CurrentViewMode.Imports)
                 {
-                    IReadOnlyList<ImportEntry> pccObjectList = Pcc.Imports;
-                    for (int i = start; i < pccObjectList.Count; i++)
-                        if (pccObjectList[i].ClassName == searchClass)
+                    for (int i = start; i < Pcc.Imports.Count; i++)
+                    {
+                        if (Pcc.Imports[i].ClassName == searchClass)
                         {
                             LeftSide_ListView.SelectedIndex = i;
                             break;
                         }
+                    }
                 }
 
             }
@@ -3184,7 +3184,7 @@ namespace ME3Explorer
                                 cacheExp.Data = data.ToArray();
                             }
 
-                            package.save();
+                            package.Save();
                         }
                     }
 
@@ -3232,7 +3232,7 @@ namespace ME3Explorer
 
                     selfNamingExport.PackageGUID = newGuid;
                     sourceFile.PackageGuid = newGuid;
-                    sourceFile.save();
+                    sourceFile.Save();
                 }
 
                 MessageBox.Show("Generated a new GUID for package.");
@@ -3307,7 +3307,7 @@ namespace ME3Explorer
 
                                 int friendlyNameIndex = reader.ReadInt32();
                                 reader.ReadInt32();
-                                var function = new UnFunction(export, package.getNameEntry(friendlyNameIndex),
+                                var function = new UnFunction(export, package.GetNameEntry(friendlyNameIndex),
                                     new FlagValues(functionFlags, UE3FunctionReader._flagSet), bytecode, nativeIndex, operatorPrecedence);
 
                                 if (nativeIndex != 0)
@@ -4223,7 +4223,7 @@ namespace ME3Explorer
                             }
 
                             if (hasConv)
-                                pcc.save();
+                                pcc.Save();
                         }
                     }
                 }).ContinueWithOnUIThread(prevTask =>
@@ -4336,7 +4336,7 @@ namespace ME3Explorer
             tempDir = Pcc.Game == MEGame.ME1 ? Path.Combine(tempDir, "Maps") : tempDir;
             string tempFilePath = Path.Combine(tempDir, $"{tempMapName}.{(Pcc.Game == MEGame.ME1 ? "SFM" : "pcc")}");
 
-            Pcc.save(tempFilePath);
+            Pcc.Save(tempFilePath);
 
             using (var tempPcc = MEPackageHandler.OpenMEPackage(tempFilePath, forceLoadFromDisk: true))
             {
@@ -4365,14 +4365,14 @@ namespace ME3Explorer
                     {
                         Parent = levelExport,
                         ObjectName = "PlayerStart",
-                        idxClass = tempPcc.getEntryOrAddImport("Engine.PlayerStart").UIndex
+                        Class = tempPcc.getEntryOrAddImport("Engine.PlayerStart")
                     };
-                    tempPcc.addExport(playerStart);
+                    tempPcc.AddExport(playerStart);
                     level.Actors.Add(playerStart.UIndex);
                     levelExport.setBinaryData(level.ToBytes(tempPcc));
                 }
 
-                tempPcc.save();
+                tempPcc.Save();
             }
 
 

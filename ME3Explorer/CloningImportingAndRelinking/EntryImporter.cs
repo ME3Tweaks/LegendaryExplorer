@@ -180,74 +180,56 @@ namespace ME3Explorer
             //for unsupported classes, this will just copy over the binary
             byte[] binaryData = ExportBinaryConverter.ConvertPostPropBinary(ex, destPackage.Game).ToBytes(destPackage);
 
-            int classValue = 0;
-            int archetype = 0;
-            int superclass = 0;
             //Set class. This will only work if the class is an import, as we can't reliably pull in exports without lots of other stuff.
-            if (ex.idxClass < 0)
+            IEntry classValue = null;
+            switch (ex.Class)
             {
-                //The class of the export we are importing is an import. We should attempt to relink this.
-                ImportEntry portingFromClassImport = ex.FileRef.getImport(ex.idxClass);
-                IEntry newClassImport = getOrAddCrossImportOrPackage(portingFromClassImport.GetFullPath, ex.FileRef, destPackage);
-                classValue = newClassImport.UIndex;
-            }
-            else if (ex.idxClass > 0)
-            {
-                //Todo: Add cross mapping support as multi-mode will allow this to work now
-                ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxClass);
-                ExportEntry matchingExport = destPackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
-                if (matchingExport != null)
-                {
-                    classValue = matchingExport.UIndex;
-                }
+                case ImportEntry sourceClassImport:
+                    //The class of the export we are importing is an import. We should attempt to relink this.
+                    classValue = getOrAddCrossImportOrPackage(sourceClassImport.GetFullPath, ex.FileRef, destPackage);
+                    break;
+                case ExportEntry sourceClassExport:
+                    //Todo: Add cross mapping support as multi-mode will allow this to work now
+                    classValue = destPackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == sourceClassExport.GetIndexedFullPath);
+                    break;
             }
 
             //Set superclass
-            if (ex.idxSuperClass < 0)
+            IEntry superclass = null;
+            switch (ex.SuperClass)
             {
-                //The class of the export we are importing is an import. We should attempt to relink this.
-                ImportEntry portingFromClassImport = ex.FileRef.getImport(ex.idxSuperClass);
-                IEntry newClassImport = getOrAddCrossImportOrPackage(portingFromClassImport.GetFullPath, ex.FileRef, destPackage);
-                superclass = newClassImport.UIndex;
-            }
-            else if (ex.idxSuperClass > 0)
-            {
-                //Todo: Add cross mapping support as multi-mode will allow this to work now
-                ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxSuperClass);
-                ExportEntry matchingExport = destPackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
-                if (matchingExport != null)
-                {
-                    superclass = matchingExport.UIndex;
-                }
+                case ImportEntry sourceSuperClassImport:
+                    //The class of the export we are importing is an import. We should attempt to relink this.
+                    superclass = getOrAddCrossImportOrPackage(sourceSuperClassImport.GetFullPath, ex.FileRef, destPackage);
+                    break;
+                case ExportEntry sourceSuperClassExport:
+                    //Todo: Add cross mapping support as multi-mode will allow this to work now
+                    superclass = destPackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == sourceSuperClassExport.GetIndexedFullPath);
+                    break;
             }
 
             //Check archetype.
-            if (ex.idxArchtype < 0)
+            IEntry archetype = null;
+            switch (ex.Archetype)
             {
-                ImportEntry portingFromClassImport = ex.FileRef.getImport(ex.idxArchtype);
-                IEntry newClassImport = getOrAddCrossImportOrPackage(portingFromClassImport.GetFullPath, ex.FileRef, destPackage);
-                archetype = newClassImport.UIndex;
-            }
-            else if (ex.idxArchtype > 0)
-            {
-                ExportEntry portingInClass = ex.FileRef.getUExport(ex.idxArchtype);
-                ExportEntry matchingExport = destPackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == portingInClass.GetIndexedFullPath);
-                if (matchingExport != null)
-                {
-                    archetype = matchingExport.UIndex;
-                }
+                case ImportEntry sourceArchetypeImport:
+                    archetype = getOrAddCrossImportOrPackage(sourceArchetypeImport.GetFullPath, ex.FileRef, destPackage);
+                    break;
+                case ExportEntry sourceArchetypExport:
+                    archetype = destPackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == sourceArchetypExport.GetIndexedFullPath);
+                    break;
             }
 
             var outputEntry = new ExportEntry(destPackage, prePropBinary, props, binaryData)
             {
                 Header = newHeader,
-                idxClass = classValue,
-                idxObjectName = destPackage.FindNameOrAdd(ex.FileRef.getNameEntry(ex.idxObjectName)),
+                Class = classValue,
+                ObjectName = ex.ObjectName,
                 idxLink = link,
-                idxSuperClass = superclass,
-                idxArchtype = archetype
+                SuperClass = superclass,
+                Archetype = archetype
             };
-            destPackage.addExport(outputEntry);
+            destPackage.AddExport(outputEntry);
             return outputEntry;
         }
 
@@ -325,11 +307,11 @@ namespace ME3Explorer
                 var newImport = new ImportEntry(destinationPCC)
                 {
                     idxLink = link,
-                    idxClassName = destinationPCC.FindNameOrAdd(importingImport.ClassName),
-                    idxObjectName = destinationPCC.FindNameOrAdd(importingImport.ObjectName),
-                    idxPackageFile = destinationPCC.FindNameOrAdd(importingImport.PackageFile)
+                    ClassName = importingImport.ClassName,
+                    ObjectName = importingImport.ObjectName,
+                    PackageFile = importingImport.PackageFile
                 };
-                destinationPCC.addImport(newImport);
+                destinationPCC.AddImport(newImport);
                 return newImport;
             }
 
@@ -346,11 +328,11 @@ namespace ME3Explorer
                     var import = new ImportEntry(destinationPCC)
                     {
                         idxLink = parent?.UIndex ?? 0,
-                        idxClassName = destinationPCC.FindNameOrAdd(imp.ClassName),
-                        idxObjectName = destinationPCC.FindNameOrAdd(imp.ObjectName),
-                        idxPackageFile = destinationPCC.FindNameOrAdd(imp.PackageFile)
+                        ClassName = imp.ClassName,
+                        ObjectName = imp.ObjectName,
+                        PackageFile = imp.PackageFile
                     };
-                    destinationPCC.addImport(import);
+                    destinationPCC.AddImport(import);
                     return import;
                 }
             }

@@ -812,7 +812,7 @@ namespace ME3Explorer.Unreal.Classes
                     if (Materials[i] > 0)
                     {
                         // It's an export
-                        MatInsts.Add(new MaterialInstanceConstant(export.FileRef.getUExport(Materials[i])));
+                        MatInsts.Add(new MaterialInstanceConstant(export.FileRef.GetUExport(Materials[i])));
                     }
                     else
                     {
@@ -1179,7 +1179,7 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 0; i < Bones.Count; i++)
             {
                 BoneStruct b = Bones[i];
-                string s = "Name : \"" + Export.FileRef.getNameEntry(b.Name) + "\" ";
+                string s = "Name : \"" + Export.FileRef.GetNameEntry(b.Name) + "\" ";
                 s += "Flags : 0x" + b.Flags.ToString("X8") + " ";
                 s += "Unk1 : 0x" + b.Unk1.ToString("X8") + " ";
                 s += "Orientation : X(" + b.Orientation.X + ") Y(" + b.Orientation.X + ") Z(" + b.Orientation.Z + ") W(" + b.Orientation.W + ")";
@@ -1205,7 +1205,7 @@ namespace ME3Explorer.Unreal.Classes
             TreeNode res = new TreeNode("Tail");
             TreeNode t = new TreeNode("Weird Bone List (" + TailNames.Count + ")");
             for (int i = 0; i < TailNames.Count; i++)
-                t.Nodes.Add(i + " : Name \"" + Export.FileRef.getNameEntry(TailNames[i].Name) + "\" Unk1 (" + TailNames[i].Unk1.ToString("X8") + ") Unk2(" + TailNames[i].Unk2.ToString("X8") + ")");
+                t.Nodes.Add(i + " : Name \"" + Export.FileRef.GetNameEntry(TailNames[i].Name) + "\" Unk1 (" + TailNames[i].Unk1.ToString("X8") + ") Unk2(" + TailNames[i].Unk2.ToString("X8") + ")");
             res.Nodes.Add(t);
             res.Nodes.Add("Unk1 : " + Unk1.ToString("X8"));
             res.Nodes.Add("Unk2 : " + Unk2.ToString("X8"));

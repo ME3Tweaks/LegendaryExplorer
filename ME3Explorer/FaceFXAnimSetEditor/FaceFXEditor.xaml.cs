@@ -75,7 +75,7 @@ namespace ME3Explorer.FaceFX
             if (d.ShowDialog() == true)
             {
                 editorControl.SaveChanges();
-                Pcc.save(d.FileName);
+                Pcc.Save(d.FileName);
                 MessageBox.Show("Done.");
             }
         }
@@ -83,7 +83,7 @@ namespace ME3Explorer.FaceFX
         private void SavePackage()
         {
             editorControl.SaveChanges();
-            Pcc.save();
+            Pcc.Save();
         }
 
         private void OpenPackage()

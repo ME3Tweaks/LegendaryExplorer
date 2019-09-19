@@ -67,7 +67,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
                 int friendlyNameIndex = reader.ReadInt32();
                 reader.ReadInt32();
-                return new UnFunction(export, export.FileRef.getNameEntry(friendlyNameIndex),
+                return new UnFunction(export, export.FileRef.GetNameEntry(friendlyNameIndex),
                     new FlagValues(functionFlags, _flagSet), bytecode, nativeIndex, operatorPrecedence);
             }
         }

@@ -149,9 +149,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
         public StructProperty GetCollisionMeshProperty(IMEPackage pcc)
         {
-            if (pcc.isUExport(BodySetup))
+            if (pcc.IsUExport(BodySetup))
             {
-                ExportEntry rb_BodySetup = pcc.getUExport(BodySetup);
+                ExportEntry rb_BodySetup = pcc.GetUExport(BodySetup);
                 return rb_BodySetup.GetProperty<StructProperty>("AggGeom");
             }
             return null;

@@ -756,7 +756,7 @@ namespace ME3Explorer
                             }
                             int nameIdx = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset);
                             int nameValueIndex = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset + 4);
-                            string nameStr = CurrentLoadedExport.FileRef.getNameEntry(nameIdx);
+                            string nameStr = CurrentLoadedExport.FileRef.GetNameEntry(nameIdx);
                             if (nameStr != "")
                             {
                                 Value_ComboBox.SelectedIndex = nameIdx;
@@ -897,15 +897,15 @@ namespace ME3Explorer
                         s += $", Int: {val}";
                         float fval = BitConverter.ToSingle(currentData, start);
                         s += $", Float: {fval}";
-                        if (CurrentLoadedExport.FileRef.isName(val))
+                        if (CurrentLoadedExport.FileRef.IsName(val))
                         {
-                            s += $", Name: {CurrentLoadedExport.FileRef.getNameEntry(val)}";
+                            s += $", Name: {CurrentLoadedExport.FileRef.GetNameEntry(val)}";
                         }
-                        if (CurrentLoadedExport.FileRef.getEntry(val) is ExportEntry exp)
+                        if (CurrentLoadedExport.FileRef.GetEntry(val) is ExportEntry exp)
                         {
                             s += $", Export: {exp.ObjectName}";
                         }
-                        else if (CurrentLoadedExport.FileRef.getEntry(val) is ImportEntry imp)
+                        else if (CurrentLoadedExport.FileRef.GetEntry(val) is ImportEntry imp)
                         {
                             s += $", Import: {imp.ObjectName}";
                         }

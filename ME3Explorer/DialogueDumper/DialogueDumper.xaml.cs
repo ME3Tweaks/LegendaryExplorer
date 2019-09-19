@@ -771,11 +771,11 @@ namespace ME3Explorer.DialogueDumper
                                     int iconv = oconv.Value;
                                     if (iconv < 0)
                                     {
-                                        convo = pcc.getImport(iconv).ObjectName;
+                                        convo = pcc.GetImport(iconv).ObjectName;
                                     }
                                     else
                                     {
-                                        convo = pcc.getUExport(iconv).ObjectName;
+                                        convo = pcc.GetUExport(iconv).ObjectName;
                                     }
                                 }
 
@@ -798,7 +798,7 @@ namespace ME3Explorer.DialogueDumper
                                 }
                                 if (iownerObj > 0)
                                 {
-                                    var svlink = pcc.getUExport(iownerObj);
+                                    var svlink = pcc.GetUExport(iownerObj);
                                     switch (svlink.ClassName)
                                     {
                                         case "SeqVar_Object":
@@ -806,15 +806,15 @@ namespace ME3Explorer.DialogueDumper
                                             ObjectProperty oactorlink = svlink.GetProperty<ObjectProperty>("ObjValue");
                                             if (oactorlink != null)
                                             {
-                                                var actor = pcc.getUExport(oactorlink.Value);
+                                                var actor = pcc.GetUExport(oactorlink.Value);
                                                 var actortag = actor.GetProperty<NameProperty>("Tag");
                                                 if (actortag != null)
                                                 {
                                                     ownertag = actortag.ToString();
                                                 }
-                                                else if (actor.idxArchtype != 0)
+                                                else if (actor.HasArchetype && actor.Archetype is ExportEntry archetype)
                                                 {
-                                                    var archtag = pcc.getUExport(actor.idxArchtype).GetProperty<NameProperty>("Tag");
+                                                    var archtag = archetype.GetProperty<NameProperty>("Tag");
                                                     if (archtag != null)
                                                     {
                                                         ownertag = archtag.ToString();
@@ -847,8 +847,8 @@ namespace ME3Explorer.DialogueDumper
                                     var tagprop = exp.GetProperty<NameProperty>("Tag");
                                     tag = tagprop.ToString();
                                     var behav = exp.GetProperty<ObjectProperty>("m_oBehavior");
-                                    var set = pcc.getUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
-                                    var strrefprop = pcc.getUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
+                                    var set = pcc.GetUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
+                                    var strrefprop = pcc.GetUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
                                     if (strrefprop != null)
                                     {
                                         strref = strrefprop.Value;
@@ -859,7 +859,7 @@ namespace ME3Explorer.DialogueDumper
                                     var tagprop = exp.GetProperty<NameProperty>("Tag");
                                     tag = tagprop.ToString();
                                     var type = exp.GetProperty<ObjectProperty>("ActorType");
-                                    var strrefprop = pcc.getUExport(type.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
+                                    var strrefprop = pcc.GetUExport(type.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
                                     if (strrefprop != null)
                                     {
                                         strref = strrefprop.Value;
@@ -871,8 +871,8 @@ namespace ME3Explorer.DialogueDumper
                                     var tagprop = exp.GetProperty<NameProperty>("Tag");
                                     tag = tagprop.Value;
                                     var modules = exp.GetProperty<ArrayProperty<ObjectProperty>>("Modules").ToList();
-                                    var simplemod = modules.FirstOrDefault(m => exp.FileRef.getUExport(m.Value).ClassName == "SFXSimpleUseModule");
-                                    strref = exp.FileRef.getUExport(simplemod.Value).GetProperty<StringRefProperty>("m_srGameName").Value;
+                                    var simplemod = modules.FirstOrDefault(m => exp.FileRef.GetUExport(m.Value).ClassName == "SFXSimpleUseModule");
+                                    strref = exp.FileRef.GetUExport(simplemod.Value).GetProperty<StringRefProperty>("m_srGameName").Value;
                                 }
                                 else if (className.StartsWith("SFXPawn_"))
                                 {

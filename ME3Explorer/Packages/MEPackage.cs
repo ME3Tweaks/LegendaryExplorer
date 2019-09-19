@@ -285,12 +285,12 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public void save()
+        public void Save()
         {
-            save(FilePath);
+            Save(FilePath);
         }
 
-        public void save(string path)
+        public void Save(string path)
         {
             bool compressed = IsCompressed;
             Flags &= ~EPackageFlags.Compressed;
@@ -559,14 +559,14 @@ namespace ME3Explorer.Packages
                 {
                     int langRef = r.ReadInt32();
                     r.ReadInt32(); //second half of name
-                    string lang = getNameEntry(langRef);
+                    string lang = GetNameEntry(langRef);
                     int numTlksForLang = r.ReadInt32(); //I believe this is always 2. Hopefully I am not wrong.
                     int maleTlk = r.ReadInt32();
                     int femaleTlk = r.ReadInt32();
 
                     if (Properties.Settings.Default.TLKLanguage.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        exportsToLoad.Add(getUExport(Properties.Settings.Default.TLKGender_IsMale ? maleTlk : femaleTlk));
+                        exportsToLoad.Add(GetUExport(Properties.Settings.Default.TLKGender_IsMale ? maleTlk : femaleTlk));
                         break;
                     }
 
@@ -972,12 +972,12 @@ namespace ME3Explorer.Packages
                                 }
                                 else
                                 {
-                                    addImport(new ImportEntry(this)
+                                    AddImport(new ImportEntry(this)
                                     {
                                         idxLink = defImp.UIndex,
-                                        idxClassName = FindNameOrAdd(expChild.ClassName),
-                                        idxObjectName = FindNameOrAdd(expChild.ObjectName),
-                                        idxPackageFile = FindNameOrAdd(defImp.PackageFile)
+                                        ClassName = expChild.ClassName,
+                                        ObjectName = expChild.ObjectName,
+                                        PackageFile = defImp.PackageFile
                                     });
                                 }
                             }
@@ -1063,7 +1063,7 @@ namespace ME3Explorer.Packages
                         {
                             textures = texParams.Select(structProp => new UIndex(structProp.GetProp<ObjectProperty>("ParameterValue")?.Value ?? 0)).ToArray();
                         }
-                        else if(mat.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentProp && getEntry(parentProp.Value) is ExportEntry parent && parent.ClassName == "Material")
+                        else if(mat.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentProp && GetEntry(parentProp.Value) is ExportEntry parent && parent.ClassName == "Material")
                         {
                             textures = ObjectBinary.From<Material>(parent).SM3MaterialResource.UniformExpressionTextures;
                         }
@@ -1073,7 +1073,7 @@ namespace ME3Explorer.Packages
                         int diff = 0;
                         foreach (UIndex texture in textures)
                         {
-                            if (getEntry(texture) is IEntry tex)
+                            if (GetEntry(texture) is IEntry tex)
                             {
                                 if (diff == 0 && tex.ObjectName.Contains("diff", StringComparison.OrdinalIgnoreCase))
                                 {
@@ -1093,7 +1093,7 @@ namespace ME3Explorer.Packages
                         var matBin = ObjectBinary.From<Material>(mat);
                         matBin.SM3MaterialResource.UniformExpressionTextures = new UIndex[] { norm, diff };
                         mat.setBinaryData(matBin.ToBytes(this));
-                        mat.idxClass = imports.First(imp => imp.ObjectName == "Material").UIndex;
+                        mat.Class = imports.First(imp => imp.ObjectName == "Material");
                     }
                 }
             }

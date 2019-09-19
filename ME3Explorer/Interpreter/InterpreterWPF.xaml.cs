@@ -242,9 +242,9 @@ namespace ME3Explorer
 
         private void PopoutInterpreterForObj()
         {
-            if (SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is ObjectProperty op && Pcc.isUExport(op.Value))
+            if (SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is ObjectProperty op && Pcc.IsUExport(op.Value))
             {
-                ExportEntry export = Pcc.getUExport(op.Value);
+                ExportEntry export = Pcc.GetUExport(op.Value);
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export)
                 {
                     Title = $"Interpreter - {export.UIndex} {export.GetInstancedFullPath} - {Pcc.FilePath}"
@@ -253,7 +253,7 @@ namespace ME3Explorer
             }
         }
 
-        private bool ObjectPropertyExportIsSelected() => SelectedItem?.Property is ObjectProperty op && Pcc.isUExport(op.Value);
+        private bool ObjectPropertyExportIsSelected() => SelectedItem?.Property is ObjectProperty op && Pcc.IsUExport(op.Value);
 
         private void SortParsedArrayAscending()
         {
@@ -310,8 +310,8 @@ namespace ME3Explorer
             {
                 case ArrayProperty<ObjectProperty> aop:
 
-                    int IndexKeySelector(ObjectProperty x) => Pcc.getEntry(x.Value)?.indexValue ?? 0;
-                    string FullPathKeySelector(ObjectProperty x) => Pcc.getEntry(x.Value)?.GetInstancedFullPath ?? "";
+                    int IndexKeySelector(ObjectProperty x) => Pcc.GetEntry(x.Value)?.indexValue ?? 0;
+                    string FullPathKeySelector(ObjectProperty x) => Pcc.GetEntry(x.Value)?.GetInstancedFullPath ?? "";
 
                     aop.Values = ascending
                         ? aop.OrderBy(FullPathKeySelector).ThenBy(IndexKeySelector).ToList()
@@ -749,14 +749,14 @@ namespace ME3Explorer
                 case ObjectProperty op:
                     {
                         int index = op.Value;
-                        var entry = parsingExport.FileRef.getEntry(index);
+                        var entry = parsingExport.FileRef.GetEntry(index);
                         editableValue = index.ToString();
                         if (entry != null)
                         {
                             parsedValue = entry.GetInstancedFullPath;
                             if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
                             {
-                                editableValue += $" {ExportToString(parsingExport.FileRef.getUExport(index))}";
+                                editableValue += $" {ExportToString(parsingExport.FileRef.GetUExport(index))}";
                             }
                         }
                         else if (index == 0)
@@ -773,7 +773,7 @@ namespace ME3Explorer
                 case DelegateProperty dp:
                     {
                         int index = dp.Value.Object;
-                        var entry = parsingExport.FileRef.getEntry(index);
+                        var entry = parsingExport.FileRef.GetEntry(index);
                         editableValue = index.ToString();
                         if (entry != null)
                         {
@@ -909,7 +909,7 @@ namespace ME3Explorer
 
                         if (parmName != null && parmValue != null && parmValue.Value != 0)
                         {
-                            parsedValue += $" {parmName}: {parsingExport.FileRef.getEntry(parmValue.Value).ObjectName}";
+                            parsedValue += $" {parmName}: {parsingExport.FileRef.GetEntry(parmValue.Value).ObjectName}";
                         }
                     }
                     else if (sp.StructType == "ScalarParameterValue")
@@ -1041,7 +1041,7 @@ namespace ME3Explorer
                         ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("StaticMesh");
                         if (smprop != null)
                         {
-                            IEntry smEntry = exportEntry.FileRef.getEntry(smprop.Value);
+                            IEntry smEntry = exportEntry.FileRef.GetEntry(smprop.Value);
                             if (smEntry != null)
                             {
                                 return $"({smEntry.ObjectName})";
@@ -1055,7 +1055,7 @@ namespace ME3Explorer
                         ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("Template");
                         if (smprop != null)
                         {
-                            IEntry smEntry = exportEntry.FileRef.getEntry(smprop.Value);
+                            IEntry smEntry = exportEntry.FileRef.GetEntry(smprop.Value);
                             if (smEntry != null)
                             {
                                 return $"({smEntry.ObjectName})";
@@ -1068,7 +1068,7 @@ namespace ME3Explorer
                         ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("DecalMaterial");
                         if (smprop != null)
                         {
-                            IEntry smEntry = exportEntry.FileRef.getEntry(smprop.Value);
+                            IEntry smEntry = exportEntry.FileRef.GetEntry(smprop.Value);
                             if (smEntry != null)
                             {
                                 return $"({smEntry.ObjectName})";
@@ -1099,15 +1099,15 @@ namespace ME3Explorer
                         int val = BitConverter.ToInt32(currentData, start);
                         s += $", Int: {val}";
                         s += $", Float: {BitConverter.ToSingle(currentData, start)}";
-                        if (Pcc.isName(val))
+                        if (Pcc.IsName(val))
                         {
-                            s += $", Name: {Pcc.getNameEntry(val)}";
+                            s += $", Name: {Pcc.GetNameEntry(val)}";
                         }
-                        if (Pcc.getEntry(val) is ExportEntry exp)
+                        if (Pcc.GetEntry(val) is ExportEntry exp)
                         {
                             s += $", Export: {exp.ObjectName}";
                         }
-                        else if (Pcc.getEntry(val) is ImportEntry imp)
+                        else if (Pcc.GetEntry(val) is ImportEntry imp)
                         {
                             s += $", Import: {imp.ObjectName}";
                         }
@@ -1301,7 +1301,7 @@ namespace ME3Explorer
                                 }
                                 else
                                 {
-                                    var entry = Pcc.getEntry(index);
+                                    var entry = Pcc.GetEntry(index);
                                     if (entry != null)
                                     {
                                         ParsedValue_TextBlock.Text = entry.GetInstancedFullPath;
@@ -1684,7 +1684,7 @@ namespace ME3Explorer
                         break;
                     case ObjectProperty op:
                         {
-                            if (int.TryParse(Value_TextBox.Text, out int o) && o != op.Value && (Pcc.isEntry(o) || o == 0))
+                            if (int.TryParse(Value_TextBox.Text, out int o) && o != op.Value && (Pcc.IsEntry(o) || o == 0))
                             {
                                 op.Value = o;
                                 updated = true;
@@ -1742,7 +1742,7 @@ namespace ME3Explorer
                             break;
                         }
                     case DelegateProperty delp:
-                        if (int.TryParse(Value_TextBox.Text, out int _o) && (Pcc.isEntry(_o) || _o == 0))
+                        if (int.TryParse(Value_TextBox.Text, out int _o) && (Pcc.IsEntry(_o) || _o == 0))
                         {
                             //get string
                             string input = Value_ComboBox.Text;
@@ -1886,10 +1886,9 @@ namespace ME3Explorer
                             if (p == null)
                             {
                                 //Attempt dynamic lookup
-                                ExportEntry exportToBuildFor = CurrentLoadedExport;
-                                if (CurrentLoadedExport.ClassName != "Class" && CurrentLoadedExport.idxClass > 0)
+                                if (!(CurrentLoadedExport.Class is ExportEntry exportToBuildFor))
                                 {
-                                    exportToBuildFor = Pcc.getEntry(CurrentLoadedExport.idxClass) as ExportEntry;
+                                    exportToBuildFor = CurrentLoadedExport;
                                 }
                                 ClassInfo classInfo = UnrealObjectInfo.generateClassInfo(exportToBuildFor);
                                 p = UnrealObjectInfo.GetPropertyInfo(Pcc.Game, astructp.Name, containingType, classInfo);

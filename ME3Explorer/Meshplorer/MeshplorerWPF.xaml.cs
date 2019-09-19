@@ -113,7 +113,7 @@ namespace ME3Explorer
                         CurrentExport.Data = dataBackup;
                         ExportEntry newExport = (ExportEntry)newEntry;
 
-                        upk.save();
+                        upk.Save();
                     }
                     MessageBox.Show(this, "Done!");
                 }
@@ -251,7 +251,7 @@ namespace ME3Explorer
                     new NoneProperty()
                 });
                 CurrentExport.setBinaryData(stm.ToBytes(Pcc));
-                CurrentExport.idxClass = Pcc.getEntryOrAddImport("Engine.StaticMesh").UIndex;
+                CurrentExport.Class = Pcc.getEntryOrAddImport("Engine.StaticMesh");
             }
         }
 
@@ -261,7 +261,7 @@ namespace ME3Explorer
 
         private void SaveFile()
         {
-            Pcc.save();
+            Pcc.Save();
         }
 
         private void SaveFileAs()
@@ -284,7 +284,7 @@ namespace ME3Explorer
             SaveFileDialog d = new SaveFileDialog { Filter = fileFilter };
             if (d.ShowDialog() == true)
             {
-                Pcc.save(d.FileName);
+                Pcc.Save(d.FileName);
                 MessageBox.Show("Done");
             }
         }
@@ -506,7 +506,7 @@ namespace ME3Explorer
 
             foreach (PackageUpdate update in exportUpdates)
             {
-                if (!MeshExports.Contains(Pcc.getEntry(update.index)))
+                if (!MeshExports.Contains(Pcc.GetEntry(update.index)))
                 {
                     shouldUpdateList = true;
                     break;

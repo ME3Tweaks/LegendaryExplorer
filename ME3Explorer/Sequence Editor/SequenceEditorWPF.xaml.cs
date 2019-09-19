@@ -160,7 +160,7 @@ namespace ME3Explorer.Sequence_Editor
                 kismetLogParser.ExportFound = (filePath, uIndex) =>
                 {
                     if (Pcc == null || Pcc.FilePath != filePath) LoadFile(filePath);
-                    GoToExport(Pcc.getUExport(uIndex), false);
+                    GoToExport(Pcc.GetUExport(uIndex), false);
                 };
             }
             else
@@ -211,14 +211,14 @@ namespace ME3Explorer.Sequence_Editor
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
-                Pcc.save(d.FileName);
+                Pcc.Save(d.FileName);
                 MessageBox.Show(this, "Done.");
             }
         }
 
         private void SavePackage()
         {
-            Pcc.save();
+            Pcc.Save();
         }
 
         private void OpenPackage()
@@ -310,7 +310,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 foreach (var export in Pcc.Exports)
                 {
-                    if (export.ClassName == "PrefabSequence" && Pcc.getObjectClass(export.idxLink) == "Prefab")
+                    if (export.ClassName == "PrefabSequence" && export.Parent?.ClassName == "Prefab")
                     {
                         string parentName = Pcc.getObjectName(export.idxLink);
                         if (prefabs.ContainsKey(parentName))
@@ -351,8 +351,8 @@ namespace ME3Explorer.Sequence_Editor
             {
                 foreach (ObjectProperty seqObj in seqObjs)
                 {
-                    if (!pcc.isUExport(seqObj.Value)) continue;
-                    ExportEntry exportEntry = pcc.getUExport(seqObj.Value);
+                    if (!pcc.IsUExport(seqObj.Value)) continue;
+                    ExportEntry exportEntry = pcc.GetUExport(seqObj.Value);
                     if (exportEntry.ClassName == "Sequence" || exportEntry.ClassName.StartsWith("PrefabSequence"))
                     {
                         TreeViewEntry t = FindSequences(exportEntry);
@@ -364,7 +364,7 @@ namespace ME3Explorer.Sequence_Editor
                         var propSequenceReference = exportEntry.GetProperty<ObjectProperty>("oSequenceReference");
                         if (propSequenceReference != null)
                         {
-                            TreeViewEntry t = FindSequences(pcc.getUExport(propSequenceReference.Value));
+                            TreeViewEntry t = FindSequences(pcc.GetUExport(propSequenceReference.Value));
                             SequenceExports.Add(exportEntry);
                             root.Sublinks.Add(t);
                         }
@@ -444,9 +444,9 @@ namespace ME3Explorer.Sequence_Editor
                     string ObjName = "";
                     while (idx > 0)
                     {
-                        if (Pcc.getUExport(Pcc.getUExport(idx).idxLink).ClassName == "SequenceReference")
+                        if (Pcc.GetUExport(Pcc.GetUExport(idx).idxLink).ClassName == "SequenceReference")
                         {
-                            var objNameProp = Pcc.getUExport(idx).GetProperty<StrProperty>("ObjName");
+                            var objNameProp = Pcc.GetUExport(idx).GetProperty<StrProperty>("ObjName");
                             if (objNameProp != null)
                             {
                                 ObjName = objNameProp.Value;
@@ -454,7 +454,7 @@ namespace ME3Explorer.Sequence_Editor
                             }
                         }
 
-                        idx = Pcc.getUExport(idx).idxLink;
+                        idx = Pcc.GetUExport(idx).idxLink;
                     }
 
                     if (objectName == "Sequence")
@@ -502,8 +502,8 @@ namespace ME3Explorer.Sequence_Editor
             if (seqObjs != null)
             {
                 CurrentObjects.AddRange(seqObjs.OrderBy(prop => prop.Value)
-                                               .Where(prop => Pcc.isUExport(prop.Value))
-                                               .Select(prop => LoadObject(Pcc.getUExport(prop.Value))));
+                                               .Where(prop => Pcc.IsUExport(prop.Value))
+                                               .Select(prop => LoadObject(Pcc.GetUExport(prop.Value))));
                 if (CurrentObjects.Count != seqObjs.Count)
                 {
                     MessageBox.Show(this, "Sequence contains invalid exports! Correct this by editing the SequenceObject array in the Interpreter");
@@ -1157,7 +1157,7 @@ namespace ME3Explorer.Sequence_Editor
                     string className = obj.Export.ClassName;
                     if (className == "InterpData"
                         || (className == "SeqAct_Interp" && obj is SAction action && action.Varlinks.Any() && action.Varlinks[0].Links.Any()
-                            && Pcc.isUExport(action.Varlinks[0].Links[0]) && Pcc.getUExport(action.Varlinks[0].Links[0]).ClassName == "InterpData"))
+                            && Pcc.IsUExport(action.Varlinks[0].Links[0]) && Pcc.GetUExport(action.Varlinks[0].Links[0]).ClassName == "InterpData"))
                     {
                         interpViewerMenuItem.Visibility = Visibility.Visible;
                     }
@@ -1468,7 +1468,7 @@ namespace ME3Explorer.Sequence_Editor
                 exp.indexValue = old.indexValue;
             }
 
-            pcc.addExport(exp);
+            pcc.AddExport(exp);
             addObjectToSequence(exp, topLevel, sequence);
             cloneSequence(exp, sequence);
             return exp;
@@ -1531,14 +1531,14 @@ namespace ME3Explorer.Sequence_Editor
                 //clone all children
                 foreach (var obj in oldObjects)
                 {
-                    cloneObject(pcc.getUExport(obj), exp, false);
+                    cloneObject(pcc.GetUExport(obj), exp, false);
                 }
 
                 //re-point children's links to new objects
                 seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
                 foreach (var seqObj in seqObjs)
                 {
-                    ExportEntry obj = pcc.getUExport(seqObj.Value);
+                    ExportEntry obj = pcc.GetUExport(seqObj.Value);
                     var props = obj.GetProperties();
                     var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
                     if (outLinksProp != null)
@@ -1600,7 +1600,7 @@ namespace ME3Explorer.Sequence_Editor
                             linkedOp.Value = newObj;
 
                             NameProperty linkAction = inLinkStruct.GetProp<NameProperty>("LinkAction");
-                            linkAction.Value = new NameReference(linkAction.Value.Name, pcc.getUExport(newObj).indexValue);
+                            linkAction.Value = new NameReference(linkAction.Value.Name, pcc.GetUExport(newObj).indexValue);
                         }
                     }
                 }
@@ -1618,7 +1618,7 @@ namespace ME3Explorer.Sequence_Editor
                             linkedOp.Value = newObj;
 
                             NameProperty linkAction = outLinkStruct.GetProp<NameProperty>("LinkAction");
-                            linkAction.Value = new NameReference(linkAction.Value.Name, pcc.getUExport(newObj).indexValue);
+                            linkAction.Value = new NameReference(linkAction.Value.Name, pcc.GetUExport(newObj).indexValue);
                         }
                     }
                 }
@@ -1639,7 +1639,7 @@ namespace ME3Explorer.Sequence_Editor
                 exp.WriteProperty(oSeqRefProp);
 
                 //clone sequence
-                cloneObject(pcc.getUExport(oldSeqIndex), parentSequence, false);
+                cloneObject(pcc.GetUExport(oldSeqIndex), parentSequence, false);
 
                 //remove cloned sequence from SeqRef's parent's sequenceobjects
                 var seqObjs = parentSequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
@@ -1650,7 +1650,7 @@ namespace ME3Explorer.Sequence_Editor
                 var inputIndices = new List<int>();
                 var outputIndices = new List<int>();
 
-                ExportEntry newSequence = pcc.getUExport(exp.UIndex + 1);
+                ExportEntry newSequence = pcc.GetUExport(exp.UIndex + 1);
                 var props = newSequence.GetProperties();
                 var inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
                 if (inLinksProp != null)
@@ -1859,7 +1859,7 @@ namespace ME3Explorer.Sequence_Editor
                 var p = new InterpEditor();
                 p.Show();
                 p.LoadFile(Pcc.FilePath);
-                p.SelectedInterpData = Pcc.getUExport(uIndex);
+                p.SelectedInterpData = Pcc.GetUExport(uIndex);
             }
         }
 
@@ -1869,16 +1869,16 @@ namespace ME3Explorer.Sequence_Editor
                 obj.Export.ClassName.EndsWith("SeqAct_StartConversation") &&
                 obj.Export.GetProperty<ObjectProperty>("Conv") is ObjectProperty conv)
             {
-                if (Pcc.isUExport(conv.Value))
+                if (Pcc.IsUExport(conv.Value))
                 {
                     AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-                    new Dialogue_Editor.DialogueEditorWPF(Pcc.getUExport(conv.Value)).Show();
+                    new Dialogue_Editor.DialogueEditorWPF(Pcc.GetUExport(conv.Value)).Show();
                     return;
                 }
 
-                if (Pcc.isImport(conv.Value))
+                if (Pcc.IsImport(conv.Value))
                 {
-                    ImportEntry convImport = Pcc.getImport(conv.Value);
+                    ImportEntry convImport = Pcc.GetImport(conv.Value);
                     string extension = Path.GetExtension(Pcc.FilePath);
                     string noExtensionPath = Path.ChangeExtension(Pcc.FilePath, null);
                     string loc_int = Pcc.Game == MEGame.ME1 ? "_LOC_int" : "_LOC_INT";
@@ -1941,7 +1941,7 @@ namespace ME3Explorer.Sequence_Editor
                         var sequenceprop = exp.GetProperty<ObjectProperty>("oSequenceReference");
                         if (sequenceprop != null)
                         {
-                            export = Pcc.getUExport(sequenceprop.Value);
+                            export = Pcc.GetUExport(sequenceprop.Value);
                         }
                         else
                         {
@@ -1959,7 +1959,7 @@ namespace ME3Explorer.Sequence_Editor
                     var sequenceprop = sequence.GetProperty<ObjectProperty>("oSequenceReference");
                     if (sequenceprop != null)
                     {
-                        sequence = Pcc.getUExport(sequenceprop.Value);
+                        sequence = Pcc.GetUExport(sequenceprop.Value);
                     }
                     else
                     {
@@ -2031,12 +2031,12 @@ namespace ME3Explorer.Sequence_Editor
                         MessageBox.Show($"{export.ObjectName} ({export.UIndex} is not part of this sequence, and can't be repointed to.");
                         return;
                     }
-                    var sequence = sVar.Export.FileRef.getUExport(sVar.Export.GetProperty<ObjectProperty>("ParentSequence").Value);
+                    var sequence = sVar.Export.FileRef.GetUExport(sVar.Export.GetProperty<ObjectProperty>("ParentSequence").Value);
                     var sequenceObjects = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
                     foreach (var seqObjRef in sequenceObjects)
                     {
                         var saveProps = false;
-                        var seqObj = sVar.Export.FileRef.getUExport(seqObjRef.Value);
+                        var seqObj = sVar.Export.FileRef.GetUExport(seqObjRef.Value);
                         var props = seqObj.GetProperties();
                         var variableLinks = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
                         if (variableLinks != null)

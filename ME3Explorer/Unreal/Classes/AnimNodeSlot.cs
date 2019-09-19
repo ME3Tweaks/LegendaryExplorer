@@ -99,11 +99,11 @@ namespace ME3Explorer.Unreal.Classes
                 t.Nodes.Add("Name : " + Children[i].Name);
                 t.Nodes.Add("Weight : " + Children[i].Weight);
                 t.Nodes.Add("Anim : " + Children[i].Anim);
-                if (pcc.isUExport(idx))
-                    switch (pcc.getUExport(idx).ClassName)
+                if (pcc.IsUExport(idx))
+                    switch (pcc.GetUExport(idx).ClassName)
                     {
                         case "AnimNodeSlot":
-                            AnimNodeSlot ans = new AnimNodeSlot(pcc.getUExport(idx));
+                            AnimNodeSlot ans = new AnimNodeSlot(pcc.GetUExport(idx));
                             t.Nodes.Add(ans.ToTree());
                             break;
                     }

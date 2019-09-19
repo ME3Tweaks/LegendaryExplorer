@@ -133,7 +133,7 @@ namespace ME3Explorer
                                     wwisestream.setBinaryData(binData);
                                 }
                             }
-                            pcc.save(Path.Combine(resultsdir, localizedFileName));
+                            pcc.Save(Path.Combine(resultsdir, localizedFileName));
                             task.Complete($"{localizedFileName} saved");
                         }
                     }

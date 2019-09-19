@@ -169,16 +169,16 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public void save()
+        public void Save()
         {
-            save(FilePath);
+            Save(FilePath);
         }
 
         /// <summary>
         ///     Not supported for UDK files
         /// </summary>
         /// <param name="path">full path + file name.</param>
-        public void save(string path)
+        public void Save(string path)
         {
             bool isSaveAs = path != FilePath;
             saveByReconstructing(path, isSaveAs);

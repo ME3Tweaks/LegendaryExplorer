@@ -139,7 +139,7 @@ namespace ME3Explorer.SequenceObjects
                         var soundObjRef = properties.GetProp<ObjectProperty>("PlaySound");
                         if (soundObjRef != null)
                         {
-                            res += export.FileRef.getEntry(soundObjRef.Value).GetFullPath;
+                            res += export.FileRef.GetEntry(soundObjRef.Value).GetFullPath;
                         }
                         break;
                     case "BioSeqAct_SetWeapon":
@@ -335,7 +335,7 @@ namespace ME3Explorer.SequenceObjects
                                     return strProp.Value;
                                 case ObjectProperty objProp when objProp.Name == "ObjValue":
                                     {
-                                        IEntry entry = pcc.getEntry(objProp.Value);
+                                        IEntry entry = pcc.GetEntry(objProp.Value);
                                         if (entry == null) return "???";
                                         if (entry is ExportEntry objValueExport && objValueExport.GetProperty<NameProperty>("Tag") is NameProperty tagProp && tagProp.Value != objValueExport.ObjectName)
                                         {
@@ -1511,10 +1511,10 @@ namespace ME3Explorer.SequenceObjects
                 {
                     case ObjectProperty objProp when objProp.Name == "oSequenceReference":
                         {
-                            string seqName = pcc.getEntry(objProp.Value)?.ObjectName ?? "";
-                            if (pcc.isUExport(objProp.Value)
+                            string seqName = pcc.GetEntry(objProp.Value)?.ObjectName ?? "";
+                            if (pcc.IsUExport(objProp.Value)
                                 && seqName == "Sequence"
-                                && pcc.getUExport(objProp.Value).GetProperty<StrProperty>("ObjName") is StrProperty objNameProp)
+                                && pcc.GetUExport(objProp.Value).GetProperty<StrProperty>("ObjName") is StrProperty objNameProp)
                             {
                                 seqName = objNameProp;
                             }
@@ -1528,7 +1528,7 @@ namespace ME3Explorer.SequenceObjects
                         s += $"\n\"{strProp}\"";
                         break;
                     case ObjectProperty objProp when objProp.Name == "m_pEffect":
-                        s += $"\n\"{pcc.getEntry(objProp.Value)?.ObjectName ?? ""}\"";
+                        s += $"\n\"{pcc.GetEntry(objProp.Value)?.ObjectName ?? ""}\"";
                         break;
                 }
             }
@@ -1568,7 +1568,7 @@ namespace ME3Explorer.SequenceObjects
                 var oSequenceReference = export.GetProperty<ObjectProperty>("oSequenceReference");
                 if (oSequenceReference != null)
                 {
-                    inputLinksProp = pcc.getUExport(oSequenceReference.Value).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+                    inputLinksProp = pcc.GetUExport(oSequenceReference.Value).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
                 }
             }
 

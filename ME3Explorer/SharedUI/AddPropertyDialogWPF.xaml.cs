@@ -85,14 +85,14 @@ namespace ME3Explorer.SharedUI
             //        Debug.WriteLine(entry.Key);
             //    }
             //}
-            if (!classList.ContainsKey(temp) && export.idxClass < 0)
+            if (!classList.ContainsKey(temp) && export.Class is ImportEntry)
             {
                 //lookup import parent info
                 temp = export.SuperClassName;
             }
-            else if (!classList.ContainsKey(temp) && export.idxClass > 0)
+            else if (!classList.ContainsKey(temp) && export.Class is ExportEntry classExport)
             {
-                export = export.FileRef.Exports[export.idxClass - 1];
+                export = classExport;
                 //current object is not in classes db, temporarily add it to the list
                 ClassInfo currentInfo;
                 switch (game)

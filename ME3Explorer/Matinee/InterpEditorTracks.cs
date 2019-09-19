@@ -47,7 +47,7 @@ namespace ME3Explorer.Matinee
             var tracksProp = Export.GetProperty<ArrayProperty<ObjectProperty>>("InterpTracks");
             if (tracksProp != null)
             {
-                var trackExports = tracksProp.Where(prop => Export.FileRef.isUExport(prop.Value)).Select(prop => Export.FileRef.getUExport(prop.Value));
+                var trackExports = tracksProp.Where(prop => Export.FileRef.IsUExport(prop.Value)).Select(prop => Export.FileRef.GetUExport(prop.Value));
                 foreach (ExportEntry trackExport in trackExports)
                 {
                     if (trackExport.InheritsFrom("BioInterpTrack"))
