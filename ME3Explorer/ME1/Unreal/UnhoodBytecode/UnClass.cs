@@ -166,12 +166,12 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         public override void Decompile(TextBuilder result)
         {
-            result.Append("class ").Append(_self.ObjectName);
+            result.Append("class ").Append(_self.ObjectName.Instanced);
             if (_super != null)
-                result.Append(" extends ").Append(_super.ObjectName);
+                result.Append(" extends ").Append(_super.ObjectName.Instanced);
             if (_outerInstance != null && _outerInstance.ObjectName != "Object")
             {
-                result.NewLine().Append("    within ").Append(_outerInstance.ObjectName);
+                result.NewLine().Append("    within ").Append(_outerInstance.ObjectName.Instanced);
             }
             if (_hideCategories.Count > 0)
             {
@@ -179,7 +179,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             }
             if (_interfaces.Count > 0)
             {
-                var intfNames = _interfaces.ConvertAll(e => e.ObjectName).ToArray();
+                var intfNames = _interfaces.ConvertAll(e => e.ObjectName.Instanced).ToArray();
                 result.NewLine().Append("    implements(").Append(string.Join(",", intfNames)).Append(")");
             }
             if (_config != "None")

@@ -475,7 +475,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 if (radius != null && height != null)
                 {
-                    string destNode = selectedSpec.ExternalTarget ? "External node" : $"{selectedSpec.EndNode.ObjectName}_{selectedSpec.EndNode.UIndex}";
+                    string destNode = selectedSpec.ExternalTarget ? "External node" : $"{selectedSpec.EndNode.ObjectName.Instanced}";
                     ReachSpecSizeToText = "ReachSpec size to " + destNode;
                     ReachSpecSize specSize = new ReachSpecSize
                     {
@@ -527,13 +527,13 @@ namespace ME3Explorer.Pathfinding_Editor
                         //Calculate direction vectors
                         if (distance != 0)
                         {
-                            DestinationNodeName = $"{destExport.ObjectName}_{destExport.indexValue}";
+                            DestinationNodeName = $"{destExport.ObjectName.Instanced}";
 
                             float dirX = (float)((destPoint.X - sourcePoint.X) / distance);
                             float dirY = (float)((destPoint.Y - sourcePoint.Y) / distance);
                             float dirZ = (float)((destPoint.Z - sourcePoint.Z) / distance);
 
-                            DestinationNodeName = $"{destExport.ObjectName}_{destExport.indexValue}";
+                            DestinationNodeName = $"{destExport.ObjectName.Instanced}";
                             NewReachSpecDistance = "Distance: " + distance.ToString("0.##");
                             NewReachSpecDirectionX = "Direction X: " + dirX.ToString("0.#####");
                             NewReachSpecDirectionY = "Direction Y: " + dirY.ToString("0.#####");
@@ -542,7 +542,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         else
                         {
                             //Distance 0
-                            DestinationNodeName = $"{destExport.ObjectName}_{destExport.indexValue}";
+                            DestinationNodeName = $"{destExport.ObjectName.Instanced}";
                             NewReachSpecDistance = "Distance: 0 - Move node";
                             SetDirectionsNA();
                         }
@@ -619,7 +619,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
 
 
-        [DebuggerDisplay("ReachSpec | {SpecExport.ObjectName} outbound from {StartNode.UIndex}")]
+        [DebuggerDisplay("ReachSpec | {SpecExport.ObjectName.Instanced} outbound from {StartNode.UIndex}")]
         public class ReachSpec
         {
             public ReachSpecSize SpecSize { get; internal set; }
@@ -629,7 +629,7 @@ namespace ME3Explorer.Pathfinding_Editor
             public bool ExternalTarget { get; internal set; }
             public string DestinationTextUI => ExternalTarget ? "Ext" : EndNode.UIndex.ToString();
 
-            public string DestinationTypeTextUI => ExternalTarget ? "External Node" : $"{EndNode.ObjectName}_{ EndNode.indexValue}";
+            public string DestinationTypeTextUI => ExternalTarget ? "External Node" : $"{EndNode.ObjectName.Instanced}";
         }
 
         [DebuggerDisplay("NodeSize | {Header} {NodeHeight}x{NodeRadius}")]

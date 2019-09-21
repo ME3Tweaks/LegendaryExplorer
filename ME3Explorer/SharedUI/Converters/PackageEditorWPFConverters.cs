@@ -58,11 +58,11 @@ namespace ME3Explorer.SharedUI.Converters
             int importindex = BitConverter.ToInt32(data, data.Length - 4);
             if (export.FileRef.GetEntry(importindex) is ImportEntry imp)
             {
-                return $" ({imp.ObjectName})";
+                return $" ({imp.ObjectName.Instanced})";
             }
             if (export.FileRef.GetEntry(importindex) is ExportEntry exp)
             {
-                return $" [{exp.ObjectName}]";
+                return $" [{exp.ObjectName.Instanced}]";
             }
             return "";
         }
@@ -78,7 +78,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && !exp.ObjectName.StartsWith("Default__") && PackageEditorWPF.ExportIconTypes.Contains(exp.ClassName))
+            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && !exp.IsDefaultObject && PackageEditorWPF.ExportIconTypes.Contains(exp.ClassName))
             {
                 switch (exp.ClassName)
                 {
@@ -95,7 +95,9 @@ namespace ME3Explorer.SharedUI.Converters
                         return "/PackageEditor/EntryIcons/icon_world.png";
                     case "Package":
                         string fname = Path.GetFileNameWithoutExtension(exp.FileRef.FilePath);
-                        return fname.Equals(exp.ObjectName, StringComparison.InvariantCultureIgnoreCase) ? "/PackageEditor/EntryIcons/icon_package_fileroot.png" :  "/PackageEditor/EntryIcons/icon_package.png";
+                        return fname != null && fname.Equals(exp.ObjectName.Name, StringComparison.InvariantCultureIgnoreCase)
+                            ? "/PackageEditor/EntryIcons/icon_package_fileroot.png"
+                            : "/PackageEditor/EntryIcons/icon_package.png";
                     case "SkeletalMesh":
                     case "StaticMesh":
                     case "FracturedStaticMesh":
@@ -121,7 +123,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && !exp.ObjectName.StartsWith("Default__") && PackageEditorWPF.ExportIconTypes.Contains(exp.ClassName))
+            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && !exp.IsDefaultObject && PackageEditorWPF.ExportIconTypes.Contains(exp.ClassName))
             {
                 return Visibility.Visible;
             }

@@ -20,7 +20,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public static ObjectBinary From(ExportEntry export)
         {
             string className = export.ClassName;
-            if (export.InheritsFrom("BioPawn"))
+            if (export.IsOrInheritsFrom("BioPawn"))
             {
                 //way, waaay too many subclasses of BioPawn to put in the switch statement, so we take care of it here
                 className = "BioPawn";

@@ -29,7 +29,7 @@
                       Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type packages:ExportEntry}">
-                        <TextBlock Text="{Binding GetFullPath}"/>
+                        <TextBlock Text="{Binding InstancedFullPath}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>

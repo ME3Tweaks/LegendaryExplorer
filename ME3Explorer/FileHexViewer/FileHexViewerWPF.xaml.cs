@@ -167,7 +167,7 @@ namespace ME3Explorer.FileHexViewer
                 List<UsedSpace> continuousBlocks = new List<UsedSpace>();
                 UsedSpace continuous = new UsedSpace
                 {
-                    UsedFor = $"Continuous Export Data {usedExportsSpaces[0].Export.UIndex} {usedExportsSpaces[0].Export.ObjectName} ({usedExportsSpaces[0].Export.ClassName})",
+                    UsedFor = $"Continuous Export Data {usedExportsSpaces[0].Export.UIndex} {usedExportsSpaces[0].Export.ObjectName.Instanced} ({usedExportsSpaces[0].Export.ClassName})",
                     UsedSpaceStart = usedExportsSpaces[0].UsedSpaceStart,
                     UsedSpaceEnd = usedExportsSpaces[0].UsedSpaceEnd,
                     Export = usedExportsSpaces[0].Export
@@ -198,7 +198,7 @@ namespace ME3Explorer.FileHexViewer
 
                         continuous = new UsedSpace
                         {
-                            UsedFor = $"Continuous Export Data {u.Export.UIndex} {u.Export.ObjectName} ({u.Export.ClassName})",
+                            UsedFor = $"Continuous Export Data {u.Export.UIndex} {u.Export.ObjectName.Instanced} ({u.Export.ClassName})",
                             UsedSpaceStart = u.UsedSpaceStart,
                             UsedSpaceEnd = u.UsedSpaceEnd,
                             Export = u.Export
@@ -249,11 +249,11 @@ namespace ME3Explorer.FileHexViewer
 
                             if (pcc.GetEntry(val) is ExportEntry exp)
                             {
-                                s += $", Export: {exp.ObjectName}";
+                                s += $", Export: {exp.ObjectName.Instanced}";
                             }
                             else if (pcc.GetEntry(val) is ImportEntry imp)
                             {
-                                s += $", Import: {imp.ObjectName}";
+                                s += $", Import: {imp.ObjectName.Instanced}";
                             }
                         }
                     }

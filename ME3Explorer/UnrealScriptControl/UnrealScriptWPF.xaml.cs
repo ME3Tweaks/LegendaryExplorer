@@ -97,7 +97,7 @@ namespace ME3Explorer
             if (CurrentLoadedExport != null)
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new UnrealScriptWPF(), CurrentLoadedExport);
-                elhw.Title = $"UnrealScript Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FilePath}";
+                elhw.Title = $"UnrealScript Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}";
                 elhw.Show();
             }
         }
@@ -265,11 +265,11 @@ namespace ME3Explorer
                 int start = (int)ScriptEditor_Hexbox.SelectionStart;
                 int len = (int)ScriptEditor_Hexbox.SelectionLength;
                 int size = (int)ScriptEditor_Hexbox.ByteProvider.Length;
-                //TODO: Optimize this so this is only called when data has changed
-                byte[] currentData = (ScriptEditor_Hexbox.ByteProvider as DynamicByteProvider).Bytes.ToArray();
                 try
                 {
-                    if (currentData != null && start != -1 && start < size)
+                    //TODO: Optimize this so this is only called when data has changed
+                    byte[] currentData = ((DynamicByteProvider)ScriptEditor_Hexbox.ByteProvider).Bytes.ToArray();
+                    if (start != -1 && start < size)
                     {
                         string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
                         if (start <= currentData.Length - 4)
@@ -292,19 +292,19 @@ namespace ME3Explorer
                                 string type = ent is ExportEntry ? "Export" : "Import";
                                 if (ent.ObjectName == CurrentLoadedExport.ObjectName)
                                 {
-                                    s += $", {type}: {ent.GetFullPath}";
+                                    s += $", {type}: {ent.InstancedFullPath}";
                                 }
                                 else
                                 {
-                                    s += $", {type}: {ent.ObjectName}";
+                                    s += $", {type}: {ent.ObjectName.Instanced}";
                                 }
                             }
                         }
-                        s += $" | Start=0x{start.ToString("X8")} ";
+                        s += $" | Start=0x{start:X8} ";
                         if (len > 0)
                         {
-                            s += $"Length=0x{len.ToString("X8")} ";
-                            s += $"End=0x{(start + len - 1).ToString("X8")}";
+                            s += $"Length=0x{len:X8} ";
+                            s += $"End=0x{(start + len - 1):X8}";
                         }
                         StatusBar_LeftMostText.Text = s;
                     }
@@ -425,7 +425,7 @@ namespace ME3Explorer
                 this.value = $"{value}";
                 if (callingEntry != null)
                 {
-                    this.value += $" ({ callingEntry.FileRef.GetEntry(value).GetFullPath})";
+                    this.value += $" ({ callingEntry.FileRef.GetEntry(value).FullPath})";
                 }
                 else
                 {

@@ -11,7 +11,7 @@ using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
-    [DebuggerDisplay("{Game} ExportEntry | {UIndex} {ObjectName}({ClassName}) in {System.IO.Path.GetFileName(FileRef.FilePath)}")]
+    [DebuggerDisplay("{Game} ExportEntry | {UIndex} {ObjectName.Instanced}({ClassName}) in {System.IO.Path.GetFileName(FileRef.FilePath)}")]
 
     public class ExportEntry : NotifyPropertyChangedBase, IEntry
     {
@@ -345,116 +345,31 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public string ObjectName
+        public string ObjectNameString
         {
             get => FileRef.Names[idxObjectName];
             set => idxObjectName = FileRef.FindNameOrAdd(value);
         }
 
-        public string ClassName => Class?.ObjectName ?? "Class";
-
-        public string SuperClassName => SuperClass?.ObjectName ?? "Class";
-
-        public string PackageName
+        public NameReference ObjectName
         {
-            get
-            {
-                int val = idxLink;
-                if (val != 0)
-                {
-                    IEntry entry = FileRef.GetEntry(val);
-                    return entry.ObjectName;
-                }
-                else return "Package";
-            }
+            get => new NameReference(ObjectNameString, indexValue);
+            set => (ObjectNameString, indexValue) = value;
         }
 
-        public string PackageNameInstanced
-        {
-            get
-            {
-                int val = idxLink;
-                if (val != 0)
-                {
-                    IEntry entry = FileRef.GetEntry(val);
-                    string result =  entry.ObjectName;
-                    if (entry.indexValue > 0)
-                    {
-                        return result + "_" + entry.indexValue; //Should be -1 for 4.1, will remain as-is for 4.0
-                    }
-                    return result;
-                }
-                else return "Package";
-            }
-        }
+        public string ClassName => Class?.ObjectName.Name ?? "Class";
 
-        public string PackageFullName
-        {
-            get
-            {
-                string result = PackageName;
-                int idxNewPackName = idxLink;
+        public string SuperClassName => SuperClass?.ObjectName.Name ?? "Class";
 
-                while (idxNewPackName != 0)
-                {
-                    string newPackageName = FileRef.GetEntry(idxNewPackName).PackageName;
-                    if (newPackageName != "Package")
-                        result = newPackageName + "." + result;
-                    idxNewPackName = FileRef.GetEntry(idxNewPackName).idxLink;
-                }
+        public string ParentName => FileRef.GetEntry(idxLink)?.ObjectName ?? "";
 
-                return result;
-            }
-        }
+        public string ParentFullPath => FileRef.GetEntry(idxLink)?.FullPath ?? "";
 
-        public string GetFullPath
-        {
-            get
-            {
-                string s = "";
-                if (PackageFullName != "Class" && PackageFullName != "Package")
-                    s += PackageFullName + ".";
-                s += ObjectName;
-                return s;
-            }
-        }
+        public string FullPath => FileRef.IsEntry(idxLink) ? $"{ParentFullPath}.{ObjectName.Name}" : ObjectName.Name;
 
-        public string GetIndexedFullPath => GetFullPath + "_" + indexValue;
+        public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
 
-        public string PackageFullNameInstanced
-        {
-            get
-            {
-                string result = PackageNameInstanced;
-                int idxNewPackName = idxLink;
-
-                while (idxNewPackName != 0)
-                {
-                    IEntry e = FileRef.GetEntry(idxNewPackName);
-                    string newPackageName = e.PackageNameInstanced;
-                    if (newPackageName != "Package")
-                        result = newPackageName + "." + result;
-                    idxNewPackName = FileRef.GetEntry(idxNewPackName).idxLink;
-                }
-                return result;
-            }
-        }
-
-        public string GetInstancedFullPath
-        {
-            get
-            {
-                string s = "";
-                if (PackageFullNameInstanced != "Class" && PackageFullNameInstanced != "Package")
-                    s += PackageFullNameInstanced + ".";
-                s += ObjectName;
-                if (indexValue > 0)
-                {
-                    s += "_" + indexValue; // Should be -1, but will wait for 4.1 to correct this for consistency
-                }
-                return s;
-            }
-        }
+        public string InstancedFullPath => FileRef.IsEntry(idxLink)? $"{ParentInstancedFullPath}.{ObjectName.Instanced}" : ObjectName.Instanced;
 
         public bool HasParent => FileRef.IsEntry(idxLink);
 
@@ -732,12 +647,12 @@ namespace ME3Explorer.Packages
         public ExportEntry Clone()
         {
             int index = 0;
-            string name = ObjectName;
+            string name = ObjectName.Name;
             foreach (ExportEntry ent in FileRef.Exports)
             {
-                if (name == ent.ObjectName && ent.indexValue > index)
+                if (name == ent.ObjectName.Name && ent.ObjectName.Number > index)
                 {
-                    index = ent.indexValue;
+                    index = ent.ObjectName.Number;
                 }
             }
             index++;

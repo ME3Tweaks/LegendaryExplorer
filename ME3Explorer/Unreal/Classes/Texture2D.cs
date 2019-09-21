@@ -109,7 +109,7 @@ namespace ME3Explorer.Unreal.Classes
             }
 
 
-            Debug.WriteLine($"Generating preview texture for Texture2D {info.Export.GetFullPath} of format {TextureFormat}");
+            Debug.WriteLine($"Generating preview texture for Texture2D {info.Export.FullPath} of format {TextureFormat}");
             if (imageBytes == null)
             {
                 imageBytes = GetImageBytesForMip(info);
@@ -255,7 +255,7 @@ namespace ME3Explorer.Unreal.Classes
             }
             if (imageBytes == null)
             {
-                throw new Exception("Could not fetch texture data for texture " + info.Export.ObjectName);
+                throw new Exception("Could not fetch texture data for texture " + info?.Export.ObjectName.Instanced);
             }
             return imageBytes;
         }
@@ -310,7 +310,7 @@ namespace ME3Explorer.Unreal.Classes
         public static byte[] GetTextureData(Texture2DMipInfo mipToLoad, bool decompress = true)
         {
             var imagebytes = new byte[decompress ? mipToLoad.uncompressedSize : mipToLoad.compressedSize];
-            Debug.WriteLine("getting texture data for " + mipToLoad.Export.GetFullPath);
+            Debug.WriteLine("getting texture data for " + mipToLoad.Export.FullPath);
             if (mipToLoad.storageType == StorageTypes.pccUnc)
             {
                 Buffer.BlockCopy(mipToLoad.Export.Data, mipToLoad.localExportOffset, imagebytes, 0, mipToLoad.uncompressedSize);
@@ -432,7 +432,7 @@ namespace ME3Explorer.Unreal.Classes
 
     }
 
-    [DebuggerDisplay("Texture2DMipInfo for {Export.ObjectName} | {width}x{height} | {storageType}")]
+    [DebuggerDisplay("Texture2DMipInfo for {Export.ObjectName.Instanced} | {width}x{height} | {storageType}")]
     public class Texture2DMipInfo
     {
         public ExportEntry Export;

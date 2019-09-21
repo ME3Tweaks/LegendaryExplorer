@@ -50,47 +50,47 @@ namespace ME3Explorer.Matinee
                 var trackExports = tracksProp.Where(prop => Export.FileRef.IsUExport(prop.Value)).Select(prop => Export.FileRef.GetUExport(prop.Value));
                 foreach (ExportEntry trackExport in trackExports)
                 {
-                    if (trackExport.InheritsFrom("BioInterpTrack"))
+                    if (trackExport.IsOrInheritsFrom("BioInterpTrack"))
                     {
                         Tracks.Add(new BioInterpTrack(trackExport));
                     }
-                    else if (trackExport.InheritsFrom("InterpTrackFloatBase"))
+                    else if (trackExport.IsOrInheritsFrom("InterpTrackFloatBase"))
                     {
                         Tracks.Add(new InterpTrackFloatBase(trackExport));
                     }
-                    else if (trackExport.InheritsFrom("InterpTrackVectorBase"))
+                    else if (trackExport.IsOrInheritsFrom("InterpTrackVectorBase"))
                     {
                         Tracks.Add(new InterpTrackVectorBase(trackExport));
                     }
-                    else if (trackExport.InheritsFrom("InterpTrackEvent"))
+                    else if (trackExport.IsOrInheritsFrom("InterpTrackEvent"))
                     {
                         Tracks.Add(new InterpTrackEvent(trackExport));
                     }
-                    else if (trackExport.InheritsFrom("InterpTrackFaceFX"))
+                    else if (trackExport.IsOrInheritsFrom("InterpTrackFaceFX"))
                     {
                         Tracks.Add(new InterpTrackFaceFX(trackExport));
                     }
-                    else if (trackExport.InheritsFrom("InterpTrackAnimControl"))
+                    else if (trackExport.IsOrInheritsFrom("InterpTrackAnimControl"))
                     {
                         Tracks.Add(new InterpTrackAnimControl(trackExport));
                     }
-                    else if (trackExport.InheritsFrom("InterpTrackMove"))
+                    else if (trackExport.IsOrInheritsFrom("InterpTrackMove"))
                     {
                         Tracks.Add(new InterpTrackMove(trackExport));
                     }
-                    else if (trackExport.InheritsFrom("InterpTrackVisibility"))
+                    else if (trackExport.IsOrInheritsFrom("InterpTrackVisibility"))
                     {
                         Tracks.Add(new InterpTrackVisibility(trackExport));
                     }
-                    else if (trackExport.InheritsFrom("InterpTrackToggle"))
+                    else if (trackExport.IsOrInheritsFrom("InterpTrackToggle"))
                     {
                         Tracks.Add(new InterpTrackToggle(trackExport));
                     }
-                    else if (trackExport.InheritsFrom("InterpTrackWwiseEvent"))
+                    else if (trackExport.IsOrInheritsFrom("InterpTrackWwiseEvent"))
                     {
                         Tracks.Add(new InterpTrackWwiseEvent(trackExport));
                     }
-                    else if (trackExport.InheritsFrom("InterpTrackDirector"))
+                    else if (trackExport.IsOrInheritsFrom("InterpTrackDirector"))
                     {
                         Tracks.Add(new InterpTrackDirector(trackExport));
                     }
@@ -114,7 +114,7 @@ namespace ME3Explorer.Matinee
         protected InterpTrack(ExportEntry export)
         {
             Export = export;
-            TrackTitle = export.GetProperty<StrProperty>("TrackTitle")?.Value ?? export.ObjectName;
+            TrackTitle = export.GetProperty<StrProperty>("TrackTitle")?.Value ?? export.ObjectName.Instanced;
         }
     }
 

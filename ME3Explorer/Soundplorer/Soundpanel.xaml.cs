@@ -72,7 +72,7 @@ namespace ME3Explorer
             if (CurrentLoadedExport != null)
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Soundpanel(), CurrentLoadedExport);
-                elhw.Title = $"Sound Player - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FilePath}";
+                elhw.Title = $"Sound Player - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}";
                 elhw.Height = 400;
                 elhw.Width = 400;
                 elhw.Show();
@@ -135,7 +135,7 @@ namespace ME3Explorer
 
                 }
                 CurrentPackage = exportEntry.FileRef;*/
-                ExportInformationList.Add($"#{exportEntry.Index} {exportEntry.ClassName} : {exportEntry.ObjectName}");
+                ExportInformationList.Add($"#{exportEntry.Index} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced}");
                 if (exportEntry.ClassName == "WwiseStream")
                 {
                     SoundPanel_TabsControl.SelectedItem = SoundPanel_PlayerTab;
@@ -896,8 +896,7 @@ namespace ME3Explorer
             if (sourceFile == null)
             {
                 OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
-                bool? res = d.ShowDialog();
-                if (res.HasValue && res.Value)
+                if (d.ShowDialog() == true)
                 {
                     sourceFile = d.FileName;
                 }
@@ -910,7 +909,7 @@ namespace ME3Explorer
             if (conversionSettings == null)
             {
                 SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this));
-                if (srod.ShowDialog().Value)
+                if (srod.ShowDialog() == true)
                 {
                     conversionSettings = srod.ChosenSettings;
                 }
@@ -926,10 +925,7 @@ namespace ME3Explorer
                 HostingControl.BusyText = "Converting and replacing audio";
                 HostingControl.IsBusy = true;
             }
-            var conversion = await Task.Run(async () =>
-            {
-                return await RunWwiseConversion(wwisePath, sourceFile, conversionSettings);
-            });
+            var conversion = await Task.Run(async () => await RunWwiseConversion(wwisePath, sourceFile, conversionSettings));
 
             ReplaceAudioFromWwiseOgg(conversion, forcedExport);
         }
@@ -1145,7 +1141,7 @@ namespace ME3Explorer
                         Filter = "Wave PCM File|*.wav",
                         FileName = CurrentLoadedExport.ObjectName + ".wav"
                     };
-                    if (d.ShowDialog().Value)
+                    if (d.ShowDialog() == true)
                     {
                         WwiseStream w = new WwiseStream(CurrentLoadedExport);
                         string wavPath = w.CreateWave(w.GetPathToAFC());
@@ -1165,7 +1161,7 @@ namespace ME3Explorer
                         Filter = "Wave PCM|*.wav",
                         FileName = $"{CurrentLoadedExport.ObjectName}_0x{currentWEMItem.Id:X8}.wav"
                     };
-                    if (d.ShowDialog().Value)
+                    if (d.ShowDialog() == true)
                     {
                         Stream ms = getPCMStream();
                         ms.Seek(0, SeekOrigin.Begin);
@@ -1185,7 +1181,7 @@ namespace ME3Explorer
                     Filter = "Wave PCM File|*.wav",
                     FileName = CurrentLoadedISACTEntry.FileName
                 };
-                if (d.ShowDialog().Value)
+                if (d.ShowDialog() == true)
                 {
                     MemoryStream waveStream = CurrentLoadedISACTEntry.GetWaveStream();
                     waveStream.Seek(0, SeekOrigin.Begin);
@@ -1205,7 +1201,7 @@ namespace ME3Explorer
                     Filter = "Wave PCM File|*.wav",
                     FileName = presetfilename
                 };
-                if (d.ShowDialog().Value)
+                if (d.ShowDialog() == true)
                 {
                     Stream s = WwiseStream.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
                     using (var fileStream = File.Create(d.FileName))

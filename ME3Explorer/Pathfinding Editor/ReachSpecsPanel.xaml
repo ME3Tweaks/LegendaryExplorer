@@ -70,14 +70,7 @@
                                 <RowDefinition Height="15"/>
                             </Grid.RowDefinitions>
                             <TextBlock Text="{Binding DestinationTextUI}" />
-                            <TextBlock Grid.Column="1" TextAlignment="Right">
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="via {0}_{1}">
-                                        <Binding Path="SpecExport.ObjectName" />
-                                        <Binding Path="SpecExport.indexValue" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
+                            <TextBlock Grid.Column="1" TextAlignment="Right" Text="SpecExport.ObjectName.Instanced"/>
                             <TextBlock Grid.Row="1" Grid.Column="0" TextAlignment="Left" FontSize="10" Foreground="Gray">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0}x{1}">

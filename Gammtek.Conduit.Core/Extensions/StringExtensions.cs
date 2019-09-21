@@ -141,5 +141,39 @@ namespace Gammtek.Conduit.Extensions
             int maxLength = Math.Min(str.Length, length);
             return str.Substring(0, maxLength);
         }
+
+        /// <summary>
+        /// Truncates string by removing characters fromm center (and replacing with ellipsis)
+        /// </summary>
+        /// <param name="str">String to truncate.</param>
+        /// <param name="length">Maximum string length. Will be clamped to at least 5</param>
+        public static string TruncCenter(this string str, int length)
+        {
+            if (str == null)
+            {
+                return null;
+            }
+
+            if (length < 5)
+            {
+                length = 5;
+            }
+
+            if (str.Length <= length)
+            {
+                return str;
+            }
+
+            if (length % 2 == 0)
+            {
+                int sideLen = (length - 2) / 2;
+                return $"{str.Substring(0, sideLen)}..{str.Substring(str.Length - sideLen)}";
+            }
+            else
+            {
+                int sideLen = (length - 3) / 2;
+                return $"{str.Substring(0, sideLen)}...{str.Substring(str.Length - sideLen)}";
+            }
+        }
     }
 }

@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal;
 using Microsoft.VisualBasic.Logging;
 using Path = System.IO.Path;
 
@@ -64,9 +65,8 @@ namespace ME3Explorer.Sequence_Editor
                             fullLine = line,
                             packageName = packageName,
                             className = args[2],
-                            objectName = nameAndIndex.Substring(0, nameAndIndex.LastIndexOf('_')),
+                            objectName = new NameReference(nameAndIndex.Substring(0, nameAndIndex.LastIndexOf('_')), nameIndex),
                             sequenceName = sequence,
-                            nameIndex = nameIndex
                         };
                     }
                 }
@@ -80,9 +80,8 @@ namespace ME3Explorer.Sequence_Editor
             public string fullLine { get; set; }
             public string packageName;
             public string className;
-            public string objectName;
+            public NameReference objectName;
             public string sequenceName;
-            public int nameIndex;
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -97,8 +96,8 @@ namespace ME3Explorer.Sequence_Editor
                         {
                             foreach (ExportEntry exp in package.Exports)
                             {
-                                if (exp.ClassName == info.className && exp.ObjectName == info.objectName && exp.indexValue == info.nameIndex &&
-                                    exp.PackageName == info.sequenceName)
+                                if (exp.ClassName == info.className && exp.ObjectName == info.objectName &&
+                                    exp.ParentName == info.sequenceName)
                                 {
                                     ExportFound(filePath, exp.UIndex);
                                     return;

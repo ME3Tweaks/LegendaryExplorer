@@ -62,7 +62,7 @@ namespace ME3Explorer.WwiseBankEditor
             listBox1.Items.Clear();
             listBox2.Items.Clear();
             for (int i = 0; i < objects.Count; i++)
-                listBox1.Items.Add(objects[i] + " : " + Pcc.Exports[objects[i]].ObjectName);
+                listBox1.Items.Add(objects[i] + " : " + Pcc.Exports[objects[i]].ObjectName.Instanced);
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -92,11 +92,11 @@ namespace ME3Explorer.WwiseBankEditor
                         }
                         if (Pcc.GetEntry(val) is ExportEntry exp)
                         {
-                            s += $", Export: {exp.ObjectName}";
+                            s += $", Export: {exp.ObjectName.Instanced}";
                         }
                         else if (Pcc.GetEntry(val) is ImportEntry imp)
                         {
-                            s += $", Import: {imp.ObjectName}";
+                            s += $", Import: {imp.ObjectName.Instanced}";
                         }
                     }
                     s += $" | Start=0x{start.ToString("X8")} ";

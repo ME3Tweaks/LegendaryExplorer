@@ -434,7 +434,7 @@ namespace ME3Explorer.ActorNodes
             : base(idx, x, y, p, grapheditor, drawRotationLine: true)
         {
             shape.Brush = backgroundBrush;
-            comment.Text = export.ObjectName + comment.Text;
+            comment.Text = export.ObjectName.Instanced + comment.Text;
         }
 
         public override Color GetDefaultShapeColor() => outlinePenColor;
@@ -459,7 +459,7 @@ namespace ME3Explorer.ActorNodes
                 if (meshObj != null)
                 {
                     ExportEntry sme = pcc.GetUExport(meshObj.Value);
-                    comment.Text = sme.ObjectName;
+                    comment.Text = sme.ObjectName.Instanced;
                 }
             }
         }
@@ -602,7 +602,7 @@ namespace ME3Explorer.ActorNodes
         public SFXPlaceable(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, x, y, p, grapheditor)
         {
-            comment.Text = $"{export.ObjectName}_{export.indexValue}";
+            comment.Text = export.ObjectName.Instanced;
         }
 
         public override Color GetDefaultShapeColor() => outlinePenColor;
@@ -643,7 +643,7 @@ namespace ME3Explorer.ActorNodes
                 {
                     text += "\n";
                 }
-                comment.Text = text + meshexp.ObjectName;
+                comment.Text = text + meshexp.ObjectName.Instanced;
             }
         }
         public override Color GetDefaultShapeColor() => outlinePenColor;

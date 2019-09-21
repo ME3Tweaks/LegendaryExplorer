@@ -53,12 +53,12 @@ namespace ME3Explorer.Unreal.Classes
 
             PropertyCollection props = export.GetProperties();
 
-            NodeName = props.GetPropOrDefault<NameProperty>("NodeName").Value.InstancedString;
+            NodeName = props.GetPropOrDefault<NameProperty>("NodeName").Value.Instanced;
             bSkipTickWhenZeroWeight = props.GetPropOrDefault<BoolProperty>("bSkipTickWhenZeroWeight").Value;
             NodeTotalWeight = props.GetPropOrDefault<FloatProperty>("NodeTotalWeight").Value;
             Children = props.GetPropOrDefault<ArrayProperty<StructProperty>>("Children").Select(prop => new ChildrenEntry
             {
-                Name = prop.GetPropOrDefault<NameProperty>("Name").Value.InstancedString,
+                Name = prop.GetPropOrDefault<NameProperty>("Name").Value.Instanced,
                 Weight = prop.GetPropOrDefault<FloatProperty>("Weight").Value,
                 Anim = prop.GetPropOrDefault<ObjectProperty>("Anim").Value,
                 bIsAdditive = prop.GetPropOrDefault<BoolProperty>("bIsAdditive").Value,
@@ -81,7 +81,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode($"{Export.ObjectName}(#{Export.UIndex})");
+            TreeNode res = new TreeNode($"{Export.ObjectName.Instanced}(#{Export.UIndex})");
             res.Nodes.Add("bSkipTickWhenZeroWeight : " + bSkipTickWhenZeroWeight);
             res.Nodes.Add("NodeName : " + NodeName);
             res.Nodes.Add("NodeTotalWeight : " + NodeTotalWeight);

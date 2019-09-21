@@ -114,7 +114,7 @@ namespace ME3Explorer.PathfindingNodes
             foreach (ExportEntry spec in ReachSpecs)
             {
                 Pen penToUse = blackPen;
-                switch (spec.ObjectName)
+                switch (spec.ObjectName.Name)
                 {
                     case "SlotToSlotReachSpec":
                         penToUse = slotToSlotPen;

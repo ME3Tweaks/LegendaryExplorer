@@ -121,7 +121,7 @@ namespace ME3Explorer
                             
                             foreach (ExportEntry wwisestream in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
                             {
-                                string[] nameSections = wwisestream.ObjectName.Split(',');
+                                string[] nameSections = wwisestream.ObjectName.Name.Split(',');
                                 if (nameSections.Length == 4 && convNames.Contains(fileName + nameSections[2]) && infoDict.TryGetValue(nameSections[3], out wwisestreaminfo info))
                                 {
                                     wwisestream.WriteProperty(new NameProperty(info.FileName, "Filename"));
@@ -188,7 +188,7 @@ namespace ME3Explorer
                     {
                         foreach (ExportEntry wwisestream in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
                         {
-                            string[] nameSections = wwisestream.ObjectName.Split(',');
+                            string[] nameSections = wwisestream.ObjectName.Name.Split(',');
                             if (nameSections.Length == 4 && wwisestream.GetProperty<NameProperty>("Filename")?.Value is NameReference fileName)
                             {
                                 byte[] binData = wwisestream.getBinaryData();
@@ -242,7 +242,7 @@ namespace ME3Explorer
                     foreach (ExportEntry bioConv in bioConvs)
                     {
                         //remove _dlg to get conversation name
-                        Conversations.Add(new ConvoTask(filePath, bioConv.ObjectName.RemoveRight(4)));
+                        Conversations.Add(new ConvoTask(filePath, bioConv.ObjectName.Name.RemoveRight(4)));
                     }
                 }
             }

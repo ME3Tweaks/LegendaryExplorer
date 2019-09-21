@@ -44,7 +44,7 @@
             <MenuItem Header="Open sequence reference in Sequence Editor" ItemsSource="{Binding CurrentNodeSequenceReferences}" IsEnabled="{Binding Path=CurrentNodeSequenceReferences.Count, Converter={StaticResource IsIntNotEqualConverter}, ConverterParameter=0}">
                 <MenuItem.ItemContainerStyle>
                     <Style TargetType="MenuItem">
-                        <Setter Property="Header" Value="{Binding GetIndexedFullPath}"/>
+                        <Setter Property="Header" Value="{Binding InstancedFullPath}"/>
                         <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=MenuItem}, Path=DataContext.OpenRefInSequenceEditorCommand}" />
                         <Setter Property="CommandParameter" Value="{Binding}" />
                     </Style>
@@ -332,14 +332,7 @@
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{Binding UIndex}" />
-                                        <TextBlock Grid.Column="1">
-                                            <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0}_{1}">
-                                                    <Binding Path="ObjectName" />
-                                                    <Binding Path="indexValue" />
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
+                                        <TextBlock Grid.Column="1" Text="{Binding Path=ObjectName.Instanced}"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>

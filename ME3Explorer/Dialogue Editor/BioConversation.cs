@@ -58,16 +58,15 @@ namespace ME3Explorer.Dialogue_Editor.BioConversationExtended
 
         public ObservableCollectionExtended<NameReference> ScriptList { get; } = new ObservableCollectionExtended<NameReference>();
 
-        public ConversationExtended(int ExportUID, string ConvName, PropertyCollection BioConvo, ExportEntry Export, ObservableCollectionExtended<SpeakerExtended> Speakers, ObservableCollectionExtended<DialogueNodeExtended> EntryList, ObservableCollectionExtended<DialogueNodeExtended> ReplyList, IEnumerable<StageDirection> StageDirections)
+        public ConversationExtended(ExportEntry export)
         {
-            this.ExportUID = ExportUID;
-            this.ConvName = ConvName;
-            this.BioConvo = BioConvo;
-            this.Export = Export;
-            this.Speakers = Speakers;
-            this.EntryList = EntryList;
-            this.ReplyList = ReplyList;
-            this.StageDirections.AddRange(StageDirections);
+            Export = export;
+            ExportUID = export.UIndex;
+            ConvName = export.ObjectName;
+            BioConvo = export.GetProperties();
+            Speakers = new ObservableCollectionExtended<SpeakerExtended>();
+            EntryList = new ObservableCollectionExtended<DialogueNodeExtended>();
+            ReplyList = new ObservableCollectionExtended<DialogueNodeExtended>();
         }
 
         public ConversationExtended(ConversationExtended other)

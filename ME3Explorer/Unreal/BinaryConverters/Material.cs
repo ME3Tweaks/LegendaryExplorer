@@ -217,7 +217,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 case "FMaterialUniformExpressionFlipbookParameter":
                     return new MaterialUniformExpressionFlipbookParameter();
                 default:
-                    throw new ArgumentException(expressionType.InstancedString);
+                    throw new ArgumentException(expressionType.Instanced);
             }
         }
     }

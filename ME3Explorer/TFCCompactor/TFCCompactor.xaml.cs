@@ -140,7 +140,7 @@ namespace ME3Explorer.TFCCompactor
                                     string tfcname = tfcNameProperty.Value;
                                     if (tfcname == "CustTextures0")
                                     {
-                                        Debug.WriteLine($"CustTextures0 TFC Reference: {texture.GetFullPath} {texture.UIndex} in {texture.FileRef.FilePath}");
+                                        Debug.WriteLine($"CustTextures0 TFC Reference: {texture.FullPath} {texture.UIndex} in {texture.FileRef.FilePath}");
                                     }
                                     if (!basegameTFCs.Contains(tfcname))
                                     {
@@ -162,7 +162,7 @@ namespace ME3Explorer.TFCCompactor
                                         }
                                         else
                                         {
-                                            Debug.WriteLine($"Skipping Reference, no external mips defined: {texture.GetFullPath} {texture.UIndex} in {texture.FileRef.FilePath}");
+                                            Debug.WriteLine($"Skipping Reference, no external mips defined: {texture.FullPath} {texture.UIndex} in {texture.FileRef.FilePath}");
                                         }
                                     }
                                 }

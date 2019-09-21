@@ -127,14 +127,7 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding UIndex}" />
-                                <TextBlock Grid.Column="1">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0}_{1}">
-                                            <Binding Path="ObjectName" />
-                                            <Binding Path="indexValue" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
+                                <TextBlock Grid.Column="1" Text="{Binding Path=ObjectName.Instanced}"/>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

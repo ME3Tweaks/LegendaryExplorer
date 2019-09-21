@@ -38,14 +38,14 @@ namespace ME3Explorer.Unreal.Classes
             data = export.Data;
             PropertyCollection props = export.GetProperties();
             bAnimRotationOnly = props.GetPropOrDefault<BoolProperty>("bAnimRotationOnly").Value;
-            TrackBoneNames = props.GetPropOrDefault<ArrayProperty<NameProperty>>("TrackBoneNames").Select(n => n.Value.InstancedString).ToList();
-            UseTranslationBoneNames = props.GetPropOrDefault<ArrayProperty<NameProperty>>("UseTranslationBoneNames").Select(n => n.Value.InstancedString).ToList();
+            TrackBoneNames = props.GetPropOrDefault<ArrayProperty<NameProperty>>("TrackBoneNames").Select(n => n.Value.Instanced).ToList();
+            UseTranslationBoneNames = props.GetPropOrDefault<ArrayProperty<NameProperty>>("UseTranslationBoneNames").Select(n => n.Value.Instanced).ToList();
         }
 
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode($"{Export.ObjectName}(#{Export.UIndex})");
+            TreeNode res = new TreeNode($"{Export.ObjectName.Instanced}(#{Export.UIndex})");
             res.Nodes.Add($"bAnimRotationOnly : {bAnimRotationOnly}");
             res.Nodes.Add(TBNToTree());
             res.Nodes.Add(UTBNToTree());

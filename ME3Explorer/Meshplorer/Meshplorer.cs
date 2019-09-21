@@ -113,12 +113,12 @@ namespace ME3Explorer.Meshplorer
             {
                 if (export.ClassName == "StaticMesh")
                 {
-                    listBox1.Items.Add($"StM#{export.UIndex} : {export.ObjectName}");
+                    listBox1.Items.Add($"StM#{export.UIndex} : {export.ObjectName.Instanced}");
                     Objects.Add(export.UIndex);
                 }
                 else if (export.ClassName == "SkeletalMesh")
                 {
-                    listBox1.Items.Add($"SkM#{export.UIndex} : {export.ObjectName}");
+                    listBox1.Items.Add($"SkM#{export.UIndex} : {export.ObjectName.Instanced}");
                     Objects.Add(export.UIndex);
                 }
             }
@@ -132,7 +132,7 @@ namespace ME3Explorer.Meshplorer
             foreach (var item in listItems)
             {
                 Materials.Add(item.UIndex);
-                MaterialBox.Items.Add($"#{item.UIndex} : {item.ObjectName}");
+                MaterialBox.Items.Add($"#{item.UIndex} : {item.ObjectName.Instanced}");
             }
             //for (int i = 0; i < Exports.Count(); i++)
             //{
@@ -157,7 +157,7 @@ namespace ME3Explorer.Meshplorer
                     if (skm.Materials[i] > 0)
                     { // Material is export
                         ExportEntry export = Pcc.GetUExport(skm.Materials[i]);
-                        desc = " Export #" + skm.Materials[i] + " : " + export.ObjectName;
+                        desc = " Export #" + skm.Materials[i] + " : " + export.ObjectName.Instanced;
                     }
                     else if (skm.Materials[i] < 0)
                     { // Material is import???
@@ -299,7 +299,7 @@ namespace ME3Explorer.Meshplorer
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = Pcc.GetUExport(n).ObjectName + ".bin";
+                d.FileName = Pcc.GetUExport(n).ObjectName.Instanced + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     //DISABLED TEMP
@@ -311,7 +311,7 @@ namespace ME3Explorer.Meshplorer
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = Pcc.GetUExport(n).ObjectName + ".bin";
+                d.FileName = Pcc.GetUExport(n).ObjectName.Instanced + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     SerializingContainer c = new SerializingContainer();
@@ -509,7 +509,7 @@ namespace ME3Explorer.Meshplorer
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = export.ObjectName + ".bin";
+                d.FileName = export.ObjectName.Instanced + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
@@ -522,7 +522,7 @@ namespace ME3Explorer.Meshplorer
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = export.ObjectName + ".bin";
+                d.FileName = export.ObjectName.Instanced + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     using (FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write))

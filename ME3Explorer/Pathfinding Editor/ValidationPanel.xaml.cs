@@ -145,7 +145,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         if (start.Value != exp.UIndex)
                         {
                             isBad = true;
-                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName} start value does not match the node that references it ({exp.UIndex})");
+                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} start value does not match the node that references it ({exp.UIndex})");
                         }
 
                         //get end
@@ -154,19 +154,19 @@ namespace ME3Explorer.Pathfinding_Editor
                         if (endActorObj.Value == start.Value)
                         {
                             isBad = true;
-                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName} start and end property is the same. This will crash the game.");
+                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} start and end property is the same. This will crash the game.");
                         }
 
                         var guid = new UnrealGUID(end.GetProp<StructProperty>("Guid"));
                         if ((guid.A | guid.B | guid.C | guid.D) == 0 && endActorObj.Value == 0)
                         {
                             isBad = true;
-                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName} has no external guid and has no endactor.");
+                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} has no external guid and has no endactor.");
                         }
                         if (endActorObj.Value > Pcc.ExportCount || endActorObj.Value < 0)
                         {
                             isBad = true;
-                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName} has invalid end property (past end of bounds or less than 0).");
+                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} has invalid end property (past end of bounds or less than 0).");
                         }
                         /*if (endActorObj.Value > 0)
                         {
@@ -210,7 +210,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 //ERROR!
                 ValidationTasks.Add(new ListBoxTask
                 {
-                    Header = $"{reachSpecExport.UIndex} {reachSpecExport.ObjectName} start does not match it's containing pathlist reference ({startNodeExport.UIndex} {startNodeExport.ObjectName})",
+                    Header = $"{reachSpecExport.UIndex} {reachSpecExport.ObjectName.Instanced} start does not match it's containing pathlist reference ({startNodeExport.UIndex} {startNodeExport.ObjectName.Instanced})",
                     Icon = EFontAwesomeIcon.Solid_Times,
                     Foreground = Brushes.Red,
                     Spinning = false
@@ -322,7 +322,7 @@ namespace ME3Explorer.Pathfinding_Editor
             List<int> NetIndexesInUse = new List<int>();
             foreach (ExportEntry exportEntry in Pcc.Exports)
             {
-                string path = exportEntry.GetFullPath;
+                string path = exportEntry.FullPath;
                 string[] pieces = path.Split('.');
 
                 if (pieces.Length < 3 || pieces[0] != "TheWorld" || pieces[1] != "PersistentLevel")
@@ -335,7 +335,7 @@ namespace ME3Explorer.Pathfinding_Editor
             int nextNetIndex = 1;
             foreach (ExportEntry exportEntry in Pcc.Exports)
             {
-                string path = exportEntry.GetFullPath;
+                string path = exportEntry.FullPath;
                 string[] pieces = path.Split('.');
 
                 if (pieces.Length < 3 || pieces[0] != "TheWorld" || pieces[1] != "PersistentLevel")
@@ -344,7 +344,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         if (exportEntry.NetIndex >= 0)
                         {
-                            Debug.WriteLine("Updating netindex on " + exportEntry.GetIndexedFullPath+" from "+exportEntry.NetIndex);
+                            Debug.WriteLine("Updating netindex on " + exportEntry.InstancedFullPath+" from "+exportEntry.NetIndex);
                             exportEntry.NetIndex = nextNetIndex++;
                         }
                     }
@@ -372,7 +372,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                     if (exportEntry.NetIndex >= 0)
                     {
-                        Debug.WriteLine("Updating netindex on " + exportEntry.GetIndexedFullPath + " from " + exportEntry.NetIndex);
+                        Debug.WriteLine("Updating netindex on " + exportEntry.InstancedFullPath + " from " + exportEntry.NetIndex);
                         exportEntry.NetIndex = nextNetIndex++;
                     }
                 }
@@ -538,7 +538,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         duplicateGuids.Add(guid);
                         ListBoxTask v = new ListBoxTask
                         {
-                            Header = $"Dupliate GUID found on export {guid.export.UIndex} {guid.export.ObjectName}_{guid.export.indexValue}",
+                            Header = $"Dupliate GUID found on export {guid.export.UIndex} {guid.export.ObjectName.Instanced}",
                             Icon = EFontAwesomeIcon.Solid_Times,
                             Spinning = false,
                             Foreground = Brushes.Red

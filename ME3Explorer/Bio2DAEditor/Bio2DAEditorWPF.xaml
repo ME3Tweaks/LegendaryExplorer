@@ -63,7 +63,7 @@
                                                         <DataTemplate DataType="{x:Type global:PackageEditorWPF+IndexedName}">
                                                             <StackPanel Orientation="Horizontal">
                                                                 <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
-                                                                <TextBlock Text="{Binding Path=Name.InstancedString}" Foreground="Black" Margin="5,0,0,0"/>
+                                                                <TextBlock Text="{Binding Path=Name.Instanced}" Foreground="Black" Margin="5,0,0,0"/>
                                                             </StackPanel>
                                                         </DataTemplate>
                                                     </ComboBox.Resources>
@@ -130,7 +130,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="3" FontWeight="Bold" Text="{Binding Path=CurrentLoadedExport.ObjectName}"/>
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="3" FontWeight="Bold" Text="{Binding Path=CurrentLoadedExport.ObjectName.Instanced}"/>
 
                 </Grid>
             </ToolBar>

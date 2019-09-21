@@ -283,7 +283,7 @@
                             </DockPanel>
                             <DockPanel Margin="0,0,5,0">
                                 <TextBlock Name="SequenceUID_TextBox" Text="{Binding Path=SelectedConv.Sequence.UIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15" DockPanel.Dock="Left" Margin="3" FontWeight="DemiBold"/>
-                                <TextBlock Name="Sequence_TextBox" Text="{Binding Path=SelectedConv.Sequence.ObjectName}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15" Margin="3" FontWeight="DemiBold"/>
+                                <TextBlock Name="Sequence_TextBox" Text="{Binding Path=SelectedConv.Sequence.ObjectName.Instanced}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Main conversation sequence" FontSize="15" Margin="3" FontWeight="DemiBold"/>
                             </DockPanel>
                             <DockPanel HorizontalAlignment="Stretch" Margin="0,5,0,0">
                                 <TextBlock Text="Wwisebank:"  HorizontalAlignment="Left" VerticalAlignment="Bottom"  ToolTip="Main conversation Wwisebank" DockPanel.Dock="Left" FontWeight="Normal" FontSize="15"/>
@@ -296,7 +296,7 @@
                             </DockPanel>
                             <StackPanel Name="Wwisebank_Stack" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Main conversation audiobank" Margin="0,0,5,0">
                                 <TextBlock Text="{Binding Path=SelectedConv.WwiseBank.UIndex}" HorizontalAlignment="Left" ToolTip="Main conversation audiobank" FontSize="15" Margin="3" FontWeight="DemiBold"/>
-                                <TextBlock Text="{Binding Path=SelectedConv.WwiseBank.ObjectName, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Left" ToolTip="Main conversation audiobank" FontSize="15" Margin="3" FontWeight="DemiBold"/>
+                                <TextBlock Text="{Binding Path=SelectedConv.WwiseBank.ObjectName.Instanced, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Left" ToolTip="Main conversation audiobank" FontSize="15" Margin="3" FontWeight="DemiBold"/>
                             </StackPanel>
                             <DockPanel HorizontalAlignment="Stretch" Margin="0,5,2,0">
                                 <TextBlock Text="Non-Speaker FaceFX:"  HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Conversation animations for non-speakers" DockPanel.Dock="Left" FontWeight="Normal" FontSize="15"/>
@@ -311,7 +311,7 @@
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Path=ObjectName}" FontStretch="Condensed"/>
+                                            <TextBlock Text="{Binding Path=ObjectName.Instanced}" FontStretch="Condensed"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
@@ -337,7 +337,7 @@
                             <ListView Name="Script_ListBox" ItemsSource="{Binding Path=SelectedConv.ScriptList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.VerticalScrollBarVisibility="Visible" MinHeight="30" >
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding InstancedString}"/>
+                                        <TextBlock Text="{Binding Instanced}"/>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
@@ -371,7 +371,7 @@
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Path=ObjectName}" FontStretch="Condensed"/>
+                                            <TextBlock Text="{Binding Path=ObjectName.Instanced}" FontStretch="Condensed"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
@@ -390,7 +390,7 @@
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Path=ObjectName}" FontStretch="Condensed"/>
+                                            <TextBlock Text="{Binding Path=ObjectName.Instanced}" FontStretch="Condensed"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>

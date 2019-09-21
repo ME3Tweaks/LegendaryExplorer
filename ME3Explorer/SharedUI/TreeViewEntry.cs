@@ -144,14 +144,10 @@ namespace ME3Explorer
                 {
                     if (_displayName != null) return _displayName;
                     string type = UIndex < 0 ? "(Imp) " : "(Exp) ";
-                    string returnvalue = $"{UIndex} {Entry.ObjectName}";
+                    string returnvalue = $"{UIndex} {Entry.ObjectName.Instanced}";
                     if (Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix)
                     {
                         returnvalue = type + returnvalue;
-                    }
-                    if (Properties.Settings.Default.PackageEditorWPF_TreeViewShowEntryIndex && Entry.indexValue != 0)
-                    {
-                        returnvalue += $"_{Entry.indexValue}";
                     }
                     returnvalue += $"({Entry.ClassName})";
                     return returnvalue;

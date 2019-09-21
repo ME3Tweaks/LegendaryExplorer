@@ -3400,19 +3400,18 @@ namespace ME1Explorer.Unreal
 
         private static Token ReadNativeParm(int start)
         {
-            Token t = new Token();
-            t.text = "";
+            Token t = new Token {text = ""};
             int uIndex = BitConverter.ToInt32(memory, start + 1);
             if (pcc.GetEntry(uIndex) is ExportEntry exp)
             {
-                string name = exp.ObjectName;
+                string name = exp.ObjectName.Instanced;
                 string clas = exp.ClassName;
                 clas = clas.Replace("Property", "");
                 t.text += $"{clas} {name};";
             }
             if (pcc.GetEntry(uIndex) is ImportEntry imp)
             {
-                string name = imp.ObjectName;
+                string name = imp.ObjectName.Instanced;
                 string clas = imp.ClassName;
                 clas = clas.Replace("Property", "");
                 t.text += $"{clas} {name};";

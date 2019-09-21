@@ -44,7 +44,7 @@ namespace ME3Explorer
                     {
                         NameReference shaderName = bin.ReadNameReference(Pcc);
                         int shaderCRC = bin.ReadInt32();
-                        mappingNode.Items.Add(new BinInterpNode(bin.Position - 12, $"CRC:{shaderCRC:X8} {shaderName.InstancedString}") { Length = 12 });
+                        mappingNode.Items.Add(new BinInterpNode(bin.Position - 12, $"CRC:{shaderCRC:X8} {shaderName.Instanced}") { Length = 12 });
                     }
                 }
 
@@ -54,9 +54,9 @@ namespace ME3Explorer
                 for (int i = 0; i < embeddedShaderFileCount; i++)
                 {
                     NameReference shaderName = bin.ReadNameReference(Pcc);
-                    var shaderNode = new BinInterpNode(bin.Position - 8, $"Shader {i} {shaderName.InstancedString}");
+                    var shaderNode = new BinInterpNode(bin.Position - 8, $"Shader {i} {shaderName.Instanced}");
 
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.InstancedString}") { Length = 8 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.Instanced}") { Length = 8 });
                     shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadValueGuid()}") { Length = 16 });
 
                     int shaderEndOffset = bin.ReadInt32();
@@ -93,7 +93,7 @@ namespace ME3Explorer
                 {
                     NameReference shaderName = bin.ReadNameReference(Pcc);
                     int shaderCRC = bin.ReadInt32();
-                    factoryMapNode.Items.Add(new BinInterpNode(bin.Position - 12, $"{shaderCRC:X8} {shaderName.InstancedString}") { Length = 12 });
+                    factoryMapNode.Items.Add(new BinInterpNode(bin.Position - 12, $"{shaderCRC:X8} {shaderName.Instanced}") { Length = 12 });
                 }
 
                 int materialShaderMapcount = bin.ReadInt32();
@@ -119,9 +119,9 @@ namespace ME3Explorer
                     nodes.Add(new BinInterpNode(bin.Position - 4, $"Shaders {unkCount}") { Length = 4, Items = unkNodes });
                     for (int j = 0; j < unkCount; j++)
                     {
-                        unkNodes.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc).InstancedString}") { Length = 8 });
+                        unkNodes.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
                         unkNodes.Add(new BinInterpNode(bin.Position, $"GUID: {bin.ReadValueGuid()}") { Length = 16 });
-                        unkNodes.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc).InstancedString}") { Length = 8 });
+                        unkNodes.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
                     }
 
                     int meshShaderMapsCount = bin.ReadInt32();
@@ -220,7 +220,7 @@ namespace ME3Explorer
         private BinInterpNode ReadMaterialUniformExpression(MemoryStream bin, string prefix = "")
         {
             NameReference expressionType = bin.ReadNameReference(Pcc);
-            var node = new BinInterpNode(bin.Position - 8, $"{prefix}{(string.IsNullOrEmpty(prefix) ? "" : ": ")}{expressionType.InstancedString}");
+            var node = new BinInterpNode(bin.Position - 8, $"{prefix}{(string.IsNullOrEmpty(prefix) ? "" : ": ")}{expressionType.Instanced}");
 
             switch (expressionType.Name)
             {
@@ -264,7 +264,7 @@ namespace ME3Explorer
                     //intentionally left blank. outputs current real-time, has no parameters
                     break;
                 case "FMaterialUniformExpressionScalarParameter":
-                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).InstancedString}"));
+                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));
                     node.Items.Add(MakeFloatNode(bin, "DefaultValue"));
                     break;
                 case "FMaterialUniformExpressionSine":
@@ -287,14 +287,14 @@ namespace ME3Explorer
                     node.Items.Add(MakeEntryNode(bin, "TextureIndex:"));
                     break;
                 case "FMaterialUniformExpressionTextureParameter":
-                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).InstancedString}"));
+                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));
                     node.Items.Add(MakeInt32Node(bin, "TextureIndex:"));
                     break;
                 case "FMaterialUniformExpressionTime":
                     //intentionally left blank. outputs current scene time, has no parameters
                     break;
                 case "FMaterialUniformExpressionVectorParameter":
-                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).InstancedString}"));
+                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));
                     node.Items.Add(MakeFloatNode(bin, "Default R"));
                     node.Items.Add(MakeFloatNode(bin, "Default G"));
                     node.Items.Add(MakeFloatNode(bin, "Default B"));
@@ -304,7 +304,7 @@ namespace ME3Explorer
                     //Not sure what it does, but it doesn't seem to have any parameters
                     break;
                 default:
-                    throw new ArgumentException(expressionType.InstancedString);
+                    throw new ArgumentException(expressionType.Instanced);
             }
 
             return node;
@@ -4053,7 +4053,7 @@ namespace ME3Explorer
             int redirnum = BitConverter.ToInt32(data, binarystart);
             subnodes.Add(new BinInterpNode
             {
-                Header = $"{binarystart:X4} Redirect references to this export to: {redirnum} {CurrentLoadedExport.FileRef.GetEntry(redirnum).GetFullPath}",
+                Header = $"{binarystart:X4} Redirect references to this export to: {redirnum} {CurrentLoadedExport.FileRef.GetEntry(redirnum).InstancedFullPath}",
                 Name = "_" + binarystart.ToString()
             });
             return subnodes;
@@ -4252,11 +4252,11 @@ namespace ME3Explorer
                         string name = val.ToString();
                         if (Pcc.GetEntry(val) is ExportEntry exp)
                         {
-                            nodeText += $"{i}: {name} {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
+                            nodeText += $"{i}: {name} {exp.InstancedFullPath} ({exp.ClassName})";
                         }
                         else if (Pcc.GetEntry(val) is ImportEntry imp)
                         {
-                            nodeText += $"{i}: {name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
+                            nodeText += $"{i}: {name} {imp.InstancedFullPath} ({imp.ClassName})";
                         }
 
                         subnodes.Add(new BinInterpNode
@@ -5603,7 +5603,7 @@ namespace ME3Explorer
                 var paramVal = bin.ReadBooleanInt();
                 var paramOverride = bin.ReadBooleanInt();
                 Guid g = bin.ReadValueGuid();
-                staticSwitchParamsNode.Items.Add(new BinInterpNode(bin.Position - 32, $"{j}: Name: {paramName.InstancedString}, Value: {paramVal}, Override: {paramOverride}\nGUID:{g}")
+                staticSwitchParamsNode.Items.Add(new BinInterpNode(bin.Position - 32, $"{j}: Name: {paramName.Instanced}, Value: {paramVal}, Override: {paramOverride}\nGUID:{g}")
                 {
                     Length = 32
                 });
@@ -5623,7 +5623,7 @@ namespace ME3Explorer
                     Length = 44,
                     Items = subnodes
                 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).InstancedString}") { Length = 8 });
+                subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
                 subnodes.Add(new BinInterpNode(bin.Position, $"R: {bin.ReadBooleanInt()}") { Length = 4 });
                 subnodes.Add(new BinInterpNode(bin.Position, $"G: {bin.ReadBooleanInt()}") { Length = 4 });
                 subnodes.Add(new BinInterpNode(bin.Position, $"B: {bin.ReadBooleanInt()}") { Length = 4 });
@@ -5648,7 +5648,7 @@ namespace ME3Explorer
                         Length = 29,
                         Items = subnodes
                     });
-                    subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).InstancedString}") { Length = 8 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
                     subnodes.Add(new BinInterpNode(bin.Position, $"CompressionSettings: {(TextureCompressionSettings)bin.ReadByte()}") { Length = 1 });
                     subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBooleanInt()}") { Length = 4 });
                     subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadValueGuid()}") { Length = 16 });
@@ -5835,7 +5835,7 @@ namespace ME3Explorer
                 subnodes.Add(MakeArrayNode(bin, "Materials", i => MakeEntryNode(bin, $"{i}"), true));
                 subnodes.Add(MakeVectorNode(bin, "Origin"));
                 subnodes.Add(MakeRotatorNode(bin, "Rotation Origin"));
-                subnodes.Add(MakeArrayNode(bin, "RefSkeleton", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadNameReference(Pcc).InstancedString}")
+                subnodes.Add(MakeArrayNode(bin, "RefSkeleton", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadNameReference(Pcc).Instanced}")
                 {
                     Items =
                     {
@@ -5999,7 +5999,7 @@ namespace ME3Explorer
                     }
                     return node;
                 }, true));
-                subnodes.Add(MakeArrayNode(bin, "NameIndexMap", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc).InstancedString}: {bin.ReadInt32()}")));
+                subnodes.Add(MakeArrayNode(bin, "NameIndexMap", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc).Instanced}: {bin.ReadInt32()}")));
                 subnodes.Add(MakeArrayNode(bin, "PerPolyBoneKDOPs", i => new BinInterpNode(bin.Position, $"{i}")
                 {
                     Items =
@@ -6170,7 +6170,7 @@ namespace ME3Explorer
                     string objtext = "Null - unused data";
                     if (associatedData != null)
                     {
-                        objtext = $"[Export {associatedData.UIndex}] {associatedData.ObjectName}_{associatedData.indexValue}";
+                        objtext = $"[Export {associatedData.UIndex}] {associatedData.ObjectName.Instanced}";
 
                         //find associated static mesh value for display.
                         byte[] smc_data = associatedData.Data;
@@ -6196,7 +6196,7 @@ namespace ME3Explorer
                             int staticmeshexp = BitConverter.ToInt32(smc_data, staticmeshstart + 0x18);
                             if (staticmeshexp > 0 && staticmeshexp < CurrentLoadedExport.FileRef.ExportCount)
                             {
-                                staticmesh = CurrentLoadedExport.FileRef.GetEntry(staticmeshexp).ObjectName;
+                                staticmesh = Pcc.GetEntry(staticmeshexp).ObjectName.Instanced;
                             }
                         }
                     }
@@ -6306,7 +6306,7 @@ namespace ME3Explorer
                     string objtext = "Null - unused data";
                     if (assossiateddata != null)
                     {
-                        objtext = $"[Export {assossiateddata.UIndex}] {assossiateddata.ObjectName}_{assossiateddata.indexValue}";
+                        objtext = $"[Export {assossiateddata.UIndex}] {assossiateddata.ObjectName.Instanced}";
                     }
 
                     slcanode.Header = $"{start:X4} [{slcaindex}] {objtext}";

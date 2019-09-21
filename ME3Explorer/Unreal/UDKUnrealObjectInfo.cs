@@ -255,12 +255,12 @@ namespace ME3Explorer.Unreal
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
                 {
                     //Skip if property is transient (only used during execution, will never be in game files)
-                    if (/*(BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) == 0 &&*/ !info.properties.ContainsKey(entry.ObjectName))
+                    if (/*(BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) == 0 &&*/ !info.properties.ContainsKey(entry.ObjectName.Name))
                     {
                         PropertyInfo p = getProperty(pcc, entry);
                         if (p != null)
                         {
-                            info.properties.Add(entry.ObjectName, p);
+                            info.properties.Add(entry.ObjectName.Name, p);
                         }
                     }
                     //else

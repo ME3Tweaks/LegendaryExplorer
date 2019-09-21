@@ -40,7 +40,7 @@ namespace ME3Explorer.SequenceObjects
         public int inputIndex;
     }
 
-    [DebuggerDisplay("SObj | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("SObj | #{UIndex}: {export.ObjectName.Instanced}")]
     public abstract class SObj : PNode, IDisposable
     {
         public IMEPackage pcc;
@@ -123,23 +123,23 @@ namespace ME3Explorer.SequenceObjects
                         string newText = "";
                         if (newMap != null)
                         {
-                            newText += "Map: :" + newMap + "\n";
+                            newText += $"Map: :{newMap}\n";
                         }
                         if (startPoint != null)
                         {
-                            newText += "Startpoint: " + startPoint;
+                            newText += $"Startpoint: {startPoint}";
                         }
                         res += newText;
                         break;
                     case "SeqAct_Delay":
                         var delayValue = properties.GetProp<FloatProperty>("Duration");
-                        res += "Delay: " + (delayValue != null ? delayValue.Value : 1) + "s";
+                        res += $"Delay: {delayValue?.Value ?? 1}s";
                         break;
                     case "SeqAct_PlaySound":
                         var soundObjRef = properties.GetProp<ObjectProperty>("PlaySound");
                         if (soundObjRef != null)
                         {
-                            res += export.FileRef.GetEntry(soundObjRef.Value).GetFullPath;
+                            res += export.FileRef.GetEntry(soundObjRef.Value).InstancedFullPath;
                         }
                         break;
                     case "BioSeqAct_SetWeapon":
@@ -203,7 +203,7 @@ namespace ME3Explorer.SequenceObjects
         }
     }
 
-    [DebuggerDisplay("SVar | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("SVar | #{UIndex}: {export.ObjectName.Instanced}")]
     public class SVar : SObj
     {
         public const float RADIUS = 30;
@@ -339,11 +339,11 @@ namespace ME3Explorer.SequenceObjects
                                         if (entry == null) return "???";
                                         if (entry is ExportEntry objValueExport && objValueExport.GetProperty<NameProperty>("Tag") is NameProperty tagProp && tagProp.Value != objValueExport.ObjectName)
                                         {
-                                            return $"#{UIndex}\n{entry.ObjectName}\n{ tagProp.Value}";
+                                            return $"#{UIndex}\n{entry.ObjectName.Instanced}\n{ tagProp.Value}";
                                         }
                                         else
                                         {
-                                            return $"#{UIndex}\n{entry.ObjectName}";
+                                            return $"#{UIndex}\n{entry.ObjectName.Instanced}";
                                         }
                                     }
                             }
@@ -460,7 +460,7 @@ namespace ME3Explorer.SequenceObjects
         }
     }
 
-    [DebuggerDisplay("SFrame | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("SFrame | #{UIndex}: {export.ObjectName.Instanced}")]
     public class SFrame : SObj
     {
         protected PPath shape;
@@ -468,7 +468,6 @@ namespace ME3Explorer.SequenceObjects
         public SFrame(ExportEntry entry, float x, float y, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
-            string s = $"{export.ObjectName}_{export.indexValue}";
             float w = 0;
             float h = 0;
             var props = export.GetProperties();
@@ -483,7 +482,7 @@ namespace ME3Explorer.SequenceObjects
                     h = (prop as IntProperty);
                 }
             }
-            MakeTitleBox(s);
+            MakeTitleBox(export.ObjectName.Instanced);
             shape = PPath.CreateRectangle(0, -titleBox.Height, w, h + titleBox.Height);
             outlinePen = new Pen(Color.Black);
             shape.Pen = outlinePen;
@@ -524,7 +523,7 @@ namespace ME3Explorer.SequenceObjects
         }
     }
 
-    [DebuggerDisplay("SBox | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("SBox | #{UIndex}: {export.ObjectName.Instanced}")]
     public abstract class SBox : SObj
     {
         public override IEnumerable<SeqEdEdge> Edges => Outlinks.SelectMany(l => l.Edges).Cast<SeqEdEdge>()
@@ -1228,7 +1227,7 @@ namespace ME3Explorer.SequenceObjects
         }
     }
 
-    [DebuggerDisplay("SEvent | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("SEvent | #{UIndex}: {export.ObjectName.Instanced}")]
     public class SEvent : SBox
     {
         public List<EventEdge> connections = new List<EventEdge>();
@@ -1238,12 +1237,11 @@ namespace ME3Explorer.SequenceObjects
             : base(entry, grapheditor)
         {
             outlinePen = new Pen(EventColor);
-            string s = export.ObjectName;
+            string s = export.ObjectName.Instanced;
             s = s.Replace("BioSeqEvt_", "");
             s = s.Replace("SFXSeqEvt_", "");
             s = s.Replace("SeqEvt_", "");
             s = s.Replace("SeqEvent_", "");
-            s += "_" + export.indexValue;
             float starty = 0;
             float w = 15;
             float midW = 0;
@@ -1375,7 +1373,7 @@ namespace ME3Explorer.SequenceObjects
         //}
     }
 
-    [DebuggerDisplay("SAction | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("SAction | #{UIndex}: {export.ObjectName.Instanced}")]
     public class SAction : SBox
     {
         public override IEnumerable<SeqEdEdge> Edges => InLinks.SelectMany(l => l.Edges).Union(base.Edges);
@@ -1427,7 +1425,7 @@ namespace ME3Explorer.SequenceObjects
         public override void Layout(float x, float y)
         {
             outlinePen = new Pen(Color.Black);
-            string s = export.ObjectName;
+            string s = export.ObjectName.Instanced;
             s = s.Replace("BioSeqAct_", "").Replace("SFXSeqAct_", "")
                  .Replace("SeqAct_", "").Replace("SeqCond_", "");
             float starty = 8;
@@ -1528,7 +1526,7 @@ namespace ME3Explorer.SequenceObjects
                         s += $"\n\"{strProp}\"";
                         break;
                     case ObjectProperty objProp when objProp.Name == "m_pEffect":
-                        s += $"\n\"{pcc.GetEntry(objProp.Value)?.ObjectName ?? ""}\"";
+                        s += $"\n\"{pcc.GetEntry(objProp.Value)?.ObjectName.Instanced ?? ""}\"";
                         break;
                 }
             }

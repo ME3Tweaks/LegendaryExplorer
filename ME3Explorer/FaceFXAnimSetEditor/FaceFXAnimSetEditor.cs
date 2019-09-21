@@ -51,7 +51,7 @@ namespace ME3Explorer.FaceFX
                     Objects.Add(i);
             listBox1.Items.Clear();
             foreach(int n in Objects)
-                listBox1.Items.Add("#" + n + " : " + Pcc.Exports[n].GetFullPath);
+                listBox1.Items.Add("#" + n + " : " + Pcc.Exports[n].FullPath);
         }
 
         private void FaceFXRefresh(int n)
@@ -125,7 +125,7 @@ namespace ME3Explorer.FaceFX
             if (FaceFX == null)
                 return;
             SaveFileDialog d = new SaveFileDialog();
-            d.FileName = FaceFX.export.ObjectName + ".fxa";
+            d.FileName = $"{FaceFX.export.ObjectName}.fxa";
             d.Filter = "*.fxa|*.fxa";
             if(d.ShowDialog() == DialogResult.OK)
             {

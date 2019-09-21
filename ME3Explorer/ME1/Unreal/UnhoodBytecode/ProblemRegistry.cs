@@ -17,8 +17,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 SubsequentBytes = subsequentBytes;
             }
 
-            public UnBytecodeOwner Function { get; private set; }
-            public byte[] SubsequentBytes { get; private set; }
+            public UnBytecodeOwner Function { get; }
+            public byte[] SubsequentBytes { get; }
         }
 
         private class BytecodeError
@@ -29,8 +29,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 Message = message;
             }
 
-            public UnBytecodeOwner Function { get; private set; }
-            public string Message { get; private set; }
+            public UnBytecodeOwner Function { get; }
+            public string Message { get; }
         }
 
         private static readonly Dictionary<byte, List<UnknownBytecodeOccurrence>> _unknownBytecodes = new Dictionary<byte, List<UnknownBytecodeOccurrence>>();
@@ -76,8 +76,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         public static void RegisterUnknownBytecode(byte b, UnBytecodeOwner function, byte[] subsequentBytes)
         {
             if (subsequentBytes.Length < 4) return;   // most likely bogus bytes after 'return'
-            List<UnknownBytecodeOccurrence> occurrences;
-            if (!_unknownBytecodes.TryGetValue(b, out occurrences))
+            if (!_unknownBytecodes.TryGetValue(b, out List<UnknownBytecodeOccurrence> occurrences))
             {
                 occurrences = new List<UnknownBytecodeOccurrence>();
                 _unknownBytecodes[b] = occurrences;
@@ -103,7 +102,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     {
                         skip = DumpNextBytecodes(writer, function, bytes, 4, 1);
                     }
-                    writer.WriteLine("      " + BytecodeReader.DumpBytes(bytes, skip, 32));
+                    writer.WriteLine($"      {BytecodeReader.DumpBytes(bytes, skip, 32)}");
                 }
             }
         }
@@ -117,9 +116,9 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     writer.Write("!!!STATE PARENT -- FIX ME IN CODE!!!.");
                     //writer.Write(parent.Parent.ObjectName + ".");
                 }
-                writer.Write(parent.ObjectName + ".");
+                writer.Write($"{parent.ObjectName.Instanced}.");
             }
-            writer.WriteLine(function.Export.ObjectName);
+            writer.WriteLine(function.Export.ObjectName.Instanced);
         }
 
         private static void DumpNextName(StreamWriter writer, UnBytecodeOwner function, byte[] bytes, int startOffset)
@@ -130,7 +129,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 using (var reader = new BinaryReader(stream))
                 {
                     var name = function.Package.GetNameEntry(reader.ReadInt32());
-                    writer.WriteLine("      " + name);
+                    writer.WriteLine($"      {name}");
                 }
             }
         }
@@ -148,7 +147,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         try
                         {
                             var bytecodeToken = bytecodeReader.ReadNext();
-                            writer.WriteLine("      " + bytecodeToken);
+                            writer.WriteLine($"      {bytecodeToken}");
                         }
                         catch (Exception)
                         {

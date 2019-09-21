@@ -644,7 +644,7 @@ namespace ME3Explorer.DialogueDumper
                             className = exp.ClassName;
                             if (className == "BioConversation")
                             {
-                                string convName = exp.ObjectName;
+                                string convName = exp.ObjectName.Instanced;
                                 int convIdx = exp.UIndex;
 
 
@@ -771,11 +771,11 @@ namespace ME3Explorer.DialogueDumper
                                     int iconv = oconv.Value;
                                     if (iconv < 0)
                                     {
-                                        convo = pcc.GetImport(iconv).ObjectName;
+                                        convo = pcc.GetImport(iconv).ObjectName.Instanced;
                                     }
                                     else
                                     {
-                                        convo = pcc.GetUExport(iconv).ObjectName;
+                                        convo = pcc.GetUExport(iconv).ObjectName.Instanced;
                                     }
                                 }
 
@@ -896,8 +896,8 @@ namespace ME3Explorer.DialogueDumper
 
                                 if (className == "AnimSequence")
                                 {
-                                    string animname = exp.ObjectName;
-                                    string animpackage = exp.Parent.ObjectName;
+                                    string animname = exp.ObjectName.Instanced;
+                                    string animpackage = exp.Parent.ObjectName.Instanced;
                                     var seqName = exp.GetProperty<NameProperty>("SequenceName");
                                     float length = exp.GetProperty<FloatProperty>("SequenceLength");
                                     dumper._xlqueue.Add(new List<string> { "Animations", animname, animpackage, seqName.ToString(), length.ToString(), fileName, GameBeingDumped.ToString() });

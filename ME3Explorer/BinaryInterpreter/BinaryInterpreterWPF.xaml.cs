@@ -219,7 +219,7 @@ namespace ME3Explorer
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.InheritsFrom("BioPawn")) && !exportEntry.IsDefaultObject);
+            return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.IsOrInheritsFrom("BioPawn")) && !exportEntry.IsDefaultObject);
         }
 
         public override void PoppedOut(MenuItem recentsMenuItem)
@@ -233,7 +233,7 @@ namespace ME3Explorer
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BinaryInterpreterWPF(), CurrentLoadedExport)
                 {
-                    Title = $"Binary Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FilePath}"
+                    Title = $"Binary Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
                 };
                 elhw.Show();
             }
@@ -339,7 +339,7 @@ namespace ME3Explorer
             //top node will always be of this element type.
             BinInterpNode topLevelTree = new BinInterpNode
             {
-                Header = $"{binarystart:X4} : {CurrentLoadedExport.GetIndexedFullPath} - Binary start",
+                Header = $"{binarystart:X4} : {CurrentLoadedExport.InstancedFullPath} - Binary start",
                 Tag = NodeType.Root,
                 Name = "_" + binarystart,
                 IsExpanded = true
@@ -380,7 +380,7 @@ namespace ME3Explorer
                 }
 
                 string className = CurrentLoadedExport.ClassName;
-                if (CurrentLoadedExport.InheritsFrom("BioPawn"))
+                if (CurrentLoadedExport.IsOrInheritsFrom("BioPawn"))
                 {
                     className = "BioPawn";
                 }
@@ -903,11 +903,11 @@ namespace ME3Explorer
                         }
                         if (CurrentLoadedExport.FileRef.GetEntry(val) is ExportEntry exp)
                         {
-                            s += $", Export: {exp.ObjectName}";
+                            s += $", Export: {exp.ObjectName.Instanced}";
                         }
                         else if (CurrentLoadedExport.FileRef.GetEntry(val) is ImportEntry imp)
                         {
-                            s += $", Import: {imp.ObjectName}";
+                            s += $", Import: {imp.ObjectName.Instanced}";
                         }
                     }
                     s += $" | Start=0x{start:X8} ";

@@ -919,8 +919,7 @@ namespace ME3Explorer.Soundplorer
                         Filter = "Wave PCM|*.wav",
                         FileName = spExport.Export.ObjectName + ".wav"
                     };
-                    bool? res = d.ShowDialog();
-                    if (res.HasValue && res.Value)
+                    if (d.ShowDialog() == true)
                     {
                         outputLocation = d.FileName;
                     }
@@ -966,8 +965,7 @@ namespace ME3Explorer.Soundplorer
                             Filter = "Wwise WEM|*.wem",
                             FileName = spExport.Export.ObjectName + ".wem"
                         };
-                        bool? res = d.ShowDialog();
-                        if (res.HasValue && res.Value)
+                        if (d.ShowDialog() == true)
                         {
                             WwiseStream w = new WwiseStream(spExport.Export);
                             if (w.ExtractRawFromSource(d.FileName, w.GetPathToAFC()))
@@ -990,8 +988,7 @@ namespace ME3Explorer.Soundplorer
                             Filter = "Wwise WEM|*.wem",
                             FileName = presetfilename
                         };
-                        bool? res = d.ShowDialog();
-                        if (res.HasValue && res.Value)
+                        if (d.ShowDialog() == true)
                         {
                             if (WwiseStream.ExtractRawFromSource(d.FileName, afcEntry.AFCPath, afcEntry.DataSize, afcEntry.Offset))
                             {
@@ -1016,8 +1013,7 @@ namespace ME3Explorer.Soundplorer
                     Filter = "Ogg Vorbis|*.ogg",
                     FileName = spExport.Export.ObjectName + ".ogg"
                 };
-                bool? res = d.ShowDialog();
-                if (res.HasValue && res.Value)
+                if (d.ShowDialog() == true)
                 {
                     WwiseStream w = new WwiseStream(spExport.Export);
                     string riffOutputFile = System.IO.Path.Combine(Directory.GetParent(d.FileName).FullName, System.IO.Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
@@ -1052,8 +1048,7 @@ namespace ME3Explorer.Soundplorer
                     Filter = "Ogg Vorbis|*.ogg",
                     FileName = presetfilename
                 };
-                bool? res = d.ShowDialog();
-                if (res.HasValue && res.Value)
+                if (d.ShowDialog() == true)
                 {
                     string riffOutputFile = System.IO.Path.Combine(Directory.GetParent(d.FileName).FullName, System.IO.Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
 
@@ -1583,7 +1578,7 @@ namespace ME3Explorer.Soundplorer
         private void UpdateDisplay()
         {
             int paddingSize = Export.FileRef.ExportCount.ToString().Length;
-            DisplayString = Export.UIndex.ToString("d" + paddingSize) + ": " + Export.ObjectName;
+            DisplayString = $"{Export.UIndex.ToString("d" + paddingSize)}: {Export.ObjectName.Instanced}";
         }
 
         public void LoadData()

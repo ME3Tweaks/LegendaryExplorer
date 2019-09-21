@@ -136,14 +136,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{Binding Export.UIndex}" />
-                            <TextBlock Grid.Column="1">
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0}_{1}">
-                                        <Binding Path="Export.ObjectName" />
-                                        <Binding Path="Export.indexValue" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
+                            <TextBlock Grid.Column="1" Text="{Binding Export.ObjectName.Instanced}"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
