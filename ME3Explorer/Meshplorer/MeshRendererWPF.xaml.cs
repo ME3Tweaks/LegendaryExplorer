@@ -160,8 +160,8 @@ namespace ME3Explorer.Meshplorer
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return parsableClasses.Contains(exportEntry.ClassName) && !exportEntry.IsDefaultObject
-                || (exportEntry.ClassName == "BrushComponent" && exportEntry.GetProperty<StructProperty>("BrushAggGeom") != null);
+            return !exportEntry.IsDefaultObject && (parsableClasses.Contains(exportEntry.ClassName)
+                 || (exportEntry.ClassName == "BrushComponent" && exportEntry.GetProperty<StructProperty>("BrushAggGeom") != null));
         }
 
         public override void PoppedOut(MenuItem recentsMenuItem)
@@ -428,7 +428,7 @@ namespace ME3Explorer.Meshplorer
             }
             else
             {
-                rb_BodySetup = new ExportEntry(Pcc, properties:new PropertyCollection{ new IntProperty(34013709, "PreCachedPhysDataVersion") }, binary: new byte[4])
+                rb_BodySetup = new ExportEntry(Pcc, properties: new PropertyCollection { new IntProperty(34013709, "PreCachedPhysDataVersion") }, binary: new byte[4])
                 {
                     Parent = CurrentLoadedExport,
                     ObjectName = "RB_BodySetup",

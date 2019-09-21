@@ -732,18 +732,29 @@ namespace ME3Explorer
                 uint cookerVersion = ms.ReadUInt32();
                 items.Add($"0x{ms.Position - 4:X2} CookedContent Version: {cookerVersion}");
 
-                if (Pcc.Game == MEGame.ME2)
+                if (Pcc.Game == MEGame.ME2 || Pcc.Game == MEGame.ME1)
                 {
-                    uint dependencyTableOffset2 = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} Dependency Table Offset: 0x{dependencyTableOffset2:X8} (Not used in Mass Effect games)");
-
                     int unknown2 = ms.ReadInt32();
                     items.Add($"0x{ms.Position - 4:X2} Unknown 2: {unknown2} (0x{unknown2:X8})");
 
                     int unknown3 = ms.ReadInt32();
-                    items.Add($"0x{ms.Position - 4:X2} Unknown 3: {unknown3} (0x{unknown3:X8})");
-                    int unknown4 = ms.ReadInt32();
-                    items.Add($"0x{ms.Position - 4:X2} Unknown 4: {unknown4} (0x{unknown4:X8})");
+                    items.Add($"0x{ms.Position - 4:X2} Static 47699: {unknown3} (0x{unknown3:X8})");
+
+                    if (Pcc.Game == MEGame.ME1)
+                    {
+                        int static0 = ms.ReadInt32();
+                        items.Add($"0x{ms.Position - 4:X2} Static 0: {static0} (0x{static0:X8})");
+                        int static1 = ms.ReadInt32();
+                        items.Add($"0x{ms.Position - 4:X2} Static 1: {static1} (0x{static1:X8})");
+                    }
+                    else
+                    {
+                        int unknown4 = ms.ReadInt32();
+                        items.Add($"0x{ms.Position - 4:X2} Unknown 4: {unknown4} (0x{unknown4:X8})");
+                        int static1966080 = ms.ReadInt32();
+                        items.Add($"0x{ms.Position - 4:X2} Static 1966080: {static1966080} (0x{static1966080:X8})");
+                    }
+
                 }
 
                 if (Pcc.Game != MEGame.UDK)
@@ -2933,6 +2944,11 @@ namespace ME3Explorer
                     var seqEditor = new Sequence_Editor.SequenceEditorWPF();
                     seqEditor.LoadFile(Pcc.FilePath);
                     seqEditor.Show();
+                    break;
+                case "Meshplorer":
+                    var meshplorer = new MeshplorerWPF();
+                    meshplorer.LoadFile(Pcc.FilePath);
+                    meshplorer.Show();
                     break;
             }
         }

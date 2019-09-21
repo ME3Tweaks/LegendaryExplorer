@@ -109,6 +109,11 @@
                                 <Image Source="/Resources/facefxeditor_256x256.ico" Width="64"/>
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Header="Meshplorer" Tag="Meshplorer" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/meshplorer_256x256.ico" Width="64"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Header="Pathfinding Editor" Tag="PathfindingEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                             <MenuItem.Icon>
                                 <Image Source="/Resources/pathfindingeditor_256x256.ico" Width="64"/>
