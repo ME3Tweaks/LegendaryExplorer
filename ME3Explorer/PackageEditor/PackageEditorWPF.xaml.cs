@@ -2945,6 +2945,11 @@ namespace ME3Explorer
                     seqEditor.LoadFile(Pcc.FilePath);
                     seqEditor.Show();
                     break;
+                case "Meshplorer":
+                    var meshplorer = new MeshplorerWPF();
+                    meshplorer.LoadFile(Pcc.FilePath);
+                    meshplorer.Show();
+                    break;
             }
         }
 
