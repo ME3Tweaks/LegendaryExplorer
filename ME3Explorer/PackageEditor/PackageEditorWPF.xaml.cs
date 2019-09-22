@@ -798,7 +798,14 @@ namespace ME3Explorer
                     return;
                 }
 
+                bool removedFromLevel = selected.Entry is ExportEntry exp && exp.ParentName == "PersistentLevel" && exp.IsOrInheritsFrom("Actor") && Pcc.RemoveFromLevelActors(exp);
+
                 EntryPruner.TrashEntries(Pcc, itemsToTrash);
+
+                if (removedFromLevel)
+                {
+                    MessageBox.Show(this, "Trashed and removed from level!");
+                }
             }
         }
 
@@ -1317,7 +1324,7 @@ namespace ME3Explorer
 
         private bool TryAddToPersistentLevel(IEntry newEntry)
         {
-            if (newEntry is ExportEntry ent && ent?.Parent?.ClassName == "Level" && ent.IsOrInheritsFrom("Actor")
+            if (newEntry is ExportEntry ent && ent.Parent?.ClassName == "Level" && ent.IsOrInheritsFrom("Actor")
              && Pcc.AddToLevelActorsIfNotThere(ent))
             {
                 MessageBox.Show(this, $"Added {ent.ObjectName.Instanced} to PersistentLevel's Actor list!");
