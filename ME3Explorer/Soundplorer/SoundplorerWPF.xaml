@@ -15,7 +15,7 @@
         Drop="Window_Drop"
         AllowDrop="True"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Soundplorer" Height="450" Width="830">
+        Title="Soundplorer" Height="450" Width="830" Loaded="SoundplorerWPF_OnLoaded">
     <Window.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>

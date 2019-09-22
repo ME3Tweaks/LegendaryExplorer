@@ -17,7 +17,7 @@
         AllowDrop="True"
         Closing="MeshplorerWPF_Closing"
         Icon="/Resources/meshplorer_256x256.ico"
-        Title="Meshplorer WPF" Height="550" Width="1200">
+        Title="Meshplorer WPF" Height="550" Width="1200" Loaded="MeshplorerWPF_OnLoaded">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>

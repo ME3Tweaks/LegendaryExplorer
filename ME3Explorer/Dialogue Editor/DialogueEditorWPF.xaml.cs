@@ -3873,12 +3873,6 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 p.SelectedInterpData = exportEntry;
             }
-            else
-            {
-                ////int i = ((DiagNode)obj).Varlinks[0].Links[0] - 1; //0-based index because Interp Viewer is old
-                //p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(i);
-                //p.loadInterpData(i);
-            }
 
         }
 

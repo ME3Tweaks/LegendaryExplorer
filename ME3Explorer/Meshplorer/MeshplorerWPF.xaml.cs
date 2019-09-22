@@ -51,7 +51,8 @@ namespace ME3Explorer
             }
         }
 
-
+        private string FileQueuedForLoad;
+        private ExportEntry ExportQueuedForFocusing;
 
         public MeshplorerWPF()
         {
@@ -64,6 +65,12 @@ namespace ME3Explorer
             RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
             LoadRecentList();
             RefreshRecent(false);
+        }
+
+        public MeshplorerWPF(ExportEntry exportToLoad) : this()
+        {
+            FileQueuedForLoad = exportToLoad.FileRef.FilePath;
+            ExportQueuedForFocusing = exportToLoad;
         }
 
         public ICommand OpenFileCommand { get; set; }
@@ -568,6 +575,27 @@ namespace ME3Explorer
                 p.Show();
                 p.LoadFile(export.FileRef.FilePath, export.UIndex);
                 p.Activate(); //bring to front
+            }
+        }
+
+        private void MeshplorerWPF_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(FileQueuedForLoad))
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
+                {
+                    //Wait for all children to finish loading
+                    LoadFile(FileQueuedForLoad);
+                    FileQueuedForLoad = null;
+
+                    if (MeshExports.Contains(ExportQueuedForFocusing))
+                    {
+                        CurrentExport = ExportQueuedForFocusing;
+                    }
+                    ExportQueuedForFocusing = null;
+
+                    Activate();
+                }));
             }
         }
     }

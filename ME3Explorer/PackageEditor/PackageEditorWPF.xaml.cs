@@ -34,6 +34,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Gammtek.Conduit.Extensions.IO;
 using ME2Explorer.Unreal;
+using ME3Explorer.Dialogue_Editor;
+using ME3Explorer.Meshplorer;
 using ME3Explorer.Unreal.BinaryConverters;
 using UsefulThings;
 using static ME3Explorer.Packages.MEPackage;
@@ -206,7 +208,6 @@ namespace ME3Explorer
         public ICommand PackageHeaderViewerCommand { get; set; }
         public ICommand CreateNewPackageGUIDCommand { get; set; }
         public ICommand SetPackageAsFilenamePackageCommand { get; set; }
-        public ICommand OpenInInterpViewerCommand { get; set; }
         public ICommand FindEntryViaTagCommand { get; set; }
         public ICommand PopoutCurrentViewCommand { get; set; }
         public ICommand MultidropRelinkingCommand { get; set; }
@@ -225,8 +226,8 @@ namespace ME3Explorer
         public ICommand DumpAllShadersCommand { get; set; }
         public ICommand DumpMaterialShadersCommand { get; set; }
         public ICommand FindReferencesCommand { get; set; }
-
         public ICommand OpenMapInGameCommand { get; set; }
+        public ICommand OpenExportInCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -252,7 +253,6 @@ namespace ME3Explorer
             PackageHeaderViewerCommand = new GenericCommand(ViewPackageInfo, PackageIsLoaded);
             CreateNewPackageGUIDCommand = new GenericCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
             SetPackageAsFilenamePackageCommand = new GenericCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
-            OpenInInterpViewerCommand = new GenericCommand(OpenInInterpViewer, CanOpenInInterpViewer);
             FindEntryViaTagCommand = new GenericCommand(FindEntryViaTag, PackageIsLoaded);
             PopoutCurrentViewCommand = new GenericCommand(PopoutCurrentView, ExportIsSelected);
             MultidropRelinkingCommand = new GenericCommand(EnableMultirelinkingMode, PackageIsLoaded);
@@ -269,11 +269,86 @@ namespace ME3Explorer
 
             BulkExportSWFCommand = new GenericCommand(BulkExportSWFs, PackageIsLoaded);
             BulkImportSWFCommand = new GenericCommand(BulkImportSWFs, PackageIsLoaded);
+            OpenExportInCommand = new RelayCommand(OpenExportIn, CanOpenExportIn);
 
             DumpAllShadersCommand = new GenericCommand(DumpAllShaders, () => PackageIsLoaded() && Pcc.Exports.Any(exp => exp.ClassName == "ShaderCache"));
             DumpMaterialShadersCommand = new GenericCommand(DumpMaterialShaders, PackageIsLoaded);
 
             OpenMapInGameCommand = new GenericCommand(OpenMapInGame, () => PackageIsLoaded() && Pcc.Game != MEGame.UDK && Pcc.Exports.Any(exp => exp.ClassName == "Level"));
+        }
+
+        private void OpenExportIn(object obj)
+        {
+            if (obj is string toolName && TryGetSelectedExport(out ExportEntry exp))
+            {
+                switch (toolName)
+                {
+                    case "DialogueEditor":
+                        if (exp.ClassName == "BioConversation")
+                        {
+                            new DialogueEditorWPF(exp).Show();
+                        }
+                        break;
+                    case "FaceFXEditor":
+                        if (exp.ClassName == "FaceFXAnimSet")
+                        {
+                            new FaceFX.FaceFXEditor(exp).Show();
+                        }
+                        break;
+                    case "Meshplorer":
+                        if (MeshRendererWPF.CanParseStatic(exp))
+                        {
+                            new MeshplorerWPF(exp).Show();
+                        }
+                        break;
+                    case "Soundplorer":
+                        if (Soundpanel.CanParseStatic(exp))
+                        {
+                            new Soundplorer.SoundplorerWPF(exp).Show();
+                        }
+                        break;
+                    case "SequenceEditor":
+                        if (exp.IsOrInheritsFrom("SequenceObject"))
+                        {
+                            new Sequence_Editor.SequenceEditorWPF(exp).Show();
+                        }
+                        break;
+                    case "InterpViewer":
+                        if (exp.ClassName == "InterpData")
+                        {
+                            var p = new Matinee.InterpEditor();
+                            p.Show();
+                            p.LoadFile(Pcc.FilePath);
+                            if (exp.ObjectName == "InterpData")
+                            {
+                                p.SelectedInterpData = exp;
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+        private bool CanOpenExportIn(object obj)
+        {
+            if (obj is string toolName && TryGetSelectedExport(out ExportEntry exp) && !exp.IsDefaultObject)
+            {
+                switch (toolName)
+                {
+                    case "DialogueEditor":
+                        return exp.ClassName == "BioConversation";
+                    case "FaceFXEditor":
+                        return exp.ClassName == "FaceFXAnimSet";
+                    case "Meshplorer":
+                        return MeshRendererWPF.CanParseStatic(exp);
+                    case "Soundplorer":
+                        return Soundpanel.CanParseStatic(exp);
+                    case "SequenceEditor":
+                        return exp.IsOrInheritsFrom("SequenceObject");
+                    case "InterpViewer":
+                        return Pcc.Game == MEGame.ME3 && exp.ClassName == "InterpData";
+                }
+            }
+            return false;
         }
 
         private void ExportEmbeddedFilePrompt()
@@ -597,17 +672,6 @@ namespace ME3Explorer
                 MessageBox.Show("Could not find export with Tag property with value: " + result);
             }
         }
-
-        private void OpenInInterpViewer()
-        {
-            if (!TryGetSelectedExport(out ExportEntry export)) return;
-            Matinee.InterpEditor p = new Matinee.InterpEditor();
-            p.Show();
-            p.LoadFile(export.FileRef.FilePath); //hmm...
-            p.SelectedInterpData = export;
-        }
-
-        private bool CanOpenInInterpViewer() => TryGetSelectedExport(out ExportEntry export) && export.FileRef.Game == MEGame.ME3 && export.ClassName == "InterpData" && !export.IsDefaultObject;
 
         private void SetSelectedAsFilenamePackage()
         {
