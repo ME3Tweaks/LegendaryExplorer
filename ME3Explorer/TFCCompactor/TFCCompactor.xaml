@@ -8,12 +8,12 @@
         xmlns:me3Explorer="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
         Title="TFC Compactor" Height="500" Width="500">
-    <xctk:BusyIndicator IsBusy="{Binding IsBusy, FallbackValue=True}" BusyContent="{Binding BusyText, FallbackValue=Downloading MEM command line tools}">
+    <xctk:BusyIndicator IsBusy="{Binding IsBusyUI, FallbackValue=True}" BusyContent="{Binding BusyText, FallbackValue=Downloading MEM command line tools}" >
         <xctk:BusyIndicator.ProgressBarStyle>
             <Style TargetType="ProgressBar">
-                <Setter Property="Maximum" Value="{Binding BusyProgressBarMaximum}"/>
+                <Setter Property="Maximum" Value="{Binding BusyProgressBarMax}"/>
                 <Setter Property="Value" Value="{Binding BusyProgressBarValue}"/>
-                <Setter Property="IsIndeterminate" Value="{Binding BusyProgressBarIndeterminate, FallbackValue=True}"/>
+                <Setter Property="IsIndeterminate" Value="False"/>
                 <Setter Property="Height" Value="14"/>
                 <Setter Property="Margin" Value="5,0,5,5"/>
             </Style>

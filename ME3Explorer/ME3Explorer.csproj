@@ -366,6 +366,7 @@
     <Compile Include="Meshplorer\MeshRendererWPF.xaml.cs">
       <DependentUpon>MeshRendererWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OnlineContent.cs" />
     <Compile Include="Packages\EntryTree.cs" />
     <Compile Include="Packages\PackageExtensions.cs" />
     <Compile Include="Packages\UnrealPackageFile.cs" />
