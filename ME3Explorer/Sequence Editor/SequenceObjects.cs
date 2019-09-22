@@ -339,11 +339,11 @@ namespace ME3Explorer.SequenceObjects
                                         if (entry == null) return "???";
                                         if (entry is ExportEntry objValueExport && objValueExport.GetProperty<NameProperty>("Tag") is NameProperty tagProp && tagProp.Value != objValueExport.ObjectName)
                                         {
-                                            return $"#{UIndex}\n{entry.ObjectName.Instanced}\n{ tagProp.Value}";
+                                            return $"#{entry.UIndex}\n{entry.ObjectName.Instanced}\n{ tagProp.Value}";
                                         }
                                         else
                                         {
-                                            return $"#{UIndex}\n{entry.ObjectName.Instanced}";
+                                            return $"#{entry.UIndex}\n{entry.ObjectName.Instanced}";
                                         }
                                     }
                             }

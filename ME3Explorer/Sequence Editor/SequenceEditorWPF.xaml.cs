@@ -1199,6 +1199,20 @@ namespace ME3Explorer.Sequence_Editor
                     }
                 }
 
+                if (contextMenu.GetChild("openRefInPackEdMenuItem") is MenuItem openRefInPackEdMenuItem)
+                {
+
+                    if (Pcc.Game == MEGame.ME3 && obj is SVar sVar &&
+                        Pcc.IsEntry(sVar.Export.GetProperty<ObjectProperty>("ObjValue")?.Value ?? 0))
+                    {
+                        openRefInPackEdMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        openRefInPackEdMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
                 contextMenu.IsOpen = true;
                 graphEditor.DisableDragging();
             }
@@ -1442,6 +1456,18 @@ namespace ME3Explorer.Sequence_Editor
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
                 p.LoadFile(obj.Export.FileRef.FilePath, obj.UIndex);
+                p.Activate(); //bring to front
+            }
+        }
+
+        private void OpenReferencedObjectInPackageEditor_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SVar sVar && sVar.Export.GetProperty<ObjectProperty>("ObjValue") is ObjectProperty objProp)
+            {
+                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                PackageEditorWPF p = new PackageEditorWPF();
+                p.Show();
+                p.LoadFile(sVar.Export.FileRef.FilePath, objProp.Value);
                 p.Activate(); //bring to front
             }
         }

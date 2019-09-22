@@ -18,14 +18,15 @@
         mc:Ignorable="d"
         Loaded="SequenceEditorWPF_Loaded"
         Closing="SequenceEditorWPF_Closing"
-        Title="Sequence Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
+        Title="Sequence Editor" Height="750" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
-            <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
+            <MenuItem Header="Open in Package Editor" Click="OpenInPackageEditor_Clicked" />
+            <MenuItem Header="Open Referenced Object in Package Editor" Click="OpenReferencedObjectInPackageEditor_Clicked" Name="openRefInPackEdMenuItem"/>
             <MenuItem Header="Open in Interp Viewer" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
             <MenuItem Header="Open in Dialogue Editor" Click="OpenInDialogueEditor_Clicked" Name="dialogueEditorMenuItem"/>
             <MenuItem Header="Open Referenced State Event in Plot Editor" Name="plotEditorMenuItem" Click="PlotEditorMenuItem_Click"/>
@@ -167,9 +168,9 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                    <TextBlock Margin="5" Text="Welcome to Sequence Editor WPF, the rewritten version of Sequence Editor" FontWeight="Bold"/>
+                    <TextBlock Margin="5" Text="Welcome to Sequence Editor" FontWeight="Bold"/>
                     <TextBlock Margin="5">
-                            Sequence Editor WPF is a bit different from the classic Sequence Editor.
+                            The new Sequence Editor is a bit different from the classic Sequence Editor.
                                 <LineBreak/>
                                 Indexes are done strictly by UIndex, which is how they appear in game code.
                                 <LineBreak/>
