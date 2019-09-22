@@ -196,15 +196,6 @@ namespace ME3Explorer.Unreal
                 ReadFileNames();
         }
 
-        public bool CompareByteArray(byte[] a1, byte[] a2)
-        {
-            if (a1.Length != a2.Length)
-                return false;
-            for (int i = 0; i < a1.Length; i++)
-                if (a1[i] != a2[i])
-                    return false;
-            return true;
-        }
 
         public void ReadFileNames()
         {
@@ -215,7 +206,7 @@ namespace ME3Explorer.Unreal
                 e = Files[i];
                 e.FileName = "UNKNOWN";
                 Files[i] = e;
-                if (CompareByteArray(Files[i].Hash, TOCHash))
+                if (Files[i].Hash.SequenceEqual(TOCHash))
                     f = i;
             }
             if (f == -1)
@@ -229,7 +220,7 @@ namespace ME3Explorer.Unreal
                 byte[] hash = ComputeHash(line);
                 f = -1;
                 for (int i = 0; i < Header.FileCount; i++)
-                    if (CompareByteArray(Files[i].Hash, hash))
+                    if (Files[i].Hash.SequenceEqual(hash))
                         f = i;
                 if (f != -1)
                 {
@@ -360,76 +351,6 @@ namespace ME3Explorer.Unreal
                 Data = data;
                 UncompressedSize = uncompressedSize;
                 IsCompressed = uncompressedSize > 0;
-            }
-        }
-
-        public async Task DecompressEntryAsync(int index, Stream output)
-        {
-            var entry = Files[index];
-            using (var fs = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.None, 4096, useAsync: true))
-            {
-                fs.Seek(entry.BlockOffsets[0], SeekOrigin.Begin);
-
-                //not compressed
-                if (entry.BlockSizeIndex == 0xFFFFFFFF)
-                {
-                    var uncompressed = new byte[entry.RealUncompressedSize];
-                    await fs.ReadAsync(uncompressed, 0, uncompressed.Length).ConfigureAwait(continueOnCapturedContext: false);
-                    await output.WriteAsync(uncompressed, 0, uncompressed.Length).ConfigureAwait(continueOnCapturedContext: false);
-
-                    return;
-                }
-
-                var decompressor = new TransformBlock<InputBlock, byte[]>(
-                    input => input.IsCompressed
-                        ? SevenZipHelper.LZMA.Decompress(input.Data, (uint)input.UncompressedSize)
-                        : input.Data
-                    , new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded }
-                    );
-
-                var outputWriter = new ActionBlock<byte[]>(
-                    data => output.Write(data, 0, data.Length)
-                    );
-
-                decompressor.LinkTo(outputWriter, new DataflowLinkOptions { PropagateCompletion = true });
-
-                uint count = 0;
-                long left = entry.RealUncompressedSize;
-                while (left > 0)
-                {
-                    uint compressedBlockSize = entry.BlockSizes[count];
-                    if (compressedBlockSize == 0)
-                    {
-                        compressedBlockSize = Header.MaxBlockSize;
-                    }
-
-                    if (compressedBlockSize == Header.MaxBlockSize ||
-                        compressedBlockSize == left)
-                    {
-                        left -= compressedBlockSize;
-                        var uncompressedData = new byte[compressedBlockSize];
-                        await fs.ReadAsync(uncompressedData, 0, uncompressedData.Length).ConfigureAwait(continueOnCapturedContext: false);
-                        decompressor.Post(new InputBlock(uncompressedData, InputBlock.Uncompressed));
-                    }
-                    else
-                    {
-                        var uncompressedBlockSize = Math.Min(left, Header.MaxBlockSize);
-                        left -= uncompressedBlockSize;
-                        if (compressedBlockSize < 5)
-                        {
-                            throw new Exception("compressed block size smaller than 5");
-                        }
-
-                        var compressedData = new byte[compressedBlockSize];
-                        await fs.ReadAsync(compressedData, 0, (int)compressedBlockSize).ConfigureAwait(continueOnCapturedContext: false);
-
-                        decompressor.Post(new InputBlock(compressedData, uncompressedBlockSize));
-                    }
-                    count++;
-                }
-
-                decompressor.Complete();
-                await outputWriter.Completion;
             }
         }
 
@@ -618,7 +539,7 @@ namespace ME3Explorer.Unreal
             int f = -1;
             for (int i = 0; i < Header.FileCount; i++)
             {
-                if (CompareByteArray(Files[i].Hash, TOCHash))
+                if (Files[i].Hash.SequenceEqual(TOCHash))
                     f = i;
             }
             return f;

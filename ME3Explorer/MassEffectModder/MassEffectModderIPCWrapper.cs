@@ -28,9 +28,9 @@ namespace MassEffectModder
         /// <param name="args"></param>
         /// <param name="worker"></param>
         /// <param name="acceptedIPC"></param>
-        public static ConsoleApp RunMEM(string args, Dictionary<string, Action<string>> IPCTriggers)
+        public static ConsoleApp RunMEM(string args, Dictionary<string, Action<string>> IPCTriggers = null, Dictionary<string, Action<string>> NonIPCTriggers = null, bool cSharpVersion = false)
         {
-            string exe = Path.Combine(App.AppDataFolder, "staticexecutables", "MassEffectModderNoGui.exe");
+            string exe = Path.Combine(App.AppDataFolder, "staticexecutables", cSharpVersion ? "MassEffectModderNoGuiCS.exe" : "MassEffectModderNoGuiQT.exe");
             Debug.WriteLine("Running process: " + exe + " " + args);
             //Log.Information("Running process: " + exe + " " + args);
 
@@ -45,7 +45,7 @@ namespace MassEffectModder
                 //{
                 //    Utilities.WriteDebugLog(str);
                 //}
-                if (str.StartsWith("[IPC]", StringComparison.Ordinal)) //needs culture ordinal check??
+                if (IPCTriggers != null && str.StartsWith("[IPC]", StringComparison.Ordinal)) //needs culture ordinal check??
                 {
                     string command = str.Substring(5);
                     int endOfCommand = command.IndexOf(' ');
@@ -59,20 +59,17 @@ namespace MassEffectModder
                         string param = str.Substring(endOfCommand + 5).Trim();
                         IPCTriggers[command].Invoke(param);
                     }
+
+                    return; //Do not allow nonIPC to try to handle an IPC command.
                 }
-                else
+
+                if (NonIPCTriggers != null && !string.IsNullOrWhiteSpace(str))
                 {
-                    if (str.Trim() != "")
+                    string command = str.Substring(0, str.IndexOf(' '));
+                    if (NonIPCTriggers.ContainsKey(command))
                     {
-                        if (str.StartsWith("Exception occured") ||
-                            str.StartsWith("Program crashed"))
-                        {
-                            //Log.Error("MEM process output: " + str);
-                        }
-                        else
-                        {
-                            //Log.Information("MEM process output: " + str);
-                        }
+                        string param = str.Substring(command.Length + 1).Trim();
+                        NonIPCTriggers[command].Invoke(param);
                     }
                 }
             };
