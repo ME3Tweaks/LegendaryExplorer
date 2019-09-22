@@ -109,7 +109,7 @@ namespace ME3Explorer
                 var assy = Assembly.LoadFile(searchPath);
                 return assy;
             }
-            //look for exe assembly (CSharpImageLibrary)
+            //look for exe assembly
             searchPath = newPath;
             if (!searchPath.EndsWith(".exe"))
             {

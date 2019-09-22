@@ -202,19 +202,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Image Engine",
-                type = typeof(CSharpImageLibrary.MainWindow),
-                icon = Application.Current.FindResource("iconImageEngine") as ImageSource,
-                open = () =>
-                {
-                    (new CSharpImageLibrary.MainWindow()).Show();
-                },
-                tags = new List<string> { "utility", "texture", "convert", "dds", "bmp", "jpg", "png" },
-                subCategory = "Converters",
-                description = "Image Engine is a texture conversion utility. It supports BMP, JPG, PNG, TGA files, as well as a variety of DDS formats and compressions. Modification to mipmaps are also supported.",
-            });
-            set.Add(new Tool
-            {
                 name = "Interp Viewer",
                 type = typeof(InterpEditor),
                 icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
