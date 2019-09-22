@@ -347,21 +347,19 @@ namespace ME3Explorer
                 subCategory = "Databases",
                 description = "Script Database is used to locate UnrealScript exports across multiple files for ME3. This tool is deprecated and is no longer supported.",
             });
-#if DEBUG
             set.Add(new Tool
             {
                 name = "TFC Compactor",
                 type = typeof(TFCCompactor.TFCCompactor),
-                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                icon = Application.Current.FindResource("iconTFCCompactor") as ImageSource,
                 open = () =>
                 {
                     (new TFCCompactor.TFCCompactor()).Show();
                 },
                 tags = new List<string> { "utility", "deployment", "textures", "compression" },
                 subCategory = "Deployment",
-                description = "TFC Compactor can compact your ME2 or ME3 DLC mod TFC file by effectively removing unreferenced chunks in it.",
+                description = "TFC Compactor can compact your ME2 or ME3 DLC mod TFC file by effectively removing unreferenced chunks in it and compressing the referenced textures. It also can be used to reduce or remove TFC dependencies so users do not have to have DLC installed for certain textures to work.",
             });
-#endif
             #endregion
 
             #region Create Mods

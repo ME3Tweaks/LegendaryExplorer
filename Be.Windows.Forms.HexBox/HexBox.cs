@@ -4346,7 +4346,7 @@ namespace Be.Windows.Forms
         /// <summary>
         /// Gets the background color for the control.
         /// </summary>
-        [DefaultValue(typeof(Color), "White")]
+        //[DefaultValue(typeof(Color), Control.D)]
         public override Color BackColor => backColor;
 
         /// <summary>
@@ -4361,8 +4361,8 @@ namespace Be.Windows.Forms
             foreColor = text;
         }
 
-        private static Color backColor = Color.White;
-        private static Color foreColor = DefaultForeColor;
+        private static Color backColor = SystemColors.Control;
+        private static Color foreColor = SystemColors.ControlText;
 
         #endregion
     }

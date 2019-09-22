@@ -7,7 +7,10 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:me3Explorer="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
-        Title="TFC Compactor" Height="500" Width="500">
+        Icon="/Resources/tfccompactor_256x256.ico"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        Title="TFC Compactor" Width="600">
     <xctk:BusyIndicator IsBusy="{Binding IsBusyUI, FallbackValue=True}" BusyContent="{Binding BusyText, FallbackValue=Downloading MEM command line tools}" >
         <xctk:BusyIndicator.ProgressBarStyle>
             <Style TargetType="ProgressBar">
@@ -30,24 +33,29 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="130"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="90"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="Install your DLC mod into a vanilla copy of the game (as an end user would do). Ensure your DLC is unpacked as referenced TFCs must be directly accessible. Then select your game, and then the DLC mod below." TextWrapping="Wrap"/>
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="Install your DLC mod into a vanilla copy of the game (as an end user would do). Select your game, and then the DLC mod below." TextWrapping="Wrap"/>
             <xctk:WatermarkComboBox  Grid.Row="1" Grid.Column="0" ItemsSource="{Binding GameList}" DisplayMemberPath="DisplayName" Watermark="Select game" SelectionChanged="GameComboBox_Changed" IsEnabled="{Binding IsNotBusy}"/>
             <xctk:WatermarkComboBox  Grid.Row="1" Grid.Column="1" ItemsSource="{Binding CustomDLCFolderList}" Watermark="Select your DLC mod" SelectionChanged="DLCModComboBox_Changed"  IsEnabled="{Binding IsNotBusy}"/>
             <Button Grid.Row="1" Grid.Column="2" Content="Scan" Command="{Binding ScanCommand}"/>
-            <TextBlock Text="TFCs referenced by files in this mod:" Grid.ColumnSpan="3"  Grid.Row="2" Margin="0,10,0,3"/>
+            <TextBlock Text="Referenced TFCs" Grid.ColumnSpan="3" FontWeight="Bold" Grid.Row="2" Margin="0,10,0,3"/>
             <xctk:CheckListBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" MinHeight="250"  ItemsSource="{Binding TextureCachesToPullFromList}" IsEnabled="{Binding IsNotBusy}" DisplayMemberPath="TFCName" SelectedMemberPath="Selected"/>
-            <TextBlock Text="Select TFC files that you want to have locally stored in your mod. Do not select dependent official DLC - for example, if your mod requires Leviathan DLC, do not select the Leviathan TFC, since it will always have to be present for your mod to work."
+            <TextBlock Text="Select TFC files that you want to have locally stored in your mod. Do not select REQUIRED dependent official DLC - for example, if your mod requires Leviathan DLC (it will not work without it), do not select the Leviathan TFC, since it will always have to be present for your mod to work.&#10;&#10;DO select optional DLC items, such as TFCs that are used by files that only take effect if a certain DLC is installed. For example, if your mod overrides a few files in Leviathan DLC but will still function if the user does not have the DLC installed, include the Leviathan DLC in the above checkboxes."
                    TextWrapping="Wrap" Grid.ColumnSpan="3"  Grid.Row="4" Margin="0,0,0,3"/>
+            <TextBlock Text="Staging directory" Grid.Row="5" FontWeight="Bold"/>
+            <TextBlock Text="Your mod and referenced TFCs will be staged into a fake game directory, in which textures will be extracted and then the TFC rebuilt from. Ensure the partition this directory resides on has several gigabytes of free disk space." TextWrapping="Wrap" Grid.Row="6" Grid.ColumnSpan="3"/>
 
-            <Button Grid.Column="2" Grid.Row="5"  Content="Compact TFC" Command="{Binding CompactTFCCommand}" Margin="0,5"/>
-            <ProgressBar Grid.Column="0" Grid.ColumnSpan="2" Margin="0,6,5,5"  Grid.Row="5" Maximum="{Binding ProgressBarMax}" Value="{Binding ProgressBarValue}" IsIndeterminate="{Binding ProgressBarIndeterminate}" MinHeight="22"/>
-            <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding CurrentOperationText, FallbackValue=Waiting for user}" TextWrapping="Wrap"/>
+            <TextBox IsReadOnly="True" Text="{Binding StagingDirectory, Mode=OneWay}"  IsEnabled="False" Margin="0,6,5,5" Grid.Row="7" Grid.ColumnSpan="2"/>
+            <Button Command="{Binding ChangeStagingDirCommand}" Content="Change" Grid.Column="2" Grid.Row="7" Margin="0,5"/>
+            <Button Grid.Column="2" Grid.Row="8"  Content="Compact TFC" Command="{Binding CompactTFCCommand}" Margin="0,5"/>
+            <ProgressBar Grid.Column="0" Grid.ColumnSpan="2" Margin="0,6,5,5"  Grid.Row="8" Maximum="{Binding ProgressBarMax}" Value="{Binding ProgressBarValue}" IsIndeterminate="{Binding ProgressBarIndeterminate}" MinHeight="22"/>
+            <TextBlock Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding CurrentOperationText, FallbackValue=Waiting for user}" TextWrapping="Wrap"/>
         </Grid>
     </xctk:BusyIndicator>
 </me3Explorer:NotifyPropertyChangedWindowBase>

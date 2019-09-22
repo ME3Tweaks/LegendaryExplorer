@@ -187,9 +187,9 @@
         <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequenceeditor_256x256.ico"/>
         <BitmapImage x:Key="iconSFAREditor" UriSource="Resources/sfareditor_256x256.ico"/>
         <BitmapImage x:Key="iconSoundplorer" UriSource="Resources/soundplorerwpf_256x256.ico"/>
+        <BitmapImage x:Key="iconTFCCompactor" UriSource="Resources/tfccompactor_256x256.ico"/>
         <BitmapImage x:Key="iconTLKManager" UriSource="Resources/tlkmanager_256x256.ico"/>
         <BitmapImage x:Key="iconTLKEditorME23" UriSource="Resources/me2me3tlkeditor_256x256.ico"/>
-        <BitmapImage x:Key="iconTexplorer" UriSource="Resources/texplorer_256x256.ico"/>
         <BitmapImage x:Key="iconUDKExplorer" UriSource="Resources/udkexplorer_256x256.ico"/>
 
         <BitmapImage x:Key="iconLoadingSpinner" UriSource="Resources/loadingspinner.png"/>
