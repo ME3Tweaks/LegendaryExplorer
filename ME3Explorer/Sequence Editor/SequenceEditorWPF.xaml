@@ -10,6 +10,7 @@
         xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:grapheditor="clr-namespace:UMD.HCIL.GraphEditor"
+        xmlns:packages="clr-namespace:ME3Explorer.Packages"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
@@ -66,8 +67,11 @@
                 <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence" IsEnabled="{Binding SelectedSequence, Converter={StaticResource NullEnabledConverter}}"/>
                 <MenuItem Header="Save View" Command="{Binding SaveViewCommand}" ToolTip="Save the node layout"/>
                 <MenuItem Header="Save Image" Command="{Binding SaveImageCommand}" ToolTip="Save image of full Sequence"/>
-                <MenuItem Header="Open Kismet Log" Command="{Binding KismetLogCommand}"/>
                 <MenuItem Header="Open Kismet Log (restricted to opened file)" Command="{Binding KismetLogCommand}" CommandParameter="{StaticResource True}"/>
+                <MenuItem Header="Open Kismet Log for ME3" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.ME3}"/>
+                <MenuItem Header="Open Kismet Log for ME2" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.ME2}"/>
+                <!-- TODO: Uncomment when ME1 Kismet Logger is created -->
+                <!--<MenuItem Header="Open Kismet Log for ME1" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.ME1}"/>-->
             </MenuItem>
 
             <MenuItem Header="View Options" Padding="4">

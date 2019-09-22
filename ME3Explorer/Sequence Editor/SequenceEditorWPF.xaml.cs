@@ -132,31 +132,34 @@ namespace ME3Explorer.Sequence_Editor
 
         private bool CanOpenKismetLog(object o)
         {
-            if (o is true)
+            switch (o)
             {
-                return Pcc != null && Pcc.Game == MEGame.ME3 && File.Exists(KismetLogPath);
+                case true:
+                    return Pcc != null && File.Exists(KismetLogParser.KismetLogPath(Pcc.Game));
+                case MEGame game:
+                    return File.Exists(KismetLogParser.KismetLogPath(game));
+                default:
+                    return false;
             }
-
-            return File.Exists(KismetLogPath);
         }
-
-        static readonly string KismetLogPath = Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "KismetLog.txt");
 
         private void OpenKismetLogParser(object obj)
         {
-            if (File.Exists(KismetLogPath))
+            if (CanOpenKismetLog(obj))
             {
+                switch (obj)
+                {
+                    case true:
+                        kismetLogParser.LoadLog(Pcc.Game, Pcc);
+                        break;
+                    case MEGame game:
+                        kismetLogParser.LoadLog(game);
+                        break;
+                    default:
+                        return;
+                }
                 kismetLogParser.Visibility = Visibility.Visible;
                 kismetLogParserRow.Height = new GridLength(150);
-                if (obj is true)
-                {
-                    kismetLogParser.LoadLog(KismetLogPath, Pcc);
-                }
-                else
-                {
-                    kismetLogParser.LoadLog(KismetLogPath);
-                }
-
                 kismetLogParser.ExportFound = (filePath, uIndex) =>
                 {
                     if (Pcc == null || Pcc.FilePath != filePath) LoadFile(filePath);
