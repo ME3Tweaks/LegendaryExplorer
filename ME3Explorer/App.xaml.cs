@@ -87,16 +87,16 @@ namespace ME3Explorer
             }
 
             //Set up Dark Mode
-            try
-            {
-                var v = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme", "1");
-                IsDarkMode = v?.ToString() == "0";
-            }
-            catch
-            {
-                IsDarkMode = false;
-            }
-            Be.Windows.Forms.HexBox.SetColors((IsDarkMode ? Color.FromArgb(255, 55, 55, 55) : Colors.White).ToWinformsColor(), SystemColors.ControlTextColor.ToWinformsColor());
+            //try
+            //{
+            //    var v = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme", "1");
+            //    IsDarkMode = v?.ToString() == "0";
+            //}
+            //catch
+            //{
+            //    IsDarkMode = false;
+            //}
+            //Be.Windows.Forms.HexBox.SetColors((IsDarkMode ? Color.FromArgb(255, 55, 55, 55) : Colors.White).ToWinformsColor(), SystemColors.ControlTextColor.ToWinformsColor());
 
             //This is in startup as it takes about 1 second to execute and will stall the UI.
             CoreCount = 0;

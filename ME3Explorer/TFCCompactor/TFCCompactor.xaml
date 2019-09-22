@@ -7,6 +7,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:me3Explorer="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
+        Icon="/Resources/tfccompactor_256x256.ico"
         SizeToContent="Height"
         ResizeMode="NoResize"
         Title="TFC Compactor" Width="600">

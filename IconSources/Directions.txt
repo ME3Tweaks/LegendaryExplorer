@@ -1,0 +1,21 @@
+Directons on making a new ME3Explorer tool icon
+Directions for GIMP (2.10)
+Uses fonts Lucidia Sans Unicode 
+
+Clone existing file and name it ToolName_Icon.xcf
+Select the "Stroke" layer. CTRL A to select all of the contents of the layer, then press delete to remove all contents of the layer
+Select top layer. Delete all but first letter and then put in a 3 or 4 letter top text after that. Then delete the first letter. (This is to get around dumb GIMP behavior where it resets the font if there is none in the text editor)
+Right click top layer, select alpha to selection
+Then go to Select menu -> Grow, grow by 4px
+Select stroke layer, fill selection with black using the bucket fill tool
+Change text in the bottom lines. Each row is a layer, do not try to do a newline. Turn off the second line and second backdrop if only using one line. When changing this line don't delete the all characters or gimp will lose all of the font settings if you do. Only remove first letter after the rest have been entered
+CTRL SHIFT A to remove any selection you have, then click on the background layer (the bottom most layer)
+Go to Colors menu and select Colorize
+Change color to something that looks like old icon, or whatever you want for a new one
+SAVE the icon as an .xcf file.
+right click a layer -> flatten image (at the bottom)
+then export image as .ico, like toolname_256x256.ico
+You have a new icon.
+
+DO NOT SAVE THE FLATTENED ICON TO .XCF or you will lose the editable source icon.
+Ensure the source xcf and exported icon are commited to repository, and that the icon ishooked up in App.xaml, Tools.cs, your tool window's .xaml file. Also ensure the icon is added to the project under /ME3Explorer/Resources, which will have all of the other icons too.

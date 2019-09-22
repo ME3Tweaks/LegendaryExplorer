@@ -1413,7 +1413,6 @@
     <Resource Include="Resources\hexconverter_256x256.ico" />
     <Resource Include="Resources\meshplorer_256x256.ico" />
     <Resource Include="Resources\ploteditor_256x256.ico" />
-    <Resource Include="Resources\texplorer_256x256.ico" />
     <Resource Include="Resources\plotdatabase_256x256.ico" />
     <Resource Include="Resources\ImageEngine_256x256.ico" />
     <Resource Include="Resources\facefxa_256x256.ico" />
@@ -1445,6 +1444,7 @@
     <Resource Include="PackageEditor\EntryIcons\icon_sequence.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_material.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_package_fileroot.png" />
+    <Resource Include="Resources\tfccompactor_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
