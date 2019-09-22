@@ -81,6 +81,8 @@ namespace ME3Explorer.Soundplorer
             set => SetProperty(ref _taskbarText, value);
         }
 
+        private string FileQueuedForLoad;
+        private ExportEntry ExportQueuedForFocusing;
 
         public SoundplorerWPF()
         {
@@ -91,6 +93,12 @@ namespace ME3Explorer.Soundplorer
 
             LoadRecentList();
             RefreshRecent(false);
+        }
+
+        public SoundplorerWPF(ExportEntry export) : this()
+        {
+            FileQueuedForLoad = export.FileRef.FilePath;
+            ExportQueuedForFocusing = export;
         }
 
         public ICommand PopoutCurrentViewCommand { get; set; }
@@ -1357,6 +1365,27 @@ namespace ME3Explorer.Soundplorer
                 //File.WriteAllBytes(d.FileName, spExport.Export.getBinaryData());
                 File.WriteAllBytes(d.FileName, spExport.Entry.DataAsStored);
                 MessageBox.Show("Done.");
+            }
+        }
+
+        private void SoundplorerWPF_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(FileQueuedForLoad))
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
+                {
+                    //Wait for all children to finish loading
+                    LoadFile(FileQueuedForLoad);
+                    FileQueuedForLoad = null;
+
+                    if (BindedItemsList.FirstOrDefault(obj => obj is SoundplorerExport sExport && sExport.Export == ExportQueuedForFocusing) is SoundplorerExport soundExport)
+                    {
+                        SoundExports_ListBox.SelectedItem = soundExport;
+                    }
+                    ExportQueuedForFocusing = null;
+
+                    Activate();
+                }));
             }
         }
     }

@@ -158,10 +158,15 @@ namespace ME3Explorer.Meshplorer
             InitializeComponent();
         }
 
-        public override bool CanParse(ExportEntry exportEntry)
+        public static bool CanParseStatic(ExportEntry exportEntry)
         {
             return !exportEntry.IsDefaultObject && (parsableClasses.Contains(exportEntry.ClassName)
-                 || (exportEntry.ClassName == "BrushComponent" && exportEntry.GetProperty<StructProperty>("BrushAggGeom") != null));
+                   || (exportEntry.ClassName == "BrushComponent" && exportEntry.GetProperty<StructProperty>("BrushAggGeom") != null));
+        }
+
+        public override bool CanParse(ExportEntry exportEntry)
+        {
+            return CanParseStatic(exportEntry);
         }
 
         public override void PoppedOut(MenuItem recentsMenuItem)

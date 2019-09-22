@@ -48,11 +48,17 @@
             <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" CommandParameter="FromContextMenu" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Edit name" ToolTip="Edits the string this name represents" Command="{Binding EditNameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
+            <MenuItem Header="Open in Dialogue Editor" Command="{Binding OpenExportInCommand}" CommandParameter="DialogueEditor" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Open in FaceFX Editor" Command="{Binding OpenExportInCommand}" CommandParameter="FaceFXEditor" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Open in Meshplorer" Command="{Binding OpenExportInCommand}" CommandParameter="Meshplorer" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Open in Soundplorer" Command="{Binding OpenExportInCommand}" CommandParameter="Soundplorer" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Open in Sequence Editor" Command="{Binding OpenExportInCommand}" CommandParameter="SequenceEditor" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Open in Interp Viewer" Command="{Binding OpenExportInCommand}" CommandParameter="InterpViewer" SharedUI:Bindings.VisibilityToEnabled="True"/>
+
             <MenuItem Header="Find references" ToolTip="Finds objects that reference this one" Command="{Binding FindReferencesCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Reindex objects with this name" ToolTip="Reindexes all objects with this name, ensuring there are no duplicate indexes" Command="{Binding ReindexCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Clone" ToolTip="Clone only this entry"  Command="{Binding CloneCommand}"/>
             <MenuItem Header="Clone Tree" ToolTip="Clone this entry and all children" Command="{Binding CloneTreeCommand}"/>
-            <MenuItem Header="Open Export in InterpViewer" ToolTip="Opens this export in InterpViewer" Command="{Binding OpenInInterpViewerCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Package utilities">
                 <MenuItem Header="Generate new GUID for package" ToolTip="Generates a new GUID for this package. Only use this if you really know what you're doing." Command="{Binding CreateNewPackageGUIDCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                 <MenuItem Header="Set as filename package" ToolTip="Sets the name of this export to the same as the file." Command="{Binding SetPackageAsFilenamePackageCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
@@ -70,15 +76,6 @@
             </MenuItem>
         </ContextMenu>
     </Window.Resources>
-    <!--<Window.CommandBindings>
-        <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
-        <CommandBinding Command="Save" Executed="SaveCommandBinding_Executed"/>
-        <CommandBinding Command="SaveAs" Executed="SaveAsCommandBinding_Executed"/>
-        <CommandBinding Command="Commands:PackageEditorWPFCommands.FindCommand" Executed="FindCommandBinding_Executed"/>
-        <CommandBinding Command="Commands:PackageEditorWPFCommands.GotoCommand" Executed="GotoCommandBinding_Executed"/>
-        <CommandBinding Command="Commands:PackageEditorWPFCommands.NextTabCommand" Executed="NextTabBinding_Executed"/>
-        <CommandBinding Command="Commands:PackageEditorWPFCommands.PreviousTabCommand" Executed="PreviousTabBinding_Executed"/>
-    </Window.CommandBindings>-->
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenFileCommand}"/>
         <KeyBinding Key="N" Modifiers="Control" Command="{Binding NewFileCommand}"/>

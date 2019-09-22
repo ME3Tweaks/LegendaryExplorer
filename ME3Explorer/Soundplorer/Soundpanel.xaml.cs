@@ -379,11 +379,13 @@ namespace ME3Explorer
             _audioPlayer?.Dispose();
         }
 
-        public override bool CanParse(ExportEntry exportEntry)
+        public static bool CanParseStatic(ExportEntry exportEntry)
         {
             //            return (/*(exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "SoundNodeWave") || */(exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
             return !exportEntry.IsDefaultObject && (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream");
         }
+
+        public override bool CanParse(ExportEntry exportEntry) => CanParseStatic(exportEntry);
 
         public override void PoppedOut(MenuItem recentsMenuItem)
         {
