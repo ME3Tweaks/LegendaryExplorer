@@ -23,6 +23,7 @@ namespace ME3Explorer
 
         static SplashScreen splashScreen;
 
+
         /// <summary>
         /// Application Entry Point.
         /// </summary>
