@@ -99,6 +99,19 @@ namespace ME3Explorer.Packages
             return false;
         }
 
+        public static bool RemoveFromLevelActors(this IMEPackage pcc, ExportEntry actor)
+        {
+            if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
+            {
+                Level level = ObjectBinary.From<Level>(levelExport);
+                if (level.Actors.Remove(actor.UIndex))
+                {
+                    levelExport.setBinaryData(level.ToBytes(pcc));
+                    return true;
+                }
+            }
+            return false;
+        }
     }
     public static class ExportEntryExtensions
     {
