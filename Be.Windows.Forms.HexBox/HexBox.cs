@@ -1480,11 +1480,10 @@ namespace Be.Windows.Forms
         {
             this.MaxBytesPerLine = 0x64; //default absolute max.
             this._vScrollBar = new VScrollBar();
-            this._vScrollBar.Scroll += new ScrollEventHandler(_vScrollBar_Scroll);
+            this._vScrollBar.Scroll += _vScrollBar_Scroll;
 
             this._builtInContextMenu = new BuiltInContextMenu(this);
 
-            BackColor = Color.White;
             Font = SystemFonts.MessageBoxFont;
             _stringFormat = new StringFormat(StringFormat.GenericTypographic);
             _stringFormat.FormatFlags = StringFormatFlags.MeasureTrailingSpaces;
@@ -3156,21 +3155,6 @@ namespace Be.Windows.Forms
         #endregion
 
         #region Overridden properties
-        /// <summary>
-        /// Gets or sets the background color for the control.
-        /// </summary>
-        [DefaultValue(typeof(Color), "White")]
-        public override Color BackColor
-        {
-            get
-            {
-                return base.BackColor;
-            }
-            set
-            {
-                base.BackColor = value;
-            }
-        }
 
         /// <summary>
         /// The font used to display text in the hexbox.
@@ -4351,10 +4335,35 @@ namespace Be.Windows.Forms
         public int MinBytesPerLine { get; set; }
 
         /// <summary>
-        /// Sets the maximum amount of bytes per row that cna be displayed.
+        /// Sets the maximum amount of bytes per row that can be displayed.
         /// </summary>
         public int MaxBytesPerLine { get; set; }
 
         public Color LineInfoForeColor { get; set; }
+
+        #region DarkModeSupport
+
+        /// <summary>
+        /// Gets the background color for the control.
+        /// </summary>
+        [DefaultValue(typeof(Color), "White")]
+        public override Color BackColor => backColor;
+
+        /// <summary>
+        /// Gets the background color for the control.
+        /// </summary>
+        [DefaultValue(typeof(Color), "Black")]
+        public override Color ForeColor => foreColor;
+
+        public static void SetColors(Color background, Color text)
+        {
+            backColor = background;
+            foreColor = text;
+        }
+
+        private static Color backColor = Color.White;
+        private static Color foreColor = DefaultForeColor;
+
+        #endregion
     }
 }
