@@ -157,7 +157,7 @@ namespace ME3Explorer.TFCCompactor
                                         {
                                             if (referencedTFCs.Add(new TFCSelector(tfcname, true)))
                                             {
-                                                Debug.WriteLine($"Reference to {tfcname} in {Path.GetFileName(texture.FileRef.FilePath)} {texture.UIndex} {texture.GetIndexedFullPath}");
+                                                Debug.WriteLine($"Reference to {tfcname} in {Path.GetFileName(texture.FileRef.FilePath)} {texture.UIndex} {texture.InstancedFullPath}");
                                                 Application.Current.Dispatcher.Invoke(delegate
                                                 {
                                                     TextureCachesToPullFromList.ReplaceAll(referencedTFCs);
