@@ -214,7 +214,7 @@ namespace ME3Explorer
         public void Write2DAToExcel(string path)
         {
             var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add(export.ObjectName.Truncate(30));
+            var worksheet = workbook.Worksheets.Add(export.ObjectName.Name.Truncate(30));
 
             //write labels
             for (int rowindex = 0; rowindex < RowCount; rowindex++)

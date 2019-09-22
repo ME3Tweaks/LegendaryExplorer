@@ -245,11 +245,11 @@ namespace ME3Explorer.Pathfinding_Editor
             var fullPathMappingList = new List<(string fullpath, IEntry entry)>();
             foreach (ImportEntry imp in Pcc.Imports)
             {
-                fullPathMappingList.Add((imp.GetFullPath, imp));
+                fullPathMappingList.Add((imp.FullPath, imp));
             }
             foreach (ExportEntry exp in Pcc.Exports)
             {
-                fullPathMappingList.Add((exp.GetFullPath, exp));
+                fullPathMappingList.Add((exp.FullPath, exp));
             }
 
             var directMapping = fullPathMappingList.Where(x => x.fullpath == importFullName).ToList();
@@ -326,7 +326,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 var downstreamName = importParts[importParts.Length - upstreamCount - 1];
                 Debug.WriteLine(downstreamName);
                 int downstreamLinkIdx = upstreamEntryToAttachTo.UIndex;
-                Debug.WriteLine(upstreamEntryToAttachTo.GetFullPath);
+                Debug.WriteLine(upstreamEntryToAttachTo.FullPath);
 
                 var downstreamPackageName = importdbinfo["packagefile"];
                 string downstreamClassName = importdbinfo["fullclasspath"];
@@ -422,11 +422,11 @@ namespace ME3Explorer.Pathfinding_Editor
         /// <param name="exportToReindex">Export that contains the path you want to reindex</param>
         public static void ReindexMatchingObjects(ExportEntry exportToReindex)
         {
-            string fullpath = exportToReindex.GetFullPath;
+            string fullpath = exportToReindex.FullPath;
             int index = 1; //we'll start at 1.
             foreach (ExportEntry export in exportToReindex.FileRef.Exports)
             {
-                if (fullpath == export.GetFullPath && export.ClassName != "Class")
+                if (fullpath == export.FullPath && !export.IsClass)
                 {
                     export.indexValue = index;
                     index++;

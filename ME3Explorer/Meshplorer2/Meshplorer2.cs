@@ -71,7 +71,7 @@ namespace ME3Explorer.Meshplorer2
                                 ent.Filename = Path.GetFileName(file);
                                 ent.UIndex = entry.UIndex;
                                 ent.isDLC = false;
-                                ent.ObjectPath = entry.GetFullPath;
+                                ent.ObjectPath = entry.FullPath;
                                 ent.isSkeletal = entry.ClassName == "SkeletalMesh";
                                 Entries.Add(ent);
                             }

@@ -106,7 +106,7 @@ namespace ME3Explorer
             SaveFileDialog d = new SaveFileDialog
             {
                 Filter = "PNG files|*.png",
-                FileName = CurrentLoadedExport.ObjectName + ".png"
+                FileName = CurrentLoadedExport.ObjectName.Instanced + ".png"
             };
             if (d.ShowDialog() == true)
             {
@@ -137,7 +137,7 @@ namespace ME3Explorer
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new EmbeddedTextureViewer(), CurrentLoadedExport)
                 {
-                    Title = $"Texture Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {Pcc.FilePath}"
+                    Title = $"Texture Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }

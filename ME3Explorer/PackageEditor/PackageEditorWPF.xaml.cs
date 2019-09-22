@@ -283,7 +283,7 @@ namespace ME3Explorer
 
         private void BulkExportSWFs()
         {
-            var swfsInFile = Pcc.Exports.Where(x => x.ClassName == (Pcc.Game == MEGame.ME1 ? "BioSWF" : "GFxMovieInfo") && !x.ObjectName.StartsWith("Defaut__")).ToList();
+            var swfsInFile = Pcc.Exports.Where(x => x.ClassName == (Pcc.Game == MEGame.ME1 ? "BioSWF" : "GFxMovieInfo") && !x.IsDefaultObject).ToList();
             if (swfsInFile.Count > 0)
             {
                 CommonOpenFileDialog m = new CommonOpenFileDialog
@@ -300,7 +300,7 @@ namespace ME3Explorer
                     //your sample code                    
                     foreach (var export in swfsInFile)
                     {
-                        string exportFilename = $"{export.GetFullPath}.swf";
+                        string exportFilename = $"{export.FullPath}.swf";
                         string outputPath = Path.Combine(dir, exportFilename);
                         ExportEmbeddedFile(export, outputPath);
                     }
@@ -317,7 +317,7 @@ namespace ME3Explorer
 
         private void BulkImportSWFs()
         {
-            var swfsInFile = Pcc.Exports.Where(x => x.ClassName == (Pcc.Game == MEGame.ME1 ? "BioSWF" : "GFxMovieInfo") && !x.ObjectName.StartsWith("Defaut__")).ToList();
+            var swfsInFile = Pcc.Exports.Where(x => x.ClassName == (Pcc.Game == MEGame.ME1 ? "BioSWF" : "GFxMovieInfo") && !x.IsDefaultObject).ToList();
             if (swfsInFile.Count > 0)
             {
                 CommonOpenFileDialog m = new CommonOpenFileDialog
@@ -348,7 +348,7 @@ namespace ME3Explorer
                         foreach (var file in allfiles)
                         {
                             var fullpath = Path.GetFileNameWithoutExtension(file);
-                            var matchingExport = swfsInFile.FirstOrDefault(x => x.GetFullPath.Equals(fullpath, StringComparison.InvariantCultureIgnoreCase));
+                            var matchingExport = swfsInFile.FirstOrDefault(x => x.FullPath.Equals(fullpath, StringComparison.InvariantCultureIgnoreCase));
                             if (matchingExport != null)
                             {
                                 //Import and replace file
@@ -792,7 +792,7 @@ namespace ME3Explorer
 
                 var itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex).Select(tvEntry => tvEntry.Entry);
 
-                if (selected.Entry is IEntry ent && ent.GetFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
+                if (selected.Entry is IEntry ent && ent.FullPath.StartsWith(UnrealPackageFile.TrashPackageName))
                 {
                     MessageBox.Show("Cannot trash an already trashed item.");
                     return;
@@ -811,8 +811,8 @@ namespace ME3Explorer
                 Task.Run(() => entry.GetEntriesThatReferenceThisOne()).ContinueWithOnUIThread(prevTask =>
                 {
                     IsBusy = false;
-                    var dlg = new ListDialog(prevTask.Result.SelectMany(kvp => kvp.Value.Select(refName => $"#{kvp.Key.UIndex} {kvp.Key.ObjectName}: {refName}")).ToList(),
-                        $"{prevTask.Result.Count} Objects that reference #{entry.UIndex} {entry.GetFullPath}",
+                    var dlg = new ListDialog(prevTask.Result.SelectMany(kvp => kvp.Value.Select(refName => $"#{kvp.Key.UIndex} {kvp.Key.ObjectName.Instanced}: {refName}")).ToList(),
+                        $"{prevTask.Result.Count} Objects that reference #{entry.UIndex} {entry.InstancedFullPath}",
                         "There may be additional references to this object in the unparsed binary of some objects", this);
                     dlg.Show();
                 });
@@ -824,7 +824,7 @@ namespace ME3Explorer
         private void ReindexObjectByName()
         {
             if (!TryGetSelectedExport(out ExportEntry export)) return;
-            if (export.GetFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
+            if (export.FullPath.StartsWith(UnrealPackageFile.TrashPackageName))
             {
                 MessageBox.Show("Cannot reindex exports that are part of ME3ExplorerTrashPackage. All items in this package should have an object index of 0.");
                 return;
@@ -838,15 +838,15 @@ namespace ME3Explorer
             if (exp != null)
             {
                 bool uiConfirm = false;
-                string prefixToReindex = exp.PackageFullNameInstanced;
+                string prefixToReindex = exp.ParentInstancedFullPath;
                 //if (numItemsInFullPath > 0)
                 //{
                 //    prefixToReindex = prefixToReindex.Substring(0, prefixToReindex.LastIndexOf('.'));
                 //}
-                string objectname = exp.ObjectName;
+                string objectname = exp.ObjectName.Name;
                 if (showUI)
                 {
-                    uiConfirm = MessageBox.Show($"Confirm reindexing of all exports named {objectname} within the following package path:\n{(prefixToReindex == "Package" ? "Package file root" : prefixToReindex)}\n\n" +
+                    uiConfirm = MessageBox.Show($"Confirm reindexing of all exports named {objectname} within the following package path:\n{(string.IsNullOrEmpty(prefixToReindex) ? "Package file root" : prefixToReindex)}\n\n" +
                                                 $"Only use this reindexing feature for items that are meant to be indexed 1 and above (and not 0) as this tool will force all items to be indexed at 1 or above.\n\n" +
                                                 $"Ensure this file has a backup, this operation may cause the file to stop working if you use it improperly.",
                                     "Confirm Reindexing",
@@ -863,7 +863,7 @@ namespace ME3Explorer
                     foreach (ExportEntry export in Pcc.Exports)
                     {
                         //Check object name is the same, the package path count is the same, the package prefix is the same, and the item is not of type Class
-                        if (objectname == export.ObjectName && export.PackageFullNameInstanced == prefixToReindex && export.PackageFullNameInstanced != "Class")
+                        if (objectname == export.ObjectName.Name && export.ParentInstancedFullPath == prefixToReindex && !export.IsClass)
                         {
                             export.indexValue = index;
                             index++;
@@ -949,7 +949,7 @@ namespace ME3Explorer
                                 SaveFileDialog d = new SaveFileDialog
                                 {
                                     Title = "Save SWF",
-                                    FileName = exp.GetFullPath + ".swf",
+                                    FileName = exp.FullPath + ".swf",
                                     Filter = "*.swf|*.swf"
                                 };
                                 if (d.ShowDialog() == true)
@@ -975,7 +975,7 @@ namespace ME3Explorer
                         SaveFileDialog d = new SaveFileDialog
                         {
                             Title = "Export TLK as XML",
-                            FileName = exp.GetFullPath + ".xml",
+                            FileName = exp.FullPath + ".xml",
                             Filter = $"*{extension}|*{extension}"
                         };
                         if (d.ShowDialog() == true)
@@ -1005,7 +1005,7 @@ namespace ME3Explorer
                             OpenFileDialog d = new OpenFileDialog
                             {
                                 Title = "Replace SWF",
-                                FileName = exp.GetFullPath + ".swf",
+                                FileName = exp.FullPath + ".swf",
                                 Filter = $"*{extension};*.gfx|*{extension};*.gfx"
                             };
                             if (d.ShowDialog() == true)
@@ -1054,7 +1054,7 @@ namespace ME3Explorer
                         OpenFileDialog d = new OpenFileDialog
                         {
                             Title = "Replace TLK from exported XML (ME1 Only)",
-                            FileName = exp.GetFullPath + ".xml",
+                            FileName = exp.FullPath + ".xml",
                             Filter = $"*{extension}|*{extension}"
                         };
                         if (d.ShowDialog() == true)
@@ -1190,7 +1190,7 @@ namespace ME3Explorer
             var duplicatesPackagePathIndexMapping = new Dictionary<string, List<int>>();
             foreach (ExportEntry exp in Pcc.Exports)
             {
-                string key = exp.GetInstancedFullPath;
+                string key = exp.InstancedFullPath;
                 if (key.StartsWith(UnrealPackageFile.TrashPackageName)) continue; //Do not report these as requiring re-indexing.
                 if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<int> indexList))
                 {
@@ -1199,7 +1199,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    duplicates.Add($"{exp.UIndex} {exp.GetInstancedFullPath} has duplicate index (index value {exp.indexValue})");
+                    duplicates.Add($"{exp.UIndex} {exp.InstancedFullPath} has duplicate index (index value {exp.indexValue})");
                 }
 
                 indexList.Add(exp.UIndex);
@@ -1317,10 +1317,10 @@ namespace ME3Explorer
 
         private bool TryAddToPersistentLevel(IEntry newEntry)
         {
-            if (newEntry is ExportEntry ent && ent?.Parent?.ClassName == "Level" && ent.InheritsFrom("Actor")
+            if (newEntry is ExportEntry ent && ent?.Parent?.ClassName == "Level" && ent.IsOrInheritsFrom("Actor")
              && Pcc.AddToLevelActorsIfNotThere(ent))
             {
-                MessageBox.Show(this, $"Added {ent.ObjectName} to PersistentLevel's Actor list!");
+                MessageBox.Show(this, $"Added {ent.ObjectName.Instanced} to PersistentLevel's Actor list!");
                 return true;
             }
 
@@ -1341,7 +1341,7 @@ namespace ME3Explorer
             OpenFileDialog d = new OpenFileDialog
             {
                 Filter = "*.bin|*.bin",
-                FileName = export.ObjectName + ".bin"
+                FileName = export.ObjectName.Instanced + ".bin"
             };
             if (d.ShowDialog() == true)
             {
@@ -1373,7 +1373,7 @@ namespace ME3Explorer
             SaveFileDialog d = new SaveFileDialog
             {
                 Filter = "*.bin|*.bin",
-                FileName = export.ObjectName + ".bin"
+                FileName = export.ObjectName.Instanced + ".bin"
             };
             if (d.ShowDialog() == true)
             {
@@ -1491,12 +1491,12 @@ namespace ME3Explorer
                         //    //Debug.Write(" " + b.ToString("X2"));
                         //}
                         //Debug.WriteLine("");
-                        changedExports.Add($"Export header has changed: {exp1.UIndex} {exp1.GetFullPath}");
+                        changedExports.Add($"Export header has changed: {exp1.UIndex} {exp1.InstancedFullPath}");
                     }
 
                     if (!exp1.Data.SequenceEqual(exp2.Data))
                     {
-                        changedExports.Add($"Export data has changed: {exp1.UIndex} {exp1.GetFullPath}");
+                        changedExports.Add($"Export data has changed: {exp1.UIndex} {exp1.InstancedFullPath}");
                     }
                 }
 
@@ -1510,8 +1510,8 @@ namespace ME3Explorer
 
                 for (int i = numExportsToEnumerate; i < enumerateExtras.ExportCount; i++)
                 {
-                    Debug.WriteLine($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].GetFullPath}");
-                    changedExports.Add($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].GetFullPath}");
+                    Debug.WriteLine($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}");
+                    changedExports.Add($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}");
                 }
 
                 sw.Stop();
@@ -2427,7 +2427,7 @@ namespace ME3Explorer
                             var entry = Pcc.GetEntry(index);
                             if (entry != null)
                             {
-                                Goto_Preview_TextBox.Text = entry.GetFullPath + "_" + entry.indexValue;
+                                Goto_Preview_TextBox.Text = entry.InstancedFullPath;
                             }
                             else
                             {
@@ -2719,7 +2719,7 @@ namespace ME3Explorer
                 IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
                 for (int i = start, numSearched = 0; numSearched < Imports.Count; i++, numSearched++)
                 {
-                    if (Imports[i].ObjectName.ToLower().Contains(searchTerm))
+                    if (Imports[i].ObjectName.Name.ToLower().Contains(searchTerm))
                     {
                         LeftSide_ListView.SelectedIndex = i;
                         break;
@@ -2737,7 +2737,7 @@ namespace ME3Explorer
                 IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
                 for (int i = start, numSearched = 0; numSearched < Exports.Count; i++, numSearched++)
                 {
-                    if (Exports[i].ObjectName.ToLower().Contains(searchTerm))
+                    if (Exports[i].ObjectName.Name.ToLower().Contains(searchTerm))
                     {
                         LeftSide_ListView.SelectedIndex = i;
                         break;
@@ -2765,7 +2765,7 @@ namespace ME3Explorer
                         continue;
                     }
 
-                    if (node.Entry.ObjectName.ToLower().Contains(searchTerm))
+                    if (node.Entry.ObjectName.Name.ToLower().Contains(searchTerm))
                     {
                         node.IsProgramaticallySelecting = true;
                         SelectedItem = node;
@@ -3050,13 +3050,13 @@ namespace ME3Explorer
                 {
                     if (export.ObjectName == "SFXOperation_ObjectiveSpawnPoint")
                     {
-                        Debug.WriteLine("Porting " + export.GetFullPath + "_" + export.indexValue);
+                        Debug.WriteLine("Porting " + export.InstancedFullPath);
                         ExportEntry portedObjective = EntryImporter.importExport(Pcc, export, targetPersistentLevel.UIndex);
                         objectMap[export] = portedObjective;
                         itemsToAddToLevel.Add(portedObjective);
                         var child = export.GetProperty<ObjectProperty>("CollisionComponent");
                         ExportEntry collCyl = sourceFile.Exports[child.Value - 1];
-                        Debug.WriteLine($"Porting {collCyl.GetFullPath}_{collCyl.indexValue}");
+                        Debug.WriteLine($"Porting {collCyl.InstancedFullPath}");
                         ExportEntry portedCollisionCylinder = EntryImporter.importExport(Pcc, collCyl, portedObjective.UIndex);
                         objectMap[collCyl] = portedCollisionCylinder;
                     }
@@ -3140,9 +3140,9 @@ namespace ME3Explorer
                             var filesToSkip = new[] {"BioD_Cit004_270ShuttleBay1", "BioD_Cit003_600MechEvent", "CAT6_Executioner", "SFXPawn_Demo", "SFXPawn_Sniper", "SFXPawn_Heavy", "GethAssassin", "BioD_OMG003_125LitExtra"};
                             foreach (ExportEntry exp in package.Exports)
                             {
-                                if (exp.ClassName == "Package" && exp.idxLink == 0 && !filesToSkip.Contains(exp.ObjectName))
+                                if (exp.ClassName == "Package" && exp.idxLink == 0 && !filesToSkip.Contains(exp.ObjectName.Name))
                                 {
-                                    if (string.Equals(exp.ObjectName, fname, StringComparison.InvariantCultureIgnoreCase))
+                                    if (string.Equals(exp.ObjectName.Name, fname, StringComparison.InvariantCultureIgnoreCase))
                                     {
                                         hasPackageNamingItself = true;
                                     }
@@ -3151,14 +3151,14 @@ namespace ME3Explorer
                                     if (guid != Guid.Empty)
                                     {
                                         GuidPackageMap.TryGetValue(guid, out string packagename);
-                                        if (packagename != null && packagename != exp.ObjectName)
+                                        if (packagename != null && packagename != exp.ObjectName.Name)
                                         {
-                                            Debug.WriteLine($"-> {exp.UIndex} {exp.ObjectName} has a guid different from already found one ({packagename})! {guid}");
+                                            Debug.WriteLine($"-> {exp.UIndex} {exp.ObjectName.Name} has a guid different from already found one ({packagename})! {guid}");
                                         }
 
                                         if (packagename == null)
                                         {
-                                            GuidPackageMap[guid] = exp.ObjectName;
+                                            GuidPackageMap[guid] = exp.ObjectName.Name;
                                         }
                                     }
                                 }
@@ -3233,7 +3233,7 @@ namespace ME3Explorer
                     {
                         if (exp.ClassName == "Package"
                             && exp.idxLink == 0
-                            && string.Equals(exp.ObjectName, fname, StringComparison.InvariantCultureIgnoreCase))
+                            && string.Equals(exp.ObjectName.Name, fname, StringComparison.InvariantCultureIgnoreCase))
                         {
                             selfNamingExport = exp;
                             break;
@@ -3257,7 +3257,7 @@ namespace ME3Explorer
 
         private void MakeAllGrenadesAmmoRespawn_Click(object sender, RoutedEventArgs e)
         {
-            var ammoGrenades = Pcc.Exports.Where(x => x.ClassName != "Class" && !x.ObjectName.StartsWith("Default") && (x.ObjectName == "SFXAmmoContainer" || x.ObjectName == "SFXGrenadeContainer" || x.ObjectName == "SFXAmmoContainer_Simulator"));
+            var ammoGrenades = Pcc.Exports.Where(x => x.ClassName != "Class" && !x.IsDefaultObject && (x.ObjectName == "SFXAmmoContainer" || x.ObjectName == "SFXGrenadeContainer" || x.ObjectName == "SFXAmmoContainer_Simulator"));
             foreach (var container in ammoGrenades)
             {
                 BoolProperty respawns = new BoolProperty(true, "bRespawns");
@@ -3328,7 +3328,7 @@ namespace ME3Explorer
 
                                 if (nativeIndex != 0)
                                 {
-                                    Debug.WriteLine(">>NATIVE Function " + nativeIndex + " " + export.ObjectName);
+                                    Debug.WriteLine($">>NATIVE Function {nativeIndex} {export.ObjectName}");
                                     var newInfo = new CachedNativeFunctionInfo
                                     {
                                         nativeIndex = nativeIndex,
@@ -3367,7 +3367,7 @@ namespace ME3Explorer
                             if ((export.ClassName == "BioSWF"))
                                 //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
                             {
-                                Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
+                                Debug.WriteLine($"{export.ClassName}({export.ObjectName.Instanced}) in {fi.Name} at export {export.UIndex}");
                             }
                         }
                     }
@@ -3612,17 +3612,6 @@ namespace ME3Explorer
             new MountEditor.MountEditorWPF().Show();
         }
 
-        private void ShowObjectIndexes_Click(object sender, RoutedEventArgs e)
-        {
-
-            Properties.Settings.Default.PackageEditorWPF_TreeViewShowEntryIndex = !Properties.Settings.Default.PackageEditorWPF_TreeViewShowEntryIndex;
-            Properties.Settings.Default.Save();
-            if (AllTreeViewNodesX.Any())
-            {
-                AllTreeViewNodesX[0].FlattenTree().ForEach(x => x.RefreshDisplayName());
-            }
-        }
-
         private void EmbeddedTextureViewer_AutoLoad_Click(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad = !Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad;
@@ -3640,9 +3629,9 @@ namespace ME3Explorer
             var strs = new List<string>();
             foreach (ExportEntry exp in Pcc.Exports)
             {
-                if (exp.GetFullPath.StartsWith("TheWorld.PersistentLevel") && exp.GetFullPath.Count(f => f == '.') == 2)
+                if (exp.ParentName == "PersistentLevel")
                 {
-                    strs.Add($"{exp.NetIndex} {exp.GetIndexedFullPath}");
+                    strs.Add($"{exp.NetIndex} {exp.InstancedFullPath}");
                 }
             }
 
@@ -3655,7 +3644,7 @@ namespace ME3Explorer
             var strs = new List<string>();
             foreach (ExportEntry exp in Pcc.Exports.Where(x => x.LinkerIndex >= 0).OrderBy(x => x.LinkerIndex))
             {
-                strs.Add($"UI:{exp.UIndex} -> LI:{BitConverter.ToInt32(exp.Data, 0)} = {exp.GetIndexedFullPath}");
+                strs.Add($"UI:{exp.UIndex} -> LI:{BitConverter.ToInt32(exp.Data, 0)} = {exp.InstancedFullPath}");
             }
 
             var d = new ListDialog(strs, "Linker Indexes", "Here are the linker indexes in this file", this);
@@ -3933,7 +3922,7 @@ namespace ME3Explorer
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
-                    var exports = pcc.Exports.Where(exp => exp.InheritsFrom("DominantSpotLightComponent"));
+                    var exports = pcc.Exports.Where(exp => exp.IsOrInheritsFrom("DominantSpotLightComponent"));
                     foreach (ExportEntry exp in exports)
                     {
                         try
@@ -4129,7 +4118,7 @@ namespace ME3Explorer
         private void CreateDynamicLighting(object sender, RoutedEventArgs e)
         {
             if (Pcc == null) return;
-            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.InheritsFrom("MeshComponent") || exp.InheritsFrom("BrushComponent")))
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsOrInheritsFrom("MeshComponent") || exp.IsOrInheritsFrom("BrushComponent")))
             {
                 PropertyCollection props = exp.GetProperties();
                 if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 && (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false || props.GetProp<BoolProperty>("CastShadow")?.Value == false))
@@ -4159,7 +4148,7 @@ namespace ME3Explorer
                 exp.WriteProperties(props);
             }
 
-            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.InheritsFrom("LightComponent")))
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsOrInheritsFrom("LightComponent")))
             {
                 PropertyCollection props = exp.GetProperties();
                 //props.AddOrReplaceProp(new BoolProperty(true, "bCanAffectDynamicPrimitivesOutsideDynamicChannel"));

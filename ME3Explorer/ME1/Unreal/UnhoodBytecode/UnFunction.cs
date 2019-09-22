@@ -90,7 +90,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             {
                 result.Append(type).Append(" ");
             }
-            result.Append(_self.ObjectName).Append("(");
+            result.Append(_self.ObjectName.Instanced).Append("(");
             int paramCount = 0;
             var locals = new List<ExportEntry>();
 
@@ -119,15 +119,15 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                             IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
                             if (entry != null)
                             {
-                                result.Append(entry.ObjectName + " ");
+                                result.Append($"{entry.ObjectName.Instanced} ");
                             }
                         }
                         else
                         {
-                            result.Append(GetPropertyType(export) + " ");
+                            result.Append($"{GetPropertyType(export)} ");
                         }
 
-                        result.Append(export.ObjectName);
+                        result.Append(export.ObjectName.Instanced);
                         paramCount++;
 
                         if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.OptionalParm) && Statements.Count > 0)
@@ -188,7 +188,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 result.PushIndent();
                 foreach (var local in locals)
                 {
-                    result.Indent().Append("local ").Append(GetPropertyType(local)).Append(" ").Append(local.ObjectName).Append(";").NewLine();
+                    result.Indent().Append("local ").Append(GetPropertyType(local)).Append(" ").Append(local.ObjectName.Instanced).Append(";").NewLine();
                 }
                 result.PopIndent();   // will be pushed again in DecompileBytecode()
                 DecompileBytecode(Statements, result, createControlStatements);

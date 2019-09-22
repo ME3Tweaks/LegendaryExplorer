@@ -140,8 +140,8 @@
 
                                 <fa:ImageAwesome x:Name="FAImageIcon" Grid.Column="7" Width="18" Height="18" Margin="2,0,4,0"/>
                                 <StackPanel>
-                                    <TextBlock Text="{Binding ObjectName}" VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding PackageFullName}" VerticalAlignment="Center" Foreground="Gray"/>
+                                    <TextBlock Text="{Binding ObjectName.Instanced}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding ParentFullPath}" VerticalAlignment="Center" Foreground="Gray"/>
                                 </StackPanel>
                             </StackPanel>
                             <DataTemplate.Triggers>

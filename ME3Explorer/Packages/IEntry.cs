@@ -17,14 +17,13 @@ namespace ME3Explorer.Packages
         MEGame Game { get; }
         int idxLink { get; set; }
         string ClassName { get; }
-        string GetFullPath { get; }
-        string GetInstancedFullPath { get; }
-        string GetIndexedFullPath { get; }
-        string ObjectName { get; set; }
-        string PackageFullName { get; }
-        string PackageFullNameInstanced { get; }
-        string PackageName { get; }
-        string PackageNameInstanced { get; }
+        string FullPath { get; }
+        string InstancedFullPath { get; }
+        string ObjectNameString { get; set; }
+        NameReference ObjectName { get; set; }
+        string ParentFullPath { get; }
+        string ParentInstancedFullPath { get; }
+        string ParentName { get; }
         byte[] GetHeader(); //returns clone
         bool HasParent { get; }
         IEntry Parent { get; set; }

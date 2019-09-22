@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer.Unreal;
 using SharpDX;
 
 namespace ME3Explorer
@@ -20,6 +21,12 @@ namespace ME3Explorer
             x = vec.X;
             y = vec.Y;
             z = vec.Z;
+        }
+
+        public static void Deconstruct(this NameReference nameRef, out string name, out int number)
+        {
+            name = nameRef.Name;
+            number = nameRef.Number;
         }
     }
 }

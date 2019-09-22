@@ -97,14 +97,14 @@ namespace ME3Explorer.Scene3D
             Properties.Add("Name", mat.Export.ObjectName);
             foreach (var textureEntry in mat.Textures)
             {
-                if (!Textures.ContainsKey(textureEntry.GetFullPath) && textureEntry.ClassName == "Texture2D")  //Apparently some assets are cubemaps, we don't want these.
+                if (!Textures.ContainsKey(textureEntry.FullPath) && textureEntry.ClassName == "Texture2D")  //Apparently some assets are cubemaps, we don't want these.
                 {
                     if (preloadedTextures != null)
                     {
-                        var preloadedInfo = preloadedTextures.FirstOrDefault(x => x.MaterialExport == mat.Export && x.Mip.Export.ObjectName == textureEntry.ObjectName); //i don't like matching on object name but its export vs import here.
+                        var preloadedInfo = preloadedTextures.FirstOrDefault(x => x.MaterialExport == mat.Export && x.Mip.Export.ObjectName.Name == textureEntry.ObjectName.Name); //i don't like matching on object name but its export vs import here.
                         if (preloadedInfo != null)
                         {
-                            Textures.Add(textureEntry.GetFullPath, texcache.LoadTexture(preloadedInfo.Mip.Export, preloadedInfo.Mip, preloadedInfo.decompressedTextureData));
+                            Textures.Add(textureEntry.FullPath, texcache.LoadTexture(preloadedInfo.Mip.Export, preloadedInfo.Mip, preloadedInfo.decompressedTextureData));
                         }
                         else
                         {
@@ -119,12 +119,12 @@ namespace ME3Explorer.Scene3D
                         var extAsset = ModelPreview.FindExternalAsset(import, texcache.cache.Select(x => x.TextureExport).ToList());
                         if (extAsset != null)
                         {
-                            Textures.Add(textureEntry.GetFullPath, texcache.LoadTexture(extAsset));
+                            Textures.Add(textureEntry.FullPath, texcache.LoadTexture(extAsset));
                         }
                     }
                     else
                     {
-                        Textures.Add(textureEntry.GetFullPath, texcache.LoadTexture(textureEntry as ExportEntry));
+                        Textures.Add(textureEntry.FullPath, texcache.LoadTexture(textureEntry as ExportEntry));
                     }
                 }
             }
@@ -171,14 +171,14 @@ namespace ME3Explorer.Scene3D
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
         public TexturedPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, preloadedTextures)
         {
-            var matPackage = mat.Export.Parent.GetFullPath.ToLower();
+            var matPackage = mat.Export.Parent.FullPath.ToLower();
             foreach (var textureEntry in mat.Textures)
             {
-                var texObjectName = textureEntry.GetFullPath.ToLower();
+                var texObjectName = textureEntry.FullPath.ToLower();
                 if (texObjectName.StartsWith(matPackage) && texObjectName.Contains("diff"))
                 {
                     // we have found the diffuse texture!
-                    DiffuseTextureFullName = textureEntry.GetFullPath;
+                    DiffuseTextureFullName = textureEntry.FullPath;
                     Debug.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
                     return;
                 }
@@ -186,34 +186,34 @@ namespace ME3Explorer.Scene3D
 
             foreach (var textureEntry in mat.Textures)
             {
-                var texObjectName = textureEntry.ObjectName.ToLower();
+                var texObjectName = textureEntry.ObjectName.Name.ToLower();
                 if (texObjectName.Contains("diff") || texObjectName.Contains("tex"))
                 {
                     // we have found the diffuse texture!
-                    DiffuseTextureFullName = textureEntry.GetFullPath;
+                    DiffuseTextureFullName = textureEntry.FullPath;
                     Debug.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
                     return;
                 }
             }
             foreach (var texparam in mat.Textures)
             {
-                var texObjectName = texparam.ObjectName.ToLower();
+                var texObjectName = texparam.ObjectName.Name.ToLower();
 
                 if (texObjectName.Contains("detail"))
                 {
                     // I guess a detail texture is good enough if we didn't return for a diffuse texture earlier...
-                    DiffuseTextureFullName = texparam.GetFullPath;
+                    DiffuseTextureFullName = texparam.FullPath;
                     Debug.WriteLine("Diffuse (Detail) texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
                     return;
                 }
             }
             foreach (var texparam in mat.Textures)
             {
-                var texObjectName = texparam.ObjectName.ToLower();
+                var texObjectName = texparam.ObjectName.Name.ToLower();
                 if (!texObjectName.Contains("norm") && !texObjectName.Contains("opac"))
                 {
                     //Anything is better than nothing I suppose
-                    DiffuseTextureFullName = texparam.GetFullPath;
+                    DiffuseTextureFullName = texparam.FullPath;
                     Debug.WriteLine("Using first found texture (last resort)  of new material <" + Properties["Name"] + "> as diffuse: " + DiffuseTextureFullName);
                     return;
                 }
@@ -436,7 +436,7 @@ namespace ME3Explorer.Scene3D
                 foreach (var mat in uniqueMaterials)
                 {
                     var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), preloadedData.texturePreviewMaterials);
-                    AddMaterial(mat.ObjectName, material);
+                    AddMaterial(mat.ObjectName.Name, material);
                 }
             }
 
@@ -453,20 +453,20 @@ namespace ME3Explorer.Scene3D
             //Debug.WriteLine("Finding external asset " + entry.GetFullPath);
             if (entry.Game == MEGame.ME1)
             {
-                var sourcePackageInternalPath = entry.GetFullPath.Substring(entry.GetFullPath.IndexOf('.') + 1);
+                var sourcePackageInternalPath = entry.FullPath.Substring(entry.FullPath.IndexOf('.') + 1);
                 string baseName = entry.FileRef.FollowLink(entry.idxLink).Split('.')[0].ToUpper() + ".upk"; //Get package filename
                 var preloadedPackageEntry = alreadyLoadedPackageEntries?.FirstOrDefault(x => Path.GetFileName(x.FileRef.FilePath).Equals(baseName, StringComparison.InvariantCultureIgnoreCase));
                 if (preloadedPackageEntry == null && MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).TryGetValue(baseName, out string packagePath))
                 {
                     var package = MEPackageHandler.OpenMEPackage(packagePath);
-                    var foundExp = package.Exports.FirstOrDefault(exp => exp.GetFullPath == sourcePackageInternalPath && exp.ClassName == entry.ClassName);
+                    var foundExp = package.Exports.FirstOrDefault(exp => exp.FullPath == sourcePackageInternalPath && exp.ClassName == entry.ClassName);
                     if (foundExp != null) return foundExp;
                     package.Dispose();
                 }
                 else
                 {
                     Debug.WriteLine("ME1 External Asset lookup: Using existing preloaded export package");
-                    var foundExp = preloadedPackageEntry.FileRef.Exports.FirstOrDefault(exp => exp.GetFullPath == sourcePackageInternalPath && exp.ClassName == entry.ClassName);
+                    var foundExp = preloadedPackageEntry.FileRef.Exports.FirstOrDefault(exp => exp.FullPath == sourcePackageInternalPath && exp.ClassName == entry.ClassName);
                     if (foundExp != null) return foundExp;
                 }
 
@@ -521,7 +521,7 @@ namespace ME3Explorer.Scene3D
                     {
                         Debug.WriteLine("ME2/3 External Asset lookup: Checking " + packagePath);
                         var package = MEPackageHandler.OpenMEPackage(packagePath);
-                        var foundExp = package.Exports.FirstOrDefault(exp => exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName);
+                        var foundExp = package.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
                         if (foundExp != null) return foundExp;
                         //Debug.WriteLine("ME2/3 External Asset lookup: Not found, disposing " + packagePath);
                         package.Dispose();
@@ -529,7 +529,7 @@ namespace ME3Explorer.Scene3D
                     else
                     {
                         Debug.WriteLine("ME2/3 External Asset lookup: Using existing preloaded export package");
-                        var foundExp = preloadedPackageEntry.FileRef.Exports.FirstOrDefault(exp => exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName);
+                        var foundExp = preloadedPackageEntry.FileRef.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
                         if (foundExp != null) return foundExp;
                     }
                 }
@@ -540,7 +540,7 @@ namespace ME3Explorer.Scene3D
                 {
                     //This is not in using statement as we have to keep this in memory.
                     IMEPackage pcc = MEPackageHandler.OpenMEPackage(sfxgamePath);
-                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName);
+                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
                     if (foundExp != null) return foundExp;
                     //Debug.WriteLine("ME2/3 External Asset lookup: Not SFXGame, disposing");
 
@@ -553,7 +553,7 @@ namespace ME3Explorer.Scene3D
                 {
                     //This is not in using statement as we have to keep this in memory.
                     IMEPackage pcc = MEPackageHandler.OpenMEPackage(entryMenuPath);
-                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName);
+                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
                     if (foundExp != null) return foundExp;
                     //Debug.WriteLine("ME2/3 External Asset lookup: Not EntryMenu, disposing");
 
@@ -566,13 +566,13 @@ namespace ME3Explorer.Scene3D
                 {
                     //This is not in using statement as we have to keep this in memory.
                     IMEPackage pcc = MEPackageHandler.OpenMEPackage(startupPath);
-                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.GetFullPath == entry.GetFullPath && exp.ClassName == entry.ClassName);
+                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
                     if (foundExp != null) return foundExp;
                     //Debug.WriteLine("ME2/3 External Asset lookup: Not Startup, disposing");
                     pcc.Dispose(); //Dump from memory
                 }
             }
-            Debug.WriteLine("Could not find external asset: " + entry.GetFullPath);
+            Debug.WriteLine("Could not find external asset: " + entry.FullPath);
             return null;
         }
 
@@ -662,7 +662,7 @@ namespace ME3Explorer.Scene3D
                 foreach (var mat in uniqueMaterials)
                 {
                     var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), preloadedData.texturePreviewMaterials);
-                    AddMaterial(mat.ObjectName, material);
+                    AddMaterial(mat.ObjectName.Name, material);
 
                 }
             }

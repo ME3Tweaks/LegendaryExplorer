@@ -22,7 +22,7 @@ namespace ME3Explorer.Packages
             if (coreRefEntry != null)
             {
                 retStr = coreRefEntry is ImportEntry ? "[I] " : "[E] ";
-                retStr += coreRefEntry.GetIndexedFullPath;
+                retStr += coreRefEntry.InstancedFullPath;
             }
             return retStr;
         }
@@ -32,12 +32,12 @@ namespace ME3Explorer.Packages
             if (pcc.IsUExport(uIndex))
             {
                 ExportEntry parent = pcc.GetUExport(uIndex);
-                return pcc.FollowLink(parent.idxLink) + parent.ObjectName + ".";
+                return $"{pcc.FollowLink(parent.idxLink)}{parent.ObjectName}.";
             }
             if (pcc.IsImport(uIndex))
             {
                 ImportEntry parent = pcc.GetImport(uIndex);
-                return pcc.FollowLink(parent.idxLink) + parent.ObjectName + ".";
+                return $"{pcc.FollowLink(parent.idxLink)}{parent.ObjectName}.";
             }
             return "";
         }
@@ -53,7 +53,7 @@ namespace ME3Explorer.Packages
             //see if this import exists locally
             foreach (ImportEntry imp in pcc.Imports)
             {
-                if (imp.GetFullPath == fullPath)
+                if (imp.FullPath == fullPath)
                 {
                     return imp;
                 }
@@ -62,7 +62,7 @@ namespace ME3Explorer.Packages
             //see if this is an export and exists locally
             foreach (ExportEntry exp in pcc.Exports)
             {
-                if (exp.GetFullPath == fullPath)
+                if (exp.FullPath == fullPath)
                 {
                     return exp;
                 }

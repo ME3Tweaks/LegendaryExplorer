@@ -62,21 +62,21 @@ namespace ME3Explorer.Unreal.Classes
 
             PropertyCollection props = export.GetProperties();
             NodeTotalWeight = props.GetPropOrDefault<FloatProperty>("NodeTotalWeight").Value;
-            ComposePrePassBoneNames = props.GetPropOrDefault<ArrayProperty<NameProperty>>("ComposePrePassBoneNames").Select(n => n.Value.InstancedString).ToList();
+            ComposePrePassBoneNames = props.GetPropOrDefault<ArrayProperty<NameProperty>>("ComposePrePassBoneNames").Select(n => n.Value.Instanced).ToList();
             AnimGroups = props.GetPropOrDefault<ArrayProperty<StructProperty>>("AnimGroups").Select(prop => new AnimGroupEntry
             {
-                GroupName = prop.GetPropOrDefault<NameProperty>("GroupName").Value.InstancedString,
+                GroupName = prop.GetPropOrDefault<NameProperty>("GroupName").Value.Instanced,
                 RateScale = prop.GetPropOrDefault<FloatProperty>("RateScale").Value,
                 SynchPctPosition = prop.GetPropOrDefault<FloatProperty>("SynchPctPosition").Value
             }).ToList();
             SkelControlLists = props.GetPropOrDefault<ArrayProperty<StructProperty>>("SkelControlLists").Select(prop => new SkelControlListEntry
             {
-                BoneName = prop.GetPropOrDefault<NameProperty>("BoneName").Value.InstancedString,
+                BoneName = prop.GetPropOrDefault<NameProperty>("BoneName").Value.Instanced,
                 ControlHead = prop.GetPropOrDefault<ObjectProperty>("ControlHead").Value
             }).ToList();
             Children = props.GetPropOrDefault<ArrayProperty<StructProperty>>("Children").Select(prop => new ChildrenEntry
             {
-                Name = prop.GetPropOrDefault<NameProperty>("Name").Value.InstancedString,
+                Name = prop.GetPropOrDefault<NameProperty>("Name").Value.Instanced,
                 Weight = prop.GetPropOrDefault<FloatProperty>("Weight").Value,
                 Anim = prop.GetPropOrDefault<ObjectProperty>("Anim").Value,
                 bIsAdditive = prop.GetPropOrDefault<BoolProperty>("bIsAdditive").Value,
@@ -86,7 +86,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode($"AnimTree : {Export.ObjectName}(#{Export.UIndex})");
+            TreeNode res = new TreeNode($"AnimTree : {Export.ObjectName.Instanced}(#{Export.UIndex})");
             res.Nodes.Add("NodeTotalWeight : " + NodeTotalWeight);
             res.Nodes.Add(AnimGroupsToTree());
             res.Nodes.Add(PrePassBoneNamesToTree());

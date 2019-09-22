@@ -395,7 +395,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 int nindex = m.export.NetIndex;
                 if (indexes.Contains(nindex))
                 {
-                    Debug.WriteLine("Duplicate netindex " + nindex + ": Found a duplicate on " + m.export.GetIndexedFullPath);
+                    Debug.WriteLine("Duplicate netindex " + nindex + ": Found a duplicate on " + m.export.InstancedFullPath);
                 }
                 else
                 {
@@ -961,7 +961,7 @@ namespace ME3Explorer.Pathfinding_Editor
             ExportEntry export = (ExportEntry)ActiveNodes_ListBox.SelectedItem;
             ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export)
             {
-                Title = $"Interpreter - {export.UIndex} {export.GetIndexedFullPath} - {Pcc.FilePath}"
+                Title = $"Interpreter - {export.UIndex} {export.InstancedFullPath} - {Pcc.FilePath}"
             };
             elhw.Show();
         }
@@ -999,7 +999,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
                 else
                 {
-                    MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry.GetIndexedFullPath} is already in the level.");
+                    MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry.InstancedFullPath} is already in the level.");
                 }
             }
         }
@@ -1091,7 +1091,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             foreach (ExportEntry exp in Pcc.Exports)
             {
-                switch (exp.ObjectName)
+                switch (exp.ObjectName.Name)
                 {
                     case "StaticMeshCollectionActor":
                         {
@@ -1157,7 +1157,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
                                 FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
                                 FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
-                                Debug.WriteLine($"{exp.Index} {exp.ObjectName}Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
+                                Debug.WriteLine($"{exp.Index} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
 
                                 xProp.Value *= -1;
                                 yProp.Value *= -1;
@@ -1594,7 +1594,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     ExportEntry exportEntry = levelToRead.FileRef.GetUExport(itemexportid);
                     AllObjectsList.Add(exportEntry);
 
-                    if (ignoredobjectnames.Contains(exportEntry.ObjectName))
+                    if (ignoredobjectnames.Contains(exportEntry.ObjectName.Name))
                     {
                         start += 4;
                         itemcount++;
@@ -1784,12 +1784,12 @@ namespace ME3Explorer.Pathfinding_Editor
                         pnm.comment.Text += $"\nReferenced in {list.Count} sequence object{(list.Count != 1 ? "s" : "")}:";
                         foreach (ExportEntry x in list)
                         {
-                            string shortpath = x.GetFullPath;
+                            string shortpath = x.InstancedFullPath;
                             if (shortpath.StartsWith("TheWorld.PersistentLevel."))
                             {
                                 shortpath = shortpath.Substring("TheWorld.PersistentLevel.".Length);
                             }
-                            pnm.comment.Text += $"\n  {x.UIndex} {shortpath}_{x.indexValue}";
+                            pnm.comment.Text += $"\n  {x.UIndex} {shortpath}";
                         }
                     }
                 }
@@ -1847,7 +1847,6 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public PointF LoadObject(ExportEntry exportToLoad, bool isFromOverlay = false)
         {
-            string s = exportToLoad.ObjectName;
             int uindex = exportToLoad.UIndex;
             int x = 0, y = 0, z = int.MinValue;
             var props = exportToLoad.GetProperties();
@@ -2418,7 +2417,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 CombatZonesLoading = true;
 
-                NodeName = $"{export.ObjectName}_{export.indexValue}";
+                NodeName = $"{export.ObjectName.Instanced}";
                 NodeNameSubText = $"Export {export.UIndex}";
                 ActiveNodes_ListBox.ScrollIntoView(export);
                 Properties_InterpreterWPF.LoadExport(export);
@@ -2988,7 +2987,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
             private bool _displayactive;
             public bool DisplayActive { get => _displayactive; set => SetProperty(ref _displayactive, value); }
-            public string DisplayString => $"{export.UIndex} {export.ObjectName}_{export.indexValue}";
+            public string DisplayString => $"{export.UIndex} {export.ObjectName.Instanced}";
 
             public Zone(ExportEntry combatZone)
             {
@@ -3562,7 +3561,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 ExportEntry exportEntry = package.GetUExport(itemexportid);
                                 //AllLevelObjects.Add(exportEntry);
 
-                                if (ignoredobjectnames.Contains(exportEntry.ObjectName))
+                                if (ignoredobjectnames.Contains(exportEntry.ObjectName.Name))
                                 {
                                     start += 4;
                                     itemcount++;
@@ -3576,7 +3575,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                         if (!navsNotAccountedFor.TryGetValue(exportEntry.ClassName, out string _))
                                         {
                                             Debug.WriteLine("Found new nav type: " + exportEntry.ClassName + " in " + exportEntry.FileRef.FilePath);
-                                            navsNotAccountedFor.Add(exportEntry.GetFullPath);
+                                            navsNotAccountedFor.Add(exportEntry.FullPath);
                                         }
                                     }
                                 }

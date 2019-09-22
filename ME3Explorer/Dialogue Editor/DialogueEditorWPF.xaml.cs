@@ -580,7 +580,7 @@ namespace ME3Explorer.Dialogue_Editor
             Conversations.ClearEx();
             foreach (var exp in Pcc.Exports.Where(exp => exp.ClassName.Equals("BioConversation")))
             {
-                Conversations.Add(new ConversationExtended(exp.UIndex, exp.ObjectName, exp.GetProperties(), exp, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<StageDirection>()));
+                Conversations.Add(new ConversationExtended(exp));
             }
         }
         private async void FirstParse()
@@ -1089,7 +1089,7 @@ namespace ME3Explorer.Dialogue_Editor
 
                 if (Pcc.Game != MEGame.ME1)
                 {
-                    Dictionary<string, ExportEntry> streams = Pcc.Exports.Where(x => x.ClassName == "WwiseStream").ToDictionary(x => $"{x.ObjectName.ToLower()}_{x.UIndex}");
+                    Dictionary<string, ExportEntry> streams = Pcc.Exports.Where(x => x.ClassName == "WwiseStream").ToDictionary(x => $"{x.ObjectName.Name.ToLower()}_{x.UIndex}");
 
                     foreach (var node in conv.EntryList)
                     {
@@ -1749,7 +1749,7 @@ namespace ME3Explorer.Dialogue_Editor
                 var exp = Pcc.getExport(uxp);
                 int index = Conversations.FindIndex(i => i.ExportUID == exp.UIndex);
                 Conversations.RemoveAt(index);
-                Conversations.Insert(index, new ConversationExtended(exp.UIndex, exp.ObjectName, exp.GetProperties(), exp, new ObservableCollectionExtended<SpeakerExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<DialogueNodeExtended>(), new ObservableCollectionExtended<StageDirection>()));
+                Conversations.Insert(index, new ConversationExtended(exp));
             }
 
             FirstParse();
@@ -2718,7 +2718,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void SetupConvJSON(ExportEntry export)
         {
-            string objectName = Regex.Replace(export.ObjectName, @"[<>:""/\\|?*]", "");
+            string objectName = Regex.Replace(export.ObjectName.Name, @"[<>:""/\\|?*]", "");
             string viewsPath = ME3ViewsPath;
             switch (Pcc.Game)
             {
@@ -4097,7 +4097,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             if (CurrentObjects.Count == 0)
                 return;
-            string objectName = Regex.Replace(CurrentLoadedExport.ObjectName, @"[<>:""/\\|?*]", "");
+            string objectName = Regex.Replace(CurrentLoadedExport.ObjectName.Name, @"[<>:""/\\|?*]", "");
             SaveFileDialog d = new SaveFileDialog
             {
                 Filter = "PNG Files (*.png)|*.png",

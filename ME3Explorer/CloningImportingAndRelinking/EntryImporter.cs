@@ -70,7 +70,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    newEntry = getOrAddCrossImportOrPackage(sourceEntry.GetFullPath, sourcePcc, destPcc,
+                    newEntry = getOrAddCrossImportOrPackage(sourceEntry.FullPath, sourcePcc, destPcc,
                                                             sourcePackageTree.NumChildrenOf(sourceEntry) == 0 ? link : (int?)null);
                     relinkMap[sourceEntry] = newEntry;
                 }
@@ -102,8 +102,8 @@ namespace ME3Explorer
                     {
                         //we must check to see if there is an item already matching what we are trying to port.
 
-                        //Todo: We may need to enhance target checking here as getfullpath may not be reliable enough. Maybe have to do indexing, or something.
-                        IEntry sameObjInTarget = destPackageTree.GetDirectChildrenOf(newParent).FirstOrDefault(x => node.GetFullPath == x.GetFullPath);
+                        //Todo: We may need to enhance target checking here as fullpath may not be reliable enough. Maybe have to do indexing, or something.
+                        IEntry sameObjInTarget = destPackageTree.GetDirectChildrenOf(newParent).FirstOrDefault(x => node.FullPath == x.FullPath);
                         if (sameObjInTarget != null)
                         {
                             relinkMap[node] = sameObjInTarget;
@@ -122,7 +122,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        entry = getOrAddCrossImportOrPackage(node.GetFullPath, sourcePcc, destPcc);
+                        entry = getOrAddCrossImportOrPackage(node.FullPath, sourcePcc, destPcc);
                     }
                     relinkMap[node] = entry;
 
@@ -169,7 +169,7 @@ namespace ME3Explorer
             {
                 //restore namelist in event of failure.
                 destPackage.setNames(names);
-                MessageBox.Show($"Error occured while trying to import {ex.ObjectName} : {exception.Message}");
+                MessageBox.Show($"Error occured while trying to import {ex.ObjectName.Instanced} : {exception.Message}");
                 throw;
             }
 
@@ -186,11 +186,11 @@ namespace ME3Explorer
             {
                 case ImportEntry sourceClassImport:
                     //The class of the export we are importing is an import. We should attempt to relink this.
-                    classValue = getOrAddCrossImportOrPackage(sourceClassImport.GetFullPath, ex.FileRef, destPackage);
+                    classValue = getOrAddCrossImportOrPackage(sourceClassImport.FullPath, ex.FileRef, destPackage);
                     break;
                 case ExportEntry sourceClassExport:
                     //Todo: Add cross mapping support as multi-mode will allow this to work now
-                    classValue = destPackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == sourceClassExport.GetIndexedFullPath);
+                    classValue = destPackage.Exports.FirstOrDefault(x => x.FullPath == sourceClassExport.FullPath && x.indexValue == sourceClassExport.indexValue);
                     break;
             }
 
@@ -200,11 +200,11 @@ namespace ME3Explorer
             {
                 case ImportEntry sourceSuperClassImport:
                     //The class of the export we are importing is an import. We should attempt to relink this.
-                    superclass = getOrAddCrossImportOrPackage(sourceSuperClassImport.GetFullPath, ex.FileRef, destPackage);
+                    superclass = getOrAddCrossImportOrPackage(sourceSuperClassImport.FullPath, ex.FileRef, destPackage);
                     break;
                 case ExportEntry sourceSuperClassExport:
                     //Todo: Add cross mapping support as multi-mode will allow this to work now
-                    superclass = destPackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == sourceSuperClassExport.GetIndexedFullPath);
+                    superclass = destPackage.Exports.FirstOrDefault(x => x.FullPath == sourceSuperClassExport.FullPath && x.indexValue == sourceSuperClassExport.indexValue);
                     break;
             }
 
@@ -213,10 +213,10 @@ namespace ME3Explorer
             switch (ex.Archetype)
             {
                 case ImportEntry sourceArchetypeImport:
-                    archetype = getOrAddCrossImportOrPackage(sourceArchetypeImport.GetFullPath, ex.FileRef, destPackage);
+                    archetype = getOrAddCrossImportOrPackage(sourceArchetypeImport.FullPath, ex.FileRef, destPackage);
                     break;
                 case ExportEntry sourceArchetypExport:
-                    archetype = destPackage.Exports.FirstOrDefault(x => x.GetIndexedFullPath == sourceArchetypExport.GetIndexedFullPath);
+                    archetype = destPackage.Exports.FirstOrDefault(x => x.FullPath == sourceArchetypExport.FullPath && x.indexValue == sourceArchetypExport.indexValue);
                     break;
             }
 
@@ -259,7 +259,7 @@ namespace ME3Explorer
             {
                 //restore namelist in event of failure.
                 targetExport.FileRef.setNames(names);
-                MessageBox.Show($"Error occured while replacing data in {incomingExport.ObjectName} : {exception.Message}");
+                MessageBox.Show($"Error occured while replacing data in {incomingExport.ObjectName.Instanced} : {exception.Message}");
                 return false;
             }
             res.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game).ToBytes(targetExport.FileRef));
@@ -286,7 +286,7 @@ namespace ME3Explorer
             //see if this import exists locally
             foreach (ImportEntry imp in destinationPCC.Imports)
             {
-                if (imp.GetFullPath == importFullName)
+                if (imp.FullPath == importFullName)
                 {
                     return imp;
                 }
@@ -295,7 +295,7 @@ namespace ME3Explorer
             //see if this is an export Package and exists locally
             foreach (ExportEntry exp in destinationPCC.Exports)
             {
-                if (exp.ClassName == "Package" && exp.GetFullPath == importFullName)
+                if (exp.ClassName == "Package" && exp.FullPath == importFullName)
                 {
                     return exp;
                 }
@@ -303,7 +303,7 @@ namespace ME3Explorer
 
             if (forcedLink is int link)
             {
-                ImportEntry importingImport = importingPCC.Imports.First(x => x.GetFullPath == importFullName); //this shouldn't be null
+                ImportEntry importingImport = importingPCC.Imports.First(x => x.FullPath == importFullName); //this shouldn't be null
                 var newImport = new ImportEntry(destinationPCC)
                 {
                     idxLink = link,
@@ -323,7 +323,7 @@ namespace ME3Explorer
 
             foreach (ImportEntry imp in importingPCC.Imports)
             {
-                if (imp.GetFullPath == importFullName)
+                if (imp.FullPath == importFullName)
                 {
                     var import = new ImportEntry(destinationPCC)
                     {
@@ -339,7 +339,7 @@ namespace ME3Explorer
 
             foreach (ExportEntry exp in importingPCC.Exports)
             {
-                if (exp.ClassName == "Package" && exp.GetFullPath == importFullName)
+                if (exp.ClassName == "Package" && exp.FullPath == importFullName)
                 {
                     return importExport(destinationPCC, exp, parent?.UIndex ?? 0);
                 }

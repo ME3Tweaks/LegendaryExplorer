@@ -16,33 +16,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public static void TrashEntries(IMEPackage pcc, IEnumerable<IEntry> itemsToTrash)
         {
             ExportEntry trashTopLevel = pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == UnrealPackageFile.TrashPackageName);
-            ImportEntry packageImport = pcc.Imports.FirstOrDefault(x => x.GetFullPath == "Core.Package");
-            if (packageImport == null)
-            {
-                ImportEntry coreImport = pcc.Imports.FirstOrDefault(x => x.GetFullPath == "Core");
-                if (coreImport == null)
-                {
-                    //really small file
-                    coreImport = new ImportEntry(pcc)
-                    {
-                        ObjectName = "Core",
-                        ClassName = "Package",
-                        idxLink = 0,
-                        PackageFile = "Core"
-                    };
-                    pcc.AddImport(coreImport);
-                }
-
-                //Package isn't an import, could be one of the 2DA files or other small ones
-                packageImport = new ImportEntry(pcc)
-                {
-                    ObjectName = "Package",
-                    ClassName = "Class",
-                    idxLink = coreImport.UIndex,
-                    PackageFile = "Core"
-                };
-                pcc.AddImport(packageImport);
-            }
+            IEntry packageClass = pcc.getEntryOrAddImport("Core.Package");
 
             foreach (IEntry entry in itemsToTrash)
             {
@@ -50,7 +24,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 {
                     continue;
                 }
-                trashTopLevel = TrashEntry(entry, trashTopLevel, packageImport);
+                trashTopLevel = TrashEntry(entry, trashTopLevel, packageClass);
             }
             pcc.RemoveTrailingTrash();
         }
@@ -125,7 +99,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             var classesToRemove = oldClasses.Keys.Except(newClasses.Keys).ToHashSet();
             foreach (IEntry entry in entries)
             {
-                if (classesToRemove.Contains(entry.ClassName) || (entry.ClassName == "Class" && classesToRemove.Contains(entry.ObjectName))
+                if (classesToRemove.Contains(entry.ClassName) || (entry.ClassName == "Class" && classesToRemove.Contains(entry.ObjectName.Name))
                     || entry is ExportEntry exp && (exp.Archetype?.IsTrash() ?? false))
                 {
                     TrashEntries(pcc, entries.FlattenTreeOf(entry.UIndex));
@@ -163,7 +137,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         case ArrayProperty<ObjectProperty> asp:
                             for (int i = asp.Count - 1; i >= 0; i--)
                             {
-                                if (asp[i].Value == 0 || sourcePcc.GetEntry(asp[i].Value) is IEntry entry && !entry.GetFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
+                                if (asp[i].Value == 0 || sourcePcc.GetEntry(asp[i].Value) is IEntry entry && !entry.FullPath.StartsWith(UnrealPackageFile.TrashPackageName))
                                 {
                                     continue;
                                 }
@@ -199,7 +173,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                             break;
                         case ObjectProperty objectProperty:
                         {
-                            if (objectProperty.Value == 0 || sourcePcc.GetEntry(objectProperty.Value) is IEntry entry && !entry.GetFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
+                            if (objectProperty.Value == 0 || sourcePcc.GetEntry(objectProperty.Value) is IEntry entry && !entry.FullPath.StartsWith(UnrealPackageFile.TrashPackageName))
                             {
                                 newProps.Add(objectProperty);
                             }

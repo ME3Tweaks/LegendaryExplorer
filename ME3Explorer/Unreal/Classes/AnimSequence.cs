@@ -74,11 +74,11 @@ namespace ME3Explorer.Unreal.Classes
 
             Props = export.GetProperties();
 
-            RotationCompressionFormat = Props.GetPropOrDefault<EnumProperty>("RotationCompressionFormat").Value.InstancedString;
-            KeyEncodingFormat = Props.GetPropOrDefault<EnumProperty>("KeyEncodingFormat").Value.InstancedString;
+            RotationCompressionFormat = Props.GetPropOrDefault<EnumProperty>("RotationCompressionFormat").Value.Instanced;
+            KeyEncodingFormat = Props.GetPropOrDefault<EnumProperty>("KeyEncodingFormat").Value.Instanced;
             bIsAdditive = Props.GetPropOrDefault<BoolProperty>("bIsAdditive").Value;
             bNoLoopingInterpolation = Props.GetPropOrDefault<BoolProperty>("bNoLoopingInterpolation").Value;
-            SequenceName = Props.GetPropOrDefault<NameProperty>("SequenceName").Value.InstancedString;
+            SequenceName = Props.GetPropOrDefault<NameProperty>("SequenceName").Value.Instanced;
             m_pBioAnimSetData = Props.GetPropOrDefault<ObjectProperty>("m_pBioAnimSetData").Value;
             SequenceLength = Props.GetPropOrDefault<FloatProperty>("SequenceLength").Value;
             RateScale = Props.GetProp<FloatProperty>("RateScale")?.Value ?? 1;
@@ -155,7 +155,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode($"{Export.ObjectName}(#{Export.UIndex})");
+            TreeNode res = new TreeNode($"{Export.ObjectName.Instanced}(#{Export.UIndex})");
             res.Nodes.Add("RotationCompressionFormat : " + RotationCompressionFormat);
             res.Nodes.Add("KeyEncodingFormat : " + KeyEncodingFormat);
             res.Nodes.Add("bIsAdditive : " + bIsAdditive);

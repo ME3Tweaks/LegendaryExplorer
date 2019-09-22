@@ -49,7 +49,7 @@ namespace ME3Explorer.TlkManagerNS
             ME1TLKItems.CollectionChanged += ME1CollectionChangedEventHandler;
             ME2TLKItems.CollectionChanged += ME2CollectionChangedEventHandler;
             ME3TLKItems.CollectionChanged += ME3CollectionChangedEventHandler;
-            ME1TLKItems.AddRange(ME1TalkFiles.tlkList.Select(x => new LoadedTLK(x.pcc.FilePath, x.uindex, x.pcc.GetUExport(x.uindex).ObjectName, true)));
+            ME1TLKItems.AddRange(ME1TalkFiles.tlkList.Select(x => new LoadedTLK(x.pcc.FilePath, x.uindex, x.pcc.getObjectName(x.uindex), true)));
             ME2TLKItems.AddRange(ME2TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
             ME3TLKItems.AddRange(ME3TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
 

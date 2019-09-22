@@ -37,8 +37,8 @@ namespace ME3Explorer.PackageEditorWPFControls
         private readonly bool sourceHasChildren;
         private readonly bool targetHasChildren;
 
-        public string TargetEntryObjectName => targetEntry == null ? "Root" : targetEntry.ObjectName;
-        public string SourceEntryObjectName => sourceEntry.ObjectName;
+        public string TargetEntryObjectName => targetEntry == null ? "Root" : targetEntry.ObjectName.Instanced;
+        public string SourceEntryObjectName => sourceEntry.ObjectName.Instanced;
 
         public ICommand ReplaceDataCommand { get; set; }
         public ICommand AddSingularCommand { get; set; }

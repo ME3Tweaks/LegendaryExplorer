@@ -80,7 +80,7 @@ namespace ME3Explorer.Unreal.Classes
             {
                 result += type + " ";
             }
-            result += export.ObjectName + "(";
+            result += export.ObjectName.Instanced + "(";
             int paramCount = 0;
             var locals = new List<ExportEntry>();
 
@@ -109,7 +109,7 @@ namespace ME3Explorer.Unreal.Classes
                             IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
                             if (entry != null)
                             {
-                                result += entry.ObjectName + " ";
+                                result += entry.ObjectName.Instanced + " ";
                             }
                         }
                         else
@@ -117,7 +117,7 @@ namespace ME3Explorer.Unreal.Classes
                             result += UnFunction.GetPropertyType(export) + " ";
                         }
 
-                        result += export.ObjectName;
+                        result += export.ObjectName.Instanced;
                         paramCount++;
 
                         //if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.OptionalParm) && Statements.Count > 0)

@@ -74,7 +74,7 @@ namespace ME3Explorer
             if (CurrentLoadedExport != null)
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Bio2DAEditorWPF(), CurrentLoadedExport);
-                elhw.Title = $"Bio2DA Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FilePath}";
+                elhw.Title = $"Bio2DA Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}";
                 elhw.Show();
             }
         }
@@ -134,7 +134,7 @@ namespace ME3Explorer
             Table2DA.MarkAsUnmodified();
         }
 
-        private bool CanCommit2DA() => Table2DA != null ? Table2DA.IsModified : false;
+        private bool CanCommit2DA() => Table2DA?.IsModified ?? false;
 
         private void ExportToExcel_Click(object sender, RoutedEventArgs e)
         {
@@ -143,8 +143,7 @@ namespace ME3Explorer
                 Filter = "Excel spreadsheet|*.xlsx",
                 FileName = CurrentLoadedExport.ObjectName
             };
-            var result = d.ShowDialog();
-            if (result.HasValue && result.Value)
+            if (d.ShowDialog() == true)
             {
                 Table2DA.Write2DAToExcel(d.FileName);
                 MessageBox.Show("Done");

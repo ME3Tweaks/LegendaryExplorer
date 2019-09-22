@@ -132,31 +132,34 @@ namespace ME3Explorer.Sequence_Editor
 
         private bool CanOpenKismetLog(object o)
         {
-            if (o is true)
+            switch (o)
             {
-                return Pcc != null && Pcc.Game == MEGame.ME3 && File.Exists(KismetLogPath);
+                case true:
+                    return Pcc != null && File.Exists(KismetLogParser.KismetLogPath(Pcc.Game));
+                case MEGame game:
+                    return File.Exists(KismetLogParser.KismetLogPath(game));
+                default:
+                    return false;
             }
-
-            return File.Exists(KismetLogPath);
         }
-
-        static readonly string KismetLogPath = Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "KismetLog.txt");
 
         private void OpenKismetLogParser(object obj)
         {
-            if (File.Exists(KismetLogPath))
+            if (CanOpenKismetLog(obj))
             {
+                switch (obj)
+                {
+                    case true:
+                        kismetLogParser.LoadLog(Pcc.Game, Pcc);
+                        break;
+                    case MEGame game:
+                        kismetLogParser.LoadLog(game);
+                        break;
+                    default:
+                        return;
+                }
                 kismetLogParser.Visibility = Visibility.Visible;
                 kismetLogParserRow.Height = new GridLength(150);
-                if (obj is true)
-                {
-                    kismetLogParser.LoadLog(KismetLogPath, Pcc);
-                }
-                else
-                {
-                    kismetLogParser.LoadLog(KismetLogPath);
-                }
-
                 kismetLogParser.ExportFound = (filePath, uIndex) =>
                 {
                     if (Pcc == null || Pcc.FilePath != filePath) LoadFile(filePath);
@@ -295,7 +298,7 @@ namespace ME3Explorer.Sequence_Editor
                     case "Prefab":
                         try
                         {
-                            prefabs.Add(export.ObjectName, new TreeViewEntry(export, export.GetFullPath));
+                            prefabs.Add(export.ObjectName.Name, new TreeViewEntry(export, export.InstancedFullPath));
                         }
                         catch
                         {
@@ -332,14 +335,14 @@ namespace ME3Explorer.Sequence_Editor
 
         private TreeViewEntry FindSequences(ExportEntry rootSeq, bool wantFullName = false)
         {
-            string seqName = wantFullName ? rootSeq.GetFullPath : "";
+            string seqName = wantFullName ? rootSeq.InstancedFullPath : "";
             if (rootSeq.GetProperty<StrProperty>("ObjName") is StrProperty objName)
             {
                 seqName += objName;
             }
             else
             {
-                seqName += rootSeq.ObjectName;
+                seqName += rootSeq.ObjectName.Instanced;
             }
             var root = new TreeViewEntry(rootSeq, $"#{rootSeq.UIndex}: {seqName}")
             {
@@ -421,7 +424,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private void SetupJSON(ExportEntry export)
         {
-            string objectName = System.Text.RegularExpressions.Regex.Replace(export.ObjectName, @"[<>:""/\\|?*]", "");
+            string objectName = System.Text.RegularExpressions.Regex.Replace(export.ObjectName.Name, @"[<>:""/\\|?*]", "");
             bool isClonedSeqRef = false;
             var defaultViewZoomProp = export.GetProperty<FloatProperty>("DefaultViewZoom");
             if (defaultViewZoomProp != null && Math.Abs(defaultViewZoomProp.Value - CLONED_SEQREF_MAGIC) < 1.0E-30f)
@@ -429,10 +432,10 @@ namespace ME3Explorer.Sequence_Editor
                 isClonedSeqRef = true;
             }
 
-            string packageFullName = export.PackageFullName;
-            if (GlobalSeqRefViewSavesMenuItem.IsChecked && packageFullName.Contains("SequenceReference") && !isClonedSeqRef)
+            string parentFullPath = export.ParentFullPath;
+            if (GlobalSeqRefViewSavesMenuItem.IsChecked && parentFullPath.Contains("SequenceReference") && !isClonedSeqRef)
             {
-                string packageName = packageFullName.Substring(packageFullName.LastIndexOf("SequenceReference"));
+                string packageName = parentFullPath.Substring(parentFullPath.LastIndexOf("SequenceReference"));
                 if (Pcc.Game == MEGame.ME3)
                 {
                     JSONpath = $"{ME3ViewsPath}{packageName}.{objectName}.JSON";
@@ -538,7 +541,6 @@ namespace ME3Explorer.Sequence_Editor
 
         public SObj LoadObject(ExportEntry export)
         {
-            string s = export.ObjectName;
             int x = 0, y = 0;
             foreach (var prop in export.GetProperties())
             {
@@ -553,11 +555,11 @@ namespace ME3Explorer.Sequence_Editor
                 }
             }
 
-            if (s.StartsWith("BioSeqEvt_") || s.StartsWith("SeqEvt_") || s.StartsWith("SFXSeqEvt_") || s.StartsWith("SeqEvent_"))
+            if (export.IsOrInheritsFrom("SequenceEvent"))
             {
                 return new SEvent(export, x, y, graphEditor);
             }
-            else if (s.StartsWith("SeqVar_") || s.StartsWith("BioSeqVar_") || s.StartsWith("SFXSeqVar_") || s.StartsWith("InterpData"))
+            else if (export.IsOrInheritsFrom("SequenceVariable"))
             {
                 return new SVar(export, x, y, graphEditor);
             }
@@ -1197,6 +1199,20 @@ namespace ME3Explorer.Sequence_Editor
                     }
                 }
 
+                if (contextMenu.GetChild("openRefInPackEdMenuItem") is MenuItem openRefInPackEdMenuItem)
+                {
+
+                    if (Pcc.Game == MEGame.ME3 && obj is SVar sVar &&
+                        Pcc.IsEntry(sVar.Export.GetProperty<ObjectProperty>("ObjValue")?.Value ?? 0))
+                    {
+                        openRefInPackEdMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        openRefInPackEdMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
                 contextMenu.IsOpen = true;
                 graphEditor.DisableDragging();
             }
@@ -1440,6 +1456,18 @@ namespace ME3Explorer.Sequence_Editor
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
                 p.LoadFile(obj.Export.FileRef.FilePath, obj.UIndex);
+                p.Activate(); //bring to front
+            }
+        }
+
+        private void OpenReferencedObjectInPackageEditor_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SVar sVar && sVar.Export.GetProperty<ObjectProperty>("ObjValue") is ObjectProperty objProp)
+            {
+                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                PackageEditorWPF p = new PackageEditorWPF();
+                p.Show();
+                p.LoadFile(sVar.Export.FileRef.FilePath, objProp.Value);
                 p.Activate(); //bring to front
             }
         }
@@ -1767,7 +1795,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (CurrentObjects.Count == 0)
                 return;
-            string objectName = System.Text.RegularExpressions.Regex.Replace(SelectedSequence.ObjectName, @"[<>:""/\\|?*]", "");
+            string objectName = System.Text.RegularExpressions.Regex.Replace(SelectedSequence.ObjectName.Name, @"[<>:""/\\|?*]", "");
             SaveFileDialog d = new SaveFileDialog
             {
                 Filter = "PNG Files (*.png)|*.png",
@@ -1804,15 +1832,15 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry exportToAdd)
             {
-                if (!exportToAdd.InheritsFrom("SequenceObject"))
+                if (!exportToAdd.IsOrInheritsFrom("SequenceObject"))
                 {
-                    MessageBox.Show(this, $"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is not a sequence object.");
+                    MessageBox.Show(this, $"#{exportToAdd.UIndex}: {exportToAdd.ObjectName.Instanced} is not a sequence object.");
                     return;
                 }
 
                 if (CurrentObjects.Any(obj => obj.Export == exportToAdd))
                 {
-                    MessageBox.Show(this, $"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is already in the sequence.");
+                    MessageBox.Show(this, $"#{exportToAdd.UIndex}: {exportToAdd.ObjectName.Instanced} is already in the sequence.");
                     return;
                 }
 
@@ -1842,7 +1870,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 int uIndex;
                 ExportEntry exportEntry = obj.Export;
-                if (exportEntry.ObjectName == "InterpData")
+                if (exportEntry.IsOrInheritsFrom("InterpData"))
                 {
                     uIndex = exportEntry.UIndex;
                 }
@@ -2028,7 +2056,7 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     if (CurrentObjects.All(x => x.Export != export))
                     {
-                        MessageBox.Show($"{export.ObjectName} ({export.UIndex} is not part of this sequence, and can't be repointed to.");
+                        MessageBox.Show($"#{export.UIndex} {export.ObjectName.Instanced}  is not part of this sequence, and can't be repointed to.");
                         return;
                     }
                     var sequence = sVar.Export.FileRef.GetUExport(sVar.Export.GetProperty<ObjectProperty>("ParentSequence").Value);
@@ -2085,6 +2113,6 @@ namespace ME3Explorer.Sequence_Editor
     }
     static class SequenceEditorExtensions
     {
-        public static bool IsSequence(this IEntry entry) => entry.InheritsFrom("Sequence");
+        public static bool IsSequence(this IEntry entry) => entry.IsOrInheritsFrom("Sequence");
     }
 }

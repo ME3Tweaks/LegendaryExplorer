@@ -30,7 +30,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static bool InheritsFrom(this IEntry entry, string baseClass)
+        public static bool IsOrInheritsFrom(this IEntry entry, string baseClass)
         {
             switch (entry.FileRef.Game)
             {
@@ -724,7 +724,7 @@ namespace ME3Explorer.Unreal
                             }
                             else if (exportEntry.ClassName == "Class")
                             {
-                                objectName = exportEntry.ObjectName;
+                                objectName = exportEntry.ObjectName.Name;
                                 if (!NewClasses.ContainsKey(objectName))
                                 {
                                     NewClasses.Add(objectName, generateClassInfo(exportEntry));
@@ -737,7 +737,7 @@ namespace ME3Explorer.Unreal
                             }
                             else if (exportEntry.ClassName == "ScriptStruct")
                             {
-                                objectName = exportEntry.ObjectName;
+                                objectName = exportEntry.ObjectName.Name;
                                 if (!NewStructs.ContainsKey(objectName))
                                 {
                                     NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
@@ -899,12 +899,12 @@ namespace ME3Explorer.Unreal
                 if (entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
                 {
-                    if (!info.properties.ContainsKey(entry.ObjectName))
+                    if (!info.properties.ContainsKey(entry.ObjectName.Name))
                     {
                         PropertyInfo p = getProperty(entry);
                         if (p != null)
                         {
-                            info.properties.Add(entry.ObjectName, p);
+                            info.properties.Add(entry.ObjectName.Name, p);
                         }
                     }
                 }
@@ -916,7 +916,7 @@ namespace ME3Explorer.Unreal
         private static void generateEnumValues(ExportEntry export, Dictionary<string, List<NameReference>> NewEnums = null)
         {
             var enumTable = NewEnums ?? Enums;
-            string enumName = export.ObjectName;
+            string enumName = export.ObjectName.Name;
             if (!enumTable.ContainsKey(enumName))
             {
                 var values = new List<NameReference>();
@@ -1115,7 +1115,7 @@ namespace ME3Explorer.Unreal
                         {
                             foreach (NameReference val in values)
                             {
-                                writer.WriteLine($"{val.InstancedString},");
+                                writer.WriteLine($"{val.Instanced},");
                             }
                         });
                     }

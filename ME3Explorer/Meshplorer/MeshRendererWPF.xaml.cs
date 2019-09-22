@@ -160,7 +160,7 @@ namespace ME3Explorer.Meshplorer
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return !exportEntry.ObjectName.StartsWith("Default__") && (parsableClasses.Contains(exportEntry.ClassName)
+            return !exportEntry.IsDefaultObject && (parsableClasses.Contains(exportEntry.ClassName)
                  || (exportEntry.ClassName == "BrushComponent" && exportEntry.GetProperty<StructProperty>("BrushAggGeom") != null));
         }
 
@@ -202,7 +202,7 @@ namespace ME3Explorer.Meshplorer
                             if (meshFile.IsUExport(matIndex))
                             {
                                 ExportEntry entry = meshFile.GetUExport(matIndex);
-                                Debug.WriteLine("Getting material assets " + entry.GetFullPath);
+                                Debug.WriteLine("Getting material assets " + entry.InstancedFullPath);
 
                                 AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
 
@@ -251,7 +251,7 @@ namespace ME3Explorer.Meshplorer
                             if (package.IsUExport(material.value))
                             {
                                 ExportEntry entry = package.GetUExport(material.value);
-                                Debug.WriteLine("Getting material assets " + entry.GetFullPath);
+                                Debug.WriteLine("Getting material assets " + entry.InstancedFullPath);
 
                                 AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
 
@@ -452,7 +452,7 @@ namespace ME3Explorer.Meshplorer
             foreach (var tex in matinst.Textures)
             {
 
-                Debug.WriteLine("Preloading " + tex.GetFullPath);
+                Debug.WriteLine("Preloading " + tex.InstancedFullPath);
                 if (tex.ClassName == "TextureCube")
                 {
                     //can't deal with cubemaps yet

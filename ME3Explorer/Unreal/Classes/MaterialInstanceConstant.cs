@@ -171,10 +171,10 @@ namespace ME3Explorer.Unreal.Classes
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode($"#{Export.UIndex} \"{Export.ObjectName}\"");
+            TreeNode res = new TreeNode($"#{Export.UIndex} \"{Export.ObjectName.Instanced}\"");
             for (int i = 0; i < Textures.Count; i++)
             {
-                string s = $"{Textures[i].GetFullPath} = #{Textures[i].UIndex}";
+                string s = $"{Textures[i].FullPath} = #{Textures[i].UIndex}";
                 s += $" \"{Export.FileRef.getObjectName(Textures[i].UIndex)}\"";
                 res.Nodes.Add(s);
             }

@@ -548,7 +548,7 @@ namespace ME3Explorer.Packages
         private void ReadLocalTLKs()
         {
             LocalTalkFiles.Clear();
-            List<ExportEntry> tlkFileSets = Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.ObjectName.StartsWith("Default__")).ToList();
+            List<ExportEntry> tlkFileSets = Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.IsDefaultObject).ToList();
             var exportsToLoad = new List<ExportEntry>();
             foreach (var tlkFileSet in tlkFileSets)
             {
@@ -956,9 +956,9 @@ namespace ME3Explorer.Packages
                 using (IMEPackage engine = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "Engine.pcc")))
                 using (IMEPackage sfxGame = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "SFXGame.pcc")))
                 {
-                    foreach (ImportEntry defImp in imports.Where(imp => imp.ObjectName.StartsWith("Default_")).ToList())
+                    foreach (ImportEntry defImp in imports.Where(imp => imp.ObjectName.Name.StartsWith("Default_")).ToList())
                     {
-                        string packageName = defImp.GetFullPath.Split('.')[0];
+                        string packageName = defImp.FullPath.Split('.')[0];
                         IMEPackage pck = packageName == "Core" ? core : packageName == "Engine" ? engine : packageName == "SFXGame" ? sfxGame : null;
                         if (pck != null && pck.Exports.FirstOrDefault(exp => exp.ObjectName == defImp.ObjectName) is ExportEntry defExp)
                         {
@@ -1075,11 +1075,11 @@ namespace ME3Explorer.Packages
                         {
                             if (GetEntry(texture) is IEntry tex)
                             {
-                                if (diff == 0 && tex.ObjectName.Contains("diff", StringComparison.OrdinalIgnoreCase))
+                                if (diff == 0 && tex.ObjectName.Name.Contains("diff", StringComparison.OrdinalIgnoreCase))
                                 {
                                     diff = texture;
                                 }
-                                else if (norm == 0 && tex.ObjectName.Contains("norm", StringComparison.OrdinalIgnoreCase))
+                                else if (norm == 0 && tex.ObjectName.Name.Contains("norm", StringComparison.OrdinalIgnoreCase))
                                 {
                                     norm = texture;
                                 }

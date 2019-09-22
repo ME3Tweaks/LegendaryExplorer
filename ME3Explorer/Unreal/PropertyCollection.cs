@@ -318,7 +318,7 @@ namespace ME3Explorer.Unreal
                 {
                     if (entry != null)
                     {
-                        Debug.WriteLine(entry.UIndex + " " + entry.ObjectName + " - Invalid properties: Does not end with None");
+                        Debug.WriteLine(entry.UIndex + " " + entry.ObjectName.Instanced + " - Invalid properties: Does not end with None");
                     }
 #if DEBUG
                     props.endOffset = (int)stream.Position;
@@ -906,7 +906,7 @@ namespace ME3Explorer.Unreal
                         return delegateProperty.Value;
                     case EnumProperty enumProperty:
                         var enumType = Type.GetType($"ME3Explorer.Unreal.ME3Enums.{propInfo.Reference}");
-                        return Enum.Parse(enumType, enumProperty.Value.InstancedString);
+                        return Enum.Parse(enumType, enumProperty.Value.Instanced);
                     case FloatProperty floatProperty:
                         return floatProperty.Value;
                     case IntProperty intProperty:

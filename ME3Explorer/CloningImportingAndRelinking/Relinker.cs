@@ -46,7 +46,7 @@ namespace ME3Explorer
                 {
                     ExportEntry Value = (ExportEntry)kvp.Value;
                     PropertyCollection transplantProps = sourceExportInOriginalFile.GetProperties();
-                    Debug.WriteLine($"Relinking items in destination export: {sourceExportInOriginalFile.GetFullPath}");
+                    Debug.WriteLine($"Relinking items in destination export: {sourceExportInOriginalFile.FullPath}");
                     relinkResults.AddRange(relinkPropertiesRecursive(importpcc, Value, transplantProps, crossPCCObjectMappingList, ""));
                     Value.WriteProperties(transplantProps);
                 }
@@ -120,7 +120,7 @@ namespace ME3Explorer
                                             else
                                             {
                                                 Debug.WriteLine("Binary relink missed ME3 WwiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue);
-                                                relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: WwiseEvent referenced WwiseStream " + originalValue + " is not in the mapping tree and could not be relinked");
+                                                relinkFailedReport.Add(exp.UIndex + " " + exp.FullPath + " binary relink error: WwiseEvent referenced WwiseStream " + originalValue + " is not in the mapping tree and could not be relinked");
                                             }
                                         }
 
@@ -149,7 +149,7 @@ namespace ME3Explorer
                                                 else
                                                 {
                                                     Debug.WriteLine("Binary relink missed ME2 WwiseEvent Bank Entry " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + bankRef);
-                                                    relinkFailedReport.Add(exp.UIndex + " " + exp.GetInstancedFullPath + " binary relink error: ME2 WwiseEvent referenced WwiseBank " + bankRef + " is not in the mapping tree and could not be relinked");
+                                                    relinkFailedReport.Add(exp.UIndex + " " + exp.InstancedFullPath + " binary relink error: ME2 WwiseEvent referenced WwiseBank " + bankRef + " is not in the mapping tree and could not be relinked");
                                                 }
 
                                                 parsingPos += 4;
@@ -171,7 +171,7 @@ namespace ME3Explorer
                                                 else
                                                 {
                                                     Debug.WriteLine("Binary relink missed ME2 WwiseEvent Bank Entry " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + wwiseStreamRef);
-                                                    relinkFailedReport.Add(exp.UIndex + " " + exp.GetInstancedFullPath + " binary relink error: ME2 WwiseEvent referenced WwiseStream " + wwiseStreamRef + " is not in the mapping tree and could not be relinked");
+                                                    relinkFailedReport.Add(exp.UIndex + " " + exp.InstancedFullPath + " binary relink error: ME2 WwiseEvent referenced WwiseStream " + wwiseStreamRef + " is not in the mapping tree and could not be relinked");
                                                 }
 
                                                 parsingPos += 4;
@@ -212,12 +212,12 @@ namespace ME3Explorer
                                         {
                                             //its an import
                                             ImportEntry superclassImportEntry = importpcc.GetImport(superclassIndex);
-                                            IEntry newSuperclassValue = EntryImporter.getOrAddCrossImportOrPackage(superclassImportEntry.GetFullPath, importpcc, exp.FileRef);
+                                            IEntry newSuperclassValue = EntryImporter.getOrAddCrossImportOrPackage(superclassImportEntry.FullPath, importpcc, exp.FileRef);
                                             newdata.OverwriteRange(offset, BitConverter.GetBytes(newSuperclassValue.UIndex));
                                         }
                                         else
                                         {
-                                            relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: Superclass is an export in the source package and was not relinked.");
+                                            relinkFailedReport.Add(exp.UIndex + " " + exp.FullPath + " binary relink error: Superclass is an export in the source package and was not relinked.");
                                         }
 
                                         offset += 4;
@@ -233,7 +233,7 @@ namespace ME3Explorer
                                             }
                                             else
                                             {
-                                                relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: Child Probe UIndex could not be remapped during porting: " + childProbeUIndex + " is not in the mapping tree and could not be relinked");
+                                                relinkFailedReport.Add(exp.UIndex + " " + exp.FullPath + " binary relink error: Child Probe UIndex could not be remapped during porting: " + childProbeUIndex + " is not in the mapping tree and could not be relinked");
                                             }
                                         }
 
@@ -298,7 +298,7 @@ namespace ME3Explorer
                                             }
                                             else
                                             {
-                                                relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: Local function[" + i + "] could not be remapped during porting: " + functionObjectIndex + " is not in the mapping tree and could not be relinked");
+                                                relinkFailedReport.Add(exp.UIndex + " " + exp.FullPath + " binary relink error: Local function[" + i + "] could not be remapped during porting: " + functionObjectIndex + " is not in the mapping tree and could not be relinked");
                                             }
 
                                             offset += 4;
@@ -316,12 +316,12 @@ namespace ME3Explorer
                                         {
                                             //its an import
                                             ImportEntry outerclassReferenceImport = importpcc.GetImport(coreReference);
-                                            IEntry outerclassNewImport = EntryImporter.getOrAddCrossImportOrPackage(outerclassReferenceImport.GetFullPath, importpcc, exp.FileRef);
+                                            IEntry outerclassNewImport = EntryImporter.getOrAddCrossImportOrPackage(outerclassReferenceImport.FullPath, importpcc, exp.FileRef);
                                             newdata.OverwriteRange(offset, BitConverter.GetBytes(outerclassNewImport.UIndex));
                                         }
                                         else
                                         {
-                                            relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: Outerclass is an export in the original package, not relinked.");
+                                            relinkFailedReport.Add(exp.UIndex + " " + exp.FullPath + " binary relink error: Outerclass is an export in the original package, not relinked.");
                                         }
 
                                         offset += 4;
@@ -362,7 +362,7 @@ namespace ME3Explorer
                                         }
                                         else
                                         {
-                                            relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: DefaultsClassLink cannot be currently automatically relinked by Binary Relinker. Please manually set this in Binary Editor");
+                                            relinkFailedReport.Add(exp.UIndex + " " + exp.FullPath + " binary relink error: DefaultsClassLink cannot be currently automatically relinked by Binary Relinker. Please manually set this in Binary Editor");
                                         }
 
                                         offset += 4;
@@ -384,12 +384,12 @@ namespace ME3Explorer
                                                     if (functionsTableIndex < 0)
                                                     {
                                                         ImportEntry functionObjIndex = importpcc.GetImport(functionsTableIndex);
-                                                        IEntry newFunctionObjIndex = EntryImporter.getOrAddCrossImportOrPackage(functionObjIndex.GetFullPath, importpcc, exp.FileRef);
+                                                        IEntry newFunctionObjIndex = EntryImporter.getOrAddCrossImportOrPackage(functionObjIndex.FullPath, importpcc, exp.FileRef);
                                                         newdata.OverwriteRange(offset, BitConverter.GetBytes(newFunctionObjIndex.UIndex));
                                                     }
                                                     else
                                                     {
-                                                        relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: Full Functions List function[" + i + "] could not be remapped during porting: " + functionsTableIndex + " is not in the mapping tree and could not be relinked");
+                                                        relinkFailedReport.Add(exp.UIndex + " " + exp.FullPath + " binary relink error: Full Functions List function[" + i + "] could not be remapped during porting: " + functionsTableIndex + " is not in the mapping tree and could not be relinked");
                                                     }
                                                 }
 
@@ -401,7 +401,7 @@ namespace ME3Explorer
                                     }
                                     catch (Exception ex)
                                     {
-                                        relinkFailedReport.Add(exp.UIndex + " " + exp.GetFullPath + " binary relink error: Exception relinking: " + ex.Message);
+                                        relinkFailedReport.Add(exp.UIndex + " " + exp.FullPath + " binary relink error: Exception relinking: " + ex.Message);
                                     }
                                 }
                                     break;
@@ -419,7 +419,7 @@ namespace ME3Explorer
                     }
                     catch (Exception e)
                     {
-                        relinkFailedReport.Add($"{exp.UIndex} {exp.GetFullPath} binary relinking failed due to exception: {e.Message}");
+                        relinkFailedReport.Add($"{exp.UIndex} {exp.FullPath} binary relinking failed due to exception: {e.Message}");
                     }
                 }
             }
@@ -493,7 +493,7 @@ namespace ME3Explorer
                 //relink
                 uIndex = targetEntry.UIndex;
 
-                Debug.WriteLine($"{debugPrefix} Relink hit: {sourceObjReference}{propertyName} : {targetEntry.GetFullPath}");
+                Debug.WriteLine($"{debugPrefix} Relink hit: {sourceObjReference}{propertyName} : {targetEntry.FullPath}");
             }
             else if (uIndex < 0) //It's an unmapped import
             {
@@ -505,7 +505,7 @@ namespace ME3Explorer
                 {
                     //Get the original import
                     ImportEntry origImport = importingPCC.GetImport(n);
-                    string origImportFullName = origImport.GetFullPath;
+                    string origImportFullName = origImport.FullPath;
                     //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
                     IEntry crossImport = null;
@@ -528,26 +528,26 @@ namespace ME3Explorer
                     {
                         crossPCCObjectMappingList.Add(origImport, crossImport); //add to mapping to speed up future relinks
                         uIndex = crossImport.UIndex;
-                        Debug.WriteLine($"Relink hit: Dynamic CrossImport for {origvalue} {importingPCC.GetEntry(origvalue).GetFullPath} -> {uIndex}");
+                        Debug.WriteLine($"Relink hit: Dynamic CrossImport for {origvalue} {importingPCC.GetEntry(origvalue).FullPath} -> {uIndex}");
 
                     }
                     else
                     {
-                        string path = importingPCC.GetEntry(uIndex) != null ? importingPCC.GetEntry(uIndex).GetFullPath : "Entry not found: " + uIndex;
+                        string path = importingPCC.GetEntry(uIndex) != null ? importingPCC.GetEntry(uIndex).FullPath : "Entry not found: " + uIndex;
 
                         if (linkFailedDueToError != null)
                         {
-                            Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.GetEntry(origvalue).GetFullPath}");
+                            Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName.Instanced} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.GetEntry(origvalue).FullPath}");
                             return $"Relink failed for {propertyName} {uIndex} in export {path}({relinkingExport.UIndex}): {linkFailedDueToError}";
                         }
 
                         if (relinkingExport.FileRef.GetEntry(uIndex) != null)
                         {
-                            Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.GetEntry(origvalue).GetFullPath}");
-                            return $"Relink failed: CrossImport porting failed for {propertyName} {uIndex} {relinkingExport.FileRef.GetEntry(uIndex).GetFullPath} in export {relinkingExport.GetFullPath}({relinkingExport.UIndex})";
+                            Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName.Instanced} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.GetEntry(origvalue).FullPath}");
+                            return $"Relink failed: CrossImport porting failed for {propertyName} {uIndex} {relinkingExport.FileRef.GetEntry(uIndex).FullPath} in export {relinkingExport.FullPath}({relinkingExport.UIndex})";
                         }
 
-                        return $"Relink failed: New export does not exist - this is probably a bug in cross import code for {propertyName} {uIndex} in export {relinkingExport.GetFullPath}({relinkingExport.UIndex})";
+                        return $"Relink failed: New export does not exist - this is probably a bug in cross import code for {propertyName} {uIndex} in export {relinkingExport.FullPath}({relinkingExport.UIndex})";
                     }
                 }
             }
@@ -555,19 +555,22 @@ namespace ME3Explorer
             {
                 //It's an export
                 //Attempt lookup
-                string indexedFullPath = importingPCC.GetUExport(uIndex).GetIndexedFullPath;
-                var existingExport = relinkingExport.FileRef.Exports.FirstOrDefault(x => x.GetIndexedFullPath == indexedFullPath);
+                ExportEntry sourceExport = importingPCC.GetUExport(uIndex);
+                string fullPath = sourceExport.FullPath;
+                int indexValue = sourceExport.indexValue;
+                var existingExport = relinkingExport.FileRef.Exports.FirstOrDefault(x => x.FullPath == fullPath && indexValue == x.indexValue);
                 if (existingExport != null)
                 {
-                    Debug.WriteLine($"Relink hit [EXPERIMENTAL]: Existing export in file was found, linking to it:  {uIndex} {indexedFullPath} -> {existingExport.GetIndexedFullPath}");
+                    Debug.WriteLine($"Relink hit [EXPERIMENTAL]: Existing export in file was found, linking to it:  " +
+                                    $"{uIndex} {sourceExport.InstancedFullPath} -> {existingExport.InstancedFullPath}");
                     uIndex = existingExport.UIndex;
 
                 }
                 else
                 {
-                    string path = importingPCC.GetEntry(uIndex) != null ? importingPCC.GetEntry(uIndex).GetFullPath : $"Entry not found: {uIndex}";
-                    Debug.WriteLine($"Relink failed in {relinkingExport.ObjectName} {relinkingExport.UIndex}: {propertyName} {uIndex} {path}");
-                    return $"Relink failed: {propertyName} {uIndex} in export {relinkingExport.GetFullPath}({relinkingExport.UIndex})";
+                    string path = importingPCC.GetEntry(uIndex)?.FullPath ?? $"Entry not found: {uIndex}";
+                    Debug.WriteLine($"Relink failed in {relinkingExport.ObjectName.Instanced} {relinkingExport.UIndex}: {propertyName} {uIndex} {path}");
+                    return $"Relink failed: {propertyName} {uIndex} in export {relinkingExport.FullPath}({relinkingExport.UIndex})";
                 }
             }
 
@@ -609,12 +612,12 @@ namespace ME3Explorer
                         if (componentObjectIndex < 0)
                         {
                             ImportEntry componentObjectImport = importpcc.GetImport(componentObjectIndex);
-                            IEntry newComponentObjectImport = EntryImporter.getOrAddCrossImportOrPackage(componentObjectImport.GetFullPath, importpcc, exp.FileRef);
+                            IEntry newComponentObjectImport = EntryImporter.getOrAddCrossImportOrPackage(componentObjectImport.FullPath, importpcc, exp.FileRef);
                             data.OverwriteRange(offset, BitConverter.GetBytes(newComponentObjectImport.UIndex));
                         }
                         else if (componentObjectIndex > 0) //we do not remap on 0 here in binary land
                         {
-                            relinkFailedReport.Add($"{exp.UIndex} {exp.GetFullPath} binary relink error: Component[{i}] could not be remapped during porting: {componentObjectIndex} is not in the mapping tree");
+                            relinkFailedReport.Add($"{exp.UIndex} {exp.FullPath} binary relink error: Component[{i}] could not be remapped during porting: {componentObjectIndex} is not in the mapping tree");
                         }
                     }
                     offset += 4;
@@ -644,7 +647,7 @@ namespace ME3Explorer
                             if (componentObjectIndex < 0)
                             {
                                 ImportEntry componentObjectImport = importpcc.GetImport(componentObjectIndex);
-                                IEntry newComponentObjectImport = EntryImporter.getOrAddCrossImportOrPackage(componentObjectImport.GetFullPath, importpcc, exp.FileRef);
+                                IEntry newComponentObjectImport = EntryImporter.getOrAddCrossImportOrPackage(componentObjectImport.FullPath, importpcc, exp.FileRef);
                                 data.OverwriteRange(offset, BitConverter.GetBytes(newComponentObjectImport.UIndex));
                             }
                             else

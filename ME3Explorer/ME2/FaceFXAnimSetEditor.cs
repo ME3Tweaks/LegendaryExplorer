@@ -54,7 +54,7 @@ namespace ME2Explorer
         {
             listBox1.Items.Clear();
             foreach(int n in Objects)
-                listBox1.Items.Add($"#{n} : {Pcc.Exports[n].GetFullPath}");
+                listBox1.Items.Add($"#{n} : {Pcc.Exports[n].FullPath}");
         }
 
         private void FaceFXRefresh(int n, IEnumerable<string> expandedNodes = null, string topNodeName = null)

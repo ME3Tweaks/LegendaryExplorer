@@ -25,20 +25,13 @@
         <DataTemplate DataType="{x:Type Packages:ImportEntry}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
-                <TextBlock Text="{Binding Path=GetFullPath}" Margin="5,0,0,0" Foreground="Gray"/>
+                <TextBlock Text="{Binding Path=InstancedFullPath}" Margin="5,0,0,0" Foreground="Gray"/>
             </StackPanel>
         </DataTemplate>
         <DataTemplate DataType="{x:Type Packages:ExportEntry}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
-                <TextBlock Foreground="Black" Margin="5,0,0,0">
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{}{0}_{1}">
-                            <Binding Path="GetFullPath" />
-                            <Binding Path="indexValue" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
+                <TextBlock Foreground="Black" Margin="5,0,0,0" Text="{Binding InstancedFullPath}"/>
             </StackPanel>
         </DataTemplate>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>

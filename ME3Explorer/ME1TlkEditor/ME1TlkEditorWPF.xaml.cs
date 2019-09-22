@@ -85,7 +85,7 @@ namespace ME3Explorer.ME1TlkEditor
             if (CurrentLoadedExport != null)
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditorWPF(), CurrentLoadedExport);
-                elhw.Title = $"TLK Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FilePath}";
+                elhw.Title = $"TLK Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}";
                 elhw.Show();
             }
         }
@@ -274,7 +274,7 @@ namespace ME3Explorer.ME1TlkEditor
 
                         writer.WriteStartDocument();
                         writer.WriteStartElement("tlkFile");
-                        writer.WriteAttributeString("Name", CurrentLoadedExport.PackageFullName + "_" + CurrentLoadedExport.ObjectName);
+                        writer.WriteAttributeString("Name", CurrentLoadedExport.InstancedFullPath);
 
                         for (int i = 0; i < LoadedStrings.Count; i++)
                         {

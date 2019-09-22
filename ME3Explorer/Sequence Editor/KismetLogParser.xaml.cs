@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal;
 using Microsoft.VisualBasic.Logging;
 using Path = System.IO.Path;
 
@@ -26,6 +27,13 @@ namespace ME3Explorer.Sequence_Editor
     /// </summary>
     public partial class KismetLogParser : NotifyPropertyChangedControlBase
     {
+        static readonly string KismetLogME3Path = Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "KismetLog.txt");
+        static readonly string KismetLogME2Path = Path.Combine(ME2Directory.gamePath, "Binaries", "KismetLog.txt");
+        static readonly string KismetLogME1Path = Path.Combine(ME1Directory.gamePath, "Binaries", "KismetLog.txt");
+        public static string KismetLogPath(MEGame game) => game == MEGame.ME3 ? KismetLogME3Path : 
+                                                           game == MEGame.ME2 ? KismetLogME2Path : 
+                                                           game == MEGame.ME1 ? KismetLogME1Path : null;
+
         public Action<string, int> ExportFound { get; set; } 
 
         public KismetLogParser()
@@ -37,12 +45,17 @@ namespace ME3Explorer.Sequence_Editor
         public ObservableCollectionExtended<LoggerInfo> LogLines { get; } = new ObservableCollectionExtended<LoggerInfo>();
 
         private IMEPackage Pcc;
+        private MEGame Game;
 
-        public void LoadLog(string filePath, IMEPackage pcc = null)
+        public void LoadLog(MEGame game, IMEPackage pcc = null)
         {
             Pcc = pcc;
+            Game = game;
             LogLines.ClearEx();
-            LogLines.AddRange(File.ReadLines(filePath).Skip(4).Select(ParseLoggerLine).NonNull().ToList());
+            if (File.Exists(KismetLogPath(Game)))
+            {
+                LogLines.AddRange(File.ReadLines(KismetLogPath(Game)).Skip(4).Select(ParseLoggerLine).NonNull().ToList());
+            }
         }
 
         private LoggerInfo ParseLoggerLine(string line)
@@ -57,16 +70,15 @@ namespace ME3Explorer.Sequence_Editor
                 string packageName = args[1].Trim('(', ')').ToLower();
                 if (Pcc == null || Path.GetFileNameWithoutExtension(Pcc.FilePath).ToLower() == packageName)
                 {
-                    if (int.TryParse(nameAndIndex.Substring(nameAndIndex.LastIndexOf('_') + 1), out int nameIndex))
+                    if (Int32.TryParse(nameAndIndex.Substring(nameAndIndex.LastIndexOf('_') + 1), out int nameIndex))
                     {
                         return new LoggerInfo
                         {
                             fullLine = line,
                             packageName = packageName,
                             className = args[2],
-                            objectName = nameAndIndex.Substring(0, nameAndIndex.LastIndexOf('_')),
+                            objectName = new NameReference(nameAndIndex.Substring(0, nameAndIndex.LastIndexOf('_')), nameIndex),
                             sequenceName = sequence,
-                            nameIndex = nameIndex
                         };
                     }
                 }
@@ -80,25 +92,24 @@ namespace ME3Explorer.Sequence_Editor
             public string fullLine { get; set; }
             public string packageName;
             public string className;
-            public string objectName;
+            public NameReference objectName;
             public string sequenceName;
-            public int nameIndex;
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count == 1 && e.AddedItems[0] is LoggerInfo info)
             {
-                foreach ((string fileName, string filePath) in MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3))
+                foreach ((string fileName, string filePath) in MELoadedFiles.GetFilesLoadedInGame(Game))
                 {
                     if (Path.GetFileNameWithoutExtension(fileName.ToLower()) == info.packageName)
                     {
-                        using (var package = MEPackageHandler.OpenME3Package(filePath))
+                        using (var package = MEPackageHandler.OpenMEPackage(filePath))
                         {
                             foreach (ExportEntry exp in package.Exports)
                             {
-                                if (exp.ClassName == info.className && exp.ObjectName == info.objectName && exp.indexValue == info.nameIndex &&
-                                    exp.PackageName == info.sequenceName)
+                                if (exp.ClassName == info.className && exp.ObjectName == info.objectName &&
+                                    exp.ParentName == info.sequenceName)
                                 {
                                     ExportFound(filePath, exp.UIndex);
                                     return;

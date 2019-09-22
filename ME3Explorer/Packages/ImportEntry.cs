@@ -2,10 +2,11 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3Explorer.Unreal;
 
 namespace ME3Explorer.Packages
 {
-    [DebuggerDisplay("ImportEntry | {UIndex} = {GetFullPath}")]
+    [DebuggerDisplay("ImportEntry | {UIndex} = {InstancedFullPath}")]
     public class ImportEntry : NotifyPropertyChangedBase, IEntry
     {
         public MEGame Game => FileRef.Game;
@@ -92,10 +93,16 @@ namespace ME3Explorer.Packages
             set => idxClassName = FileRef.FindNameOrAdd(value);
         }
 
-        public string ObjectName
+        public string ObjectNameString
         {
             get => FileRef.Names[idxObjectName];
             set => idxObjectName = FileRef.FindNameOrAdd(value);
+        }
+
+        public NameReference ObjectName
+        {
+            get => new NameReference(ObjectNameString, indexValue);
+            set => (ObjectNameString, indexValue) = value;
         }
 
         public string PackageFile
@@ -104,106 +111,15 @@ namespace ME3Explorer.Packages
             set => idxPackageFile = FileRef.FindNameOrAdd(value);
         }
 
+        public string ParentName => FileRef.GetEntry(idxLink)?.ObjectName ?? "";
 
-        public string PackageName
-        {
-            get
-            {
-                int val = idxLink;
-                if (val != 0)
-                {
-                    IEntry entry = FileRef.GetEntry(val);
-                    return entry.ObjectName;
-                }
-                else return "Package";
-            }
-        }
+        public string ParentFullPath => FileRef.GetEntry(idxLink)?.FullPath ?? "";
 
-        public string PackageNameInstanced
-        {
-            get
-            {
-                int val = idxLink;
-                if (val != 0)
-                {
-                    IEntry entry = FileRef.GetEntry(val);
-                    string result = entry.ObjectName;
-                    if (entry.indexValue > 0)
-                    {
-                        return result + "_" + entry.indexValue; //Should be -1 for 4.1, will remain as-is for 4.0
-                    }
-                    return result;
-                }
-                else return "Package";
-            }
-        }
+        public string FullPath => FileRef.IsEntry(idxLink) ? $"{ParentFullPath}.{ObjectName.Name}" : ObjectName.Name;
 
-        public string PackageFullName
-        {
-            get
-            {
-                string result = PackageName;
-                int idxNewPackName = idxLink;
+        public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
 
-                while (idxNewPackName != 0)
-                {
-                    string newPackageName = FileRef.GetEntry(idxNewPackName).PackageName;
-                    if (newPackageName != "Package")
-                        result = newPackageName + "." + result;
-                    idxNewPackName = FileRef.GetEntry(idxNewPackName).idxLink;
-                }
-                return result;
-            }
-        }
-
-        public string GetFullPath
-        {
-            get
-            {
-                string s = "";
-                if (PackageFullName != "Class" && PackageFullName != "Package")
-                    s += PackageFullName + ".";
-                s += ObjectName;
-                return s;
-            }
-        }
-        public string GetIndexedFullPath => GetFullPath + "_" + indexValue;
-
-        public string PackageFullNameInstanced
-        {
-            get
-            {
-                string result = PackageName;
-                int idxNewPackName = idxLink;
-
-                while (idxNewPackName != 0)
-                {
-                    IEntry e = FileRef.GetEntry(idxNewPackName);
-                    string newPackageName = e.PackageName;
-                    if (e.indexValue > 0)
-                    {
-                        newPackageName += "_" + e.indexValue;
-                    }
-                    if (newPackageName != "Package")
-                        result = newPackageName + "." + result;
-                    idxNewPackName = FileRef.GetEntry(idxNewPackName).idxLink;
-                }
-                return result;
-            }
-        }
-
-        public string GetInstancedFullPath
-        {
-            get
-            {
-                string s = "";
-                if (PackageFullNameInstanced != "Class" && PackageFullNameInstanced != "Package")
-                    s += PackageFullNameInstanced + ".";
-                s += ObjectName;
-                s += "_" + indexValue;
-                return s;
-            }
-        }
+        public string InstancedFullPath => FileRef.IsEntry(idxLink) ? $"{ParentInstancedFullPath}.{ObjectName.Instanced}" : ObjectName.Instanced;
 
         bool headerChanged;
         public bool HeaderChanged

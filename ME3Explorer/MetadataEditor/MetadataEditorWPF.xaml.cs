@@ -129,7 +129,7 @@ namespace ME3Explorer.MetadataEditor
                 {
                     Height = 620,
                     Width = 780,
-                    Title = $"Metadata Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FilePath}"
+                    Title = $"Metadata Editor - {export.UIndex} {export.InstancedFullPath} - {export.FileRef.FilePath}"
                 };
                 mde.RefreshAllEntriesList(CurrentLoadedEntry.FileRef);
                 elhw.Show();
@@ -158,7 +158,7 @@ namespace ME3Explorer.MetadataEditor
                 InfoTab_Link_TextBlock.Text = "0x08 Link:";
                 InfoTab_ObjectName_TextBlock.Text = "0x0C Object name:";
 
-                InfoTab_Objectname_ComboBox.SelectedIndex = exportEntry.FileRef.findName(exportEntry.ObjectName);
+                InfoTab_Objectname_ComboBox.SelectedIndex = exportEntry.FileRef.findName(exportEntry.ObjectName.Name);
 
                 LoadAllEntriesBindedItems(exportEntry);
 
@@ -183,7 +183,7 @@ namespace ME3Explorer.MetadataEditor
                     int pairOffset = 44;
                     foreach ((NameReference name, int uIndex) in componentMap)
                     {
-                        components += $"0x{pairOffset:X2} {name.InstancedString} {exportEntry.FileRef.GetEntryString(uIndex)}\n";
+                        components += $"0x{pairOffset:X2} {name.Instanced} {exportEntry.FileRef.GetEntryString(uIndex)}\n";
                         pairOffset += 12;
                     }
 
@@ -298,7 +298,7 @@ namespace ME3Explorer.MetadataEditor
             InfoTab_ObjectName_TextBlock.Text = "0x14 Object name:";
             Header_Hexbox_ComponentsLabel.Text = "";
 
-            InfoTab_Objectname_ComboBox.SelectedIndex = importEntry.FileRef.findName(importEntry.ObjectName);
+            InfoTab_Objectname_ComboBox.SelectedIndex = importEntry.FileRef.findName(importEntry.ObjectName.Name);
             InfoTab_ImpClass_ComboBox.SelectedIndex = importEntry.FileRef.findName(importEntry.ClassName);
             LoadAllEntriesBindedItems(importEntry);
 
@@ -344,11 +344,11 @@ namespace ME3Explorer.MetadataEditor
                         }
                         if (CurrentLoadedEntry.FileRef.GetEntry(val) is ExportEntry exp)
                         {
-                            s += $", Export: {exp.ObjectName}";
+                            s += $", Export: {exp.ObjectName.Instanced}";
                         }
                         else if (CurrentLoadedEntry.FileRef.GetEntry(val) is ImportEntry imp)
                         {
-                            s += $", Import: {imp.ObjectName}";
+                            s += $", Import: {imp.ObjectName.Instanced}";
                         }
                     }
                     s += $" | Start=0x{start:X8} ";

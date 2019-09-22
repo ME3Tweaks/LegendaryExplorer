@@ -1258,7 +1258,7 @@ namespace ME3Explorer.Unreal.Classes
 
                     foreach (var mat in MatInsts)
                     {
-                        mtlWriter.WriteLine("newmtl " + mat.Export.ObjectName);
+                        mtlWriter.WriteLine("newmtl " + mat.Export.ObjectName.Instanced);
                     }
 
                     lodIndex++;
@@ -1279,8 +1279,8 @@ namespace ME3Explorer.Unreal.Classes
                     int lodStart = LODVertexOffsets[lodIndex];
                     foreach (var section in lod.Sections)
                     {
-                        writer.WriteLine("usemtl " + MatInsts[section.MaterialIndex].Export.ObjectName);
-                        writer.WriteLine("g LOD" + lodIndex + "-" + MatInsts[section.MaterialIndex].Export.ObjectName);
+                        writer.WriteLine("usemtl " + MatInsts[section.MaterialIndex].Export.ObjectName.Instanced);
+                        writer.WriteLine("g LOD" + lodIndex + "-" + MatInsts[section.MaterialIndex].Export.ObjectName.Instanced);
 
                         for (int i = section.BaseIndex; i < section.BaseIndex + section.NumTriangles * 3; i += 3)
                         {

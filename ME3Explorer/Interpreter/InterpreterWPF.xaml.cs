@@ -247,7 +247,7 @@ namespace ME3Explorer
                 ExportEntry export = Pcc.GetUExport(op.Value);
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export)
                 {
-                    Title = $"Interpreter - {export.UIndex} {export.GetInstancedFullPath} - {Pcc.FilePath}"
+                    Title = $"Interpreter - {export.UIndex} {export.InstancedFullPath} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }
@@ -310,15 +310,14 @@ namespace ME3Explorer
             {
                 case ArrayProperty<ObjectProperty> aop:
 
-                    int IndexKeySelector(ObjectProperty x) => Pcc.GetEntry(x.Value)?.indexValue ?? 0;
-                    string FullPathKeySelector(ObjectProperty x) => Pcc.GetEntry(x.Value)?.GetInstancedFullPath ?? "";
+                    string FullPathKeySelector(ObjectProperty x) => Pcc.GetEntry(x.Value)?.InstancedFullPath ?? "";
 
                     aop.Values = ascending
-                        ? aop.OrderBy(FullPathKeySelector).ThenBy(IndexKeySelector).ToList()
-                        : aop.OrderByDescending(FullPathKeySelector).ThenByDescending(IndexKeySelector).ToList();
+                        ? aop.OrderBy(FullPathKeySelector).ToList()
+                        : aop.OrderByDescending(FullPathKeySelector).ToList();
                     break;
                 case ArrayProperty<NameProperty> anp:
-                    anp.Values = (ascending ? anp.OrderBy(x => x.Value.InstancedString) : anp.OrderByDescending(x => x.Value.InstancedString)).ToList();
+                    anp.Values = (ascending ? anp.OrderBy(x => x.Value.Instanced) : anp.OrderByDescending(x => x.Value.Instanced)).ToList();
                     break;
             }
             CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
@@ -613,7 +612,7 @@ namespace ME3Explorer
             {
                 UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry
                 {
-                    DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.ObjectName} ({CurrentLoadedExport.ClassName})",
+                    DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.ObjectName.Instanced} ({CurrentLoadedExport.ClassName})",
                     IsExpanded = true
                 };
 
@@ -631,7 +630,7 @@ namespace ME3Explorer
 
                 UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry
                 {
-                    DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.GetInstancedFullPath} ({CurrentLoadedExport.ClassName})",
+                    DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.InstancedFullPath} ({CurrentLoadedExport.ClassName})",
                     IsExpanded = true
                 };
 
@@ -753,7 +752,7 @@ namespace ME3Explorer
                         editableValue = index.ToString();
                         if (entry != null)
                         {
-                            parsedValue = entry.GetInstancedFullPath;
+                            parsedValue = entry.InstancedFullPath;
                             if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
                             {
                                 editableValue += $" {ExportToString(parsingExport.FileRef.GetUExport(index))}";
@@ -777,7 +776,7 @@ namespace ME3Explorer
                         editableValue = index.ToString();
                         if (entry != null)
                         {
-                            parsedValue = $"{entry.GetFullPath}.{dp.Value.FunctionName}";
+                            parsedValue = $"{entry.InstancedFullPath}.{dp.Value.FunctionName}";
                         }
                         else if (index == 0)
                         {
@@ -822,7 +821,7 @@ namespace ME3Explorer
                     break;
                 case NameProperty np:
                     editableValue = $"{parsingExport.FileRef.findName(np.Value.Name)}_{np.Value.Number}";
-                    parsedValue = np.Value.InstancedString;
+                    parsedValue = np.Value.Instanced;
                     break;
                 case ByteProperty bp:
                     editableValue = parsedValue = bp.Value.ToString();
@@ -831,7 +830,7 @@ namespace ME3Explorer
                     editableValue = parsedValue = b4p.Value.ToString();
                     break;
                 case EnumProperty ep:
-                    editableValue = ep.Value.InstancedString;
+                    editableValue = ep.Value.Instanced;
                     break;
                 case StringRefProperty strrefp:
                     editableValue = strrefp.Value.ToString();
@@ -909,7 +908,7 @@ namespace ME3Explorer
 
                         if (parmName != null && parmValue != null && parmValue.Value != 0)
                         {
-                            parsedValue += $" {parmName}: {parsingExport.FileRef.GetEntry(parmValue.Value).ObjectName}";
+                            parsedValue += $" {parmName}: {parsingExport.FileRef.GetEntry(parmValue.Value).ObjectName.Instanced}";
                         }
                     }
                     else if (sp.StructType == "ScalarParameterValue")
@@ -1031,11 +1030,11 @@ namespace ME3Explorer
 
         private static string ExportToString(ExportEntry exportEntry)
         {
-            switch (exportEntry.ObjectName)
+            switch (exportEntry.ClassName)
             {
                 case "LevelStreamingKismet":
                     NameProperty prop = exportEntry.GetProperty<NameProperty>("PackageName");
-                    return $"({prop.Value.InstancedString})";
+                    return $"({prop.Value.Instanced})";
                 case "StaticMeshComponent":
                     {
                         ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("StaticMesh");
@@ -1044,7 +1043,7 @@ namespace ME3Explorer
                             IEntry smEntry = exportEntry.FileRef.GetEntry(smprop.Value);
                             if (smEntry != null)
                             {
-                                return $"({smEntry.ObjectName})";
+                                return $"({smEntry.ObjectName.Instanced})";
                             }
                         }
                     }
@@ -1058,7 +1057,7 @@ namespace ME3Explorer
                             IEntry smEntry = exportEntry.FileRef.GetEntry(smprop.Value);
                             if (smEntry != null)
                             {
-                                return $"({smEntry.ObjectName})";
+                                return $"({smEntry.ObjectName.Instanced})";
                             }
                         }
                     }
@@ -1071,7 +1070,7 @@ namespace ME3Explorer
                             IEntry smEntry = exportEntry.FileRef.GetEntry(smprop.Value);
                             if (smEntry != null)
                             {
-                                return $"({smEntry.ObjectName})";
+                                return $"({smEntry.ObjectName.Instanced})";
                             }
                         }
                     }
@@ -1105,11 +1104,11 @@ namespace ME3Explorer
                         }
                         if (Pcc.GetEntry(val) is ExportEntry exp)
                         {
-                            s += $", Export: {exp.ObjectName}";
+                            s += $", Export: {exp.ObjectName.Instanced}";
                         }
                         else if (Pcc.GetEntry(val) is ImportEntry imp)
                         {
-                            s += $", Import: {imp.ObjectName}";
+                            s += $", Import: {imp.ObjectName.Instanced}";
                         }
                     }
                     s += $" | Start=0x{start:X8} ";
@@ -1304,7 +1303,7 @@ namespace ME3Explorer
                                     var entry = Pcc.GetEntry(index);
                                     if (entry != null)
                                     {
-                                        ParsedValue_TextBlock.Text = entry.GetInstancedFullPath;
+                                        ParsedValue_TextBlock.Text = entry.InstancedFullPath;
                                     }
                                     else
                                     {
@@ -1952,7 +1951,7 @@ namespace ME3Explorer
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), CurrentLoadedExport)
                 {
-                    Title = $"Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetInstancedFullPath} - {Pcc.FilePath}"
+                    Title = $"Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {Pcc.FilePath}"
                 };
                 elhw.Show();
             }

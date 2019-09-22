@@ -537,16 +537,7 @@ namespace ME3Explorer.PackageDumper
                         for (int x = 0; x < pcc.Imports.Count; x++)
                         {
                             ImportEntry imp = pcc.Imports[x];
-                            if (imp.PackageFullName != "Class" && imp.PackageFullName != "Package")
-                            {
-                                stringoutput.WriteLine(
-                                    $"#{(x + 1) * -1}: {imp.PackageFullName}.{imp.ObjectName}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.byteSize):X4})");
-                            }
-                            else
-                            {
-                                stringoutput.WriteLine(
-                                    $"#{(x + 1) * -1}: {imp.ObjectName}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.byteSize):X4})");
-                            }
+                            stringoutput.WriteLine($"#{(x + 1) * -1}: {imp.InstancedFullPath}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.byteSize):X4})");
                         }
                         stringoutput.WriteLine("--End of Imports");
                         //}
@@ -590,13 +581,7 @@ namespace ME3Explorer.PackageDumper
                                 stringoutput.Write("[C] ");
                             }
 
-                            stringoutput.Write($"{exp.GetFullPath}({exp.ClassName})");
-                            int ival = exp.indexValue;
-                            if (ival > 0)
-                            {
-                                stringoutput.Write($" (Index: {ival}) ");
-
-                            }
+                            stringoutput.Write($"{exp.InstancedFullPath}({exp.ClassName})");
                             stringoutput.WriteLine($"(Superclass: {exp.SuperClassName}) (Data Offset: 0x {exp.DataOffset:X5})");
 
                             if (isScript)

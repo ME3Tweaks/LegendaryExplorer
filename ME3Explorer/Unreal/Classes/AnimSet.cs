@@ -48,13 +48,13 @@ namespace ME3Explorer.Unreal.Classes
             {
                 SetData = new BioAnimSetData(pcc.GetUExport(m_pBioAnimSetData));
             }
-            PreviewSkelMeshName = props.GetPropOrDefault<NameProperty>("PreviewSkelMeshName").Value.InstancedString;
+            PreviewSkelMeshName = props.GetPropOrDefault<NameProperty>("PreviewSkelMeshName").Value.Instanced;
             Sequences = props.GetPropOrDefault<ArrayProperty<ObjectProperty>>("Sequences").Select(prop => prop.Value).ToList();
         }
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode($"AnimSet : {Export.ObjectName}(#{Export.UIndex})");
+            TreeNode res = new TreeNode($"AnimSet : {Export.ObjectName.Instanced}(#{Export.UIndex})");
             res.Nodes.Add($"PreviewSkelMeshName : {PreviewSkelMeshName}");
             res.Nodes.Add($"m_pBioAnimSetData : {m_pBioAnimSetData}");
             if (SetData != null)

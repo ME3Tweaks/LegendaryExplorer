@@ -25,7 +25,7 @@ namespace ME3Explorer.Unreal
 
         //https://api.unrealengine.com/INT/API/Runtime/Core/UObject/FName/index.html
         [JsonIgnore]
-        public string InstancedString => Number > 0 ? $"{Name}_{Number - 1}" : Name;
+        public string Instanced => Number > 0 ? $"{Name}_{Number - 1}" : Name;
 
         public static implicit operator NameReference(string s)
         {
@@ -455,7 +455,7 @@ namespace ME3Explorer.Unreal
                 case "NameProperty":
                     v.IntValue = BitConverter.ToInt32(raw, start);
                     v.NameValue = new NameReference(pcc.GetNameEntry(v.IntValue), BitConverter.ToInt32(raw, start + 4));
-                    v.StringValue = v.NameValue.InstancedString;
+                    v.StringValue = v.NameValue.Instanced;
                     v.len = 8;
                     break;
             }

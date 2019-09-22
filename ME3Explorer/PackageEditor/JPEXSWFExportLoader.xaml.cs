@@ -87,7 +87,7 @@ namespace ME3Explorer.PackageEditor
             ImportJPEXSavedFileCommand = new GenericCommand(ImportJPEXFile, JPEXExportFileExists);
         }
 
-        private bool JPEXExportFileExists() => CurrentLoadedExport != null && File.Exists(Path.Combine(Path.GetTempPath(), CurrentLoadedExport.GetFullPath + ".swf"));
+        private bool JPEXExportFileExists() => CurrentLoadedExport != null && File.Exists(Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".swf"));
 
 
         private void OpenExportInJPEX()
@@ -99,7 +99,7 @@ namespace ME3Explorer.PackageEditor
 
                 //This may be more efficient if it is copied with blockcopy instead.
                 byte[] data = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName).Select(x => x.Value).ToArray();
-                string writeoutPath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.GetFullPath + ".swf");
+                string writeoutPath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".swf");
 
                 File.WriteAllBytes(writeoutPath, data);
 
@@ -155,7 +155,7 @@ namespace ME3Explorer.PackageEditor
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return parsableClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith(("Default__"));
+            return parsableClasses.Contains(exportEntry.ClassName) && !exportEntry.IsDefaultObject;
         }
 
         public override void PoppedOut(MenuItem recentsMenuItem)
