@@ -567,7 +567,7 @@ namespace ME3Explorer.Unreal
         {
             //Debug.WriteLine("Writing byte property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
             stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 1);
-            if (pcc.Game == MEGame.ME3)
+            if (pcc.Game >= MEGame.ME3)
             {
                 stream.WriteInt32(pcc.FindNameOrAdd("None"));
                 stream.WriteInt32(0);
@@ -578,7 +578,7 @@ namespace ME3Explorer.Unreal
         public static void WriteEnumProperty(this Stream stream, IMEPackage pcc, string propName, NameReference enumName, NameReference enumValue)
         {
             stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 8);
-            if (pcc.Game == MEGame.ME3)
+            if (pcc.Game >= MEGame.ME3)
             {
                 stream.WriteInt32(pcc.FindNameOrAdd(enumName.Name));
                 stream.WriteInt32(enumName.Number);

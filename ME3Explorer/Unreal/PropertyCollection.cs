@@ -265,7 +265,7 @@ namespace ME3Explorer.Unreal
                                 }
                                 else
                                 {
-                                    if (pcc.Game == MEGame.ME3)
+                                    if (pcc.Game >= MEGame.ME3)
                                     {
                                         stream.Seek(8, SeekOrigin.Current);
                                     }

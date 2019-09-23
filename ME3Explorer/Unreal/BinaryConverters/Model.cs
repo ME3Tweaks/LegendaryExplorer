@@ -48,10 +48,17 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref RootOutside);
             sc.Serialize(ref Linked);
             sc.BulkSerialize(ref PortalNodes, SCExt.Serialize, 4);
-            sc.BulkSerialize(ref ShadowVolume, SCExt.Serialize, 16);
+            if (sc.Game != MEGame.UDK)
+            {
+                sc.BulkSerialize(ref ShadowVolume, SCExt.Serialize, 16);
+            }
+            else if (sc.IsLoading)
+            {
+                ShadowVolume = Array.Empty<MeshEdge>();
+            }
             sc.Serialize(ref NumVertices);
             sc.BulkSerialize(ref VertexBuffer, SCExt.Serialize, 36);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref LightingGuid);
                 sc.Serialize(ref LightmassSettings, SCExt.Serialize);
@@ -202,7 +209,7 @@ namespace ME3Explorer
             sc.Serialize(ref node.Plane);
             sc.Serialize(ref node.ShadowMapScale);
             sc.Serialize(ref node.LightingChannels);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref node.iLightmassIndex);
             }

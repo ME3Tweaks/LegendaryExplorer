@@ -19,9 +19,15 @@ namespace ME3Explorer
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00
         };
 
-        private static readonly byte[] me3UDKStackDummy = new byte[]
+        private static readonly byte[] me3StackDummy = new byte[]
         {
             0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00
+        };
+
+        private static readonly byte[] UDKStackDummy = new byte[]
+        {
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00
         };
 
@@ -147,7 +153,9 @@ namespace ME3Explorer
             byte[] prePropBinary;
             if (ex.HasStack)
             {
-                prePropBinary = destPackage.Game < MEGame.ME3 ? me1Me2StackDummy : me3UDKStackDummy;
+                prePropBinary = destPackage.Game == MEGame.UDK ? UDKStackDummy :
+                                destPackage.Game == MEGame.ME3 ? me3StackDummy : 
+                                                                 me1Me2StackDummy;
             }
             else
             {
@@ -240,7 +248,9 @@ namespace ME3Explorer
             if (incomingExport.HasStack)
             {
                 //TODO: Find a unique NetIndex instead of writing a blank... don't know if that will fix multiplayer sync issues
-                byte[] stackdummy = targetExport.Game < MEGame.ME3 ? me1Me2StackDummy : me3UDKStackDummy;
+                byte[] stackdummy = targetExport.Game == MEGame.UDK ? UDKStackDummy :
+                                    targetExport.Game == MEGame.ME3 ? me3StackDummy : 
+                                                                      me1Me2StackDummy;
                 res.Write(stackdummy, 0, stackdummy.Length);
             }
             else

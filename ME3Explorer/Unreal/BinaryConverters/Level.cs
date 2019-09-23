@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer.Packages;
 using SharpDX;
+using StreamHelpers;
 
 namespace ME3Explorer.Unreal.BinaryConverters
 {
@@ -54,7 +55,18 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref ModelComponents, SCExt.Serialize);
             sc.Serialize(ref GameSequences, SCExt.Serialize);
             sc.Serialize(ref TextureToInstancesMap, SCExt.Serialize, SCExt.Serialize);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game == MEGame.UDK)
+            {
+                if (sc.IsLoading)
+                {
+                    sc.ms.Skip(sc.ms.ReadInt32() * 8);
+                }
+                else
+                {
+                    sc.ms.WriteInt32(0);
+                }
+            }
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref ApexMesh, SCExt.Serialize);
             }
@@ -74,14 +86,24 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref CachedPhysBSPDataVersion);
             sc.Serialize(ref CachedPhysSMDataVersion);
             sc.Serialize(ref ForceStreamTextures, SCExt.Serialize, SCExt.Serialize);
+            if (sc.Game == MEGame.UDK)
+            {
+                KCachedConvexData dummy = new KCachedConvexData { CachedConvexElements = Array.Empty<KCachedConvexDataElement>() };
+                sc.Serialize(ref dummy);
+                int dummyInt = 0;
+                sc.Serialize(ref dummyInt);
+            }
             sc.Serialize(ref NavListStart);
             sc.Serialize(ref NavListEnd);
             sc.Serialize(ref CoverListStart);
             sc.Serialize(ref CoverListEnd);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref PylonListStart);
                 sc.Serialize(ref PylonListEnd);
+            }
+            if (sc.Game == MEGame.ME3)
+            {
                 sc.Serialize(ref guidToIntMap, SCExt.Serialize, SCExt.Serialize);
                 sc.Serialize(ref CoverLinks, SCExt.Serialize);
                 sc.Serialize(ref intToByteMap, SCExt.Serialize, SCExt.Serialize);
@@ -101,16 +123,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 numbers = new int[0];
             }
             sc.Serialize(ref CrossLevelActors, SCExt.Serialize);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game == MEGame.UDK)
             {
-                //PrecomputedLightVolume
-                bool bIsInitialized = false;
-                sc.Serialize(ref bIsInitialized);
-                //should always be false, but just in case;
-                if (bIsInitialized)
-                {
-                    throw new Exception($"PersistentLevel has a PreComputedLightVolume! Level in: {sc.Pcc.FilePath}");
-                }
+                int dummy = 0;
+                sc.Serialize(ref dummy);
+                sc.Serialize(ref dummy);
+                sc.Serialize(ref dummy);
             }
 
             if (sc.Game == MEGame.ME1)
@@ -122,6 +140,25 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 ArtPlaceable1 = new UIndex(0);
                 ArtPlaceable2 = new UIndex(0);
+            }
+
+            if (sc.Game == MEGame.UDK && sc.IsSaving)
+            {
+                sc.ms.WriteBoolInt(false); //PrecomputedLightVolume bIsInitialized
+                sc.ms.WriteZeros(28); //Zero-ed PrecomputedVisibilityHandler
+                sc.ms.WriteZeros(45); //unk data
+            }
+
+            if (sc.Game == MEGame.ME3)
+            {
+                //PrecomputedLightVolume
+                bool bIsInitialized = false;
+                sc.Serialize(ref bIsInitialized);
+                //should always be false, but just in case;
+                if (bIsInitialized)
+                {
+                    throw new Exception($"PersistentLevel has a PreComputedLightVolume! Level in: {sc.Pcc.FilePath}");
+                }
             }
         }
 

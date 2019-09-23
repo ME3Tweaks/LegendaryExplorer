@@ -70,7 +70,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     uIndexes.Add((lightMap2D.Texture1, $"{prefix}LightMap.Texture1"));
                     uIndexes.Add((lightMap2D.Texture2, $"{prefix}LightMap.Texture2"));
                     uIndexes.Add((lightMap2D.Texture3, $"{prefix}LightMap.Texture3"));
-                    if (game != MEGame.ME3)
+                    if (game < MEGame.ME3)
                     {
                         uIndexes.Add((lightMap2D.Texture4, $"{prefix}LightMap.Texture4"));
                     }
@@ -178,7 +178,7 @@ namespace ME3Explorer
                 samp = new QuantizedDirectionalLightSample();
             }
 
-            if (sc.Game != MEGame.ME3)
+            if (sc.Game < MEGame.ME3)
             {
                 sc.Serialize(ref samp.Coefficient1);
             }
@@ -254,7 +254,7 @@ namespace ME3Explorer
             sc.Serialize(ref lmap.ScaleVector1);
             sc.Serialize(ref lmap.ScaleVector2);
             sc.Serialize(ref lmap.ScaleVector3);
-            if (sc.Game != MEGame.ME3)
+            if (sc.Game < MEGame.ME3)
             {
                 sc.Serialize(ref lmap.ScaleVector4);
             }
@@ -270,7 +270,7 @@ namespace ME3Explorer
             sc.Serialize(ref lmap.ScaleVector2);
             sc.Serialize(ref lmap.Texture3);
             sc.Serialize(ref lmap.ScaleVector3);
-            if (sc.Game != MEGame.ME3)
+            if (sc.Game < MEGame.ME3)
             {
                 sc.Serialize(ref lmap.Texture4);
                 sc.Serialize(ref lmap.ScaleVector4);
@@ -328,12 +328,18 @@ namespace ME3Explorer
             sc.Serialize(ref lod.ShadowMaps, Serialize);
             sc.Serialize(ref lod.ShadowVertexBuffers, Serialize);
             sc.Serialize(ref lod.LightMap);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref lod.bLoadVertexColorData);
                 if (lod.bLoadVertexColorData > 0)
                 {
                     sc.Serialize(ref lod.OverrideVertexColors);
+                }
+
+                if (sc.Game == MEGame.UDK)
+                {
+                    byte dummy = 0;
+                    sc.Serialize(ref dummy);
                 }
             }
         }

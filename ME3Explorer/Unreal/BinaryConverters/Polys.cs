@@ -113,7 +113,7 @@ namespace ME3Explorer
             sc.Serialize(ref poly.iBrushPoly);
             sc.Serialize(ref poly.ShadowMapScale);
             sc.Serialize(ref poly.LightingChannels);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref poly.LightmassSettings);
                 sc.Serialize(ref poly.RulesetVariation);
