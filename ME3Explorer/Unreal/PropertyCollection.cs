@@ -159,7 +159,7 @@ namespace ME3Explorer.Unreal
                         stream.Seek(4, SeekOrigin.Current);
                         break;
                     }
-                    NameReference nameRef = new NameReference (name, stream.ReadInt32());
+                    NameReference nameRef = new NameReference(name, stream.ReadInt32());
                     int typeIdx = stream.ReadInt32();
                     stream.Seek(4, SeekOrigin.Current);
                     int size = stream.ReadInt32();
@@ -527,7 +527,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new EnumProperty(stream, pcc, enumType) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<EnumProperty>(arrayOffset, props, name) {Reference = enumType};
+                        return new ArrayProperty<EnumProperty>(arrayOffset, props, name) { Reference = enumType };
                     }
                 case ArrayType.Struct:
                     {
@@ -591,7 +591,7 @@ namespace ME3Explorer.Unreal
                             {
                                 long structOffset = stream.Position;
                                 //Debug.WriteLine("reading array struct: " + arrayStructType + " at 0x" + stream.Position.ToString("X5"));
-                                PropertyCollection structProps = ReadProps(export, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties,entry: parsingEntry);
+                                PropertyCollection structProps = ReadProps(export, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties, entry: parsingEntry);
 #if DEBUG
                                 try
                                 {
@@ -610,7 +610,7 @@ namespace ME3Explorer.Unreal
 #endif
                             }
                         }
-                        return new ArrayProperty<StructProperty>(arrayOffset, props, name) {Reference = arrayStructType};
+                        return new ArrayProperty<StructProperty>(arrayOffset, props, name) { Reference = arrayStructType };
                     }
                 case ArrayType.Bool:
                     {
@@ -738,7 +738,7 @@ namespace ME3Explorer.Unreal
     [DebuggerDisplay("StructProperty | {Name.Name} - {StructType}")]
     public class StructProperty : UProperty
     {
-        public override PropertyType PropType => PropertyType.StructProperty ;
+        public override PropertyType PropType => PropertyType.StructProperty;
 
         public bool IsImmutable;
 
@@ -828,7 +828,7 @@ namespace ME3Explorer.Unreal
             foreach (FieldInfo info in fields)
             {
                 if (classInfo.properties.TryGetValue(info.Name, out PropertyInfo propInfo)
-                 && getPropMethodInfo.MakeGenericMethod(getUPropertyType(propInfo)).Invoke(this, new object[]{ info.Name }) is UProperty uProp)
+                 && getPropMethodInfo.MakeGenericMethod(getUPropertyType(propInfo)).Invoke(this, new object[] { info.Name }) is UProperty uProp)
                 {
                     info.SetValue(uStruct, getUPropertyValue(uProp, propInfo));
                 }
@@ -861,17 +861,17 @@ namespace ME3Explorer.Unreal
                     case PropertyType.ByteProperty:
                         return typeof(ByteProperty);
                     case PropertyType.ArrayProperty:
-                    {
-                        if (Enum.TryParse(propInfo.Reference, out PropertyType arrayType))
                         {
-                            return typeof(ArrayProperty<>).MakeGenericType(getUPropertyType(new PropertyInfo(arrayType)));
+                            if (Enum.TryParse(propInfo.Reference, out PropertyType arrayType))
+                            {
+                                return typeof(ArrayProperty<>).MakeGenericType(getUPropertyType(new PropertyInfo(arrayType)));
+                            }
+                            if (ME3UnrealObjectInfo.Classes.ContainsKey(propInfo.Reference))
+                            {
+                                return typeof(ArrayProperty<ObjectProperty>);
+                            }
+                            return typeof(ArrayProperty<StructProperty>);
                         }
-                        if (ME3UnrealObjectInfo.Classes.ContainsKey(propInfo.Reference))
-                        {
-                            return typeof(ArrayProperty<ObjectProperty>);
-                        }
-                        return typeof(ArrayProperty<StructProperty>);
-                    }
                     case PropertyType.StrProperty:
                         return typeof(StrProperty);
                     case PropertyType.StringRefProperty:
@@ -888,14 +888,14 @@ namespace ME3Explorer.Unreal
                 switch (prop)
                 {
                     case ArrayPropertyBase arrayPropertyBase:
-                    {
-                        List<object> objVals = arrayPropertyBase.Properties.Select(p => getUPropertyValue(p, propInfo)).ToList();
-                        Type arrayType = getArrayPropertyValueType(arrayPropertyBase, propInfo);
-                        //IEnumerable<arrayType> typedEnumerable = objVals.Cast<arrayType>();
-                        var typedEnumerable = typeof(Enumerable).InvokeGenericMethod(nameof(Enumerable.Cast), arrayType, null, objVals);
-                        //return typedEnumerable.ToArray();
-                        return typeof(Enumerable).InvokeGenericMethod(nameof(Enumerable.ToArray), arrayType, null, typedEnumerable);
-                    }
+                        {
+                            List<object> objVals = arrayPropertyBase.Properties.Select(p => getUPropertyValue(p, propInfo)).ToList();
+                            Type arrayType = getArrayPropertyValueType(arrayPropertyBase, propInfo);
+                            //IEnumerable<arrayType> typedEnumerable = objVals.Cast<arrayType>();
+                            var typedEnumerable = typeof(Enumerable).InvokeGenericMethod(nameof(Enumerable.Cast), arrayType, null, objVals);
+                            //return typedEnumerable.ToArray();
+                            return typeof(Enumerable).InvokeGenericMethod(nameof(Enumerable.ToArray), arrayType, null, typedEnumerable);
+                        }
                     case BioMask4Property bioMask4Property:
                         return bioMask4Property.Value;
                     case BoolProperty boolProperty:
@@ -920,11 +920,11 @@ namespace ME3Explorer.Unreal
                     case StrProperty strProperty:
                         return strProperty.Value;
                     case StructProperty structProperty:
-                    {
-                        Type structType = Type.GetType($"ME3Explorer.Unreal.ME3Structs.{propInfo.Reference}");
-                        //return structProperty.GetStruct<structType>();
-                        return typeof(StructProperty).InvokeGenericMethod(nameof(structProperty.GetStruct), structType, structProperty);
-                    }
+                        {
+                            Type structType = Type.GetType($"ME3Explorer.Unreal.ME3Structs.{propInfo.Reference}");
+                            //return structProperty.GetStruct<structType>();
+                            return typeof(StructProperty).InvokeGenericMethod(nameof(structProperty.GetStruct), structType, structProperty);
+                        }
                     case UnknownProperty unknownProperty:
                     case NoneProperty noneProperty:
                     default:
@@ -961,7 +961,7 @@ namespace ME3Explorer.Unreal
                     case ArrayProperty<StructProperty> _:
                         return Type.GetType($"ME3Explorer.Unreal.ME3Structs.{propInfo.Reference}");
                     default:
-                        throw new  NotImplementedException();
+                        throw new NotImplementedException();
                 }
             }
         }

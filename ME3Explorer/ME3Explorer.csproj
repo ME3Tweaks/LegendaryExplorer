@@ -367,6 +367,7 @@
       <DependentUpon>MeshRendererWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="OnlineContent.cs" />
+    <Compile Include="PackageEditor\TextureViewer\ParallelCRC.cs" />
     <Compile Include="Packages\EntryTree.cs" />
     <Compile Include="Packages\PackageExtensions.cs" />
     <Compile Include="Packages\UnrealPackageFile.cs" />
@@ -589,8 +590,8 @@
     </Compile>
     <Compile Include="PackageDumper\TreeNode.cs" />
     <Compile Include="PackageDumper\TreeNodeList.cs" />
-    <Compile Include="PackageEditor\EmbeddedTextureViewer.xaml.cs">
-      <DependentUpon>EmbeddedTextureViewer.xaml</DependentUpon>
+    <Compile Include="PackageEditor\TextureViewer\TextureViewerExportLoader.xaml.cs">
+      <DependentUpon>TextureViewerExportLoader.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageEditor\JPEXSWFExportLoader.xaml.cs">
       <DependentUpon>JPEXSWFExportLoader.xaml</DependentUpon>
@@ -1022,7 +1023,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PackageEditor\EmbeddedTextureViewer.xaml">
+    <Page Include="PackageEditor\TextureViewer\TextureViewerExportLoader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

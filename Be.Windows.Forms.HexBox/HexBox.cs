@@ -4361,7 +4361,7 @@ namespace Be.Windows.Forms
             foreColor = text;
         }
 
-        private static Color backColor = SystemColors.Control;
+        private static Color backColor = SystemColors.Window;
         private static Color foreColor = SystemColors.ControlText;
 
         #endregion

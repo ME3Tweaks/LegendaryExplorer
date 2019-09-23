@@ -27,6 +27,14 @@ namespace ME3Explorer.SharedUI
 
         private InputType _inputType;
 
+        /// <summary>
+        /// Creates a new prompt dialog with the specified question, title, and default value. Ensure yo/su set the owner before showing if this if being called from a WPF window.
+        /// </summary>
+        /// <param name="question"></param>
+        /// <param name="title"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="selectText"></param>
+        /// <param name="inputType"></param>
         public PromptDialog(string question, string title, string defaultValue = "", bool selectText = false, InputType inputType = InputType.Text)
         {
             InitializeComponent();

@@ -26,14 +26,16 @@ using PixelFormat = MassEffectModder.Images.PixelFormat;
 namespace ME3Explorer
 {
     /// <summary>
-    /// Interaction logic for EmbeddedTextureViewer.xaml
+    /// Interaction logic for TextureViewerExportLoader.xaml
     /// </summary>
-    public partial class EmbeddedTextureViewer : ExportLoaderControl
+    public partial class TextureViewerExportLoader : ExportLoaderControl
     {
         public ObservableCollectionExtended<Texture2DMipInfo> MipList { get; } = new ObservableCollectionExtended<Texture2DMipInfo>();
         private string CurrentLoadedFormat;
         private string CurrentLoadedCacheName;
         private string CurrentLoadedBasePackageName;
+
+        public ObservableCollectionExtended<string> AvailableTFCNames { get; } = new ObservableCollectionExtended<string>();
 
         private string _cannotShowTextureText;
         public string CannotShowTextureText
@@ -56,7 +58,14 @@ namespace ME3Explorer
             set => SetProperty(ref _imageStretchOption, value);
         }
 
-        public EmbeddedTextureViewer()
+        private uint _textureCRC;
+        public uint TextureCRC
+        {
+            get => _textureCRC;
+            set => SetProperty(ref _textureCRC, value);
+        }
+
+        public TextureViewerExportLoader()
         {
             MemoryAnalyzer.AddTrackedMemoryItem("Embedded Texture Viewer Export Loader", new WeakReference(this));
 
@@ -77,6 +86,12 @@ namespace ME3Explorer
 
         private void ReplaceFromPNG()
         {
+            var selectedTFCName = (string)TextureCacheComboBox.SelectedItem;
+            if (TFCCompactor.TFCCompactor.BasegameTFCs.Contains(selectedTFCName) || MEDirectories.OfficialDLC(CurrentLoadedExport.Game).Any(x => $"Textures_{x}" == selectedTFCName))
+            {
+                MessageBox.Show("Cannot replace textures into a TFC provided by BioWare. Choose a different target TFC from the list.");
+                return;
+            }
             OpenFileDialog selectDDS = new OpenFileDialog
             {
                 Title = "Select texture file",
@@ -96,7 +111,50 @@ namespace ME3Explorer
                     MessageBox.Show("Cannot replace texture: Aspect ratios must be the same.");
                     return;
                 }
-                replaceTextures(image, props, selectDDS.FileName);
+
+                //Todo: check if vanilla. Do not allow replacing textures to a vanilla TFC.
+                string forcedTFCName = selectedTFCName;
+                if (selectedTFCName == "Create new TFC")
+                {
+                    string defaultTfcName = "Textures_DLC_MOD_YourModFolderNameHere";
+                    //attempt to lookup name.
+                    var containingFolderInfo = Directory.GetParent(CurrentLoadedExport.FileRef.FilePath);
+                    if (Path.GetFileName(containingFolderInfo.FullName).StartsWith("CookedPC"))
+                    {
+                        //Check next level up.
+                        containingFolderInfo = containingFolderInfo.Parent;
+                        if (containingFolderInfo != null && Path.GetFileName(containingFolderInfo.FullName).StartsWith("DLC_"))
+                        {
+                            var possibleDLCName = Path.GetFileName(containingFolderInfo.FullName);
+                            if (!MEDirectories.OfficialDLC(CurrentLoadedExport.Game).Contains(possibleDLCName))
+                            {
+                                defaultTfcName = $"Textures_{possibleDLCName}";
+                            }
+                        }
+
+                    }
+                    PromptDialog p = new PromptDialog("Enter name for a new TFC. It must start with Textures_DLC_, and will be created in the local directory of this package file.", "Enter new name for TFC", defaultTfcName) { Owner = Window.GetWindow(this) };
+                    var hasResult = p.ShowDialog();
+                    if (hasResult.HasValue && hasResult.Value)
+                    {
+                        if (p.ResponseText.StartsWith("Textures_DLC_") && p.ResponseText.Length > 14)
+                        {
+                            //Check TFC name isn't in list
+                            CurrentLoadedExport.FileRef.FindNameOrAdd(p.ResponseText);
+                            forcedTFCName = p.ResponseText;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error: Name must start with Textures_DLC_, and must have at least one additional character.\nThe named should match your DLC's foldername.");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                replaceTextures(image, props, selectDDS.FileName, forcedTFCName);
             }
 
         }
@@ -135,7 +193,7 @@ namespace ME3Explorer
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new EmbeddedTextureViewer(), CurrentLoadedExport)
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new TextureViewerExportLoader(), CurrentLoadedExport)
                 {
                     Title = $"Texture Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {Pcc.FilePath}"
                 };
@@ -148,6 +206,7 @@ namespace ME3Explorer
             TextureImage.Source = null;
             try
             {
+                AvailableTFCNames.ClearEx();
                 PropertyCollection properties = exportEntry.GetProperties();
                 var format = properties.GetProp<EnumProperty>("Format");
                 var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
@@ -155,7 +214,20 @@ namespace ME3Explorer
                 {
                     CurrentLoadedCacheName = cache.Value.Name;
                 }
+
                 var neverStream = properties.GetProp<BoolProperty>("NeverStream") ?? false;
+                AvailableTFCNames.AddRange(exportEntry.FileRef.Names.Where(x => x.StartsWith("Textures_DLC_")));
+
+                //Populate list first in event loading fails, so user has way to still try to fix texture.
+                if (cache != null)
+                {
+                    if (!AvailableTFCNames.Contains(cache.Value))
+                    {
+                        AvailableTFCNames.Add(cache.Value);
+                    }
+                    TextureCacheComboBox.SelectedIndex = AvailableTFCNames.IndexOf(cache.Value);
+                }
+                AvailableTFCNames.Add("Create new TFC");
 
                 List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(exportEntry, CurrentLoadedCacheName);
 
@@ -186,6 +258,10 @@ namespace ME3Explorer
                 CurrentLoadedExport = exportEntry;
                 CurrentLoadedFormat = format.Value.Name;
                 MipList.ReplaceAll(mips);
+                TextureCRC = Texture2D.GetMipCRC(topmip, format.Value);
+
+                
+
                 if (Settings.Default.EmbeddedTextureViewer_AutoLoad)
                 {
                     Mips_ListBox.SelectedIndex = MipList.IndexOf(topmip);
@@ -200,7 +276,7 @@ namespace ME3Explorer
             }
         }
 
-        
+
 
         private void LoadMip(Texture2DMipInfo mipToLoad)
         {
@@ -229,9 +305,7 @@ namespace ME3Explorer
             TextureImage.Source = null;
             try
             {
-
                 var imagebytes = Texture2D.GetTextureData(mipToLoad);
-
                 CannotShowTextureTextVisibility = Visibility.Collapsed;
                 var fmt = DDSImage.convertFormat(CurrentLoadedFormat);
                 var bitmap = DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height);
@@ -246,7 +320,6 @@ namespace ME3Explorer
                     bitmapImage.EndInit();
                     TextureImage.Source = bitmapImage; //image1 is your control            }
                 }
-                TextureCache_TextBox.Text = mipToLoad.TextureCacheName;
             }
             catch (Exception e)
             {
@@ -272,11 +345,11 @@ namespace ME3Explorer
             }
         }
 
-        public string replaceTextures(Image image, PropertyCollection props, string fileSourcePath = null)
+        public string replaceTextures(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null)
         {
             string errors = "";
             Texture2D texture = new Texture2D(CurrentLoadedExport);
-            var textureCache = texture.GetTopMip().TextureCacheName;
+            var textureCache = forcedTFCName ?? texture.GetTopMip().TextureCacheName;
             string fmt = texture.TextureFormat;
             PixelFormat pixelFormat = Image.getPixelFormatType(fmt);
             texture.RemoveEmptyMipsFromMipList();
@@ -356,22 +429,20 @@ namespace ME3Explorer
             //if (!texture.properties.exists("LODGroup"))
             //    texture.properties.setByteValue("LODGroup", "TEXTUREGROUP_Character", "TextureGroup", 1025);
             List<byte[]> compressedMips = new List<byte[]>();
+
             for (int m = 0; m < image.mipMaps.Count(); m++)
             {
-                if (CurrentLoadedExport.Game == MEGame.ME1)
+                if (CurrentLoadedExport.Game == MEGame.ME2)
                     compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extLZO));
                 else
                     compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extZlib));
             }
 
 
-            //if (verify)
-            //    matched.crcs = new List<uint>();
             List<Texture2DMipInfo> mipmaps = new List<Texture2DMipInfo>();
             for (int m = 0; m < image.mipMaps.Count(); m++)
             {
-                //if (verify)
-                //    matched.crcs.Add(texture.getCrcData(image.mipMaps[m].data));
+
                 Texture2DMipInfo mipmap = new Texture2DMipInfo();
                 mipmap.Export = CurrentLoadedExport;
                 mipmap.width = image.mipMaps[m].origWidth;
@@ -405,28 +476,6 @@ namespace ME3Explorer
                         //    }
                         //}
                         //else 
-
-
-                        // The bottom 6 mips are apparently always pcc stored. If there is less than 6 mips, set neverstream to true, which tells game
-                        // and toolset to never look into archives for mips.
-                        //if (CurrentLoadedExport.Game == MEGame.ME2 || CurrentLoadedExport.Game == MEGame.ME3)
-                        //{
-                        //    if (texture.properties.exists("TextureFileCacheName"))
-                        //    {
-                        //        if (texture.mipMapsList.Count < 6)
-                        //        {
-                        //            mipmap.storageType = StorageTypes.pccUnc;
-                        //            texture.properties.setBoolValue("NeverStream", true);
-                        //        }
-                        //        else
-                        //        {
-                        //            if (CurrentLoadedExport.Game == MEGame.ME2)
-                        //                mipmap.storageType = StorageTypes.extLZO;
-                        //            else
-                        //                mipmap.storageType = StorageTypes.extZlib;
-                        //        }
-                        //    }
-                        //}
                     }
                 }
                 //ME2,ME3: Force ZLib compression in event LZO is attempted to be used (LZO is slower in me2/me3 than zlib
@@ -436,6 +485,10 @@ namespace ME3Explorer
                         mipmap.storageType = StorageTypes.extZlib;
                     if (mipmap.storageType == StorageTypes.pccLZO)
                         mipmap.storageType = StorageTypes.pccZlib;
+                    if (mipmap.storageType == StorageTypes.extUnc)
+                    {
+
+                    }
                 }
 
                 //Investigate. this has something to do with archive storage types
@@ -578,7 +631,7 @@ namespace ME3Explorer
                 }
             }
             //todo: check to make sure TFC will not be larger than 2GiB
-
+            Guid tfcGuid = Guid.NewGuid(); //make new guid as storage
             for (int m = 0; m < image.mipMaps.Count(); m++)
             {
                 Texture2DMipInfo mipmap = mipmaps[m];
@@ -618,6 +671,7 @@ namespace ME3Explorer
                         mipmap.compressedSize = mipmap.uncompressedSize;
                         mipmap.newDataForSerializing = image.mipMaps[m].data;
                     }
+
                     if (mipmap.storageType == StorageTypes.extZlib ||
                         mipmap.storageType == StorageTypes.extLZO ||
                         mipmap.storageType == StorageTypes.extUnc)
@@ -631,8 +685,9 @@ namespace ME3Explorer
                             {
                                 try
                                 {
-                                    using (FileStream fs = new FileStream(localDirectoryTFCPath, FileMode.Open, FileAccess.Write))
+                                    using (FileStream fs = new FileStream(localDirectoryTFCPath, FileMode.Open, FileAccess.ReadWrite))
                                     {
+                                        tfcGuid = fs.ReadGuid();
                                         fs.Seek(0, SeekOrigin.End);
                                         mipmap.externalOffset = (int)fs.Position;
                                         fs.Write(mipmap.newDataForSerializing, 0, mipmap.compressedSize);
@@ -651,8 +706,9 @@ namespace ME3Explorer
                             {
                                 try
                                 {
-                                    using (FileStream fs = new FileStream(archiveFile, FileMode.Open, FileAccess.Write))
+                                    using (FileStream fs = new FileStream(archiveFile, FileMode.Open, FileAccess.ReadWrite))
                                     {
+                                        tfcGuid = fs.ReadGuid();
                                         fs.Seek(0, SeekOrigin.End);
                                         mipmap.externalOffset = (int)fs.Position;
                                         fs.Write(mipmap.newDataForSerializing, 0, mipmap.compressedSize);
@@ -664,22 +720,21 @@ namespace ME3Explorer
                                 }
                                 continue;
                             }
-                            //Make new TFC
 
-                            //Cache not found
+
+                            //Cache not found. Make new TFC
                             try
                             {
                                 using (FileStream fs = new FileStream(localDirectoryTFCPath, FileMode.OpenOrCreate, FileAccess.Write))
                                 {
-                                    Guid g = new Guid();
-                                    fs.WriteGuid(g); //TFC GUID. Don't know if this has to be part of a texture.
+                                    fs.WriteGuid(tfcGuid);
                                     mipmap.externalOffset = (int)fs.Position;
                                     fs.Write(mipmap.newDataForSerializing, 0, mipmap.compressedSize);
                                 }
                             }
                             catch (Exception e)
                             {
-                                throw new Exception("Problem appending to TFC file " + tfcarchive + ": " + e.Message);
+                                throw new Exception("Problem creating new TFC file " + tfcarchive + ": " + e.Message);
                             }
                             continue;
                         }
@@ -741,6 +796,56 @@ namespace ME3Explorer
             texture.ReplaceMips(mipmaps);
 
             //Set properties
+
+
+            // The bottom 6 mips are apparently always pcc stored. If there is less than 6 mips, set neverstream to true, which tells game
+            // and toolset to never look into archives for mips.
+            //if (CurrentLoadedExport.Game == MEGame.ME2 || CurrentLoadedExport.Game == MEGame.ME3)
+            //{
+            //    if (texture.properties.exists("TextureFileCacheName"))
+            //    {
+            //        if (texture.mipMapsList.Count < 6)
+            //        {
+            //            mipmap.storageType = StorageTypes.pccUnc;
+            //            texture.properties.setBoolValue("NeverStream", true);
+            //        }
+            //        else
+            //        {
+            //            if (CurrentLoadedExport.Game == MEGame.ME2)
+            //                mipmap.storageType = StorageTypes.extLZO;
+            //            else
+            //                mipmap.storageType = StorageTypes.extZlib;
+            //        }
+            //    }
+            //}
+            if (mipmaps.Count < 6)
+            {
+                props.AddOrReplaceProp(new BoolProperty(true, "NeverStream"));
+            }
+            else
+            {
+                var neverStream = props.GetProp<BoolProperty>("NeverStream");
+                if (neverStream != null)
+                {
+                    props.Remove(neverStream);
+                }
+            }
+
+            props.AddOrReplaceProp(tfcGuid.ToGuidStructProp("TFCFileGuid"));
+            if (mipmaps[0].storageType == StorageTypes.extLZO || mipmaps[0].storageType == StorageTypes.extUnc || mipmaps[0].storageType == StorageTypes.extZlib)
+            {
+                //Requires texture cache name
+                props.AddOrReplaceProp(new NameProperty(textureCache, "TextureFileCacheName"));
+            }
+            else
+            {
+                //Should not have texture cache name
+                var cacheProp = props.GetProp<NameProperty>("TextureFileCacheName");
+                if (cacheProp != null)
+                {
+                    props.Remove(cacheProp);
+                }
+            }
             props.AddOrReplaceProp(new IntProperty(texture.Mips.First().width, "SizeX"));
             props.AddOrReplaceProp(new IntProperty(texture.Mips.First().height, "SizeY"));
             if (CurrentLoadedExport.Game == MEGame.ME1 && fileSourcePath != null)

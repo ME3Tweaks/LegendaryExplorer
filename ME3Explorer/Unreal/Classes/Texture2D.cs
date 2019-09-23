@@ -15,10 +15,11 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
-using static ME3Explorer.EmbeddedTextureViewer;
+using static ME3Explorer.TextureViewerExportLoader;
 using static MassEffectModder.Images.Image;
 using System.Windows.Media.Imaging;
 using MassEffectModder.Images;
+using ME3Explorer.PackageEditor.TextureViewer;
 using Buffer = System.Buffer;
 
 namespace ME3Explorer.Unreal.Classes
@@ -260,11 +261,6 @@ namespace ME3Explorer.Unreal.Classes
             return imageBytes;
         }
 
-        private byte[] GetImageBytes()
-        {
-            throw new NotImplementedException();
-        }
-
         internal byte[] SerializeNewData()
         {
             MemoryStream ms = new MemoryStream();
@@ -430,6 +426,17 @@ namespace ME3Explorer.Unreal.Classes
             return imagebytes;
         }
 
+        public static uint GetMipCRC(Texture2DMipInfo mip, string textureFormat)
+        {
+            byte[] data = GetTextureData(mip);
+            if (data == null) return 0;
+            if (textureFormat == "PF_NormalMap_HQ")
+            {
+                // only ME1 and ME2
+                return (uint) ~ParallelCRC.Compute(data, 0, data.Length / 2);
+            }
+            return (uint)~ParallelCRC.Compute(data);
+        }
     }
 
     [DebuggerDisplay("Texture2DMipInfo for {Export.ObjectName.Instanced} | {width}x{height} | {storageType}")]

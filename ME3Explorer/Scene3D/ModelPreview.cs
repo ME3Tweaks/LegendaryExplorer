@@ -11,7 +11,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
-using static ME3Explorer.EmbeddedTextureViewer;
+using static ME3Explorer.TextureViewerExportLoader;
 using static ME3Explorer.Scene3D.ModelPreview;
 
 

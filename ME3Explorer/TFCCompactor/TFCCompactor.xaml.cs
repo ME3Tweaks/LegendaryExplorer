@@ -256,7 +256,7 @@ namespace ME3Explorer.TFCCompactor
             }
         }
 
-        private static string[] basegameTFCs = { "CharTextures", "Movies", "Textures", "Lighting" };
+        public static string[] BasegameTFCs = { "CharTextures", "Movies", "Textures", "Lighting" };
         private void BeginReferencedTFCScan()
         {
             backgroundWorker = new BackgroundWorker();
@@ -308,7 +308,7 @@ namespace ME3Explorer.TFCCompactor
                                 //{
                                 //    Debug.WriteLine($"CustTextures0 TFC Reference: {texture.FullPath} {texture.UIndex} in {texture.FileRef.FilePath}");
                                 //}
-                                if (!basegameTFCs.Contains(tfcname))
+                                if (!BasegameTFCs.Contains(tfcname))
                                 {
                                     //Check that external mips are referenced.
                                     //some texture2d have a tfc but don't have any external mips for some reason
