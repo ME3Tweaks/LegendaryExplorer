@@ -69,10 +69,9 @@ namespace ME3Explorer.Packages
                     stream.Seek(4 + count * 4, SeekOrigin.Current);
                     long end = stream.Position;
                     stream.Seek(start, SeekOrigin.Begin);
-
-                        //read header
-                        _header = stream.ReadToBuffer((int)(end - start));
-                        break;
+                    //read header
+                    _header = stream.ReadToBuffer((int)(end - start));
+                    break;
                 }
                 case MEGame.ME3:
                 case MEGame.UDK:
@@ -550,12 +549,8 @@ namespace ME3Explorer.Packages
             IMEPackage pcc = FileRef;
             if (HasStack)
             {
-                if (pcc.Game != MEGame.ME3)
-                {
-                    return 32;
-                }
-
-                return 30;
+                return pcc.Game == MEGame.UDK ? 26 :
+                       pcc.Game == MEGame.ME3 ? 30 : 32;
             }
 
             //TODO: If there are more classes which have binary before the props, could be worth creating a more extensible system for this

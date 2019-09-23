@@ -529,7 +529,7 @@ namespace ME3Explorer.Sequence_Editor
                 o.Click += node_Click;
             }
 
-            if (SavedPositions.IsEmpty() && Pcc.Game != MEGame.ME1)
+            if (SavedPositions.IsEmpty() && (Pcc.Game != MEGame.ME1 && Pcc.Game != MEGame.UDK))
             {
                 AutoLayout();
             }
@@ -563,7 +563,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 return new SVar(export, x, y, graphEditor);
             }
-            else if (export.ClassName == "SequenceFrame" && Pcc.Game == MEGame.ME1)
+            else if (export.ClassName == "SequenceFrame" && (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK))
             {
                 return new SFrame(export, x, y, graphEditor);
             }
@@ -605,7 +605,7 @@ namespace ME3Explorer.Sequence_Editor
                     {
                         obj.Layout(savedInfo.X, savedInfo.Y);
                     }
-                    else if (Pcc.Game == MEGame.ME1)
+                    else if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK)
                     {
                         obj.Layout();
                     }

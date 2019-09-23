@@ -334,6 +334,7 @@ namespace ME3Explorer
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"LODData count: {lodDataCount}"));
                 subnodes.AddRange(ReadList(lodDataCount, i => new BinInterpNode(bin.Position, $"LODData {i}")
                 {
+                    IsExpanded = true,
                     Items =
                     {
                         new BinInterpNode(bin.Position, $"ShadowMaps ({bin.ReadInt32()})")
@@ -345,7 +346,7 @@ namespace ME3Explorer
                             Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, $"{j}"))
                         },
                         MakeLightMapNode(bin),
-                        ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new List<ITreeItem>
+                        ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new List<ITreeItem>
                         {
                             new BinInterpNode(bin.Position, $"bLoadVertexColorData ({bLoadVertexColorData = bin.ReadBoolByte()})"),
                             ListInitHelper.ConditionalAdd(bLoadVertexColorData, () => new ITreeItem[]
@@ -533,6 +534,7 @@ namespace ME3Explorer
             int bulkSerializeDataSize;
             return new BinInterpNode(bin.Position, "LightMap ")
             {
+                IsExpanded = true,
                 Items =
                 {
                     new BinInterpNode(bin.Position, $"LightMapType: {lightMapType = (ELightMapType)bin.ReadInt32()}"),
@@ -582,7 +584,7 @@ namespace ME3Explorer
                             MakeVectorNode(bin, "ScaleVector 2"),
                             MakeEntryNode(bin, "Texture 3"),
                             MakeVectorNode(bin, "ScaleVector 3"),
-                            ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME3, () => new ITreeItem[]
+                            ListInitHelper.ConditionalAdd(Pcc.Game < MEGame.ME3, () => new ITreeItem[]
                             {
                                 MakeEntryNode(bin, "Texture 4"),
                                 MakeVectorNode(bin, "ScaleVector 4"),
@@ -1028,7 +1030,7 @@ namespace ME3Explorer
                                 MakeInt32Node(bin, "iBrushPoly"),
                                 MakeFloatNode(bin, "ShadowMapScale"),
                                 MakeInt32Node(bin, "LightingChannels"),
-                                ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                                ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new ITreeItem[]
                                 {
                                     MakeBoolIntNode(bin, "bUseTwoSidedLighting"),
                                     MakeBoolIntNode(bin, "bShadowIndirectOnly"),
@@ -1131,7 +1133,7 @@ namespace ME3Explorer
                             new BinInterpNode(bin.Position, $"Plane: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()}, W: {bin.ReadSingle()})"),
                             MakeFloatNode(bin, "ShadowMapScale"),
                             MakeInt32Node(bin, "LightingChannels(Bitfield)"),
-                            Pcc.Game == MEGame.ME3 ? new BinInterpNode(bin.Position, $"iLightmassIndex: {bin.ReadInt32()}") : null,
+                            Pcc.Game >= MEGame.ME3 ? new BinInterpNode(bin.Position, $"iLightmassIndex: {bin.ReadInt32()}") : null,
                         }.NonNull().ToList()
                     })
                 });
@@ -1196,21 +1198,24 @@ namespace ME3Explorer
                     Items = ReadList(portalNodesCount, i => MakeInt32Node(bin, $"{i}"))
                 });
 
-                subnodes.Add(MakeInt32Node(bin, "FMeshEdge Size"));
-                int legacyedgesCount = bin.ReadInt32();
-                subnodes.Add(new BinInterpNode(bin.Position - 4, $"ShadowVolume? ({legacyedgesCount})")
+                if (Pcc.Game < MEGame.UDK)
                 {
-                    Items = ReadList(legacyedgesCount, i => new BinInterpNode(bin.Position, $"MeshEdge {i}")
+                    subnodes.Add(MakeInt32Node(bin, "FMeshEdge Size"));
+                    int legacyedgesCount = bin.ReadInt32();
+                    subnodes.Add(new BinInterpNode(bin.Position - 4, $"ShadowVolume? ({legacyedgesCount})")
                     {
-                        Items = new List<ITreeItem>
+                        Items = ReadList(legacyedgesCount, i => new BinInterpNode(bin.Position, $"MeshEdge {i}")
                         {
-                            MakeInt32Node(bin, "Vertices[0]"),
-                            MakeInt32Node(bin, "Vertices[1]"),
-                            MakeInt32Node(bin, "Faces[0]"),
-                            new BinInterpNode(bin.Position, $"Faces[1]: {bin.ReadInt32()}")
-                        }
-                    })
-                });
+                            Items = new List<ITreeItem>
+                            {
+                                MakeInt32Node(bin, "Vertices[0]"),
+                                MakeInt32Node(bin, "Vertices[1]"),
+                                MakeInt32Node(bin, "Faces[0]"),
+                                new BinInterpNode(bin.Position, $"Faces[1]: {bin.ReadInt32()}")
+                            }
+                        })
+                    });
+                }
 
                 subnodes.Add(MakeUInt32Node(bin, "NumVertices:"));
 
@@ -1231,7 +1236,7 @@ namespace ME3Explorer
                     })
                 });
 
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game >= MEGame.ME3)
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"LightingGuid: {bin.ReadValueGuid()}") { Length = 16 });
 
@@ -1405,9 +1410,9 @@ namespace ME3Explorer
                     Items =
                     {
                         new BinInterpNode(bin.Position, $"Node: {nodeString = entryRefString(bin)}", NodeType.StructLeafObject) {Length = 4},
-                        MakeEntryNode(bin, "StateNode"),
+                        ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeEntryNode(bin, "StateNode")),
                         new BinInterpNode(bin.Position, $"ProbeMask: {bin.ReadUInt64():X16}"),
-                        ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                        ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new ITreeItem[]
                         {
                             MakeUInt16Node(bin, "LatentAction")
                         }, () => new ITreeItem[]
@@ -5242,8 +5247,13 @@ namespace ME3Explorer
                                              })
                                          })
                 });
+                if (Pcc.Game == MEGame.UDK)
+                {
+                    subnodes.Add(MakeArrayNode(bin, "MeshesComponentsWithDynamicLighting?", 
+                                               i => new BinInterpNode(bin.Position, $"{i}: {entryRefString(bin)}, {bin.ReadInt32()}")));
+                }
 
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game >= MEGame.ME3)
                 {
                     int apexSize;
                     subnodes.Add(new BinInterpNode(bin.Position, $"APEX Size: {apexSize = bin.ReadInt32()}"));
@@ -5333,15 +5343,41 @@ namespace ME3Explorer
                     Items = ReadList(forceStreamTexturesCount, i => MakeBoolIntNode(bin, "Texture: {entryRefString(bin)} | ForceStream"))
                 });
 
+                if (Pcc.Game == MEGame.UDK)
+                {
+                    subnodes.Add(new BinInterpNode(bin.Position, "CachedPhysConvexBSPData")
+                    {
+                        Items =
+                        {
+                            new BinInterpNode(bin.Position, $"CachedConvexElements ({cachedConvexElementsCount = bin.ReadInt32()})")
+                            {
+                                Items = ReadList(cachedConvexElementsCount, j =>
+                                {
+                                    int size;
+                                    var item = new BinInterpNode(bin.Position, $"{j}: ConvexElementData (size of byte: {bin.ReadInt32()}) (number of bytes: {size = bin.ReadInt32()})")
+                                    {
+                                        Length = size + 8
+                                    };
+                                    bin.Skip(size);
+                                    return item;
+                                })
+                            }
+                        }
+                    });
+                    subnodes.Add(MakeInt32Node(bin, "CachedPhysConvexBSPVersion"));
+                }
+
                 subnodes.Add(MakeEntryNode(bin, "NavListStart"));
                 subnodes.Add(MakeEntryNode(bin, "NavListEnd"));
                 subnodes.Add(MakeEntryNode(bin, "CoverListStart"));
                 subnodes.Add(MakeEntryNode(bin, "CoverListEnd"));
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game >= MEGame.ME3)
                 {
                     subnodes.Add(MakeEntryNode(bin, "PylonListStart"));
                     subnodes.Add(MakeEntryNode(bin, "PylonListEnd"));
-
+                }
+                if (Pcc.Game == MEGame.ME3)
+                {
                     int guidToIntMapCount;
                     subnodes.Add(new BinInterpNode(bin.Position, $"guidToIntMap?: ({guidToIntMapCount = bin.ReadInt32()})")
                     {
@@ -5391,7 +5427,14 @@ namespace ME3Explorer
                     subnodes.Add(MakeEntryNode(bin, "BioArtPlaceable 2?"));
                 }
 
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game == MEGame.UDK)
+                {
+                    subnodes.Add(MakeUInt32Node(bin, "unk"));
+                    subnodes.Add(MakeUInt32Node(bin, "unk"));
+                    subnodes.Add(MakeUInt32Node(bin, "unk"));
+                }
+
+                if (Pcc.Game >= MEGame.ME3)
                 {
                     bool bInitialized;
                     int samplesCount;
@@ -5412,9 +5455,22 @@ namespace ME3Explorer
                                         {
                                             MakeVectorNode(bin, "Position"),
                                             MakeFloatNode(bin, "Radius"),
-                                            //SirCxyrtyx: This is a color, but is serialized as an FQuantizedSHVectorRGB, a vector of colored, quantized spherical harmonic coefficients.
-                                            //Conversion to ARGB is possible, but devilishly tricky. Let me know if this is something that's actually needed
-                                            new BinInterpNode(bin.Position, $"Ambient Radiance? : {bin.ReadToBuffer(39)}"){ Length = 39}
+                                            ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.UDK, () => new ITreeItem[]
+                                            {
+                                                MakeByteNode(bin, "IndirectDirectionTheta"),
+                                                MakeByteNode(bin, "IndirectDirectionPhi"),
+                                                MakeByteNode(bin, "EnvironmentDirectionTheta"),
+                                                MakeByteNode(bin, "EnvironmentDirectionPhi"),
+                                                MakeColorNode(bin, "IndirectRadiance"),
+                                                MakeColorNode(bin, "EnvironmentRadiance"),
+                                                MakeColorNode(bin, "AmbientRadiance"),
+                                                MakeByteNode(bin, "bShadowedFromDominantLights"),
+                                            }, () => new []
+                                            {
+                                                //SirCxyrtyx: This is a color, but is serialized as an FQuantizedSHVectorRGB, a vector of colored, quantized spherical harmonic coefficients.
+                                                //Conversion to ARGB is possible, but devilishly tricky. Let me know if this is something that's actually needed
+                                                new BinInterpNode(bin.Position, $"Ambient Radiance? : {bin.ReadToBuffer(39)}"){ Length = 39}
+                                            })
                                         }
                                     })
                                 }
@@ -5422,6 +5478,44 @@ namespace ME3Explorer
                             })
                         }
                     });
+                }
+                if (Pcc.Game == MEGame.UDK)
+                {
+                    BinInterpNode item = new BinInterpNode(bin.Position, "PrecomputedVisibilityHandler")
+                    {
+                        IsExpanded = true
+                    };
+                    subnodes.Add(item);
+                    item.Items.Add(MakeVector2DNode(bin, "PrecomputedVisibilityCellBucketOriginXY"));
+                    item.Items.Add(MakeVector2DNode(bin, "PrecomputedVisibilityCellSizeXY"));
+                    item.Items.Add(MakeFloatNode(bin, "PrecomputedVisibilityCellSizeZ"));
+                    item.Items.Add(MakeInt32Node(bin, "PrecomputedVisibilityCellBucketSizeXY"));
+                    //item.Items.Add(MakeInt32Node(bin, "PrecomputedVisibilityNumCellBuckets"));
+                    item.Items.Add(MakeArrayNode(bin, "PrecomputedVisibilityCellBuckets", i => new BinInterpNode(bin.Position, $"{i}")
+                    {
+                        Items =
+                        {
+                            MakeInt32Node(bin, "CellDataSize"),
+                            MakeArrayNode(bin, "Cells", j => new BinInterpNode(bin.Position, $"{j}")
+                            {
+                                Items =
+                                {
+                                    MakeVectorNode(bin, "Min"),
+                                    MakeUInt16Node(bin, "ChunkIndex"),
+                                    MakeUInt16Node(bin, "DataOffset")
+                                }
+                            }),
+                            MakeArrayNode(bin, "CellDataChunks", j => new BinInterpNode(bin.Position, $"{j}")
+                            {
+                                Items =
+                                {
+                                    MakeBoolIntNode(bin, "bCompressed"),
+                                    MakeInt32Node(bin, "UncompressedSize"),
+                                    MakeByteArrayNode(bin, "Data")
+                                }
+                            })
+                        }
+                    }));
                 }
 
                 binarystart = (int)bin.Position;
@@ -5529,6 +5623,14 @@ namespace ME3Explorer
                 IsExpanded = IsExpanded,
                 Items = ReadList(count, selector)
             };
+        }
+
+        private static BinInterpNode MakeByteArrayNode(MemoryStream bin, string name)
+        {
+            long pos = bin.Position;
+            int count = bin.ReadInt32();
+            bin.Skip(count);
+            return new BinInterpNode(pos, $"{name} ({count} bytes)");
         }
 
         private static BinInterpNode MakeArrayNode(int count, MemoryStream bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false)
