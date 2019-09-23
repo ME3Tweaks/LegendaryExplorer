@@ -2788,10 +2788,11 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void ComboBox_Speaker_FFX_DropDownClosed(object sender, EventArgs e)
         {
+
             var ffxMaleNew = SelectedSpeaker.FaceFX_Male;
-            var ffxMaleOld = SelectedSpeakerList[SelectedSpeaker.SpeakerID + 2].FaceFX_Male;
+            var ffxMaleOld = GetFaceFX(SelectedConv, SelectedSpeaker.SpeakerID, true);
             var ffxFemaleNew = SelectedSpeaker.FaceFX_Female;
-            var ffxFemaleOld = SelectedSpeakerList[SelectedSpeaker.SpeakerID + 2].FaceFX_Female;
+            var ffxFemaleOld = GetFaceFX(SelectedConv, SelectedSpeaker.SpeakerID, false);
             if (ffxMaleNew == ffxMaleOld && ffxFemaleNew == ffxFemaleOld)
                 return;
 

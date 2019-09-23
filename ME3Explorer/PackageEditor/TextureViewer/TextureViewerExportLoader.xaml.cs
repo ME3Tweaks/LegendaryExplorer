@@ -260,7 +260,7 @@ namespace ME3Explorer
                 MipList.ReplaceAll(mips);
                 TextureCRC = Texture2D.GetMipCRC(topmip, format.Value);
 
-                
+
 
                 if (Settings.Default.EmbeddedTextureViewer_AutoLoad)
                 {
@@ -864,7 +864,14 @@ namespace ME3Explorer
             props.WriteTo(mem, texture.Export.FileRef);
             int propStart = CurrentLoadedExport.GetPropertyStart();
             byte[] propData = mem.ToArray();
-            CurrentLoadedExport.Data = CurrentLoadedExport.Data.Take(propStart).Concat(propData).Concat(texture.SerializeNewData()).ToArray();
+            if (CurrentLoadedExport.Game == MEGame.ME3)
+            {
+                CurrentLoadedExport.Data = CurrentLoadedExport.Data.Take(propStart).Concat(propData).Concat(texture.SerializeNewData()).Concat(BitConverter.GetBytes(0)).ToArray();
+            }
+            else
+            {
+                CurrentLoadedExport.Data = CurrentLoadedExport.Data.Take(propStart).Concat(propData).Concat(texture.SerializeNewData()).ToArray();
+            }
 
             //using (MemoryStream newData = new MemoryStream())
             //{
