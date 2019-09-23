@@ -25,5 +25,7 @@ JetBrains has kindly given us several open source licenses for their tools that 
 ## Contributing
 [You can check out the contributing guidelines and tips document](https://github.com/Mgamerz/ME3Explorer/blob/Beta/CONTRIBUTING.md), for both developers and end-users who need features.
 
+Want to build the toolset yourself? [Read the guide on how to do so, it's very easy to do](https://github.com/ME3Tweaks/ME3Explorer/wiki/How-to-build-the-toolset-from-source).
+
 ## License
 The ME3Tweaks fork of ME3Explorer is licensed under GPLv3.
