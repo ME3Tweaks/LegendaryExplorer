@@ -46,3 +46,22 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'me3explorernightly'
     publishLocation: 'Container'
+
+- task: ado-discord-webhook@1
+  inputs:
+    channelId: '625923576960385045'
+    webhookKey: '9edOZQmHesLbsn1BxQVQGmg2eYo-hMFoRPKg8YBybpD0-l8O1-oPQUgPhiCdGLykHvMy'
+    name: 'Azure DevOps CI'
+    avatar: 'https://i.imgur.com/mUtPj2S.png'
+    messageType: 'embeds'
+    embeds: |
+      [{
+        "title": "ME3Explorer - ME3Tweaks Fork Build Complete",
+        "description": "A new nightly build of ME3Explorer has been built.",
+        "image": {
+          "url": "https://i.imgur.com/mUtPj2S.png",
+          "height": 64,
+          "width": 64
+        },
+        "url": "https://dev.azure.com/Mgamerz2/ME3Explorer/_build/results?buildId=$(Build.BuildId)"
+      }]
