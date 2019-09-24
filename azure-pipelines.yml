@@ -38,7 +38,7 @@ steps:
     rootFolderOrFile: '$(Build.SourcesDirectory)/ME3Explorer/bin/x64/Release'
     includeRootFolder: false
     archiveType: '7z'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).7z'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/me3explorer_cibuild_$(Build.SourceVersion).7z'
     replaceExistingArchive: true
 
 - task: PublishBuildArtifacts@1
