@@ -44,3 +44,9 @@ steps:
     archiveType: '7z'
     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).7z'
     replaceExistingArchive: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'me3explorernightly'
+    publishLocation: 'Container'
