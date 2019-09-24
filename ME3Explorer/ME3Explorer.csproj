@@ -372,7 +372,6 @@
     <Compile Include="Packages\UnrealPackageFile.cs" />
     <Compile Include="Scene3D\SceneRenderContext.cs" />
     <Compile Include="Scene3D\SceneRenderControlWPF.cs" />
-    <Compile Include="Sequence Editor\SequenceObjectsDB.cs" />
     <Compile Include="SharedUI\Converters\BoolToIndexConverter.cs" />
     <Compile Include="CodeWriter.cs" />
     <Compile Include="Dialogue Editor\BioConversation.cs" />
