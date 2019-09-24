@@ -14,73 +14,45 @@ namespace ME3Explorer.Unreal
 {
     public static class UnrealObjectInfo
     {
-        public static bool IsImmutable(string structType, MEGame game)
-        {
-            switch (game)
+        public static bool IsImmutable(string structType, MEGame game) =>
+            game switch 
             {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.IsImmutableStruct(structType);
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.IsImmutableStruct(structType);
-                case MEGame.ME3:
-                case MEGame.UDK:
-                    return ME3UnrealObjectInfo.IsImmutableStruct(structType);
-                default:
-                    return false;
-            }
-        }
+                MEGame.ME1 => ME1UnrealObjectInfo.IsImmutableStruct(structType),
+                MEGame.ME2 => ME2UnrealObjectInfo.IsImmutableStruct(structType),
+                MEGame.ME3 => ME3UnrealObjectInfo.IsImmutableStruct(structType),
+                MEGame.UDK => ME3UnrealObjectInfo.IsImmutableStruct(structType),
+                _ => false,
+            };
 
-        public static bool IsOrInheritsFrom(this IEntry entry, string baseClass)
-        {
-            switch (entry.FileRef.Game)
+        public static bool IsOrInheritsFrom(this IEntry entry, string baseClass) =>
+            entry.FileRef.Game switch
             {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.InheritsFrom(entry, baseClass);
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.InheritsFrom(entry, baseClass);
-                case MEGame.ME3:
-                case MEGame.UDK: //use me3?
-                    return ME3UnrealObjectInfo.InheritsFrom(entry, baseClass);
-                default:
-                    return false;
-            }
-        }
+                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(entry, baseClass),
+                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(entry, baseClass),
+                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(entry, baseClass),
+                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(entry, baseClass),
+                _ => false
+            };
 
-        public static string GetEnumType(MEGame game, string propName, string typeName, ClassInfo nonVanillaClassInfo = null)
-        {
-            switch (game)
+        public static string GetEnumType(MEGame game, string propName, string typeName, ClassInfo nonVanillaClassInfo = null) =>
+            game switch
             {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo);
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo);
-                case MEGame.ME3:
-                case MEGame.UDK:
-                    var enumType = ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName);
-                    if (enumType == null && game == MEGame.UDK)
-                    {
-                        enumType = UDKUnrealObjectInfo.getEnumTypefromProp(typeName, propName);
-                    }
+                MEGame.ME1 => ME1UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
+                MEGame.ME2 => ME2UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
+                MEGame.ME3 => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName),
+                MEGame.UDK => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName) ?? UDKUnrealObjectInfo.getEnumTypefromProp(typeName, propName),
+                _ => null
+            };
 
-                    return enumType;
-            }
-            return null;
-        }
-
-        public static List<NameReference> GetEnumValues(MEGame game, string enumName, bool includeNone = false)
-        {
-            switch (game)
+        public static List<NameReference> GetEnumValues(MEGame game, string enumName, bool includeNone = false) =>
+            game switch
             {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getEnumValues(enumName, includeNone);
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getEnumValues(enumName, includeNone);
-                case MEGame.ME3:
-                case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getEnumValues(enumName, includeNone);
-            }
-            return null;
-        }
+                MEGame.ME1 => ME1UnrealObjectInfo.getEnumValues(enumName, includeNone),
+                MEGame.ME2 => ME2UnrealObjectInfo.getEnumValues(enumName, includeNone),
+                MEGame.ME3 => ME3UnrealObjectInfo.getEnumValues(enumName, includeNone),
+                MEGame.UDK => ME3UnrealObjectInfo.getEnumValues(enumName, includeNone),
+                _ => null
+            };
 
         /// <summary>
         /// Gets the type of an array
