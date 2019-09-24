@@ -10,7 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
+  solution: 'ME3Explorer.sln'
   buildPlatform: 'x64'
   buildConfiguration: 'Release'
 
