@@ -68,7 +68,7 @@ steps:
         "fields": [{
           "name": "Triggering commit",
           "value": "$(Build.SourceVersionMessage)"
-        }]
+        }],
         "url": "https://dev.azure.com/Mgamerz2/ME3Explorer/_build/results?buildId=$(Build.BuildId)",
         "timestamp": "$(time)"
       }]
