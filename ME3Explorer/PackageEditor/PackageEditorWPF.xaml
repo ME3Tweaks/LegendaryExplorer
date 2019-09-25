@@ -287,13 +287,13 @@
                         <DataTemplate DataType="{x:Type global:PackageEditorWPF+IndexedName}">
                             <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent">
                                 <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
-                                <TextBlock Text="{Binding Path=Name.Name}" Foreground="Black" Margin="5,0,0,0"/>
+                                <TextBlock Text="{Binding Path=Name.Name}" Margin="5,0,0,0"/>
                             </StackPanel>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type Packages:ImportEntry}">
                             <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent">
                                 <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
-                                <TextBlock Text="{Binding Path=InstancedFullPath}" Foreground="Black" Margin="5,0,0,0"/>
+                                <TextBlock Text="{Binding Path=InstancedFullPath}"  Margin="5,0,0,0"/>
                             </StackPanel>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type Packages:ExportEntry}">
