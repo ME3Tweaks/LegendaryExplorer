@@ -34,7 +34,8 @@ namespace ME3Explorer.PropertyDatabase
 
         public MEGame currentGame { get; set; }
 
-        public PropsDataBase CurrentDataBase { get; set; } = new PropsDataBase();
+        public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, new ObservableCollectionExtended<ClassRecord>());
+        private ObservableCollectionExtended<ClassRecord> CurrentClasses { get; } = new ObservableCollectionExtended<ClassRecord>();
         private string CurrentDBPath { get; set; }
 
         public ICommand GenerateDBCommand { get; set; }
@@ -162,10 +163,19 @@ namespace ME3Explorer.PropertyDatabase
             //Load database
             if(File.Exists(CurrentDBPath))
             {
-                CurrentDataBase = XmlHelper.FromXmlFile<PropsDataBase>(CurrentDBPath);
+                var readData = XmlHelper.FromXmlFile<PropsDataBase>(CurrentDBPath);
+                CurrentDataBase.meGame = readData.meGame;
+                CurrentDataBase.GenerationDate = readData.GenerationDate;
+                CurrentDataBase.ClassRecords.Clear();
+                CurrentDataBase.ClassRecords.AddRange(readData.ClassRecords);
+                int classCount = CurrentDataBase.ClassRecords.Count;
+                CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {classCount}";
+            }
+            else
+            {
+                CurrentOverallOperationText = "No database found.";
             }
 
-            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate}";
         }
 
         public void SaveDatabase()
@@ -237,16 +247,18 @@ namespace ME3Explorer.PropertyDatabase
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
             List<string> files = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(System.IO.Path.GetExtension(s.ToLower()))).ToList();
             await dumpPackages(files, currentGame);
+            CurrentDataBase.ClassRecords.SortDescending(x => x.Class);
+
             MessageBox.Show("Done");
             SaveDatabase();
-
         }
 
         private async Task dumpPackages(List<string> files, MEGame game)
         {
-            CurrentOverallOperationText = "Generating Databases...";
-            StatusBar_Progress.IsEnabled = true;
-            StatusBar_RightSide_LastSaved.IsEnabled = false;
+            CurrentOverallOperationText = "Generating Database...";
+            StatusBar_Progress.Visibility = Visibility.Visible;
+            StatusBar_RightSide_LastSaved.Visibility = Visibility.Hidden;
+            StatusBar_CancelBtn.Visibility = Visibility.Visible;
             OverallProgressMaximum = files.Count;
             OverallProgressValue = 0;
             //bool isProcessing = true;
@@ -254,7 +266,7 @@ namespace ME3Explorer.PropertyDatabase
             //Clear database
             CurrentDataBase.meGame = currentGame;
             CurrentDataBase.GenerationDate = DateTime.Now.ToString();
-            CurrentDataBase.ClassRecords = new List<ClassRecord>();
+            CurrentDataBase.ClassRecords.Clear();
 
             //Background Consumer copies strings into Class
             dbworker = new BackgroundWorker();
@@ -316,8 +328,9 @@ namespace ME3Explorer.PropertyDatabase
             CommandManager.InvalidateRequerySuggested();
             try
             {
-                StatusBar_Progress.IsEnabled = false;
-                StatusBar_RightSide_LastSaved.IsEnabled = true;
+                StatusBar_Progress.Visibility = Visibility.Hidden;
+                StatusBar_RightSide_LastSaved.Visibility = Visibility.Visible;
+                StatusBar_CancelBtn.Visibility = Visibility.Hidden;
             }
             catch
             {
@@ -342,9 +355,7 @@ namespace ME3Explorer.PropertyDatabase
                     var classrecord = CurrentDataBase.ClassRecords.FirstOrDefault(c => c.Class == property[0]);
                     if(classrecord == null)
                     {
-                        classrecord = new ClassRecord();
-                        classrecord.Class = property[0];
-                        classrecord.PropertyRecords = new List<PropertyRecord>();
+                        classrecord = new ClassRecord(property[0], null, null, new List<PropertyRecord>());
                         CurrentDataBase.ClassRecords.Add(classrecord);
                     }
 
@@ -361,24 +372,16 @@ namespace ME3Explorer.PropertyDatabase
                     var proprecord = classrecord.PropertyRecords.FirstOrDefault(p => p.Property == property[3]);
                     if (proprecord == null)
                     {
-                        proprecord = new PropertyRecord();
-                        proprecord.Property = property[3];
-                        proprecord.PropertyUsages = new List<PropertyUsage>();
+                        proprecord = new PropertyRecord(property[3], new List<PropertyUsage>());
                         classrecord.PropertyRecords.Add(proprecord);
                     }
 
                     var usagelist = proprecord.PropertyUsages.FirstOrDefault(p => p.Value == property[8]);
                     if (usagelist == null)
                     {
-                        var usage = new PropertyUsage();
-                        usage.Filename = property[4];
-                        usage.ExportUID = property[5];
-                        usage.IsDefault = Boolean.Parse(property[6]);
-                        usage.Type = property[7];
-                        usage.Value = property[8];
+                        var usage = new PropertyUsage(property[4], property[5], Boolean.Parse(property[6]), property[7], property[8]);
                         proprecord.PropertyUsages.Add(usage);
                     }
-                    
                  
                 }
                 catch
@@ -407,9 +410,17 @@ namespace ME3Explorer.PropertyDatabase
     {
         public MEGame meGame { get; set; }
         public string GenerationDate { get; set; }
-        public List<ClassRecord> ClassRecords { get; set; }
+        public ObservableCollectionExtended<ClassRecord> ClassRecords { get; } = new ObservableCollectionExtended<ClassRecord>();
 
+        public PropsDataBase(MEGame meGame, string GenerationDate, ObservableCollectionExtended<ClassRecord> ClassRecords)
+        {
+            this.meGame = meGame;
+            this.GenerationDate = GenerationDate;
+            this.ClassRecords.AddRange(ClassRecords);
+        }
 
+        public PropsDataBase()
+        { }
     }
 
     public class ClassRecord
@@ -417,15 +428,31 @@ namespace ME3Explorer.PropertyDatabase
         public string Class { get; set; }
         public string Definition_package { get; set; }
         public string SuperClass { get; set; }
-        public List<PropertyRecord> PropertyRecords { get; set; }
+        public List<PropertyRecord> PropertyRecords { get; } = new List<PropertyRecord>();
 
+        public ClassRecord(string Class, string Definition_package, string SuperClass, List<PropertyRecord> PropertyRecords)
+        {
+            this.Class = Class;
+            this.Definition_package = Definition_package;
+            this.SuperClass = SuperClass;
+            this.PropertyRecords.AddRange(PropertyRecords);
+        }
+
+        public ClassRecord()
+        { }
     }
 
     public class PropertyRecord
     {
         public string Property { get; set; }
-        public List<PropertyUsage> PropertyUsages { get; set; }
-
+        public List<PropertyUsage> PropertyUsages { get; } = new List<PropertyUsage>();
+        public PropertyRecord(string Property, List<PropertyUsage> PropertyUsages)
+        {
+            this.Property = Property;
+            this.PropertyUsages.AddRange(PropertyUsages);
+        }
+        public PropertyRecord()
+        { }
     }
 
     public class PropertyUsage
@@ -435,7 +462,16 @@ namespace ME3Explorer.PropertyDatabase
         public bool IsDefault { get; set; }
         public string Type { get; set; }
         public string Value { get; set; }
-
+        public PropertyUsage(string Filename, string ExportUID, bool IsDefault, string Type, string Value)
+        {
+            this.Filename = Filename;
+            this.ExportUID = ExportUID;
+            this.IsDefault = IsDefault;
+            this.Type = Type;
+            this.Value = Value;
+        }
+        public PropertyUsage()
+        { }
     }
     #endregion
 
@@ -525,34 +561,56 @@ namespace ME3Explorer.PropertyDatabase
                         {
                             string pName = p.Name;
                             string pType = p.PropType.ToString();
-                            string pValue = null;
-                            switch(pType)
+                            string pValue = "null";
+                            switch(p)
                             {
-                                case "ArrayProperty":
+                                case ArrayPropertyBase parray:
                                     pValue = "Array";
                                     break;
-                                case "StructProperty":
+                                case StructProperty pstruct:
                                     pValue = "Struct";
                                     break;
-                                case "ObjectProperty":
-                                    var pobj = p as ObjectProperty;
-                                    pValue = pcc.getEntry(pobj.Value).ObjectName;
+                                case ObjectProperty pobj:
+                                    if(pobj.Value != 0)
+                                    {
+                                        pValue = pcc.getEntry(pobj.Value).ClassName;
+                                    }
                                     break;
-                                case "BoolProperty":
-                                    var pbool = p as BoolProperty;
+                                case BoolProperty pbool:
                                     pValue = pbool.Value.ToString();
                                     break;
-                                case "IntProperty":
-                                    var pint = p as IntProperty;
-                                    pValue = pint.Value.ToString();
+                                case IntProperty pint:
+                                    //pValue = pint.Value.ToString();
+                                    pValue = "int"; //Keep DB size down
                                     break;
-                                case "FloatProperty":
-                                    var pflt = p as FloatProperty;
-                                    pValue = pflt.Value.ToString();
+                                case FloatProperty pflt:
+                                    //pValue = pflt.Value.ToString();
+                                    pValue = "float"; //Keep DB size down
                                     break;
-                                case "NameProperty":
-                                    var pnme = p as NameProperty;
+                                case NameProperty pnme:
                                     pValue = pnme.Value.ToString();
+                                    break;
+                                case ByteProperty pbte:
+                                    pValue = pbte.Value.ToString();
+                                    break;
+                                case EnumProperty penum:
+                                    pValue = penum.Value.ToString();
+                                    break;
+                                case StrProperty pstr:
+                                    pValue = "String";
+                                    break;
+                                case StringRefProperty pstrref:
+                                    pValue = "TLK StringRef";
+                                    break;
+                                case DelegateProperty pdelg:
+                                    if (pdelg.Value != null)
+                                    {
+                                        var pscrdel = pdelg.Value.Object;
+                                        if(pscrdel != 0)
+                                        {
+                                            pValue = pcc.getEntry(pscrdel).ClassName;
+                                        }
+                                    }
                                     break;
                                 default:
                                     pValue = p.ToString();

@@ -43,7 +43,7 @@
                 <MenuItem Header="Open Selected Class" Command=""/>
             </MenuItem>
         </Menu>
-        <StatusBar Height="23" DockPanel.Dock="Bottom">
+        <StatusBar Height="33" DockPanel.Dock="Bottom">
             <StatusBarItem VerticalContentAlignment="Center" x:Name="StatusBar_GameID_Container" Visibility="Visible" Margin="0,0,0,0">
                 <Border BorderBrush="Gray" BorderThickness="2,2,2,2" CornerRadius="3,3,3,3" VerticalAlignment="Center">
                     <TextBlock x:Name="StatusBar_GameID_Text" Background="DarkSeaGreen" Text="{Binding currentGame}" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
@@ -54,14 +54,14 @@
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <Button Command="{Binding CancelDumpCommand}" Content="Cancel" Width="79" Margin="2,1" HorizontalAlignment="Right"/>
-                    <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding CurrentDatabase.GenerationDate, StringFormat='Generated at {0}'}" Foreground="Gray"/>
-                    <ProgressBar x:Name="StatusBar_Progress" Value="{Binding OverallProgressValue}" Maximum="{Binding OverallProgressMaximum}" Height="14" HorizontalAlignment="Stretch" Width="100" IsEnabled="False"/>
+                    <Button Name="StatusBar_CancelBtn" Command="{Binding CancelDumpCommand}" Content="Cancel" Width="79" Margin="2,1" HorizontalAlignment="Right" Visibility="Hidden"/>
+                    <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding CurrentDatabase.GenerationDate, StringFormat='Generated at {0}'}" Foreground="Gray" Visibility="Visible"/>
+                    <ProgressBar x:Name="StatusBar_Progress" Value="{Binding OverallProgressValue}" Maximum="{Binding OverallProgressMaximum}" Height="24" HorizontalAlignment="Stretch" Width="100" Visibility="Hidden"/>
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
         <DockPanel>
-            <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="200" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}" SelectedValue="Class">
+            <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="200" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}" SelectedValue="Class" DisplayMemberPath="Class">
             </SharedUI:ListBoxScroll>
             <SharedUI:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200">
 
