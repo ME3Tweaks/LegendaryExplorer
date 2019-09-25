@@ -56,8 +56,8 @@ steps:
 
 - task: ado-discord-webhook@1
   inputs:
-    channelId: '625923576960385045'
-    webhookKey: '9edOZQmHesLbsn1BxQVQGmg2eYo-hMFoRPKg8YBybpD0-l8O1-oPQUgPhiCdGLykHvMy'
+    channelId: $(discord_channel_id)
+    webhookKey: $(discord_webhook_key)
     name: 'Azure DevOps CI'
     avatar: 'https://i.imgur.com/mUtPj2S.png'
     messageType: 'embeds'
