@@ -50,16 +50,18 @@
                 </Border>
             </StatusBarItem>
             <StatusBarItem>
-                <TextBlock x:Name="StatusBar_LeftMostText" Text="Currently looking at ME3 Properties"/>
+                <TextBlock x:Name="StatusBar_LeftMostText" Text="{Binding CurrentOverallOperationText}"/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
+                    <Button Command="{Binding CancelDumpCommand}" Content="Cancel" Width="79" Margin="2,1" HorizontalAlignment="Right"/>
                     <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding CurrentDatabase.GenerationDate, StringFormat='Generated at {0}'}" Foreground="Gray"/>
+                    <ProgressBar x:Name="StatusBar_Progress" Value="{Binding OverallProgressValue}" Maximum="{Binding OverallProgressMaximum}" Height="14" HorizontalAlignment="Stretch" Width="100" IsEnabled="False"/>
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
         <DockPanel>
-            <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="200" ItemsSource="{Binding Path=CurrentDataBase.Class}">
+            <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="200" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}" SelectedValue="Class">
             </SharedUI:ListBoxScroll>
             <SharedUI:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200">
 
