@@ -152,6 +152,13 @@ namespace ME3Explorer.Meshplorer
             set => SetProperty(ref _isBrush, value);
         }
 
+        private bool _showCollisionMesh;
+        public bool ShowCollisionMesh
+        {
+            get => _showCollisionMesh;
+            set => SetProperty(ref _showCollisionMesh, value);
+        }
+
         public MeshRendererWPF()
         {
             DataContext = this;
@@ -362,95 +369,6 @@ namespace ME3Explorer.Meshplorer
             return null;
         }
 
-        #region CollisionMesh
-
-        private bool _showCollisionMesh;
-        public bool ShowCollisionMesh
-        {
-            get => _showCollisionMesh;
-            set => SetProperty(ref _showCollisionMesh, value);
-        }
-
-        private int _maxVerts = 12;
-
-        public int MaxVerts
-        {
-            get => _maxVerts;
-            set => SetProperty(ref _maxVerts, value);
-        }
-
-        private uint _depth = 4;
-
-        public uint Depth
-        {
-            get => _depth;
-            set => SetProperty(ref _depth, value);
-        }
-
-        private double _conservationThreshold = 24.0;
-
-        public double ConservationThreshold
-        {
-            get => _conservationThreshold;
-            set => SetProperty(ref _conservationThreshold, value);
-        }
-
-        private StructProperty aggGeomProp;
-
-
-        private void GenerateCollisionMesh(object sender, RoutedEventArgs e)
-        {
-            if (IsStaticMesh && (Preview?.LODs.Any() ?? false))
-            {
-                BusyText = "Generating Collision Mesh";
-                IsBusy = true;
-                Task.Run(() =>
-                {
-                    var mesh = Preview.LODs[0].Mesh;
-                    return AggGeomBuilder.CreateAggGeom(mesh.Vertices.Select(vert => new Vector3(-vert.Position.X, vert.Position.Z, vert.Position.Y)).ToArray(),
-                                                        mesh.Triangles.SelectMany(tri => new[] { tri.Vertex1, tri.Vertex2, tri.Vertex3 }).ToArray(),
-                                                        Depth, ConservationThreshold, MaxVerts);
-                }).ContinueWithOnUIThread(prevTask =>
-                {
-                    aggGeomProp = prevTask.Result;
-                    STMCollisionMesh = GetMeshFromAggGeom(aggGeomProp);
-                    IsBusy = false;
-                });
-            }
-        }
-
-        private void SaveGeneratedMesh(object sender, RoutedEventArgs e)
-        {
-            if (aggGeomProp == null)
-            {
-                MessageBox.Show("You must generate collision mesh before you can save it!");
-                return;
-            }
-            ExportEntry rb_BodySetup;
-            if (CurrentLoadedExport.GetProperty<ObjectProperty>("BodySetup")?.Value is int bodySetupUIndex && Pcc.IsUExport(bodySetupUIndex))
-            {
-                rb_BodySetup = Pcc.GetUExport(bodySetupUIndex);
-            }
-            else
-            {
-                rb_BodySetup = new ExportEntry(Pcc, properties: new PropertyCollection { new IntProperty(34013709, "PreCachedPhysDataVersion") }, binary: new byte[4])
-                {
-                    Parent = CurrentLoadedExport,
-                    ObjectName = "RB_BodySetup",
-                    Class = Pcc.getEntryOrAddImport("Engine.RB_BodySetup")
-                };
-                Pcc.AddExport(rb_BodySetup);
-                var stm = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
-                stm.BodySetup = rb_BodySetup.UIndex;
-                CurrentLoadedExport.setBinaryData(stm.ToBytes(Pcc));
-                CurrentLoadedExport.WriteProperty(new ObjectProperty(rb_BodySetup, "BodySetup"));
-            }
-
-            rb_BodySetup.WriteProperty(aggGeomProp);
-        }
-
-        #endregion
-
         private static void AddMaterialBackgroundThreadTextures(List<ModelPreview.PreloadedTextureData> texturePreviewMaterials, ExportEntry entry)
         {
             var matinst = new Unreal.Classes.MaterialInstanceConstant(entry);
@@ -521,7 +439,6 @@ namespace ME3Explorer.Meshplorer
             Preview?.Dispose();
             CurrentLoadedExport = null;
             STMCollisionMesh = null;
-            aggGeomProp = null;
         }
 
         public override void PopOut()

@@ -83,7 +83,7 @@ namespace ME3Explorer.Unreal
     }
 
 
-    public struct ScriptDelegate : IEquatable<ScriptDelegate>
+    public readonly struct ScriptDelegate : IEquatable<ScriptDelegate>
     {
         public int Object { get; }
         public NameReference FunctionName { get; }

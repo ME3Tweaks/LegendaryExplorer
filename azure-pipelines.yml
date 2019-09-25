@@ -1,0 +1,67 @@
+# .NET Desktop
+
+# Build and run tests for .NET Desktop or Windows classic desktop solutions.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+
+trigger:
+- Beta
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: 'ME3Explorer.sln'
+  buildPlatform: 'x64'
+  buildConfiguration: 'Release'
+
+steps:
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: VSTest@2
+  inputs:
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.SourcesDirectory)/ME3Explorer/bin/x64/Release'
+    includeRootFolder: false
+    archiveType: '7z'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/me3explorer_cibuild_$(Build.SourceVersion).7z'
+    replaceExistingArchive: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'me3explorernightly'
+    publishLocation: 'Container'
+
+- task: ado-discord-webhook@1
+  inputs:
+    channelId: '625923576960385045'
+    webhookKey: '9edOZQmHesLbsn1BxQVQGmg2eYo-hMFoRPKg8YBybpD0-l8O1-oPQUgPhiCdGLykHvMy'
+    name: 'Azure DevOps CI'
+    avatar: 'https://i.imgur.com/mUtPj2S.png'
+    messageType: 'embeds'
+    embeds: |
+      [{
+        "title": "ME3Explorer - ME3Tweaks Fork Build Complete",
+        "description": "A new nightly build of ME3Explorer has been built. Click this link and select Artifacts from the top right to download it. Nightly builds may be unstable.",
+        "thumbnail": {
+          "url": "https://i.imgur.com/mUtPj2S.png",
+          "height": 64,
+          "width": 64
+        },
+        "url": "https://dev.azure.com/Mgamerz2/ME3Explorer/_build/results?buildId=$(Build.BuildId)"
+      }]

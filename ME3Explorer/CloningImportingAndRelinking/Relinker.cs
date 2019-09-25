@@ -83,7 +83,7 @@ namespace ME3Explorer
 
                             foreach ((UIndex uIndex, string propName) in indices)
                             {
-                                string result = relinkObjectProperty(importpcc, exp, ref uIndex.value, $"(Binary Property: {propName})", crossPCCObjectMappingList, "");
+                                string result = relinkUIndex(importpcc, exp, ref uIndex.value, $"(Binary Property: {propName})", crossPCCObjectMappingList, "");
                                 if (result != null)
                                 {
                                     relinkFailedReport.Add(result);
@@ -451,7 +451,7 @@ namespace ME3Explorer
                     foreach (ObjectProperty objProperty in objArrayProp)
                     {
                         int uIndex = objProperty.Value;
-                        string result = relinkObjectProperty(importingPCC, relinkingExport, ref uIndex, objProperty.Name, crossPCCObjectMappingList, debugPrefix);
+                        string result = relinkUIndex(importingPCC, relinkingExport, ref uIndex, objProperty.Name, crossPCCObjectMappingList, debugPrefix);
                         objProperty.Value = uIndex;
                         if (result != null)
                         {
@@ -461,10 +461,19 @@ namespace ME3Explorer
                 }
                 else if (prop is ObjectProperty objectProperty)
                 {
-                    //relink
                     int uIndex = objectProperty.Value;
-                    string result = relinkObjectProperty(importingPCC, relinkingExport, ref uIndex, objectProperty.Name, crossPCCObjectMappingList, debugPrefix);
+                    string result = relinkUIndex(importingPCC, relinkingExport, ref uIndex, objectProperty.Name, crossPCCObjectMappingList, debugPrefix);
                     objectProperty.Value = uIndex;
+                    if (result != null)
+                    {
+                        relinkResults.Add(result);
+                    }
+                }
+                else if (prop is DelegateProperty delegateProp)
+                {
+                    int uIndex = delegateProp.Value.Object;
+                    string result = relinkUIndex(importingPCC, relinkingExport, ref uIndex, delegateProp.Name, crossPCCObjectMappingList, debugPrefix);
+                    delegateProp.Value = new ScriptDelegate(uIndex, delegateProp.Value.FunctionName);
                     if (result != null)
                     {
                         relinkResults.Add(result);
@@ -474,7 +483,7 @@ namespace ME3Explorer
             return relinkResults;
         }
 
-        private static string relinkObjectProperty(IMEPackage importingPCC, ExportEntry relinkingExport, ref int uIndex, string propertyName, OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, string debugPrefix)
+        private static string relinkUIndex(IMEPackage importingPCC, ExportEntry relinkingExport, ref int uIndex, string propertyName, OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, string debugPrefix)
         {
             if (uIndex == 0)
             {
@@ -534,7 +543,6 @@ namespace ME3Explorer
                     else
                     {
                         string path = importingPCC.GetEntry(uIndex) != null ? importingPCC.GetEntry(uIndex).FullPath : "Entry not found: " + uIndex;
-
                         if (linkFailedDueToError != null)
                         {
                             Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName.Instanced} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.GetEntry(origvalue).FullPath}");
