@@ -58,17 +58,17 @@ steps:
     messageType: 'embeds'
     embeds: |
       [{
-        title: "ME3Explorer - ME3Tweaks Fork Build Complete",
-        description: "A new nightly build of ME3Explorer has been built. Click this link and select Artifacts from the top right to download it. Nightly builds may be unstable.",
-        thumbnail: {
-          url: "https://i.imgur.com/mUtPj2S.png",
-          height: 64,
-          width": 64
+        "title": "ME3Explorer - ME3Tweaks Fork Build Complete",
+        "description: "A new nightly build of ME3Explorer has been built. Click this link and select Artifacts from the top right to download it. Nightly builds may be unstable.",
+        "thumbnail": {
+          "url": "https://i.imgur.com/mUtPj2S.png",
+          "height": 64,
+          "width": 64
         },
-        fields: [{
-          name: "Triggering commit",
-          value: '$(Build.SourceVersionMessage)'
+        "fields": [{
+          "name": "Triggering commit",
+          "value": '$(Build.SourceVersionMessage)'
         }]
-        url: "https://dev.azure.com/Mgamerz2/ME3Explorer/_build/results?buildId=$(Build.BuildId)",
-        timestamp: '$(time)'
+        "url": "https://dev.azure.com/Mgamerz2/ME3Explorer/_build/results?buildId=$(Build.BuildId)",
+        "timestamp": '$(time)'
       }]
