@@ -58,7 +58,7 @@ steps:
       [{
         "title": "ME3Explorer - ME3Tweaks Fork Build Complete",
         "description": "A new nightly build of ME3Explorer has been built.",
-        "image": {
+        "thumbnail": {
           "url": "https://i.imgur.com/mUtPj2S.png",
           "height": 64,
           "width": 64
