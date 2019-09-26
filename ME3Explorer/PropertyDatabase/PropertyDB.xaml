@@ -38,7 +38,7 @@
 
             <MenuItem Header="Tools" Padding="4">
                 <MenuItem Header="Open Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
-                <MenuItem Header="Open Usage" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
                 <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
                 <MenuItem Header="Show Defaults" Command="{Binding OpenSourcePkgCommand}" ToolTip="Show default values only." />
             </MenuItem>
@@ -87,7 +87,7 @@
                     </ContextMenu>
                 </SharedUI:ListBoxScroll.ContextMenu>
             </SharedUI:ListBoxScroll>
-            <SharedUI:ListBoxScroll x:Name="lstbx_Values" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyUsages, ElementName=lstbx_Properties }" >
+            <SharedUI:ListBoxScroll x:Name="lstbx_Usages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyUsages, ElementName=lstbx_Properties }" >
                 <SharedUI:ListBoxScroll.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -112,6 +112,7 @@
                 </SharedUI:ListBoxScroll.ItemContainerStyle>
                 <SharedUI:ListBoxScroll.ContextMenu>
                     <ContextMenu>
+                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
                         <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
                         <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
                     </ContextMenu>

@@ -48,7 +48,8 @@ namespace ME3Explorer.PropertyDatabase
         public ICommand CancelDumpCommand { get; set; }
         public ICommand OpenSourcePkgCommand { get; set; }
         public ICommand GoToSuperclassCommand { get; set; }
-        
+        public ICommand OpenUsagePkgCommand { get; set; }
+
 
         /// <summary>
         /// Items show in the list that are currently being processed
@@ -101,6 +102,10 @@ namespace ME3Explorer.PropertyDatabase
         {
             return lstbx_Classes.SelectedIndex >= 0;
         }
+        private bool IsUsageSelected(object obj)
+        {
+            return lstbx_Usages.SelectedIndex >= 0;
+        }
         public override void handleUpdate(List<PackageUpdate> updates)
         {
             throw new NotImplementedException();
@@ -143,6 +148,7 @@ namespace ME3Explorer.PropertyDatabase
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             OpenSourcePkgCommand = new RelayCommand(OpenSourcePkg, IsClassSelected);
             GoToSuperclassCommand = new RelayCommand(GoToSuperClass, IsClassSelected);
+            OpenUsagePkgCommand = new RelayCommand(OpenUsagePkg, IsUsageSelected);
         }
 
 
@@ -258,6 +264,18 @@ namespace ME3Explorer.PropertyDatabase
             }
 
         }
+        private void OpenUsagePkg(object obj)
+        {
+            var usagepkg = CurrentDataBase.ClassRecords[lstbx_Classes.SelectedIndex].PropertyRecords[lstbx_Properties.SelectedIndex].PropertyUsages[lstbx_Usages.SelectedIndex].Filename;
+            var usageexp = CurrentDataBase.ClassRecords[lstbx_Classes.SelectedIndex].PropertyRecords[lstbx_Properties.SelectedIndex].PropertyUsages[lstbx_Usages.SelectedIndex].ExportUID;
+            if (usagepkg == null)
+            {
+                MessageBox.Show("Usage file unknown.");
+                return;
+            }
+            OpenInToolkit("PackageEditor", usagepkg, usageexp);
+        }
+
         private void OpenSourcePkg(object obj)
         {
             var sourcepkg = CurrentDataBase.ClassRecords[lstbx_Classes.SelectedIndex].Definition_package;
@@ -560,10 +578,10 @@ namespace ME3Explorer.PropertyDatabase
     public class PropertyUsage : NotifyPropertyChangedBase
     {
         public string Filename { get; set; }
-        public string ExportUID { get; set; }
+        public int ExportUID { get; set; }
         public bool IsDefault { get; set; }
         public string Value { get; set; }
-        public PropertyUsage(string Filename, string ExportUID, bool IsDefault, string Value)
+        public PropertyUsage(string Filename, int ExportUID, bool IsDefault, string Value)
         {
             this.Filename = Filename;
             this.ExportUID = ExportUID;
@@ -622,7 +640,7 @@ namespace ME3Explorer.PropertyDatabase
                         string pDefinitionPackage = null;
                         int pDefUID = 0;
                         string pFile = ShortFileName;
-                        string pExport = exp.UIndex.ToString();
+                        int pExport = exp.UIndex;
                         bool pIsdefault = false;  //Setup default cases
 
                         if (exp.ClassName != "Class")
