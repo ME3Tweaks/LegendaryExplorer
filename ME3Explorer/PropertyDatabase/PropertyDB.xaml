@@ -25,7 +25,7 @@
         <Converters:EmbeddedFileToolTipConverter x:Key="EmbeddedFileToolTipConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="MyMenu">
-            <MenuItem Header="Open in Package Editor" ToolTip="Opens this class in Package Editor." />
+            <MenuItem Header="Open Source File" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
         </ContextMenu>
     </Window.Resources>
     <DockPanel>
@@ -40,7 +40,7 @@
             </MenuItem>
 
             <MenuItem Header="Tools" Padding="4">
-                <MenuItem Header="Open Selected Class" Command=""/>
+                <MenuItem Header="Open Source" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
             </MenuItem>
         </Menu>
         <StatusBar Height="33" DockPanel.Dock="Bottom">
@@ -63,10 +63,10 @@
         <DockPanel>
             <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}"  DisplayMemberPath="Class" SelectedItem="{Binding CurrentClass, Mode=TwoWay}">
             </SharedUI:ListBoxScroll>
-            <SharedUI:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyRecords, ElementName=lstbx_Classes }"  DisplayMemberPath="Property">
+            <SharedUI:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyRecords, ElementName=lstbx_Classes }"  DisplayMemberPath="Property" >
 
             </SharedUI:ListBoxScroll>
-            <SharedUI:ListBoxScroll x:Name="lstbx_Values" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyUsages, ElementName=lstbx_Properties }">
+            <SharedUI:ListBoxScroll x:Name="lstbx_Values" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyUsages, ElementName=lstbx_Properties }" >
                 <SharedUI:ListBoxScroll.ItemTemplate>
                     <DataTemplate>
                         <TextBlock>
