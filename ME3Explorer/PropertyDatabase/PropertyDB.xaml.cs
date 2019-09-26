@@ -49,7 +49,7 @@ namespace ME3Explorer.PropertyDatabase
         public ICommand OpenSourcePkgCommand { get; set; }
         public ICommand GoToSuperclassCommand { get; set; }
         public ICommand OpenUsagePkgCommand { get; set; }
-
+        public ICommand FilterSeqClassCommand { get; set; }
 
         /// <summary>
         /// Items show in the list that are currently being processed
@@ -143,15 +143,13 @@ namespace ME3Explorer.PropertyDatabase
         private void LoadCommands()
         {
             GenerateDBCommand = new GenericCommand(GenerateDatabase);
-            //SaveDBCommand = new GenericCommand();
+            FilterSeqClassCommand = new GenericCommand(FilterSeqClasses);
             SwitchMECommand = new RelayCommand(SwitchGame);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             OpenSourcePkgCommand = new RelayCommand(OpenSourcePkg, IsClassSelected);
             GoToSuperclassCommand = new RelayCommand(GoToSuperClass, IsClassSelected);
             OpenUsagePkgCommand = new RelayCommand(OpenUsagePkg, IsUsageSelected);
         }
-
-
 
         private void PropertyDB_Closing(object sender, CancelEventArgs e)
         {
@@ -246,6 +244,33 @@ namespace ME3Explorer.PropertyDatabase
 
             LoadDatabase();
         }
+
+        private void FilterSeqClasses()
+        {
+            if(!menu_fltrSeq.IsChecked)
+            {
+                menu_fltrSeq.IsChecked = true;
+                ICollectionView view = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
+                view.Filter = delegate (object item) {
+                    var classes = item as ClassRecord;
+                    if (classes != null && (
+                    classes.Class.ToLower().StartsWith("seq") ||
+                    classes.Class.ToLower().StartsWith("bioseq") ||
+                    classes.Class.ToLower().StartsWith("sfxseq") ||
+                    classes.Class.ToLower().StartsWith("rvrseq"))) return true;
+                    return false;
+                }; ;
+                lstbx_Classes.ItemsSource = view;
+            }
+            else
+            {
+                menu_fltrSeq.IsChecked = false;
+                ICollectionView view = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
+                view.Filter = null;
+                lstbx_Classes.ItemsSource = view;
+            }
+        }
+
         private void GoToSuperClass(object obj)
         {
             var sClass = CurrentDataBase.ClassRecords[lstbx_Classes.SelectedIndex].SuperClass;
@@ -471,11 +496,8 @@ namespace ME3Explorer.PropertyDatabase
 
             foreach (ClassRecord record in _dbqueue.GetConsumingEnumerable(CancellationToken.None))
             {
-                //Property List<string> { pClass 0, pSuperClass 1, pDefinitionPackage 2, pName 3, pFile 4, pExport 5, pIsdefault.ToString() 6, pType 7, pValue 8 };
                 try
                 {
-                    //We already know Class Record exists, and that the value doesn't exist
-                    //Get ClassRecord from concurrent
                     var oldClassRecord = GeneratedClasses.FirstOrDefault(r => r.Key == record.Class).Value;
 
                     if (record.SuperClass != null && oldClassRecord.SuperClass == null)
@@ -631,7 +653,6 @@ namespace ME3Explorer.PropertyDatabase
         /// <workbook>Output excel workbook</workbook>
         public void dumpPackageFile(MEGame GameBeingDumped, PropertyDB dumper)
         {
-            string fileName = ShortFileName.ToUpper();
             dumper.CurrentOverallOperationText = $"Generating Database... Files: { dumper.OverallProgressValue}/{dumper.OverallProgressMaximum} Classes Found: { dumper.GeneratedClasses.Count} Unique Property Values: { dumper.GeneratedValueChecker.Count}";
 
             try
@@ -765,13 +786,13 @@ namespace ME3Explorer.PropertyDatabase
                             pClass = exp.ObjectName;
                             pSuperClass = exp.SuperClassName;
                             pDefUID = exp.UIndex;
-                            var NewUsageRecord = new PropertyUsage(pFile, pExport, pIsdefault, "Class");
+                            var NewUsageRecord = new PropertyUsage(pFile, pExport, pIsdefault, "None");
                             var NewPropertyRecord = new PropertyRecord("None", "NoneProperty", new ObservableCollectionExtended<PropertyUsage>() { NewUsageRecord });
                             var NewClassRecord = new ClassRecord(pClass, pFile, pDefUID, pSuperClass, new ObservableCollectionExtended<PropertyRecord>() { NewPropertyRecord });
                             if (!dumper.GeneratedClasses.TryAdd(pClass, NewClassRecord))
                             {
                                 dumper._dbqueue.Add(NewClassRecord);
-
+    
                             }
                         }
                     }

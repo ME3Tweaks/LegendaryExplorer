@@ -28,8 +28,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top" Name="TopDock">
             <MenuItem Header="Database" Padding="4" >
-                <MenuItem Header="Generate" Command="{Binding GenerateDBCommand}" InputGestureText="Ctrl+G" ToolTip="Scan Game Properties"/>
-                <MenuItem Header="Save"  Command="{Binding SaveDBCommand}" InputGestureText="Ctrl+S" ToolTip="Save database in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <MenuItem Header="Generate New Database" Command="{Binding GenerateDBCommand}" InputGestureText="Ctrl+G" ToolTip="Scan Game Properties"/>
                 <Separator />
                 <MenuItem Name="switchME1_menu" Header="ME1 Properties" Command="{Binding SwitchMECommand}" CommandParameter="ME1" InputGestureText="Ctrl+1" ToolTip="Switch to ME1 Properties"/>
                 <MenuItem Name="switchME2_menu" Header="ME2 Properties" Command="{Binding SwitchMECommand}" CommandParameter="ME2" InputGestureText="Ctrl+2" ToolTip="Switch to ME2 Properties"/>
@@ -40,7 +39,8 @@
                 <MenuItem Header="Open Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
                 <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
                 <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
-                <MenuItem Header="Show Defaults" Command="{Binding OpenSourcePkgCommand}" ToolTip="Show default values only." />
+                <Separator/>
+                <MenuItem Name="menu_fltrSeq" Header="Only Sequence Classes" Command="{Binding FilterSeqClassCommand}" ToolTip="Show sequence classes only." />
             </MenuItem>
         </Menu>
         <StatusBar Height="33" DockPanel.Dock="Bottom">
@@ -94,18 +94,17 @@
                             <TextBlock Text="{Binding Filename}" />
                             <TextBlock Text=" #"/>
                             <TextBlock Text="{Binding ExportUID}" />
-                            <TextBlock Text=" Value:" />
+                            <TextBlock Text="   Value: " />
                             <TextBlock Text="{Binding Value}" />
-                            <TextBlock Text=" default:" />
-                            <TextBlock Text="{Binding IsDefault}" />
                         </StackPanel>
                     </DataTemplate>
                 </SharedUI:ListBoxScroll.ItemTemplate>
                 <SharedUI:ListBoxScroll.ItemContainerStyle>
-                    <Style>
+                    <Style TargetType="ListBoxItem">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsDefault}">
+                            <DataTrigger Binding="{Binding Path=IsDefault}" Value="True">
                                 <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                                <Setter Property="TextElement.ToolTip" Value="Default value"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
