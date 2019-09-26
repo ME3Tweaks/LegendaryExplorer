@@ -26,7 +26,7 @@
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
     </Window.Resources>
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top" Name="TopDock">
             <MenuItem Header="Database" Padding="4" >
                 <MenuItem Header="Generate" Command="{Binding GenerateDBCommand}" InputGestureText="Ctrl+G" ToolTip="Scan Game Properties"/>
                 <MenuItem Header="Save"  Command="{Binding SaveDBCommand}" InputGestureText="Ctrl+S" ToolTip="Save database in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
@@ -60,7 +60,7 @@
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
-        <DockPanel>
+        <DockPanel Name="MidDock">
             <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}"  DisplayMemberPath="Class" SelectedItem="{Binding CurrentClass, Mode=TwoWay}">
                 <SharedUI:ListBoxScroll.ContextMenu>
                     <ContextMenu>
@@ -87,7 +87,7 @@
                     </ContextMenu>
                 </SharedUI:ListBoxScroll.ContextMenu>
             </SharedUI:ListBoxScroll>
-            <SharedUI:ListBoxScroll x:Name="lstbx_Usages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyUsages, ElementName=lstbx_Properties }" >
+            <SharedUI:ListBoxScroll x:Name="lstbx_Usages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyUsages, ElementName=lstbx_Properties }"  >
                 <SharedUI:ListBoxScroll.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -105,7 +105,7 @@
                     <Style>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsDefault}">
-                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextElement.FontWeight" Value="Bold"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

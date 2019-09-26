@@ -158,7 +158,6 @@ namespace ME3Explorer.PropertyDatabase
             if (e.Cancel)
                 return;
             //Dump Database
-            //Save settings (path, currentGame)
             Properties.Settings.Default.PropertyDBPath = CurrentDBPath;
             Properties.Settings.Default.PropertyDBGame = currentGame.ToString();
         }
@@ -208,6 +207,8 @@ namespace ME3Explorer.PropertyDatabase
                 serializer.Serialize(file, CurrentDataBase);
             }
             CurrentOverallOperationText = $"Database saved.";
+            await Task.Delay(5000);
+            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count}";
         }
 
 
@@ -362,6 +363,8 @@ namespace ME3Explorer.PropertyDatabase
 
         private async Task dumpPackages(List<string> files, MEGame game)
         {
+            TopDock.IsEnabled = false;
+            MidDock.IsEnabled = false;
             StatusBar_Progress.Visibility = Visibility.Visible;
             StatusBar_RightSide_LastSaved.Visibility = Visibility.Hidden;
             StatusBar_CancelBtn.Visibility = Visibility.Visible;
@@ -441,14 +444,21 @@ namespace ME3Explorer.PropertyDatabase
             {
                 CurrentDataBase.ClassRecords.AddRange(GeneratedClasses.Values);
                 CurrentDataBase.ClassRecords.Sort(x => x.Class);
+                foreach(var c in CurrentDataBase.ClassRecords)
+                {
+                    c.PropertyRecords.Sort(x => x.Property);
+                }
+
                 GeneratedClasses.Clear();
                 GeneratedValueChecker.Clear();
                 isProcessing = false;
                 StatusBar_Progress.Visibility = Visibility.Hidden;
                 StatusBar_RightSide_LastSaved.Visibility = Visibility.Visible;
                 StatusBar_CancelBtn.Visibility = Visibility.Hidden;
-                MessageBox.Show("Done");
+                TopDock.IsEnabled = true;
+                MidDock.IsEnabled = true;
                 SaveDatabase();
+                MessageBox.Show("Done");
             }
             catch
             {
