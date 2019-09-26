@@ -47,6 +47,8 @@ namespace ME3Explorer.PropertyDatabase
         public ICommand SwitchMECommand { get; set; }
         public ICommand CancelDumpCommand { get; set; }
         public ICommand OpenSourcePkgCommand { get; set; }
+        public ICommand GoToSuperclassCommand { get; set; }
+        
 
         /// <summary>
         /// Items show in the list that are currently being processed
@@ -140,7 +142,9 @@ namespace ME3Explorer.PropertyDatabase
             SwitchMECommand = new RelayCommand(SwitchGame);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             OpenSourcePkgCommand = new RelayCommand(OpenSourcePkg, IsClassSelected);
+            GoToSuperclassCommand = new RelayCommand(GoToSuperClass, IsClassSelected);
         }
+
 
 
         private void PropertyDB_Closing(object sender, CancelEventArgs e)
@@ -158,8 +162,6 @@ namespace ME3Explorer.PropertyDatabase
         #region UserCommands
         public void GenerateDatabase()
         {
-            //Use Property Dumper - run directly? to generate?
-            //Save to XML
             ScanGame(currentGame);
         }
 
@@ -237,15 +239,35 @@ namespace ME3Explorer.PropertyDatabase
 
             LoadDatabase();
         }
+        private void GoToSuperClass(object obj)
+        {
+            var sClass = CurrentDataBase.ClassRecords[lstbx_Classes.SelectedIndex].SuperClass;
+            if (sClass == null)
+            {
+                MessageBox.Show("SuperClass unknown.");
+                return;
+            }
+            var scidx = CurrentDataBase.ClassRecords.IndexOf(CurrentDataBase.ClassRecords.Where(r => r.Class == sClass).FirstOrDefault());
+            if(scidx >= 0)
+            {
+                lstbx_Classes.SelectedIndex = scidx;
+            }
+            else
+            {
+                MessageBox.Show("SuperClass not found.");
+            }
 
+        }
         private void OpenSourcePkg(object obj)
         {
             var sourcepkg = CurrentDataBase.ClassRecords[lstbx_Classes.SelectedIndex].Definition_package;
-            if(sourcepkg != null)
+            var sourceexp = CurrentDataBase.ClassRecords[lstbx_Classes.SelectedIndex].Definition_UID;
+            if (sourcepkg == null)
             {
-                OpenInToolkit("PackageEditor", sourcepkg);
-
+                MessageBox.Show("Definition file unknown.");
+                return;
             }
+            OpenInToolkit("PackageEditor", sourcepkg, sourceexp);
         }
 
         private void OpenInToolkit(string tool, string filename, int export = 0, string param = null)
@@ -264,6 +286,7 @@ namespace ME3Explorer.PropertyDatabase
                     rootPath = ME3Directory.gamePath;
                     break;
             }
+            filename = $"{filename}.*";
             filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault();
             if (filePath == null)
             {
@@ -276,9 +299,9 @@ namespace ME3Explorer.PropertyDatabase
                 case "PackageEditor":
                     var packEditor = new PackageEditorWPF();
                     packEditor.Show();
-                    if (Pcc.isUExport(export))
+                    if (export != 0)
                     {
-                        packEditor.LoadFile(Pcc.FilePath, export);
+                        packEditor.LoadFile(filePath, export);
                     }
                     else
                     {
@@ -434,6 +457,7 @@ namespace ME3Explorer.PropertyDatabase
                     if (record.Definition_package != null && oldClassRecord.Definition_package == null)
                     {
                         oldClassRecord.Definition_package = record.Definition_package;
+                        oldClassRecord.Definition_UID = record.Definition_UID;
                     }
 
                     var pName = record.PropertyRecords[0].Property;
@@ -499,13 +523,15 @@ namespace ME3Explorer.PropertyDatabase
         private string _Class;
         public string Class { get => _Class; set => SetProperty(ref _Class, value); }
         public string Definition_package { get; set; }
+        public int Definition_UID { get; set; }
         public string SuperClass { get; set; }
         public ObservableCollectionExtended<PropertyRecord> PropertyRecords { get; } = new ObservableCollectionExtended<PropertyRecord>();
 
-        public ClassRecord(string Class, string Definition_package, string SuperClass, ObservableCollectionExtended<PropertyRecord> PropertyRecords)
+        public ClassRecord(string Class, string Definition_package, int Definition_UID, string SuperClass, ObservableCollectionExtended<PropertyRecord> PropertyRecords)
         {
             this.Class = Class;
             this.Definition_package = Definition_package;
+            this.Definition_UID = Definition_UID;
             this.SuperClass = SuperClass;
             this.PropertyRecords.AddRange(PropertyRecords);
         }
@@ -518,10 +544,13 @@ namespace ME3Explorer.PropertyDatabase
     {
         private string _Property;
         public string Property { get => _Property; set => SetProperty(ref _Property, value); }
+        private string _Type;
+        public string Type { get => _Type; set => SetProperty(ref _Type, value); }
         public ObservableCollectionExtended<PropertyUsage> PropertyUsages { get; } = new ObservableCollectionExtended<PropertyUsage>();
-        public PropertyRecord(string Property, ObservableCollectionExtended<PropertyUsage> PropertyUsages)
+        public PropertyRecord(string Property, string Type, ObservableCollectionExtended<PropertyUsage> PropertyUsages)
         {
             this.Property = Property;
+            this.Type = Type;
             this.PropertyUsages.AddRange(PropertyUsages);
         }
         public PropertyRecord()
@@ -533,14 +562,12 @@ namespace ME3Explorer.PropertyDatabase
         public string Filename { get; set; }
         public string ExportUID { get; set; }
         public bool IsDefault { get; set; }
-        public string Type { get; set; }
         public string Value { get; set; }
-        public PropertyUsage(string Filename, string ExportUID, bool IsDefault, string Type, string Value)
+        public PropertyUsage(string Filename, string ExportUID, bool IsDefault, string Value)
         {
             this.Filename = Filename;
             this.ExportUID = ExportUID;
             this.IsDefault = IsDefault;
-            this.Type = Type;
             this.Value = Value;
         }
         public PropertyUsage()
@@ -593,115 +620,130 @@ namespace ME3Explorer.PropertyDatabase
                         string pClass = exp.ClassName;  //Handle basic class record
                         string pSuperClass = null;
                         string pDefinitionPackage = null;
+                        int pDefUID = 0;
                         string pFile = ShortFileName;
                         string pExport = exp.UIndex.ToString();
-                        if (exp.ClassName == "Class")
+                        bool pIsdefault = false;  //Setup default cases
+
+                        if (exp.ClassName != "Class")
                         {
+                            if (exp.ObjectName.StartsWith("Default__"))
+                            {
+                                pIsdefault = true;
+                            }
+                            var props = exp.GetProperties(false, true);
+                            foreach (var p in props)
+                            {
+                                string pName = p.Name;
+                                string pType = p.PropType.ToString();
+                                string pValue = "null";
+                                switch (p)
+                                {
+                                    case ArrayPropertyBase parray:
+                                        pValue = "Array";
+                                        break;
+                                    case StructProperty pstruct:
+                                        pValue = "Struct";
+                                        break;
+                                    case NoneProperty pnone:
+                                        pValue = "None";
+                                        break;
+                                    case ObjectProperty pobj:
+                                        if (pobj.Value != 0)
+                                        {
+                                            pValue = pcc.getEntry(pobj.Value).ClassName;
+                                        }
+                                        break;
+                                    case BoolProperty pbool:
+                                        pValue = pbool.Value.ToString();
+                                        break;
+                                    case IntProperty pint:
+                                        if (pIsdefault)
+                                        {
+                                            pValue = pint.Value.ToString();
+                                        }
+                                        else
+                                        {
+                                            pValue = "int"; //Keep DB size down
+                                        }
+                                        break;
+                                    case FloatProperty pflt:
+                                        if (pIsdefault)
+                                        {
+                                            pValue = pflt.Value.ToString();
+                                        }
+                                        else
+                                        {
+                                            pValue = "float"; //Keep DB size down
+                                        }
+                                        break;
+                                    case NameProperty pnme:
+                                        pValue = pnme.Value.ToString();
+                                        break;
+                                    case ByteProperty pbte:
+                                        pValue = pbte.Value.ToString();
+                                        break;
+                                    case EnumProperty penum:
+                                        pValue = penum.Value.ToString();
+                                        break;
+                                    case StrProperty pstr:
+                                        if (pIsdefault)
+                                        {
+                                            pValue = pstr;
+                                        }
+                                        else
+                                        {
+                                            pValue = "String";
+                                        }
+                                        break;
+                                    case StringRefProperty pstrref:
+                                        if (pIsdefault)
+                                        {
+                                            pValue = pstrref.Value.ToString();
+                                        }
+                                        else
+                                        {
+                                            pValue = "TLK StringRef";
+                                        }
+                                        break;
+                                    case DelegateProperty pdelg:
+                                        if (pdelg.Value != null)
+                                        {
+                                            var pscrdel = pdelg.Value.Object;
+                                            if (pscrdel != 0)
+                                            {
+                                                pValue = pcc.getEntry(pscrdel).ClassName;
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        pValue = p.ToString();
+                                        break;
+                                }
+
+                                var NewUsageRecord = new PropertyUsage(pFile, pExport, pIsdefault, pValue);
+                                var NewPropertyRecord = new PropertyRecord(pName, pType, new ObservableCollectionExtended<PropertyUsage>() { NewUsageRecord });
+                                var NewClassRecord = new ClassRecord(pClass, pDefinitionPackage, pDefUID, pSuperClass, new ObservableCollectionExtended<PropertyRecord>() { NewPropertyRecord });
+                                string valueKey = string.Concat(pClass, pName, pValue, pIsdefault.ToString());
+                                if (!dumper.GeneratedClasses.TryAdd(pClass, NewClassRecord) && dumper.GeneratedValueChecker.TryAdd(valueKey, true))
+                                {
+                                    dumper._dbqueue.Add(NewClassRecord);
+
+                                }
+                            }
+                        }
+                        else
+                        { 
                             pClass = exp.ObjectName;
                             pSuperClass = exp.SuperClassName;
-                            pDefinitionPackage = pFile;
-                        }
-
-                        bool pIsdefault = false;  //Setup default cases
-                        if (exp.ObjectName.StartsWith("Default__"))
-                        {
-                            pIsdefault = true;
-                        }
-
-                        var props = exp.GetProperties();
-                        foreach(var p in props)
-                        {
-                            string pName = p.Name;
-                            string pType = p.PropType.ToString();
-                            string pValue = "null";
-                            switch(p)
-                            {
-                                case ArrayPropertyBase parray:
-                                    pValue = "Array";
-                                    break;
-                                case StructProperty pstruct:
-                                    pValue = "Struct";
-                                    break;
-                                case ObjectProperty pobj:
-                                    if(pobj.Value != 0)
-                                    {
-                                        pValue = pcc.getEntry(pobj.Value).ClassName;
-                                    }
-                                    break;
-                                case BoolProperty pbool:
-                                    pValue = pbool.Value.ToString();
-                                    break;
-                                case IntProperty pint:
-                                    if(pIsdefault)
-                                    {
-                                        pValue = pint.Value.ToString();
-                                    }
-                                    else
-                                    {
-                                        pValue = "int"; //Keep DB size down
-                                    }
-                                    break;
-                                case FloatProperty pflt:
-                                    if (pIsdefault)
-                                    {
-                                        pValue = pflt.Value.ToString();
-                                    }
-                                    else
-                                    {
-                                        pValue = "float"; //Keep DB size down
-                                    }
-                                    break;
-                                case NameProperty pnme:
-                                    pValue = pnme.Value.ToString();
-                                    break;
-                                case ByteProperty pbte:
-                                    pValue = pbte.Value.ToString();
-                                    break;
-                                case EnumProperty penum:
-                                    pValue = penum.Value.ToString();
-                                    break;
-                                case StrProperty pstr:
-                                    if (pIsdefault)
-                                    {
-                                        pValue = pstr;
-                                    }
-                                    else
-                                    {
-                                        pValue = "String";
-                                    }
-                                    break;
-                                case StringRefProperty pstrref:
-                                    if (pIsdefault)
-                                    {
-                                        pValue = pstrref.Value.ToString();
-                                    }
-                                    else
-                                    {
-                                        pValue = "TLK StringRef";
-                                    }
-                                    break;
-                                case DelegateProperty pdelg:
-                                    if (pdelg.Value != null)
-                                    {
-                                        var pscrdel = pdelg.Value.Object;
-                                        if(pscrdel != 0)
-                                        {
-                                            pValue = pcc.getEntry(pscrdel).ClassName;
-                                        }
-                                    }
-                                    break;
-                                default:
-                                    pValue = p.ToString();
-                                    break;
-                            }
-
-                            var NewUsageRecord = new PropertyUsage(pFile, pExport, pIsdefault, pType, pValue);
-                            var NewPropertyRecord = new PropertyRecord(pName, new ObservableCollectionExtended<PropertyUsage>() { NewUsageRecord });
-                            var NewClassRecord = new ClassRecord(pClass, pDefinitionPackage, pSuperClass, new ObservableCollectionExtended<PropertyRecord>() { NewPropertyRecord });
-                            string valueKey = string.Concat(pClass, pName, pValue);
-                            if (!dumper.GeneratedClasses.TryAdd(pClass, NewClassRecord) && dumper.GeneratedValueChecker.TryAdd(valueKey, true))
+                            pDefUID = exp.UIndex;
+                            var NewUsageRecord = new PropertyUsage(pFile, pExport, pIsdefault, "Class");
+                            var NewPropertyRecord = new PropertyRecord("None", "NoneProperty", new ObservableCollectionExtended<PropertyUsage>() { NewUsageRecord });
+                            var NewClassRecord = new ClassRecord(pClass, pFile, pDefUID, pSuperClass, new ObservableCollectionExtended<PropertyRecord>() { NewPropertyRecord });
+                            if (!dumper.GeneratedClasses.TryAdd(pClass, NewClassRecord))
                             {
                                 dumper._dbqueue.Add(NewClassRecord);
+
                             }
                         }
                     }

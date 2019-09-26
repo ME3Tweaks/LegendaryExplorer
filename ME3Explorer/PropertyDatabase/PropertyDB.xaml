@@ -24,10 +24,6 @@
         <Converters:EntryFileTypeIconPathConverter x:Key="EntryFileTypeIconPathConverter"/>
         <Converters:EmbeddedFileToolTipConverter x:Key="EmbeddedFileToolTipConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
-        <ContextMenu x:Key="MyMenu">
-            <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
-            <MenuItem Header="Open Usage" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
-        </ContextMenu>
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -41,8 +37,9 @@
             </MenuItem>
 
             <MenuItem Header="Tools" Padding="4">
-                <MenuItem Header="Open Source" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
+                <MenuItem Header="Open Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
                 <MenuItem Header="Open Usage" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
                 <MenuItem Header="Show Defaults" Command="{Binding OpenSourcePkgCommand}" ToolTip="Show default values only." />
             </MenuItem>
         </Menu>
@@ -65,21 +62,60 @@
         </StatusBar>
         <DockPanel>
             <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}"  DisplayMemberPath="Class" SelectedItem="{Binding CurrentClass, Mode=TwoWay}">
+                <SharedUI:ListBoxScroll.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
+                        <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
+                    </ContextMenu>
+                </SharedUI:ListBoxScroll.ContextMenu>
             </SharedUI:ListBoxScroll>
-            <SharedUI:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyRecords, ElementName=lstbx_Classes }"  DisplayMemberPath="Property" >
-
+            <SharedUI:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyRecords, ElementName=lstbx_Classes }" >
+                <SharedUI:ListBoxScroll.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Property}" />
+                            <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center"/>
+                            <TextBlock FontSize="10" Text="{Binding Type}" VerticalAlignment="Center"/>
+                            <TextBlock FontSize="10" Text=")" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </DataTemplate>
+                </SharedUI:ListBoxScroll.ItemTemplate>
+                <SharedUI:ListBoxScroll.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
+                        <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
+                    </ContextMenu>
+                </SharedUI:ListBoxScroll.ContextMenu>
             </SharedUI:ListBoxScroll>
             <SharedUI:ListBoxScroll x:Name="lstbx_Values" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyUsages, ElementName=lstbx_Properties }" >
                 <SharedUI:ListBoxScroll.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock>
-                            <Run Text="{Binding Filename}" />
-                            <Run Text="#" />
-                            <Run Text="{Binding ExportUID}" />
-                            <Run Text="{Binding Value}" />
-                        </TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Filename}" />
+                            <TextBlock Text=" #"/>
+                            <TextBlock Text="{Binding ExportUID}" />
+                            <TextBlock Text=" Value:" />
+                            <TextBlock Text="{Binding Value}" />
+                            <TextBlock Text=" default:" />
+                            <TextBlock Text="{Binding IsDefault}" />
+                        </StackPanel>
                     </DataTemplate>
                 </SharedUI:ListBoxScroll.ItemTemplate>
+                <SharedUI:ListBoxScroll.ItemContainerStyle>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDefault}">
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </SharedUI:ListBoxScroll.ItemContainerStyle>
+                <SharedUI:ListBoxScroll.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
+                        <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
+                    </ContextMenu>
+                </SharedUI:ListBoxScroll.ContextMenu>
             </SharedUI:ListBoxScroll>
         </DockPanel>
     </DockPanel>
