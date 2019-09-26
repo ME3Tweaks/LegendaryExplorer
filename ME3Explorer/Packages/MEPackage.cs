@@ -1087,7 +1087,7 @@ namespace ME3Explorer.Packages
                         }
                         if (diff == 0)
                         {
-                            diff = EntryImporter.getOrAddCrossImportOrPackage("EngineMaterials.DefaultDiffuse", resourcePCC, this).UIndex;
+                            diff = EntryImporter.GetOrAddCrossImportOrPackage("EngineMaterials.DefaultDiffuse", resourcePCC, this).UIndex;
                         }
 
                         var matBin = ObjectBinary.From<Material>(mat);

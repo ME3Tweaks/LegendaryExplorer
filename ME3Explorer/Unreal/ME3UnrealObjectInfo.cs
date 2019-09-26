@@ -14,6 +14,11 @@ namespace ME3Explorer.Unreal
 {
     public static class UnrealObjectInfo
     {
+        internal const string Me3ExplorerCustomNativeAdditionsName = "ME3Explorer_CustomNativeAdditions";
+
+        public static List<string> GetNonAbstractDerivedClassesOf(string baseClassName, MEGame game) =>
+            GetClasses(game).Where(kvp => kvp.Key != baseClassName && !kvp.Value.isAbstract && IsOrInheritsFrom(kvp.Key, baseClassName, game)).Select(kvp => kvp.Key).ToList();
+
         public static bool IsImmutable(string structType, MEGame game) =>
             game switch 
             {
@@ -24,13 +29,15 @@ namespace ME3Explorer.Unreal
                 _ => false,
             };
 
-        public static bool IsOrInheritsFrom(this IEntry entry, string baseClass) =>
-            entry.FileRef.Game switch
+        public static bool IsOrInheritsFrom(this IEntry entry, string baseClass) => IsOrInheritsFrom(entry.ClassName, baseClass, entry.FileRef.Game);
+
+        public static bool IsOrInheritsFrom(string className, string baseClass, MEGame game) =>
+            game switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(entry, baseClass),
-                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(entry, baseClass),
-                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(entry, baseClass),
-                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(entry, baseClass),
+                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass),
+                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass),
+                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass),
+                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass),
                 _ => false
             };
 
@@ -301,7 +308,6 @@ namespace ME3Explorer.Unreal
 
     public static class ME3UnrealObjectInfo
     {
-
         public class SequenceObjectInfo
         {
             public List<string> inputLinks;
@@ -653,9 +659,8 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static bool InheritsFrom(IEntry entry, string baseClass)
+        public static bool InheritsFrom(string className, string baseClass)
         {
-            string className = entry.ClassName;
             while (Classes.ContainsKey(className))
             {
                 if (className == baseClass)
@@ -731,7 +736,7 @@ namespace ME3Explorer.Unreal
             NewClasses["SFXSeqAct_AttachToSocket"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
-                pccPath = "ME3Explorer_CustomNativeAdditions",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 0,
                 properties =
                 {
@@ -748,7 +753,7 @@ namespace ME3Explorer.Unreal
             NewClasses["BioSeqAct_ShowMedals"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
-                pccPath = "ME3Explorer_CustomNativeAdditions",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 0,
                 properties =
                 {
@@ -761,7 +766,7 @@ namespace ME3Explorer.Unreal
             NewClasses["SFXSeqAct_SetFaceFX"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
-                pccPath = "ME3Explorer_CustomNativeAdditions",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 0,
                 properties =
                 {
@@ -774,21 +779,21 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "Texture2D",
                 exportIndex = 0,
-                pccPath = "ME3Explorer_CustomNativeAdditions"
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
             NewClasses["Package"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
-                pccPath = "ME3Explorer_CustomNativeAdditions"
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
             NewClasses["StaticMesh"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
-                pccPath = "ME3Explorer_CustomNativeAdditions",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
@@ -808,7 +813,7 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "StaticMesh",
                 exportIndex = 0,
-                pccPath = "ME3Explorer_CustomNativeAdditions",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("LoseChunkOutsideMaterial", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface")),
@@ -856,6 +861,10 @@ namespace ME3Explorer.Unreal
                 baseClass = export.SuperClassName,
                 exportIndex = export.UIndex
             };
+            if (!isStruct)
+            {
+                
+            }
             if (pcc.FilePath.Contains("BIOGame"))
             {
                 info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BIOGame") + 8).ToArray());

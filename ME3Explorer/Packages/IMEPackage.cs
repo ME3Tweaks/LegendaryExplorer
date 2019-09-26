@@ -93,6 +93,7 @@ namespace ME3Explorer.Packages
         public string pccPath;
         //0-based
         public int exportIndex;
+        public bool isAbstract;
 
         public bool TryGetPropInfo(string name, MEGame game, out PropertyInfo propInfo) =>
             properties.TryGetValue(name, out propInfo) || (UnrealObjectInfo.GetClassOrStructInfo(game, baseClass)?.TryGetPropInfo(name, game, out propInfo) ?? false);

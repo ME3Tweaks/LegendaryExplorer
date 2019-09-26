@@ -115,7 +115,7 @@ namespace ME3Explorer
                         CurrentExport.setBinaryData(objBin.ToBytes(CurrentExport.FileRef));
                         CurrentExport.WriteProperties(new PropertyCollection());
 
-                        EntryImporter.ImportAndRelinkEntries(TreeMergeDialog.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true,
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true,
                                                              out IEntry newEntry);
                         CurrentExport.Data = dataBackup;
                         ExportEntry newExport = (ExportEntry)newEntry;
@@ -220,7 +220,7 @@ namespace ME3Explorer
                             }
                             meshExport.setBinaryData(objBin.ToBytes(udk));
                             meshExport.WriteProperties(new PropertyCollection());
-                            var results = EntryImporter.ImportAndRelinkEntries(TreeMergeDialog.PortingOption.AddSingularAsChild, meshExport, Pcc,
+                            var results = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, meshExport, Pcc,
                                                                                null, true, out _);
                             if (results.Any())
                             {

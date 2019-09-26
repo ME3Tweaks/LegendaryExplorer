@@ -71,7 +71,7 @@ namespace ME3Explorer.Packages
         ///     UDKPackage class constructor. It also load namelist, importlist and exportinfo (not exportdata) from udk file
         /// </summary>
         /// <param name="UDKPackagePath">full path + file name of desired udk file.</param>
-        public UDKPackage(string UDKPackagePath, bool create = false) : base(Path.GetFullPath(UDKPackagePath))
+        private UDKPackage(string UDKPackagePath, bool create = false) : base(Path.GetFullPath(UDKPackagePath))
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"UDKPackage {Path.GetFileName(UDKPackagePath)}", new WeakReference(this));
 

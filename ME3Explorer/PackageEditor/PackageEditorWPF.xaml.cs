@@ -2570,7 +2570,7 @@ namespace ME3Explorer
 
                 var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem);
 
-                if (portingOption == TreeMergeDialog.PortingOption.Cancel)
+                if (portingOption == EntryImporter.PortingOption.Cancel)
                 {
                     return;
                 }
@@ -3122,13 +3122,13 @@ namespace ME3Explorer
                     if (export.ObjectName == "SFXOperation_ObjectiveSpawnPoint")
                     {
                         Debug.WriteLine("Porting " + export.InstancedFullPath);
-                        ExportEntry portedObjective = EntryImporter.importExport(Pcc, export, targetPersistentLevel.UIndex);
+                        ExportEntry portedObjective = EntryImporter.ImportExport(Pcc, export, targetPersistentLevel.UIndex);
                         objectMap[export] = portedObjective;
                         itemsToAddToLevel.Add(portedObjective);
                         var child = export.GetProperty<ObjectProperty>("CollisionComponent");
                         ExportEntry collCyl = sourceFile.Exports[child.Value - 1];
                         Debug.WriteLine($"Porting {collCyl.InstancedFullPath}");
-                        ExportEntry portedCollisionCylinder = EntryImporter.importExport(Pcc, collCyl, portedObjective.UIndex);
+                        ExportEntry portedCollisionCylinder = EntryImporter.ImportExport(Pcc, collCyl, portedObjective.UIndex);
                         objectMap[collCyl] = portedCollisionCylinder;
                     }
                 }

@@ -237,9 +237,8 @@ namespace ME2Explorer.Unreal
             return null;
         }
 
-        public static bool InheritsFrom(IEntry entry, string baseClass)
+        public static bool InheritsFrom(string className, string baseClass)
         {
-            string className = entry.ClassName;
             while (Classes.ContainsKey(className))
             {
                 if (className == baseClass)
@@ -432,14 +431,14 @@ namespace ME2Explorer.Unreal
                 {
                     baseClass = "Texture2D",
                     exportIndex = 0,
-                    pccPath = "ME3Explorer_CustomNativeAdditions"
+                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
                 });
 
                 NewClasses["StaticMesh"] = new ClassInfo
                 {
                     baseClass = "Object",
                     exportIndex = 0,
-                    pccPath = "ME3Explorer_CustomNativeAdditions",
+                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                     properties =
                     {
                         new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),

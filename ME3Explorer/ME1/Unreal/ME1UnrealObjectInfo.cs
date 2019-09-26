@@ -278,10 +278,14 @@ namespace ME1Explorer.Unreal
                     }
                     structProps.Add(new NoneProperty());
 
-                    string filepath = Path.Combine(ME1Directory.gamePath, "BioGame", info.pccPath);
+                    string filepath = Path.Combine(ME1Directory.BioGamePath, info.pccPath);
                     if (File.Exists(info.pccPath))
                     {
                         filepath = info.pccPath; //Used for dynamic lookup
+                    }
+                    if (!File.Exists(filepath))
+                    {
+                        filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
                     }
                     if (File.Exists(filepath))
                     {
@@ -366,9 +370,8 @@ namespace ME1Explorer.Unreal
             }
         }
 
-        public static bool InheritsFrom(IEntry entry, string baseClass)
+        public static bool InheritsFrom(string className, string baseClass)
         {
-            string className = entry.ClassName;
             while (Classes.ContainsKey(className))
             {
                 if (className == baseClass)
@@ -432,14 +435,14 @@ namespace ME1Explorer.Unreal
             {
                 baseClass = "Texture2D",
                 exportIndex = 0,
-                pccPath = "ME3Explorer_CustomNativeAdditions"
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
             Classes["StaticMesh"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
-                pccPath = "ME3Explorer_CustomNativeAdditions",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
@@ -455,7 +458,7 @@ namespace ME1Explorer.Unreal
             };
 
 
-            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }, Formatting.Indented));
+            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(new {Classes, Structs, Enums }, Formatting.Indented));
             MessageBox.Show("Done");
         }
 
@@ -470,6 +473,10 @@ namespace ME1Explorer.Unreal
             if (pcc.FilePath.Contains("BioGame"))
             {
                 info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BioGame") + 8).ToArray());
+            }
+            else if (pcc.FilePath.Contains(@"DLC\DLC_"))
+            {
+                info.pccPath = pcc.FilePath.Substring(pcc.FilePath.LastIndexOf(@"DLC\DLC_"));
             }
             else
             {

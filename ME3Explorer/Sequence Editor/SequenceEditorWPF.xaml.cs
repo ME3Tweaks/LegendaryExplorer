@@ -1188,7 +1188,7 @@ namespace ME3Explorer.Sequence_Editor
                 {
 
                     if (obj is SAction sAction &&
-                        sAction.Export.ClassName.EndsWith("SeqAct_StartConversation") &&
+                        (sAction.Export.ClassName.EndsWith("SeqAct_StartConversation") || sAction.Export.ClassName.EndsWith("StartAmbientConv")) &&
                         sAction.Export.GetProperty<ObjectProperty>("Conv") != null)
                     {
                         dialogueEditorMenuItem.Visibility = Visibility.Visible;
@@ -1894,7 +1894,7 @@ namespace ME3Explorer.Sequence_Editor
         private void OpenInDialogueEditor_Clicked(object sender, RoutedEventArgs e)
         {
             if (CurrentObjects_ListBox.SelectedItem is SObj obj &&
-                obj.Export.ClassName.EndsWith("SeqAct_StartConversation") &&
+                (obj.Export.ClassName.EndsWith("SeqAct_StartConversation") || obj.Export.ClassName.EndsWith("StartAmbientConv")) &&
                 obj.Export.GetProperty<ObjectProperty>("Conv") is ObjectProperty conv)
             {
                 if (Pcc.IsUExport(conv.Value))
