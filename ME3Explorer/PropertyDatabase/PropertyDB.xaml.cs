@@ -35,7 +35,9 @@ namespace ME3Explorer.PropertyDatabase
         public MEGame currentGame { get; set; }
 
         public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, new ObservableCollectionExtended<ClassRecord>());
-        private ObservableCollectionExtended<ClassRecord> CurrentClasses { get; } = new ObservableCollectionExtended<ClassRecord>();
+        public ObservableCollectionExtended<ClassRecord> GeneratedDB = new ObservableCollectionExtended<ClassRecord>();
+        private ObservableCollectionExtended<PropertyRecord> CurrentProps { get; } = new ObservableCollectionExtended<PropertyRecord>();
+        private ObservableCollectionExtended<PropertyUsage> CurrentUsages { get; } = new ObservableCollectionExtended<PropertyUsage>();
         private string CurrentDBPath { get; set; }
 
         public ICommand GenerateDBCommand { get; set; }
@@ -192,6 +194,8 @@ namespace ME3Explorer.PropertyDatabase
             switchME1_menu.IsChecked = false;
             switchME2_menu.IsChecked = false;
             switchME3_menu.IsChecked = false;
+            CurrentDataBase.ClassRecords.Clear();
+            CurrentDataBase.GenerationDate = null;
             switch (p)
             {
                 case "ME1":
@@ -247,26 +251,28 @@ namespace ME3Explorer.PropertyDatabase
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
             List<string> files = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(System.IO.Path.GetExtension(s.ToLower()))).ToList();
             await dumpPackages(files, currentGame);
-            CurrentDataBase.ClassRecords.SortDescending(x => x.Class);
 
-            MessageBox.Show("Done");
-            SaveDatabase();
+
+
+
         }
 
         private async Task dumpPackages(List<string> files, MEGame game)
         {
-            CurrentOverallOperationText = "Generating Database...";
             StatusBar_Progress.Visibility = Visibility.Visible;
             StatusBar_RightSide_LastSaved.Visibility = Visibility.Hidden;
             StatusBar_CancelBtn.Visibility = Visibility.Visible;
             OverallProgressMaximum = files.Count;
             OverallProgressValue = 0;
-            //bool isProcessing = true;
+            CurrentOverallOperationText = $"Generating Database...  {OverallProgressValue}/{OverallProgressMaximum}";
 
             //Clear database
             CurrentDataBase.meGame = currentGame;
             CurrentDataBase.GenerationDate = DateTime.Now.ToString();
             CurrentDataBase.ClassRecords.Clear();
+            CurrentProps.Clear();
+            CurrentUsages.Clear();
+            GeneratedDB.Clear();
 
             //Background Consumer copies strings into Class
             dbworker = new BackgroundWorker();
@@ -289,7 +295,7 @@ namespace ME3Explorer.PropertyDatabase
                     OverallProgressValue++; //Concurrency 
                     CurrentDumpingItems.Remove(x);
                 });
-            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount }); // How many items at the same time 
+            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount / 2 }); // How many items at the same time 
 
             AllDumpingItems = new List<ClassScanSingleFileTask>();
             CurrentDumpingItems.ClearEx();
@@ -308,9 +314,8 @@ namespace ME3Explorer.PropertyDatabase
             if (DumpCanceled)
             {
                 DumpCanceled = false;
-                //CurrentFileProgressValue = 0;
-                OverallProgressMaximum = 100;
-                CurrentOverallOperationText = "Dump canceled";
+                CurrentOverallOperationText = $"Dump canceled at {OverallProgressValue}/{OverallProgressMaximum}. Processing Queue.";
+                _dbqueue.CompleteAdding();
             }
             else
             {
@@ -328,13 +333,19 @@ namespace ME3Explorer.PropertyDatabase
             CommandManager.InvalidateRequerySuggested();
             try
             {
+                CurrentDataBase.ClassRecords.AddRange(GeneratedDB);
+                CurrentDataBase.ClassRecords.Sort(x => x.Class);
+                GeneratedDB.Clear();
+
                 StatusBar_Progress.Visibility = Visibility.Hidden;
                 StatusBar_RightSide_LastSaved.Visibility = Visibility.Visible;
                 StatusBar_CancelBtn.Visibility = Visibility.Hidden;
+                MessageBox.Show("Done");
+                SaveDatabase();
             }
             catch
             {
-                MessageBox.Show("Unable to save excel file. Check it is not open.", "Error", MessageBoxButton.OK);
+                MessageBox.Show("Unable to finish.", "Error", MessageBoxButton.OK);
             }
         }
 
@@ -347,16 +358,11 @@ namespace ME3Explorer.PropertyDatabase
                 try
                 {
 
-
-                    //Check if class has been generated
-                    //Check if property has been generated
-                    //Add usage or create record as needed
-
-                    var classrecord = CurrentDataBase.ClassRecords.FirstOrDefault(c => c.Class == property[0]);
+                    var classrecord = GeneratedDB.FirstOrDefault(c => c.Class == property[0]);
                     if(classrecord == null)
                     {
-                        classrecord = new ClassRecord(property[0], null, null, new List<PropertyRecord>());
-                        CurrentDataBase.ClassRecords.Add(classrecord);
+                        classrecord = new ClassRecord(property[0], null, null, new ObservableCollectionExtended<PropertyRecord>());
+                        GeneratedDB.Add(classrecord);
                     }
 
                     if (classrecord.SuperClass == null)
@@ -384,9 +390,9 @@ namespace ME3Explorer.PropertyDatabase
                     }
                  
                 }
-                catch
+                catch(Exception err)
                 {
-                    MessageBox.Show($"Error writing. {property[0]} {property[4]} {property[5]}");
+                    MessageBox.Show($"Error writing. {property[0]} {property[3]} {property[4]} {property[5]} {property[8]} {err}");
                 }
             }
         }
@@ -397,6 +403,7 @@ namespace ME3Explorer.PropertyDatabase
             {
                 AllDumpingItems.ForEach(x => x.DumpCanceled = true);
             }
+            
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
         #endregion
@@ -406,7 +413,7 @@ namespace ME3Explorer.PropertyDatabase
     /// Database Classes
     /// </summary>
     /// 
-    public class PropsDataBase
+    public class PropsDataBase : NotifyPropertyChangedBase
     {
         public MEGame meGame { get; set; }
         public string GenerationDate { get; set; }
@@ -423,14 +430,15 @@ namespace ME3Explorer.PropertyDatabase
         { }
     }
 
-    public class ClassRecord
+    public class ClassRecord : NotifyPropertyChangedBase
     {
-        public string Class { get; set; }
+        private string _Class;
+        public string Class { get => _Class; set => SetProperty(ref _Class, value); }
         public string Definition_package { get; set; }
         public string SuperClass { get; set; }
-        public List<PropertyRecord> PropertyRecords { get; } = new List<PropertyRecord>();
+        public ObservableCollectionExtended<PropertyRecord> PropertyRecords { get; } = new ObservableCollectionExtended<PropertyRecord>();
 
-        public ClassRecord(string Class, string Definition_package, string SuperClass, List<PropertyRecord> PropertyRecords)
+        public ClassRecord(string Class, string Definition_package, string SuperClass, ObservableCollectionExtended<PropertyRecord> PropertyRecords)
         {
             this.Class = Class;
             this.Definition_package = Definition_package;
@@ -442,9 +450,10 @@ namespace ME3Explorer.PropertyDatabase
         { }
     }
 
-    public class PropertyRecord
+    public class PropertyRecord : NotifyPropertyChangedBase
     {
-        public string Property { get; set; }
+        private string _Property;
+        public string Property { get => _Property; set => SetProperty(ref _Property, value); }
         public List<PropertyUsage> PropertyUsages { get; } = new List<PropertyUsage>();
         public PropertyRecord(string Property, List<PropertyUsage> PropertyUsages)
         {
@@ -455,7 +464,7 @@ namespace ME3Explorer.PropertyDatabase
         { }
     }
 
-    public class PropertyUsage
+    public class PropertyUsage : NotifyPropertyChangedBase
     {
         public string Filename { get; set; }
         public string ExportUID { get; set; }
@@ -521,9 +530,10 @@ namespace ME3Explorer.PropertyDatabase
         /// Dumps Conversation strings to xl worksheet
         /// </summary>
         /// <workbook>Output excel workbook</workbook>
-        public void dumpPackageFile(MEGame GameBeingDumped, PropertyDatabase.PropertyDB dumper)
+        public void dumpPackageFile(MEGame GameBeingDumped, PropertyDB dumper)
         {
             string fileName = ShortFileName.ToUpper();
+            dumper.CurrentOverallOperationText = $"Generating Database... { dumper.OverallProgressValue}/{dumper.OverallProgressMaximum} { dumper._dbqueue.Count.ToString() }";
 
             try
             {
@@ -625,7 +635,7 @@ namespace ME3Explorer.PropertyDatabase
             }
             catch (Exception e)
             {
-                MessageBox.Show($"Exception {ShortFileName}");
+                MessageBox.Show($"Exception {ShortFileName} SingleFileProcess");
             }
         }
     }

@@ -61,13 +61,22 @@
             </StatusBarItem>
         </StatusBar>
         <DockPanel>
-            <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="200" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}" SelectedValue="Class" DisplayMemberPath="Class">
+            <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}"  DisplayMemberPath="Class" SelectedItem="{Binding CurrentClass, Mode=TwoWay}">
             </SharedUI:ListBoxScroll>
-            <SharedUI:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200">
+            <SharedUI:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyRecords, ElementName=lstbx_Classes }"  DisplayMemberPath="Property">
 
             </SharedUI:ListBoxScroll>
-            <SharedUI:ListBoxScroll x:Name="lstbx_Values" DockPanel.Dock="Right" MinWidth="200">
-
+            <SharedUI:ListBoxScroll x:Name="lstbx_Values" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyUsages, ElementName=lstbx_Properties }">
+                <SharedUI:ListBoxScroll.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <Run Text="{Binding Filename}" />
+                            <Run Text="#" />
+                            <Run Text="{Binding ExportUID}" />
+                            <Run Text="{Binding Value}" />
+                        </TextBlock>
+                    </DataTemplate>
+                </SharedUI:ListBoxScroll.ItemTemplate>
             </SharedUI:ListBoxScroll>
         </DockPanel>
     </DockPanel>
