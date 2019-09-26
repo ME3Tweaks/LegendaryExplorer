@@ -27,6 +27,11 @@
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top" Name="TopDock">
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
             <MenuItem Header="Database" Padding="4" >
                 <MenuItem Header="Generate New Database" Command="{Binding GenerateDBCommand}" InputGestureText="Ctrl+G" ToolTip="Scan Game Properties"/>
                 <Separator />
@@ -41,6 +46,12 @@
                 <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
                 <Separator/>
                 <MenuItem Name="menu_fltrSeq" Header="Only Sequence Classes" Command="{Binding FilterSeqClassCommand}" ToolTip="Show sequence classes only." />
+            </MenuItem>
+            <MenuItem HorizontalAlignment="Right">
+                <MenuItem.Header>
+                    <TextBox Name="FilterBox" Width="300" KeyUp="FilterBox_KeyUp" ToolTip="Filter and find classes" IsEnabled="true" HorizontalAlignment="Right" HorizontalContentAlignment="Left">
+                    </TextBox>
+                </MenuItem.Header>
             </MenuItem>
         </Menu>
         <StatusBar Height="33" DockPanel.Dock="Bottom">

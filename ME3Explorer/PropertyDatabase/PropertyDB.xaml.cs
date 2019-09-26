@@ -175,7 +175,6 @@ namespace ME3Explorer.PropertyDatabase
                 return;
             }
 
-            //Load database
             if(File.Exists(CurrentDBPath))
             {
                 var readData = JsonConvert.DeserializeObject<PropsDataBase>(File.ReadAllText(CurrentDBPath));
@@ -197,7 +196,7 @@ namespace ME3Explorer.PropertyDatabase
         public async void SaveDatabase()
         {
             CurrentOverallOperationText = $"Database saving...";
-            await Task.Delay(10);
+
             ////Save database to JSON directly to file
             using (StreamWriter file = File.CreateText(CurrentDBPath))
             {
@@ -270,7 +269,27 @@ namespace ME3Explorer.PropertyDatabase
                 lstbx_Classes.ItemsSource = view;
             }
         }
-
+        private void FilterBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            string ftxt = FilterBox.Text.ToLower();
+            ICollectionView view = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
+            if(ftxt == null)
+            {
+                view.Filter = null;
+                
+            }
+            else
+            {
+                view.Filter = delegate (object item) {
+                    var classes = item as ClassRecord;
+                    if (classes != null &&
+                    classes.Class.ToLower().Contains(ftxt)) return true;
+                    return false;
+                }; ;
+            }
+            
+            lstbx_Classes.ItemsSource = view;
+        }
         private void GoToSuperClass(object obj)
         {
             var sClass = CurrentDataBase.ClassRecords[lstbx_Classes.SelectedIndex].SuperClass;
@@ -545,6 +564,8 @@ namespace ME3Explorer.PropertyDatabase
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
         #endregion
+
+
     }
     #region Database
     /// <summary>
