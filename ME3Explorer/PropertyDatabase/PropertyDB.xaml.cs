@@ -1,6 +1,7 @@
 ﻿using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -118,7 +119,7 @@ namespace ME3Explorer.PropertyDatabase
 
             InitializeComponent();
 
-            if (CurrentDBPath != null && CurrentDBPath.EndsWith("xml") && File.Exists(CurrentDBPath) && game != MEGame.Unknown)
+            if (CurrentDBPath != null && CurrentDBPath.EndsWith("JSON") && File.Exists(CurrentDBPath) && game != MEGame.Unknown)
             {
                 SwitchGame(game.ToString());
             }
@@ -166,14 +167,14 @@ namespace ME3Explorer.PropertyDatabase
         {
             if(CurrentDBPath == null)
             {
-                //Open XML file
                 return;
             }
 
             //Load database
             if(File.Exists(CurrentDBPath))
             {
-                var readData = XmlHelper.FromXmlFile<PropsDataBase>(CurrentDBPath);
+                var readData = JsonConvert.DeserializeObject<PropsDataBase>(File.ReadAllText(CurrentDBPath));
+
                 CurrentDataBase.meGame = readData.meGame;
                 CurrentDataBase.GenerationDate = readData.GenerationDate;
                 CurrentDataBase.ClassRecords.Clear();
@@ -188,11 +189,16 @@ namespace ME3Explorer.PropertyDatabase
 
         }
 
-        public void SaveDatabase()
+        public async void SaveDatabase()
         {
             CurrentOverallOperationText = $"Database saving...";
-            //Save database to XML
-            XmlHelper.ToXmlFile(CurrentDataBase, CurrentDBPath);
+            await Task.Delay(10);
+            ////Save database to JSON directly to file
+            using (StreamWriter file = File.CreateText(CurrentDBPath))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, CurrentDataBase);
+            }
             CurrentOverallOperationText = $"Database saved.";
         }
 
@@ -227,7 +233,7 @@ namespace ME3Explorer.PropertyDatabase
                     switchME3_menu.IsChecked = true;
                     break;
             }
-            CurrentDBPath = System.IO.Path.Combine(App.AppDataFolder, $"PropertyDB{currentGame}.xml");
+            CurrentDBPath = System.IO.Path.Combine(App.AppDataFolder, $"PropertyDB{currentGame}.JSON");
 
             LoadDatabase();
         }
@@ -311,7 +317,6 @@ namespace ME3Explorer.PropertyDatabase
             List<string> files = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(System.IO.Path.GetExtension(s.ToLower()))).ToList();
             await dumpPackages(files, currentGame);
 
-
         }
 
         private async Task dumpPackages(List<string> files, MEGame game)
@@ -371,11 +376,11 @@ namespace ME3Explorer.PropertyDatabase
             CommandManager.InvalidateRequerySuggested();
             await ProcessingQueue.Completion;
             isProcessing = true;
+            
             if (DumpCanceled)
             {
                 DumpCanceled = false;
-                CurrentOverallOperationText = $"Dump canceled at {OverallProgressValue}/{OverallProgressMaximum}. Processing Queue.";
-                _dbqueue.CompleteAdding();
+                CurrentOverallOperationText = $"Dump canceled. Processing Queue.";
             }
             else
             {
@@ -383,7 +388,7 @@ namespace ME3Explorer.PropertyDatabase
                 OverallProgressMaximum = 100;
                 CurrentOverallOperationText = "Dump completed. Processing Queue.";
             }
-
+            _dbqueue.CompleteAdding();
         }
 
 
@@ -513,8 +518,8 @@ namespace ME3Explorer.PropertyDatabase
     {
         private string _Property;
         public string Property { get => _Property; set => SetProperty(ref _Property, value); }
-        public List<PropertyUsage> PropertyUsages { get; } = new List<PropertyUsage>();
-        public PropertyRecord(string Property, List<PropertyUsage> PropertyUsages)
+        public ObservableCollectionExtended<PropertyUsage> PropertyUsages { get; } = new ObservableCollectionExtended<PropertyUsage>();
+        public PropertyRecord(string Property, ObservableCollectionExtended<PropertyUsage> PropertyUsages)
         {
             this.Property = Property;
             this.PropertyUsages.AddRange(PropertyUsages);
@@ -691,7 +696,7 @@ namespace ME3Explorer.PropertyDatabase
                             }
 
                             var NewUsageRecord = new PropertyUsage(pFile, pExport, pIsdefault, pType, pValue);
-                            var NewPropertyRecord = new PropertyRecord(pName, new List<PropertyUsage>() { NewUsageRecord });
+                            var NewPropertyRecord = new PropertyRecord(pName, new ObservableCollectionExtended<PropertyUsage>() { NewUsageRecord });
                             var NewClassRecord = new ClassRecord(pClass, pDefinitionPackage, pSuperClass, new ObservableCollectionExtended<PropertyRecord>() { NewPropertyRecord });
                             string valueKey = string.Concat(pClass, pName, pValue);
                             if (!dumper.GeneratedClasses.TryAdd(pClass, NewClassRecord) && dumper.GeneratedValueChecker.TryAdd(valueKey, true))
@@ -710,101 +715,4 @@ namespace ME3Explorer.PropertyDatabase
     }
     #endregion
 
-
-
-    #region XMLGen
-    public static class XmlHelper
-    {
-        public static bool NewLineOnAttributes { get; set; }
-        /// <summary>
-        /// Serializes an object to an XML string, using the specified namespaces.
-        /// </summary>
-        public static string ToXml(object obj, XmlSerializerNamespaces ns)
-        {
-            Type T = obj.GetType();
-
-            var xs = new XmlSerializer(T);
-            var ws = new XmlWriterSettings { Indent = true, NewLineOnAttributes = NewLineOnAttributes, OmitXmlDeclaration = true };
-
-            var sb = new StringBuilder();
-            using (XmlWriter writer = XmlWriter.Create(sb, ws))
-            {
-                xs.Serialize(writer, obj, ns);
-            }
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Serializes an object to an XML string.
-        /// </summary>
-        public static string ToXml(object obj)
-        {
-            var ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
-            return ToXml(obj, ns);
-        }
-
-        /// <summary>
-        /// Deserializes an object from an XML string.
-        /// </summary>
-        public static PropsDataBase FromXml<T>(string xml)
-        {
-            XmlSerializer xs = new XmlSerializer(typeof(PropsDataBase));
-            using (StringReader sr = new StringReader(xml))
-            {
-                return (PropsDataBase)xs.Deserialize(sr);
-            }
-        }
-
-        /// <summary>
-        /// Deserializes an object from an XML string, using the specified type name.
-        /// </summary>
-        public static object FromXml(string xml, string typeName)
-        {
-            Type T = Type.GetType(typeName);
-            XmlSerializer xs = new XmlSerializer(T);
-            using (StringReader sr = new StringReader(xml))
-            {
-                return xs.Deserialize(sr);
-            }
-        }
-
-        /// <summary>
-        /// Serializes an object to an XML file.
-        /// </summary>
-        public static void ToXmlFile(Object obj, string filePath)
-        {
-            var xs = new XmlSerializer(obj.GetType());
-            var ns = new XmlSerializerNamespaces();
-            var ws = new XmlWriterSettings { Indent = true, NewLineOnAttributes = NewLineOnAttributes, OmitXmlDeclaration = true };
-            ns.Add("", "");
-
-            using (XmlWriter writer = XmlWriter.Create(filePath, ws))
-            {
-                xs.Serialize(writer, obj);
-            }
-        }
-
-        /// <summary>
-        /// Deserializes an object from an XML file.
-        /// </summary>
-        public static PropsDataBase FromXmlFile<T>(string filePath)
-        {
-            StreamReader sr = new StreamReader(filePath);
-            try
-            {
-                var result = FromXml<PropsDataBase>(sr.ReadToEnd());
-                return result;
-            }
-            catch (Exception e)
-            {
-                throw new Exception("There was an error attempting to read the file " + filePath + "\n\n" + e.InnerException.Message);
-            }
-            finally
-            {
-                sr.Close();
-            }
-        }
-    }
-    #endregion
 }

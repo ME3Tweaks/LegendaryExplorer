@@ -25,7 +25,8 @@
         <Converters:EmbeddedFileToolTipConverter x:Key="EmbeddedFileToolTipConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="MyMenu">
-            <MenuItem Header="Open Source File" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
+            <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
+            <MenuItem Header="Open Usage" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
         </ContextMenu>
     </Window.Resources>
     <DockPanel>
@@ -41,6 +42,8 @@
 
             <MenuItem Header="Tools" Padding="4">
                 <MenuItem Header="Open Source" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
+                <MenuItem Header="Open Usage" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                <MenuItem Header="Show Defaults" Command="{Binding OpenSourcePkgCommand}" ToolTip="Show default values only." />
             </MenuItem>
         </Menu>
         <StatusBar Height="33" DockPanel.Dock="Bottom">
