@@ -62,7 +62,7 @@ namespace ME3Explorer
         public static readonly string[] ExportIconTypes =
         {
             "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile",
-            "World", "Package", "StaticMesh", "SkeletalMesh", "Sequence", "Material"
+            "World", "Package", "StaticMesh", "SkeletalMesh", "Sequence", "Material", "Function", "Class"
         };
 
         /// <summary>

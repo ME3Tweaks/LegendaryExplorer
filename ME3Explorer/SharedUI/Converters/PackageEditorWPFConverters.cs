@@ -93,6 +93,10 @@ namespace ME3Explorer.SharedUI.Converters
                         return "/PackageEditor/EntryIcons/icon_tlkfile.png";
                     case "World":
                         return "/PackageEditor/EntryIcons/icon_world.png";
+                    case "Function":
+                        return "/PackageEditor/EntryIcons/icon_function.png";
+                    case "Class":
+                        return "/PackageEditor/EntryIcons/icon_class.png";
                     case "Package":
                         string fname = Path.GetFileNameWithoutExtension(exp.FileRef.FilePath);
                         return fname != null && fname.Equals(exp.ObjectName.Name, StringComparison.InvariantCultureIgnoreCase)
@@ -107,6 +111,10 @@ namespace ME3Explorer.SharedUI.Converters
                     case "Material":
                         return "/PackageEditor/EntryIcons/icon_material.png";
                 }
+            }
+            else if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp2 && exp2.IsDefaultObject)
+            {
+                return "/PackageEditor/EntryIcons/icon_default.png";
             }
 
             return null;
@@ -123,7 +131,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && !exp.IsDefaultObject && PackageEditorWPF.ExportIconTypes.Contains(exp.ClassName))
+            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && (exp.IsDefaultObject || PackageEditorWPF.ExportIconTypes.Contains(exp.ClassName)))
             {
                 return Visibility.Visible;
             }
