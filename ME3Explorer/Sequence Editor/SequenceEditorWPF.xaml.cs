@@ -28,6 +28,7 @@ using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
+using GongSolutions.Wpf.DragDrop;
 using MassEffect.NativesEditor.Views;
 using ME3Explorer.Matinee;
 
@@ -90,6 +91,11 @@ namespace ME3Explorer.Sequence_Editor
             this.graphEditor.DragDrop += SequenceEditor_DragDrop;
             this.graphEditor.DragEnter += SequenceEditor_DragEnter;
 
+            eventsToolBox.DoubleClickCallback = CreateNewObject;
+            actionsToolBox.DoubleClickCallback = CreateNewObject;
+            conditionsToolBox.DoubleClickCallback = CreateNewObject;
+            variablesToolBox.DoubleClickCallback = CreateNewObject;
+
             if (File.Exists(OptionsPath))
             {
                 var options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(OptionsPath));
@@ -128,6 +134,11 @@ namespace ME3Explorer.Sequence_Editor
             AutoLayoutCommand = new GenericCommand(AutoLayout, CurrentObjects.Any);
             GotoCommand = new GenericCommand(GoTo, PackageIsLoaded);
             KismetLogCommand = new RelayCommand(OpenKismetLogParser, CanOpenKismetLog);
+        }
+
+        private void CreateNewObject(ClassInfo info)
+        {
+            MessageBox.Show(this, info.ClassName);
         }
 
         private bool CanOpenKismetLog(object o)
@@ -250,6 +261,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             try
             {
+                SelectedSequence = null;
                 CurrentObjects.ClearEx();
                 SequenceExports.ClearEx();
                 SelectedObjects.ClearEx();
@@ -271,13 +283,19 @@ namespace ME3Explorer.Sequence_Editor
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
 
-                Title = $"Sequence Editor WPF - {fileName}";
+                Title = $"Sequence Editor - {fileName}";
                 StatusText = null; //no status
+
+                eventsToolBox.Classes = SequenceObjectCreator.GetSequenceEvents(Pcc.Game);
+                actionsToolBox.Classes = SequenceObjectCreator.GetSequenceActions(Pcc.Game);
+                conditionsToolBox.Classes = SequenceObjectCreator.GetSequenceConditions(Pcc.Game);
+                variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game);
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(this, "Error:\n" + ex.Message);
-                Title = "Sequence Editor WPF";
+                Title = "Sequence Editor";
                 CurrentFile = null;
                 UnLoadMEPackage();
             }

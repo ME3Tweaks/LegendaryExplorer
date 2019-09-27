@@ -15,6 +15,7 @@
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:dd="urn:gong-wpf-dragdrop"
         mc:Ignorable="d"
         Loaded="SequenceEditorWPF_Loaded"
         Closing="SequenceEditorWPF_Closing"
@@ -42,7 +43,7 @@
             <MenuItem Header="Remove from sequence" Name="removeFromSequenceMenuItem" Click="RemoveFromSequence_Click"/>
         </ContextMenu>
         <ContextMenu x:Key="backContextMenu">
-            <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence"/>
+            <MenuItem Header="Add Existing Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence"/>
         </ContextMenu>
         <system:Boolean x:Key="True">True</system:Boolean>
     </Window.Resources>
@@ -263,9 +264,39 @@
                 <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"/>
                 <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
             </Grid>
-            <WindowsFormsHost Grid.Column="0" Grid.Row="0" Name="GraphHost" VerticalAlignment="Stretch">
-                <grapheditor:GraphEditor/>
-            </WindowsFormsHost>
+            <Grid Grid.Column="0" Grid.Row="0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <WindowsFormsHost Grid.Column="1" Name="GraphHost" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <grapheditor:GraphEditor />
+                </WindowsFormsHost>
+                <Expander Grid.Column="0" Name="toolBoxExpander" HorizontalAlignment="Left" IsEnabled="{Binding SelectedSequence, Converter={StaticResource NullEnabledConverter}}"
+                          ExpandDirection="Right" IsExpanded="False" Background="Orange" SharedUI:Bindings.VisibilityToEnabled="True">
+                    <Expander.Header>
+                        <TextBlock Text="Sequence Object Toolbox" VerticalAlignment="Center" Margin="0,0,4,0">
+                            <TextBlock.LayoutTransform>
+                                <RotateTransform Angle="-90" />
+                            </TextBlock.LayoutTransform>
+                        </TextBlock>
+                    </Expander.Header>
+                    <TabControl>
+                        <TabItem Header="Events">
+                            <SharedUI:ToolBox x:Name="eventsToolBox" />
+                        </TabItem>
+                        <TabItem Header="Actions">
+                            <SharedUI:ToolBox x:Name="actionsToolBox" />
+                        </TabItem>
+                        <TabItem Header="Conditions">
+                            <SharedUI:ToolBox x:Name="conditionsToolBox" />
+                        </TabItem>
+                        <TabItem Header="Variables">
+                            <SharedUI:ToolBox x:Name="variablesToolBox" />
+                        </TabItem>
+                    </TabControl>
+                </Expander>
+            </Grid>
             <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding ElementName=kismetLogParser, Path=Visibility}"/>
             <local:KismetLogParser x:Name="kismetLogParser" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Visibility="Collapsed"/>
         </Grid>

@@ -33,6 +33,14 @@ namespace ME1Explorer.Unreal
                     Classes = blob.Classes;
                     Structs = blob.Structs;
                     Enums = blob.Enums;
+                    foreach ((string className, ClassInfo classInfo) in Classes)
+                    {
+                        classInfo.ClassName = className;
+                    }
+                    foreach ((string className, ClassInfo classInfo) in Structs)
+                    {
+                        classInfo.ClassName = className;
+                    }
                 }
             }
             catch
@@ -463,7 +471,8 @@ namespace ME1Explorer.Unreal
             ClassInfo info = new ClassInfo
             {
                 baseClass = export.SuperClassName,
-                exportIndex = export.UIndex
+                exportIndex = export.UIndex,
+                ClassName = export.ObjectName
             };
             if (!isStruct)
             {

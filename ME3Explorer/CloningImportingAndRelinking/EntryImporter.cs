@@ -458,12 +458,16 @@ namespace ME3Explorer
 
         private static readonly string[] me3FilesSafeToImportFrom = { "Core.pcc", "Engine.pcc", "SFXGame.pcc", "WwiseAudio.pcc", "Startup.pcc" };
 
-        private static bool IsSafeToImportFrom(string path, MEGame game) =>
+        public static bool IsSafeToImportFrom(string path, MEGame game) =>
             (game switch
             {
                 MEGame.ME1 => me1FilesSafeToImportFrom,
                 MEGame.ME2 => me2FilesSafeToImportFrom,
                 _ => me3FilesSafeToImportFrom
             }).Any(path.EndsWith);
+
+        public static bool CanImport(string className, MEGame game) => CanImport(UnrealObjectInfo.GetClassOrStructInfo(game, className), game);
+
+        public static bool CanImport(ClassInfo classInfo, MEGame game) => classInfo != null && IsSafeToImportFrom(classInfo.pccPath, game);
     }
 }

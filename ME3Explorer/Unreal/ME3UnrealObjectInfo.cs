@@ -16,8 +16,8 @@ namespace ME3Explorer.Unreal
     {
         internal const string Me3ExplorerCustomNativeAdditionsName = "ME3Explorer_CustomNativeAdditions";
 
-        public static List<string> GetNonAbstractDerivedClassesOf(string baseClassName, MEGame game) =>
-            GetClasses(game).Where(kvp => kvp.Key != baseClassName && !kvp.Value.isAbstract && IsOrInheritsFrom(kvp.Key, baseClassName, game)).Select(kvp => kvp.Key).ToList();
+        public static List<ClassInfo> GetNonAbstractDerivedClassesOf(string baseClassName, MEGame game) =>
+            GetClasses(game).Values.Where(info => info.ClassName != baseClassName && !info.isAbstract && IsOrInheritsFrom(info.ClassName, baseClassName, game)).ToList();
 
         public static bool IsImmutable(string structType, MEGame game) =>
             game switch 
@@ -347,6 +347,14 @@ namespace ME3Explorer.Unreal
                     Classes = blob.Classes;
                     Structs = blob.Structs;
                     Enums = blob.Enums;
+                    foreach ((string className, ClassInfo classInfo) in Classes)
+                    {
+                        classInfo.ClassName = className;
+                    }
+                    foreach ((string className, ClassInfo classInfo) in Structs)
+                    {
+                        classInfo.ClassName = className;
+                    }
                 }
             }
             catch (Exception e)
@@ -853,7 +861,8 @@ namespace ME3Explorer.Unreal
             ClassInfo info = new ClassInfo
             {
                 baseClass = export.SuperClassName,
-                exportIndex = export.UIndex
+                exportIndex = export.UIndex,
+                ClassName = export.ObjectName
             };
             if (!isStruct)
             {

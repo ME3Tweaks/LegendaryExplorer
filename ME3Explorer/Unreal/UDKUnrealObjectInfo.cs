@@ -238,7 +238,8 @@ namespace ME3Explorer.Unreal
             ClassInfo info = new ClassInfo
             {
                 baseClass = pcc.Exports[index].SuperClassName,
-                exportIndex = index
+                exportIndex = index,
+                ClassName = pcc.Exports[index].ObjectName
             };
             if (pcc.FilePath.Contains("BIOGame"))
             {
