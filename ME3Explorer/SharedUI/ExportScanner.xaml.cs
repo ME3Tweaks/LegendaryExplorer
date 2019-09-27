@@ -50,7 +50,7 @@ namespace ME3Explorer.SharedUI
         public ExportScanner(Func<ExportEntry, bool> exportSelector, Func<ExportEntry, string> exportTransformer)
         {
             InitializeComponent();
-            filePaths = MELoadedFiles.GetEnabledDLC(MEGame.ME3).Append(ME3Directory.BIOGamePath)
+            filePaths = MELoadedFiles.GetEnabledDLCFiles(MEGame.ME3).Append(ME3Directory.BIOGamePath)
                                              .SelectMany(dlcDir => Directory.EnumerateFiles(Path.Combine(dlcDir, "CookedPCConsole"), "*.pcc")).ToList();
 
             progressBar.Maximum = filePaths.Count;

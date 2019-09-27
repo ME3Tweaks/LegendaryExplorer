@@ -386,41 +386,37 @@ namespace ME2Explorer.Unreal
             var NewStructs = new Dictionary<string, ClassInfo>();
             var NewEnums = new Dictionary<string, List<NameReference>>();
 
-            string path = ME2Directory.gamePath;
-            string[] files = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
-            foreach (string file in files)
+            foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.ME2))
             {
-                if (file.ToLower().EndsWith(".pcc")/* && file.Contains("Engine")*/)
+                if (Path.GetExtension(filePath) == ".pcc")
                 {
-                    using (IMEPackage pcc = MEPackageHandler.OpenME2Package(file))
+                    using IMEPackage pcc = MEPackageHandler.OpenME2Package(filePath);
+                    for (int j = 1; j <= pcc.ExportCount; j++)
                     {
-                        for (int j = 1; j <= pcc.ExportCount; j++)
+                        ExportEntry exportEntry = pcc.GetUExport(j);
+                        if (exportEntry.ClassName == "Enum")
                         {
-                            ExportEntry exportEntry = pcc.GetUExport(j);
-                            if (exportEntry.ClassName == "Enum")
+                            generateEnumValues(exportEntry, NewEnums);
+                        }
+                        else if (exportEntry.ClassName == "Class")
+                        {
+                            string objectName = exportEntry.ObjectName;
+                            if (!NewClasses.ContainsKey(objectName))
                             {
-                                generateEnumValues(exportEntry, NewEnums);
-                            }
-                            else if (exportEntry.ClassName == "Class")
-                            {
-                                string objectName = exportEntry.ObjectName;
-                                if (!NewClasses.ContainsKey(objectName))
-                                {
-                                    NewClasses.Add(objectName, generateClassInfo(exportEntry));
-                                }
-                            }
-                            else if (exportEntry.ClassName == "ScriptStruct")
-                            {
-                                string objectName = exportEntry.ObjectName;
-                                if (!NewStructs.ContainsKey(objectName))
-                                {
-                                    NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
-
-                                }
+                                NewClasses.Add(objectName, generateClassInfo(exportEntry));
                             }
                         }
-                        //Debug.WriteLine("Releasing " + pcc.FileName);
+                        else if (exportEntry.ClassName == "ScriptStruct")
+                        {
+                            string objectName = exportEntry.ObjectName;
+                            if (!NewStructs.ContainsKey(objectName))
+                            {
+                                NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
+
+                            }
+                        }
                     }
+                    //Debug.WriteLine("Releasing " + pcc.FileName);
                 }
             }
 
@@ -479,6 +475,11 @@ namespace ME2Explorer.Unreal
                 baseClass = export.SuperClassName,
                 exportIndex = export.UIndex
             };
+            if (!isStruct)
+            {
+                ME3Explorer.Unreal.BinaryConverters.Class classBinary = ME3Explorer.Unreal.BinaryConverters.ObjectBinary.From<ME3Explorer.Unreal.BinaryConverters.Class>(export);
+                info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
+            }
             if (pcc.FilePath.Contains("BioGame"))
             {
                 info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BioGame") + 8).ToArray());

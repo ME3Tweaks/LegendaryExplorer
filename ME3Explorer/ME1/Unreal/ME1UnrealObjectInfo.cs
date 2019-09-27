@@ -391,39 +391,34 @@ namespace ME1Explorer.Unreal
             Classes = new Dictionary<string, ClassInfo>();
             Structs = new Dictionary<string, ClassInfo>();
             Enums = new Dictionary<string, List<NameReference>>();
-            string path = ME1Directory.gamePath;
-            string[] files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
-            string objectName;
-            foreach (string file in files)
+            foreach (string file in MELoadedFiles.GetOfficialFiles(MEGame.ME1))
             {
                 if (Path.GetExtension(file) == ".upk" || Path.GetExtension(file) == ".sfm" || Path.GetExtension(file) == ".u")
                 {
-                    Debug.WriteLine("File: " + file);
-                    using (IMEPackage pcc = MEPackageHandler.OpenME1Package(file))
+                    Debug.WriteLine($"File: {file}");
+                    using IMEPackage pcc = MEPackageHandler.OpenME1Package(file);
+                    for (int j = 1; j <= pcc.ExportCount; j++)
                     {
-                        for (int j = 1; j <= pcc.ExportCount; j++)
+                        ExportEntry exportEntry = pcc.GetUExport(j);
+                        if (exportEntry.ClassName == "Enum")
                         {
-                            ExportEntry exportEntry = pcc.GetUExport(j);
-                            if (exportEntry.ClassName == "Enum")
+                            generateEnumValues(exportEntry);
+                        }
+                        else if (exportEntry.ClassName == "Class")
+                        {
+                            string objectName = exportEntry.ObjectName;
+                            Debug.WriteLine($"Generating information for {objectName}");
+                            if (!Classes.ContainsKey(objectName))
                             {
-                                generateEnumValues(exportEntry);
+                                Classes.Add(objectName, generateClassInfo(exportEntry));
                             }
-                            else if (exportEntry.ClassName == "Class")
+                        }
+                        else if (exportEntry.ClassName == "ScriptStruct")
+                        {
+                            string objectName = exportEntry.ObjectName;
+                            if (!Structs.ContainsKey(exportEntry.ObjectName))
                             {
-                                objectName = exportEntry.ObjectName;
-                                Debug.WriteLine("Generating information for " + exportEntry.ObjectName);
-                                if (!Classes.ContainsKey(exportEntry.ObjectName))
-                                {
-                                    Classes.Add(objectName, generateClassInfo(exportEntry));
-                                }
-                            }
-                            else if (exportEntry.ClassName == "ScriptStruct")
-                            {
-                                objectName = exportEntry.ObjectName;
-                                if (!Structs.ContainsKey(exportEntry.ObjectName))
-                                {
-                                    Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
-                                }
+                                Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
                             }
                         }
                     }
@@ -470,6 +465,11 @@ namespace ME1Explorer.Unreal
                 baseClass = export.SuperClassName,
                 exportIndex = export.UIndex
             };
+            if (!isStruct)
+            {
+                ME3Explorer.Unreal.BinaryConverters.Class classBinary = ME3Explorer.Unreal.BinaryConverters.ObjectBinary.From<ME3Explorer.Unreal.BinaryConverters.Class>(export);
+                info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
+            }
             if (pcc.FilePath.Contains("BioGame"))
             {
                 info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BioGame") + 8).ToArray());

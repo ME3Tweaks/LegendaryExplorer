@@ -41,7 +41,7 @@ namespace ME3Explorer
                 return loadedFiles;
             }
 
-            foreach (string directory in GetEnabledDLC(game).OrderBy(dir => GetMountPriority(dir, game)).Prepend(MEDirectories.BioGamePath(game)))
+            foreach (string directory in GetEnabledDLCFiles(game).OrderBy(dir => GetMountPriority(dir, game)).Prepend(MEDirectories.BioGamePath(game)))
             {
                 foreach (string filePath in GetCookedFiles(game, directory,includeTFC))
                 {
@@ -57,7 +57,8 @@ namespace ME3Explorer
             return loadedFiles;
         }
 
-        public static IEnumerable<string> GetAllFiles(MEGame game) => GetEnabledDLC(game).Prepend(MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory));
+        public static IEnumerable<string> GetAllFiles(MEGame game) => GetEnabledDLCFiles(game).Prepend(MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory));
+        public static IEnumerable<string> GetOfficialFiles(MEGame game) => GetOfficialDLCFiles(game).Prepend(MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory));
 
         private static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false)
         {
@@ -78,9 +79,13 @@ namespace ME3Explorer
         /// Directory Override is used to use a custom path, for things like TFC Compactor, where the directory ME3Exp is pointing to may not be the one you want to use.
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<string> GetEnabledDLC(MEGame game, string directoryOverride = null) =>
+        public static IEnumerable<string> GetEnabledDLCFiles(MEGame game, string directoryOverride = null) =>
             Directory.Exists(MEDirectories.DLCPath(game))
                 ? Directory.EnumerateDirectories(directoryOverride ?? MEDirectories.DLCPath(game)).Where(dir => IsEnabledDLC(dir, game))
+                : Enumerable.Empty<string>();
+        public static IEnumerable<string> GetOfficialDLCFiles(MEGame game) =>
+            Directory.Exists(MEDirectories.DLCPath(game))
+                ? Directory.EnumerateDirectories(MEDirectories.DLCPath(game)).Where(dir => IsOfficialDLC(dir, game))
                 : Enumerable.Empty<string>();
 
         public static string GetMountDLCFromDLCDir(string dlcDirectory, MEGame game) => Path.Combine(dlcDirectory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC", "Mount.dlc");
@@ -93,6 +98,12 @@ namespace ME3Explorer
                 return ME1Directory.OfficialDLC.Contains(dlcName) || File.Exists(Path.Combine(dir, "AutoLoad.ini"));
             }
             return dlcName.StartsWith("DLC_") && File.Exists(GetMountDLCFromDLCDir(dir, game));
+        }
+
+        public static bool IsOfficialDLC(string dir, MEGame game)
+        {
+            string dlcName = Path.GetFileName(dir);
+            return MEDirectories.OfficialDLC(game).Contains(dlcName);
         }
 
         public static int GetMountPriority(string dlcDirectory, MEGame game)

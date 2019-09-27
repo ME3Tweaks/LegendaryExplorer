@@ -682,43 +682,37 @@ namespace ME3Explorer.Unreal
             var NewEnums = new Dictionary<string, List<NameReference>>();
             var newSequenceObjects = new Dictionary<string, SequenceObjectInfo>();
 
-            string path = ME3Directory.gamePath;
-            string[] files = Directory.GetFiles(Path.Combine(path, "BIOGame"), "*.pcc", SearchOption.AllDirectories);
-            string objectName;
-            int length = files.Length;
-            for (int i = 0; i < length; i++)
+            foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.ME3))
             {
-                if (files[i].ToLower().EndsWith(".pcc"))
+                if (Path.GetExtension(filePath) == ".pcc")
                 {
-                    using (IMEPackage pcc = MEPackageHandler.OpenME3Package(files[i]))
+                    using IMEPackage pcc = MEPackageHandler.OpenME3Package(filePath);
+                    for (int i = 1; i <= pcc.ExportCount; i++)
                     {
-                        for (int j = 1; j <= pcc.ExportCount; j++)
+                        ExportEntry exportEntry = pcc.GetUExport(i);
+                        if (exportEntry.ClassName == "Enum")
                         {
-                            ExportEntry exportEntry = pcc.GetUExport(j);
-                            if (exportEntry.ClassName == "Enum")
+                            generateEnumValues(exportEntry, NewEnums);
+                        }
+                        else if (exportEntry.ClassName == "Class")
+                        {
+                            string objectName = exportEntry.ObjectName.Name;
+                            if (!NewClasses.ContainsKey(objectName))
                             {
-                                generateEnumValues(exportEntry, NewEnums);
+                                NewClasses.Add(objectName, generateClassInfo(exportEntry));
                             }
-                            else if (exportEntry.ClassName == "Class")
+                            if ((objectName.Contains("SeqAct") || objectName.Contains("SeqCond") || objectName.Contains("SequenceLatentAction") ||
+                                 objectName == "SequenceOp" || objectName == "SequenceAction" || objectName == "SequenceCondition") && !newSequenceObjects.ContainsKey(objectName))
                             {
-                                objectName = exportEntry.ObjectName.Name;
-                                if (!NewClasses.ContainsKey(objectName))
-                                {
-                                    NewClasses.Add(objectName, generateClassInfo(exportEntry));
-                                }
-                                if ((objectName.Contains("SeqAct") || objectName.Contains("SeqCond") || objectName.Contains("SequenceLatentAction") ||
-                                    objectName == "SequenceOp" || objectName == "SequenceAction" || objectName == "SequenceCondition") && !newSequenceObjects.ContainsKey(objectName))
-                                {
-                                    newSequenceObjects.Add(objectName, generateSequenceObjectInfo(j, pcc));
-                                }
+                                newSequenceObjects.Add(objectName, generateSequenceObjectInfo(i, pcc));
                             }
-                            else if (exportEntry.ClassName == "ScriptStruct")
+                        }
+                        else if (exportEntry.ClassName == "ScriptStruct")
+                        {
+                            string objectName = exportEntry.ObjectName.Name;
+                            if (!NewStructs.ContainsKey(objectName))
                             {
-                                objectName = exportEntry.ObjectName.Name;
-                                if (!NewStructs.ContainsKey(objectName))
-                                {
-                                    NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
-                                }
+                                NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
                             }
                         }
                     }
@@ -863,7 +857,8 @@ namespace ME3Explorer.Unreal
             };
             if (!isStruct)
             {
-                
+                BinaryConverters.Class classBinary = BinaryConverters.ObjectBinary.From<BinaryConverters.Class>(export);
+                info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
             }
             if (pcc.FilePath.Contains("BIOGame"))
             {
