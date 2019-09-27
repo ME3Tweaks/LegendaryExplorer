@@ -22,7 +22,7 @@ namespace ME3Explorer.Packages
         public int Index { get; set; }
         public int UIndex => Index + 1;
 
-        public ExportEntry(IMEPackage file, byte[] prePropBinary = null, PropertyCollection properties = null, byte[] binary = null)
+        public ExportEntry(IMEPackage file, byte[] prePropBinary = null, PropertyCollection properties = null, byte[] binary = null, bool isClass = false)
         {
             FileRef = file;
             OriginalDataSize = 0;
@@ -35,11 +35,14 @@ namespace ME3Explorer.Packages
                 prePropBinary = new byte[4];
             }
             ms.WriteFromBuffer(prePropBinary);
-            if (properties == null)
+            if (!isClass)
             {
-                properties = new PropertyCollection();
+                if (properties == null)
+                {
+                    properties = new PropertyCollection();
+                }
+                properties.WriteTo(ms, file);
             }
-            properties.WriteTo(ms, file);
             if (binary != null)
             {
                 ms.WriteFromBuffer(binary);
@@ -503,9 +506,9 @@ namespace ME3Explorer.Packages
                 return properties;
             }
 
-            if (ClassName == "Class")
+            if (IsClass)
             {
-                return new PropertyCollection();
+                return new PropertyCollection { endOffset = 4, IsImmutable = true};
             } //no properties
 
             //else if (!includeNoneProperties)
@@ -542,9 +545,9 @@ namespace ME3Explorer.Packages
 
         public int GetPropertyStart()
         {
-            if (ClassName == "Class")
+            if (IsClass)
             {
-                return 0;
+                return 4;
             }
             IMEPackage pcc = FileRef;
             if (HasStack)

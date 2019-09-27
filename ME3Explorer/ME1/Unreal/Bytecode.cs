@@ -367,6 +367,7 @@ namespace ME1Explorer.Unreal
             byte t = memory[start];
             int end = start;
             if (t <= 0x60)
+            {
                 switch (t)
                 {
                     case EX_LocalVariable: //0x00
@@ -840,6 +841,7 @@ namespace ME1Explorer.Unreal
                         res = newTok;
                         break;
                 }
+            }
             else
             {
                 switch (t)

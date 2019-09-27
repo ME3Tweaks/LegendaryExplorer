@@ -108,9 +108,9 @@ namespace ME3Explorer.Unreal
         {
             foreach (var prop in this)
             {
-                prop.WriteTo(stream, pcc);
+                prop.WriteTo(stream, pcc, IsImmutable);
             }
-            if (requireNoneAtEnd && (Count == 0 || !(this.Last() is NoneProperty)))
+            if (!IsImmutable && requireNoneAtEnd && (Count == 0 || !(this.Last() is NoneProperty)))
             {
                 stream.WriteNoneProperty(pcc);
             }
@@ -740,17 +740,32 @@ namespace ME3Explorer.Unreal
     {
         public override PropertyType PropType => PropertyType.StructProperty;
 
-        public bool IsImmutable;
+        private bool _isImmutable;
+        private PropertyCollection _properties;
 
         public string StructType { get; }
-        public PropertyCollection Properties { get; set; }
+
+        public PropertyCollection Properties
+        {
+            get => _properties;
+            set
+            {
+                _properties = value;
+                _properties.IsImmutable = _isImmutable;
+            }
+        }
+
+        public bool IsImmutable
+        {
+            get => _isImmutable;
+            set => Properties.IsImmutable = _isImmutable = value;
+        }
 
         public StructProperty(string structType, PropertyCollection props, NameReference? name = null, bool isImmutable = false) : base(name)
         {
             StructType = structType;
             Properties = props;
             IsImmutable = isImmutable;
-            Properties.IsImmutable = IsImmutable;
         }
 
         public StructProperty(string structType, bool isImmutable, params UProperty[] props) : base(null)
@@ -762,7 +777,6 @@ namespace ME3Explorer.Unreal
             {
                 Properties.Add(prop);
             }
-            Properties.IsImmutable = IsImmutable;
         }
 
         public T GetProp<T>(string name) where T : UProperty
@@ -779,30 +793,14 @@ namespace ME3Explorer.Unreal
         {
             if (valueOnly)
             {
-                foreach (var prop in Properties)
-                {
-                    //Debug.WriteLine("Writing struct prop " + prop.Name + " at 0x" + stream.Position.ToString("X4"));
-                    prop.WriteTo(stream, pcc, IsImmutable);
-                }
-                if (!IsImmutable && (Properties.Count == 0 || !(Properties.Last() is NoneProperty)))
-                {
-                    stream.WriteNoneProperty(pcc);
-                }
+                Properties.WriteTo(stream, pcc);
             }
             else
             {
                 stream.WriteStructProperty(pcc, Name, StructType, () =>
                 {
                     MemoryStream m = new MemoryStream();
-                    foreach (var prop in Properties)
-                    {
-                        prop.WriteTo(m, pcc, IsImmutable);
-                    }
-
-                    if (!IsImmutable && (Properties.Count == 0 || !(Properties.Last() is NoneProperty))) //ensure ending none
-                    {
-                        m.WriteNoneProperty(pcc);
-                    }
+                    Properties.WriteTo(stream, pcc);
                     return m;
                 });
             }

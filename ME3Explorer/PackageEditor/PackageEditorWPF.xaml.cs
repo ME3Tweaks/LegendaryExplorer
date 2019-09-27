@@ -3725,7 +3725,7 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
+            var filePaths = MELoadedFiles.GetAllFiles(MEGame.ME3).Concat(MELoadedFiles.GetAllFiles(MEGame.ME2)).Concat(MELoadedFiles.GetAllFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
@@ -3765,7 +3765,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "FracturedStaticMesh", true)) break;
+                    if (findClass(filePath, "Class", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
 
@@ -3921,7 +3921,7 @@ namespace ME3Explorer
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
-                    if (!pcc.IsCompressed) return false;
+                    //if (!pcc.IsCompressed) return false;
                     if (filePath.Contains("DLC_MOD"))
                     {
                         return false;
@@ -3933,7 +3933,7 @@ namespace ME3Explorer
                         try
                         {
                             Debug.WriteLine($"{exp.UIndex}: {filePath}");
-                            var obj = ObjectBinary.From<FracturedStaticMesh>(exp);
+                            var obj = ObjectBinary.From<Class>(exp);
                             var ms = new MemoryStream();
                             obj.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
                             byte[] buff = ms.ToArray();

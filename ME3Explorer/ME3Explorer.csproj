@@ -818,6 +818,7 @@
     </Compile>
     <Compile Include="Unreal\BinaryConverters\BioDynamicAnimSet.cs" />
     <Compile Include="Unreal\BinaryConverters\BioPawn.cs" />
+    <Compile Include="Unreal\BinaryConverters\Class.cs" />
     <Compile Include="Unreal\BinaryConverters\DecalComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\EntryPruner.cs" />
     <Compile Include="Unreal\BinaryConverters\ExportBinaryConverter.cs" />

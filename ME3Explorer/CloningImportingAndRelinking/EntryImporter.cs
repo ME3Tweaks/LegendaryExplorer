@@ -250,7 +250,7 @@ namespace ME3Explorer
                     break;
             }
 
-            var outputEntry = new ExportEntry(destPackage, prePropBinary, props, binaryData)
+            var outputEntry = new ExportEntry(destPackage, prePropBinary, props, binaryData, ex.IsClass)
             {
                 Header = newHeader,
                 Class = classValue,

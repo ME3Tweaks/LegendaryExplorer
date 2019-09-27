@@ -73,6 +73,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<BioPawn>(export);
                 case "PrefabInstance":
                     return From<PrefabInstance>(export);
+                case "Class":
+                    return From<Class>(export);
                 default:
                     return null;
             }
