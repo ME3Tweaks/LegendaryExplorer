@@ -22,6 +22,8 @@ steps:
     script: |
       $date=$(Get-Date -Format s);
       Write-Host "##vso[task.setvariable variable=time]$date"
+      Write-Host "$(Build.SourceVersionMessage)"
+
 
 - task: NuGetToolInstaller@1
 
@@ -53,14 +55,6 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'me3explorernightly'
     publishLocation: 'Container'
-
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Write your PowerShell commands here.
-      
-      Write-Host "$(Build.SourceVersionMessage)"
 
 - task: ado-discord-webhook@1
   inputs:
