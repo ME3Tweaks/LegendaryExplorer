@@ -23,6 +23,8 @@ steps:
       $date=$(Get-Date -Format s);
       Write-Host "##vso[task.setvariable variable=time]$date"
       $discordmessage=$($Build.SourceVersionMessage -split '\n')[0]
+      Write-Host "##vso[task.setvariable variable=discordmessage]$discordmessage"
+
 
 - task: NuGetToolInstaller@1
 
