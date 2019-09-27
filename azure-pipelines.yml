@@ -22,8 +22,7 @@ steps:
     script: |
       $date=$(Get-Date -Format s);
       Write-Host "##vso[task.setvariable variable=time]$date"
-      Write-Host "$(Build.SourceVersionMessage)"
-
+      $discordmessage=$($(Build.SourceVersionMessage) -split '\n')[0]
 
 - task: NuGetToolInstaller@1
 
@@ -74,7 +73,7 @@ steps:
         },
         "fields": [{
           "name": "Triggering commit",
-          "value": "$(Build.SourceVersionMessage)"
+          "value": "$(discordmessage)"
         }],
         "url": "https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/results?buildId=$(Build.BuildId)",
         "timestamp": "$(time)"
