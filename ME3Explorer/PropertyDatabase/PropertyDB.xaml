@@ -72,7 +72,7 @@
             </StatusBarItem>
         </StatusBar>
         <DockPanel Name="MidDock">
-            <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}"  DisplayMemberPath="Class" SelectedItem="{Binding CurrentClass, Mode=TwoWay}">
+            <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}"  DisplayMemberPath="Class">
                 <SharedUI:ListBoxScroll.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
