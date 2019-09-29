@@ -26,9 +26,6 @@ steps:
       $numlines = $($discordmessage | measure).Count
       if ($numlines > 0) $discordmessage = $($discordmessage -split '\n')[0]
       Write-Host "##vso[task.setvariable variable=discordmessage]$discordmessage"
-      Write-Host "$(Build.SourceVersionMessage)"
-      Write-Host "Triggering Commit:"
-      Write-Host $discordmessage
 
 
 - task: NuGetToolInstaller@1
