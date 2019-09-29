@@ -12,17 +12,10 @@
         Closing="PropertyDB_Closing"
         AllowDrop="True"
         Icon="/Resources/propertydatabase_256x256.ico"
-        Title="Property Database WPF" Height="450" Width="900"
+        Title="Property and Asset Database" Height="450" Width="900"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
-        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
-        <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
-        <Converters:PackageEditorWPFActiveViewHighlightConverter x:Key="PackageEditorWPFActiveViewHighlightConverter"/>
-        <Converters:ObjectStructPropertyTypeConverter x:Key="ObjectStructPropertyTypeConverter"/>
-        <Converters:EntryFileTypeConverter x:Key="EntryFileTypeConverter"/>
-        <Converters:EntryFileTypeIconPathConverter x:Key="EntryFileTypeIconPathConverter"/>
-        <Converters:EmbeddedFileToolTipConverter x:Key="EmbeddedFileToolTipConverter"/>
+        <local:FileIndexToNameConverter x:Key="FileIndexToNameConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
     </Window.Resources>
     <DockPanel>
@@ -35,9 +28,9 @@
             <MenuItem Header="Database" Padding="4" >
                 <MenuItem Header="Generate New Database" Command="{Binding GenerateDBCommand}" InputGestureText="Ctrl+G" ToolTip="Scan Game Properties"/>
                 <Separator />
-                <MenuItem Name="switchME1_menu" Header="ME1 Properties" Command="{Binding SwitchMECommand}" CommandParameter="ME1" InputGestureText="Ctrl+1" ToolTip="Switch to ME1 Properties"/>
-                <MenuItem Name="switchME2_menu" Header="ME2 Properties" Command="{Binding SwitchMECommand}" CommandParameter="ME2" InputGestureText="Ctrl+2" ToolTip="Switch to ME2 Properties"/>
-                <MenuItem Name="switchME3_menu" Header="ME3 Properties" Command="{Binding SwitchMECommand}" CommandParameter="ME3" InputGestureText="Ctrl+3" ToolTip="Switch to ME3 Properties"/>
+                <MenuItem Name="switchME1_menu" Header="ME1 Database" Command="{Binding SwitchMECommand}" CommandParameter="ME1" InputGestureText="Ctrl+1" ToolTip="Switch to ME1 Database"/>
+                <MenuItem Name="switchME2_menu" Header="ME2 Database" Command="{Binding SwitchMECommand}" CommandParameter="ME2" InputGestureText="Ctrl+2" ToolTip="Switch to ME2 Database"/>
+                <MenuItem Name="switchME3_menu" Header="ME3 Database" Command="{Binding SwitchMECommand}" CommandParameter="ME3" InputGestureText="Ctrl+3" ToolTip="Switch to ME3 Database"/>
             </MenuItem>
 
             <MenuItem Header="Tools" Padding="4">
@@ -72,62 +65,122 @@
             </StatusBarItem>
         </StatusBar>
         <DockPanel Name="MidDock">
-            <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}"  DisplayMemberPath="Class">
-                <SharedUI:ListBoxScroll.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
-                        <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
-                    </ContextMenu>
-                </SharedUI:ListBoxScroll.ContextMenu>
-            </SharedUI:ListBoxScroll>
-            <SharedUI:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyRecords, ElementName=lstbx_Classes }" >
-                <SharedUI:ListBoxScroll.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Property}" />
-                            <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center"/>
-                            <TextBlock FontSize="10" Text="{Binding Type}" VerticalAlignment="Center"/>
-                            <TextBlock FontSize="10" Text=")" VerticalAlignment="Center" />
+            <TabControl SelectedIndex="{Binding currentView, Mode=OneWayToSource}">
+<!-- Classes-->
+                <TabItem Header="Classes">
+                    <DockPanel>
+                        <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}"  DisplayMemberPath="Class">
+                            <SharedUI:ListBoxScroll.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
+                                    <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
+                                </ContextMenu>
+                            </SharedUI:ListBoxScroll.ContextMenu>
+                        </SharedUI:ListBoxScroll>
+                        <SharedUI:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyRecords, ElementName=lstbx_Classes }" >
+                            <SharedUI:ListBoxScroll.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Property}" />
+                                        <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center"/>
+                                        <TextBlock FontSize="10" Text="{Binding Type}" VerticalAlignment="Center"/>
+                                        <TextBlock FontSize="10" Text=")" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </SharedUI:ListBoxScroll.ItemTemplate>
+                            <SharedUI:ListBoxScroll.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
+                                    <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
+                                </ContextMenu>
+                            </SharedUI:ListBoxScroll.ContextMenu>
+                        </SharedUI:ListBoxScroll>
+                        <SharedUI:ListBoxScroll x:Name="lstbx_Usages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.ClassUsages, ElementName=lstbx_Classes }"  >
+                            <SharedUI:ListBoxScroll.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                    <Binding Path="FileKey"/>
+                                                    <Binding Path="CurrentDataBase.FileList" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock Text=" #"/>
+                                        <TextBlock Text="{Binding ExportUID}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </SharedUI:ListBoxScroll.ItemTemplate>
+                            <SharedUI:ListBoxScroll.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=IsDefault}" Value="True">
+                                            <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                                            <Setter Property="TextElement.ToolTip" Value="Default value"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </SharedUI:ListBoxScroll.ItemContainerStyle>
+                            <SharedUI:ListBoxScroll.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                    <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
+                                    <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
+                                </ContextMenu>
+                            </SharedUI:ListBoxScroll.ContextMenu>
+                        </SharedUI:ListBoxScroll>
+                    </DockPanel>
+                </TabItem>
+                <!-- Animations -->
+                <TabItem Header="Animations">
+                    <DockPanel>
+                        <SharedUI:ListBoxScroll x:Name="lstbx_Anims" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Animations}"  DisplayMemberPath="AnimSequence" ></SharedUI:ListBoxScroll>
+                        
+                        <!--<SharedUI:ListBoxScroll x:Name="lstbx_AnimProps" MinWidth="200" ItemsSource="{Binding SelectedItem, ElementName=lstbx_Anims }" >
+                            <SharedUI:ListBoxScroll.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Vertical">
+                                            <TextBlock Text="Length (s): " />
+                                            <TextBlock Text="{Binding Path=Length, ElementName=lstbx_Anims }" />
+                                            <TextBlock Text="Animation Group: " />
+                                            <TextBlock Text="{Binding AnimData}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </SharedUI:ListBoxScroll.ItemTemplate>
+                        </SharedUI:ListBoxScroll>-->
+                        <StackPanel x:Name="details_Anim" MinWidth="300"   >
+                            <TextBlock Text="Length (s): " />
+                            <TextBlock Text="{Binding Path=Length}"/>
+                            <TextBlock Text="Animation Group: " />
+                            <TextBlock Text="{Binding Path=SelectedItem.AnimData, ElementName=lstbx_Anims}" />
                         </StackPanel>
-                    </DataTemplate>
-                </SharedUI:ListBoxScroll.ItemTemplate>
-                <SharedUI:ListBoxScroll.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
-                        <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
-                    </ContextMenu>
-                </SharedUI:ListBoxScroll.ContextMenu>
-            </SharedUI:ListBoxScroll>
-            <SharedUI:ListBoxScroll x:Name="lstbx_Usages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyUsages, ElementName=lstbx_Properties }"  >
-                <SharedUI:ListBoxScroll.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Filename}" />
-                            <TextBlock Text=" #"/>
-                            <TextBlock Text="{Binding ExportUID}" />
-                            <TextBlock Text="   Value: " />
-                            <TextBlock Text="{Binding Value}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </SharedUI:ListBoxScroll.ItemTemplate>
-                <SharedUI:ListBoxScroll.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=IsDefault}" Value="True">
-                                <Setter Property="TextElement.FontWeight" Value="Bold"/>
-                                <Setter Property="TextElement.ToolTip" Value="Default value"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </SharedUI:ListBoxScroll.ItemContainerStyle>
-                <SharedUI:ListBoxScroll.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
-                        <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />
-                        <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
-                    </ContextMenu>
-                </SharedUI:ListBoxScroll.ContextMenu>
-            </SharedUI:ListBoxScroll>
+                        <SharedUI:ListBoxScroll x:Name="lstbx_AnimUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.AnimUsages, ElementName=lstbx_Anims }"  >
+                            <SharedUI:ListBoxScroll.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                    <Binding Path="Item1"/>
+                                                    <Binding Path="CurrentDataBase.FileList" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock Text="  #"/>
+                                        <TextBlock Text="{Binding Item2}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </SharedUI:ListBoxScroll.ItemTemplate>
+                            <SharedUI:ListBoxScroll.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                </ContextMenu>
+                            </SharedUI:ListBoxScroll.ContextMenu>
+                        </SharedUI:ListBoxScroll>
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
         </DockPanel>
     </DockPanel>
 </global:WPFBase>

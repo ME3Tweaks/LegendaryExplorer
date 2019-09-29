@@ -6,6 +6,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -18,25 +19,40 @@ using System.Windows.Media;
 
 namespace ME3Explorer.PropertyDatabase
 {
+
+
     /// <summary>
     /// Interaction logic for PropertyDB
     /// </summary>
     public partial class PropertyDB : WPFBase
     {
         #region Declarations
+        private int _currentView;
+        public int currentView { get => _currentView; set { SetProperty(ref _currentView, value); Console.WriteLine($"Tab index{_currentView}"); } }
 
+        public enum DBView
+        {
+            Class = 0,
+            Animations,
+            Materials,
+        }
         public MEGame currentGame { get; set; }
         private string CurrentDBPath { get; set; }
-        public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, new ObservableCollectionExtended<ClassRecord>());
+        public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(), new ObservableCollectionExtended<Animation>());
 
         /// <summary>
         /// Dictionary that stores generated classes
         /// </summary>
         public ConcurrentDictionary<String, ClassRecord> GeneratedClasses = new ConcurrentDictionary<String, ClassRecord>();
         /// <summary>
+        /// Dictionary that stores generated Animations
+        /// </summary>
+        public ConcurrentDictionary<String, Animation> GeneratedAnims = new ConcurrentDictionary<String, Animation>();
+        /// <summary>
         /// Used to check if values generated are unique.
         /// </summary>
         public ConcurrentDictionary<String, Boolean> GeneratedValueChecker = new ConcurrentDictionary<String, Boolean>();
+
         /// <summary>
         /// Items show in the list that are currently being processed
         /// </summary>
@@ -82,7 +98,7 @@ namespace ME3Explorer.PropertyDatabase
         }
 
         public ICommand GenerateDBCommand { get; set; }
-        public ICommand SaveDBCommand { get; set; }
+        public ICommand SwitchViewCommand { get; set; }
         public ICommand SwitchMECommand { get; set; }
         public ICommand CancelDumpCommand { get; set; }
         public ICommand OpenSourcePkgCommand { get; set; }
@@ -100,12 +116,14 @@ namespace ME3Explorer.PropertyDatabase
         }
         private bool IsUsageSelected(object obj)
         {
-            return lstbx_Usages.SelectedIndex >= 0;
+            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 0) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 1);
         }
         public override void handleUpdate(List<PackageUpdate> updates)
         {
             throw new NotImplementedException();
         }
+
+
 
         #endregion
 
@@ -113,7 +131,7 @@ namespace ME3Explorer.PropertyDatabase
 
         public PropertyDB()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Property Database WPF", new WeakReference(this));
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Property and Asset Database", new WeakReference(this));
             LoadCommands();
 
             //Get default db / gane
@@ -145,6 +163,8 @@ namespace ME3Explorer.PropertyDatabase
             OpenUsagePkgCommand = new RelayCommand(OpenUsagePkg, IsUsageSelected);
         }
 
+
+
         private void PropertyDB_Closing(object sender, CancelEventArgs e)
         {
             if (e.Cancel)
@@ -175,10 +195,13 @@ namespace ME3Explorer.PropertyDatabase
 
                 CurrentDataBase.meGame = readData.meGame;
                 CurrentDataBase.GenerationDate = readData.GenerationDate;
+                CurrentDataBase.FileList.Clear();
+                CurrentDataBase.FileList.AddRange(readData.FileList);
                 CurrentDataBase.ClassRecords.Clear();
                 CurrentDataBase.ClassRecords.AddRange(readData.ClassRecords);
-                int classCount = CurrentDataBase.ClassRecords.Count;
-                CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {classCount}";
+                CurrentDataBase.Animations.Clear();
+                CurrentDataBase.Animations.AddRange(readData.Animations);
+                CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count}";
             }
             else
             {
@@ -199,9 +222,18 @@ namespace ME3Explorer.PropertyDatabase
             }
             CurrentOverallOperationText = $"Database saved.";
             await Task.Delay(5000);
-            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count}";
+            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count}";
         }
 
+        public void ClearDataBase()
+        {
+            CurrentDataBase.meGame = currentGame;
+            CurrentDataBase.GenerationDate = null;
+            CurrentDataBase.FileList.Clear();
+            CurrentDataBase.ClassRecords.ClearEx();
+            CurrentDataBase.Animations.ClearEx();
+            CurrentDataBase.Materials.ClearEx();
+        }
 
         public void SwitchGame(object param)
         {
@@ -209,13 +241,12 @@ namespace ME3Explorer.PropertyDatabase
             switchME1_menu.IsChecked = false;
             switchME2_menu.IsChecked = false;
             switchME3_menu.IsChecked = false;
-            CurrentDataBase.ClassRecords.Clear();
-            CurrentDataBase.GenerationDate = null;
+            ClearDataBase();
+
             switch (p)
             {
                 case "ME1":
                     currentGame = MEGame.ME1;
-                    
                     StatusBar_GameID_Text.Text = "ME1";
                     StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
                     switchME1_menu.IsChecked = true;
@@ -233,7 +264,7 @@ namespace ME3Explorer.PropertyDatabase
                     switchME3_menu.IsChecked = true;
                     break;
             }
-            CurrentDBPath = System.IO.Path.Combine(App.AppDataFolder, $"PropertyDB{currentGame}.JSON");
+            CurrentDBPath = Path.Combine(App.AppDataFolder, $"PropertyDB{currentGame}.JSON");
 
             LoadDatabase();
         }
@@ -305,13 +336,29 @@ namespace ME3Explorer.PropertyDatabase
         }
         private void OpenUsagePkg(object obj)
         {
-            var usagepkg = CurrentDataBase.ClassRecords[lstbx_Classes.SelectedIndex].PropertyRecords[lstbx_Properties.SelectedIndex].PropertyUsages[lstbx_Usages.SelectedIndex].Filename;
-            var usageexp = CurrentDataBase.ClassRecords[lstbx_Classes.SelectedIndex].PropertyRecords[lstbx_Properties.SelectedIndex].PropertyUsages[lstbx_Usages.SelectedIndex].ExportUID;
-            if (usagepkg == null)
+            string usagepkg = null;
+            var usageexp = 0;
+
+            if (lstbx_Usages.SelectedIndex >= 0 && currentView == 0)
+            {
+                var c = lstbx_Usages.SelectedItem as ClassUsage;
+                usagepkg = CurrentDataBase.FileList[c.FileKey];
+                usageexp = c.ExportUID;
+            }
+            else if(lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 1)
+            {
+                var a = lstbx_AnimUsages.SelectedItem as Tuple<int,int>;
+                usagepkg = CurrentDataBase.FileList[a.Item1];
+                usageexp = a.Item2;
+            }
+
+            if(usagepkg == null)
             {
                 MessageBox.Show("Usage file unknown.");
                 return;
             }
+
+
             OpenInToolkit("PackageEditor", usagepkg, usageexp);
         }
         private void OpenSourcePkg(object obj)
@@ -393,7 +440,7 @@ namespace ME3Explorer.PropertyDatabase
 
             rootPath = Path.GetFullPath(rootPath);
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
-            List<string> files = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(System.IO.Path.GetExtension(s.ToLower()))).ToList();
+            List<string> files = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
             await dumpPackages(files, currentGame);
 
         }
@@ -410,11 +457,13 @@ namespace ME3Explorer.PropertyDatabase
             CurrentOverallOperationText = $"Generating Database...";
 
             //Clear database
-            CurrentDataBase.meGame = currentGame;
+            ClearDataBase();
             CurrentDataBase.GenerationDate = DateTime.Now.ToString();
-            CurrentDataBase.ClassRecords.Clear();
             GeneratedClasses.Clear();
+            GeneratedAnims.Clear();
             GeneratedValueChecker.Clear();
+
+
 
             _dbqueue = new BlockingCollection<ClassRecord>(); //Reset queue for multiple operations
 
@@ -445,6 +494,7 @@ namespace ME3Explorer.PropertyDatabase
             CurrentDumpingItems.ClearEx();
             foreach (var item in files)
             {
+                CurrentDataBase.FileList.Add(Path.GetFileNameWithoutExtension(item));
                 var threadtask = new ClassScanSingleFileTask(item);
                 AllDumpingItems.Add(threadtask); //For setting cancelation value
                 ProcessingQueue.Post(threadtask); // Post all items to the block
@@ -477,6 +527,8 @@ namespace ME3Explorer.PropertyDatabase
             CommandManager.InvalidateRequerySuggested();
             try
             {
+               
+                //Add and sort Classes
                 CurrentDataBase.ClassRecords.AddRange(GeneratedClasses.Values);
                 CurrentDataBase.ClassRecords.Sort(x => x.Class);
                 foreach(var c in CurrentDataBase.ClassRecords)
@@ -484,7 +536,13 @@ namespace ME3Explorer.PropertyDatabase
                     c.PropertyRecords.Sort(x => x.Property);
                 }
 
+                //Add animations
+                CurrentDataBase.Animations.AddRange(GeneratedAnims.Values);
+                CurrentDataBase.Animations.Sort(x => x.AnimSequence);
+
+
                 GeneratedClasses.Clear();
+                GeneratedAnims.Clear();
                 GeneratedValueChecker.Clear();
                 isProcessing = false;
                 StatusBar_Progress.Visibility = Visibility.Hidden;
@@ -520,19 +578,18 @@ namespace ME3Explorer.PropertyDatabase
                         oldClassRecord.Definition_UID = record.Definition_UID;
                     }
 
-                    var pName = record.PropertyRecords[0].Property;
-
-                    var proprecord = oldClassRecord.PropertyRecords.FirstOrDefault(p => p.Property == pName);
-                    if (proprecord == null)
+                    foreach( var r in record.PropertyRecords)
                     {
-                        oldClassRecord.PropertyRecords.AddRange(record.PropertyRecords);
+                        var proprecord = oldClassRecord.PropertyRecords.FirstOrDefault(p => p.Property == r.Property);
+                        if (proprecord == null)
+                        {
+                            oldClassRecord.PropertyRecords.Add(r);
+                        }
                     }
-                    else
-                    {
-                        proprecord.PropertyUsages.AddRange(record.PropertyRecords[0].PropertyUsages);
-                    }
+                    
+                    oldClassRecord.ClassUsages.AddRange(record.ClassUsages);
 
-                    if(isProcessing)
+                    if (isProcessing)
                     {
                         CurrentOverallOperationText = $"Processing Queue. {_dbqueue.Count}";
                     }
@@ -540,7 +597,7 @@ namespace ME3Explorer.PropertyDatabase
                 }
                 catch(Exception err)
                 {
-                    MessageBox.Show($"Error writing. {record.Class} {record.PropertyRecords[0].Property} {record.PropertyRecords[0].PropertyUsages[0].Filename} {err}");
+                    MessageBox.Show($"Error writing. {record.Class} {record.PropertyRecords[0].Property} {record.ClassUsages[0].FileKey} {err}");
                 }
             }
         }
@@ -567,13 +624,17 @@ namespace ME3Explorer.PropertyDatabase
     {
         public MEGame meGame { get; set; }
         public string GenerationDate { get; set; }
+        public List<string> FileList { get; } = new List<string>();
         public ObservableCollectionExtended<ClassRecord> ClassRecords { get; } = new ObservableCollectionExtended<ClassRecord>();
-
-        public PropsDataBase(MEGame meGame, string GenerationDate, ObservableCollectionExtended<ClassRecord> ClassRecords)
+        public ObservableCollectionExtended<Material> Materials { get; } = new ObservableCollectionExtended<Material>();
+        public ObservableCollectionExtended<Animation> Animations { get; } = new ObservableCollectionExtended<Animation>();
+        public PropsDataBase(MEGame meGame, string GenerationDate, ObservableCollectionExtended<ClassRecord> ClassRecords, ObservableCollectionExtended<Material> Materials, ObservableCollectionExtended<Animation> Animations)
         {
             this.meGame = meGame;
             this.GenerationDate = GenerationDate;
             this.ClassRecords.AddRange(ClassRecords);
+            this.Materials.AddRange(Materials);
+            this.Animations.AddRange(Animations);
         }
 
         public PropsDataBase()
@@ -588,14 +649,16 @@ namespace ME3Explorer.PropertyDatabase
         public int Definition_UID { get; set; }
         public string SuperClass { get; set; }
         public ObservableCollectionExtended<PropertyRecord> PropertyRecords { get; } = new ObservableCollectionExtended<PropertyRecord>();
+        public ObservableCollectionExtended<ClassUsage> ClassUsages { get; } = new ObservableCollectionExtended<ClassUsage>();
 
-        public ClassRecord(string Class, string Definition_package, int Definition_UID, string SuperClass, ObservableCollectionExtended<PropertyRecord> PropertyRecords)
+        public ClassRecord(string Class, string Definition_package, int Definition_UID, string SuperClass, ObservableCollectionExtended<PropertyRecord> PropertyRecords, ObservableCollectionExtended<ClassUsage> ClassUsages)
         {
             this.Class = Class;
             this.Definition_package = Definition_package;
             this.Definition_UID = Definition_UID;
             this.SuperClass = SuperClass;
             this.PropertyRecords.AddRange(PropertyRecords);
+            this.ClassUsages.AddRange(ClassUsages);
         }
 
         public ClassRecord()
@@ -608,32 +671,89 @@ namespace ME3Explorer.PropertyDatabase
         public string Property { get => _Property; set => SetProperty(ref _Property, value); }
         private string _Type;
         public string Type { get => _Type; set => SetProperty(ref _Type, value); }
-        public ObservableCollectionExtended<PropertyUsage> PropertyUsages { get; } = new ObservableCollectionExtended<PropertyUsage>();
-        public PropertyRecord(string Property, string Type, ObservableCollectionExtended<PropertyUsage> PropertyUsages)
+
+        public PropertyRecord(string Property, string Type)
         {
             this.Property = Property;
             this.Type = Type;
-            this.PropertyUsages.AddRange(PropertyUsages);
+            
         }
         public PropertyRecord()
         { }
     }
 
-    public class PropertyUsage : NotifyPropertyChangedBase
+    public class ClassUsage : NotifyPropertyChangedBase
     {
-        public string Filename { get; set; }
+        public int FileKey { get; set; }
         public int ExportUID { get; set; }
         public bool IsDefault { get; set; }
-        public string Value { get; set; }
-        public PropertyUsage(string Filename, int ExportUID, bool IsDefault, string Value)
+        public ClassUsage(int FileKey, int ExportUID, bool IsDefault)
         {
-            this.Filename = Filename;
+            this.FileKey = FileKey;
             this.ExportUID = ExportUID;
             this.IsDefault = IsDefault;
-            this.Value = Value;
         }
-        public PropertyUsage()
+        public ClassUsage()
         { }
+    }
+
+    public class Material : NotifyPropertyChangedBase
+    {
+        private string _MaterialName;
+        public string MaterialName { get => _MaterialName; set => SetProperty(ref _MaterialName, value); }
+        public string ParentPackage;
+        public bool IsDLC;
+        public ObservableCollectionExtended<(string, int)> MaterialUsages { get; } = new ObservableCollectionExtended<(string, int)>(); //File reference then export
+
+        public ObservableCollectionExtended<string> MatSettings { get; } = new ObservableCollectionExtended<string>();
+
+        public Material(string MaterialName, string ParentPackage, bool IsDLC, ObservableCollectionExtended<(string, int)> MaterialUsages, ObservableCollectionExtended<string> MatSettings)
+        {
+            this.MaterialName = MaterialName;
+            this.ParentPackage = ParentPackage;
+            this.IsDLC = IsDLC;
+            this.MaterialUsages.AddRange(MaterialUsages);
+            this.MatSettings.AddRange(MatSettings);
+        }
+
+        public Material()
+        { }
+    }
+
+    public class Animation : NotifyPropertyChangedBase
+    {
+        private string _AnimSequence;
+        public string AnimSequence { get => _AnimSequence; set => SetProperty(ref _AnimSequence, value); }
+        public string AnimData;
+        public float Length;
+        public ObservableCollectionExtended<Tuple<int, int>> AnimUsages { get; } = new ObservableCollectionExtended<Tuple<int, int>>(); //File reference then export
+
+        public Animation(string AnimSequence, string AnimData, float Length, ObservableCollectionExtended<Tuple<int, int>> AnimUsages)
+        {
+            this.AnimSequence = AnimSequence;
+            this.AnimData = AnimData;
+            this.Length = Length;
+            this.AnimUsages.AddRange(AnimUsages);
+        }
+
+        public Animation()
+        { }
+    }
+    public class FileIndexToNameConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            int fileindex = (Int32)values[0];
+            var listofFiles = values[1] as List<string>;
+            if (fileindex == 0 || listofFiles.Count == 0)
+                return "Error file not found";
+            return listofFiles[fileindex];
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            return null; //not needed
+        }
     }
     #endregion
 
@@ -651,7 +771,7 @@ namespace ME3Explorer.PropertyDatabase
         public ClassScanSingleFileTask(string file)
         {
             File = file;
-            ShortFileName = System.IO.Path.GetFileNameWithoutExtension(file);
+            ShortFileName = Path.GetFileNameWithoutExtension(file);
 
         }
 
@@ -664,8 +784,8 @@ namespace ME3Explorer.PropertyDatabase
         /// </summary>
         public void dumpPackageFile(MEGame GameBeingDumped, PropertyDB dumper)
         {
-            dumper.CurrentOverallOperationText = $"Generating Database... Files: { dumper.OverallProgressValue}/{dumper.OverallProgressMaximum} Classes Found: { dumper.GeneratedClasses.Count} Unique Property Values: { dumper.GeneratedValueChecker.Count}";
-
+            dumper.CurrentOverallOperationText = $"Generating Database... Files: { dumper.OverallProgressValue}/{dumper.OverallProgressMaximum} {dumper._dbqueue.Count} Found Classes: { dumper.GeneratedClasses.Count} Animations: { dumper.GeneratedAnims.Count}";
+            
             try
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
@@ -675,14 +795,16 @@ namespace ME3Explorer.PropertyDatabase
                         GameBeingDumped = pcc.Game;
                     }
 
+                    int pFileKey = dumper.CurrentDataBase.FileList.FindIndex(i => i == ShortFileName);
+
                     foreach (ExportEntry exp in pcc.Exports)
                     {
                         string pClass = exp.ClassName;  //Handle basic class record
+                        string pExp = exp.ObjectName;
                         string pSuperClass = null;
                         string pDefinitionPackage = null;
                         int pDefUID = 0;
-                        string pFile = ShortFileName;
-                        int pExport = exp.UIndex;
+                        int pExportUID = exp.UIndex;
                         bool pIsdefault = false;  //Setup default cases
 
                         if (exp.ClassName != "Class")
@@ -691,104 +813,131 @@ namespace ME3Explorer.PropertyDatabase
                             {
                                 pIsdefault = true;
                             }
+                            var pList = new ObservableCollectionExtended<PropertyRecord>();
                             var props = exp.GetProperties(false, true);
                             foreach (var p in props)
                             {
                                 string pName = p.Name;
                                 string pType = p.PropType.ToString();
-                                string pValue = "null";
-                                switch (p)
+                                //string pValue = "null";
+                                //switch (p)
+                                //{
+                                //    case ArrayPropertyBase parray:
+                                //        pValue = "Array";
+                                //        break;
+                                //    case StructProperty pstruct:
+                                //        pValue = "Struct";
+                                //        break;
+                                //    case NoneProperty pnone:
+                                //        pValue = "None";
+                                //        break;
+                                //    case ObjectProperty pobj:
+                                //        if (pobj.Value != 0)
+                                //        {
+                                //            pValue = pcc.getEntry(pobj.Value).ClassName;
+                                //        }
+                                //        break;
+                                //    case BoolProperty pbool:
+                                //        pValue = pbool.Value.ToString();
+                                //        break;
+                                //    case IntProperty pint:
+                                //        if (pIsdefault)
+                                //        {
+                                //            pValue = pint.Value.ToString();
+                                //        }
+                                //        else
+                                //        {
+                                //            pValue = "int"; //Keep DB size down
+                                //        }
+                                //        break;
+                                //    case FloatProperty pflt:
+                                //        if (pIsdefault)
+                                //        {
+                                //            pValue = pflt.Value.ToString();
+                                //        }
+                                //        else
+                                //        {
+                                //            pValue = "float"; //Keep DB size down
+                                //        }
+                                //        break;
+                                //    case NameProperty pnme:
+                                //        pValue = pnme.Value.ToString();
+                                //        break;
+                                //    case ByteProperty pbte:
+                                //        pValue = pbte.Value.ToString();
+                                //        break;
+                                //    case EnumProperty penum:
+                                //        pValue = penum.Value.ToString();
+                                //        break;
+                                //    case StrProperty pstr:
+                                //        if (pIsdefault)
+                                //        {
+                                //            pValue = pstr;
+                                //        }
+                                //        else
+                                //        {
+                                //            pValue = "string";
+                                //        }
+                                //        break;
+                                //    case StringRefProperty pstrref:
+                                //        if (pIsdefault)
+                                //        {
+                                //            pValue = pstrref.Value.ToString();
+                                //        }
+                                //        else
+                                //        {
+                                //            pValue = "TLK StringRef";
+                                //        }
+                                //        break;
+                                //    case DelegateProperty pdelg:
+                                //        if (pdelg.Value != null)
+                                //        {
+                                //            var pscrdel = pdelg.Value.Object;
+                                //            if (pscrdel != 0)
+                                //            {
+                                //                pValue = pcc.getEntry(pscrdel).ClassName;
+                                //            }
+                                //        }
+                                //        break;
+                                //    default:
+                                //        pValue = p.ToString();
+                                //        break;
+                                //}
+
+
+                                var NewPropertyRecord = new PropertyRecord(pName, pType);
+                                pList.Add(NewPropertyRecord);
+                            }
+
+
+                            var NewUsageRecord = new ClassUsage(pFileKey, pExportUID, pIsdefault);
+                            var NewClassRecord = new ClassRecord(pClass, pDefinitionPackage, pDefUID, pSuperClass, pList, new ObservableCollectionExtended<ClassUsage>() { NewUsageRecord });
+                            string valueKey = string.Concat(pClass, ShortFileName, pIsdefault.ToString());
+                            if (!dumper.GeneratedClasses.TryAdd(pClass, NewClassRecord) && dumper.GeneratedValueChecker.TryAdd(valueKey, true))
+                            {
+                                dumper._dbqueue.Add(NewClassRecord);
+
+                            }
+
+                            if (exp.ClassName == "AnimSequence")
+                            {
+                                string aSet = null;
+                                var pSet = exp.GetProperty<NameProperty>("SequenceName");
+                                if (pSet != null)
                                 {
-                                    case ArrayPropertyBase parray:
-                                        pValue = "Array";
-                                        break;
-                                    case StructProperty pstruct:
-                                        pValue = "Struct";
-                                        break;
-                                    case NoneProperty pnone:
-                                        pValue = "None";
-                                        break;
-                                    case ObjectProperty pobj:
-                                        if (pobj.Value != 0)
-                                        {
-                                            pValue = pcc.getEntry(pobj.Value).ClassName;
-                                        }
-                                        break;
-                                    case BoolProperty pbool:
-                                        pValue = pbool.Value.ToString();
-                                        break;
-                                    case IntProperty pint:
-                                        if (pIsdefault)
-                                        {
-                                            pValue = pint.Value.ToString();
-                                        }
-                                        else
-                                        {
-                                            pValue = "int"; //Keep DB size down
-                                        }
-                                        break;
-                                    case FloatProperty pflt:
-                                        if (pIsdefault)
-                                        {
-                                            pValue = pflt.Value.ToString();
-                                        }
-                                        else
-                                        {
-                                            pValue = "float"; //Keep DB size down
-                                        }
-                                        break;
-                                    case NameProperty pnme:
-                                        pValue = pnme.Value.ToString();
-                                        break;
-                                    case ByteProperty pbte:
-                                        pValue = pbte.Value.ToString();
-                                        break;
-                                    case EnumProperty penum:
-                                        pValue = penum.Value.ToString();
-                                        break;
-                                    case StrProperty pstr:
-                                        if (pIsdefault)
-                                        {
-                                            pValue = pstr;
-                                        }
-                                        else
-                                        {
-                                            pValue = "string";
-                                        }
-                                        break;
-                                    case StringRefProperty pstrref:
-                                        if (pIsdefault)
-                                        {
-                                            pValue = pstrref.Value.ToString();
-                                        }
-                                        else
-                                        {
-                                            pValue = "TLK StringRef";
-                                        }
-                                        break;
-                                    case DelegateProperty pdelg:
-                                        if (pdelg.Value != null)
-                                        {
-                                            var pscrdel = pdelg.Value.Object;
-                                            if (pscrdel != 0)
-                                            {
-                                                pValue = pcc.getEntry(pscrdel).ClassName;
-                                            }
-                                        }
-                                        break;
-                                    default:
-                                        pValue = p.ToString();
-                                        break;
+                                    aSet = pSet.Value;
                                 }
-
-                                var NewUsageRecord = new PropertyUsage(pFile, pExport, pIsdefault, pValue);
-                                var NewPropertyRecord = new PropertyRecord(pName, pType, new ObservableCollectionExtended<PropertyUsage>() { NewUsageRecord });
-                                var NewClassRecord = new ClassRecord(pClass, pDefinitionPackage, pDefUID, pSuperClass, new ObservableCollectionExtended<PropertyRecord>() { NewPropertyRecord });
-                                string valueKey = string.Concat(pClass, pName, pValue, pIsdefault.ToString());
-                                if (!dumper.GeneratedClasses.TryAdd(pClass, NewClassRecord) && dumper.GeneratedValueChecker.TryAdd(valueKey, true))
+                                float aLength = 0;
+                                var pLength = exp.GetProperty<FloatProperty>("SequenceLength");
+                                if (pLength != null)
                                 {
-                                    dumper._dbqueue.Add(NewClassRecord);
-
+                                    aLength = pLength.Value;
+                                }
+                                var NewAnim = new Animation(pExp, aSet, aLength, new ObservableCollectionExtended<Tuple<int, int>>() { new Tuple<int, int>(pFileKey, pExportUID) });
+                                if (!dumper.GeneratedAnims.TryAdd(pExp, NewAnim))
+                                {
+                                    var anim = dumper.GeneratedAnims[pExp];
+                                    anim.AnimUsages.Add(new Tuple<int, int>(pFileKey, pExportUID));
                                 }
                             }
                         }
@@ -797,9 +946,9 @@ namespace ME3Explorer.PropertyDatabase
                             pClass = exp.ObjectName;
                             pSuperClass = exp.SuperClassName;
                             pDefUID = exp.UIndex;
-                            var NewUsageRecord = new PropertyUsage(pFile, pExport, pIsdefault, "None");
-                            var NewPropertyRecord = new PropertyRecord("None", "NoneProperty", new ObservableCollectionExtended<PropertyUsage>() { NewUsageRecord });
-                            var NewClassRecord = new ClassRecord(pClass, pFile, pDefUID, pSuperClass, new ObservableCollectionExtended<PropertyRecord>() { NewPropertyRecord });
+                            var NewUsageRecord = new ClassUsage(pFileKey, pExportUID, pIsdefault);
+                            var NewPropertyRecord = new PropertyRecord("None", "NoneProperty");
+                            var NewClassRecord = new ClassRecord(pClass, ShortFileName, pDefUID, pSuperClass, new ObservableCollectionExtended<PropertyRecord>() { NewPropertyRecord }, new ObservableCollectionExtended<ClassUsage>() { NewUsageRecord });
                             if (!dumper.GeneratedClasses.TryAdd(pClass, NewClassRecord))
                             {
                                 dumper._dbqueue.Add(NewClassRecord);
