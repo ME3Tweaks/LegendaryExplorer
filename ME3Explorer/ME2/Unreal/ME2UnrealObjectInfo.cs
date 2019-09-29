@@ -259,7 +259,7 @@ namespace ME2Explorer.Unreal
         }
 
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
-            "Quat", "Matrix", "IntPoint", "ActorReference", "PolyReference", "AimTransform", "NavReference", "FontCharacter", "CovPosInfo",
+            "Quat", "Matrix", "IntPoint", "ActorReference", "PolyReference", "NavReference", "FontCharacter", "CovPosInfo",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
 
         public static bool IsImmutableStruct(string structName)
@@ -486,7 +486,7 @@ namespace ME2Explorer.Unreal
             };
             if (!isStruct)
             {
-                ME3Explorer.Unreal.BinaryConverters.Class classBinary = ME3Explorer.Unreal.BinaryConverters.ObjectBinary.From<ME3Explorer.Unreal.BinaryConverters.Class>(export);
+                ME3Explorer.Unreal.BinaryConverters.UClass classBinary = ME3Explorer.Unreal.BinaryConverters.ObjectBinary.From<ME3Explorer.Unreal.BinaryConverters.UClass>(export);
                 info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
             }
             if (pcc.FilePath.Contains("BioGame"))

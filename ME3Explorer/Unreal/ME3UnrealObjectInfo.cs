@@ -325,7 +325,7 @@ namespace ME3Explorer.Unreal
 
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "AimOffsetProfile", "FontCharacter",
-            "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
+            "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "RwPlane", "RwQuat", "BioRwBox44" };
 
         private static readonly string jsonPath = Path.Combine(App.ExecFolder, "ME3ObjectInfo.json");
 
@@ -866,7 +866,7 @@ namespace ME3Explorer.Unreal
             };
             if (!isStruct)
             {
-                BinaryConverters.Class classBinary = BinaryConverters.ObjectBinary.From<BinaryConverters.Class>(export);
+                BinaryConverters.UClass classBinary = BinaryConverters.ObjectBinary.From<BinaryConverters.UClass>(export);
                 info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
             }
             if (pcc.FilePath.Contains("BIOGame"))

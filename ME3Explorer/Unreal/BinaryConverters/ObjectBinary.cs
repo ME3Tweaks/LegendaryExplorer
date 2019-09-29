@@ -74,7 +74,36 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 case "PrefabInstance":
                     return From<PrefabInstance>(export);
                 case "Class":
-                    return From<Class>(export);
+                    return From<UClass>(export);
+                case "State":
+                    return From<UState>(export);
+                case "Function":
+                    return From<UFunction>(export);
+                case "Enum":
+                    return From<UEnum>(export);
+                case "Const":
+                    return From<UConst>(export);
+                case "ScriptStruct":
+                    return From<UScriptStruct>(export);
+                case "IntProperty":
+                case "BoolProperty":
+                case "FloatProperty":
+                case "NameProperty":
+                case "StrProperty":
+                case "StringRefProperty":
+                    return From<UValueProperty>(export);
+                case "ByteProperty":
+                case "ObjectProperty":
+                case "ComponentProperty":
+                case "InterfaceProperty":
+                case "ArrayProperty":
+                case "StructProperty":
+                case "BioMask4Property":
+                    return From<UReferenceProperty>(export);
+                case "MapProperty":
+                case "ClassProperty":
+                case "DelegateProperty":
+                    return From<UTwoReferenceProperty>(export);
                 default:
                     return null;
             }

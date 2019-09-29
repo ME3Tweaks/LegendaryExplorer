@@ -821,11 +821,14 @@
     </Compile>
     <Compile Include="Unreal\BinaryConverters\BioDynamicAnimSet.cs" />
     <Compile Include="Unreal\BinaryConverters\BioPawn.cs" />
-    <Compile Include="Unreal\BinaryConverters\Class.cs" />
+    <Compile Include="Unreal\BinaryConverters\UClass.cs" />
     <Compile Include="Unreal\BinaryConverters\DecalComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\EntryPruner.cs" />
     <Compile Include="Unreal\BinaryConverters\ExportBinaryConverter.cs" />
     <Compile Include="Unreal\BinaryConverters\ConvertExtensions.cs" />
+    <Compile Include="Unreal\BinaryConverters\UConst.cs" />
+    <Compile Include="Unreal\BinaryConverters\UEnum.cs" />
+    <Compile Include="Unreal\BinaryConverters\UField.cs" />
     <Compile Include="Unreal\BinaryConverters\FluidSurfaceComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\FracturedStaticMesh.cs" />
     <Compile Include="Unreal\BinaryConverters\Level.cs" />
@@ -842,6 +845,12 @@
     <Compile Include="Unreal\BinaryConverters\StaticMeshComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\Terrain.cs" />
     <Compile Include="Unreal\BinaryConverters\TerrainComponent.cs" />
+    <Compile Include="Unreal\BinaryConverters\UFunction.cs" />
+    <Compile Include="Unreal\BinaryConverters\UReferenceProperty.cs" />
+    <Compile Include="Unreal\BinaryConverters\UValueProperty.cs" />
+    <Compile Include="Unreal\BinaryConverters\UScriptStruct.cs" />
+    <Compile Include="Unreal\BinaryConverters\UState.cs" />
+    <Compile Include="Unreal\BinaryConverters\UStruct.cs" />
     <Compile Include="Unreal\CommonStructs.cs" />
     <Compile Include="Unreal\DLCPackage2.cs" />
     <Compile Include="Unreal\SerializingContainer2.cs" />

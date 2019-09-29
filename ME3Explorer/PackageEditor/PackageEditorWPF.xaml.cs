@@ -3765,7 +3765,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "Class", true)) break;
+                    if (findClass(filePath, "Const", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
 
@@ -3927,13 +3927,13 @@ namespace ME3Explorer
                         return false;
                     }
 
-                    var exports = pcc.Exports.Where(exp => exp.ClassName == className && !exp.IsDefaultObject);
+                    var exports = pcc.Exports.Where(exp => !exp.IsDefaultObject && exp.ClassName == className);
                     foreach (ExportEntry exp in exports)
                     {
                         try
                         {
                             Debug.WriteLine($"{exp.UIndex}: {filePath}");
-                            var obj = ObjectBinary.From<Class>(exp);
+                            var obj = ObjectBinary.From(exp);
                             var ms = new MemoryStream();
                             obj.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
                             byte[] buff = ms.ToArray();
@@ -3941,8 +3941,8 @@ namespace ME3Explorer
                             if (!buff.SequenceEqual(exp.getBinaryData()))
                             {
                                 string userFolder =  Path.Combine(@"C:\Users", Environment.UserName);
-                                File.WriteAllBytes(Path.Combine(userFolder, "converted{className}"), buff);
-                                File.WriteAllBytes(Path.Combine(userFolder, "original{className}"), exp.getBinaryData());
+                                File.WriteAllBytes(Path.Combine(userFolder, $"converted{className}"), buff);
+                                File.WriteAllBytes(Path.Combine(userFolder, $"original{className}"), exp.getBinaryData());
                                 interestingExports.Add($"{exp.UIndex}: {filePath}");
                                 return true;
                             }
@@ -3965,6 +3965,8 @@ namespace ME3Explorer
 
                 return false;
             }
+
+            #region extra scanning functions
 
             void findClassesWithBinary(string filePath)
             {
@@ -4104,6 +4106,8 @@ namespace ME3Explorer
                     }
                 }
             }
+
+            #endregion
         }
 
         private void InterpreterWPF_Colorize_MenuItem_Click(object sender, RoutedEventArgs e)

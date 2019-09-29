@@ -78,9 +78,9 @@ namespace ME3Explorer
                     ExportEntry exp = (ExportEntry)mapping.Value;
                     try
                     {
-                        if (exp.IsClass && exp.Game != importpcc.Game)
+                        if (exp.Game != importpcc.Game && (exp.IsClass || exp.ClassName == "State" || exp.ClassName == "Function"))
                         {
-                            relinkFailedReport.Add($"{exp.UIndex} {exp.FullPath} binary relinking failed. Cannot port Classes between games!");
+                            relinkFailedReport.Add($"{exp.UIndex} {exp.FullPath} binary relinking failed. Cannot port {exp.ClassName} between games!");
                             continue;
                         }
 
@@ -98,20 +98,21 @@ namespace ME3Explorer
                                 }
                             }
 
-                            if (objBin is Class classBinary && classBinary.IgnoreMask != 0 && classBinary.StateBlock.Length > 16)
+                            //UStruct is abstract baseclass for Class, State, and Function
+                            if (objBin is UStruct uStructBinary && uStructBinary.ScriptBytes.Length > 0)
                             {
                                 if (exp.Game == MEGame.ME3)
                                 {
-                                    (List<Token> tokens, _) = Bytecode.ParseBytecode(classBinary.StateBlock.Slice(0, classBinary.StateBlock.Length - 10), exp);
+                                    (List<Token> tokens, _) = Bytecode.ParseBytecode(uStructBinary.ScriptBytes, sourceexp);
                                     foreach (Token token in tokens)
                                     {
-                                        relinkFailedReport.AddRange(RelinkToken(token, classBinary.StateBlock, sourceexp, exp, crossPCCObjectMappingList,
+                                        relinkFailedReport.AddRange(RelinkToken(token, uStructBinary.ScriptBytes, sourceexp, exp, crossPCCObjectMappingList,
                                                                                 importExportDependencies));
                                     }
                                 }
                                 else
                                 {
-                                    relinkFailedReport.Add($"{exp.UIndex} {exp.FullPath} binary relinking failed. Class contains script in state block, " +
+                                    relinkFailedReport.Add($"{exp.UIndex} {exp.FullPath} binary relinking failed. {exp.ClassName} contains script, " +
                                                            $"which cannot be relinked for {exp.Game}");
                                 }
                             }
@@ -184,27 +185,12 @@ namespace ME3Explorer
                                     }
                                 }
                                     break;
-                                case "Function":
-                                    if (exp.Game == MEGame.ME3 && importpcc.Game == MEGame.ME3)
-                                    {
-                                        relinkFailedReport.AddRange(RelinkFunction(sourceexp, exp, crossPCCObjectMappingList, importExportDependencies));
-                                    }
-                                    else if (exp.Game != importpcc.Game)
-                                    {
-                                        relinkFailedReport.Add($"{exp.UIndex} {exp.FullPath} binary relinking failed. Cannot port functions between games!");
-                                    }
-                                    else
-                                    {
-                                        relinkFailedReport.Add($"{exp.UIndex} {exp.FullPath} binary relinking failed. Cannot port {exp.Game} functions! " +
-                                                               "Function porting currently only works in ME3.");
-                                    }
-                                    break;
                                 default:
                                     continue;
                             }
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception e) when (!App.IsDebug)
                     {
                         relinkFailedReport.Add($"{exp.UIndex} {exp.FullPath} binary relinking failed due to exception: {e.Message}");
                     }

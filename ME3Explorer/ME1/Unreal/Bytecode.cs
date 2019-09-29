@@ -79,32 +79,6 @@ namespace ME1Explorer.Unreal
         private const int EX_EqualEqual_DelDel = 0x3B;
         private const int EX_NotEqual_DelDel = 0x3C;
 
-        public static string ToRawText(byte[] raw, IMEPackage Pcc, bool debug)
-        {
-            string s = "";
-            pcc = Pcc;
-            memory = raw;
-            memsize = raw.Length;
-            DebugCounter = 0;
-            _debug = new List<DbgMsg>();
-            List<Token> t = ReadAll(0);
-            int pos = 32;
-            for (int i = 0; i < t.Count; i++)
-            {
-                s += pos.ToString("X2") + " : " + t[i].text + "\n";
-                pos += t[i].raw.Length;
-            }
-            if (debug)
-            {
-                s += "\nDebug print:\n\n";
-                SortDbgMsg();
-                for (int i = 0; i < _debug.Count(); i++)
-                    s += _debug[i].count + " : " + _debug[i].msg;
-            }
-            return s;
-
-        }
-
         private const int EX_EqualEqual_DelFunc = 0x3D;
         private const int EX_NotEqual_DelFunc = 0x3E;
         private const int EX_EmptyDelegate = 0x3F;
@@ -321,6 +295,32 @@ namespace ME1Explorer.Unreal
             NATIVE_SaveConfig = 0x218,
         };
 
+        public static string ToRawText(byte[] raw, IMEPackage Pcc, bool debug)
+        {
+            string s = "";
+            pcc = Pcc;
+            memory = raw;
+            memsize = raw.Length;
+            DebugCounter = 0;
+            _debug = new List<DbgMsg>();
+            List<Token> t = ReadAll(0);
+            int pos = 32;
+            for (int i = 0; i < t.Count; i++)
+            {
+                s += pos.ToString("X2") + " : " + t[i].text + "\n";
+                pos += t[i].raw.Length;
+            }
+            if (debug)
+            {
+                s += "\nDebug print:\n\n";
+                SortDbgMsg();
+                for (int i = 0; i < _debug.Count(); i++)
+                    s += _debug[i].count + " : " + _debug[i].msg;
+            }
+            return s;
+
+        }
+
         private static void SortDbgMsg()
         {
             bool done = false;
@@ -403,6 +403,12 @@ namespace ME1Explorer.Unreal
                         break;
                     case EX_JumpIfNot: //0x07
                         newTok = ReadJumpIfNot(start);
+                        newTok.stop = false;
+                        end = start + newTok.raw.Length;
+                        res = newTok;
+                        break;
+                    case EX_Stop: //0x08
+                        newTok = ReadStopToken(start);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -3501,6 +3507,15 @@ namespace ME1Explorer.Unreal
         {
             Token t = new Token();
             t.text = "\\\\End of Script";
+            t.raw = new byte[1];
+            t.raw[0] = memory[start];
+            return t;
+        }
+
+        private static Token ReadStopToken(int start)
+        {
+            Token t = new Token();
+            t.text = "\\\\Stop?";
             t.raw = new byte[1];
             t.raw[0] = memory[start];
             return t;

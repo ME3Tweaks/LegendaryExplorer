@@ -739,7 +739,7 @@ namespace ME3Explorer
             string displayName = displayPrefix;
             if (!(parent.Property is ArrayPropertyBase))
             {
-                displayName += $" {prop.Name}:";
+                displayName += $" {prop.Name.Instanced}:";
             }
             string editableValue = ""; //editable value
             string parsedValue = ""; //human formatted item. Will most times be blank
