@@ -25,7 +25,6 @@ steps:
       $discordmessage=$("$(Build.SourceVersionMessage)" -split '\n')[0]
       Write-Host "##vso[task.setvariable variable=discordmessage]$discordmessage"
       Write-Host "$(Build.SourceVersionMessage)"
-      $(Build) | fl
       Write-Host "Triggering Commit:"
       Write-Host $discordmessage
 
