@@ -24,6 +24,8 @@ steps:
       Write-Host "##vso[task.setvariable variable=time]$date"
       $discordmessage=$($Build.SourceVersionMessage -split '\n')[0]
       Write-Host "##vso[task.setvariable variable=discordmessage]$discordmessage"
+      Write-Host "Triggering Commit:"
+      Write-Host $discordmessage
 
 
 - task: NuGetToolInstaller@1
