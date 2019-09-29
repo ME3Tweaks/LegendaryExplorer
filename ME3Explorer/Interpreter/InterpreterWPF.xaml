@@ -61,12 +61,12 @@
                     <DataTemplate DataType="{x:Type global:PackageEditorWPF+IndexedName}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
-                            <TextBlock Text="{Binding Path=Name.Name}" Foreground="Black" Margin="5,0,0,0"/>
+                            <TextBlock Text="{Binding Path=Name.Name}" Margin="5,0,0,0"/>
                         </StackPanel>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type unreal:NameReference}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Path=Instanced}" Foreground="Black" Margin="5,0,0,0"/>
+                            <TextBlock Text="{Binding Path=Instanced}" Margin="5,0,0,0"/>
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.Resources>
