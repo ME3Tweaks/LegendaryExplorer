@@ -22,7 +22,7 @@ steps:
     script: |
       $date=$(Get-Date -Format s);
       Write-Host "##vso[task.setvariable variable=time]$date"
-      $discordmessage=$($(Build.SourceVersionMessage) -split '\n')[0]
+      $discordmessage=$("$(Build.SourceVersionMessage)" -split '\n')[0]
       Write-Host "##vso[task.setvariable variable=discordmessage]$discordmessage"
       Write-Host "$(Build.SourceVersionMessage)"
       $(Build) | fl
