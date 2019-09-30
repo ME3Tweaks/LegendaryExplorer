@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
         xmlns:local="clr-namespace:ME3Explorer.PropertyDatabase"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
@@ -17,6 +17,7 @@
     <Window.Resources>
         <local:FileIndexToNameConverter x:Key="FileIndexToNameConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top" Name="TopDock">
@@ -39,12 +40,6 @@
                 <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
                 <Separator/>
                 <MenuItem Name="menu_fltrSeq" Header="Only Sequence Classes" Command="{Binding FilterSeqClassCommand}" ToolTip="Show sequence classes only." />
-            </MenuItem>
-            <MenuItem HorizontalAlignment="Right" >
-                <MenuItem.Header>
-                    <TextBlock Text="Filter" ToolTip="Filter and find classes" IsEnabled="true" HorizontalAlignment="Right">
-                    </TextBlock>
-                </MenuItem.Header>
             </MenuItem>
             <MenuItem HorizontalAlignment="Right" >
                 <MenuItem.Header>
@@ -258,6 +253,55 @@
                             <SharedUI:ListBoxScroll.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                </ContextMenu>
+                            </SharedUI:ListBoxScroll.ContextMenu>
+                        </SharedUI:ListBoxScroll>
+                    </DockPanel>
+                </TabItem>
+                <!-- Meshes -->
+                <TabItem Header="Meshes" TabIndex="3">
+                    <DockPanel>
+                        <SharedUI:ListBoxScroll x:Name="lstbx_Meshes" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Meshes}" >
+                            <SharedUI:ListBoxScroll.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding MeshName}" />
+                                        <StackPanel Orientation="Horizontal" Name="details_skelmesh" Visibility="{Binding IsSkeleton, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <TextBlock FontSize="10" Text=" (Skeletal Mesh " VerticalAlignment="Center"/>
+                                            <TextBlock FontSize="10" Text=", Bone Count: " VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text="{Binding BoneCount}" VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text=")  " VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </SharedUI:ListBoxScroll.ItemTemplate>
+                        </SharedUI:ListBoxScroll>
+                        <DockPanel x:Name="details_Mesh" MinWidth="350" Margin="3">
+                            <ToggleButton x:Name="btn_MeshRenderToggle" Content="Toggle Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_MeshRenderToggle_Click" IsChecked="{Binding IsMeshRendering}"></ToggleButton>
+                            <meshplorer:MeshRendererWPF x:Name="MeshRendererTab_MeshRenderer"/>
+
+                        </DockPanel>
+                        <SharedUI:ListBoxScroll x:Name="lstbx_MeshUsages" DockPanel.Dock="Right" MinWidth="250" ItemsSource="{Binding SelectedItem.MeshUsages, ElementName=lstbx_Meshes }"  >
+                            <SharedUI:ListBoxScroll.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                    <Binding Path="Item1"/>
+                                                    <Binding Path="CurrentDataBase.FileList" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock Text="  #"/>
+                                        <TextBlock Text="{Binding Item2}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </SharedUI:ListBoxScroll.ItemTemplate>
+                            <SharedUI:ListBoxScroll.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                    <MenuItem Header="Open in Meshplorer" Command="{Binding OpenUsagePkgCommand}" CommandParameter="Meshplorer" ToolTip="Opens this Usage in Meshplorer." />
                                 </ContextMenu>
                             </SharedUI:ListBoxScroll.ContextMenu>
                         </SharedUI:ListBoxScroll>
