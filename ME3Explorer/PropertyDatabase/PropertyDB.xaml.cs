@@ -295,23 +295,49 @@ namespace ME3Explorer.PropertyDatabase
         private void FilterBox_KeyUp(object sender, KeyEventArgs e)
         {
             string ftxt = FilterBox.Text.ToLower();
-            ICollectionView view = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
+            ICollectionView viewM = CollectionViewSource.GetDefaultView(CurrentDataBase.Materials);
+            ICollectionView viewA = CollectionViewSource.GetDefaultView(CurrentDataBase.Animations);
+            ICollectionView viewC = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
+
             if(ftxt == null)
             {
-                view.Filter = null;
-                
+                viewM.Filter = null;
+                viewA.Filter = null;
+                viewC.Filter = null;
             }
             else
             {
-                view.Filter = delegate (object item) {
-                    var classes = item as ClassRecord;
-                    if (classes != null &&
-                    classes.Class.ToLower().Contains(ftxt)) return true;
-                    return false;
-                }; ;
+                switch (currentView)
+                {
+                    case 1:
+                        viewA.Filter = delegate (object item) {
+                            var mats = item as Material;
+                            if (mats != null &&
+                            mats.MaterialName.ToLower().Contains(ftxt)) return true;
+                            return false;
+                        }; ;
+                        break;
+                    case 2:
+                        viewA.Filter = delegate (object item) {
+                            var anims = item as Animation;
+                            if (anims != null &&
+                            anims.AnimSequence.ToLower().Contains(ftxt)) return true;
+                            return false;
+                        }; ;
+                        break;
+                    default:
+                        viewC.Filter = delegate (object item) {
+                            var classes = item as ClassRecord;
+                            if (classes != null &&
+                            classes.Class.ToLower().Contains(ftxt)) return true;
+                            return false;
+                        }; ;
+                        break;
+                }
             }
-            
-            lstbx_Classes.ItemsSource = view;
+            lstbx_Classes.ItemsSource = viewC;
+            lstbx_Anims.ItemsSource = viewA;
+            lstbx_Materials.ItemsSource = viewM;
         }
         private void GoToSuperClass(object obj)
         {

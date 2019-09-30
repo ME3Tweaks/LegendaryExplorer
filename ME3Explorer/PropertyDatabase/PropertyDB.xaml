@@ -40,7 +40,13 @@
                 <Separator/>
                 <MenuItem Name="menu_fltrSeq" Header="Only Sequence Classes" Command="{Binding FilterSeqClassCommand}" ToolTip="Show sequence classes only." />
             </MenuItem>
-            <MenuItem HorizontalAlignment="Right">
+            <MenuItem HorizontalAlignment="Right" >
+                <MenuItem.Header>
+                    <TextBlock Text="Filter" ToolTip="Filter and find classes" IsEnabled="true" HorizontalAlignment="Right">
+                    </TextBlock>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem HorizontalAlignment="Right" >
                 <MenuItem.Header>
                     <TextBox Name="FilterBox" Width="300" KeyUp="FilterBox_KeyUp" ToolTip="Filter and find classes" IsEnabled="true" HorizontalAlignment="Right" HorizontalContentAlignment="Left">
                     </TextBox>
