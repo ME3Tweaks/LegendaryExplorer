@@ -847,6 +847,10 @@ namespace ME3Explorer.PropertyDatabase
                     {
                         string pClass = exp.ClassName;  //Handle basic class record
                         string pExp = exp.ObjectName;
+                        if (exp.indexValue > 0)
+                        {
+                            pExp = $"{pExp}_{exp.indexValue}";
+                        }
                         string pSuperClass = null;
                         string pDefinitionPackage = null;
                         int pDefUID = 0;
@@ -1018,30 +1022,23 @@ namespace ME3Explorer.PropertyDatabase
 
                             }
 
-                            try
+                            if (exp.ClassName == "Material")
                             {
-                                if (exp.ClassName == "Material")
-                                {
-                                    string parent = GetTopParentPackage(exp);
-                                    bool IsDLC = pcc.IsInOfficialDLC();
 
-                                    var NewMat = new Material(pExp, parent, IsDLC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) }, mSets);
-                                    if (!dbScanner.GeneratedMats.TryAdd(pExp, NewMat))
+                                string parent = GetTopParentPackage(exp);
+                                bool IsDLC = pcc.IsInOfficialDLC();
+
+                                var NewMat = new Material(pExp, parent, IsDLC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) }, mSets);
+                                if (!dbScanner.GeneratedMats.TryAdd(pExp, NewMat))
+                                {
+                                    var eMat = dbScanner.GeneratedMats[pExp];
+                                    eMat.MaterialUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC));
+                                    if (eMat.IsDLCOnly)
                                     {
-                                        var eMat = dbScanner.GeneratedMats[pExp];
-                                        eMat.MaterialUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC));
-                                        if (eMat.IsDLCOnly)
-                                        {
-                                            eMat.IsDLCOnly = IsDLC;
-                                        }
+                                        eMat.IsDLCOnly = IsDLC;
                                     }
                                 }
                             }
-                            catch (Exception e)
-                            {
-                                MessageBox.Show($"Exception {exp.UIndex} {ShortFileName} Material {pExp} {e}");
-                            }
-
 
                             if (exp.ClassName == "AnimSequence")
                             {
