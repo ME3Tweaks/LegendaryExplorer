@@ -10,6 +10,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using System.Diagnostics;
 using ME3Explorer;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME1Explorer.Unreal
 {

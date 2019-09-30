@@ -50,7 +50,7 @@
                     </Style>
                 </MenuItem.ItemContainerStyle>
             </MenuItem>
-            <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
+            <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
         </ContextMenu>
     </Window.Resources>
     <Window.InputBindings>

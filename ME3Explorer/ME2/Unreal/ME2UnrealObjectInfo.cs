@@ -8,6 +8,7 @@ using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Properties;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 using Newtonsoft.Json;
 
 namespace ME2Explorer.Unreal

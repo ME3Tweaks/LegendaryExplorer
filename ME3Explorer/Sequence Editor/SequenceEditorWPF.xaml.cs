@@ -31,6 +31,7 @@ using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using GongSolutions.Wpf.DragDrop;
 using MassEffect.NativesEditor.Views;
 using ME3Explorer.Matinee;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Explorer.Sequence_Editor
 {
@@ -62,8 +63,14 @@ namespace ME3Explorer.Sequence_Editor
         public string CurrentFile;
         public string JSONpath;
 
+        private ExportEntry _selectedSequence;
+        public ExportEntry SelectedSequence
+        {
+            get => _selectedSequence;
+            set => SetProperty(ref _selectedSequence, value);
+        }
+
         private List<SaveData> SavedPositions;
-        private ExportEntry SelectedSequence;
         public bool RefOrRefChild;
 
         public static readonly string SequenceEditorDataFolder = Path.Combine(App.AppDataFolder, @"SequenceEditor\");
@@ -138,7 +145,24 @@ namespace ME3Explorer.Sequence_Editor
 
         private void CreateNewObject(ClassInfo info)
         {
-            MessageBox.Show(this, info.ClassName);
+            if (SelectedSequence == null)
+            {
+                return;
+            }
+            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName);
+            if (classEntry is null)
+            {
+                MessageBox.Show(this, $"Could not import {info.ClassName}'s class definition! It may defined in a DLC you don't have.");
+                return;
+            }
+
+            ExportEntry newSeqObj = new ExportEntry(Pcc, properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info))
+            {
+                Class = classEntry,
+                ObjectName = info.ClassName
+            };
+            Pcc.AddExport(newSeqObj);
+            addObject(newSeqObj);
         }
 
         private bool CanOpenKismetLog(object o)
@@ -1014,7 +1038,7 @@ namespace ME3Explorer.Sequence_Editor
 
             foreach (var i in updatedExports)
             {
-                if (Pcc.getExport(i).IsSequence())
+                if (Pcc.IsUExport(i + 1) && Pcc.getExport(i).IsSequence())
                 {
                     LoadSequences();
                     break;
@@ -1317,7 +1341,7 @@ namespace ME3Explorer.Sequence_Editor
             export.WriteProperties(props);
         }
 
-        private void RemoveFromSequence_Click(object sender, RoutedEventArgs e)
+        private void TrashAndRemoveFromSequence_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentObjects_ListBox.SelectedItem is SObj sObj)
             {
@@ -1359,10 +1383,8 @@ namespace ME3Explorer.Sequence_Editor
                     SelectedSequence.WriteProperty(seqObjs);
                 }
 
-                //set ParentSequence to null
-                var parentSeqProp = sObj.Export.GetProperty<ObjectProperty>("ParentSequence");
-                parentSeqProp.Value = 0;
-                sObj.Export.WriteProperty(parentSeqProp);
+                //Trash
+                EntryPruner.TrashEntryAndDescendants(sObj.Export);
 
             }
         }
@@ -1552,7 +1574,7 @@ namespace ME3Explorer.Sequence_Editor
                 }
 
                 newObject.WriteProperties(newObjectProps);
-                newObject.idxLink = sequenceExport.UIndex;
+                newObject.Parent = sequenceExport;
             }
         }
 

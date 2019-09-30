@@ -1597,7 +1597,7 @@ namespace ME3Explorer
 
         public PackageEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Editor WPF", new WeakReference(this));
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Editor", new WeakReference(this));
 
             //ME3UnrealObjectInfo.generateInfo();
             CurrentView = CurrentViewMode.Tree;
@@ -1658,7 +1658,7 @@ namespace ME3Explorer
                 RefreshView();
                 InitStuff();
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
-                Title = $"Package Editor WPF - {s}";
+                Title = $"Package Editor - {s}";
                 InterpreterTab_Interpreter.UnloadExport();
 
                 QueuedGotoNumber = goToIndex;
@@ -2237,6 +2237,10 @@ namespace ME3Explorer
                 updates = updates.OrderBy(x => x.index).ToList(); //ensure ascending order
                 foreach (PackageUpdate update in updates)
                 {
+                    if (update.index >= Pcc.NameCount)
+                    {
+                        continue;
+                    }
                     if (update.index > NamesList.Count - 1) //names are 0 indexed
                     {
                         NameReference nr = Pcc.Names[update.index];
@@ -3122,14 +3126,12 @@ namespace ME3Explorer
                     if (export.ObjectName == "SFXOperation_ObjectiveSpawnPoint")
                     {
                         Debug.WriteLine("Porting " + export.InstancedFullPath);
-                        ExportEntry portedObjective = EntryImporter.ImportExport(Pcc, export, targetPersistentLevel.UIndex);
-                        objectMap[export] = portedObjective;
+                        ExportEntry portedObjective = EntryImporter.ImportExport(Pcc, export, targetPersistentLevel.UIndex, objectMapping: objectMap);
                         itemsToAddToLevel.Add(portedObjective);
                         var child = export.GetProperty<ObjectProperty>("CollisionComponent");
                         ExportEntry collCyl = sourceFile.Exports[child.Value - 1];
                         Debug.WriteLine($"Porting {collCyl.InstancedFullPath}");
-                        ExportEntry portedCollisionCylinder = EntryImporter.ImportExport(Pcc, collCyl, portedObjective.UIndex);
-                        objectMap[collCyl] = portedCollisionCylinder;
+                        EntryImporter.ImportExport(Pcc, collCyl, portedObjective.UIndex, objectMapping: objectMap);
                     }
                 }
 
@@ -3765,7 +3767,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "Const", true)) break;
+                    if (findClass(filePath, "Enum", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
 

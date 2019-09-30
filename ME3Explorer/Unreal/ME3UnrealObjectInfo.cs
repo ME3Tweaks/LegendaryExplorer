@@ -8,6 +8,7 @@ using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME3Explorer.Packages;
 using ME3Explorer.Properties;
+using ME3Explorer.Unreal.BinaryConverters;
 using Newtonsoft.Json;
 
 namespace ME3Explorer.Unreal
@@ -29,8 +30,8 @@ namespace ME3Explorer.Unreal
                 _ => false,
             };
 
+        public static bool IsOrInheritsFrom(this ClassInfo info, string baseClass, MEGame game) => IsOrInheritsFrom(info.ClassName, baseClass, game);
         public static bool IsOrInheritsFrom(this IEntry entry, string baseClass) => IsOrInheritsFrom(entry.ClassName, baseClass, entry.FileRef.Game);
-
         public static bool IsOrInheritsFrom(string className, string baseClass, MEGame game) =>
             game switch
             {
@@ -60,6 +61,60 @@ namespace ME3Explorer.Unreal
                 MEGame.UDK => ME3UnrealObjectInfo.getEnumValues(enumName, includeNone),
                 _ => null
             };
+
+        /// <summary>
+        /// Recursively gets class defaults, traveling up inheritiance chain, but stopping at <paramref name="notIncludingClass"></paramref>
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="className"></param>
+        /// <param name="notIncludingClass"></param>
+        /// <returns></returns>
+        public static PropertyCollection getClassDefaults(MEGame game, string className, string notIncludingClass = null)
+        {
+            Dictionary<string, ClassInfo> classes = GetClasses(game);
+            if (classes.TryGetValue(className, out ClassInfo info))
+            {
+                try
+                {
+                    PropertyCollection props = new PropertyCollection();
+                    while (info != null && info.ClassName != notIncludingClass)
+                    {
+                        string filepath = Path.Combine(MEDirectories.BioGamePath(game), info.pccPath);
+                        if (File.Exists(info.pccPath))
+                        {
+                            filepath = info.pccPath; //Used for dynamic lookup
+                        }
+                        if (game == MEGame.ME1 && !File.Exists(filepath))
+                        {
+                            filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
+                        }
+                        if (File.Exists(filepath))
+                        {
+                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackage(filepath);
+                            ExportEntry classExport = importPCC.GetUExport(info.exportIndex);
+                            UClass classBin = ObjectBinary.From<UClass>(classExport);
+                            ExportEntry defaults = importPCC.GetUExport(classBin.Defaults);
+
+                            foreach (var prop in defaults.GetProperties())
+                            {
+                                if (!props.ContainsNamedProp(prop.Name))
+                                {
+                                    props.Add(prop);
+                                }
+                            }
+                        }
+
+                        classes.TryGetValue(info.baseClass, out info);
+                    }
+                    return props;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            return null;
+        }
 
         /// <summary>
         /// Gets the type of an array
@@ -555,12 +610,11 @@ namespace ME3Explorer.Unreal
         public static PropertyCollection getDefaultStructValue(string structName, bool stripTransients)
         {
             bool isImmutable = UnrealObjectInfo.IsImmutable(structName, MEGame.ME3);
-            if (Structs.ContainsKey(structName))
+            if (Structs.TryGetValue(structName, out ClassInfo info))
             {
                 try
                 {
-                    PropertyCollection structProps = new PropertyCollection();
-                    ClassInfo info = Structs[structName];
+                    PropertyCollection props = new PropertyCollection();
                     while (info != null)
                     {
                         foreach ((string propName, PropertyInfo propInfo) in info.properties)
@@ -571,7 +625,7 @@ namespace ME3Explorer.Unreal
                             }
                             if (getDefaultProperty(propName, propInfo, stripTransients, isImmutable) is UProperty uProp)
                             {
-                                structProps.Add(uProp);
+                                props.Add(uProp);
                             }
                         }
                         string filepath = Path.Combine(ME3Directory.gamePath, "BIOGame", info.pccPath);
@@ -588,16 +642,16 @@ namespace ME3Explorer.Unreal
                                 PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), structName);
                                 foreach (var prop in defaults)
                                 {
-                                    structProps.TryReplaceProp(prop);
+                                    props.TryReplaceProp(prop);
                                 }
                             }
                         }
 
                         Structs.TryGetValue(info.baseClass, out info);
                     }
-                    structProps.Add(new NoneProperty());
+                    props.Add(new NoneProperty());
                     
-                    return structProps;
+                    return props;
                 }
                 catch
                 {

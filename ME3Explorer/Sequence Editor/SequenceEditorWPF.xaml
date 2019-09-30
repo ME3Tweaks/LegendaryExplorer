@@ -40,7 +40,7 @@
                 <MenuItem Header="Break All" Name="breakAllLinksMenuItem" Click="removeAllLinks"/>
             </MenuItem>
             <MenuItem Header="Repoint incoming references" Name="repointIncomingReferences" Click="RepointIncomingReferences_Click"/>
-            <MenuItem Header="Remove from sequence" Name="removeFromSequenceMenuItem" Click="RemoveFromSequence_Click"/>
+            <MenuItem Header="Trash and remove from sequence" Name="removeFromSequenceMenuItem" Click="TrashAndRemoveFromSequence_Click"/>
         </ContextMenu>
         <ContextMenu x:Key="backContextMenu">
             <MenuItem Header="Add Existing Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence"/>
