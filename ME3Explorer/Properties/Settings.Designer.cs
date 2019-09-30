@@ -322,7 +322,22 @@ namespace ME3Explorer.Properties {
                 this["PropertyDBPath"] = value;
             }
         }
-        
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PropertyDBGame
+        {
+            get
+            {
+                return ((string)(this["PropertyDBGame"]));
+            }
+            set
+            {
+                this["PropertyDBGame"] = value;
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]

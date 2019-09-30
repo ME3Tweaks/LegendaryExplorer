@@ -310,7 +310,7 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Property Database",
+                name = "Property Database (OLD)",
                 type = typeof(Propertydb.PropertyDB),
                 icon = Application.Current.FindResource("iconPropertyDatabase") as ImageSource,
                 open = () =>
@@ -320,6 +320,19 @@ namespace ME3Explorer
                 tags = new List<string> { "utility" },
                 subCategory = "Databases",
                 description = "Scans ME3 and creates a database of all the classes and properties for those classes that Bioware uses.\n\nThis is different than Package Dumper, as it looks across all instances of the class and what is actually used."
+            });
+            set.Add(new Tool
+            {
+                name = "Property Database WPF",
+                type = typeof(PropertyDatabase.PropertyDB),
+                icon = Application.Current.FindResource("iconPropertyDatabase") as ImageSource,
+                open = () =>
+                {
+                    (new PropertyDatabase.PropertyDB()).Show();
+                },
+                tags = new List<string> { "utility" },
+                subCategory = "Databases",
+                description = "Scans games and creates a database of all the classes and properties for those classes that Bioware uses.\n\nThis is different than Package Dumper, as it looks across all instances of the class and what is actually used."
             });
             set.Add(new Tool
             {
