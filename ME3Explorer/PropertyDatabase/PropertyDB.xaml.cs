@@ -100,6 +100,7 @@ namespace ME3Explorer.PropertyDatabase
         }
 
         private bool IsMeshRendering;
+        private IMEPackage meshPcc;
         public ICommand GenerateDBCommand { get; set; }
         public ICommand SwitchMECommand { get; set; }
         public ICommand CancelDumpCommand { get; set; }
@@ -174,6 +175,8 @@ namespace ME3Explorer.PropertyDatabase
            
             Properties.Settings.Default.PropertyDBPath = CurrentDBPath;
             Properties.Settings.Default.PropertyDBGame = currentGame.ToString();
+            MeshRendererTab_MeshRenderer.UnloadExport();
+            meshPcc.Dispose();
         }
 
         #endregion
@@ -439,19 +442,14 @@ namespace ME3Explorer.PropertyDatabase
         private void OpenInToolkit(string tool, string filename, int export = 0, string param = null)
         {
             string filePath = null;
-            string rootPath = null;
-            switch (currentGame)
+            string rootPath = MEDirectories.GamePath(currentGame);
+
+            if (rootPath == null)
             {
-                case MEGame.ME1:
-                    rootPath = ME1Directory.gamePath;
-                    break;
-                case MEGame.ME2:
-                    rootPath = ME2Directory.gamePath;
-                    break;
-                case MEGame.ME3:
-                    rootPath = ME3Directory.gamePath;
-                    break;
+                MessageBox.Show($"{currentGame} has not been found. Please check your ME3Explorer settings");
+                return;
             }
+
             filename = $"{filename}.*";
             filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault();
             if (filePath == null)
@@ -491,27 +489,86 @@ namespace ME3Explorer.PropertyDatabase
 
         private void btn_MeshRenderToggle_Click(object sender, RoutedEventArgs e)
         {
-            RenderMesh();
+            ToggleRenderMesh();
+            if(btn_MeshRenderToggle.IsChecked == true)
+            {
+                btn_MeshRenderToggle.Content = "Untoggle Mesh Rendering";
+            }
+            else
+            {
+                btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
+            }
         }
 
-        private void RenderMesh()
+        private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) //Fires if Tab moves away
+        {
+            if(e.AddedItems == e.RemovedItems)
+            {
+                return;
+            }
+
+            if(currentView != 3)
+            {
+                ToggleRenderMesh();
+                btn_MeshRenderToggle.IsChecked = false;
+                btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
+            }
+        }
+
+        private void lstbx_Meshes_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if(currentView == 3 && lstbx_Meshes.SelectedIndex >= 0)
+            {
+                ToggleRenderMesh();
+            }
+        }
+
+        private void ToggleRenderMesh()
         {
             bool showmesh = false;
-            if(IsMeshRendering && (lstbx_Meshes.SelectedIndex >= 0) && CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages.Count > 0)
+            if(btn_MeshRenderToggle.IsChecked == true && (lstbx_Meshes.SelectedIndex >= 0) && CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages.Count > 0 && currentView == 3)
             {
                 showmesh = true;
+                
             }
 
             if(!showmesh)
             {
                 MeshRendererTab_MeshRenderer.UnloadExport();
+                if(meshPcc != null)
+                {
+                    meshPcc.Dispose();
+                }
                 return;
             }
 
-            var file = CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages[0];
+            var filekey = CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages[0].Item1;
+            var filename = CurrentDataBase.FileList[filekey];
+            string rootPath = MEDirectories.GamePath(currentGame);
 
-            //MeshRendererTab_MeshRenderer.LoadExport() TO DO
-            
+            if (rootPath == null)
+            {
+                MessageBox.Show($"{currentGame} has not been found. Please check your ME3Explorer settings");
+                return;
+            }
+
+            filename = $"{filename}.*";
+            var filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault();
+            if (filePath == null)
+            {
+                MessageBox.Show($"File {filename} not found.");
+                return;
+            }
+
+            if (meshPcc != null)
+            {
+                MeshRendererTab_MeshRenderer.UnloadExport();
+                meshPcc.Dispose();
+            }
+            meshPcc = MEPackageHandler.OpenMEPackage(filePath);
+            var meshExp = meshPcc.getUExport(CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages[0].Item2);
+            MeshRendererTab_MeshRenderer.LoadExport(meshExp);
+
 
         }
         #endregion
@@ -716,6 +773,8 @@ namespace ME3Explorer.PropertyDatabase
             
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
+
+
 
         #endregion
 

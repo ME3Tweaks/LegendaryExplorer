@@ -66,7 +66,7 @@
             </StatusBarItem>
         </StatusBar>
         <DockPanel Name="MidDock">
-            <TabControl SelectedIndex="{Binding currentView, Mode=OneWayToSource}">
+            <TabControl SelectedIndex="{Binding currentView, Mode=OneWayToSource}" SelectionChanged="TabControl_SelectionChanged">
 <!-- Classes-->
                 <TabItem Header="Classes" TabIndex="0">
                     <DockPanel>
@@ -261,7 +261,7 @@
                 <!-- Meshes -->
                 <TabItem Header="Meshes" TabIndex="3">
                     <DockPanel>
-                        <SharedUI:ListBoxScroll x:Name="lstbx_Meshes" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Meshes}" >
+                        <SharedUI:ListBoxScroll x:Name="lstbx_Meshes" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Meshes}" SelectionChanged="lstbx_Meshes_SelectionChanged">
                             <SharedUI:ListBoxScroll.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
@@ -277,7 +277,7 @@
                             </SharedUI:ListBoxScroll.ItemTemplate>
                         </SharedUI:ListBoxScroll>
                         <DockPanel x:Name="details_Mesh" MinWidth="350" Margin="3">
-                            <ToggleButton x:Name="btn_MeshRenderToggle" Content="Toggle Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_MeshRenderToggle_Click" IsChecked="{Binding IsMeshRendering}"></ToggleButton>
+                            <ToggleButton x:Name="btn_MeshRenderToggle" Content="Toggle Mesh Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_MeshRenderToggle_Click" IsChecked="{Binding IsMeshRendering}"></ToggleButton>
                             <meshplorer:MeshRendererWPF x:Name="MeshRendererTab_MeshRenderer"/>
 
                         </DockPanel>
