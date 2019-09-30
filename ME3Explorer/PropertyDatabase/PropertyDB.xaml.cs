@@ -29,7 +29,15 @@ namespace ME3Explorer.PropertyDatabase
     {
         #region Declarations
         private int _currentView;
-        public int currentView { get => _currentView; set => SetProperty(ref _currentView, value); } 
+        public int currentView { get => _currentView; set => SetProperty(ref _currentView, value); }
+
+        private bool _isBusy;
+        public bool IsBusy { get => _isBusy; set => SetProperty(ref _isBusy, value); }
+        private string _busyText;
+        public string BusyText { get => _busyText; set => SetProperty(ref _busyText, value); }
+        private string _busyHeader;
+        public string BusyHeader { get => _busyHeader; set => SetProperty(ref _busyHeader, value); }
+
         public MEGame currentGame { get; set; }
         private string CurrentDBPath { get; set; }
         public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(), new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>());
@@ -151,7 +159,7 @@ namespace ME3Explorer.PropertyDatabase
             {
                 CurrentDBPath = null;
                 SwitchGame(MEGame.ME3);
-                
+
             }
         }
 
@@ -172,7 +180,7 @@ namespace ME3Explorer.PropertyDatabase
         {
             if (e.Cancel)
                 return;
-           
+
             Properties.Settings.Default.PropertyDBPath = CurrentDBPath;
             Properties.Settings.Default.PropertyDBGame = currentGame.ToString();
             MeshRendererTab_MeshRenderer.UnloadExport();
@@ -189,12 +197,12 @@ namespace ME3Explorer.PropertyDatabase
 
         public void LoadDatabase()
         {
-            if(CurrentDBPath == null)
+            if (CurrentDBPath == null)
             {
                 return;
             }
 
-            if(File.Exists(CurrentDBPath))
+            if (File.Exists(CurrentDBPath))
             {
                 JsonSerializer serializer = new JsonSerializer();
                 var readData = new PropsDataBase();
@@ -205,7 +213,7 @@ namespace ME3Explorer.PropertyDatabase
                 {
                     readData = serializer.Deserialize<PropsDataBase>(reader);
                 }
-                    
+
 
                 CurrentDataBase.meGame = readData.meGame;
                 CurrentDataBase.GenerationDate = readData.GenerationDate;
@@ -298,11 +306,12 @@ namespace ME3Explorer.PropertyDatabase
 
         private void FilterSeqClasses()
         {
-            if(!menu_fltrSeq.IsChecked)
+            if (!menu_fltrSeq.IsChecked)
             {
                 menu_fltrSeq.IsChecked = true;
                 ICollectionView view = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
-                view.Filter = delegate (object item) {
+                view.Filter = delegate (object item)
+                {
                     var classes = item as ClassRecord;
                     if (classes != null && (
                     classes.Class.ToLower().StartsWith("seq") ||
@@ -328,7 +337,7 @@ namespace ME3Explorer.PropertyDatabase
             ICollectionView viewA = CollectionViewSource.GetDefaultView(CurrentDataBase.Animations);
             ICollectionView viewC = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
 
-            if(ftxt == null)
+            if (ftxt == null)
             {
                 viewM.Filter = null;
                 viewA.Filter = null;
@@ -339,7 +348,8 @@ namespace ME3Explorer.PropertyDatabase
                 switch (currentView)
                 {
                     case 1:
-                        viewA.Filter = delegate (object item) {
+                        viewA.Filter = delegate (object item)
+                        {
                             var mats = item as Material;
                             if (mats != null &&
                             mats.MaterialName.ToLower().Contains(ftxt)) return true;
@@ -347,7 +357,8 @@ namespace ME3Explorer.PropertyDatabase
                         }; ;
                         break;
                     case 2:
-                        viewA.Filter = delegate (object item) {
+                        viewA.Filter = delegate (object item)
+                        {
                             var anims = item as Animation;
                             if (anims != null &&
                             anims.AnimSequence.ToLower().Contains(ftxt)) return true;
@@ -355,7 +366,8 @@ namespace ME3Explorer.PropertyDatabase
                         }; ;
                         break;
                     default:
-                        viewC.Filter = delegate (object item) {
+                        viewC.Filter = delegate (object item)
+                        {
                             var classes = item as ClassRecord;
                             if (classes != null &&
                             classes.Class.ToLower().Contains(ftxt)) return true;
@@ -377,7 +389,7 @@ namespace ME3Explorer.PropertyDatabase
                 return;
             }
             var scidx = CurrentDataBase.ClassRecords.IndexOf(CurrentDataBase.ClassRecords.Where(r => r.Class == sClass).FirstOrDefault());
-            if(scidx >= 0)
+            if (scidx >= 0)
             {
                 lstbx_Classes.SelectedIndex = scidx;
             }
@@ -405,9 +417,9 @@ namespace ME3Explorer.PropertyDatabase
                 usagepkg = CurrentDataBase.FileList[m.Item1];
                 usageexp = m.Item2;
             }
-            else if(lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 2)
+            else if (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 2)
             {
-                var a = lstbx_AnimUsages.SelectedItem as Tuple<int,int>;
+                var a = lstbx_AnimUsages.SelectedItem as Tuple<int, int>;
                 usagepkg = CurrentDataBase.FileList[a.Item1];
                 usageexp = a.Item2;
             }
@@ -490,7 +502,7 @@ namespace ME3Explorer.PropertyDatabase
         private void btn_MeshRenderToggle_Click(object sender, RoutedEventArgs e)
         {
             ToggleRenderMesh();
-            if(btn_MeshRenderToggle.IsChecked == true)
+            if (btn_MeshRenderToggle.IsChecked == true)
             {
                 btn_MeshRenderToggle.Content = "Untoggle Mesh Rendering";
             }
@@ -502,12 +514,12 @@ namespace ME3Explorer.PropertyDatabase
 
         private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) //Fires if Tab moves away
         {
-            if(e.AddedItems == e.RemovedItems)
+            if (e.AddedItems == e.RemovedItems)
             {
                 return;
             }
 
-            if(currentView != 3)
+            if (currentView != 3)
             {
                 ToggleRenderMesh();
                 btn_MeshRenderToggle.IsChecked = false;
@@ -517,7 +529,7 @@ namespace ME3Explorer.PropertyDatabase
 
         private void lstbx_Meshes_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if(currentView == 3 && lstbx_Meshes.SelectedIndex >= 0)
+            if (currentView == 3 && lstbx_Meshes.SelectedIndex >= 0)
             {
                 ToggleRenderMesh();
             }
@@ -526,16 +538,16 @@ namespace ME3Explorer.PropertyDatabase
         private void ToggleRenderMesh()
         {
             bool showmesh = false;
-            if(btn_MeshRenderToggle.IsChecked == true && (lstbx_Meshes.SelectedIndex >= 0) && CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages.Count > 0 && currentView == 3)
+            if (btn_MeshRenderToggle.IsChecked == true && (lstbx_Meshes.SelectedIndex >= 0) && CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages.Count > 0 && currentView == 3)
             {
                 showmesh = true;
-                
+
             }
 
-            if(!showmesh)
+            if (!showmesh)
             {
                 MeshRendererTab_MeshRenderer.UnloadExport();
-                if(meshPcc != null)
+                if (meshPcc != null)
                 {
                     meshPcc.Dispose();
                 }
@@ -566,7 +578,7 @@ namespace ME3Explorer.PropertyDatabase
                 meshPcc.Dispose();
             }
             meshPcc = MEPackageHandler.OpenMEPackage(filePath);
-            var meshExp = meshPcc.getUExport(CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages[0].Item2);
+            var meshExp = meshPcc.getExport(CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages[0].Item2);
             MeshRendererTab_MeshRenderer.LoadExport(meshExp);
 
 
@@ -576,15 +588,15 @@ namespace ME3Explorer.PropertyDatabase
         #region Scan
         private async void ScanGame()
         {
-            
+
             string outputDir = CurrentDBPath;
-            if(CurrentDBPath == null)
+            if (CurrentDBPath == null)
             {
                 outputDir = App.AppDataFolder;
             }
             string rootPath = MEDirectories.GamePath(currentGame);
-            
-            if(rootPath == null)
+
+            if (rootPath == null)
             {
                 MessageBox.Show($"{currentGame} has not been found. Please check your ME3Explorer settings");
                 return;
@@ -601,9 +613,9 @@ namespace ME3Explorer.PropertyDatabase
         {
             TopDock.IsEnabled = false;
             MidDock.IsEnabled = false;
-            StatusBar_Progress.Visibility = Visibility.Visible;
+            //StatusBar_Progress.Visibility = Visibility.Visible;
             StatusBar_RightSide_LastSaved.Visibility = Visibility.Hidden;
-            StatusBar_CancelBtn.Visibility = Visibility.Visible;
+            //StatusBar_CancelBtn.Visibility = Visibility.Visible;
             OverallProgressMaximum = files.Count;
             OverallProgressValue = 0;
             CurrentOverallOperationText = $"Generating Database...";
@@ -625,6 +637,10 @@ namespace ME3Explorer.PropertyDatabase
             dbworker.WorkerSupportsCancellation = true;
             dbworker.RunWorkerAsync();
 
+
+
+            IsBusy = true;
+            BusyHeader = $"Generating database for {currentGame}";
             ProcessingQueue = new ActionBlock<ClassScanSingleFileTask>(x =>
             {
                 if (x.DumpCanceled)
@@ -636,6 +652,7 @@ namespace ME3Explorer.PropertyDatabase
                 x.dumpPackageFile(game, this); // What to do on each item
                 Application.Current.Dispatcher.Invoke(() =>
                 {
+                    BusyText = $"Scanned {OverallProgressValue}/{OverallProgressMaximum} files\n\nClasses: { GeneratedClasses.Count}\nAnimations: { GeneratedAnims.Count}\nMaterials: { GeneratedMats.Count}\nMeshes: { GeneratedMeshes.Count}";
                     OverallProgressValue++; //Concurrency 
                     CurrentDumpingItems.Remove(x);
                 });
@@ -657,7 +674,7 @@ namespace ME3Explorer.PropertyDatabase
             CommandManager.InvalidateRequerySuggested();
             await ProcessingQueue.Completion;
             isProcessing = true;
-            
+
             if (DumpCanceled)
             {
                 DumpCanceled = false;
@@ -675,15 +692,16 @@ namespace ME3Explorer.PropertyDatabase
 
         private void dbworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            IsBusy = false;
             dbworker.CancelAsync();
             CommandManager.InvalidateRequerySuggested();
             try
             {
-               
+
                 //Add and sort Classes
                 CurrentDataBase.ClassRecords.AddRange(GeneratedClasses.Values);
                 CurrentDataBase.ClassRecords.Sort(x => x.Class);
-                foreach(var c in CurrentDataBase.ClassRecords)
+                foreach (var c in CurrentDataBase.ClassRecords)
                 {
                     c.PropertyRecords.Sort(x => x.Property);
                 }
@@ -706,9 +724,9 @@ namespace ME3Explorer.PropertyDatabase
                 GeneratedMeshes.Clear();
                 GeneratedValueChecker.Clear();
                 isProcessing = false;
-                StatusBar_Progress.Visibility = Visibility.Hidden;
+                //StatusBar_Progress.Visibility = Visibility.Hidden;
                 StatusBar_RightSide_LastSaved.Visibility = Visibility.Visible;
-                StatusBar_CancelBtn.Visibility = Visibility.Hidden;
+                //StatusBar_CancelBtn.Visibility = Visibility.Hidden;
                 SaveDatabase();
                 TopDock.IsEnabled = true;
                 MidDock.IsEnabled = true;
@@ -740,7 +758,7 @@ namespace ME3Explorer.PropertyDatabase
                         oldClassRecord.Definition_UID = record.Definition_UID;
                     }
 
-                    foreach( var r in record.PropertyRecords)
+                    foreach (var r in record.PropertyRecords)
                     {
                         var proprecord = oldClassRecord.PropertyRecords.FirstOrDefault(p => p.Property == r.Property);
                         if (proprecord == null)
@@ -748,7 +766,7 @@ namespace ME3Explorer.PropertyDatabase
                             oldClassRecord.PropertyRecords.Add(r);
                         }
                     }
-                    
+
                     oldClassRecord.ClassUsages.AddRange(record.ClassUsages);
 
                     if (isProcessing)
@@ -757,7 +775,7 @@ namespace ME3Explorer.PropertyDatabase
                     }
 
                 }
-                catch(Exception err)
+                catch (Exception err)
                 {
                     MessageBox.Show($"Error writing. {record.Class} {record.PropertyRecords[0].Property} {record.ClassUsages[0].FileKey} {err}");
                 }
@@ -770,7 +788,7 @@ namespace ME3Explorer.PropertyDatabase
             {
                 AllDumpingItems.ForEach(x => x.DumpCanceled = true);
             }
-            
+
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
 
@@ -843,7 +861,7 @@ namespace ME3Explorer.PropertyDatabase
         {
             this.Property = Property;
             this.Type = Type;
-            
+
         }
         public PropertyRecord()
         { }
@@ -991,8 +1009,7 @@ namespace ME3Explorer.PropertyDatabase
         /// </summary>
         public void dumpPackageFile(MEGame GameBeingDumped, PropertyDB dbScanner)
         {
-            dbScanner.CurrentOverallOperationText = $"Generating Database... Files: { dbScanner.OverallProgressValue}/{dbScanner.OverallProgressMaximum} {dbScanner._dbqueue.Count} Found Classes: { dbScanner.GeneratedClasses.Count} Animations: { dbScanner.GeneratedAnims.Count} Materials: { dbScanner.GeneratedMats.Count} Meshes: { dbScanner.GeneratedMeshes.Count}";
-            
+            //dbScanner.CurrentOverallOperationText = $"Generating Database... Files: { dbScanner.OverallProgressValue}/{dbScanner.OverallProgressMaximum} {dbScanner._dbqueue.Count} Found Classes: { dbScanner.GeneratedClasses.Count} Animations: { dbScanner.GeneratedAnims.Count} Materials: { dbScanner.GeneratedMats.Count} Meshes: { dbScanner.GeneratedMeshes.Count}";
             try
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
@@ -1014,7 +1031,7 @@ namespace ME3Explorer.PropertyDatabase
 
                         if (exp.ClassName != "Class")
                         {
-                            if (exp.ObjectName.StartsWith("Default__"))
+                            if (exp.IsDefaultObject)
                             {
                                 pIsdefault = true;
                             }
@@ -1040,7 +1057,7 @@ namespace ME3Explorer.PropertyDatabase
                                     case ObjectProperty pobj:
                                         if (pobj.Value != 0)
                                         {
-                                            pValue = pcc.getEntry(pobj.Value).ClassName;
+                                            pValue = pcc.GetEntry(pobj.Value).ClassName;
                                         }
                                         break;
                                     case BoolProperty pbool:
@@ -1101,7 +1118,7 @@ namespace ME3Explorer.PropertyDatabase
                                             var pscrdel = pdelg.Value.Object;
                                             if (pscrdel != 0)
                                             {
-                                                pValue = pcc.getEntry(pscrdel).ClassName;
+                                                pValue = pcc.GetEntry(pscrdel).ClassName;
                                             }
                                         }
                                         break;
@@ -1121,9 +1138,9 @@ namespace ME3Explorer.PropertyDatabase
                                     {
                                         foreach (var param in p as ArrayProperty<ObjectProperty>)
                                         {
-                                            if(param.Value > 0)
+                                            if (param.Value > 0)
                                             {
-                                                var exprsn = pcc.getUExport(param.Value);
+                                                var exprsn = pcc.GetUExport(param.Value);
                                                 var paramName = "n/a";
                                                 var paramNameProp = exprsn.GetProperty<NameProperty>("ParameterName");
                                                 if (paramNameProp != null)
@@ -1261,7 +1278,7 @@ namespace ME3Explorer.PropertyDatabase
                             }
                         }
                         else
-                        { 
+                        {
                             pClass = exp.ObjectName;
                             pSuperClass = exp.SuperClassName;
                             pDefUID = exp.UIndex;
@@ -1271,7 +1288,7 @@ namespace ME3Explorer.PropertyDatabase
                             if (!dbScanner.GeneratedClasses.TryAdd(pClass, NewClassRecord))
                             {
                                 dbScanner._dbqueue.Add(NewClassRecord);
-    
+
                             }
                         }
                     }
@@ -1286,7 +1303,7 @@ namespace ME3Explorer.PropertyDatabase
         private string GetTopParentPackage(IEntry export)
         {
             string toppackage = null;
-            if(export.HasParent)
+            if (export.HasParent)
             {
                 toppackage = GetTopParentPackage(export.Parent);
             }
