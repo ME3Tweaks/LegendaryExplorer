@@ -16,6 +16,17 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $date=$(Get-Date -Format s);
+      Write-Host "##vso[task.setvariable variable=time]$date"
+      $discordmessage="$(Build.SourceVersionMessage)"
+      $numlines = $($discordmessage | measure).Count
+      if ($numlines > 0) { $discordmessage=$($discordmessage -split '\n')[0] }
+      Write-Host "##vso[task.setvariable variable=discordmessage]$discordmessage"
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
@@ -49,19 +60,24 @@ steps:
 
 - task: ado-discord-webhook@1
   inputs:
-    channelId: '625923576960385045'
-    webhookKey: '9edOZQmHesLbsn1BxQVQGmg2eYo-hMFoRPKg8YBybpD0-l8O1-oPQUgPhiCdGLykHvMy'
+    channelId: '$(discord_channel_id)'
+    webhookKey: '$(discord_webhook_key)'
     name: 'Azure DevOps CI'
     avatar: 'https://i.imgur.com/mUtPj2S.png'
     messageType: 'embeds'
     embeds: |
       [{
         "title": "ME3Explorer - ME3Tweaks Fork Build Complete",
-        "description": "A new nightly build of ME3Explorer has been built.",
-        "image": {
+        "description": "A new nightly build of ME3Explorer has been built. Click this link and select Artifacts from the top right to download it. Nightly builds may be unstable and have bugs.",
+        "thumbnail": {
           "url": "https://i.imgur.com/mUtPj2S.png",
           "height": 64,
           "width": 64
         },
-        "url": "https://dev.azure.com/Mgamerz2/ME3Explorer/_build/results?buildId=$(Build.BuildId)"
+        "fields": [{
+          "name": "Triggering commit",
+          "value": "$(discordmessage)"
+        }],
+        "url": "https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/results?buildId=$(Build.BuildId)",
+        "timestamp": "$(time)"
       }]

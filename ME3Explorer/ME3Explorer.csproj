@@ -1459,6 +1459,9 @@
     <Resource Include="PackageEditor\EntryIcons\icon_material.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_package_fileroot.png" />
     <Resource Include="Resources\tfccompactor_256x256.ico" />
+    <Resource Include="PackageEditor\EntryIcons\icon_function.png" />
+    <Resource Include="PackageEditor\EntryIcons\icon_class.png" />
+    <Resource Include="PackageEditor\EntryIcons\icon_default.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
