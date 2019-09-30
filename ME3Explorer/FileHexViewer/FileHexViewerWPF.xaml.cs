@@ -107,7 +107,13 @@ namespace ME3Explorer.FileHexViewer
                     else if (strLength > 0)
                     {
                         inStream.ReadString(strLength, true, Encoding.ASCII); //-1 cause we also read trailing null.
-                        inStream.ReadValueS64(); //Read 8 bytes
+                        if (pcc.Game != MEGame.ME2)
+                        {
+                            inStream.ReadValueS64(); //Read 8 bytes
+                        } else
+                        {
+                            inStream.ReadValueS32(); //4 bytes
+                        }
                     }
                 }
 
