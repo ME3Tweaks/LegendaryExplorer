@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -136,7 +137,7 @@ namespace ME3Explorer.PropertyDatabase
 
             InitializeComponent();
 
-            if (CurrentDBPath != null && CurrentDBPath.EndsWith("JSON") && File.Exists(CurrentDBPath) && game != MEGame.Unknown)
+            if (CurrentDBPath != null && CurrentDBPath.EndsWith("zip") && File.Exists(CurrentDBPath) && game != MEGame.Unknown)
             {
                 SwitchGame(game.ToString());
             }
@@ -144,7 +145,7 @@ namespace ME3Explorer.PropertyDatabase
             {
                 CurrentDBPath = null;
                 SwitchGame("ME3");
-                CurrentOverallOperationText = "No database found.";
+                
             }
         }
 
@@ -187,7 +188,16 @@ namespace ME3Explorer.PropertyDatabase
 
             if(File.Exists(CurrentDBPath))
             {
-                var readData = JsonConvert.DeserializeObject<PropsDataBase>(File.ReadAllText(CurrentDBPath));
+                JsonSerializer serializer = new JsonSerializer();
+                var readData = new PropsDataBase();
+                using (ZipArchive archive = ZipFile.OpenRead(CurrentDBPath))
+                using (var jsonstream = archive.GetEntry($"PropertyDB{currentGame}.JSON").Open())
+                using (StreamReader sr = new StreamReader(jsonstream))
+                using (JsonReader reader = new JsonTextReader(sr))
+                {
+                    readData = serializer.Deserialize<PropsDataBase>(reader);
+                }
+                    
 
                 CurrentDataBase.meGame = readData.meGame;
                 CurrentDataBase.GenerationDate = readData.GenerationDate;
@@ -213,10 +223,32 @@ namespace ME3Explorer.PropertyDatabase
             CurrentOverallOperationText = $"Database saving...";
 
             ////Save database to JSON directly to file
-            using (StreamWriter file = File.CreateText(CurrentDBPath))
+            //using (StreamWriter file = File.CreateText(CurrentDBPath))
+            //{
+            //    JsonSerializer serializer = new JsonSerializer();
+            //    serializer.Serialize(file, CurrentDataBase);
+            //}
+
+            //Zip Compressed save
+            using (var memoryStream = new MemoryStream())
             {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(file, CurrentDataBase);
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                    var zipFile = archive.CreateEntry($"PropertyDB{currentGame}.JSON");
+
+                    using (var entryStream = zipFile.Open())
+                    using (var streamWriter = new StreamWriter(entryStream))
+                    {
+                        var jsondb = JsonConvert.SerializeObject(CurrentDataBase);
+                        streamWriter.Write(jsondb);
+                    }
+                }
+
+                using (var fileStream = new FileStream(CurrentDBPath, FileMode.Create))
+                {
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    memoryStream.CopyTo(fileStream);
+                }
             }
             CurrentOverallOperationText = $"Database saved.";
             await Task.Delay(5000);
@@ -262,7 +294,7 @@ namespace ME3Explorer.PropertyDatabase
                     switchME3_menu.IsChecked = true;
                     break;
             }
-            CurrentDBPath = Path.Combine(App.AppDataFolder, $"PropertyDB{currentGame}.JSON");
+            CurrentDBPath = Path.Combine(App.AppDataFolder, $"PropertyDB{currentGame}.zip");
 
             LoadDatabase();
         }
