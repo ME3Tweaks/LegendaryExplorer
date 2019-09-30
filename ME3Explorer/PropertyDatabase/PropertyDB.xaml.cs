@@ -28,14 +28,7 @@ namespace ME3Explorer.PropertyDatabase
     {
         #region Declarations
         private int _currentView;
-        public int currentView { get => _currentView; set { SetProperty(ref _currentView, value); Console.WriteLine($"Tab index{_currentView}"); } }
-
-        public enum DBView
-        {
-            Class = 0,
-            Animations,
-            Materials,
-        }
+        public int currentView { get => _currentView; set => SetProperty(ref _currentView, value); } 
         public MEGame currentGame { get; set; }
         private string CurrentDBPath { get; set; }
         public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(), new ObservableCollectionExtended<Animation>());
@@ -48,6 +41,10 @@ namespace ME3Explorer.PropertyDatabase
         /// Dictionary that stores generated Animations
         /// </summary>
         public ConcurrentDictionary<String, Animation> GeneratedAnims = new ConcurrentDictionary<String, Animation>();
+        /// <summary>
+        /// Dictionary that stores generated Materials
+        /// </summary>
+        public ConcurrentDictionary<String, Material> GeneratedMats = new ConcurrentDictionary<String, Material>();
         /// <summary>
         /// Used to check if values generated are unique.
         /// </summary>
@@ -98,7 +95,6 @@ namespace ME3Explorer.PropertyDatabase
         }
 
         public ICommand GenerateDBCommand { get; set; }
-        public ICommand SwitchViewCommand { get; set; }
         public ICommand SwitchMECommand { get; set; }
         public ICommand CancelDumpCommand { get; set; }
         public ICommand OpenSourcePkgCommand { get; set; }
@@ -116,7 +112,7 @@ namespace ME3Explorer.PropertyDatabase
         }
         private bool IsUsageSelected(object obj)
         {
-            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 0) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 1);
+            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 0) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 1) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 2);
         }
         public override void handleUpdate(List<PackageUpdate> updates)
         {
@@ -201,6 +197,8 @@ namespace ME3Explorer.PropertyDatabase
                 CurrentDataBase.ClassRecords.AddRange(readData.ClassRecords);
                 CurrentDataBase.Animations.Clear();
                 CurrentDataBase.Animations.AddRange(readData.Animations);
+                CurrentDataBase.Materials.Clear();
+                CurrentDataBase.Materials.AddRange(readData.Materials);
                 CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count}";
             }
             else
@@ -345,7 +343,13 @@ namespace ME3Explorer.PropertyDatabase
                 usagepkg = CurrentDataBase.FileList[c.FileKey];
                 usageexp = c.ExportUID;
             }
-            else if(lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 1)
+            else if (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 1)
+            {
+                var m = lstbx_MatUsages.SelectedItem as Tuple<int, int, bool>;
+                usagepkg = CurrentDataBase.FileList[m.Item1];
+                usageexp = m.Item2;
+            }
+            else if(lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 2)
             {
                 var a = lstbx_AnimUsages.SelectedItem as Tuple<int,int>;
                 usagepkg = CurrentDataBase.FileList[a.Item1];
@@ -488,14 +492,15 @@ namespace ME3Explorer.PropertyDatabase
                     OverallProgressValue++; //Concurrency 
                     CurrentDumpingItems.Remove(x);
                 });
-            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount });
+            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount }); // App.CoreCount
 
             AllDumpingItems = new List<ClassScanSingleFileTask>();
             CurrentDumpingItems.ClearEx();
             foreach (var item in files)
             {
+                var filekey = CurrentDataBase.FileList.Count;
                 CurrentDataBase.FileList.Add(Path.GetFileNameWithoutExtension(item));
-                var threadtask = new ClassScanSingleFileTask(item);
+                var threadtask = new ClassScanSingleFileTask(item, filekey);
                 AllDumpingItems.Add(threadtask); //For setting cancelation value
                 ProcessingQueue.Post(threadtask); // Post all items to the block
 
@@ -540,9 +545,13 @@ namespace ME3Explorer.PropertyDatabase
                 CurrentDataBase.Animations.AddRange(GeneratedAnims.Values);
                 CurrentDataBase.Animations.Sort(x => x.AnimSequence);
 
+                //Add Materials
+                CurrentDataBase.Materials.AddRange(GeneratedMats.Values);
+                CurrentDataBase.Materials.Sort(x => x.MaterialName);
 
                 GeneratedClasses.Clear();
                 GeneratedAnims.Clear();
+                GeneratedMats.Clear();
                 GeneratedValueChecker.Clear();
                 isProcessing = false;
                 StatusBar_Progress.Visibility = Visibility.Hidden;
@@ -559,7 +568,7 @@ namespace ME3Explorer.PropertyDatabase
             }
         }
 
-        private void DBProcessor(object sender, DoWorkEventArgs e)
+        private void DBProcessor(object sender, DoWorkEventArgs e) //Background worker to clean up class data.
         {
 
             foreach (ClassRecord record in _dbqueue.GetConsumingEnumerable(CancellationToken.None))
@@ -701,17 +710,19 @@ namespace ME3Explorer.PropertyDatabase
     {
         private string _MaterialName;
         public string MaterialName { get => _MaterialName; set => SetProperty(ref _MaterialName, value); }
-        public string ParentPackage;
-        public bool IsDLC;
-        public ObservableCollectionExtended<(string, int)> MaterialUsages { get; } = new ObservableCollectionExtended<(string, int)>(); //File reference then export
+        private string _ParentPackagee;
+        public string ParentPackage { get => _ParentPackagee; set => SetProperty(ref _ParentPackagee, value); }
+        private bool _IsDLCOnly;
+        public bool IsDLCOnly { get => _IsDLCOnly; set => SetProperty(ref _IsDLCOnly, value); }
+        public ObservableCollectionExtended<Tuple<int, int, bool>> MaterialUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool>>(); //File reference, export, isDLC file
 
-        public ObservableCollectionExtended<string> MatSettings { get; } = new ObservableCollectionExtended<string>();
+        public ObservableCollectionExtended<Tuple<string, string, string>> MatSettings { get; } = new ObservableCollectionExtended<Tuple<string, string, string>>();
 
-        public Material(string MaterialName, string ParentPackage, bool IsDLC, ObservableCollectionExtended<(string, int)> MaterialUsages, ObservableCollectionExtended<string> MatSettings)
+        public Material(string MaterialName, string ParentPackage, bool IsDLCOnly, ObservableCollectionExtended<Tuple<int, int, bool>> MaterialUsages, ObservableCollectionExtended<Tuple<string, string, string>> MatSettings)
         {
             this.MaterialName = MaterialName;
             this.ParentPackage = ParentPackage;
-            this.IsDLC = IsDLC;
+            this.IsDLCOnly = IsDLCOnly;
             this.MaterialUsages.AddRange(MaterialUsages);
             this.MatSettings.AddRange(MatSettings);
         }
@@ -724,15 +735,30 @@ namespace ME3Explorer.PropertyDatabase
     {
         private string _AnimSequence;
         public string AnimSequence { get => _AnimSequence; set => SetProperty(ref _AnimSequence, value); }
-        public string AnimData;
-        public float Length;
+        private string _SeqName;
+        public string SeqName { get => _SeqName; set => SetProperty(ref _SeqName, value); }
+        private string _AnimData;
+        public string AnimData { get => _AnimData; set => SetProperty(ref _AnimData, value); }
+        private float _Length;
+        public float Length { get => _Length; set => SetProperty(ref _Length, value); }
+        private int _Frames;
+        public int Frames { get => _Frames; set => SetProperty(ref _Frames, value); }
+        private string _Compression;
+        public string Compression { get => _Compression; set => SetProperty(ref _Compression, value); }
+        private string _KeyFormat;
+        public string KeyFormat { get => _KeyFormat; set => SetProperty(ref _KeyFormat, value); }
+
         public ObservableCollectionExtended<Tuple<int, int>> AnimUsages { get; } = new ObservableCollectionExtended<Tuple<int, int>>(); //File reference then export
 
-        public Animation(string AnimSequence, string AnimData, float Length, ObservableCollectionExtended<Tuple<int, int>> AnimUsages)
+        public Animation(string AnimSequence, string SeqName, string AnimData, float Length, int Frames, string Compression, string KeyFormat, ObservableCollectionExtended<Tuple<int, int>> AnimUsages)
         {
             this.AnimSequence = AnimSequence;
+            this.SeqName = SeqName;
             this.AnimData = AnimData;
             this.Length = Length;
+            this.Frames = Frames;
+            this.Compression = Compression;
+            this.KeyFormat = KeyFormat;
             this.AnimUsages.AddRange(AnimUsages);
         }
 
@@ -768,34 +794,28 @@ namespace ME3Explorer.PropertyDatabase
             set => SetProperty(ref _shortFileName, value);
         }
 
-        public ClassScanSingleFileTask(string file)
+        public ClassScanSingleFileTask(string file, int filekey)
         {
             File = file;
             ShortFileName = Path.GetFileNameWithoutExtension(file);
-
+            FileKey = filekey;
         }
 
         public bool DumpCanceled;
-
+        private readonly int FileKey;
         private readonly string File;
 
         /// <summary>
         /// Dumps Property data to concurrent dictionary
         /// </summary>
-        public void dumpPackageFile(MEGame GameBeingDumped, PropertyDB dumper)
+        public void dumpPackageFile(MEGame GameBeingDumped, PropertyDB dbScanner)
         {
-            dumper.CurrentOverallOperationText = $"Generating Database... Files: { dumper.OverallProgressValue}/{dumper.OverallProgressMaximum} {dumper._dbqueue.Count} Found Classes: { dumper.GeneratedClasses.Count} Animations: { dumper.GeneratedAnims.Count}";
+            dbScanner.CurrentOverallOperationText = $"Generating Database... Files: { dbScanner.OverallProgressValue}/{dbScanner.OverallProgressMaximum} {dbScanner._dbqueue.Count} Found Classes: { dbScanner.GeneratedClasses.Count} Animations: { dbScanner.GeneratedAnims.Count} Materials: { dbScanner.GeneratedMats.Count}";
             
             try
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
                 {
-                    if (GameBeingDumped == MEGame.Unknown) //Correct mapping
-                    {
-                        GameBeingDumped = pcc.Game;
-                    }
-
-                    int pFileKey = dumper.CurrentDataBase.FileList.FindIndex(i => i == ShortFileName);
 
                     foreach (ExportEntry exp in pcc.Exports)
                     {
@@ -814,118 +834,198 @@ namespace ME3Explorer.PropertyDatabase
                                 pIsdefault = true;
                             }
                             var pList = new ObservableCollectionExtended<PropertyRecord>();
-                            var props = exp.GetProperties(false, true);
+                            var mSets = new ObservableCollectionExtended<Tuple<string, string, string>>();
+                            var props = exp.GetProperties(false, false);
                             foreach (var p in props)
                             {
                                 string pName = p.Name;
                                 string pType = p.PropType.ToString();
-                                //string pValue = "null";
-                                //switch (p)
-                                //{
-                                //    case ArrayPropertyBase parray:
-                                //        pValue = "Array";
-                                //        break;
-                                //    case StructProperty pstruct:
-                                //        pValue = "Struct";
-                                //        break;
-                                //    case NoneProperty pnone:
-                                //        pValue = "None";
-                                //        break;
-                                //    case ObjectProperty pobj:
-                                //        if (pobj.Value != 0)
-                                //        {
-                                //            pValue = pcc.getEntry(pobj.Value).ClassName;
-                                //        }
-                                //        break;
-                                //    case BoolProperty pbool:
-                                //        pValue = pbool.Value.ToString();
-                                //        break;
-                                //    case IntProperty pint:
-                                //        if (pIsdefault)
-                                //        {
-                                //            pValue = pint.Value.ToString();
-                                //        }
-                                //        else
-                                //        {
-                                //            pValue = "int"; //Keep DB size down
-                                //        }
-                                //        break;
-                                //    case FloatProperty pflt:
-                                //        if (pIsdefault)
-                                //        {
-                                //            pValue = pflt.Value.ToString();
-                                //        }
-                                //        else
-                                //        {
-                                //            pValue = "float"; //Keep DB size down
-                                //        }
-                                //        break;
-                                //    case NameProperty pnme:
-                                //        pValue = pnme.Value.ToString();
-                                //        break;
-                                //    case ByteProperty pbte:
-                                //        pValue = pbte.Value.ToString();
-                                //        break;
-                                //    case EnumProperty penum:
-                                //        pValue = penum.Value.ToString();
-                                //        break;
-                                //    case StrProperty pstr:
-                                //        if (pIsdefault)
-                                //        {
-                                //            pValue = pstr;
-                                //        }
-                                //        else
-                                //        {
-                                //            pValue = "string";
-                                //        }
-                                //        break;
-                                //    case StringRefProperty pstrref:
-                                //        if (pIsdefault)
-                                //        {
-                                //            pValue = pstrref.Value.ToString();
-                                //        }
-                                //        else
-                                //        {
-                                //            pValue = "TLK StringRef";
-                                //        }
-                                //        break;
-                                //    case DelegateProperty pdelg:
-                                //        if (pdelg.Value != null)
-                                //        {
-                                //            var pscrdel = pdelg.Value.Object;
-                                //            if (pscrdel != 0)
-                                //            {
-                                //                pValue = pcc.getEntry(pscrdel).ClassName;
-                                //            }
-                                //        }
-                                //        break;
-                                //    default:
-                                //        pValue = p.ToString();
-                                //        break;
-                                //}
-
+                                string pValue = "null";
+                                switch (p)
+                                {
+                                    case ArrayPropertyBase parray:
+                                        pValue = "Array";
+                                        break;
+                                    case StructProperty pstruct:
+                                        pValue = "Struct";
+                                        break;
+                                    case NoneProperty pnone:
+                                        pValue = "None";
+                                        break;
+                                    case ObjectProperty pobj:
+                                        if (pobj.Value != 0)
+                                        {
+                                            pValue = pcc.getEntry(pobj.Value).ClassName;
+                                        }
+                                        break;
+                                    case BoolProperty pbool:
+                                        pValue = pbool.Value.ToString();
+                                        break;
+                                    case IntProperty pint:
+                                        if (pIsdefault)
+                                        {
+                                            pValue = pint.Value.ToString();
+                                        }
+                                        else
+                                        {
+                                            pValue = "int"; //Keep DB size down
+                                        }
+                                        break;
+                                    case FloatProperty pflt:
+                                        if (pIsdefault)
+                                        {
+                                            pValue = pflt.Value.ToString();
+                                        }
+                                        else
+                                        {
+                                            pValue = "float"; //Keep DB size down
+                                        }
+                                        break;
+                                    case NameProperty pnme:
+                                        pValue = pnme.Value.ToString();
+                                        break;
+                                    case ByteProperty pbte:
+                                        pValue = pbte.Value.ToString();
+                                        break;
+                                    case EnumProperty penum:
+                                        pValue = penum.Value.ToString();
+                                        break;
+                                    case StrProperty pstr:
+                                        if (pIsdefault)
+                                        {
+                                            pValue = pstr;
+                                        }
+                                        else
+                                        {
+                                            pValue = "string";
+                                        }
+                                        break;
+                                    case StringRefProperty pstrref:
+                                        if (pIsdefault)
+                                        {
+                                            pValue = pstrref.Value.ToString();
+                                        }
+                                        else
+                                        {
+                                            pValue = "TLK StringRef";
+                                        }
+                                        break;
+                                    case DelegateProperty pdelg:
+                                        if (pdelg.Value != null)
+                                        {
+                                            var pscrdel = pdelg.Value.Object;
+                                            if (pscrdel != 0)
+                                            {
+                                                pValue = pcc.getEntry(pscrdel).ClassName;
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        pValue = p.ToString();
+                                        break;
+                                }
 
                                 var NewPropertyRecord = new PropertyRecord(pName, pType);
                                 pList.Add(NewPropertyRecord);
+
+                                if (exp.ClassName == "Material" && !dbScanner.GeneratedMats.ContainsKey(pExp)) //Run material settings
+                                {
+                                    var pSet = new Tuple<string, string, string>(null, null, null);
+                                    var matSet_name = p.Name;
+                                    if (matSet_name == "Expressions")
+                                    {
+                                        foreach (var param in p as ArrayProperty<ObjectProperty>)
+                                        {
+                                            if(param.Value > 0)
+                                            {
+                                                var exprsn = pcc.getUExport(param.Value);
+                                                var paramName = "n/a";
+                                                var paramNameProp = exprsn.GetProperty<NameProperty>("ParameterName");
+                                                if (paramNameProp != null)
+                                                {
+                                                    paramName = paramNameProp.Value;
+                                                }
+                                                string exprsnName = exprsn.ClassName.Remove(0, 18);
+                                                switch (exprsn.ClassName)
+                                                {
+                                                    case "MaterialExpressionScalarParameter":
+                                                        var sValue = exprsn.GetProperty<FloatProperty>("DefaultValue");
+                                                        string defscalar = "n/a";
+                                                        if (sValue != null)
+                                                        {
+                                                            defscalar = sValue.Value.ToString();
+                                                        }
+                                                        pSet = new Tuple<string, string, string>(exprsnName, paramName, defscalar);
+                                                        break;
+                                                    case "MaterialExpressionVectorParameter":
+                                                        var vValue = exprsn.GetProperty<StructProperty>("DefaultValue");
+                                                        string linearColor = "n/a";
+                                                        //if (vValue != null)
+                                                        //{
+                                                        //    linearColor = vValue.ToString();
+                                                        //}
+                                                        pSet = new Tuple<string, string, string>(exprsnName, paramName, linearColor);
+                                                        break;
+                                                    default:
+                                                        pSet = new Tuple<string, string, string>(exprsnName, paramName, null);
+                                                        break;
+                                                }
+
+                                                mSets.Add(pSet);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        pSet = new Tuple<string, string, string>(matSet_name, pType, pValue);
+                                        mSets.Add(pSet);
+                                    }
+                                }
                             }
 
-
-                            var NewUsageRecord = new ClassUsage(pFileKey, pExportUID, pIsdefault);
+                            var NewUsageRecord = new ClassUsage(FileKey, pExportUID, pIsdefault);
                             var NewClassRecord = new ClassRecord(pClass, pDefinitionPackage, pDefUID, pSuperClass, pList, new ObservableCollectionExtended<ClassUsage>() { NewUsageRecord });
                             string valueKey = string.Concat(pClass, ShortFileName, pIsdefault.ToString());
-                            if (!dumper.GeneratedClasses.TryAdd(pClass, NewClassRecord) && dumper.GeneratedValueChecker.TryAdd(valueKey, true))
+                            if (!dbScanner.GeneratedClasses.TryAdd(pClass, NewClassRecord) && dbScanner.GeneratedValueChecker.TryAdd(valueKey, true))
                             {
-                                dumper._dbqueue.Add(NewClassRecord);
+                                dbScanner._dbqueue.Add(NewClassRecord);
 
                             }
+
+                            try
+                            {
+                                if (exp.ClassName == "Material")
+                                {
+                                    string parent = GetTopParentPackage(exp);
+                                    bool IsDLC = pcc.IsInOfficialDLC();
+
+                                    var NewMat = new Material(pExp, parent, IsDLC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) }, mSets);
+                                    if (!dbScanner.GeneratedMats.TryAdd(pExp, NewMat))
+                                    {
+                                        var eMat = dbScanner.GeneratedMats[pExp];
+                                        eMat.MaterialUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC));
+                                        if (eMat.IsDLCOnly)
+                                        {
+                                            eMat.IsDLCOnly = IsDLC;
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                MessageBox.Show($"Exception {exp.UIndex} {ShortFileName} Material {pExp} {e}");
+                            }
+
 
                             if (exp.ClassName == "AnimSequence")
                             {
-                                string aSet = null;
-                                var pSet = exp.GetProperty<NameProperty>("SequenceName");
-                                if (pSet != null)
+                                string aSeq = null;
+                                string aGrp = "None";
+                                var pSeq = exp.GetProperty<NameProperty>("SequenceName");
+                                if (pSeq != null)
                                 {
-                                    aSet = pSet.Value;
+                                    aSeq = pSeq.Value;
+                                    aGrp = pExp.Replace(aSeq, null);
                                 }
                                 float aLength = 0;
                                 var pLength = exp.GetProperty<FloatProperty>("SequenceLength");
@@ -933,11 +1033,29 @@ namespace ME3Explorer.PropertyDatabase
                                 {
                                     aLength = pLength.Value;
                                 }
-                                var NewAnim = new Animation(pExp, aSet, aLength, new ObservableCollectionExtended<Tuple<int, int>>() { new Tuple<int, int>(pFileKey, pExportUID) });
-                                if (!dumper.GeneratedAnims.TryAdd(pExp, NewAnim))
+                                int aFrames = 0;
+                                var pFrames = exp.GetProperty<IntProperty>("NumFrames");
+                                if (pFrames != null)
                                 {
-                                    var anim = dumper.GeneratedAnims[pExp];
-                                    anim.AnimUsages.Add(new Tuple<int, int>(pFileKey, pExportUID));
+                                    aFrames = pFrames.Value;
+                                }
+                                string aComp = "None";
+                                var pComp = exp.GetProperty<EnumProperty>("RotationCompressionFormat");
+                                if (pComp != null)
+                                {
+                                    aComp = pComp.Value.ToString();
+                                }
+                                string aKeyF = "None";
+                                var pKeyF = exp.GetProperty<EnumProperty>("KeyEncodingFormat");
+                                if (pKeyF != null)
+                                {
+                                    aKeyF = pKeyF.Value.ToString();
+                                }
+                                var NewAnim = new Animation(pExp, aSeq, aGrp, aLength, aFrames, aComp, aKeyF, new ObservableCollectionExtended<Tuple<int, int>>() { new Tuple<int, int>(FileKey, pExportUID) });
+                                if (!dbScanner.GeneratedAnims.TryAdd(pExp, NewAnim))
+                                {
+                                    var anim = dbScanner.GeneratedAnims[pExp];
+                                    anim.AnimUsages.Add(new Tuple<int, int>(FileKey, pExportUID));
                                 }
                             }
                         }
@@ -946,12 +1064,12 @@ namespace ME3Explorer.PropertyDatabase
                             pClass = exp.ObjectName;
                             pSuperClass = exp.SuperClassName;
                             pDefUID = exp.UIndex;
-                            var NewUsageRecord = new ClassUsage(pFileKey, pExportUID, pIsdefault);
+                            var NewUsageRecord = new ClassUsage(FileKey, pExportUID, pIsdefault);
                             var NewPropertyRecord = new PropertyRecord("None", "NoneProperty");
                             var NewClassRecord = new ClassRecord(pClass, ShortFileName, pDefUID, pSuperClass, new ObservableCollectionExtended<PropertyRecord>() { NewPropertyRecord }, new ObservableCollectionExtended<ClassUsage>() { NewUsageRecord });
-                            if (!dumper.GeneratedClasses.TryAdd(pClass, NewClassRecord))
+                            if (!dbScanner.GeneratedClasses.TryAdd(pClass, NewClassRecord))
                             {
-                                dumper._dbqueue.Add(NewClassRecord);
+                                dbScanner._dbqueue.Add(NewClassRecord);
     
                             }
                         }
@@ -963,7 +1081,22 @@ namespace ME3Explorer.PropertyDatabase
                 MessageBox.Show($"Exception {ShortFileName} SingleFileProcess {e}");
             }
         }
+
+        private string GetTopParentPackage(IEntry export)
+        {
+            string toppackage = null;
+            if(export.HasParent)
+            {
+                toppackage = GetTopParentPackage(export.Parent);
+            }
+            else
+            {
+                toppackage = export.ObjectName;
+            }
+            return toppackage;
+        }
     }
+
     #endregion
 
 }
