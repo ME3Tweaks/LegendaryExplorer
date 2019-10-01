@@ -4505,18 +4505,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                int offset = 0;
-
-                int unrealExportIndex = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} Unreal Unique Index: {unrealExportIndex}",
-                    Name = "_" + offset,
-
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 4;
-
+                int offset = 4;
 
                 int superclassIndex = BitConverter.ToInt32(data, offset);
                 string superclassStr = CurrentLoadedExport.FileRef.GetEntryString(superclassIndex);
@@ -4542,7 +4531,7 @@ namespace ME3Explorer
                 int childProbeUIndex = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"0x{offset:X5} Child probe first item UIndex: {childProbeUIndex} ({CurrentLoadedExport.FileRef.GetEntryString(childProbeUIndex)}))",
+                    Header = $"0x{offset:X5} ChildListStart: {childProbeUIndex} ({CurrentLoadedExport.FileRef.GetEntryString(childProbeUIndex)}))",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafObject
                 });
@@ -4551,7 +4540,7 @@ namespace ME3Explorer
 
                 //I am not sure what these mean. However if Pt1&2 are 33/25, the following bytes that follow are extended.
                 //int headerUnknown1 = BitConverter.ToInt32(data, offset);
-                Int64 ignoreMask = BitConverter.ToInt64(data, offset);
+                long ignoreMask = BitConverter.ToInt64(data, offset);
                 subnodes.Add(new BinInterpNode
                 {
                     Header = $"0x{offset:X5} IgnoreMask: 0x{ignoreMask:X16}",
@@ -4621,7 +4610,7 @@ namespace ME3Explorer
                         string scriptText = "";
                         foreach (Token t in tokens.Item1)
                         {
-                            scriptText += "0x" + t.pos.ToString("X4") + " " + t.text + "\n";
+                            scriptText += $"0x{t.pos:X4} {t.text}\n";
                         }
 
                         scriptBlock.Items.Add(new BinInterpNode
@@ -4635,13 +4624,12 @@ namespace ME3Explorer
                 }
 
 
-                offset += skipAmount + 10; //heuristic to find end of script
-                                           //for (int i = 0; i < 5; i++)
-                                           //{
+                offset += skipAmount + 10;
+
                 uint stateMask = BitConverter.ToUInt32(data, offset);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"0x{offset:X5} Statemask: {stateMask} [{getStateFlagsStr(stateMask)}]",
+                    Header = $"0x{offset:X5} StateFlags: {stateMask} [{getStateFlagsStr(stateMask)}]",
                     Name = "_" + offset,
 
                     Tag = NodeType.StructLeafInt
@@ -4677,7 +4665,7 @@ namespace ME3Explorer
 
                 var classFlagsNode = new BinInterpNode()
                 {
-                    Header = $"0x{offset:X5} Class Mask: 0x{((int)ClassFlags):X8}",
+                    Header = $"0x{offset:X5} ClassFlags: 0x{((int)ClassFlags):X8}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafInt
                 };

@@ -1597,7 +1597,7 @@ namespace ME3Explorer
 
         public PackageEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Editor WPF", new WeakReference(this));
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Editor", new WeakReference(this));
 
             //ME3UnrealObjectInfo.generateInfo();
             CurrentView = CurrentViewMode.Tree;
@@ -1658,7 +1658,7 @@ namespace ME3Explorer
                 RefreshView();
                 InitStuff();
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
-                Title = $"Package Editor WPF - {s}";
+                Title = $"Package Editor - {s}";
                 InterpreterTab_Interpreter.UnloadExport();
 
                 QueuedGotoNumber = goToIndex;
@@ -2237,6 +2237,10 @@ namespace ME3Explorer
                 updates = updates.OrderBy(x => x.index).ToList(); //ensure ascending order
                 foreach (PackageUpdate update in updates)
                 {
+                    if (update.index >= Pcc.NameCount)
+                    {
+                        continue;
+                    }
                     if (update.index > NamesList.Count - 1) //names are 0 indexed
                     {
                         NameReference nr = Pcc.Names[update.index];
@@ -2570,7 +2574,7 @@ namespace ME3Explorer
 
                 var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem);
 
-                if (portingOption == TreeMergeDialog.PortingOption.Cancel)
+                if (portingOption == EntryImporter.PortingOption.Cancel)
                 {
                     return;
                 }
@@ -3122,14 +3126,12 @@ namespace ME3Explorer
                     if (export.ObjectName == "SFXOperation_ObjectiveSpawnPoint")
                     {
                         Debug.WriteLine("Porting " + export.InstancedFullPath);
-                        ExportEntry portedObjective = EntryImporter.importExport(Pcc, export, targetPersistentLevel.UIndex);
-                        objectMap[export] = portedObjective;
+                        ExportEntry portedObjective = EntryImporter.ImportExport(Pcc, export, targetPersistentLevel.UIndex, objectMapping: objectMap);
                         itemsToAddToLevel.Add(portedObjective);
                         var child = export.GetProperty<ObjectProperty>("CollisionComponent");
                         ExportEntry collCyl = sourceFile.Exports[child.Value - 1];
                         Debug.WriteLine($"Porting {collCyl.InstancedFullPath}");
-                        ExportEntry portedCollisionCylinder = EntryImporter.importExport(Pcc, collCyl, portedObjective.UIndex);
-                        objectMap[collCyl] = portedCollisionCylinder;
+                        EntryImporter.ImportExport(Pcc, collCyl, portedObjective.UIndex, objectMapping: objectMap);
                     }
                 }
 
@@ -3725,7 +3727,7 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            var filePaths = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).Values.Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME2).Values).Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).Values);
+            var filePaths = MELoadedFiles.GetAllFiles(MEGame.ME3).Concat(MELoadedFiles.GetAllFiles(MEGame.ME2)).Concat(MELoadedFiles.GetAllFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
@@ -3765,7 +3767,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "FracturedStaticMesh", true)) break;
+                    if (findClass(filePath, "Enum", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
 
@@ -3921,19 +3923,19 @@ namespace ME3Explorer
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
-                    if (!pcc.IsCompressed) return false;
+                    //if (!pcc.IsCompressed) return false;
                     if (filePath.Contains("DLC_MOD"))
                     {
                         return false;
                     }
 
-                    var exports = pcc.Exports.Where(exp => exp.ClassName == className && !exp.IsDefaultObject);
+                    var exports = pcc.Exports.Where(exp => !exp.IsDefaultObject && exp.ClassName == className);
                     foreach (ExportEntry exp in exports)
                     {
                         try
                         {
                             Debug.WriteLine($"{exp.UIndex}: {filePath}");
-                            var obj = ObjectBinary.From<FracturedStaticMesh>(exp);
+                            var obj = ObjectBinary.From(exp);
                             var ms = new MemoryStream();
                             obj.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
                             byte[] buff = ms.ToArray();
@@ -3941,8 +3943,8 @@ namespace ME3Explorer
                             if (!buff.SequenceEqual(exp.getBinaryData()))
                             {
                                 string userFolder =  Path.Combine(@"C:\Users", Environment.UserName);
-                                File.WriteAllBytes(Path.Combine(userFolder, "converted{className}"), buff);
-                                File.WriteAllBytes(Path.Combine(userFolder, "original{className}"), exp.getBinaryData());
+                                File.WriteAllBytes(Path.Combine(userFolder, $"converted{className}"), buff);
+                                File.WriteAllBytes(Path.Combine(userFolder, $"original{className}"), exp.getBinaryData());
                                 interestingExports.Add($"{exp.UIndex}: {filePath}");
                                 return true;
                             }
@@ -3965,6 +3967,8 @@ namespace ME3Explorer
 
                 return false;
             }
+
+            #region extra scanning functions
 
             void findClassesWithBinary(string filePath)
             {
@@ -4104,6 +4108,8 @@ namespace ME3Explorer
                     }
                 }
             }
+
+            #endregion
         }
 
         private void InterpreterWPF_Colorize_MenuItem_Click(object sender, RoutedEventArgs e)

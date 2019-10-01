@@ -46,6 +46,15 @@ namespace ME3Explorer
         public const string ME1FileFilter = "*.u;*.upk;*sfm|*.u;*.upk;*sfm";
         public const string ME3ME2FileFilter = "*.pcc|*.pcc";
 
+        public static string CustomResourceFilePath(MEGame game) => Path.Combine(ExecFolder, game switch
+        {
+            MEGame.ME3 => "ME3Resources.pcc",
+            MEGame.ME2 => "ME2Resources.pcc",
+            MEGame.ME1 => "ME1Resources.upk",
+            MEGame.UDK => "UDKResources.upk",
+            _ => "ME3Resources.pcc"
+        });
+
         public static string Version => GetVersion();
 
         public static Visibility IsDebugVisibility => IsDebug ? Visibility.Visible : Visibility.Collapsed;

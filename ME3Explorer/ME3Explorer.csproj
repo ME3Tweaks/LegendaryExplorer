@@ -370,8 +370,12 @@
     <Compile Include="Packages\EntryTree.cs" />
     <Compile Include="Packages\PackageExtensions.cs" />
     <Compile Include="Packages\UnrealPackageFile.cs" />
+    <Compile Include="PropertyDatabase\PropertyDB.xaml.cs">
+      <DependentUpon>PropertyDB.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Scene3D\SceneRenderContext.cs" />
     <Compile Include="Scene3D\SceneRenderControlWPF.cs" />
+    <Compile Include="Sequence Editor\SequenceObjectCreator.cs" />
     <Compile Include="SharedUI\Converters\BoolToIndexConverter.cs" />
     <Compile Include="CodeWriter.cs" />
     <Compile Include="Dialogue Editor\BioConversation.cs" />
@@ -620,6 +624,9 @@
     </Compile>
     <Compile Include="SharedUI\PeregrineTreeView\NodeTreeSelectionBehavior.cs" />
     <Compile Include="SharedUI\ListBoxTask.cs" />
+    <Compile Include="SharedUI\ToolBox.xaml.cs">
+      <DependentUpon>ToolBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\TouchComfySettings.cs" />
     <Compile Include="SharedUI\TreeViewEntry.cs" />
     <Compile Include="Packages\UDKPackage.cs" />
@@ -817,10 +824,14 @@
     </Compile>
     <Compile Include="Unreal\BinaryConverters\BioDynamicAnimSet.cs" />
     <Compile Include="Unreal\BinaryConverters\BioPawn.cs" />
+    <Compile Include="Unreal\BinaryConverters\UClass.cs" />
     <Compile Include="Unreal\BinaryConverters\DecalComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\EntryPruner.cs" />
     <Compile Include="Unreal\BinaryConverters\ExportBinaryConverter.cs" />
     <Compile Include="Unreal\BinaryConverters\ConvertExtensions.cs" />
+    <Compile Include="Unreal\BinaryConverters\UConst.cs" />
+    <Compile Include="Unreal\BinaryConverters\UEnum.cs" />
+    <Compile Include="Unreal\BinaryConverters\UField.cs" />
     <Compile Include="Unreal\BinaryConverters\FluidSurfaceComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\FracturedStaticMesh.cs" />
     <Compile Include="Unreal\BinaryConverters\Level.cs" />
@@ -837,6 +848,12 @@
     <Compile Include="Unreal\BinaryConverters\StaticMeshComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\Terrain.cs" />
     <Compile Include="Unreal\BinaryConverters\TerrainComponent.cs" />
+    <Compile Include="Unreal\BinaryConverters\UFunction.cs" />
+    <Compile Include="Unreal\BinaryConverters\UReferenceProperty.cs" />
+    <Compile Include="Unreal\BinaryConverters\UValueProperty.cs" />
+    <Compile Include="Unreal\BinaryConverters\UScriptStruct.cs" />
+    <Compile Include="Unreal\BinaryConverters\UState.cs" />
+    <Compile Include="Unreal\BinaryConverters\UStruct.cs" />
     <Compile Include="Unreal\CommonStructs.cs" />
     <Compile Include="Unreal\DLCPackage2.cs" />
     <Compile Include="Unreal\SerializingContainer2.cs" />
@@ -1038,6 +1055,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PropertyDatabase\PropertyDB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Sequence Editor\KismetLogParser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1091,6 +1112,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SharedUI\PromptDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\ToolBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

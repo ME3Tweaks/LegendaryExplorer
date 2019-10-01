@@ -91,7 +91,11 @@ namespace ME3Explorer.Packages
             return -1;
         }
 
-        public void setNames(List<string> list) => names = list;
+        public void setNames(List<string> list)
+        {
+            names = list;
+            NameCount = names.Count;
+        }
 
         #endregion
 
@@ -461,11 +465,42 @@ namespace ME3Explorer.Packages
                     {
                         tasks.Clear();
                         taskCompletion.Clear();
-                        foreach (var item in Tools)
+                        var removedImports = pendingUpdates.Where(u => u.change == PackageChange.ImportRemove).Select(u => u.index).ToList();
+                        var removedExports = pendingUpdates.Where(u => u.change == PackageChange.ExportRemove).Select(u => u.index).ToList();
+                        var pendingUpdatesList = new List<PackageUpdate>();
+                        foreach (PackageUpdate upd in pendingUpdates)
                         {
-                            item.handleUpdate(pendingUpdates.ToList());
+                            switch (upd.change)
+                            {
+                                case PackageChange.ExportAdd:
+                                case PackageChange.ExportData:
+                                case PackageChange.ExportHeader:
+                                {
+                                    if (!removedExports.Contains(upd.index))
+                                    {
+                                        pendingUpdatesList.Add(upd);
+                                    }
+                                    break;
+                                }
+                                case PackageChange.ImportAdd:
+                                case PackageChange.Import:
+                                {
+                                    if (!removedImports.Contains(upd.index))
+                                    {
+                                        pendingUpdatesList.Add(upd);
+                                    }
+                                    break;
+                                }
+                                default:
+                                    pendingUpdatesList.Add(upd);
+                                    break;
+                            }
                         }
                         pendingUpdates.Clear();
+                        foreach (var item in Tools)
+                        {
+                            item.handleUpdate(pendingUpdatesList);
+                        }
                         OnPropertyChanged(nameof(IsModified));
                     }
                 });

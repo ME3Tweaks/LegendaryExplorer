@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ME3Explorer.Unreal;
+using Newtonsoft.Json;
 using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
@@ -87,12 +88,16 @@ namespace ME3Explorer.Packages
 
     public class ClassInfo
     {
+        [JsonIgnore]
+        public string ClassName { get; set; }
+
         public OrderedMultiValueDictionary<string, PropertyInfo> properties = new OrderedMultiValueDictionary<string, PropertyInfo>();
         public string baseClass;
         //Relative to BIOGame
         public string pccPath;
         //0-based
         public int exportIndex;
+        public bool isAbstract;
 
         public bool TryGetPropInfo(string name, MEGame game, out PropertyInfo propInfo) =>
             properties.TryGetValue(name, out propInfo) || (UnrealObjectInfo.GetClassOrStructInfo(game, baseClass)?.TryGetPropInfo(name, game, out propInfo) ?? false);

@@ -44,12 +44,12 @@ namespace ME3Explorer.Unreal
 
         public static bool operator ==(NameReference r, string s)
         {
-            return s == r.Name;
+            return string.Equals(s, r.Name, StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool operator !=(NameReference r, string s)
         {
-            return s != r.Name;
+            return !string.Equals(s, r.Name, StringComparison.OrdinalIgnoreCase);
         }
 
         #region IEquatable
@@ -64,7 +64,7 @@ namespace ME3Explorer.Unreal
         }
         public bool Equals(NameReference other)
         {
-            return string.Equals(Name, other.Name) && Number == other.Number;
+            return string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) && Number == other.Number;
         }
 
         public override bool Equals(object obj)
@@ -482,77 +482,71 @@ namespace ME3Explorer.Unreal
             return result;
         }
 
-        public static void WritePropHeader(this Stream stream, IMEPackage pcc, string propName, PropertyType type, int size)
+        public static void WritePropHeader(this Stream stream, IMEPackage pcc, NameReference propName, PropertyType type, int size, int staticArrayIndex)
         {
-            stream.WriteInt32(pcc.FindNameOrAdd(propName));
-            stream.WriteInt32(0);
-            stream.WriteInt32(pcc.FindNameOrAdd(type.ToString()));
-            stream.WriteInt32(0);
+            stream.WriteNameReference(propName, pcc);
+            stream.WriteNameReference(type.ToString(), pcc);
             stream.WriteInt32(size);
-            stream.WriteInt32(0);
+            stream.WriteInt32(staticArrayIndex);
         }
 
         public static void WriteNoneProperty(this Stream stream, IMEPackage pcc)
         {
             //Debug.WriteLine("Writing none property at 0x" + stream.Position.ToString("X6"));
-
-            stream.WriteInt32(pcc.FindNameOrAdd("None"));
-            stream.WriteInt32(0);
+            stream.WriteNameReference("None", pcc);
         }
 
-        public static void WriteStructProperty(this Stream stream, IMEPackage pcc, string propName, string structName, MemoryStream value)
+        public static void WriteStructProperty(this Stream stream, IMEPackage pcc, NameReference propName, NameReference structName, Stream value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing struct property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.StructProperty, (int)value.Length);
-            stream.WriteInt32(pcc.FindNameOrAdd(structName));
-            stream.WriteInt32(0);
+            stream.WritePropHeader(pcc, propName, PropertyType.StructProperty, (int)value.Length, staticArrayIndex);
+            stream.WriteNameReference(structName, pcc);
             stream.WriteStream(value);
         }
 
-        public static void WriteStructProperty(this Stream stream, IMEPackage pcc, string propName, string structName, Func<MemoryStream> func)
+        public static void WriteStructProperty(this Stream stream, IMEPackage pcc, NameReference propName, NameReference structName, Func<Stream> func, int staticArrayIndex)
         {
-            stream.WriteStructProperty(pcc, propName, structName, func());
+            stream.WriteStructProperty(pcc, propName, structName, func(), staticArrayIndex);
         }
 
-        public static void WriteIntProperty(this Stream stream, IMEPackage pcc, string propName, int value)
+        public static void WriteIntProperty(this Stream stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing int property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.IntProperty, 4);
+            stream.WritePropHeader(pcc, propName, PropertyType.IntProperty, 4, staticArrayIndex);
             stream.WriteInt32(value);
         }
 
-        public static void WriteFloatProperty(this Stream stream, IMEPackage pcc, string propName, float value)
+        public static void WriteFloatProperty(this Stream stream, IMEPackage pcc, NameReference propName, float value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing float property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.FloatProperty, 4);
+            stream.WritePropHeader(pcc, propName, PropertyType.FloatProperty, 4, staticArrayIndex);
             stream.WriteFloat(value);
         }
 
-        public static void WriteObjectProperty(this Stream stream, IMEPackage pcc, string propName, int value)
+        public static void WriteObjectProperty(this Stream stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.ObjectProperty, 4);
+            stream.WritePropHeader(pcc, propName, PropertyType.ObjectProperty, 4, staticArrayIndex);
             stream.WriteInt32(value);
         }
 
-        public static void WriteNameProperty(this Stream stream, IMEPackage pcc, string propName, NameReference value)
+        public static void WriteNameProperty(this Stream stream, IMEPackage pcc, NameReference propName, NameReference value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing name property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.NameProperty, 8);
-            stream.WriteInt32(pcc.FindNameOrAdd(value.Name));
-            stream.WriteInt32(value.Number);
+            stream.WritePropHeader(pcc, propName, PropertyType.NameProperty, 8, staticArrayIndex);
+            stream.WriteNameReference(value, pcc);
         }
 
-        public static void WriteBoolProperty(this Stream stream, IMEPackage pcc, string propName, bool value)
+        public static void WriteBoolProperty(this Stream stream, IMEPackage pcc, NameReference propName, bool value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.BoolProperty, 0);
+            stream.WritePropHeader(pcc, propName, PropertyType.BoolProperty, 0, staticArrayIndex);
             if (pcc.Game >= MEGame.ME3)
             {
                 stream.WriteBoolByte(value);
@@ -563,76 +557,69 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static void WriteByteProperty(this Stream stream, IMEPackage pcc, string propName, byte value)
+        public static void WriteByteProperty(this Stream stream, IMEPackage pcc, NameReference propName, byte value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing byte property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
-            stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 1);
+            stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 1, staticArrayIndex);
             if (pcc.Game >= MEGame.ME3)
             {
-                stream.WriteInt32(pcc.FindNameOrAdd("None"));
-                stream.WriteInt32(0);
+                stream.WriteNameReference("None", pcc);
             }
             stream.WriteByte(value);
         }
 
-        public static void WriteEnumProperty(this Stream stream, IMEPackage pcc, string propName, NameReference enumName, NameReference enumValue)
+        public static void WriteEnumProperty(this Stream stream, IMEPackage pcc, NameReference propName, NameReference enumName, NameReference enumValue, int staticArrayIndex)
         {
-            stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 8);
+            stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 8, staticArrayIndex);
             if (pcc.Game >= MEGame.ME3)
             {
-                stream.WriteInt32(pcc.FindNameOrAdd(enumName.Name));
-                stream.WriteInt32(enumName.Number);
+                stream.WriteNameReference(enumName, pcc);
             }
-            stream.WriteInt32(pcc.FindNameOrAdd(enumValue.Name));
-            stream.WriteInt32(enumValue.Number);
+            stream.WriteNameReference(enumValue, pcc);
         }
 
-        public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, string propName, int count, MemoryStream value)
+        public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, NameReference propName, int count, Stream value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing array property " + propName + ", count: " + count + " at 0x" + stream.Position.ToString("X6")+", length: "+value.Length);
-            stream.WritePropHeader(pcc, propName, PropertyType.ArrayProperty, 4 + (int)value.Length);
+            stream.WritePropHeader(pcc, propName, PropertyType.ArrayProperty, 4 + (int)value.Length, staticArrayIndex);
             stream.WriteInt32(count);
             stream.WriteStream(value);
         }
 
-        public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, string propName, int count, Func<MemoryStream> func)
+        public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, NameReference propName, int count, Func<Stream> func, int staticArrayIndex)
         {
-            stream.WriteArrayProperty(pcc, propName, count, func());
+            stream.WriteArrayProperty(pcc, propName, count, func(), staticArrayIndex);
         }
 
-        public static void WriteStringProperty(this Stream stream, IMEPackage pcc, string propName, string value)
+        public static void WriteStringProperty(this Stream stream, IMEPackage pcc, NameReference propName, string value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing string property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
             int strLen = value.Length == 0 ? 0 : value.Length + 1;
             if (pcc.Game == MEGame.ME3)
             {
-                if (propName != null)
-                {
-                    stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, (strLen * 2) + 4);
-                }
+                stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, (strLen * 2) + 4, staticArrayIndex);
                 stream.WriteUnrealStringUnicode(value);
             }
             else
             {
-                stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, strLen + 4);
+                stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, strLen + 4, staticArrayIndex);
                 stream.WriteUnrealStringASCII(value);
             }
         }
 
-        public static void WriteStringRefProperty(this Stream stream, IMEPackage pcc, string propName, int value)
+        public static void WriteStringRefProperty(this Stream stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing stringref property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.StringRefProperty, 4);
+            stream.WritePropHeader(pcc, propName, PropertyType.StringRefProperty, 4, staticArrayIndex);
             stream.WriteInt32(value);
         }
 
-        public static void WriteDelegateProperty(this Stream stream, IMEPackage pcc, string propName, ScriptDelegate value)
+        public static void WriteDelegateProperty(this Stream stream, IMEPackage pcc, NameReference propName, ScriptDelegate value, int staticArrayIndex)
         {
-            stream.WritePropHeader(pcc, propName, PropertyType.DelegateProperty, 12);
+            stream.WritePropHeader(pcc, propName, PropertyType.DelegateProperty, 12, staticArrayIndex);
             stream.WriteInt32(value.Object);
-            stream.WriteInt32(pcc.FindNameOrAdd(value.FunctionName.Name));
-            stream.WriteInt32(value.FunctionName.Number);
+            stream.WriteNameReference(value.FunctionName, pcc);
         }
 
         public static StructProperty ToGuidStructProp(this Guid guid, NameReference propName)

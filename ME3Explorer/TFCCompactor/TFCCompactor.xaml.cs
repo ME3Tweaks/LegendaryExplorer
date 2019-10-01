@@ -760,7 +760,7 @@ namespace ME3Explorer.TFCCompactor
                             GameList.Add(new GameWrapper(MEGame.Unknown, "Select game...", null) { IsBrowseForCustom = true, IsCustomPath = true });
                             SelectedGame = newItem;
                             var officialDLC = gameSelected == MEGame.ME3 ? ME3Directory.OfficialDLC : ME2Directory.OfficialDLC;
-                            var DLC = MELoadedFiles.GetEnabledDLC(gameSelected, result).Select(x => Path.GetFileName(x)).Where(x => !officialDLC.Contains(x));
+                            var DLC = MELoadedFiles.GetEnabledDLCFiles(gameSelected, result).Select(x => Path.GetFileName(x)).Where(x => !officialDLC.Contains(x));
                             CustomDLCFolderList.ReplaceAll(DLC);
                         }
                     }
@@ -770,7 +770,7 @@ namespace ME3Explorer.TFCCompactor
                     ScanForGameCompleted = false;
                     SelectedGame = newItem;
                     var officialDLC = newItem.Game == MEGame.ME3 ? ME3Directory.OfficialDLC : ME2Directory.OfficialDLC;
-                    var DLC = MELoadedFiles.GetEnabledDLC(newItem.Game, newItem.DLCPath).Select(x => Path.GetFileName(x)).Where(x => !officialDLC.Contains(x));
+                    var DLC = MELoadedFiles.GetEnabledDLCFiles(newItem.Game, newItem.DLCPath).Select(x => Path.GetFileName(x)).Where(x => !officialDLC.Contains(x));
                     CustomDLCFolderList.ReplaceAll(DLC);
                 }
             }

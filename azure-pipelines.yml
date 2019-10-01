@@ -22,9 +22,10 @@ steps:
     script: |
       $date=$(Get-Date -Format s);
       Write-Host "##vso[task.setvariable variable=time]$date"
-      $discordmessage=$($Build.SourceVersionMessage -split '\n')[0]
+      $discordmessage="$(Build.SourceVersionMessage)"
+      $numlines = $($discordmessage | measure).Count
+      if ($numlines > 0) { $discordmessage=$($discordmessage -split '\n')[0] }
       Write-Host "##vso[task.setvariable variable=discordmessage]$discordmessage"
-
 
 - task: NuGetToolInstaller@1
 
@@ -67,7 +68,7 @@ steps:
     embeds: |
       [{
         "title": "ME3Explorer - ME3Tweaks Fork Build Complete",
-        "description": "A new nightly build of ME3Explorer has been built. Click this link and select Artifacts from the top right to download it. Nightly builds may be unstable.",
+        "description": "A new nightly build of ME3Explorer has been built. Click this link and select Artifacts from the top right to download it. Nightly builds may be unstable and have bugs.",
         "thumbnail": {
           "url": "https://i.imgur.com/mUtPj2S.png",
           "height": 64,

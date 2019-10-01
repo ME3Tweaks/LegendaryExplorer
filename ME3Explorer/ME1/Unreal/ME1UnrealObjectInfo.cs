@@ -10,6 +10,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using System.Diagnostics;
 using ME3Explorer;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME1Explorer.Unreal
 {
@@ -33,6 +34,14 @@ namespace ME1Explorer.Unreal
                     Classes = blob.Classes;
                     Structs = blob.Structs;
                     Enums = blob.Enums;
+                    foreach ((string className, ClassInfo classInfo) in Classes)
+                    {
+                        classInfo.ClassName = className;
+                    }
+                    foreach ((string className, ClassInfo classInfo) in Structs)
+                    {
+                        classInfo.ClassName = className;
+                    }
                 }
             }
             catch
@@ -42,7 +51,7 @@ namespace ME1Explorer.Unreal
         }
 
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
-            "Quat", "Matrix", "IntPoint", "ActorReference", "PolyReference", "AimTransform","BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4",
+            "Quat", "Matrix", "IntPoint", "ActorReference", "PolyReference","BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4",
             "BioRwBox44" };
 
         public static bool IsImmutableStruct(string structName)
@@ -278,10 +287,14 @@ namespace ME1Explorer.Unreal
                     }
                     structProps.Add(new NoneProperty());
 
-                    string filepath = Path.Combine(ME1Directory.gamePath, "BioGame", info.pccPath);
+                    string filepath = Path.Combine(ME1Directory.BioGamePath, info.pccPath);
                     if (File.Exists(info.pccPath))
                     {
                         filepath = info.pccPath; //Used for dynamic lookup
+                    }
+                    if (!File.Exists(filepath))
+                    {
+                        filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
                     }
                     if (File.Exists(filepath))
                     {
@@ -366,9 +379,8 @@ namespace ME1Explorer.Unreal
             }
         }
 
-        public static bool InheritsFrom(IEntry entry, string baseClass)
+        public static bool InheritsFrom(string className, string baseClass)
         {
-            string className = entry.ClassName;
             while (Classes.ContainsKey(className))
             {
                 if (className == baseClass)
@@ -388,39 +400,34 @@ namespace ME1Explorer.Unreal
             Classes = new Dictionary<string, ClassInfo>();
             Structs = new Dictionary<string, ClassInfo>();
             Enums = new Dictionary<string, List<NameReference>>();
-            string path = ME1Directory.gamePath;
-            string[] files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
-            string objectName;
-            foreach (string file in files)
+            foreach (string file in MELoadedFiles.GetOfficialFiles(MEGame.ME1))
             {
                 if (Path.GetExtension(file) == ".upk" || Path.GetExtension(file) == ".sfm" || Path.GetExtension(file) == ".u")
                 {
-                    Debug.WriteLine("File: " + file);
-                    using (IMEPackage pcc = MEPackageHandler.OpenME1Package(file))
+                    Debug.WriteLine($"File: {file}");
+                    using IMEPackage pcc = MEPackageHandler.OpenME1Package(file);
+                    for (int j = 1; j <= pcc.ExportCount; j++)
                     {
-                        for (int j = 1; j <= pcc.ExportCount; j++)
+                        ExportEntry exportEntry = pcc.GetUExport(j);
+                        if (exportEntry.ClassName == "Enum")
                         {
-                            ExportEntry exportEntry = pcc.GetUExport(j);
-                            if (exportEntry.ClassName == "Enum")
+                            generateEnumValues(exportEntry);
+                        }
+                        else if (exportEntry.ClassName == "Class")
+                        {
+                            string objectName = exportEntry.ObjectName;
+                            Debug.WriteLine($"Generating information for {objectName}");
+                            if (!Classes.ContainsKey(objectName))
                             {
-                                generateEnumValues(exportEntry);
+                                Classes.Add(objectName, generateClassInfo(exportEntry));
                             }
-                            else if (exportEntry.ClassName == "Class")
+                        }
+                        else if (exportEntry.ClassName == "ScriptStruct")
+                        {
+                            string objectName = exportEntry.ObjectName;
+                            if (!Structs.ContainsKey(exportEntry.ObjectName))
                             {
-                                objectName = exportEntry.ObjectName;
-                                Debug.WriteLine("Generating information for " + exportEntry.ObjectName);
-                                if (!Classes.ContainsKey(exportEntry.ObjectName))
-                                {
-                                    Classes.Add(objectName, generateClassInfo(exportEntry));
-                                }
-                            }
-                            else if (exportEntry.ClassName == "ScriptStruct")
-                            {
-                                objectName = exportEntry.ObjectName;
-                                if (!Structs.ContainsKey(exportEntry.ObjectName))
-                                {
-                                    Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
-                                }
+                                Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
                             }
                         }
                     }
@@ -432,14 +439,14 @@ namespace ME1Explorer.Unreal
             {
                 baseClass = "Texture2D",
                 exportIndex = 0,
-                pccPath = "ME3Explorer_CustomNativeAdditions"
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
             Classes["StaticMesh"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
-                pccPath = "ME3Explorer_CustomNativeAdditions",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
@@ -455,7 +462,7 @@ namespace ME1Explorer.Unreal
             };
 
 
-            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }, Formatting.Indented));
+            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(new {Classes, Structs, Enums }, Formatting.Indented));
             MessageBox.Show("Done");
         }
 
@@ -465,11 +472,21 @@ namespace ME1Explorer.Unreal
             ClassInfo info = new ClassInfo
             {
                 baseClass = export.SuperClassName,
-                exportIndex = export.UIndex
+                exportIndex = export.UIndex,
+                ClassName = export.ObjectName
             };
+            if (!isStruct)
+            {
+                ME3Explorer.Unreal.BinaryConverters.UClass classBinary = ME3Explorer.Unreal.BinaryConverters.ObjectBinary.From<ME3Explorer.Unreal.BinaryConverters.UClass>(export);
+                info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
+            }
             if (pcc.FilePath.Contains("BioGame"))
             {
                 info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BioGame") + 8).ToArray());
+            }
+            else if (pcc.FilePath.Contains(@"DLC\DLC_"))
+            {
+                info.pccPath = pcc.FilePath.Substring(pcc.FilePath.LastIndexOf(@"DLC\DLC_"));
             }
             else
             {

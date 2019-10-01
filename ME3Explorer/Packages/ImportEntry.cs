@@ -93,7 +93,7 @@ namespace ME3Explorer.Packages
             set => idxClassName = FileRef.FindNameOrAdd(value);
         }
 
-        public string ObjectNameString
+        private string ObjectNameString
         {
             get => FileRef.Names[idxObjectName];
             set => idxObjectName = FileRef.FindNameOrAdd(value);
@@ -148,6 +148,8 @@ namespace ME3Explorer.Packages
                 }
             }
         }
+
+        public bool IsClass => ClassName == "Class";
 
         public ImportEntry Clone()
         {

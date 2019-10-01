@@ -8,6 +8,7 @@ using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Properties;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 using Newtonsoft.Json;
 
 namespace ME2Explorer.Unreal
@@ -32,6 +33,14 @@ namespace ME2Explorer.Unreal
                     Classes = blob.Classes;
                     Structs = blob.Structs;
                     Enums = blob.Enums;
+                    foreach ((string className, ClassInfo classInfo) in Classes)
+                    {
+                        classInfo.ClassName = className;
+                    }
+                    foreach ((string className, ClassInfo classInfo) in Structs)
+                    {
+                        classInfo.ClassName = className;
+                    }
                 }
             }
             catch
@@ -237,9 +246,8 @@ namespace ME2Explorer.Unreal
             return null;
         }
 
-        public static bool InheritsFrom(IEntry entry, string baseClass)
+        public static bool InheritsFrom(string className, string baseClass)
         {
-            string className = entry.ClassName;
             while (Classes.ContainsKey(className))
             {
                 if (className == baseClass)
@@ -252,7 +260,7 @@ namespace ME2Explorer.Unreal
         }
 
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
-            "Quat", "Matrix", "IntPoint", "ActorReference", "PolyReference", "AimTransform", "NavReference", "FontCharacter", "CovPosInfo",
+            "Quat", "Matrix", "IntPoint", "ActorReference", "PolyReference", "NavReference", "FontCharacter", "CovPosInfo",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
 
         public static bool IsImmutableStruct(string structName)
@@ -387,41 +395,37 @@ namespace ME2Explorer.Unreal
             var NewStructs = new Dictionary<string, ClassInfo>();
             var NewEnums = new Dictionary<string, List<NameReference>>();
 
-            string path = ME2Directory.gamePath;
-            string[] files = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
-            foreach (string file in files)
+            foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.ME2))
             {
-                if (file.ToLower().EndsWith(".pcc")/* && file.Contains("Engine")*/)
+                if (Path.GetExtension(filePath) == ".pcc")
                 {
-                    using (IMEPackage pcc = MEPackageHandler.OpenME2Package(file))
+                    using IMEPackage pcc = MEPackageHandler.OpenME2Package(filePath);
+                    for (int j = 1; j <= pcc.ExportCount; j++)
                     {
-                        for (int j = 1; j <= pcc.ExportCount; j++)
+                        ExportEntry exportEntry = pcc.GetUExport(j);
+                        if (exportEntry.ClassName == "Enum")
                         {
-                            ExportEntry exportEntry = pcc.GetUExport(j);
-                            if (exportEntry.ClassName == "Enum")
+                            generateEnumValues(exportEntry, NewEnums);
+                        }
+                        else if (exportEntry.ClassName == "Class")
+                        {
+                            string objectName = exportEntry.ObjectName;
+                            if (!NewClasses.ContainsKey(objectName))
                             {
-                                generateEnumValues(exportEntry, NewEnums);
-                            }
-                            else if (exportEntry.ClassName == "Class")
-                            {
-                                string objectName = exportEntry.ObjectName;
-                                if (!NewClasses.ContainsKey(objectName))
-                                {
-                                    NewClasses.Add(objectName, generateClassInfo(exportEntry));
-                                }
-                            }
-                            else if (exportEntry.ClassName == "ScriptStruct")
-                            {
-                                string objectName = exportEntry.ObjectName;
-                                if (!NewStructs.ContainsKey(objectName))
-                                {
-                                    NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
-
-                                }
+                                NewClasses.Add(objectName, generateClassInfo(exportEntry));
                             }
                         }
-                        //Debug.WriteLine("Releasing " + pcc.FileName);
+                        else if (exportEntry.ClassName == "ScriptStruct")
+                        {
+                            string objectName = exportEntry.ObjectName;
+                            if (!NewStructs.ContainsKey(objectName))
+                            {
+                                NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
+
+                            }
+                        }
                     }
+                    //Debug.WriteLine("Releasing " + pcc.FileName);
                 }
             }
 
@@ -432,14 +436,14 @@ namespace ME2Explorer.Unreal
                 {
                     baseClass = "Texture2D",
                     exportIndex = 0,
-                    pccPath = "ME3Explorer_CustomNativeAdditions"
+                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
                 });
 
                 NewClasses["StaticMesh"] = new ClassInfo
                 {
                     baseClass = "Object",
                     exportIndex = 0,
-                    pccPath = "ME3Explorer_CustomNativeAdditions",
+                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                     properties =
                     {
                         new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
@@ -478,8 +482,14 @@ namespace ME2Explorer.Unreal
             ClassInfo info = new ClassInfo
             {
                 baseClass = export.SuperClassName,
-                exportIndex = export.UIndex
+                exportIndex = export.UIndex,
+                ClassName = export.ObjectName
             };
+            if (!isStruct)
+            {
+                ME3Explorer.Unreal.BinaryConverters.UClass classBinary = ME3Explorer.Unreal.BinaryConverters.ObjectBinary.From<ME3Explorer.Unreal.BinaryConverters.UClass>(export);
+                info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
+            }
             if (pcc.FilePath.Contains("BioGame"))
             {
                 info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BioGame") + 8).ToArray());

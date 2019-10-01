@@ -23,15 +23,7 @@ namespace ME3Explorer.PackageEditorWPFControls
     /// </summary>
     public partial class TreeMergeDialog : NotifyPropertyChangedWindowBase
     {
-        public enum PortingOption
-        {
-            CloneTreeAsChild,
-            AddSingularAsChild,
-            ReplaceSingular,
-            MergeTreeChildren,
-            Cancel
-        }
-        public PortingOption PortingOptionChosen = PortingOption.Cancel; //Click X, get cancel
+        public EntryImporter.PortingOption PortingOptionChosen = EntryImporter.PortingOption.Cancel; //Click X, get cancel
         private readonly IEntry sourceEntry;
         private readonly IEntry targetEntry;
         private readonly bool sourceHasChildren;
@@ -70,19 +62,19 @@ namespace ME3Explorer.PackageEditorWPFControls
 
         private void CloneTree(object obj)
         {
-            PortingOptionChosen = PortingOption.CloneTreeAsChild;
+            PortingOptionChosen = EntryImporter.PortingOption.CloneTreeAsChild;
             Close();
         }
 
         private void AddSingular(object obj)
         {
-            PortingOptionChosen = PortingOption.AddSingularAsChild;
+            PortingOptionChosen = EntryImporter.PortingOption.AddSingularAsChild;
             Close();
         }
 
         private void MergeTree(object obj)
         {
-            PortingOptionChosen = PortingOption.MergeTreeChildren;
+            PortingOptionChosen = EntryImporter.PortingOption.MergeTreeChildren;
             Close();
         }
 
@@ -108,7 +100,7 @@ namespace ME3Explorer.PackageEditorWPFControls
 
         private void ReplaceData(object obj)
         {
-            PortingOptionChosen = PortingOption.ReplaceSingular;
+            PortingOptionChosen = EntryImporter.PortingOption.ReplaceSingular;
             Close();
         }
 
@@ -117,7 +109,7 @@ namespace ME3Explorer.PackageEditorWPFControls
             return (sourceEntry is ExportEntry && targetEntry is ExportEntry && sourceEntry.ClassName == targetEntry.ClassName);
         }
 
-        public static PortingOption GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem)
+        public static EntryImporter.PortingOption GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem)
         {
             TreeMergeDialog tmd = new TreeMergeDialog(sourceItem.Entry, targetItem.Entry);
             tmd.Owner = w;
@@ -128,26 +120,26 @@ namespace ME3Explorer.PackageEditorWPFControls
 
         private void MergeButton_Click(object sender, RoutedEventArgs e)
         {
-            PortingOptionChosen = PortingOption.MergeTreeChildren;
+            PortingOptionChosen = EntryImporter.PortingOption.MergeTreeChildren;
             Close();
         }
 
         private void CloneTreeButton_Click(object sender, RoutedEventArgs e)
         {
-            PortingOptionChosen = PortingOption.CloneTreeAsChild;
+            PortingOptionChosen = EntryImporter.PortingOption.CloneTreeAsChild;
             Close();
 
         }
 
         private void AddSingularButton_Click(object sender, RoutedEventArgs e)
         {
-            PortingOptionChosen = PortingOption.AddSingularAsChild;
+            PortingOptionChosen = EntryImporter.PortingOption.AddSingularAsChild;
             Close();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            PortingOptionChosen = PortingOption.Cancel;
+            PortingOptionChosen = EntryImporter.PortingOption.Cancel;
             Close();
         }
     }

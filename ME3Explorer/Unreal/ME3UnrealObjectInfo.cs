@@ -8,12 +8,18 @@ using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME3Explorer.Packages;
 using ME3Explorer.Properties;
+using ME3Explorer.Unreal.BinaryConverters;
 using Newtonsoft.Json;
 
 namespace ME3Explorer.Unreal
 {
     public static class UnrealObjectInfo
     {
+        internal const string Me3ExplorerCustomNativeAdditionsName = "ME3Explorer_CustomNativeAdditions";
+
+        public static List<ClassInfo> GetNonAbstractDerivedClassesOf(string baseClassName, MEGame game) =>
+            GetClasses(game).Values.Where(info => info.ClassName != baseClassName && !info.isAbstract && IsOrInheritsFrom(info.ClassName, baseClassName, game)).ToList();
+
         public static bool IsImmutable(string structType, MEGame game) =>
             game switch 
             {
@@ -24,13 +30,15 @@ namespace ME3Explorer.Unreal
                 _ => false,
             };
 
-        public static bool IsOrInheritsFrom(this IEntry entry, string baseClass) =>
-            entry.FileRef.Game switch
+        public static bool IsOrInheritsFrom(this ClassInfo info, string baseClass, MEGame game) => IsOrInheritsFrom(info.ClassName, baseClass, game);
+        public static bool IsOrInheritsFrom(this IEntry entry, string baseClass) => IsOrInheritsFrom(entry.ClassName, baseClass, entry.FileRef.Game);
+        public static bool IsOrInheritsFrom(string className, string baseClass, MEGame game) =>
+            game switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(entry, baseClass),
-                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(entry, baseClass),
-                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(entry, baseClass),
-                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(entry, baseClass),
+                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass),
+                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass),
+                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass),
+                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass),
                 _ => false
             };
 
@@ -53,6 +61,60 @@ namespace ME3Explorer.Unreal
                 MEGame.UDK => ME3UnrealObjectInfo.getEnumValues(enumName, includeNone),
                 _ => null
             };
+
+        /// <summary>
+        /// Recursively gets class defaults, traveling up inheritiance chain, but stopping at <paramref name="notIncludingClass"></paramref>
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="className"></param>
+        /// <param name="notIncludingClass"></param>
+        /// <returns></returns>
+        public static PropertyCollection getClassDefaults(MEGame game, string className, string notIncludingClass = null)
+        {
+            Dictionary<string, ClassInfo> classes = GetClasses(game);
+            if (classes.TryGetValue(className, out ClassInfo info))
+            {
+                try
+                {
+                    PropertyCollection props = new PropertyCollection();
+                    while (info != null && info.ClassName != notIncludingClass)
+                    {
+                        string filepath = Path.Combine(MEDirectories.BioGamePath(game), info.pccPath);
+                        if (File.Exists(info.pccPath))
+                        {
+                            filepath = info.pccPath; //Used for dynamic lookup
+                        }
+                        if (game == MEGame.ME1 && !File.Exists(filepath))
+                        {
+                            filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
+                        }
+                        if (File.Exists(filepath))
+                        {
+                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackage(filepath);
+                            ExportEntry classExport = importPCC.GetUExport(info.exportIndex);
+                            UClass classBin = ObjectBinary.From<UClass>(classExport);
+                            ExportEntry defaults = importPCC.GetUExport(classBin.Defaults);
+
+                            foreach (var prop in defaults.GetProperties())
+                            {
+                                if (!props.ContainsNamedProp(prop.Name))
+                                {
+                                    props.Add(prop);
+                                }
+                            }
+                        }
+
+                        classes.TryGetValue(info.baseClass, out info);
+                    }
+                    return props;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            return null;
+        }
 
         /// <summary>
         /// Gets the type of an array
@@ -301,7 +363,6 @@ namespace ME3Explorer.Unreal
 
     public static class ME3UnrealObjectInfo
     {
-
         public class SequenceObjectInfo
         {
             public List<string> inputLinks;
@@ -319,7 +380,7 @@ namespace ME3Explorer.Unreal
 
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "AimOffsetProfile", "FontCharacter",
-            "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
+            "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "RwPlane", "RwQuat", "BioRwBox44" };
 
         private static readonly string jsonPath = Path.Combine(App.ExecFolder, "ME3ObjectInfo.json");
 
@@ -341,6 +402,14 @@ namespace ME3Explorer.Unreal
                     Classes = blob.Classes;
                     Structs = blob.Structs;
                     Enums = blob.Enums;
+                    foreach ((string className, ClassInfo classInfo) in Classes)
+                    {
+                        classInfo.ClassName = className;
+                    }
+                    foreach ((string className, ClassInfo classInfo) in Structs)
+                    {
+                        classInfo.ClassName = className;
+                    }
                 }
             }
             catch (Exception e)
@@ -541,12 +610,11 @@ namespace ME3Explorer.Unreal
         public static PropertyCollection getDefaultStructValue(string structName, bool stripTransients)
         {
             bool isImmutable = UnrealObjectInfo.IsImmutable(structName, MEGame.ME3);
-            if (Structs.ContainsKey(structName))
+            if (Structs.TryGetValue(structName, out ClassInfo info))
             {
                 try
                 {
-                    PropertyCollection structProps = new PropertyCollection();
-                    ClassInfo info = Structs[structName];
+                    PropertyCollection props = new PropertyCollection();
                     while (info != null)
                     {
                         foreach ((string propName, PropertyInfo propInfo) in info.properties)
@@ -557,7 +625,7 @@ namespace ME3Explorer.Unreal
                             }
                             if (getDefaultProperty(propName, propInfo, stripTransients, isImmutable) is UProperty uProp)
                             {
-                                structProps.Add(uProp);
+                                props.Add(uProp);
                             }
                         }
                         string filepath = Path.Combine(ME3Directory.gamePath, "BIOGame", info.pccPath);
@@ -574,16 +642,16 @@ namespace ME3Explorer.Unreal
                                 PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), structName);
                                 foreach (var prop in defaults)
                                 {
-                                    structProps.TryReplaceProp(prop);
+                                    props.TryReplaceProp(prop);
                                 }
                             }
                         }
 
                         Structs.TryGetValue(info.baseClass, out info);
                     }
-                    structProps.Add(new NoneProperty());
+                    props.Add(new NoneProperty());
                     
-                    return structProps;
+                    return props;
                 }
                 catch
                 {
@@ -653,9 +721,8 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static bool InheritsFrom(IEntry entry, string baseClass)
+        public static bool InheritsFrom(string className, string baseClass)
         {
-            string className = entry.ClassName;
             while (Classes.ContainsKey(className))
             {
                 if (className == baseClass)
@@ -677,43 +744,37 @@ namespace ME3Explorer.Unreal
             var NewEnums = new Dictionary<string, List<NameReference>>();
             var newSequenceObjects = new Dictionary<string, SequenceObjectInfo>();
 
-            string path = ME3Directory.gamePath;
-            string[] files = Directory.GetFiles(Path.Combine(path, "BIOGame"), "*.pcc", SearchOption.AllDirectories);
-            string objectName;
-            int length = files.Length;
-            for (int i = 0; i < length; i++)
+            foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.ME3))
             {
-                if (files[i].ToLower().EndsWith(".pcc"))
+                if (Path.GetExtension(filePath) == ".pcc")
                 {
-                    using (IMEPackage pcc = MEPackageHandler.OpenME3Package(files[i]))
+                    using IMEPackage pcc = MEPackageHandler.OpenME3Package(filePath);
+                    for (int i = 1; i <= pcc.ExportCount; i++)
                     {
-                        for (int j = 1; j <= pcc.ExportCount; j++)
+                        ExportEntry exportEntry = pcc.GetUExport(i);
+                        if (exportEntry.ClassName == "Enum")
                         {
-                            ExportEntry exportEntry = pcc.GetUExport(j);
-                            if (exportEntry.ClassName == "Enum")
+                            generateEnumValues(exportEntry, NewEnums);
+                        }
+                        else if (exportEntry.ClassName == "Class")
+                        {
+                            string objectName = exportEntry.ObjectName.Name;
+                            if (!NewClasses.ContainsKey(objectName))
                             {
-                                generateEnumValues(exportEntry, NewEnums);
+                                NewClasses.Add(objectName, generateClassInfo(exportEntry));
                             }
-                            else if (exportEntry.ClassName == "Class")
+                            if ((objectName.Contains("SeqAct") || objectName.Contains("SeqCond") || objectName.Contains("SequenceLatentAction") ||
+                                 objectName == "SequenceOp" || objectName == "SequenceAction" || objectName == "SequenceCondition") && !newSequenceObjects.ContainsKey(objectName))
                             {
-                                objectName = exportEntry.ObjectName.Name;
-                                if (!NewClasses.ContainsKey(objectName))
-                                {
-                                    NewClasses.Add(objectName, generateClassInfo(exportEntry));
-                                }
-                                if ((objectName.Contains("SeqAct") || objectName.Contains("SeqCond") || objectName.Contains("SequenceLatentAction") ||
-                                    objectName == "SequenceOp" || objectName == "SequenceAction" || objectName == "SequenceCondition") && !newSequenceObjects.ContainsKey(objectName))
-                                {
-                                    newSequenceObjects.Add(objectName, generateSequenceObjectInfo(j, pcc));
-                                }
+                                newSequenceObjects.Add(objectName, generateSequenceObjectInfo(i, pcc));
                             }
-                            else if (exportEntry.ClassName == "ScriptStruct")
+                        }
+                        else if (exportEntry.ClassName == "ScriptStruct")
+                        {
+                            string objectName = exportEntry.ObjectName.Name;
+                            if (!NewStructs.ContainsKey(objectName))
                             {
-                                objectName = exportEntry.ObjectName.Name;
-                                if (!NewStructs.ContainsKey(objectName))
-                                {
-                                    NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
-                                }
+                                NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
                             }
                         }
                     }
@@ -731,7 +792,7 @@ namespace ME3Explorer.Unreal
             NewClasses["SFXSeqAct_AttachToSocket"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
-                pccPath = "ME3Explorer_CustomNativeAdditions",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 0,
                 properties =
                 {
@@ -748,7 +809,7 @@ namespace ME3Explorer.Unreal
             NewClasses["BioSeqAct_ShowMedals"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
-                pccPath = "ME3Explorer_CustomNativeAdditions",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 0,
                 properties =
                 {
@@ -761,7 +822,7 @@ namespace ME3Explorer.Unreal
             NewClasses["SFXSeqAct_SetFaceFX"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
-                pccPath = "ME3Explorer_CustomNativeAdditions",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 exportIndex = 0,
                 properties =
                 {
@@ -774,21 +835,21 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "Texture2D",
                 exportIndex = 0,
-                pccPath = "ME3Explorer_CustomNativeAdditions"
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
             NewClasses["Package"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
-                pccPath = "ME3Explorer_CustomNativeAdditions"
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
             NewClasses["StaticMesh"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
-                pccPath = "ME3Explorer_CustomNativeAdditions",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
@@ -808,7 +869,7 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "StaticMesh",
                 exportIndex = 0,
-                pccPath = "ME3Explorer_CustomNativeAdditions",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("LoseChunkOutsideMaterial", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface")),
@@ -854,8 +915,14 @@ namespace ME3Explorer.Unreal
             ClassInfo info = new ClassInfo
             {
                 baseClass = export.SuperClassName,
-                exportIndex = export.UIndex
+                exportIndex = export.UIndex,
+                ClassName = export.ObjectName
             };
+            if (!isStruct)
+            {
+                BinaryConverters.UClass classBinary = BinaryConverters.ObjectBinary.From<BinaryConverters.UClass>(export);
+                info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
+            }
             if (pcc.FilePath.Contains("BIOGame"))
             {
                 info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BIOGame") + 8).ToArray());

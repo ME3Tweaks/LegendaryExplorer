@@ -28,8 +28,10 @@ using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
+using GongSolutions.Wpf.DragDrop;
 using MassEffect.NativesEditor.Views;
 using ME3Explorer.Matinee;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Explorer.Sequence_Editor
 {
@@ -61,8 +63,14 @@ namespace ME3Explorer.Sequence_Editor
         public string CurrentFile;
         public string JSONpath;
 
+        private ExportEntry _selectedSequence;
+        public ExportEntry SelectedSequence
+        {
+            get => _selectedSequence;
+            set => SetProperty(ref _selectedSequence, value);
+        }
+
         private List<SaveData> SavedPositions;
-        private ExportEntry SelectedSequence;
         public bool RefOrRefChild;
 
         public static readonly string SequenceEditorDataFolder = Path.Combine(App.AppDataFolder, @"SequenceEditor\");
@@ -89,6 +97,11 @@ namespace ME3Explorer.Sequence_Editor
             this.graphEditor.Click += graphEditor_Click;
             this.graphEditor.DragDrop += SequenceEditor_DragDrop;
             this.graphEditor.DragEnter += SequenceEditor_DragEnter;
+
+            eventsToolBox.DoubleClickCallback = CreateNewObject;
+            actionsToolBox.DoubleClickCallback = CreateNewObject;
+            conditionsToolBox.DoubleClickCallback = CreateNewObject;
+            variablesToolBox.DoubleClickCallback = CreateNewObject;
 
             if (File.Exists(OptionsPath))
             {
@@ -128,6 +141,28 @@ namespace ME3Explorer.Sequence_Editor
             AutoLayoutCommand = new GenericCommand(AutoLayout, CurrentObjects.Any);
             GotoCommand = new GenericCommand(GoTo, PackageIsLoaded);
             KismetLogCommand = new RelayCommand(OpenKismetLogParser, CanOpenKismetLog);
+        }
+
+        private void CreateNewObject(ClassInfo info)
+        {
+            if (SelectedSequence == null)
+            {
+                return;
+            }
+            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName);
+            if (classEntry is null)
+            {
+                MessageBox.Show(this, $"Could not import {info.ClassName}'s class definition! It may defined in a DLC you don't have.");
+                return;
+            }
+
+            ExportEntry newSeqObj = new ExportEntry(Pcc, properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info))
+            {
+                Class = classEntry,
+                ObjectName = info.ClassName
+            };
+            Pcc.AddExport(newSeqObj);
+            addObject(newSeqObj);
         }
 
         private bool CanOpenKismetLog(object o)
@@ -250,6 +285,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             try
             {
+                SelectedSequence = null;
                 CurrentObjects.ClearEx();
                 SequenceExports.ClearEx();
                 SelectedObjects.ClearEx();
@@ -271,13 +307,19 @@ namespace ME3Explorer.Sequence_Editor
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
 
-                Title = $"Sequence Editor WPF - {fileName}";
+                Title = $"Sequence Editor - {fileName}";
                 StatusText = null; //no status
+
+                eventsToolBox.Classes = SequenceObjectCreator.GetSequenceEvents(Pcc.Game);
+                actionsToolBox.Classes = SequenceObjectCreator.GetSequenceActions(Pcc.Game);
+                conditionsToolBox.Classes = SequenceObjectCreator.GetSequenceConditions(Pcc.Game);
+                variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game);
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(this, "Error:\n" + ex.Message);
-                Title = "Sequence Editor WPF";
+                Title = "Sequence Editor";
                 CurrentFile = null;
                 UnLoadMEPackage();
             }
@@ -996,7 +1038,7 @@ namespace ME3Explorer.Sequence_Editor
 
             foreach (var i in updatedExports)
             {
-                if (Pcc.getExport(i).IsSequence())
+                if (Pcc.IsUExport(i + 1) && Pcc.getExport(i).IsSequence())
                 {
                     LoadSequences();
                     break;
@@ -1188,7 +1230,7 @@ namespace ME3Explorer.Sequence_Editor
                 {
 
                     if (obj is SAction sAction &&
-                        sAction.Export.ClassName.EndsWith("SeqAct_StartConversation") &&
+                        (sAction.Export.ClassName.EndsWith("SeqAct_StartConversation") || sAction.Export.ClassName.EndsWith("StartAmbientConv")) &&
                         sAction.Export.GetProperty<ObjectProperty>("Conv") != null)
                     {
                         dialogueEditorMenuItem.Visibility = Visibility.Visible;
@@ -1299,7 +1341,7 @@ namespace ME3Explorer.Sequence_Editor
             export.WriteProperties(props);
         }
 
-        private void RemoveFromSequence_Click(object sender, RoutedEventArgs e)
+        private void TrashAndRemoveFromSequence_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentObjects_ListBox.SelectedItem is SObj sObj)
             {
@@ -1341,10 +1383,8 @@ namespace ME3Explorer.Sequence_Editor
                     SelectedSequence.WriteProperty(seqObjs);
                 }
 
-                //set ParentSequence to null
-                var parentSeqProp = sObj.Export.GetProperty<ObjectProperty>("ParentSequence");
-                parentSeqProp.Value = 0;
-                sObj.Export.WriteProperty(parentSeqProp);
+                //Trash
+                EntryPruner.TrashEntryAndDescendants(sObj.Export);
 
             }
         }
@@ -1534,7 +1574,7 @@ namespace ME3Explorer.Sequence_Editor
                 }
 
                 newObject.WriteProperties(newObjectProps);
-                newObject.idxLink = sequenceExport.UIndex;
+                newObject.Parent = sequenceExport;
             }
         }
 
@@ -1894,7 +1934,7 @@ namespace ME3Explorer.Sequence_Editor
         private void OpenInDialogueEditor_Clicked(object sender, RoutedEventArgs e)
         {
             if (CurrentObjects_ListBox.SelectedItem is SObj obj &&
-                obj.Export.ClassName.EndsWith("SeqAct_StartConversation") &&
+                (obj.Export.ClassName.EndsWith("SeqAct_StartConversation") || obj.Export.ClassName.EndsWith("StartAmbientConv")) &&
                 obj.Export.GetProperty<ObjectProperty>("Conv") is ObjectProperty conv)
             {
                 if (Pcc.IsUExport(conv.Value))
@@ -2013,7 +2053,7 @@ namespace ME3Explorer.Sequence_Editor
                 sAction.Export.ClassName == "BioSeqAct_PMExecuteTransition" &&
                 sAction.Export.GetProperty<IntProperty>("m_nIndex")?.Value is int m_nIndex)
             {
-                var plotFiles = MELoadedFiles.GetEnabledDLC(MEGame.ME3).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, MEGame.ME3))
+                var plotFiles = MELoadedFiles.GetEnabledDLCFiles(MEGame.ME3).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, MEGame.ME3))
                                               .Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
                                               .Append(Path.Combine(ME3Directory.cookedPath, "SFXGameInfoSP_SF.pcc"))
                                               .Where(File.Exists);

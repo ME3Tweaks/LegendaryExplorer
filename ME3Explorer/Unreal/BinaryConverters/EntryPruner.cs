@@ -13,6 +13,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
 {
     public static class EntryPruner
     {
+        public static void TrashEntryAndDescendants(IEntry entry)
+        {
+            var entriesToTrash = new List<IEntry> { entry };
+            entriesToTrash.AddRange(entry.GetAllDescendants());
+            TrashEntries(entry.FileRef, entriesToTrash);
+        }
         public static void TrashEntries(IMEPackage pcc, IEnumerable<IEntry> itemsToTrash)
         {
             ExportEntry trashTopLevel = pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == UnrealPackageFile.TrashPackageName);

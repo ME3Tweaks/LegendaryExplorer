@@ -667,9 +667,10 @@ namespace ME3Explorer
             }
         }
 
-        public static void WriteStream(this Stream stream, MemoryStream value)
+        public static void WriteStream(this Stream stream, Stream value)
         {
-            value.WriteTo(stream);
+            value.Position = 0;
+            value.CopyTo(stream);
         }
 
         /// <summary>

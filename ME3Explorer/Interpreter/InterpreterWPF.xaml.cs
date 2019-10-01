@@ -676,7 +676,7 @@ namespace ME3Explorer
                                 return;
                             }
                         }
-                        //todo: select node using parent-first selection (from packageeditorwpf)
+                        //todo: select node using parent-first selection (from packageeditor)
                         //due to tree view virtualization
 
                         cachedSelectedItem.ExpandParents();
@@ -704,7 +704,7 @@ namespace ME3Explorer
                             {
                                 DisplayName = "Too many children to display",
                                 HasTooManyChildrenToDisplay = true,
-                                AdvancedModeText = "Disable this optimization in Package Editor WPF Options menu"
+                                AdvancedModeText = "Disable this optimization in Package Editor Options menu"
                             };
                             upropertyEntry.HasTooManyChildrenToDisplay = true;
                             upropertyEntry.ChildrenProperties.Add(wontshowholder);
@@ -739,7 +739,7 @@ namespace ME3Explorer
             string displayName = displayPrefix;
             if (!(parent.Property is ArrayPropertyBase))
             {
-                displayName += $" {prop.Name}:";
+                displayName += $" {prop.Name.Instanced}:";
             }
             string editableValue = ""; //editable value
             string parsedValue = ""; //human formatted item. Will most times be blank
@@ -1323,12 +1323,12 @@ namespace ME3Explorer
                             {
 
                                 string str = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(index, CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef);
-                                str = str.Replace("\n", "[\\n]");
-                                if (str.Length > 82)
+                                str = str?.Replace("\n", "[\\n]");
+                                if (str?.Length > 82)
                                 {
                                     str = str.Substring(0, 80) + "...";
                                 }
-                                ParsedValue_TextBlock.Text = str.Replace(Environment.NewLine, "[\\n]");
+                                ParsedValue_TextBlock.Text = str?.Replace(Environment.NewLine, "[\\n]");
                             }
                             else
                             {
@@ -1779,7 +1779,7 @@ namespace ME3Explorer
 
                 if (updated)
                 {
-                    //will cause a refresh from packageeditorwpf
+                    //will cause a refresh from packageeditor
                     CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
                 }
                 //StartScan();
