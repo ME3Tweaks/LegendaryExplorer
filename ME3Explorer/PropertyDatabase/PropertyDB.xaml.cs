@@ -147,7 +147,7 @@ namespace ME3Explorer.PropertyDatabase
         }
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            throw new NotImplementedException();
+            //Not applicable
         }
 
 
@@ -182,9 +182,9 @@ namespace ME3Explorer.PropertyDatabase
         private void LoadCommands()
         {
             GenerateDBCommand = new GenericCommand(GenerateDatabase);
-            FilterSeqClassCommand = new RelayCommand(FilterSeqClasses, IsViewingClass);
-            FilterMatCommand = new RelayCommand(FilterMaterials, IsViewingMaterials);
-            FilterMeshCommand = new RelayCommand(FilterMeshes, IsViewingMeshes);
+            FilterSeqClassCommand = new RelayCommand(SetFilters, IsViewingClass);
+            FilterMatCommand = new RelayCommand(SetFilters, IsViewingMaterials);
+            FilterMeshCommand = new RelayCommand(SetFilters, IsViewingMeshes);
             SwitchMECommand = new RelayCommand(SwitchGame);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             OpenSourcePkgCommand = new RelayCommand(OpenSourcePkg, IsClassSelected);
@@ -576,6 +576,10 @@ namespace ME3Explorer.PropertyDatabase
             {
                 showthis = false;
             }
+            if (showthis && menu_fltrMatNoDLC.IsChecked && mr.IsDLCOnly)
+            {
+                showthis = false;
+            }
             return showthis;
         }
         bool MeshFilter(object d)
@@ -602,7 +606,7 @@ namespace ME3Explorer.PropertyDatabase
             bool showthis = true;
             if (FilterBox.Text != null)
             {
-                showthis = ar.SeqName.ToLower().Contains(FilterBox.Text.ToLower());
+                showthis = ar.AnimSequence.ToLower().Contains(FilterBox.Text.ToLower());
             }
 
             return showthis;
@@ -624,34 +628,25 @@ namespace ME3Explorer.PropertyDatabase
             lstbx_Meshes.ItemsSource = viewS;
             lstbx_Classes.ItemsSource = viewC;
         }
-        private void FilterSeqClasses(object obj)
-        {
-            menu_fltrSeq.IsChecked = !menu_fltrSeq.IsChecked;
-            Filter();
-        }
-        private void FilterMaterials(object obj)
+        private void SetFilters(object obj)
         {
             var param = obj as string;
             switch(param)
             {
+                case "Seq":
+                    menu_fltrSeq.IsChecked = !menu_fltrSeq.IsChecked;
+                    break;
                 case "Unlit":
                     menu_fltrMatUnlit.IsChecked = !menu_fltrMatUnlit.IsChecked;
                     break;
                 case "Twoside":
                     menu_fltrMat2side.IsChecked = !menu_fltrMat2side.IsChecked;
                     break;
-                default:
+                case "NoDLC":
+                    menu_fltrMatNoDLC.IsChecked = !menu_fltrMatNoDLC.IsChecked;
                     break;
-            }
-            Filter();
-        }
-        private void FilterMeshes(object obj)
-        {
-            var param = obj as string;
-            switch (param)
-            {
                 case "Skel":
-                    if(!menu_fltrSkM.IsChecked)
+                    if (!menu_fltrSkM.IsChecked)
                     {
                         menu_fltrSkM.IsChecked = true;
                         menu_fltrStM.IsChecked = false;
@@ -704,8 +699,20 @@ namespace ME3Explorer.PropertyDatabase
             rootPath = Path.GetFullPath(rootPath);
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
             List<string> files = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
-            await dumpPackages(files, currentGame);
 
+            //Shuffle randomly to avoid localizations concurrently accessing
+            int n = files.Count;
+            var rng = new Random();
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                var value = files[k];
+                files[k] = files[n];
+                files[n] = value;
+            }
+
+            await dumpPackages(files, currentGame);
         }
 
         private async Task dumpPackages(List<string> files, MEGame game)
@@ -785,7 +792,6 @@ namespace ME3Explorer.PropertyDatabase
             }
             _dbqueue.CompleteAdding();
         }
-
 
         private void dbworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -880,8 +886,6 @@ namespace ME3Explorer.PropertyDatabase
 
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
-
-
 
         #endregion
 
@@ -1298,10 +1302,13 @@ namespace ME3Explorer.PropertyDatabase
                                 if (!dbScanner.GeneratedMats.TryAdd(pExp, NewMat))
                                 {
                                     var eMat = dbScanner.GeneratedMats[pExp];
-                                    eMat.MaterialUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC));
-                                    if (eMat.IsDLCOnly)
+                                    lock(eMat)
                                     {
-                                        eMat.IsDLCOnly = IsDLC;
+                                        eMat.MaterialUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC));
+                                        if (eMat.IsDLCOnly)
+                                        {
+                                            eMat.IsDLCOnly = IsDLC;
+                                        }
                                     }
                                 }
                             }
@@ -1344,7 +1351,10 @@ namespace ME3Explorer.PropertyDatabase
                                 if (!dbScanner.GeneratedAnims.TryAdd(pExp, NewAnim))
                                 {
                                     var anim = dbScanner.GeneratedAnims[pExp];
-                                    anim.AnimUsages.Add(new Tuple<int, int>(FileKey, pExportUID));
+                                    lock (anim)
+                                    {
+                                        anim.AnimUsages.Add(new Tuple<int, int>(FileKey, pExportUID));
+                                    }
                                 }
                             }
 
@@ -1352,7 +1362,7 @@ namespace ME3Explorer.PropertyDatabase
                             {
                                 bool IsSkel = exp.ClassName == "SkeletalMesh";
                                 int bones = 0;
-                                if (IsSkel && !exp.ObjectName.ToString().StartsWith("Default__"))
+                                if (IsSkel)
                                 {
                                     var bin = ObjectBinary.From<SkeletalMesh>(exp);
                                     if(bin != null)
@@ -1364,7 +1374,11 @@ namespace ME3Explorer.PropertyDatabase
                                 if (!dbScanner.GeneratedMeshes.TryAdd(pExp, NewMeshRec))
                                 {
                                     var mr = dbScanner.GeneratedMeshes[pExp];
-                                    mr.MeshUsages.Add(new Tuple<int, int>(FileKey, pExportUID));
+                                    lock (mr)
+                                    {
+                                        mr.MeshUsages.Add(new Tuple<int, int>(FileKey, pExportUID));
+                                    }
+
                                 }
                             }
                         }

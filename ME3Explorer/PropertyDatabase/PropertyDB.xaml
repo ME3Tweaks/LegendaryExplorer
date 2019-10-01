@@ -40,11 +40,12 @@
                         <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
                         <Separator/>
                         <MenuItem Header="Filter Classes">
-                            <MenuItem Name="menu_fltrSeq" Header="Only Sequence Classes" Command="{Binding FilterSeqClassCommand}" ToolTip="Show sequence classes only." />
+                            <MenuItem Name="menu_fltrSeq" Header="Only Sequence Classes" Command="{Binding FilterSeqClassCommand}" CommandParameter="Seq" ToolTip="Show sequence classes only." />
                         </MenuItem>
                         <MenuItem Header="Filter Materials">
                             <MenuItem Name="menu_fltrMatUnlit" Header="Only Unlit Materials" Command="{Binding FilterMatCommand}" CommandParameter="Unlit" ToolTip="Show Unlit materials only." />
                             <MenuItem Name="menu_fltrMat2side" Header="Only 2 sided Materials" Command="{Binding FilterMatCommand}" CommandParameter="Twoside" ToolTip="Show 2 sided materials only." />
+                            <MenuItem Name="menu_fltrMatNoDLC" Header="Hide DLC only Materials" Command="{Binding FilterMatCommand}" CommandParameter="NoDLC" ToolTip="Hide materials that require cooked Shadercaches." />
                         </MenuItem>
                         <MenuItem Header="Filter Meshes">
                             <MenuItem Name="menu_fltrSkM" Header="Only Skeleton Meshes" Command="{Binding FilterMeshCommand}" CommandParameter="Skel" ToolTip="Show Skeleton Meshes only." />
