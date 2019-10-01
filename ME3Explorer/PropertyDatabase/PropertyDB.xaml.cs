@@ -117,6 +117,8 @@ namespace ME3Explorer.PropertyDatabase
         public ICommand GoToSuperclassCommand { get; set; }
         public ICommand OpenUsagePkgCommand { get; set; }
         public ICommand FilterSeqClassCommand { get; set; }
+        public ICommand FilterMatCommand { get; set; }
+        public ICommand FilterMeshCommand { get; set; }
 
         private bool CanCancelDump(object obj)
         {
@@ -133,6 +135,14 @@ namespace ME3Explorer.PropertyDatabase
         private bool IsViewingClass(object obj)
         {
             return currentView == 0;
+        }
+        private bool IsViewingMaterials(object obj)
+        {
+            return currentView == 1;
+        }
+        private bool IsViewingMeshes(object obj)
+        {
+            return currentView == 3;
         }
         public override void handleUpdate(List<PackageUpdate> updates)
         {
@@ -172,6 +182,8 @@ namespace ME3Explorer.PropertyDatabase
         {
             GenerateDBCommand = new GenericCommand(GenerateDatabase);
             FilterSeqClassCommand = new RelayCommand(FilterSeqClasses, IsViewingClass);
+            FilterMatCommand = new RelayCommand(FilterMaterials, IsViewingMaterials);
+            FilterMeshCommand = new RelayCommand(FilterMeshes, IsViewingMeshes);
             SwitchMECommand = new RelayCommand(SwitchGame);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             OpenSourcePkgCommand = new RelayCommand(OpenSourcePkg, IsClassSelected);
@@ -311,98 +323,6 @@ namespace ME3Explorer.PropertyDatabase
             CurrentDBPath = Path.Combine(App.AppDataFolder, $"PropertyDB{currentGame}.zip");
 
             LoadDatabase();
-        }
-        private void Filter(string ftxt)
-        {
-            ICollectionView viewM = CollectionViewSource.GetDefaultView(CurrentDataBase.Materials);
-            ICollectionView viewA = CollectionViewSource.GetDefaultView(CurrentDataBase.Animations);
-            ICollectionView viewS = CollectionViewSource.GetDefaultView(CurrentDataBase.Meshes);
-            ICollectionView viewC = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
-            if (ftxt == null)
-            {
-                viewM.Filter = null;
-                viewA.Filter = null;
-                viewS.Filter = null;
-                viewC.Filter = null;
-            }
-            else
-            {
-                switch (currentView)
-                {
-                    case 1:
-                        viewM.Filter = delegate (object item)
-                        {
-                            var mats = item as Material;
-                            if (mats != null &&
-                            mats.MaterialName.ToLower().Contains(ftxt)) return true;
-                            return false;
-                        }; ;
-                        break;
-                    case 2:
-                        viewA.Filter = delegate (object item)
-                        {
-                            var anims = item as Animation;
-                            if (anims != null &&
-                            anims.AnimSequence.ToLower().Contains(ftxt)) return true;
-                            return false;
-                        }; ;
-                        break;
-                    case 3:
-                        viewS.Filter = delegate (object item)
-                        {
-                            var meshes = item as MeshRecord;
-                            if (meshes != null &&
-                            meshes.MeshName.ToLower().Contains(ftxt)) return true;
-                            return false;
-                        }; ;
-
-                        break;
-                    default:
-                        viewC.Filter = delegate (object item)
-                        {
-                            var classes = item as ClassRecord;
-                            if (classes != null &&
-                            classes.Class.ToLower().Contains(ftxt)) return true;
-                            return false;
-                        }; ;
-                        break;
-                }
-            }
-            lstbx_Materials.ItemsSource = viewM;
-            lstbx_Anims.ItemsSource = viewA;
-            lstbx_Meshes.ItemsSource = viewS;
-            lstbx_Classes.ItemsSource = viewC;
-        }
-        private void FilterSeqClasses(object obj)
-        {
-            if (!menu_fltrSeq.IsChecked)
-            {
-                menu_fltrSeq.IsChecked = true;
-                ICollectionView view = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
-                view.Filter = delegate (object item)
-                {
-                    var classes = item as ClassRecord;
-                    if (classes != null && (
-                    classes.Class.ToLower().StartsWith("seq") ||
-                    classes.Class.ToLower().StartsWith("bioseq") ||
-                    classes.Class.ToLower().StartsWith("sfxseq") ||
-                    classes.Class.ToLower().StartsWith("rvrseq"))) return true;
-                    return false;
-                }; ;
-                lstbx_Classes.ItemsSource = view;
-            }
-            else
-            {
-                menu_fltrSeq.IsChecked = false;
-                ICollectionView view = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
-                view.Filter = null;
-                lstbx_Classes.ItemsSource = view;
-            }
-        }
-        private void FilterBox_KeyUp(object sender, KeyEventArgs e)
-        {
-           string ftxt = FilterBox.Text.ToLower();
-           Filter(ftxt);
         }
         private void GoToSuperClass(object obj)
         {
@@ -546,10 +466,10 @@ namespace ME3Explorer.PropertyDatabase
             var selected = item.SelectedItem as TabItem;
             var unselected = e.RemovedItems[0] as TabItem;
 
-            if(unselected != null && selected.TabIndex != unselected.TabIndex)
+            if (unselected != null && selected.TabIndex != unselected.TabIndex)
             {
                 FilterBox.Clear();
-                Filter(null);
+                Filter();
 
                 if (currentView != 3)
                 {
@@ -618,6 +538,145 @@ namespace ME3Explorer.PropertyDatabase
 
 
         }
+        #endregion
+
+        #region Filters
+        bool ClassFilter(object d)
+        {
+            var cr = d as ClassRecord;
+            bool showthis = true;
+            if(FilterBox.Text != null)
+            {
+                showthis = cr.Class.ToLower().Contains(FilterBox.Text.ToLower());
+            }
+            if(showthis && menu_fltrSeq.IsChecked && (!cr.Class.ToLower().StartsWith("seq") && !cr.Class.ToLower().StartsWith("bioseq") && !cr.Class.ToLower().StartsWith("sfxseq") && !cr.Class.ToLower().StartsWith("rvrseq")))
+            {
+                showthis = false;
+            }
+            return showthis;
+        }
+        bool MaterialFilter(object d)
+        {
+            var mr = d as Material;
+            bool showthis = true;
+            if (FilterBox.Text != null)
+            {
+                showthis = mr.MaterialName.ToLower().Contains(FilterBox.Text.ToLower());
+            }
+            if (showthis && menu_fltrMatUnlit.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "LightingModel" && x.Item3 == "MLM_Unlit"))
+            {
+                showthis = false;
+            }
+            if (showthis && menu_fltrMat2side.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "TwoSided" && x.Item3 == "True"))
+            {
+                showthis = false;
+            }
+            return showthis;
+        }
+        bool MeshFilter(object d)
+        {
+            var mr = d as MeshRecord;
+            bool showthis = true;
+            if (FilterBox.Text != null)
+            {
+                showthis = mr.MeshName.ToLower().Contains(FilterBox.Text.ToLower());
+            }
+            if (showthis && menu_fltrSkM.IsChecked && !mr.IsSkeleton)
+            {
+                showthis = false;
+            }
+            if (showthis && menu_fltrStM.IsChecked && mr.IsSkeleton)
+            {
+                showthis = false;
+            }
+            return showthis;
+        }
+        bool AnimFilter(object d)
+        {
+            var ar = d as Animation;
+            bool showthis = true;
+            if (FilterBox.Text != null)
+            {
+                showthis = ar.SeqName.ToLower().Contains(FilterBox.Text.ToLower());
+            }
+
+            return showthis;
+        }
+        private void Filter()
+        {
+            ICollectionView viewM = CollectionViewSource.GetDefaultView(CurrentDataBase.Materials);
+            ICollectionView viewA = CollectionViewSource.GetDefaultView(CurrentDataBase.Animations);
+            ICollectionView viewS = CollectionViewSource.GetDefaultView(CurrentDataBase.Meshes);
+            ICollectionView viewC = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
+
+            viewC.Filter = ClassFilter;
+            viewM.Filter = MaterialFilter;
+            viewS.Filter = MeshFilter;
+            viewA.Filter = AnimFilter;
+
+            lstbx_Materials.ItemsSource = viewM;
+            lstbx_Anims.ItemsSource = viewA;
+            lstbx_Meshes.ItemsSource = viewS;
+            lstbx_Classes.ItemsSource = viewC;
+        }
+        private void FilterSeqClasses(object obj)
+        {
+            menu_fltrSeq.IsChecked = !menu_fltrSeq.IsChecked;
+            Filter();
+        }
+        private void FilterMaterials(object obj)
+        {
+            var param = obj as string;
+            switch(param)
+            {
+                case "Unlit":
+                    menu_fltrMatUnlit.IsChecked = !menu_fltrMatUnlit.IsChecked;
+                    break;
+                case "Twoside":
+                    menu_fltrMat2side.IsChecked = !menu_fltrMat2side.IsChecked;
+                    break;
+                default:
+                    break;
+            }
+            Filter();
+        }
+        private void FilterMeshes(object obj)
+        {
+            var param = obj as string;
+            switch (param)
+            {
+                case "Skel":
+                    if(!menu_fltrSkM.IsChecked)
+                    {
+                        menu_fltrSkM.IsChecked = true;
+                        menu_fltrStM.IsChecked = false;
+                    }
+                    else
+                    {
+                        menu_fltrSkM.IsChecked = false;
+                    }
+                    break;
+                case "Static":
+                    if (!menu_fltrStM.IsChecked)
+                    {
+                        menu_fltrSkM.IsChecked = false;
+                        menu_fltrStM.IsChecked = true;
+                    }
+                    else
+                    {
+                        menu_fltrStM.IsChecked = false;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            Filter();
+        }
+        private void FilterBox_KeyUp(object sender, KeyEventArgs e)
+        {
+           Filter();
+        }
+
         #endregion
 
         #region Scan
@@ -819,7 +878,6 @@ namespace ME3Explorer.PropertyDatabase
 
 
         #endregion
-
 
     }
     #region Database
@@ -1223,7 +1281,7 @@ namespace ME3Explorer.PropertyDatabase
 
                             }
 
-                            if (exp.ClassName == "Material")
+                            if (exp.ClassName == "Material" && !pIsdefault)
                             {
 
                                 string parent = GetTopParentPackage(exp);
@@ -1241,7 +1299,7 @@ namespace ME3Explorer.PropertyDatabase
                                 }
                             }
 
-                            if (exp.ClassName == "AnimSequence")
+                            if (exp.ClassName == "AnimSequence" && !pIsdefault)
                             {
                                 string aSeq = null;
                                 string aGrp = "None";
@@ -1283,7 +1341,7 @@ namespace ME3Explorer.PropertyDatabase
                                 }
                             }
 
-                            if (exp.ClassName == "SkeletalMesh" || exp.ClassName == "StaticMesh")
+                            if ((exp.ClassName == "SkeletalMesh" || exp.ClassName == "StaticMesh") && !pIsdefault)
                             {
                                 bool IsSkel = exp.ClassName == "SkeletalMesh";
                                 int bones = 0;
