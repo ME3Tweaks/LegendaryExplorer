@@ -202,10 +202,7 @@ namespace ME3Explorer.PropertyDatabase
             Properties.Settings.Default.PropertyDBPath = CurrentDBPath;
             Properties.Settings.Default.PropertyDBGame = currentGame.ToString();
             MeshRendererTab_MeshRenderer.UnloadExport();
-            if(meshPcc != null)
-            {
-                meshPcc.Dispose();
-            }
+            meshPcc?.Dispose();
         }
 
         #endregion

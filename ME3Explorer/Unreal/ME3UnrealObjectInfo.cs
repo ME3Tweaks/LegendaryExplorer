@@ -365,12 +365,7 @@ namespace ME3Explorer.Unreal
     {
         public class SequenceObjectInfo
         {
-            public List<string> inputLinks;
-
-            public SequenceObjectInfo()
-            {
-                inputLinks = new List<string>();
-            }
+            public List<string> inputLinks = new List<string>();
         }
 
         public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
@@ -423,14 +418,16 @@ namespace ME3Explorer.Unreal
             {
                 objectName = objectName.Substring(9);
             }
-            if (SequenceObjects.ContainsKey(objectName))
+            if (SequenceObjects.TryGetValue(objectName, out SequenceObjectInfo seqInfo))
             {
-                if (SequenceObjects[objectName].inputLinks != null && SequenceObjects[objectName].inputLinks.Count > 0)
+                if (seqInfo.inputLinks?.Count > 0)
                 {
                     return SequenceObjects[objectName];
                 }
-
-                return getSequenceObjectInfo(Classes[objectName].baseClass);
+                if (Classes.TryGetValue(objectName, out ClassInfo info) && info.baseClass != "Object" && info.baseClass != "Class")
+                {
+                    return getSequenceObjectInfo(info.baseClass);
+                }
             }
             return null;
         }
@@ -766,7 +763,11 @@ namespace ME3Explorer.Unreal
                             if ((objectName.Contains("SeqAct") || objectName.Contains("SeqCond") || objectName.Contains("SequenceLatentAction") ||
                                  objectName == "SequenceOp" || objectName == "SequenceAction" || objectName == "SequenceCondition") && !newSequenceObjects.ContainsKey(objectName))
                             {
-                                newSequenceObjects.Add(objectName, generateSequenceObjectInfo(i, pcc));
+                                SequenceObjectInfo sequenceObjectInfo = generateSequenceObjectInfo(i, pcc);
+                                if (sequenceObjectInfo.inputLinks.Count > 0)
+                                {
+                                    newSequenceObjects.Add(objectName, sequenceObjectInfo);
+                                }
                             }
                         }
                         else if (exportEntry.ClassName == "ScriptStruct")
@@ -788,48 +789,34 @@ namespace ME3Explorer.Unreal
             //Custom additions are tweaks and additional classes either not automatically able to be determined
             //or by new classes designed in the modding scene that must be present in order for parsing to work properly
 
-            //Kinkojiro - New Class - SFXSeqAct_AttachToSocket
-            NewClasses["SFXSeqAct_AttachToSocket"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 0,
-                properties =
-                {
-                    new KeyValuePair<string, PropertyInfo>("PSC2Component", new PropertyInfo(PropertyType.ObjectProperty, "ParticleSystemComponent")),
-                    new KeyValuePair<string, PropertyInfo>("PSC1Component", new PropertyInfo(PropertyType.ObjectProperty, "ParticleSystemComponent")),
-                    new KeyValuePair<string, PropertyInfo>("SkMeshComponent", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMeshComponent")),
-                    new KeyValuePair<string, PropertyInfo>("TargetPawn", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
-                    new KeyValuePair<string, PropertyInfo>("AttachSocketName", new PropertyInfo(PropertyType.NameProperty, "ParticleSystemComponent"))
-                }
-            };
-
             //Kinkojiro - New Class - BioSeqAct_ShowMedals
             //Sequence object for showing the medals UI
             NewClasses["BioSeqAct_ShowMedals"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 0,
+                exportIndex = 22, //in ME3Resources.pcc
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("bFromMainMenu", new PropertyInfo(PropertyType.BoolProperty)),
                     new KeyValuePair<string, PropertyInfo>("m_oGuiReferenced", new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo"))
                 }
             };
+            newSequenceObjects["BioSeqAct_ShowMedals"] = new SequenceObjectInfo();
 
             //Kinkojiro - New Class - SFXSeqAct_SetFaceFX
             NewClasses["SFXSeqAct_SetFaceFX"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 0,
+                exportIndex = 30, //in ME3Resources.pcc
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("m_aoTargets", new PropertyInfo(PropertyType.ArrayProperty, "Actor")),
                     new KeyValuePair<string, PropertyInfo>("m_pDefaultFaceFXAsset", new PropertyInfo(PropertyType.ObjectProperty, "FaceFXAsset"))
                 }
             };
+            newSequenceObjects["SFXSeqAct_SetFaceFX"] = new SequenceObjectInfo();
 
             NewClasses["LightMapTexture2D"] = new ClassInfo
             {
