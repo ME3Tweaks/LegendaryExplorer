@@ -25,7 +25,7 @@
         <DataTemplate DataType="{x:Type Packages:ExportEntry}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
-                <TextBlock Text="{Binding InstancedFullPath}" Foreground="Black" Margin="5,0,0,0"/>
+                <TextBlock Text="{Binding InstancedFullPath}" Margin="5,0,0,0"/>
             </StackPanel>
         </DataTemplate>
     </me3explorer:NotifyPropertyChangedWindowBase.Resources>
