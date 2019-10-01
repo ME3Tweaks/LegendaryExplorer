@@ -60,7 +60,6 @@ namespace ME3Explorer
             relinkMap ??= new Dictionary<IEntry, IEntry>();
             IMEPackage sourcePcc = sourceEntry.FileRef;
             EntryTree sourcePackageTree = new EntryTree(sourcePcc);
-            EntryTree destPackageTree = new EntryTree(destPcc);
 
             if (portingOption == PortingOption.ReplaceSingular)
             {
@@ -118,7 +117,7 @@ namespace ME3Explorer
                         //we must check to see if there is an item already matching what we are trying to port.
 
                         //Todo: We may need to enhance target checking here as fullpath may not be reliable enough. Maybe have to do indexing, or something.
-                        IEntry sameObjInTarget = destPackageTree.GetDirectChildrenOf(newParent).FirstOrDefault(x => node.FullPath == x.FullPath);
+                        IEntry sameObjInTarget = newParent.GetChildren().FirstOrDefault(x => node.FullPath == x.FullPath);
                         if (sameObjInTarget != null)
                         {
                             relinkMap[node] = sameObjInTarget;
@@ -437,12 +436,6 @@ namespace ME3Explorer
             List<string> nameListBackup = pcc.Names.ToList();
             try
             {
-                if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
-                {
-                    string resourceFilePath = App.CustomResourceFilePath(pcc.Game);
-                    if (!File.Exists(resourceFilePath)) return null;
-                }
-
                 if (IsSafeToImportFrom(info.pccPath, pcc.Game))
                 {
                     string package = Path.GetFileNameWithoutExtension(info.pccPath);
