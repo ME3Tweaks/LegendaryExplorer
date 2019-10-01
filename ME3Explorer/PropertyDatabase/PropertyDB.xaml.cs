@@ -147,7 +147,7 @@ namespace ME3Explorer.PropertyDatabase
         }
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            throw new NotImplementedException();
+            //Not applicable
         }
 
 

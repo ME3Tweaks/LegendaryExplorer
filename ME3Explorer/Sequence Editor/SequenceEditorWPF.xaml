@@ -276,13 +276,16 @@
                 <Expander Grid.Column="0" Name="toolBoxExpander" HorizontalAlignment="Left" IsEnabled="{Binding SelectedSequence, Converter={StaticResource NullEnabledConverter}}"
                           ExpandDirection="Right" IsExpanded="False" Background="Orange" SharedUI:Bindings.VisibilityToEnabled="True">
                     <Expander.Header>
-                        <TextBlock Text="Sequence Object Toolbox" VerticalAlignment="Center" Margin="0,0,4,0">
+                        <TextBlock Text="Sequence Object Toolbox" Foreground="Black" VerticalAlignment="Center" Margin="0,0,4,0">
                             <TextBlock.LayoutTransform>
                                 <RotateTransform Angle="-90" />
                             </TextBlock.LayoutTransform>
                         </TextBlock>
                     </Expander.Header>
                     <TabControl>
+                        <TabItem Header="Common">
+                            <SharedUI:ToolBox x:Name="commonToolBox" />
+                        </TabItem>
                         <TabItem Header="Events">
                             <SharedUI:ToolBox x:Name="eventsToolBox" />
                         </TabItem>
