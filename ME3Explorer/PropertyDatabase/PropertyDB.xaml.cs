@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -127,7 +128,11 @@ namespace ME3Explorer.PropertyDatabase
         }
         private bool IsUsageSelected(object obj)
         {
-            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 0) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 1) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 2) || (lstbx_Meshes.SelectedIndex >= 0 && currentView == 3);
+            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 0) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 1) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 2) || (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3);
+        }
+        private bool IsViewingClass(object obj)
+        {
+            return currentView == 0;
         }
         public override void handleUpdate(List<PackageUpdate> updates)
         {
@@ -166,7 +171,7 @@ namespace ME3Explorer.PropertyDatabase
         private void LoadCommands()
         {
             GenerateDBCommand = new GenericCommand(GenerateDatabase);
-            FilterSeqClassCommand = new GenericCommand(FilterSeqClasses);
+            FilterSeqClassCommand = new RelayCommand(FilterSeqClasses, IsViewingClass);
             SwitchMECommand = new RelayCommand(SwitchGame);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             OpenSourcePkgCommand = new RelayCommand(OpenSourcePkg, IsClassSelected);
@@ -279,6 +284,7 @@ namespace ME3Explorer.PropertyDatabase
             switchME1_menu.IsChecked = false;
             switchME2_menu.IsChecked = false;
             switchME3_menu.IsChecked = false;
+            FilterBox.Clear();
             ClearDataBase();
 
             switch (p)
@@ -306,8 +312,68 @@ namespace ME3Explorer.PropertyDatabase
 
             LoadDatabase();
         }
+        private void Filter(string ftxt)
+        {
+            ICollectionView viewM = CollectionViewSource.GetDefaultView(CurrentDataBase.Materials);
+            ICollectionView viewA = CollectionViewSource.GetDefaultView(CurrentDataBase.Animations);
+            ICollectionView viewS = CollectionViewSource.GetDefaultView(CurrentDataBase.Meshes);
+            ICollectionView viewC = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
+            if (ftxt == null)
+            {
+                viewM.Filter = null;
+                viewA.Filter = null;
+                viewS.Filter = null;
+                viewC.Filter = null;
+            }
+            else
+            {
+                switch (currentView)
+                {
+                    case 1:
+                        viewM.Filter = delegate (object item)
+                        {
+                            var mats = item as Material;
+                            if (mats != null &&
+                            mats.MaterialName.ToLower().Contains(ftxt)) return true;
+                            return false;
+                        }; ;
+                        break;
+                    case 2:
+                        viewA.Filter = delegate (object item)
+                        {
+                            var anims = item as Animation;
+                            if (anims != null &&
+                            anims.AnimSequence.ToLower().Contains(ftxt)) return true;
+                            return false;
+                        }; ;
+                        break;
+                    case 3:
+                        viewS.Filter = delegate (object item)
+                        {
+                            var meshes = item as MeshRecord;
+                            if (meshes != null &&
+                            meshes.MeshName.ToLower().Contains(ftxt)) return true;
+                            return false;
+                        }; ;
 
-        private void FilterSeqClasses()
+                        break;
+                    default:
+                        viewC.Filter = delegate (object item)
+                        {
+                            var classes = item as ClassRecord;
+                            if (classes != null &&
+                            classes.Class.ToLower().Contains(ftxt)) return true;
+                            return false;
+                        }; ;
+                        break;
+                }
+            }
+            lstbx_Materials.ItemsSource = viewM;
+            lstbx_Anims.ItemsSource = viewA;
+            lstbx_Meshes.ItemsSource = viewS;
+            lstbx_Classes.ItemsSource = viewC;
+        }
+        private void FilterSeqClasses(object obj)
         {
             if (!menu_fltrSeq.IsChecked)
             {
@@ -335,53 +401,8 @@ namespace ME3Explorer.PropertyDatabase
         }
         private void FilterBox_KeyUp(object sender, KeyEventArgs e)
         {
-            string ftxt = FilterBox.Text.ToLower();
-            ICollectionView viewM = CollectionViewSource.GetDefaultView(CurrentDataBase.Materials);
-            ICollectionView viewA = CollectionViewSource.GetDefaultView(CurrentDataBase.Animations);
-            ICollectionView viewC = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
-
-            if (ftxt == null)
-            {
-                viewM.Filter = null;
-                viewA.Filter = null;
-                viewC.Filter = null;
-            }
-            else
-            {
-                switch (currentView)
-                {
-                    case 1:
-                        viewA.Filter = delegate (object item)
-                        {
-                            var mats = item as Material;
-                            if (mats != null &&
-                            mats.MaterialName.ToLower().Contains(ftxt)) return true;
-                            return false;
-                        }; ;
-                        break;
-                    case 2:
-                        viewA.Filter = delegate (object item)
-                        {
-                            var anims = item as Animation;
-                            if (anims != null &&
-                            anims.AnimSequence.ToLower().Contains(ftxt)) return true;
-                            return false;
-                        }; ;
-                        break;
-                    default:
-                        viewC.Filter = delegate (object item)
-                        {
-                            var classes = item as ClassRecord;
-                            if (classes != null &&
-                            classes.Class.ToLower().Contains(ftxt)) return true;
-                            return false;
-                        }; ;
-                        break;
-                }
-            }
-            lstbx_Classes.ItemsSource = viewC;
-            lstbx_Anims.ItemsSource = viewA;
-            lstbx_Materials.ItemsSource = viewM;
+           string ftxt = FilterBox.Text.ToLower();
+           Filter(ftxt);
         }
         private void GoToSuperClass(object obj)
         {
@@ -517,17 +538,27 @@ namespace ME3Explorer.PropertyDatabase
 
         private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) //Fires if Tab moves away
         {
-            if (e.AddedItems == e.RemovedItems)
+            if (e.AddedItems == e.RemovedItems || e.RemovedItems.Count == 0)
             {
                 return;
             }
+            var item = sender as TabControl;
+            var selected = item.SelectedItem as TabItem;
+            var unselected = e.RemovedItems[0] as TabItem;
 
-            if (currentView != 3)
+            if(unselected != null && selected.TabIndex != unselected.TabIndex)
             {
-                ToggleRenderMesh();
-                btn_MeshRenderToggle.IsChecked = false;
-                btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
+                FilterBox.Clear();
+                Filter(null);
+
+                if (currentView != 3)
+                {
+                    ToggleRenderMesh();
+                    btn_MeshRenderToggle.IsChecked = false;
+                    btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
+                }
             }
+
         }
 
         private void lstbx_Meshes_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -556,8 +587,9 @@ namespace ME3Explorer.PropertyDatabase
                 }
                 return;
             }
+            var selecteditem = lstbx_Meshes.SelectedItem as MeshRecord;
 
-            var filekey = CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages[0].Item1;
+            var filekey = selecteditem.MeshUsages[0].Item1;
             var filename = CurrentDataBase.FileList[filekey];
             string rootPath = MEDirectories.GamePath(currentGame);
 
@@ -581,7 +613,7 @@ namespace ME3Explorer.PropertyDatabase
                 meshPcc.Dispose();
             }
             meshPcc = MEPackageHandler.OpenMEPackage(filePath);
-            var meshExp = meshPcc.getExport(CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages[0].Item2);
+            var meshExp = meshPcc.GetUExport(selecteditem.MeshUsages[0].Item2);
             MeshRendererTab_MeshRenderer.LoadExport(meshExp);
 
 
