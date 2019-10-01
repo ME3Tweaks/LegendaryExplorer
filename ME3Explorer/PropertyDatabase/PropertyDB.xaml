@@ -54,16 +54,8 @@
                         <TextBlock x:Name="StatusBar_GameID_Text" Background="DarkSeaGreen" Text="{Binding currentGame, FallbackValue=ME3}" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
                     </Border>
                 </StatusBarItem>
-
                 <StatusBarItem>
                     <TextBlock x:Name="StatusBar_LeftMostText" Text="{Binding CurrentOverallOperationText}"/>
-                </StatusBarItem>
-                <StatusBarItem HorizontalAlignment="Right">
-                    <StackPanel Orientation="Horizontal">
-                        <!--<Button Name="StatusBar_CancelBtn" Command="{Binding CancelDumpCommand}" Content="Cancel" Width="79" Margin="0" Padding="0" HorizontalAlignment="Right" Visibility="Collapsed"/>-->
-                        <!--<ProgressBar x:Name="StatusBar_Progress" Value="{Binding OverallProgressValue}" Maximum="{Binding OverallProgressMaximum}" HorizontalAlignment="Stretch" Width="100" Visibility="Collapsed"/>-->
-                        <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding CurrentDatabase.GenerationDate, StringFormat='Generated at {0}', FallbackValue=No database generated}" Foreground="Gray" VerticalAlignment="Center"/>
-                    </StackPanel>
                 </StatusBarItem>
             </StatusBar>
             <DockPanel Name="MidDock">

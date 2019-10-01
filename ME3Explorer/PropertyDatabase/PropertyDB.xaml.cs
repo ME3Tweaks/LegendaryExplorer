@@ -1,6 +1,7 @@
 ﻿using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -55,7 +56,7 @@ namespace ME3Explorer.PropertyDatabase
         /// </summary>
         public ConcurrentDictionary<String, Material> GeneratedMats = new ConcurrentDictionary<String, Material>();
         /// <summary>
-        /// Dictionary that stores generated Materials
+        /// Dictionary that stores generated Meshes
         /// </summary>
         public ConcurrentDictionary<String, MeshRecord> GeneratedMeshes = new ConcurrentDictionary<String, MeshRecord>();
         /// <summary>
@@ -107,7 +108,6 @@ namespace ME3Explorer.PropertyDatabase
             set => SetProperty(ref _overallProgressMaximum, value);
         }
 
-        private bool IsMeshRendering;
         private IMEPackage meshPcc;
         public ICommand GenerateDBCommand { get; set; }
         public ICommand SwitchMECommand { get; set; }
@@ -184,7 +184,10 @@ namespace ME3Explorer.PropertyDatabase
             Properties.Settings.Default.PropertyDBPath = CurrentDBPath;
             Properties.Settings.Default.PropertyDBGame = currentGame.ToString();
             MeshRendererTab_MeshRenderer.UnloadExport();
-            meshPcc.Dispose();
+            if(meshPcc != null)
+            {
+                meshPcc.Dispose();
+            }
         }
 
         #endregion
@@ -596,7 +599,7 @@ namespace ME3Explorer.PropertyDatabase
             }
             string rootPath = MEDirectories.GamePath(currentGame);
 
-            if (rootPath == null)
+            if (rootPath == null || !Directory.Exists(rootPath))
             {
                 MessageBox.Show($"{currentGame} has not been found. Please check your ME3Explorer settings");
                 return;
@@ -613,9 +616,6 @@ namespace ME3Explorer.PropertyDatabase
         {
             TopDock.IsEnabled = false;
             MidDock.IsEnabled = false;
-            //StatusBar_Progress.Visibility = Visibility.Visible;
-            StatusBar_RightSide_LastSaved.Visibility = Visibility.Hidden;
-            //StatusBar_CancelBtn.Visibility = Visibility.Visible;
             OverallProgressMaximum = files.Count;
             OverallProgressValue = 0;
             CurrentOverallOperationText = $"Generating Database...";
@@ -625,6 +625,7 @@ namespace ME3Explorer.PropertyDatabase
             CurrentDataBase.GenerationDate = DateTime.Now.ToString();
             GeneratedClasses.Clear();
             GeneratedAnims.Clear();
+            GeneratedMats.Clear();
             GeneratedMeshes.Clear();
             GeneratedValueChecker.Clear();
 
@@ -636,7 +637,6 @@ namespace ME3Explorer.PropertyDatabase
             dbworker.RunWorkerCompleted += dbworker_RunWorkerCompleted;
             dbworker.WorkerSupportsCancellation = true;
             dbworker.RunWorkerAsync();
-
 
 
             IsBusy = true;
@@ -678,13 +678,13 @@ namespace ME3Explorer.PropertyDatabase
             if (DumpCanceled)
             {
                 DumpCanceled = false;
-                CurrentOverallOperationText = $"Dump canceled. Processing Queue.";
+                BusyHeader = $"Dump canceled. Processing Queue.";
             }
             else
             {
                 OverallProgressValue = 100;
                 OverallProgressMaximum = 100;
-                CurrentOverallOperationText = "Dump completed. Processing Queue.";
+                BusyHeader = "Dump completed. Processing Queue.";
             }
             _dbqueue.CompleteAdding();
         }
@@ -692,51 +692,43 @@ namespace ME3Explorer.PropertyDatabase
 
         private void dbworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            IsBusy = false;
+            
             dbworker.CancelAsync();
             CommandManager.InvalidateRequerySuggested();
-            try
+
+            //Add and sort Classes
+            CurrentDataBase.ClassRecords.AddRange(GeneratedClasses.Values);
+            CurrentDataBase.ClassRecords.Sort(x => x.Class);
+            foreach (var c in CurrentDataBase.ClassRecords)
             {
-
-                //Add and sort Classes
-                CurrentDataBase.ClassRecords.AddRange(GeneratedClasses.Values);
-                CurrentDataBase.ClassRecords.Sort(x => x.Class);
-                foreach (var c in CurrentDataBase.ClassRecords)
-                {
-                    c.PropertyRecords.Sort(x => x.Property);
-                }
-
-                //Add animations
-                CurrentDataBase.Animations.AddRange(GeneratedAnims.Values);
-                CurrentDataBase.Animations.Sort(x => x.AnimSequence);
-
-                //Add Materials
-                CurrentDataBase.Materials.AddRange(GeneratedMats.Values);
-                CurrentDataBase.Materials.Sort(x => x.MaterialName);
-
-                //Add Meshes
-                CurrentDataBase.Meshes.AddRange(GeneratedMeshes.Values);
-                CurrentDataBase.Meshes.Sort(x => x.MeshName);
-
-                GeneratedClasses.Clear();
-                GeneratedAnims.Clear();
-                GeneratedMats.Clear();
-                GeneratedMeshes.Clear();
-                GeneratedValueChecker.Clear();
-                isProcessing = false;
-                //StatusBar_Progress.Visibility = Visibility.Hidden;
-                StatusBar_RightSide_LastSaved.Visibility = Visibility.Visible;
-                //StatusBar_CancelBtn.Visibility = Visibility.Hidden;
-                SaveDatabase();
-                TopDock.IsEnabled = true;
-                MidDock.IsEnabled = true;
-
-                MessageBox.Show("Done");
+                c.PropertyRecords.Sort(x => x.Property);
             }
-            catch
-            {
-                MessageBox.Show("Unable to finish.", "Error", MessageBoxButton.OK);
-            }
+
+            //Add animations
+            CurrentDataBase.Animations.AddRange(GeneratedAnims.Values);
+            CurrentDataBase.Animations.Sort(x => x.AnimSequence);
+
+            //Add Materials
+            CurrentDataBase.Materials.AddRange(GeneratedMats.Values);
+            CurrentDataBase.Materials.Sort(x => x.MaterialName);
+
+            //Add Meshes
+            CurrentDataBase.Meshes.AddRange(GeneratedMeshes.Values);
+            CurrentDataBase.Meshes.Sort(x => x.MeshName);
+
+            GeneratedClasses.Clear();
+            GeneratedAnims.Clear();
+            GeneratedMats.Clear();
+            GeneratedMeshes.Clear();
+            GeneratedValueChecker.Clear();
+            isProcessing = false;
+            SaveDatabase();
+            IsBusy = false;
+            TopDock.IsEnabled = true;
+            MidDock.IsEnabled = true;
+
+            MessageBox.Show("Done");
+
         }
 
         private void DBProcessor(object sender, DoWorkEventArgs e) //Background worker to clean up class data.
@@ -771,7 +763,7 @@ namespace ME3Explorer.PropertyDatabase
 
                     if (isProcessing)
                     {
-                        CurrentOverallOperationText = $"Processing Queue. {_dbqueue.Count}";
+                        BusyHeader = $"Processing Queue. {_dbqueue.Count}";
                     }
 
                 }
@@ -1009,13 +1001,11 @@ namespace ME3Explorer.PropertyDatabase
         /// </summary>
         public void dumpPackageFile(MEGame GameBeingDumped, PropertyDB dbScanner)
         {
-            //dbScanner.CurrentOverallOperationText = $"Generating Database... Files: { dbScanner.OverallProgressValue}/{dbScanner.OverallProgressMaximum} {dbScanner._dbqueue.Count} Found Classes: { dbScanner.GeneratedClasses.Count} Animations: { dbScanner.GeneratedAnims.Count} Materials: { dbScanner.GeneratedMats.Count} Meshes: { dbScanner.GeneratedMeshes.Count}";
-            try
+            using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
             {
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
+                foreach (ExportEntry exp in pcc.Exports)
                 {
-
-                    foreach (ExportEntry exp in pcc.Exports)
+                    try
                     {
                         string pClass = exp.ClassName;  //Handle basic class record
                         string pExp = exp.ObjectName;
@@ -1265,6 +1255,14 @@ namespace ME3Explorer.PropertyDatabase
                             {
                                 bool IsSkel = exp.ClassName == "SkeletalMesh";
                                 int bones = 0;
+                                if (IsSkel && !exp.ObjectName.ToString().StartsWith("Default__"))
+                                {
+                                    var bin = ObjectBinary.From<SkeletalMesh>(exp);
+                                    if(bin != null)
+                                    {
+                                        bones = bin.RefSkeleton.Length;
+                                    }
+                                }
                                 var NewMeshRec = new MeshRecord(pExp, IsSkel, bones, new ObservableCollectionExtended<Tuple<int, int>> { new Tuple<int, int>(FileKey, pExportUID) });
                                 if (!dbScanner.GeneratedMeshes.TryAdd(pExp, NewMeshRec))
                                 {
@@ -1284,15 +1282,14 @@ namespace ME3Explorer.PropertyDatabase
                             if (!dbScanner.GeneratedClasses.TryAdd(pClass, NewClassRecord))
                             {
                                 dbScanner._dbqueue.Add(NewClassRecord);
-
                             }
                         }
                     }
+                    catch (Exception e) when (!App.IsDebug)
+                    {
+                        MessageBox.Show($"Exception Bug detected in single file: {ShortFileName} Export:{exp.UIndex}");
+                    }
                 }
-            }
-            catch (Exception e) when (!App.IsDebug)
-            {
-                MessageBox.Show($"Exception {ShortFileName} SingleFileProcess {e}");
             }
         }
 
