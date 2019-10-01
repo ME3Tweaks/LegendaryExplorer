@@ -1211,6 +1211,19 @@ namespace ME3Explorer.Sequence_Editor
                     }
                 }
 
+                if (contextMenu.GetChild("cloneInterpDataMenuItem") is MenuItem cloneInterpDataMenuItem)
+                {
+                    string className = obj.Export.ClassName;
+                    if (className == "InterpData")
+                    {
+                        cloneInterpDataMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        cloneInterpDataMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
                 if (contextMenu.GetChild("plotEditorMenuItem") is MenuItem plotEditorMenuItem)
                 {
 
@@ -1509,6 +1522,14 @@ namespace ME3Explorer.Sequence_Editor
                 p.Show();
                 p.LoadFile(sVar.Export.FileRef.FilePath, objProp.Value);
                 p.Activate(); //bring to front
+            }
+        }
+
+        private void CloneInterpData_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (SelectedObjects.HasExactly(1) && SelectedObjects[0] is SVar sVar && sVar.Export.ClassName == "InterpData")
+            {
+                addObject((ExportEntry)EntryCloner.cloneTree(sVar.Export));
             }
         }
 

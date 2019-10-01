@@ -33,6 +33,7 @@
             <MenuItem Header="Open Referenced State Event in Plot Editor" Name="plotEditorMenuItem" Click="PlotEditorMenuItem_Click"/>
             <Separator />
             <MenuItem Header="Clone Object" Click="CloneObject_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
+            <MenuItem Header="Clone InterpData tree" Click="CloneInterpData_Clicked" Name="cloneInterpDataMenuItem" ToolTip="Clone InterpData and all of its children"/>
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
                 <MenuItem Header="Output Links" Name="outputLinksMenuItem"/>
                 <MenuItem Header="Var Links" Name="varLinksMenuItem"/>

@@ -169,6 +169,11 @@ namespace ME3Explorer.Packages
                    entry.ClassName == "TextureFlipBook";
         }
 
+        public static bool CanHaveScript(this ExportEntry entry)
+        {
+            return entry.ClassName == "Class" || entry.ClassName == "Function" || entry.ClassName == "State";
+        }
+
         public static bool IsDescendantOf(this IEntry entry, IEntry ancestor)
         {
             while (entry.HasParent)
