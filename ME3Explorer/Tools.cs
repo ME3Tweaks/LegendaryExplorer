@@ -323,7 +323,7 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Property Database WPF",
+                name = "Property & Asset Database",
                 type = typeof(PropertyDatabase.PropertyDB),
                 icon = Application.Current.FindResource("iconPropertyDatabase") as ImageSource,
                 open = () =>
@@ -332,7 +332,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility" },
                 subCategory = "Databases",
-                description = "Scans games and creates a database of all the classes and properties for those classes that Bioware uses.\n\nThis is different than Package Dumper, as it looks across all instances of the class and what is actually used."
+                description = "Scans games and creates a database of classes, animations, materials and meshes.\n\nIndividual assets can be opened directly from the interface."
             });
             set.Add(new Tool
             {
