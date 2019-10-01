@@ -30,7 +30,7 @@ namespace ME3Explorer.PropertyDatabase
     public partial class PropertyDB : WPFBase
     {
         #region Declarations
-        public string dbCurrentBuild { get; set; } = "1.0";
+        public string dbCurrentBuild { get; set; } = "1.0"; //If changes are made that invalidate old databases edit this.
         private int _currentView;
         public int currentView { get => _currentView; set => SetProperty(ref _currentView, value); }
 
