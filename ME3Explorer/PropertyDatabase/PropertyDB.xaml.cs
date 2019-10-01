@@ -30,6 +30,7 @@ namespace ME3Explorer.PropertyDatabase
     public partial class PropertyDB : WPFBase
     {
         #region Declarations
+        public string dbCurrentBuild { get; set; } = "1.0";
         private int _currentView;
         public int currentView { get => _currentView; set => SetProperty(ref _currentView, value); }
 
@@ -234,6 +235,13 @@ namespace ME3Explorer.PropertyDatabase
                     readData = serializer.Deserialize<PropsDataBase>(reader);
                 }
 
+                if(readData.DataBaseversion == null || readData.DataBaseversion != dbCurrentBuild)
+                {
+                    var warn = MessageBox.Show("This database is out of date. A new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
+                    if (warn != MessageBoxResult.Cancel)
+                        GenerateDatabase();
+                    return;
+                }
 
                 CurrentDataBase.meGame = readData.meGame;
                 CurrentDataBase.GenerationDate = readData.GenerationDate;
@@ -714,6 +722,7 @@ namespace ME3Explorer.PropertyDatabase
             //Clear database
             ClearDataBase();
             CurrentDataBase.GenerationDate = DateTime.Now.ToString();
+            CurrentDataBase.DataBaseversion = dbCurrentBuild;
             GeneratedClasses.Clear();
             GeneratedAnims.Clear();
             GeneratedMats.Clear();
@@ -889,6 +898,7 @@ namespace ME3Explorer.PropertyDatabase
     {
         public MEGame meGame { get; set; }
         public string GenerationDate { get; set; }
+        public string DataBaseversion { get; set; }
         public List<string> FileList { get; } = new List<string>();
         public ObservableCollectionExtended<ClassRecord> ClassRecords { get; } = new ObservableCollectionExtended<ClassRecord>();
         public ObservableCollectionExtended<Material> Materials { get; } = new ObservableCollectionExtended<Material>();

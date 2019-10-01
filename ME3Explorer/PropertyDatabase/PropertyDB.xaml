@@ -53,14 +53,19 @@
                     </MenuItem>
                 </Menu>
             </DockPanel>
-            <StatusBar Height="23" DockPanel.Dock="Bottom">
-                <StatusBarItem VerticalContentAlignment="Center" x:Name="StatusBar_GameID_Container" Visibility="Visible" Margin="3,-1,3,-1">
+            <StatusBar Height="23" DockPanel.Dock="Bottom" >
+                <StatusBarItem VerticalContentAlignment="Center" x:Name="StatusBar_GameID_Container" Visibility="Visible" Margin="3,-1,3,-1" DockPanel.Dock="Left">
                     <Border BorderBrush="Gray" BorderThickness="2,2,2,2" CornerRadius="3,3,3,3" VerticalAlignment="Center">
                         <TextBlock x:Name="StatusBar_GameID_Text" Background="DarkSeaGreen" Text="{Binding currentGame, FallbackValue=ME3}" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
                     </Border>
                 </StatusBarItem>
                 <StatusBarItem>
                     <TextBlock x:Name="StatusBar_LeftMostText" Text="{Binding CurrentOverallOperationText}"/>
+                </StatusBarItem>
+                <StatusBarItem HorizontalContentAlignment="Right" HorizontalAlignment="Right">
+                    <TextBlock x:Name="StatusBar_RightMostText" Margin="2,0,2,0" Foreground="Gray">
+                                <Run Text="v"/><Run Text="{Binding Path=dbCurrentBuild, Mode=OneWay}"/>
+                    </TextBlock>
                 </StatusBarItem>
             </StatusBar>
             <DockPanel Name="MidDock">
