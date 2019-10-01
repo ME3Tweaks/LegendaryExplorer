@@ -18,6 +18,27 @@ namespace ME3Explorer.Sequence_Editor
         private const string SequenceActionName = "SequenceAction";
         private const string SequenceVariableName = "SequenceVariable";
 
+        public static List<ClassInfo> GetCommonObjects(MEGame game)
+        {
+            return new List<string>
+            {
+                "Sequence",
+                "SeqAct_Interp",
+                "InterpData",
+                "BioSeqAct_EndCurrentConvNode",
+                "BioSeqEvt_ConvNode",
+                "BioSeqVar_ObjectFindByTag",
+                "SeqVar_Object",
+                "SeqAct_ActivateRemoteEvent",
+                "SeqEvent_SequenceActivated",
+                "SeqAct_Delay",
+                "SeqAct_Gate",
+                "BioSeqAct_PMCheckState",
+                "BioSeqAct_PMExecuteTransition",
+                "SeqAct_FinishSequence"
+            }.Select(className => UnrealObjectInfo.GetClassOrStructInfo(game, className)).NonNull().ToList();
+        }
+
         public static List<ClassInfo> GetSequenceVariables(MEGame game)
         {
             List<ClassInfo> classes = UnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceVariableName, game);
@@ -69,89 +90,77 @@ namespace ME3Explorer.Sequence_Editor
         public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, ClassInfo info)
         {
             MEGame game = pcc.Game;
-            string baseClass = SequenceActionName;
-            if (info.IsOrInheritsFrom(SequenceEventName, game))
+            if (info.ClassName == "Sequence")
             {
-                baseClass = SequenceEventName;
+                return new PropertyCollection { new ArrayProperty<ObjectProperty>("SequenceObjects") };
             }
-            else if (info.IsOrInheritsFrom(SequenceConditionName, game))
+            if (info.IsOrInheritsFrom(SequenceVariableName, game))
             {
-                baseClass = SequenceConditionName;
-            }
-            else if (info.IsOrInheritsFrom(SequenceActionName, game))
-            {
-                baseClass = SequenceActionName;
-            }
-            else if (info.IsOrInheritsFrom(SequenceVariableName, game))
-            {
-                baseClass = SequenceVariableName;
+                return new PropertyCollection();
             }
 
             PropertyCollection defaults = new PropertyCollection();
 
-            if (baseClass == SequenceEventName || baseClass == SequenceConditionName || baseClass == SequenceActionName)
+            ArrayProperty<StructProperty> varLinksProp = null;
+            ArrayProperty<StructProperty> outLinksProp = null;
+            Dictionary<string, ClassInfo> classes = UnrealObjectInfo.GetClasses(game);
+            try
             {
-                ArrayProperty<StructProperty> varLinksProp = null;
-                ArrayProperty<StructProperty> outLinksProp = null;
-                Dictionary<string, ClassInfo> classes = UnrealObjectInfo.GetClasses(game);
-                try
+                while (info != null && (varLinksProp == null || outLinksProp == null))
                 {
-                    while (info != null && (varLinksProp == null || outLinksProp == null))
+                    string filepath = Path.Combine(MEDirectories.BioGamePath(game), info.pccPath);
+                    if (File.Exists(info.pccPath))
                     {
-                        string filepath = Path.Combine(MEDirectories.BioGamePath(game), info.pccPath);
-                        if (File.Exists(info.pccPath))
-                        {
-                            filepath = info.pccPath; //Used for dynamic lookup
-                        }
-                        if (game == MEGame.ME1 && !File.Exists(filepath))
-                        {
-                            filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
-                        }
-                        if (File.Exists(filepath))
-                        {
-                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackage(filepath);
-                            ExportEntry classExport = importPCC.GetUExport(info.exportIndex);
-                            UClass classBin = ObjectBinary.From<UClass>(classExport);
-                            ExportEntry classDefaults = importPCC.GetUExport(classBin.Defaults);
+                        filepath = info.pccPath; //Used for dynamic lookup
+                    }
+                    if (game == MEGame.ME1 && !File.Exists(filepath))
+                    {
+                        filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
+                    }
+                    if (File.Exists(filepath))
+                    {
+                        using IMEPackage importPCC = MEPackageHandler.OpenMEPackage(filepath);
+                        ExportEntry classExport = importPCC.GetUExport(info.exportIndex);
+                        UClass classBin = ObjectBinary.From<UClass>(classExport);
+                        ExportEntry classDefaults = importPCC.GetUExport(classBin.Defaults);
 
-                            foreach (var prop in classDefaults.GetProperties())
+                        foreach (var prop in classDefaults.GetProperties())
+                        {
+                            if (varLinksProp == null && prop.Name == "VariableLinks" && prop is ArrayProperty<StructProperty> vlp)
                             {
-                                if (varLinksProp == null && prop.Name == "VariableLinks" && prop is ArrayProperty<StructProperty> vlp)
+                                varLinksProp = vlp;
+                                //relink ExpectedType
+                                foreach (StructProperty varLink in varLinksProp)
                                 {
-                                    varLinksProp = vlp;
-                                    //relink ExpectedType
-                                    foreach (StructProperty varLink in varLinksProp)
+                                    if (varLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
+                                        importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
+                                        EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName) is IEntry portedExpectedVar)
                                     {
-                                        if (varLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
-                                            importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName) is IEntry portedExpectedVar)
-                                        {
-                                            expectedTypeProp.Value = portedExpectedVar.UIndex;
-                                        }
+                                        expectedTypeProp.Value = portedExpectedVar.UIndex;
                                     }
                                 }
-                                if (outLinksProp == null && prop.Name == "OutputLinks" && prop is ArrayProperty<StructProperty> olp)
-                                {
-                                    outLinksProp = olp;
-                                }
+                            }
+                            if (outLinksProp == null && prop.Name == "OutputLinks" && prop is ArrayProperty<StructProperty> olp)
+                            {
+                                outLinksProp = olp;
                             }
                         }
-
-                        classes.TryGetValue(info.baseClass, out info);
                     }
+
+                    classes.TryGetValue(info.baseClass, out info);
                 }
-                catch
-                {
-                    // ignored
-                }
-                if (varLinksProp != null)
-                {
-                    defaults.Add(varLinksProp);
-                }
-                if (outLinksProp != null)
-                {
-                    defaults.Add(outLinksProp);
-                }
+            }
+            catch
+            {
+                // ignored
+            }
+            if (varLinksProp != null)
+            {
+                defaults.Add(varLinksProp);
+            }
+            if (outLinksProp != null)
+            {
+                defaults.Add(outLinksProp);
             }
 
             //remove links if empty

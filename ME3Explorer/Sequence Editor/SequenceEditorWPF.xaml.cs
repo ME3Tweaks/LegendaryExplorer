@@ -98,6 +98,7 @@ namespace ME3Explorer.Sequence_Editor
             this.graphEditor.DragDrop += SequenceEditor_DragDrop;
             this.graphEditor.DragEnter += SequenceEditor_DragEnter;
 
+            commonToolBox.DoubleClickCallback = CreateNewObject;
             eventsToolBox.DoubleClickCallback = CreateNewObject;
             actionsToolBox.DoubleClickCallback = CreateNewObject;
             conditionsToolBox.DoubleClickCallback = CreateNewObject;
@@ -310,10 +311,11 @@ namespace ME3Explorer.Sequence_Editor
                 Title = $"Sequence Editor - {fileName}";
                 StatusText = null; //no status
 
-                eventsToolBox.Classes = SequenceObjectCreator.GetSequenceEvents(Pcc.Game);
-                actionsToolBox.Classes = SequenceObjectCreator.GetSequenceActions(Pcc.Game);
-                conditionsToolBox.Classes = SequenceObjectCreator.GetSequenceConditions(Pcc.Game);
-                variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game);
+                commonToolBox.Classes = SequenceObjectCreator.GetCommonObjects(Pcc.Game).OrderBy(info => info.ClassName).ToList();
+                eventsToolBox.Classes = SequenceObjectCreator.GetSequenceEvents(Pcc.Game).OrderBy(info => info.ClassName).ToList();
+                actionsToolBox.Classes = SequenceObjectCreator.GetSequenceActions(Pcc.Game).OrderBy(info => info.ClassName).ToList();
+                conditionsToolBox.Classes = SequenceObjectCreator.GetSequenceConditions(Pcc.Game).OrderBy(info => info.ClassName).ToList();
+                variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game).OrderBy(info => info.ClassName).ToList();
 
             }
             catch (Exception ex)
