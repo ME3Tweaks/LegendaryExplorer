@@ -4427,12 +4427,12 @@ namespace ME3Explorer
                     if (length != 0)
                     {
                         int nameindex = BitConverter.ToInt32(data, pos);
-                        int nameindexunreal = BitConverter.ToInt32(data, pos + 4);
+                        int num = BitConverter.ToInt32(data, pos + 4);
 
-                        string name = CurrentLoadedExport.FileRef.GetNameEntry(nameindex);
+                        var name = new NameReference(CurrentLoadedExport.FileRef.GetNameEntry(nameindex), num);
                         subnodes.Add(new BinInterpNode
                         {
-                            Header = $"{(pos - binarystart):X4} Camera: {name}_{nameindexunreal}",
+                            Header = $"{(pos - binarystart):X4} Camera: {name.Instanced}",
                             Name = $"_{pos.ToString()}",
                             Tag = NodeType.StructLeafName
                         });
@@ -4465,10 +4465,10 @@ namespace ME3Explorer
                             for (int i = 0; i < count; i++)
                             {
                                 nameindex = BitConverter.ToInt32(data, pos);
-                                nameindexunreal = BitConverter.ToInt32(data, pos + 4);
+                                num = BitConverter.ToInt32(data, pos + 4);
                                 BinInterpNode parentnode = new BinInterpNode
                                 {
-                                    Header = $"{(pos - binarystart):X4} Camera {i + 1}: {CurrentLoadedExport.FileRef.GetNameEntry(nameindex)}_{nameindexunreal}",
+                                    Header = $"{(pos - binarystart):X4} Camera {i + 1}: {CurrentLoadedExport.FileRef.GetNameEntry(nameindex)}_{num}",
                                     Tag = NodeType.StructLeafName,
                                     Name = $"_{pos.ToString()}"
                                 };
@@ -6111,104 +6111,6 @@ namespace ME3Explorer
 
             return subnodes;
 
-        }
-
-        private BinInterpNode ReadSoftSkinVertice(MEGame game, byte[] data, int pos)
-        {
-            //UDK has lots of unused values
-            int rvpos = pos;
-            float vPosX = BitConverter.ToSingle(data, rvpos);
-            rvpos += 4;
-            float vPosY = BitConverter.ToSingle(data, rvpos);
-            rvpos += 4;
-            float vPosZ = BitConverter.ToSingle(data, rvpos);
-            rvpos += 4;
-            float TanX = BitConverter.ToSingle(data, rvpos);
-            rvpos += 4;
-            float TanY = BitConverter.ToSingle(data, rvpos);
-            rvpos += 4;
-            float TanZ = BitConverter.ToSingle(data, rvpos);
-            rvpos += 4;
-            float uv1U = BitConverter.ToSingle(data, rvpos);
-            rvpos += 4;
-            float uv1V = BitConverter.ToSingle(data, rvpos);
-            rvpos += 4; //32
-
-            if (game == MEGame.UDK)
-            {
-                float uv2U = BitConverter.ToSingle(data, rvpos);
-                rvpos += 4;
-                float uv2V = BitConverter.ToSingle(data, rvpos);
-                rvpos += 4;
-                float uv3U = BitConverter.ToSingle(data, rvpos);
-                rvpos += 4;
-                float uv3V = BitConverter.ToSingle(data, rvpos);
-                rvpos += 4;
-                float uv4U = BitConverter.ToSingle(data, rvpos);
-                rvpos += 4;
-                float uv4V = BitConverter.ToSingle(data, rvpos);
-                rvpos += 4;
-                int color = BitConverter.ToInt32(data, rvpos);
-                rvpos += 4;
-
-                //Influence Bones
-                byte inflbnA = data[rvpos];  //SINGLE BYTE Influence
-                rvpos += 1;
-                byte inflbnB = data[rvpos];
-                rvpos += 1;
-                byte inflbnC = data[rvpos];
-                rvpos += 1;
-                byte inflbnD = data[rvpos];
-                rvpos += 1;
-
-                //Influence Weights
-                byte inflwA = data[rvpos];  //SINGLE BYTE Influence
-                rvpos += 1;
-                byte inflwB = data[rvpos];
-                rvpos += 1;
-                byte inflwC = data[rvpos];
-                rvpos += 1;
-                byte inflwD = data[rvpos];
-                rvpos += 1;
-
-                return new BinInterpNode
-                {
-                    Header = $"Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ} UV(0) U:{uv1U} W:{uv1U} UV(1) U:{uv2U} W:{uv2U} UV(2) U:{uv3U} W:{uv3U} UV(3) U:{uv4U} W:{uv4U} Color: {color} Influence bones: ({inflbnA}, {inflbnB}, {inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB}, {inflwC}, {inflwD})",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.Unknown,
-                };
-            }
-            else
-            {
-                //Influence Bones
-                byte inflbnA = data[rvpos];  //SINGLE BYTE Influence
-                rvpos += 1;
-                byte inflbnB = data[rvpos];
-                rvpos += 1;
-                byte inflbnC = data[rvpos];
-                rvpos += 1;
-                byte inflbnD = data[rvpos];
-                rvpos += 1;
-
-                //Influence Weights
-                byte inflwA = data[rvpos];
-                rvpos += 1;
-                byte inflwB = data[rvpos];
-                rvpos += 1;
-                byte inflwC = data[rvpos];
-                rvpos += 1;
-                byte inflwD = data[rvpos];
-                rvpos += 1;
-
-                return new BinInterpNode
-                {
-                    Header = $"Position: X:{vPosX} Y:{vPosY} Z:{vPosZ} Tangent X:{TanX} Y:{TanY} Z:{TanZ}  UV U:{uv1U} W:{uv1U} Influence bones: ({inflbnA}, {inflbnB}, {inflbnC}, {inflbnD}) Influence Weights: ({inflwA}, {inflwB}, {inflwC}, {inflwD})",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.Unknown,
-                };
-            }
         }
 
         private List<ITreeItem> StartStaticMeshCollectionActorScan(byte[] data, ref int binarystart)

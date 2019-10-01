@@ -108,7 +108,8 @@ namespace ME3Explorer.Packages
 
         public bool HasStack => ObjectFlags.HasFlag(EObjectFlags.HasStack);
 
-        public bool IsDefaultObject => ObjectFlags.HasFlag(EObjectFlags.ClassDefaultObject);
+        //should only have to check the flag, but custom mod classes might not have set it properly
+        public bool IsDefaultObject => ObjectFlags.HasFlag(EObjectFlags.ClassDefaultObject) || ObjectName.Name.StartsWith("Default__");
 
         private byte[] _header;
 

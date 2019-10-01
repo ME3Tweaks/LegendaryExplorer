@@ -1055,7 +1055,7 @@ namespace ME3Explorer.PropertyDatabase
                                         pValue = "None";
                                         break;
                                     case ObjectProperty pobj:
-                                        if (pobj.Value != 0)
+                                        if (pcc.IsEntry(pobj.Value))
                                         {
                                             pValue = pcc.GetEntry(pobj.Value).ClassName;
                                         }
@@ -1263,13 +1263,9 @@ namespace ME3Explorer.PropertyDatabase
 
                             if (exp.ClassName == "SkeletalMesh" || exp.ClassName == "StaticMesh")
                             {
-                                bool IsSkel = false;
-                                if (exp.ClassName == "SkeletalMesh")
-                                {
-                                    IsSkel = true;
-                                }
+                                bool IsSkel = exp.ClassName == "SkeletalMesh";
                                 int bones = 0;
-                                var NewMeshRec = new MeshRecord(pExp, IsSkel, bones, new ObservableCollectionExtended<Tuple<int, int>>() { new Tuple<int, int>(FileKey, pExportUID) });
+                                var NewMeshRec = new MeshRecord(pExp, IsSkel, bones, new ObservableCollectionExtended<Tuple<int, int>> { new Tuple<int, int>(FileKey, pExportUID) });
                                 if (!dbScanner.GeneratedMeshes.TryAdd(pExp, NewMeshRec))
                                 {
                                     var mr = dbScanner.GeneratedMeshes[pExp];
@@ -1294,7 +1290,7 @@ namespace ME3Explorer.PropertyDatabase
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception e) when (!App.IsDebug)
             {
                 MessageBox.Show($"Exception {ShortFileName} SingleFileProcess {e}");
             }

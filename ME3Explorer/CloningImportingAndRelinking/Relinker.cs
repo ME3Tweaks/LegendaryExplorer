@@ -150,13 +150,41 @@ namespace ME3Explorer
                                         }
                                     }
                                     break;
+                                case "DominantDirectionalLightComponent":
+                                case "SphericalHarmonicLightComponent":
+                                case "DominantPointLightComponent":
+                                case "StaticLightCollectionActor":
+                                case "DominantSpotLightComponent":
+                                case "DirectionalLightComponent":
+                                case "StaticMeshCollectionActor":
+                                case "TerrainWeightMapTexture":
+                                case "PhysicsAssetInstance":
+                                case "PointLightComponent":
+                                case "ShadowMapTexture2D":
+                                case "SpotLightComponent":
+                                case "LightMapTexture2D":
+                                case "SkyLightComponent":
+                                case "TextureFlipBook":
+                                case "BrushComponent":
+                                case "FaceFXAnimSet":
+                                case "TextureMovie":
+                                case "AnimSequence":
+                                case "RB_BodySetup":
+                                case "MorphTarget":
+                                case "ShadowMap1D":
+                                case "WwiseStream":
+                                case "WwiseBank":
+                                case "Texture2D":
+                                    //these classes have binary but do not need relinking
+                                    break;
                                 default:
                                     if (binarydata.Any(b => b != 0))
                                     {
                                         relinkFailedReport.Add($"{relinkingExport.UIndex} {relinkingExport.FullPath} has unparsed binary. " +
-                                                               $"This binary may contain items that need to be relinked.");
+                                                               $"This binary may contain items that need to be relinked. Come to the Discord server " +
+                                                               $"(click ME3Tweaks logo in main window for invite) and ask devs to parse this class.");
                                     }
-                                    continue;
+                                    break;
                             }
                         }
                     }

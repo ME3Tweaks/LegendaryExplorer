@@ -918,7 +918,7 @@ namespace ME3Explorer.Unreal
                 exportIndex = export.UIndex,
                 ClassName = export.ObjectName
             };
-            if (!isStruct)
+            if (export.IsClass)
             {
                 BinaryConverters.UClass classBinary = BinaryConverters.ObjectBinary.From<BinaryConverters.UClass>(export);
                 info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
