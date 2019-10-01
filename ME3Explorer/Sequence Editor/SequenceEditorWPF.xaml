@@ -34,6 +34,7 @@
             <Separator />
             <MenuItem Header="Clone Object" Click="CloneObject_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
             <MenuItem Header="Clone InterpData tree" Click="CloneInterpData_Clicked" Name="cloneInterpDataMenuItem" ToolTip="Clone InterpData and all of its children"/>
+            <MenuItem Header="Edit Comment" Click="EditComment_Click" ToolTip="Add or edit this node's comment"/>
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
                 <MenuItem Header="Output Links" Name="outputLinksMenuItem"/>
                 <MenuItem Header="Var Links" Name="varLinksMenuItem"/>
@@ -263,7 +264,8 @@
                     </i:Interaction.Behaviors>
                 </TreeView>
                 <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"/>
-                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" HideHexBox="True"
+                                       Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
             </Grid>
             <Grid Grid.Column="0" Grid.Row="0" >
                 <Grid.ColumnDefinitions>

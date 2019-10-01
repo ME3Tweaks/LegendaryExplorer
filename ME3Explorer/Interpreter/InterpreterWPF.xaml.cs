@@ -143,7 +143,7 @@ namespace ME3Explorer
             InterpreterWPF i = (InterpreterWPF)obj;
             if ((bool)e.NewValue)
             {
-                i.Interpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Collapsed;
+                i.Interpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = i.SaveHexChange_Button.Visibility = Visibility.Collapsed;
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(0);
                 i.HexboxColumnDefinition.MinWidth = 0;
                 i.HexboxColumnDefinition.MaxWidth = 0;
@@ -151,7 +151,7 @@ namespace ME3Explorer
             }
             else
             {
-                i.Interpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Visible;
+                i.Interpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = i.SaveHexChange_Button.Visibility = Visibility.Visible;
                 i.HexboxColumnDefinition.Width = new GridLength(285);
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
                 i.HexboxColumnDefinition.MinWidth = 220;

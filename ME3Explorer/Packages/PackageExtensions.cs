@@ -160,19 +160,36 @@ namespace ME3Explorer.Packages
             return entry.ObjectName == UnrealPackageFile.TrashPackageName || entry.Parent?.ObjectName == UnrealPackageFile.TrashPackageName;
         }
 
-        public static bool IsTexture(this IEntry entry)
-        {
-            return entry.ClassName == "Texture2D" ||
-                   entry.ClassName == "LightMapTexture2D" ||
-                   entry.ClassName == "ShadowMapTexture2D" ||
-                   entry.ClassName == "TerrainWeightMapTexture" ||
-                   entry.ClassName == "TextureFlipBook";
-        }
+        public static bool IsTexture(this IEntry entry) =>
+            entry.ClassName == "Texture2D" ||
+            entry.ClassName == "LightMapTexture2D" ||
+            entry.ClassName == "ShadowMapTexture2D" ||
+            entry.ClassName == "TerrainWeightMapTexture" ||
+            entry.ClassName == "TextureFlipBook";
 
-        public static bool CanHaveScript(this ExportEntry entry)
-        {
-            return entry.ClassName == "Class" || entry.ClassName == "Function" || entry.ClassName == "State";
-        }
+        public static bool IsPartOfClassDefinition(this ExportEntry entry) =>
+            entry.ClassName == "Class" ||
+            entry.ClassName == "Function" ||
+            entry.ClassName == "State" ||
+            entry.ClassName == "Const" ||
+            entry.ClassName == "Enum" ||
+            entry.ClassName == "ScriptStruct" ||
+            entry.ClassName == "IntProperty" ||
+            entry.ClassName == "BoolProperty" ||
+            entry.ClassName == "FloatProperty" ||
+            entry.ClassName == "NameProperty" ||
+            entry.ClassName == "StrProperty" ||
+            entry.ClassName == "StringRefProperty" ||
+            entry.ClassName == "ByteProperty" ||
+            entry.ClassName == "ObjectProperty" ||
+            entry.ClassName == "ComponentProperty" ||
+            entry.ClassName == "InterfaceProperty" ||
+            entry.ClassName == "ArrayProperty" ||
+            entry.ClassName == "StructProperty" ||
+            entry.ClassName == "BioMask4Property" ||
+            entry.ClassName == "MapProperty" ||
+            entry.ClassName == "ClassProperty" ||
+            entry.ClassName == "DelegateProperty";
 
         public static bool IsDescendantOf(this IEntry entry, IEntry ancestor)
         {

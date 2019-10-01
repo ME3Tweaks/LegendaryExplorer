@@ -379,7 +379,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private TreeViewEntry FindSequences(ExportEntry rootSeq, bool wantFullName = false)
         {
-            string seqName = wantFullName ? rootSeq.InstancedFullPath : "";
+            string seqName = wantFullName ? $"{rootSeq.ParentInstancedFullPath}." : "";
             if (rootSeq.GetProperty<StrProperty>("ObjName") is StrProperty objName)
             {
                 seqName += objName;
@@ -2171,6 +2171,27 @@ namespace ME3Explorer.Sequence_Editor
             if (CurrentObjects.Any())
             {
                 RefreshView();
+            }
+        }
+
+        private void EditComment_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SObj sObj)
+            {
+                var comments = sObj.Export.GetProperty<ArrayProperty<StrProperty>>("m_aObjComment") ?? new ArrayProperty<StrProperty>("m_aObjComment");
+
+                string commentText = string.Join("\n", comments.Select(prop => prop.Value));
+
+                string resultText = PromptDialog.Prompt(this, "", "Edit Comment", commentText, true, PromptDialog.InputType.Multiline);
+
+                if (resultText == null)
+                {
+                    return;
+                }
+
+                comments = new ArrayProperty<StrProperty>(resultText.SplitLines(StringSplitOptions.RemoveEmptyEntries).Select(s => new StrProperty(s)), "m_aObjComment");
+
+                sObj.Export.WriteProperty(comments);
             }
         }
     }

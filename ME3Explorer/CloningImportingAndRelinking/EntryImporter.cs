@@ -177,7 +177,7 @@ namespace ME3Explorer
                     ms.WriteInt32(newNameIdx);
                     prePropBinary = ms.ToArray();
                 }
-                else if (sourceExport.CanHaveScript())
+                else if (sourceExport.IsPartOfClassDefinition())
                 {
                     prePropBinary = sourceExport.Data.Slice(0, start);
                 }

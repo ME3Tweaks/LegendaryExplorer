@@ -351,6 +351,17 @@ namespace ME3Explorer
 
     public static class StringExtensions
     {
+        /// <summary>
+        /// Splits on Environment.Newline
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static string[] SplitLines(this string s, StringSplitOptions options = StringSplitOptions.None)
+        {
+            return s.Split(new[] {Environment.NewLine}, options);
+        }
+
         public static bool isNumericallyEqual(this string first, string second)
         {
             return double.TryParse(first, out double a)

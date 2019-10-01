@@ -22,7 +22,8 @@ namespace ME3Explorer.SharedUI
         public enum InputType
         {
             Text,
-            Password
+            Password,
+            Multiline
         }
 
         private InputType _inputType;
@@ -47,6 +48,16 @@ namespace ME3Explorer.SharedUI
                 txtResponse.SelectAll();
             }
             _inputType = inputType;
+            if (inputType == InputType.Multiline)
+            {
+                txtResponse.AcceptsReturn = true;
+                txtResponse.Height = 100;
+            }
+            else
+            {
+                txtResponse.AcceptsReturn = false;
+                txtResponse.MaxLines = 1;
+            }
         }
 
         void PromptDialog_Loaded(object sender, RoutedEventArgs e)
