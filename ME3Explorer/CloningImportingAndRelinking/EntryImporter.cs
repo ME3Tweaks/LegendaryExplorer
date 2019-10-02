@@ -296,11 +296,13 @@ namespace ME3Explorer
             MemoryStream res = new MemoryStream();
             if (incomingExport.HasStack)
             {
-                //TODO: Find a unique NetIndex instead of writing a blank... don't know if that will fix multiplayer sync issues
-                byte[] stackdummy = targetExport.Game == MEGame.UDK ? UDKStackDummy :
-                                    targetExport.Game == MEGame.ME3 ? me3StackDummy : 
-                                                                      me1Me2StackDummy;
-                res.Write(stackdummy, 0, stackdummy.Length);
+                res.WriteFromBuffer(incomingExport.Data.Slice(0, 8));
+                res.WriteFromBuffer(targetExport.Game switch
+                {
+                    MEGame.UDK => UDKStackDummy,
+                    MEGame.ME3 => me3StackDummy,
+                    _ => me1Me2StackDummy
+                });
             }
             else
             {
