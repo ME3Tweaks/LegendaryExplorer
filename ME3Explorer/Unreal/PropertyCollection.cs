@@ -772,15 +772,15 @@ namespace ME3Explorer.Unreal
         public StructProperty(string structType, PropertyCollection props, NameReference? name = null, bool isImmutable = false) : base(name)
         {
             StructType = structType;
-            Properties = props;
+            Properties = props ?? new PropertyCollection();
             IsImmutable = isImmutable;
         }
 
         public StructProperty(string structType, bool isImmutable, params UProperty[] props) : base(null)
         {
             StructType = structType;
-            IsImmutable = isImmutable;
             Properties = new PropertyCollection();
+            IsImmutable = isImmutable;
             foreach (var prop in props)
             {
                 Properties.Add(prop);
