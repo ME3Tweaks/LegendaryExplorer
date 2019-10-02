@@ -45,6 +45,7 @@
                         <MenuItem Header="Filter Materials">
                             <MenuItem Name="menu_fltrMatUnlit" Header="Only Unlit Materials" Command="{Binding FilterMatCommand}" CommandParameter="Unlit" ToolTip="Show Unlit materials only." />
                             <MenuItem Name="menu_fltrMat2side" Header="Only 2 sided Materials" Command="{Binding FilterMatCommand}" CommandParameter="Twoside" ToolTip="Show 2 sided materials only." />
+                            <MenuItem Name="menu_fltrMat1side" Header="Only Backface culled (1 side)" Command="{Binding FilterMatCommand}" CommandParameter="Oneside" ToolTip="Show 1 sided materials only." />
                             <MenuItem Name="menu_fltrMatNoDLC" Header="Hide DLC only Materials" Command="{Binding FilterMatCommand}" CommandParameter="NoDLC" ToolTip="Hide materials that require cooked Shadercaches." />
                         </MenuItem>
                         <MenuItem Header="Filter Meshes">
@@ -316,6 +317,80 @@
                                     <ContextMenu>
                                         <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
                                         <MenuItem Header="Open in Meshplorer" Command="{Binding OpenUsagePkgCommand}" CommandParameter="Meshplorer" ToolTip="Opens this Usage in Meshplorer." />
+                                    </ContextMenu>
+                                </SharedUI:ListBoxScroll.ContextMenu>
+                            </SharedUI:ListBoxScroll>
+                        </DockPanel>
+                    </TabItem>
+                    <!-- ParticleSystems -->
+                    <TabItem Header="Particle Systems" TabIndex="4">
+                        <DockPanel>
+                            <SharedUI:ListBoxScroll x:Name="lstbx_Particles" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Particles}"  >
+                                <SharedUI:ListBoxScroll.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding PSName}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </SharedUI:ListBoxScroll.ItemTemplate>
+                                <SharedUI:ListBoxScroll.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsDLCOnly}" Value="True">
+                                                <Setter Property="Background" Value="LightGray"/>
+                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </SharedUI:ListBoxScroll.ItemContainerStyle>
+                            </SharedUI:ListBoxScroll>
+                            <StackPanel x:Name="details_PS" MinWidth="200" Margin="3"  >
+                                <StackPanel.Style>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=lstbx_Particles, Path=SelectedIndex}" Value=">=0">
+                                                <Setter Property="StackPanel.Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                                <TextBlock Text="Parent Package: " Margin="0,5,0,0"/>
+                                <TextBlock Text="{Binding Path=SelectedItem.ParentPackage, ElementName=lstbx_Particles}" />
+                                <TextBlock Text="System Complexity (emitter count): " Margin="0,5,0,0"/>
+                                <TextBlock Text="{Binding Path=SelectedItem.EmitterCount, ElementName=lstbx_Particles}" />
+                                <TextBlock Text="Is DLC Only: " Margin="0,5,0,0"/>
+                                <TextBlock Text="{Binding Path=SelectedItem.IsDLCOnly, ElementName=lstbx_Particles}" />
+                            </StackPanel>
+                            <SharedUI:ListBoxScroll x:Name="lstbx_PSUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.PSUsages, ElementName=lstbx_Particles }"  >
+                                <SharedUI:ListBoxScroll.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                        <Binding Path="Item1"/>
+                                                        <Binding Path="CurrentDataBase.FileList" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                            <TextBlock Text=" #"/>
+                                            <TextBlock Text="{Binding Item2}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </SharedUI:ListBoxScroll.ItemTemplate>
+                                <SharedUI:ListBoxScroll.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=Item3}" Value="True">
+                                                <Setter Property="Background" Value="LightGray"/>
+                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </SharedUI:ListBoxScroll.ItemContainerStyle>
+                                <SharedUI:ListBoxScroll.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
                                     </ContextMenu>
                                 </SharedUI:ListBoxScroll.ContextMenu>
                             </SharedUI:ListBoxScroll>

@@ -62,6 +62,10 @@ namespace ME3Explorer.PropertyDatabase
         /// </summary>
         public ConcurrentDictionary<String, MeshRecord> GeneratedMeshes = new ConcurrentDictionary<String, MeshRecord>();
         /// <summary>
+        /// Dictionary that stores generated Particle Systems
+        /// </summary>
+        public ConcurrentDictionary<String, ParticleSys> GeneratedPS = new ConcurrentDictionary<String, ParticleSys>();
+        /// <summary>
         /// Used to check if values generated are unique.
         /// </summary>
         public ConcurrentDictionary<String, Boolean> GeneratedValueChecker = new ConcurrentDictionary<String, Boolean>();
@@ -131,7 +135,8 @@ namespace ME3Explorer.PropertyDatabase
         }
         private bool IsUsageSelected(object obj)
         {
-            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 0) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 1) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 2) || (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3);
+            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 0) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 1) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 2) 
+                || (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3) || (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 4);
         }
         private bool IsViewingClass(object obj)
         {
@@ -252,7 +257,10 @@ namespace ME3Explorer.PropertyDatabase
                 CurrentDataBase.Materials.AddRange(readData.Materials);
                 CurrentDataBase.Meshes.Clear();
                 CurrentDataBase.Meshes.AddRange(readData.Meshes);
-                CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count}";
+                CurrentDataBase.Particles.Clear();
+                CurrentDataBase.Particles.AddRange(readData.Particles);
+                CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count}";
+                
             }
             else
             {
@@ -281,7 +289,7 @@ namespace ME3Explorer.PropertyDatabase
             }
             CurrentOverallOperationText = $"Database saved.";
             await Task.Delay(5000);
-            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count}";
+            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count}";
         }
 
         public void ClearDataBase()
@@ -293,6 +301,7 @@ namespace ME3Explorer.PropertyDatabase
             CurrentDataBase.Animations.ClearEx();
             CurrentDataBase.Materials.ClearEx();
             CurrentDataBase.Meshes.ClearEx();
+            CurrentDataBase.Particles.ClearEx();
         }
 
         public void SwitchGame(object param)
@@ -350,7 +359,7 @@ namespace ME3Explorer.PropertyDatabase
         }
         private void OpenUsagePkg(object obj)
         {
-            var param = obj as string;
+            var tool = obj as string;
             string usagepkg = null;
             var usageexp = 0;
 
@@ -378,6 +387,12 @@ namespace ME3Explorer.PropertyDatabase
                 usagepkg = CurrentDataBase.FileList[s.Item1];
                 usageexp = s.Item2;
             }
+            else if (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 4)
+            {
+                var s = lstbx_PSUsages.SelectedItem as Tuple<int, int, bool>;
+                usagepkg = CurrentDataBase.FileList[s.Item1];
+                usageexp = s.Item2;
+            }
 
             if (usagepkg == null)
             {
@@ -386,7 +401,7 @@ namespace ME3Explorer.PropertyDatabase
             }
 
 
-            OpenInToolkit(param, usagepkg, usageexp);
+            OpenInToolkit(tool, usagepkg, usageexp);
         }
         private void OpenSourcePkg(object obj)
         {
@@ -576,6 +591,10 @@ namespace ME3Explorer.PropertyDatabase
             {
                 showthis = false;
             }
+            if (showthis && menu_fltrMat1side.IsChecked && mr.MatSettings.Any(x => x.Item1 == "TwoSided" && x.Item3 == "True"))
+            {
+                showthis = false;
+            }
             if (showthis && menu_fltrMatNoDLC.IsChecked && mr.IsDLCOnly)
             {
                 showthis = false;
@@ -611,18 +630,32 @@ namespace ME3Explorer.PropertyDatabase
 
             return showthis;
         }
+        bool PSFilter(object d)
+        {
+            var ps = d as ParticleSys;
+            bool showthis = true;
+            if (FilterBox.Text != null)
+            {
+                showthis = ps.PSName.ToLower().Contains(FilterBox.Text.ToLower());
+            }
+
+            return showthis;
+        }
         private void Filter()
         {
             ICollectionView viewM = CollectionViewSource.GetDefaultView(CurrentDataBase.Materials);
             ICollectionView viewA = CollectionViewSource.GetDefaultView(CurrentDataBase.Animations);
             ICollectionView viewS = CollectionViewSource.GetDefaultView(CurrentDataBase.Meshes);
             ICollectionView viewC = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
+            ICollectionView viewP = CollectionViewSource.GetDefaultView(CurrentDataBase.Particles);
 
             viewC.Filter = ClassFilter;
             viewM.Filter = MaterialFilter;
             viewS.Filter = MeshFilter;
             viewA.Filter = AnimFilter;
+            viewP.Filter = PSFilter;
 
+            lstbx_Anims.ItemsSource = viewP;
             lstbx_Materials.ItemsSource = viewM;
             lstbx_Anims.ItemsSource = viewA;
             lstbx_Meshes.ItemsSource = viewS;
@@ -640,7 +673,26 @@ namespace ME3Explorer.PropertyDatabase
                     menu_fltrMatUnlit.IsChecked = !menu_fltrMatUnlit.IsChecked;
                     break;
                 case "Twoside":
-                    menu_fltrMat2side.IsChecked = !menu_fltrMat2side.IsChecked;
+                    if (!menu_fltrMat2side.IsChecked)
+                    {
+                        menu_fltrMat2side.IsChecked = true;
+                        menu_fltrMat1side.IsChecked = false;
+                    }
+                    else
+                    {
+                        menu_fltrMat2side.IsChecked = false;
+                    }
+                    break;
+                case "Oneside":
+                    if(!menu_fltrMat1side.IsChecked)
+                    {
+                        menu_fltrMat1side.IsChecked = true;
+                        menu_fltrMat2side.IsChecked = false;
+                    }
+                    else
+                    {
+                        menu_fltrMat1side.IsChecked = false;
+                    }
                     break;
                 case "NoDLC":
                     menu_fltrMatNoDLC.IsChecked = !menu_fltrMatNoDLC.IsChecked;
@@ -731,6 +783,7 @@ namespace ME3Explorer.PropertyDatabase
             GeneratedAnims.Clear();
             GeneratedMats.Clear();
             GeneratedMeshes.Clear();
+            GeneratedPS.Clear();
             GeneratedValueChecker.Clear();
 
             _dbqueue = new BlockingCollection<ClassRecord>(); //Reset queue for multiple operations
@@ -756,7 +809,7 @@ namespace ME3Explorer.PropertyDatabase
                 x.dumpPackageFile(game, this); // What to do on each item
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    BusyText = $"Scanned {OverallProgressValue}/{OverallProgressMaximum} files\n\nClasses: { GeneratedClasses.Count}\nAnimations: { GeneratedAnims.Count}\nMaterials: { GeneratedMats.Count}\nMeshes: { GeneratedMeshes.Count}";
+                    BusyText = $"Scanned {OverallProgressValue}/{OverallProgressMaximum} files\n\nClasses: { GeneratedClasses.Count}\nAnimations: { GeneratedAnims.Count}\nMaterials: { GeneratedMats.Count}\nMeshes: { GeneratedMeshes.Count}\nParticles: { GeneratedPS.Count}";
                     OverallProgressValue++; //Concurrency 
                     CurrentDumpingItems.Remove(x);
                 });
@@ -819,10 +872,15 @@ namespace ME3Explorer.PropertyDatabase
             CurrentDataBase.Meshes.AddRange(GeneratedMeshes.Values);
             CurrentDataBase.Meshes.Sort(x => x.MeshName);
 
+            //Add Particles
+            CurrentDataBase.Particles.AddRange(GeneratedPS.Values);
+            CurrentDataBase.Particles.Sort(x => x.PSName);
+
             GeneratedClasses.Clear();
             GeneratedAnims.Clear();
             GeneratedMats.Clear();
             GeneratedMeshes.Clear();
+            GeneratedPS.Clear();
             GeneratedValueChecker.Clear();
             isProcessing = false;
             SaveDatabase();
@@ -905,6 +963,7 @@ namespace ME3Explorer.PropertyDatabase
         public ObservableCollectionExtended<Material> Materials { get; } = new ObservableCollectionExtended<Material>();
         public ObservableCollectionExtended<Animation> Animations { get; } = new ObservableCollectionExtended<Animation>();
         public ObservableCollectionExtended<MeshRecord> Meshes { get; } = new ObservableCollectionExtended<MeshRecord>();
+        public ObservableCollectionExtended<ParticleSys> Particles { get; } = new ObservableCollectionExtended<ParticleSys>();
         public PropsDataBase(MEGame meGame, string GenerationDate, ObservableCollectionExtended<ClassRecord> ClassRecords, ObservableCollectionExtended<Material> Materials, ObservableCollectionExtended<Animation> Animations, ObservableCollectionExtended<MeshRecord> Meshes)
         {
             this.meGame = meGame;
@@ -1055,6 +1114,30 @@ namespace ME3Explorer.PropertyDatabase
         }
 
         public MeshRecord()
+        { }
+    }
+    public class ParticleSys : NotifyPropertyChangedBase
+    {
+        private string _PSName;
+        public string PSName { get => _PSName; set => SetProperty(ref _PSName, value); }
+        private string _ParentPackagee;
+        public string ParentPackage { get => _ParentPackagee; set => SetProperty(ref _ParentPackagee, value); }
+        private bool _IsDLCOnly;
+        public bool IsDLCOnly { get => _IsDLCOnly; set => SetProperty(ref _IsDLCOnly, value); }
+        private int _EmitterCount;
+        public int EmitterCount { get => _EmitterCount; set => SetProperty(ref _EmitterCount, value); }
+        public ObservableCollectionExtended<Tuple<int, int, bool>> PSUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool>>(); //File reference, export, isDLC file
+
+        public ParticleSys(string PSName, string ParentPackage, bool IsDLCOnly, int EmitterCount, ObservableCollectionExtended<Tuple<int, int, bool>> PSUsages)
+        {
+            this.PSName = PSName;
+            this.ParentPackage = ParentPackage;
+            this.IsDLCOnly = IsDLCOnly;
+            this.EmitterCount = EmitterCount;
+            this.PSUsages.AddRange(PSUsages);
+        }
+
+        public ParticleSys()
         { }
     }
     public class FileIndexToNameConverter : IMultiValueConverter
@@ -1294,8 +1377,15 @@ namespace ME3Explorer.PropertyDatabase
 
                             if (exp.ClassName == "Material" && !pIsdefault)
                             {
-
-                                string parent = GetTopParentPackage(exp);
+                                string parent = null;
+                                if (GameBeingDumped == MEGame.ME1 && File.EndsWith(".upk"))
+                                {
+                                    parent = ShortFileName;
+                                }
+                                else
+                                {
+                                    parent = GetTopParentPackage(exp);
+                                }
                                 bool IsDLC = pcc.IsInOfficialDLC();
 
                                 var NewMat = new Material(pExp, parent, IsDLC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) }, mSets);
@@ -1379,6 +1469,41 @@ namespace ME3Explorer.PropertyDatabase
                                         mr.MeshUsages.Add(new Tuple<int, int>(FileKey, pExportUID));
                                     }
 
+                                }
+                            }
+
+                            if (exp.ClassName == "ParticleSystem" && !pIsdefault)
+                            {
+                                string parent = null;
+                                if (GameBeingDumped == MEGame.ME1 && File.EndsWith(".upk"))
+                                {
+                                    parent = ShortFileName;
+                                }
+                                else
+                                {
+                                    parent = GetTopParentPackage(exp);
+                                }
+
+                                bool IsDLC = pcc.IsInOfficialDLC();
+                                int EmCnt = 0;
+                                var EmtProp = exp.GetProperty<ArrayProperty<ObjectProperty>>("Emitters");
+                                if(EmtProp != null)
+                                {
+                                    EmCnt = EmtProp.Count;
+                                }
+
+                                var NewPS = new ParticleSys(pExp, parent, IsDLC, EmCnt, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
+                                if (!dbScanner.GeneratedPS.TryAdd(pExp, NewPS))
+                                {
+                                    var ePS = dbScanner.GeneratedPS[pExp];
+                                    lock (ePS)
+                                    {
+                                        ePS.PSUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC));
+                                        if (ePS.IsDLCOnly)
+                                        {
+                                            ePS.IsDLCOnly = IsDLC;
+                                        }
+                                    }
                                 }
                             }
                         }
