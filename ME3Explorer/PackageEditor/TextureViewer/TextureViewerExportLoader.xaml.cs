@@ -81,10 +81,10 @@ namespace ME3Explorer
         private void LoadCommands()
         {
             ExportToPNGCommand = new GenericCommand(ExportToPNG, NonEmptyMipSelected);
-            ReplaceFromPNGCommand = new GenericCommand(ReplaceFromPNG, NonEmptyMipSelected);
+            ReplaceFromPNGCommand = new GenericCommand(ReplaceFromFile, NonEmptyMipSelected);
         }
 
-        private void ReplaceFromPNG()
+        private void ReplaceFromFile()
         {
             var selectedTFCName = (string)TextureCacheComboBox.SelectedItem;
             if (TFCCompactor.TFCCompactor.BasegameTFCs.Contains(selectedTFCName) || MEDirectories.OfficialDLC(CurrentLoadedExport.Game).Any(x => $"Textures_{x}" == selectedTFCName))
@@ -478,7 +478,7 @@ namespace ME3Explorer
                         //else 
                     }
                 }
-                //ME2,ME3: Force ZLib compression in event LZO is attempted to be used (LZO is slower in me2/me3 than zlib
+                //ME2,ME3: Force compression type (not implemented yet)
                 if (texture.Export.Game != MEGame.ME1)
                 {
                     if (mipmap.storageType == StorageTypes.extLZO)
