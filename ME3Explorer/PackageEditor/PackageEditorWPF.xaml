@@ -172,8 +172,13 @@
 
                 <MenuItem Header="Options" Padding="4">
                     <MenuItem Name="TLKManagerWPF_MenuItem" Header="TLK Manager" Click="TLKManagerWPF_MenuItem_Click" ToolTip="Open TLK Manager"/>
-                    <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=TouchComfyMode, Mode=TwoWay}" ToolTip="Makes Package Editor a bit easier to use on touch devices" StaysOpenOnClick="True"/>
-                    <MenuItem Name="AssociatePccSfm_MenuItem" Header="Associate PCC/SFM files" Click="AssociateFileTypes_Clicked" ToolTip="Makes Package Editor open when you double click PCC/SFM files in Windows Explorer"/>
+                    <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked" 
+                              IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=TouchComfyMode, Mode=TwoWay}" 
+                              ToolTip="Makes Package Editor a bit easier to use on touch devices" StaysOpenOnClick="True"/>
+                    <MenuItem Name="AssociatePccSfm_MenuItem" Header="Associate PCC/SFM files" Click="AssociatePCCSFM_Clicked" 
+                              ToolTip="Makes Package Editor open when you double click PCC/SFM files in Windows Explorer"/>
+                    <MenuItem Name="AssociateUPKUDK_MenuItem" Header="Associate UPK/UDK files" Click="AssociateUPKUDK_Clicked" 
+                              ToolTip="Makes Package Editor open when you double click UPK/UDK files in Windows Explorer"/>
                     <Separator/>
 
                     <MenuItem Name="ShowImpExpPrefixes_MenuItem" Header="Show Imp/Exp entry prefixes" Click="ShowImpExpPrefix_Clicked" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PackageEditorWPF_ShowImpExpPrefix, Mode=TwoWay}" ToolTip="Changes the treeview of Package Editor to display/hide the (Imp)/(Exp) text"/>

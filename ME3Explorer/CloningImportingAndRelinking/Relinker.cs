@@ -35,6 +35,37 @@ namespace ME3Explorer
                 (IEntry src, IEntry dest) = crossPCCObjectMappingList[i];
                 if (src is ExportEntry sourceExport && dest is ExportEntry relinkingExport)
                 {
+                    //Relink stack
+                    if (relinkingExport.HasStack)
+                    {
+                        byte[] stack = relinkingExport.GetStack();
+
+                        int uIndex = BitConverter.ToInt32(stack, 0);
+                        string relinkResult = relinkUIndex(sourceExport.FileRef, relinkingExport, ref uIndex, "Stack: Node",
+                                                           crossPCCObjectMappingList, "", importExportDependencies);
+                        if (relinkResult is null)
+                        {
+                            stack.OverwriteRange(0, BitConverter.GetBytes(uIndex));
+                        }
+                        else
+                        {
+                            relinkFailedReport.Add(relinkResult);
+                        }
+                        uIndex = BitConverter.ToInt32(stack, 4);
+                        relinkResult = relinkUIndex(sourceExport.FileRef, relinkingExport, ref uIndex, "Stack: StateNode",
+                                                           crossPCCObjectMappingList, "", importExportDependencies);
+                        if (relinkResult is null)
+                        {
+                            stack.OverwriteRange(4, BitConverter.GetBytes(uIndex));
+                        }
+                        else
+                        {
+                            relinkFailedReport.Add(relinkResult);
+                        }
+
+                        relinkingExport.SetStack(stack);
+                    }
+
                     //Relink Properties
                     PropertyCollection transplantProps = sourceExport.GetProperties();
                     relinkFailedReport.AddRange(relinkPropertiesRecursive(importpcc, relinkingExport, transplantProps, crossPCCObjectMappingList, "", importExportDependencies));

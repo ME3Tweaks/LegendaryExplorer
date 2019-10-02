@@ -28,6 +28,8 @@ namespace ME3Explorer.Packages
         public abstract int ExportCount { get; protected set; }
         public abstract int ImportCount { get; protected set; }
 
+        public List<ME1Explorer.Unreal.Classes.TalkFile> LocalTalkFiles { get; } = new List<ME1Explorer.Unreal.Classes.TalkFile>();
+
         #region Names
         protected uint namesAdded;
         protected List<string> names = new List<string>();

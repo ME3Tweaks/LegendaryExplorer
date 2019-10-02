@@ -578,16 +578,21 @@ namespace ME3Explorer
 
         private void NewFile()
         {
-            string gameString = InputComboBoxWPF.GetValue(this, "Choose a game to create a file for:", new[] {"ME3", "ME2", "ME1"}, "ME3");
+            string gameString = InputComboBoxWPF.GetValue(this, "Choose a game to create a file for:", new[] {"ME3", "ME2", "ME1", "UDK"}, "ME3");
             if (Enum.TryParse(gameString, out MEGame game))
             {
                 var dlg = new SaveFileDialog
                 {
-                    Filter = game == MEGame.ME1 ? App.ME1FileFilter : App.ME3ME2FileFilter
+                    Filter = game switch
+                    {
+                        MEGame.UDK => App.UDKFileFilter,
+                        MEGame.ME1 => App.ME1FileFilter,
+                        _ => App.ME3ME2FileFilter
+                    }
                 };
                 if (dlg.ShowDialog() == true)
                 {
-                    MEPackageHandler.CreateAndSaveMePackage(dlg.FileName, game);
+                    MEPackageHandler.CreateAndSavePackage(dlg.FileName, game);
                     LoadFile(dlg.FileName);
                     AddRecent(dlg.FileName, false);
                     SaveRecentList();
@@ -2943,7 +2948,7 @@ namespace ME3Explorer
                 // Note that you can have more than one file.
                 var files = (string[]) e.Data.GetData(DataFormats.FileDrop);
                 string ext = Path.GetExtension(files[0]).ToLower();
-                if (ext != ".u" && ext != ".upk" && ext != ".pcc" && ext != ".sfm")
+                if (ext != ".u" && ext != ".upk" && ext != ".pcc" && ext != ".sfm" && ext != ".udk")
                 {
                     e.Effects = DragDropEffects.None;
                     e.Handled = true;
@@ -3551,10 +3556,16 @@ namespace ME3Explorer
             new PackageDumper.PackageDumper(this).Show();
         }
 
-        private void AssociateFileTypes_Clicked(object sender, RoutedEventArgs e)
+        private void AssociatePCCSFM_Clicked(object sender, RoutedEventArgs e)
         {
             Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("pcc", "Mass Effect 2/3 Package File");
             Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("sfm", "Mass Effect 1 Package File");
+        }
+
+        private void AssociateUPKUDK_Clicked(object sender, RoutedEventArgs e)
+        {
+            Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("upk", "Unreal Package File");
+            Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("udk", "UDK Package File");
         }
 
         private void BuildME1ObjectInfo_Clicked(object sender, RoutedEventArgs e)

@@ -6819,8 +6819,10 @@ namespace ME3Explorer
                 bin.JumpTo(binarystart);
                 if (Pcc.Game != MEGame.ME3)
                 {
-                    bin.Skip(12); // 12 zeros
+                    bin.Skip(8); // 12 zeros
+                    int thumbnailSize = bin.ReadInt32();
                     subnodes.Add(MakeInt32Node(bin, "File Offset"));
+                    bin.Skip(thumbnailSize);
                 }
 
                 int numMipMaps = bin.ReadInt32();

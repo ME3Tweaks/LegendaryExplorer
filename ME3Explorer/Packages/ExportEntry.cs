@@ -108,6 +108,23 @@ namespace ME3Explorer.Packages
 
         public bool HasStack => ObjectFlags.HasFlag(EObjectFlags.HasStack);
 
+        public byte[] GetStack()
+        {
+            if (!HasStack)
+            {
+                return Array.Empty<byte>();
+            }
+
+            return _data.Slice(0, stackLength);
+        }
+
+        public void SetStack(byte[] stack)
+        {
+            byte[] data = Data;
+            Buffer.BlockCopy(stack, 0, data, 0, stackLength);
+            Data = data;
+        }
+
         //should only have to check the flag, but custom mod classes might not have set it properly
         public bool IsDefaultObject => ObjectFlags.HasFlag(EObjectFlags.ClassDefaultObject) || ObjectName.Name.StartsWith("Default__");
 
@@ -553,8 +570,7 @@ namespace ME3Explorer.Packages
             IMEPackage pcc = FileRef;
             if (HasStack)
             {
-                return pcc.Game == MEGame.UDK ? 26 :
-                       pcc.Game == MEGame.ME3 ? 30 : 32;
+                return stackLength;
             }
 
             //TODO: If there are more classes which have binary before the props, could be worth creating a more extensible system for this
@@ -606,6 +622,14 @@ namespace ME3Explorer.Packages
 
             return result;
         }
+
+        private int stackLength =>
+            Game switch
+            {
+                MEGame.UDK => 26,
+                MEGame.ME3 => 30,
+                _ => 32
+            };
 
         public int NetIndex
         {

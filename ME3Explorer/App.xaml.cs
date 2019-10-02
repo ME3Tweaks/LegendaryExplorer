@@ -247,6 +247,7 @@ namespace ME3Explorer
                 case ".sfm":
                 case ".upk":
                 case ".u":
+                case ".udk":
                     PackageEditorWPF editor = new PackageEditorWPF();
                     editor.Show();
                     editor.LoadFile(args[1]);

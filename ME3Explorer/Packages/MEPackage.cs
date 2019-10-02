@@ -543,8 +543,6 @@ namespace ME3Explorer.Packages
                 ms.WriteInt32(0);//empty additionalPackagesToCook array
             }
         }
-
-        public List<ME1Explorer.Unreal.Classes.TalkFile> LocalTalkFiles { get; } = new List<ME1Explorer.Unreal.Classes.TalkFile>();
         private void ReadLocalTLKs()
         {
             LocalTalkFiles.Clear();

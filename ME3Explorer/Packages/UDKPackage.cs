@@ -8,6 +8,7 @@ using System.Windows;
 using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.Classes;
 using static ME3Explorer.Unreal.UnrealFlags;
 using StreamHelpers;
 
@@ -23,8 +24,6 @@ namespace ME3Explorer.Packages
             WriteHeader(ms);
             return ms.ToArray();
         }
-
-        public List<ME1Explorer.Unreal.Classes.TalkFile> LocalTalkFiles { get; } = new List<ME1Explorer.Unreal.Classes.TalkFile>();
         public int FullHeaderSize { get; private set; }
         public EPackageFlags Flags { get; private set; }
         public bool IsCompressed => false;
@@ -41,6 +40,15 @@ namespace ME3Explorer.Packages
         public bool CanReconstruct => false;
 
         #region HeaderMisc
+        private class Thumbnail
+        {
+            public string ClassName;
+            public string PathName;
+            public int Offset;
+            public int Width;
+            public int Height;
+            public byte[] Data;
+        }
         private string folderName;
         private int importExportGuidsOffset;
         private int importGuidsCount;
@@ -52,6 +60,7 @@ namespace ME3Explorer.Packages
         private int engineVersion;
         private int cookedContentVersion;
         private uint packageSource;
+        private List<Thumbnail> ThumbnailTable = new List<Thumbnail>();
         #endregion
 
         static bool isInitialized;
@@ -67,10 +76,12 @@ namespace ME3Explorer.Packages
                 return (fileName, shouldCreate) => new UDKPackage(fileName, shouldCreate);
             }
         }
+
         /// <summary>
         ///     UDKPackage class constructor. It also load namelist, importlist and exportinfo (not exportdata) from udk file
         /// </summary>
         /// <param name="UDKPackagePath">full path + file name of desired udk file.</param>
+        /// <param name="create">Create a file instead of reading from disk</param>
         private UDKPackage(string UDKPackagePath, bool create = false) : base(Path.GetFullPath(UDKPackagePath))
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"UDKPackage {Path.GetFileName(UDKPackagePath)}", new WeakReference(this));
@@ -80,7 +91,7 @@ namespace ME3Explorer.Packages
                 folderName = "None";
                 engineVersion = 12791;
                 //reasonable defaults?
-                Flags = EPackageFlags.Cooked | EPackageFlags.AllowDownload | EPackageFlags.DisallowLazyLoading | EPackageFlags.RequireImportsAlreadyLoaded;
+                Flags = EPackageFlags.AllowDownload | EPackageFlags.NoExportsData;
                 return;
             }
 
@@ -187,6 +198,11 @@ namespace ME3Explorer.Packages
         {
             try
             {
+                if (exports.Any(exp => exp.ClassName == "Level"))
+                {
+                    Flags |= EPackageFlags.Map;
+                }
+
                 //UDK does not like it when non-Package exports have the forced export flag, which seems to be common in ME files
                 foreach (ExportEntry export in exports)
                 {
@@ -232,9 +248,48 @@ namespace ME3Explorer.Packages
                 DependencyTableOffset = (int)ms.Position;
                 ms.WriteZeros(4 * ExportCount);
 
-                FullHeaderSize = importExportGuidsOffset = (int)ms.Position;
+                importExportGuidsOffset = (int)ms.Position;
                 importGuidsCount = exportGuidsCount = 0;
-                thumbnailTableOffset = 0;
+
+                //generate thumbnails
+                ThumbnailTable.Clear();
+                foreach (ExportEntry export in exports)
+                {
+                    if (export.IsTexture())
+                    {
+                        var tex = new Texture2D(export);
+                        var mip = tex.GetTopMip();
+                        ThumbnailTable.Add(new Thumbnail
+                        {
+                            ClassName = export.ClassName,
+                            PathName = export.InstancedFullPath,
+                            Width = mip.width,
+                            Height = mip.height,
+                            Data = tex.GetPNG(mip)
+                        });
+                    }
+                }
+
+                //write thumbnails
+                foreach (Thumbnail thumbnail in ThumbnailTable)
+                {
+                    thumbnail.Offset = (int)ms.Position;
+                    ms.WriteInt32(thumbnail.Width);
+                    ms.WriteInt32(thumbnail.Height);
+                    ms.WriteInt32(thumbnail.Data.Length);
+                    ms.WriteFromBuffer(thumbnail.Data);
+                    File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(FilePath), $"{thumbnail.PathName}({thumbnail.ClassName}).png"), thumbnail.Data);
+                }
+                thumbnailTableOffset = (int)ms.Position;
+                ms.WriteInt32(ThumbnailTable.Count);
+                foreach (Thumbnail thumbnail in ThumbnailTable)
+                {
+                    ms.WriteUnrealStringASCII(thumbnail.ClassName);
+                    ms.WriteUnrealStringASCII(thumbnail.PathName);
+                    ms.WriteInt32(thumbnail.Offset);
+                }
+
+                FullHeaderSize = (int)ms.Position;
 
                 //export data
                 foreach (ExportEntry e in exports)

@@ -15,11 +15,11 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
-using static ME3Explorer.TextureViewerExportLoader;
 using static MassEffectModder.Images.Image;
 using System.Windows.Media.Imaging;
 using MassEffectModder.Images;
 using ME3Explorer.PackageEditor.TextureViewer;
+using StreamHelpers;
 using Buffer = System.Buffer;
 
 namespace ME3Explorer.Unreal.Classes
@@ -87,6 +87,15 @@ namespace ME3Explorer.Unreal.Classes
             }
 
             return true;
+        }
+
+        public byte[] GetPNG(Texture2DMipInfo info)
+        {
+            PixelFormat format = getPixelFormatType(TextureFormat);
+
+            MemoryStream ms = new MemoryStream();
+            convertToPng(GetTextureData(info), info.width, info.height, format).Save(ms);
+            return ms.ToArray();
         }
 
 
@@ -191,8 +200,11 @@ namespace ME3Explorer.Unreal.Classes
             ms.Seek(exportEntry.propsEnd(), SeekOrigin.Begin);
             if (exportEntry.FileRef.Game != MEGame.ME3)
             {
-                ms.Seek(12, SeekOrigin.Current); // 12 zeros
+                ms.Skip(4);//BulkDataFlags
+                ms.Skip(4);//ElementCount
+                int bulkDataSize = ms.ReadInt32();
                 ms.Seek(4, SeekOrigin.Current); // position in the package
+                ms.Skip(bulkDataSize); //skips over thumbnail png, if it exists
             }
 
             var mips = new List<Texture2DMipInfo>();

@@ -87,14 +87,17 @@ namespace ME3Explorer.Packages
             return package;
         }
 
-        public static void CreateAndSaveMePackage(string path, MEGame game)
+        public static void CreateAndSavePackage(string path, MEGame game)
         {
-            MEConstructorDelegate(path, game).Save();
-        }
-
-        public static void CreateAndSaveUDKPackage(string path)
-        {
-            UDKConstructorDelegate(path, true).Save();
+            switch (game)
+            {
+                case MEGame.UDK:
+                    UDKConstructorDelegate(path, true).Save();
+                    break;
+                default:
+                    MEConstructorDelegate(path, game).Save();
+                    break;
+            }
         }
 
         private static void Package_noLongerUsed(UnrealPackageFile sender)

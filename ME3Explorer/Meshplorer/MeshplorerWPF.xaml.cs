@@ -103,7 +103,7 @@ namespace ME3Explorer
                 try
                 {
 
-                    MEPackageHandler.CreateAndSaveUDKPackage(d.FileName);
+                    MEPackageHandler.CreateAndSavePackage(d.FileName, MEGame.UDK);
                     using (IMEPackage upk = MEPackageHandler.OpenUDKPackage(d.FileName))
                     {
                         byte[] dataBackup = CurrentExport.Data;
