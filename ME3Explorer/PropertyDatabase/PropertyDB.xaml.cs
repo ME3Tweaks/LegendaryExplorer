@@ -1,7 +1,11 @@
-﻿using ME3Explorer.Packages;
+﻿using ME3Explorer.Dialogue_Editor;
+using ME3Explorer.Packages;
+using ME3Explorer.Pathfinding_Editor;
+using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
+using ME3Explorer.Unreal.Classes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -66,6 +70,10 @@ namespace ME3Explorer.PropertyDatabase
         /// </summary>
         public ConcurrentDictionary<String, ParticleSys> GeneratedPS = new ConcurrentDictionary<String, ParticleSys>();
         /// <summary>
+        /// Dictionary that stores generated Textures
+        /// </summary>
+        public ConcurrentDictionary<String, TextureRecord> GeneratedText = new ConcurrentDictionary<String, TextureRecord>();
+        /// <summary>
         /// Used to check if values generated are unique.
         /// </summary>
         public ConcurrentDictionary<String, Boolean> GeneratedValueChecker = new ConcurrentDictionary<String, Boolean>();
@@ -113,8 +121,9 @@ namespace ME3Explorer.PropertyDatabase
             get => _overallProgressMaximum;
             set => SetProperty(ref _overallProgressMaximum, value);
         }
-
+        public ICollectionView filesFiltered { get; set; }
         private IMEPackage meshPcc;
+        private IMEPackage textPcc;
         public ICommand GenerateDBCommand { get; set; }
         public ICommand SwitchMECommand { get; set; }
         public ICommand CancelDumpCommand { get; set; }
@@ -136,7 +145,7 @@ namespace ME3Explorer.PropertyDatabase
         private bool IsUsageSelected(object obj)
         {
             return (lstbx_Usages.SelectedIndex >= 0 && currentView == 0) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 1) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 2) 
-                || (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3) || (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 4);
+                || (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3) || (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 4) || (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 5) || currentView == 6;
         }
         private bool IsViewingClass(object obj)
         {
@@ -149,6 +158,10 @@ namespace ME3Explorer.PropertyDatabase
         private bool IsViewingMeshes(object obj)
         {
             return currentView == 3;
+        }
+        private bool IsViewingTextures(object obj)
+        {
+            return currentView == 5;
         }
         public override void handleUpdate(List<PackageUpdate> updates)
         {
@@ -196,9 +209,7 @@ namespace ME3Explorer.PropertyDatabase
             GoToSuperclassCommand = new RelayCommand(GoToSuperClass, IsClassSelected);
             OpenUsagePkgCommand = new RelayCommand(OpenUsagePkg, IsUsageSelected);
         }
-
-
-
+               
         private void PropertyDB_Closing(object sender, CancelEventArgs e)
         {
             if (e.Cancel)
@@ -206,8 +217,10 @@ namespace ME3Explorer.PropertyDatabase
 
             Properties.Settings.Default.PropertyDBPath = CurrentDBPath;
             Properties.Settings.Default.PropertyDBGame = currentGame.ToString();
+            EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
             MeshRendererTab_MeshRenderer.UnloadExport();
             meshPcc?.Dispose();
+            textPcc?.Dispose();
         }
 
         #endregion
@@ -259,7 +272,10 @@ namespace ME3Explorer.PropertyDatabase
                 CurrentDataBase.Meshes.AddRange(readData.Meshes);
                 CurrentDataBase.Particles.Clear();
                 CurrentDataBase.Particles.AddRange(readData.Particles);
-                CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count}";
+                CurrentDataBase.Textures.Clear();
+                CurrentDataBase.Textures.AddRange(readData.Textures);
+
+                CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count}";
                 
             }
             else
@@ -289,7 +305,7 @@ namespace ME3Explorer.PropertyDatabase
             }
             CurrentOverallOperationText = $"Database saved.";
             await Task.Delay(5000);
-            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count}";
+            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count}";
         }
 
         public void ClearDataBase()
@@ -302,6 +318,7 @@ namespace ME3Explorer.PropertyDatabase
             CurrentDataBase.Materials.ClearEx();
             CurrentDataBase.Meshes.ClearEx();
             CurrentDataBase.Particles.ClearEx();
+            CurrentDataBase.Textures.ClearEx();
         }
 
         public void SwitchGame(object param)
@@ -393,13 +410,16 @@ namespace ME3Explorer.PropertyDatabase
                 usagepkg = CurrentDataBase.FileList[s.Item1];
                 usageexp = s.Item2;
             }
+            else if (lstbx_Files.SelectedIndex >= 0 && currentView == 5)
+            {
+                usagepkg = lstbx_Files.SelectedItem.ToString();
+            }
 
             if (usagepkg == null)
             {
                 MessageBox.Show("Usage file unknown.");
                 return;
             }
-
 
             OpenInToolkit(tool, usagepkg, usageexp);
         }
@@ -420,7 +440,7 @@ namespace ME3Explorer.PropertyDatabase
             string filePath = null;
             string rootPath = MEDirectories.GamePath(currentGame);
 
-            if (rootPath == null)
+            if (rootPath == null || !Directory.Exists(rootPath))
             {
                 MessageBox.Show($"{currentGame} has not been found. Please check your ME3Explorer settings");
                 return;
@@ -447,6 +467,20 @@ namespace ME3Explorer.PropertyDatabase
                     {
                         meshPlorer.LoadFile(filePath);
                     }
+                    break;
+                case "PathEd":
+                    var pathEd = new PathfindingEditorWPF(filePath);
+                    pathEd.Show();
+                    break;
+                case "DlgEd":
+                    var diagEd = new DialogueEditorWPF();
+                    diagEd.Show();
+                    diagEd.LoadFile(filePath);
+                    break;
+                case "SeqEd":
+                    var SeqEd = new SequenceEditorWPF();
+                    SeqEd.Show();
+                    SeqEd.LoadFile(filePath);
                     break;
                 default:
                     var packEditor = new PackageEditorWPF();
@@ -491,11 +525,18 @@ namespace ME3Explorer.PropertyDatabase
                 FilterBox.Clear();
                 Filter();
 
-                if (currentView != 3)
+                if (unselected.TabIndex == 3)
                 {
                     ToggleRenderMesh();
                     btn_MeshRenderToggle.IsChecked = false;
                     btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
+                }
+
+                if (unselected.TabIndex == 5)
+                {
+                    ToggleRenderTexture();
+                    btn_TextRenderToggle.IsChecked = false;
+                    btn_TextRenderToggle.Content = "Toggle Texture Rendering";
                 }
             }
 
@@ -508,23 +549,38 @@ namespace ME3Explorer.PropertyDatabase
                 ToggleRenderMesh();
             }
         }
-
+        private void lstbx_Textures_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (currentView == 5 && lstbx_Textures.SelectedIndex >= 0)
+            {
+                ToggleRenderTexture();
+            }
+        }
+        private void btn_TextRenderToggle_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleRenderTexture();
+            if (btn_TextRenderToggle.IsChecked == true)
+            {
+                btn_TextRenderToggle.Content = "Untoggle Texture Rendering";
+            }
+            else
+            {
+                btn_TextRenderToggle.Content = "Toggle Texture Rendering";
+            }
+        }
         private void ToggleRenderMesh()
         {
             bool showmesh = false;
             if (btn_MeshRenderToggle.IsChecked == true && (lstbx_Meshes.SelectedIndex >= 0) && CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages.Count > 0 && currentView == 3)
             {
                 showmesh = true;
-
+                
             }
 
             if (!showmesh)
             {
                 MeshRendererTab_MeshRenderer.UnloadExport();
-                if (meshPcc != null)
-                {
-                    meshPcc.Dispose();
-                }
+                meshPcc?.Dispose();
                 return;
             }
             var selecteditem = lstbx_Meshes.SelectedItem as MeshRecord;
@@ -556,6 +612,49 @@ namespace ME3Explorer.PropertyDatabase
             var meshExp = meshPcc.GetUExport(selecteditem.MeshUsages[0].Item2);
             MeshRendererTab_MeshRenderer.LoadExport(meshExp);
 
+        }
+        private void ToggleRenderTexture()
+        {
+            bool showText = false;
+            if (btn_TextRenderToggle.IsChecked == true && (lstbx_Textures.SelectedIndex >= 0) && CurrentDataBase.Textures[lstbx_Textures.SelectedIndex].TextureUsages.Count > 0 && currentView == 5)
+            {
+                showText = true;
+            }
+
+            if (!showText)
+            {
+                EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
+                textPcc?.Dispose();
+                return;
+            }
+            var selecteditem = lstbx_Textures.SelectedItem as TextureRecord;
+
+            var filekey = selecteditem.TextureUsages[0].Item1;
+            var filename = CurrentDataBase.FileList[filekey];
+            string rootPath = MEDirectories.GamePath(currentGame);
+
+            if (rootPath == null)
+            {
+                MessageBox.Show($"{currentGame} has not been found. Please check your ME3Explorer settings");
+                return;
+            }
+
+            filename = $"{filename}.*";
+            var filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault();
+            if (filePath == null)
+            {
+                MessageBox.Show($"File {filename} not found.");
+                return;
+            }
+
+            if (textPcc != null)
+            {
+                EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
+                textPcc.Dispose();
+            }
+            textPcc = MEPackageHandler.OpenMEPackage(filePath);
+            var TextExp = textPcc.GetUExport(selecteditem.TextureUsages[0].Item2);
+            EmbeddedTextureViewerTab_EmbededTextureViewer.LoadExport(TextExp);
 
         }
         #endregion
@@ -661,6 +760,26 @@ namespace ME3Explorer.PropertyDatabase
 
             return showthis;
         }
+        bool TexFilter(object d)
+        {
+            var tr = d as TextureRecord;
+            bool showthis = true;
+            if (FilterBox.Text != null)
+            {
+                showthis = tr.TextureName.ToLower().Contains(FilterBox.Text.ToLower());
+            }
+
+            return showthis;
+        }
+        private bool FileFilter(object d)
+        {
+            bool showthis = true;
+            if (FilterBox.Text != null)
+            {
+                showthis = (d as string).Contains(FilterBox.Text.ToLower());
+            }
+            return showthis;
+        }
         private void Filter()
         {
             ICollectionView viewM = CollectionViewSource.GetDefaultView(CurrentDataBase.Materials);
@@ -668,18 +787,25 @@ namespace ME3Explorer.PropertyDatabase
             ICollectionView viewS = CollectionViewSource.GetDefaultView(CurrentDataBase.Meshes);
             ICollectionView viewC = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
             ICollectionView viewP = CollectionViewSource.GetDefaultView(CurrentDataBase.Particles);
-
+            ICollectionView viewT = CollectionViewSource.GetDefaultView(CurrentDataBase.Textures);
+            ICollectionView filesFiltered = CollectionViewSource.GetDefaultView(CurrentDataBase.FileList);
+            
+            filesFiltered.SortDescriptions.Add(new SortDescription("", ListSortDirection.Ascending));
+            filesFiltered.Filter = FileFilter;
             viewC.Filter = ClassFilter;
             viewM.Filter = MaterialFilter;
             viewS.Filter = MeshFilter;
             viewA.Filter = AnimFilter;
             viewP.Filter = PSFilter;
+            viewT.Filter = TexFilter;
 
             lstbx_Anims.ItemsSource = viewP;
             lstbx_Materials.ItemsSource = viewM;
             lstbx_Anims.ItemsSource = viewA;
             lstbx_Meshes.ItemsSource = viewS;
             lstbx_Classes.ItemsSource = viewC;
+            lstbx_Textures.ItemsSource = viewT;
+            lstbx_Files.ItemsSource = filesFiltered;
         }
         private void SetFilters(object obj)
         {
@@ -788,6 +914,7 @@ namespace ME3Explorer.PropertyDatabase
         }
         private void FilterBox_KeyUp(object sender, KeyEventArgs e)
         {
+           
            Filter();
         }
 
@@ -828,7 +955,6 @@ namespace ME3Explorer.PropertyDatabase
 
             await dumpPackages(files, currentGame);
         }
-
         private async Task dumpPackages(List<string> files, MEGame game)
         {
             TopDock.IsEnabled = false;
@@ -846,6 +972,7 @@ namespace ME3Explorer.PropertyDatabase
             GeneratedMats.Clear();
             GeneratedMeshes.Clear();
             GeneratedPS.Clear();
+            GeneratedText.Clear();
             GeneratedValueChecker.Clear();
 
             _dbqueue = new BlockingCollection<ClassRecord>(); //Reset queue for multiple operations
@@ -907,7 +1034,6 @@ namespace ME3Explorer.PropertyDatabase
             }
             _dbqueue.CompleteAdding();
         }
-
         private void dbworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             
@@ -938,11 +1064,16 @@ namespace ME3Explorer.PropertyDatabase
             CurrentDataBase.Particles.AddRange(GeneratedPS.Values);
             CurrentDataBase.Particles.Sort(x => x.PSName);
 
+            //Add Textures
+            CurrentDataBase.Textures.AddRange(GeneratedText.Values);
+            CurrentDataBase.Textures.Sort(x => x.TextureName);
+
             GeneratedClasses.Clear();
             GeneratedAnims.Clear();
             GeneratedMats.Clear();
             GeneratedMeshes.Clear();
             GeneratedPS.Clear();
+            GeneratedText.Clear();
             GeneratedValueChecker.Clear();
             isProcessing = false;
             SaveDatabase();
@@ -953,7 +1084,6 @@ namespace ME3Explorer.PropertyDatabase
             MessageBox.Show("Done");
 
         }
-
         private void DBProcessor(object sender, DoWorkEventArgs e) //Background worker to clean up class data.
         {
 
@@ -1009,6 +1139,7 @@ namespace ME3Explorer.PropertyDatabase
 
         #endregion
 
+
     }
     #region Database
     /// <summary>
@@ -1026,6 +1157,7 @@ namespace ME3Explorer.PropertyDatabase
         public ObservableCollectionExtended<Animation> Animations { get; } = new ObservableCollectionExtended<Animation>();
         public ObservableCollectionExtended<MeshRecord> Meshes { get; } = new ObservableCollectionExtended<MeshRecord>();
         public ObservableCollectionExtended<ParticleSys> Particles { get; } = new ObservableCollectionExtended<ParticleSys>();
+        public ObservableCollectionExtended<TextureRecord> Textures { get; } = new ObservableCollectionExtended<TextureRecord>();
         public PropsDataBase(MEGame meGame, string GenerationDate, ObservableCollectionExtended<ClassRecord> ClassRecords, ObservableCollectionExtended<Material> Materials, ObservableCollectionExtended<Animation> Animations, ObservableCollectionExtended<MeshRecord> Meshes)
         {
             this.meGame = meGame;
@@ -1200,6 +1332,38 @@ namespace ME3Explorer.PropertyDatabase
         }
 
         public ParticleSys()
+        { }
+    }
+
+    public class TextureRecord : NotifyPropertyChangedBase
+    {
+        private string _TextureName;
+        public string TextureName { get => _TextureName; set => SetProperty(ref _TextureName, value); }
+        private string _ParentPackage;
+        public string ParentPackage { get => _ParentPackage; set => SetProperty(ref _ParentPackage, value); }
+        private bool _IsDLCOnly;
+        public bool IsDLCOnly { get => _IsDLCOnly; set => SetProperty(ref _IsDLCOnly, value); }
+        private string _CFormat;
+        public string CFormat { get => _CFormat; set => SetProperty(ref _CFormat, value); }
+        private int _SizeX;
+        public int SizeX { get => _SizeX; set => SetProperty(ref _SizeX, value); }
+        private int _SizeY;
+        public int SizeY { get => _SizeY; set => SetProperty(ref _SizeY, value); }
+
+        public ObservableCollectionExtended<Tuple<int, int, bool>> TextureUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool>>(); //File reference then export, isDLC file
+
+        public TextureRecord(string TextureName, string ParentPackage, bool IsDLCOnly, string CFormat, int SizeX, int SizeY, ObservableCollectionExtended<Tuple<int, int, bool>> TextureUsages)
+        {
+            this.TextureName = TextureName;
+            this.ParentPackage = ParentPackage;
+            this.IsDLCOnly = IsDLCOnly;
+            this.CFormat = CFormat;
+            this.SizeX = SizeX;
+            this.SizeY = SizeY;
+            this.TextureUsages.AddRange(TextureUsages);
+        }
+
+        public TextureRecord()
         { }
     }
     public class FileIndexToNameConverter : IMultiValueConverter
@@ -1516,7 +1680,7 @@ namespace ME3Explorer.PropertyDatabase
                                 int bones = 0;
                                 if (IsSkel)
                                 {
-                                    var bin = ObjectBinary.From<SkeletalMesh>(exp);
+                                    var bin = ObjectBinary.From<Unreal.BinaryConverters.SkeletalMesh>(exp);
                                     if(bin != null)
                                     {
                                         bones = bin.RefSkeleton.Length;
@@ -1564,6 +1728,44 @@ namespace ME3Explorer.PropertyDatabase
                                         if (ePS.IsDLCOnly)
                                         {
                                             ePS.IsDLCOnly = IsDLC;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (exp.ClassName == "Texture2D" && !pIsdefault)
+                            {
+                                string parent = null;
+                                if (GameBeingDumped == MEGame.ME1 && File.EndsWith(".upk"))
+                                {
+                                    parent = ShortFileName;
+                                }
+                                else
+                                {
+                                    parent = GetTopParentPackage(exp);
+                                }
+
+                                bool IsDLC = pcc.IsInOfficialDLC();
+                                string pformat = "n/a";
+                                var formp = exp.GetProperty<EnumProperty>("Format");
+                                if (formp != null)
+                                {
+                                    pformat = formp.Value.Name.ToString() ;
+                                }
+
+                                //var bin = 
+
+
+                                var NewTex = new TextureRecord(pExp, parent, IsDLC, pformat, 0, 0, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
+                                if (!dbScanner.GeneratedText.TryAdd(pExp, NewTex))
+                                {
+                                    var t = dbScanner.GeneratedText[pExp];
+                                    lock (t)
+                                    {
+                                        t.TextureUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC));
+                                        if (t.IsDLCOnly)
+                                        {
+                                            t.IsDLCOnly = IsDLC;
                                         }
                                     }
                                 }

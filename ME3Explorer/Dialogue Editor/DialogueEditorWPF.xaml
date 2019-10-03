@@ -34,7 +34,6 @@
             <MenuItem Header="Clone Reply" Command="{Binding NodeAddCommand}" CommandParameter="CloneReply" ToolTip="Create a new reply as a duplicate of this one"/>
             <Separator />
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
- 
                 <MenuItem Header="Individual Links" Name="outputLinksMenuItem"></MenuItem>
                 <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Command="{Binding NodeDeleteAllLinksCommand}" IsEnabled="{Binding SelectedDialogueNode, Converter={StaticResource NullEnabledConverter}}"/>
             </MenuItem>

@@ -2,15 +2,15 @@
     xmlns:global="clr-namespace:ME3Explorer" x:Class="ME3Explorer.PropertyDatabase.PropertyDB"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
         xmlns:local="clr-namespace:ME3Explorer.PropertyDatabase"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-        xmlns:system="clr-namespace:System;assembly=mscorlib"
-    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    Closing="PropertyDB_Closing"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:clr="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:clb="clr-namespace:System;assembly=mscorlib"
+        Closing="PropertyDB_Closing"
         AllowDrop="True"
         Icon="/Resources/propertydatabase_256x256.ico"
         Title="Property and Asset Database" Height="500" Width="1000"
@@ -19,6 +19,11 @@
         <local:FileIndexToNameConverter x:Key="FileIndexToNameConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <CollectionViewSource x:Key="SortedFileList" Source="{Binding filesFiltered}" IsLiveSortingRequested="True">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="" Direction="Ascending"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
     </Window.Resources>
     <xctk:BusyIndicator IsBusy="{Binding IsBusy, FallbackValue=True}">
         <DockPanel>
@@ -33,32 +38,31 @@
                         <MenuItem Name="switchME2_menu" Header="ME2 Database" Command="{Binding SwitchMECommand}" CommandParameter="ME2" InputGestureText="Ctrl+2" ToolTip="Switch to ME2 Database"/>
                         <MenuItem Name="switchME3_menu" Header="ME3 Database" Command="{Binding SwitchMECommand}" CommandParameter="ME3" InputGestureText="Ctrl+3" ToolTip="Switch to ME3 Database"/>
                     </MenuItem>
-
                     <MenuItem Header="Tools" Padding="4">
                         <MenuItem Header="Open Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
                         <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
                         <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
                         <Separator/>
                         <MenuItem Header="Filter Classes">
-                            <MenuItem Name="menu_fltrSeq" Header="Only Sequence Classes" Command="{Binding FilterSeqClassCommand}" CommandParameter="Seq" ToolTip="Show sequence classes only." />
+                            <MenuItem Name="menu_fltrSeq" Header="Only Sequence Classes" Command="{Binding FilterSeqClassCommand}" CommandParameter="Seq" ToolTip="Show sequence classes only." StaysOpenOnClick="True"/>
                         </MenuItem>
                         <MenuItem Header="Filter Materials">
-                            <MenuItem Name="menu_fltrMatNoDLC" Header="Hide DLC only Materials" Command="{Binding FilterMatCommand}" CommandParameter="NoDLC" ToolTip="Hide materials that require cooked Shadercaches." />
-                            <MenuItem Name="menu_fltrMatUnlit" Header="Only Unlit Materials" Command="{Binding FilterMatCommand}" CommandParameter="Unlit" ToolTip="Show Unlit materials only." />
+                            <MenuItem Name="menu_fltrMatNoDLC" Header="Hide DLC only Materials" Command="{Binding FilterMatCommand}" CommandParameter="NoDLC" ToolTip="Hide materials that require cooked Shadercaches." StaysOpenOnClick="True"/>
+                            <MenuItem Name="menu_fltrMatUnlit" Header="Only Unlit Materials" Command="{Binding FilterMatCommand}" CommandParameter="Unlit" ToolTip="Show Unlit materials only." StaysOpenOnClick="True"/>
                             <Separator/>
-                            <MenuItem Name="menu_fltrMatTrans" Header="Only Translucent Materials" Command="{Binding FilterMatCommand}" CommandParameter="Transl" ToolTip="Show translucent materials only." />
-                            <MenuItem Name="menu_fltrMatAdd" Header="Only Additive Materials" Command="{Binding FilterMatCommand}" CommandParameter="BAdd" ToolTip="Show additive materials only." />
-                            <MenuItem Name="menu_fltrMatOpq" Header="Only Opaque Materials" Command="{Binding FilterMatCommand}" CommandParameter="Opq" ToolTip="Show opaque materials only." />
+                            <MenuItem Name="menu_fltrMatTrans" Header="Only Translucent Materials" Command="{Binding FilterMatCommand}" CommandParameter="Transl" ToolTip="Show translucent materials only." StaysOpenOnClick="True"/>
+                            <MenuItem Name="menu_fltrMatAdd" Header="Only Additive Materials" Command="{Binding FilterMatCommand}" CommandParameter="BAdd" ToolTip="Show additive materials only." StaysOpenOnClick="True"/>
+                            <MenuItem Name="menu_fltrMatOpq" Header="Only Opaque Materials" Command="{Binding FilterMatCommand}" CommandParameter="Opq" ToolTip="Show opaque materials only." StaysOpenOnClick="True"/>
                             <Separator/>
-                            <MenuItem Name="menu_fltrMat2side" Header="Only 2 sided Materials" Command="{Binding FilterMatCommand}" CommandParameter="Twoside" ToolTip="Show 2 sided materials only." />
-                            <MenuItem Name="menu_fltrMat1side" Header="Only Backface culled (1 side)" Command="{Binding FilterMatCommand}" CommandParameter="Oneside" ToolTip="Show 1 sided materials only." />
+                            <MenuItem Name="menu_fltrMat2side" Header="Only 2 sided Materials" Command="{Binding FilterMatCommand}" CommandParameter="Twoside" ToolTip="Show 2 sided materials only." StaysOpenOnClick="True"/>
+                            <MenuItem Name="menu_fltrMat1side" Header="Only Backface culled (1 side)" Command="{Binding FilterMatCommand}" CommandParameter="Oneside" ToolTip="Show 1 sided materials only." StaysOpenOnClick="True"/>
                             <Separator/>
-                            <MenuItem Name="menu_fltrMatColor" Header="Must have color setting" Command="{Binding FilterMatCommand}" CommandParameter="Vcolor" ToolTip="Show if has color parameter" />
-                            <MenuItem Name="menu_fltrMatText" Header="Must have texture setting" Command="{Binding FilterMatCommand}" CommandParameter="TextP" ToolTip="Show only if has texture parameter." />
+                            <MenuItem Name="menu_fltrMatColor" Header="Must have color setting" Command="{Binding FilterMatCommand}" CommandParameter="Vcolor" ToolTip="Show if has color parameter" StaysOpenOnClick="True"/>
+                            <MenuItem Name="menu_fltrMatText" Header="Must have texture setting" Command="{Binding FilterMatCommand}" CommandParameter="TextP" ToolTip="Show only if has texture parameter." StaysOpenOnClick="True"/>
                         </MenuItem>
                         <MenuItem Header="Filter Meshes">
-                            <MenuItem Name="menu_fltrSkM" Header="Only Skeleton Meshes" Command="{Binding FilterMeshCommand}" CommandParameter="Skel" ToolTip="Show Skeleton Meshes only." />
-                            <MenuItem Name="menu_fltrStM" Header="Only Static Meshes" Command="{Binding FilterMeshCommand}" CommandParameter="Static" ToolTip="Show Static Meshes only." />
+                            <MenuItem Name="menu_fltrSkM" Header="Only Skeleton Meshes" Command="{Binding FilterMeshCommand}" CommandParameter="Skel" ToolTip="Show Skeleton Meshes only." StaysOpenOnClick="True"/>
+                            <MenuItem Name="menu_fltrStM" Header="Only Static Meshes" Command="{Binding FilterMeshCommand}" CommandParameter="Static" ToolTip="Show Static Meshes only." StaysOpenOnClick="True"/>
                         </MenuItem>
                     </MenuItem>
                 </Menu>
@@ -399,6 +403,112 @@
                                 <SharedUI:ListBoxScroll.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                    </ContextMenu>
+                                </SharedUI:ListBoxScroll.ContextMenu>
+                            </SharedUI:ListBoxScroll>
+                        </DockPanel>
+                    </TabItem>
+                    <!-- Textures -->
+                    <TabItem Header="Textures" TabIndex="5">
+                        <DockPanel>
+                            <SharedUI:ListBoxScroll x:Name="lstbx_Textures" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Textures}" SelectionChanged="lstbx_Textures_SelectionChanged">
+                                <SharedUI:ListBoxScroll.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding TextureName}" />
+                                            <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center"/>
+                                            <TextBlock FontSize="10" Text="{Binding ParentPackage}" VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text="," VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text="{Binding CFormat}" VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text=", " VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text="{Binding SizeX}" VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text="x" VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text="{Binding SizeY}" VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text=")  " VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </SharedUI:ListBoxScroll.ItemTemplate>
+                                <SharedUI:ListBoxScroll.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsDLCOnly}" Value="True">
+                                                <Setter Property="Background" Value="LightGray"/>
+                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </SharedUI:ListBoxScroll.ItemContainerStyle>
+                            </SharedUI:ListBoxScroll>
+                            <DockPanel x:Name="details_Textures" MinWidth="350" MaxWidth="550" Margin="3">
+                                <ToggleButton x:Name="btn_TextRenderToggle" Content="Toggle Texture Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_TextRenderToggle_Click" IsChecked="{Binding IsTextRendering}"></ToggleButton>
+                                <global:TextureViewerExportLoader x:Name="EmbeddedTextureViewerTab_EmbededTextureViewer"/>
+                            </DockPanel>
+                            <SharedUI:ListBoxScroll x:Name="lstbx_TextureUsages" DockPanel.Dock="Right" MinWidth="250" ItemsSource="{Binding SelectedItem.TextureUsages, ElementName=lstbx_Textures }"  >
+                                <SharedUI:ListBoxScroll.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                        <Binding Path="Item1"/>
+                                                        <Binding Path="CurrentDataBase.FileList" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                            <TextBlock Text="  #"/>
+                                            <TextBlock Text="{Binding Item2}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </SharedUI:ListBoxScroll.ItemTemplate>
+                                <SharedUI:ListBoxScroll.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=Item3}" Value="True">
+                                                <Setter Property="Background" Value="LightGray"/>
+                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </SharedUI:ListBoxScroll.ItemContainerStyle>
+                                <SharedUI:ListBoxScroll.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                    </ContextMenu>
+                                </SharedUI:ListBoxScroll.ContextMenu>
+                            </SharedUI:ListBoxScroll>
+                        </DockPanel>
+                    </TabItem>
+                    <!-- FileList -->
+                    <TabItem Header="Files" TabIndex="6">
+                        <DockPanel>
+                            <SharedUI:ListBoxScroll x:Name="lstbx_Files" DockPanel.Dock="Left" MinWidth="300" >
+                                <SharedUI:ListBoxScroll.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Open in Package Editor" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this file in Package Editor.">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Open in Sequence Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="SeqEd" ToolTip="Opens this file in Sequence Editor." >
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources/sequenceeditor_256x256.ico" Width="64"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Open in Meshplorer" Command="{Binding OpenUsagePkgCommand}" CommandParameter="Meshplorer" ToolTip="Opens this file in Meshplorer Editor.">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources/meshplorer_256x256.ico" Width="64"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Open in Pathfinding Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="PathEd" ToolTip="Opens this file in Pathfinding Editor.">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources/pathfindingeditor_256x256.ico" Width="64"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Open in Dialogue Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="DlgEd" ToolTip="Opens this file in Dialogue Editor.">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources/dialogueeditor_256x256.ico" Width="64"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
                                     </ContextMenu>
                                 </SharedUI:ListBoxScroll.ContextMenu>
                             </SharedUI:ListBoxScroll>
