@@ -776,7 +776,7 @@ namespace ME3Explorer.PropertyDatabase
             bool showthis = true;
             if (FilterBox.Text != null)
             {
-                showthis = (d as string).Contains(FilterBox.Text.ToLower());
+                showthis = (d as string).ToLower().Contains(FilterBox.Text.ToLower());
             }
             return showthis;
         }
@@ -998,7 +998,7 @@ namespace ME3Explorer.PropertyDatabase
                 x.dumpPackageFile(game, this); // What to do on each item
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    BusyText = $"Scanned {OverallProgressValue}/{OverallProgressMaximum} files\n\nClasses: { GeneratedClasses.Count}\nAnimations: { GeneratedAnims.Count}\nMaterials: { GeneratedMats.Count}\nMeshes: { GeneratedMeshes.Count}\nParticles: { GeneratedPS.Count}";
+                    BusyText = $"Scanned {OverallProgressValue}/{OverallProgressMaximum} files\n\nClasses: { GeneratedClasses.Count}\nAnimations: { GeneratedAnims.Count}\nMaterials: { GeneratedMats.Count}\nMeshes: { GeneratedMeshes.Count}\nParticles: { GeneratedPS.Count}\nTextures: { GeneratedText.Count}";
                     OverallProgressValue++; //Concurrency 
                     CurrentDumpingItems.Remove(x);
                 });
@@ -1349,10 +1349,11 @@ namespace ME3Explorer.PropertyDatabase
         public int SizeX { get => _SizeX; set => SetProperty(ref _SizeX, value); }
         private int _SizeY;
         public int SizeY { get => _SizeY; set => SetProperty(ref _SizeY, value); }
-
+        private string _CRC;
+        public string CRC { get => _CRC; set => SetProperty(ref _CRC, value); }
         public ObservableCollectionExtended<Tuple<int, int, bool>> TextureUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool>>(); //File reference then export, isDLC file
 
-        public TextureRecord(string TextureName, string ParentPackage, bool IsDLCOnly, string CFormat, int SizeX, int SizeY, ObservableCollectionExtended<Tuple<int, int, bool>> TextureUsages)
+        public TextureRecord(string TextureName, string ParentPackage, bool IsDLCOnly, string CFormat, int SizeX, int SizeY, string CRC, ObservableCollectionExtended<Tuple<int, int, bool>> TextureUsages)
         {
             this.TextureName = TextureName;
             this.ParentPackage = ParentPackage;
@@ -1360,6 +1361,7 @@ namespace ME3Explorer.PropertyDatabase
             this.CFormat = CFormat;
             this.SizeX = SizeX;
             this.SizeY = SizeY;
+            this.CRC = CRC;
             this.TextureUsages.AddRange(TextureUsages);
         }
 
@@ -1752,11 +1754,22 @@ namespace ME3Explorer.PropertyDatabase
                                 {
                                     pformat = formp.Value.Name.ToString() ;
                                 }
+                                int psizeX = 0;
+                                var propX = exp.GetProperty<IntProperty>("SizeX");
+                                if (propX != null)
+                                {
+                                    psizeX = propX;
+                                }
+                                int psizeY = 0;
+                                var propY = exp.GetProperty<IntProperty>("SizeY");
+                                if (propY != null)
+                                {
+                                    psizeY = propY;
+                                }
 
-                                //var bin = 
+                                string cRC = "n/a"; //TO DO ADD MAGIC
 
-
-                                var NewTex = new TextureRecord(pExp, parent, IsDLC, pformat, 0, 0, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
+                                var NewTex = new TextureRecord(pExp, parent, IsDLC, pformat, psizeX, psizeY, cRC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
                                 if (!dbScanner.GeneratedText.TryAdd(pExp, NewTex))
                                 {
                                     var t = dbScanner.GeneratedText[pExp];

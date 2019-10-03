@@ -418,12 +418,14 @@
                                             <TextBlock Text="{Binding TextureName}" />
                                             <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center"/>
                                             <TextBlock FontSize="10" Text="{Binding ParentPackage}" VerticalAlignment="Center" />
-                                            <TextBlock FontSize="10" Text="," VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text=", " VerticalAlignment="Center" />
                                             <TextBlock FontSize="10" Text="{Binding CFormat}" VerticalAlignment="Center" />
                                             <TextBlock FontSize="10" Text=", " VerticalAlignment="Center" />
                                             <TextBlock FontSize="10" Text="{Binding SizeX}" VerticalAlignment="Center" />
                                             <TextBlock FontSize="10" Text="x" VerticalAlignment="Center" />
                                             <TextBlock FontSize="10" Text="{Binding SizeY}" VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text=", " VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text="{Binding CRC}" VerticalAlignment="Center" />
                                             <TextBlock FontSize="10" Text=")  " VerticalAlignment="Center" />
                                         </StackPanel>
                                     </DataTemplate>
