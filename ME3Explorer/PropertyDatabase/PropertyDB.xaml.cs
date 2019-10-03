@@ -599,6 +599,26 @@ namespace ME3Explorer.PropertyDatabase
             {
                 showthis = false;
             }
+            if (showthis && menu_fltrMatTrans.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "BlendMode" && x.Item3 == "BLEND_Translucent"))
+            {
+                showthis = false;
+            }
+            if (showthis && menu_fltrMatAdd.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "BlendMode" && x.Item3 == "BLEND_Additive"))
+            {
+                showthis = false;
+            }
+            if (showthis && menu_fltrMatOpq.IsChecked && mr.MatSettings.Any(x => x.Item1 == "BlendMode" && (x.Item3 == "BLEND_Additive" || x.Item3 == "BLEND_Translucent")))
+            {
+                showthis = false;
+            }
+            if (showthis && menu_fltrMatColor.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "VectorParameter" && x.Item2.ToLower().Contains("color")))
+            {
+                showthis = false;
+            }
+            if (showthis && menu_fltrMatText.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "TextureSampleParameter2D"))
+            {
+                showthis = false;
+            }
             return showthis;
         }
         bool MeshFilter(object d)
@@ -696,6 +716,48 @@ namespace ME3Explorer.PropertyDatabase
                     break;
                 case "NoDLC":
                     menu_fltrMatNoDLC.IsChecked = !menu_fltrMatNoDLC.IsChecked;
+                    break;
+                case "Transl":
+                    if (!menu_fltrMatTrans.IsChecked)
+                    {
+                        menu_fltrMatTrans.IsChecked = true;
+                        menu_fltrMatAdd.IsChecked = false;
+                        menu_fltrMatOpq.IsChecked = false;
+                    }
+                    else
+                    {
+                        menu_fltrMatTrans.IsChecked = false;
+                    }
+                    break;
+                case "BAdd":
+                    if (!menu_fltrMatAdd.IsChecked)
+                    {
+                        menu_fltrMatTrans.IsChecked = false;
+                        menu_fltrMatAdd.IsChecked = true;
+                        menu_fltrMatOpq.IsChecked = false;
+                    }
+                    else
+                    {
+                        menu_fltrMatAdd.IsChecked = false;
+                    }
+                    break;
+                case "Opq":
+                    if (!menu_fltrMatOpq.IsChecked)
+                    {
+                        menu_fltrMatTrans.IsChecked = false;
+                        menu_fltrMatAdd.IsChecked = false;
+                        menu_fltrMatOpq.IsChecked = true;
+                    }
+                    else
+                    {
+                        menu_fltrMatOpq.IsChecked = false;
+                    }
+                    break;
+                case "Vcolor":
+                    menu_fltrMatColor.IsChecked = !menu_fltrMatColor.IsChecked;
+                    break;
+                case "TextP":
+                    menu_fltrMatText.IsChecked = !menu_fltrMatText.IsChecked;
                     break;
                 case "Skel":
                     if (!menu_fltrSkM.IsChecked)
