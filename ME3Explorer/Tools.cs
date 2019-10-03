@@ -310,19 +310,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Property Database (OLD)",
-                type = typeof(Propertydb.PropertyDB),
-                icon = Application.Current.FindResource("iconPropertyDatabase") as ImageSource,
-                open = () =>
-                {
-                    (new Propertydb.PropertyDB()).Show();
-                },
-                tags = new List<string> { "utility" },
-                subCategory = "Databases",
-                description = "Scans ME3 and creates a database of all the classes and properties for those classes that Bioware uses.\n\nThis is different than Package Dumper, as it looks across all instances of the class and what is actually used."
-            });
-            set.Add(new Tool
-            {
                 name = "Property & Asset Database",
                 type = typeof(PropertyDatabase.PropertyDB),
                 icon = Application.Current.FindResource("iconPropertyDatabase") as ImageSource,
@@ -330,7 +317,7 @@ namespace ME3Explorer
                 {
                     (new PropertyDatabase.PropertyDB()).Show();
                 },
-                tags = new List<string> { "utility" },
+                tags = new List<string> { "utility", "mesh", "material", "class", "animation" },
                 subCategory = "Databases",
                 description = "Scans games and creates a database of classes, animations, materials and meshes.\n\nIndividual assets can be opened directly from the interface."
             });
@@ -473,19 +460,6 @@ namespace ME3Explorer
                 description = "Level Explorer allows you to view the meshes of a level.",
 
             });*/
-            set.Add(new Tool
-            {
-                name = "Mesh Database",
-                type = typeof(Meshplorer2.MeshDatabase),
-                icon = Application.Current.FindResource("iconMeshDatabase") as ImageSource,
-                open = () =>
-                {
-                    (new Meshplorer2.MeshDatabase()).Show();
-                },
-                tags = new List<string> { "utility", "mesh" },
-                subCategory = "Databases",
-                description = "Scans ME3 (no DLC) for meshes and makes a database. This tool is deprecated and no longer supported."
-            });
             set.Add(new Tool
             {
                 name = "Mount Editor",

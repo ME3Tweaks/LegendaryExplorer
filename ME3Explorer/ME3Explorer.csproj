@@ -651,12 +651,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Propertydb\PropertyDB.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Propertydb\PropertyDB.Designer.cs">
-      <DependentUpon>PropertyDB.cs</DependentUpon>
-    </Compile>
     <Compile Include="SharedUI\Commands.cs" />
     <Compile Include="Sequence Editor\SequenceEditorWPF.xaml.cs">
       <DependentUpon>SequenceEditorWPF.xaml</DependentUpon>
@@ -1182,12 +1176,6 @@
     <Compile Include="Packages\CompressionHelper.cs" />
     <Compile Include="ME2\TlkManager\ME2TalkFiles.cs" />
     <Compile Include="ME2\Unreal\ME2UnrealObjectInfo.cs" />
-    <Compile Include="Meshplorer2\Meshplorer2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Meshplorer2\Meshplorer2.Designer.cs">
-      <DependentUpon>Meshplorer2.cs</DependentUpon>
-    </Compile>
     <Compile Include="Meshplorer\Meshplorer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1236,9 +1224,6 @@
     <EmbeddedResource Include="ME2\FaceFXAnimSetEditor.resx">
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Meshplorer2\Meshplorer2.resx">
-      <DependentUpon>Meshplorer2.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Meshplorer\Meshplorer.resx">
       <DependentUpon>Meshplorer.cs</DependentUpon>
     </EmbeddedResource>
@@ -1249,9 +1234,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Propertydb\PropertyDB.resx">
-      <DependentUpon>PropertyDB.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PSAViewer\PSAViewer.resx">
       <DependentUpon>PSAViewer.cs</DependentUpon>
