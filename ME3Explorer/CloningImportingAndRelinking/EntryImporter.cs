@@ -183,13 +183,9 @@ namespace ME3Explorer
                     ms.WriteInt32(newNameIdx);
                     prePropBinary = ms.ToArray();
                 }
-                else if (sourceExport.IsPartOfClassDefinition())
-                {
-                    prePropBinary = sourceExport.Data.Slice(0, start);
-                }
                 else
                 {
-                    prePropBinary = new byte[start];
+                    prePropBinary = sourceExport.Data.Slice(0, start);
                 }
             }
 
@@ -203,7 +199,7 @@ namespace ME3Explorer
                     props = EntryPruner.RemoveIncompatibleProperties(sourceExport.FileRef, props, sourceExport.ClassName, destPackage.Game);
                 }
             }
-            catch (Exception exception)
+            catch (Exception exception) when(!App.IsDebug)
             {
                 //restore namelist in event of failure.
                 destPackage.setNames(names);

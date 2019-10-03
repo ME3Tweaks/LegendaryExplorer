@@ -89,7 +89,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 BspSurf surf = Surfs[i];
                 uIndexes.Add((surf.Material, $"Surfs[{i}].Material"));
-                uIndexes.Add((surf.Material, $"Surfs[{i}].Actor"));
+                uIndexes.Add((surf.Actor, $"Surfs[{i}].Actor"));
             }
 
             uIndexes.AddRange(Zones.Select((zone, i) => (zone.ZoneActor, $"Zones[{i}].ZoneActor")));

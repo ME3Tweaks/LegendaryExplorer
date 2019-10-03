@@ -449,8 +449,6 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public int LinkerIndex => BitConverter.ToInt32(_data, 0);
-
         public int OriginalDataSize { get; protected set; }
         public bool ReadsFromConfig { get; protected set; }
 
@@ -563,64 +561,33 @@ namespace ME3Explorer.Packages
 
         public int GetPropertyStart()
         {
-            if (IsClass)
-            {
-                return 4;
-            }
-            IMEPackage pcc = FileRef;
             if (HasStack)
             {
                 return stackLength;
             }
 
-            //TODO: If there are more classes which have binary before the props, could be worth creating a more extensible system for this
-            if (pcc.Game == MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
+            int start = 0;
+
+            if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
             {
-                int count = BitConverter.ToInt32(_data, 0);
-                return count * 2 + 12;
+                //DominantLightShadowMap, which goes before everything for some reason
+                int count = BitConverter.ToInt32(_data, 0);  
+                start += count * 2 + 4;
             }
 
-            //if (!IsDefaultObject)
-            //{
-            //    switch (ClassName)
-            //    {
-            //        case "ParticleSystemComponent":
-            //            return 0x10;
-            //    }
-            //}
-            if (_data.Length == 4)
-            {
-                return 4;
-            }
 
-            int result = 8;
-            int test0 = BitConverter.ToInt32(_data, 0);
-            int test1 = BitConverter.ToInt32(_data, 4);
-            int test2 = BitConverter.ToInt32(_data, 8); //Name index if Test1 is actually a name. Should be 0 since we wouldn't have indexes here
-            if (pcc.IsName(test1) && test2 == 0) //is 0x4 a proper 8 byte name?
-                result = 4;
-            if (pcc.IsName(test1) && pcc.IsName(test2) && test2 != 0)
-                result = 8;
-
-            if (_data.Length > 0x10 && pcc.IsName(test1) && pcc.GetNameEntry(test1) == ObjectName && test0 == 0 && test2 == indexValue) //!= UIndex will cover more cases, but there's still the very tiny case where they line up
+            if (!IsDefaultObject && this.IsOrInheritsFrom("Component") || (Game == MEGame.UDK && ClassName.EndsWith("Component")))
             {
-                int test3 = BitConverter.ToInt32(_data, 0x10);
-                string namev = pcc.GetNameEntry(test3);
-                //Debug.WriteLine("Reading " + name + " (" + namev + ") at 0x" + (stream.Position - 24).ToString("X8"));
-                if (namev != null && Enum.IsDefined(typeof(PropertyType), namev) && Enum.TryParse(namev, out PropertyType propertyType))
+                start += 4; //TemplateOwnerClass
+                if (ParentFullPath.Contains("Default__"))
                 {
-                    if (propertyType > PropertyType.None)
-                    {
-                        //Edge case
-                        return 0x8;
-                    }
+                    start += 8; //TemplateName
                 }
-
-                //Debug.WriteLine("Primitive Component: " + ClassName + " (" + ObjectName + ")");
-                return 0x10; //Primitive Component
             }
 
-            return result;
+            start += 4; //NetIndex
+
+            return start;
         }
 
         private int stackLength =>

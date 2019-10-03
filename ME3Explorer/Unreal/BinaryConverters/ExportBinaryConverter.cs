@@ -31,6 +31,27 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 return new GenericObjectBinary(ConvertTexture2D(export, newGame));
             }
 
+            switch (export.ClassName)
+            {
+                case "DirectionalLightComponent":
+                case "PointLightComponent":
+                case "SkyLightComponent":
+                case "SphericalHarmonicLightComponent":
+                case "SpotLightComponent":
+                case "DominantSpotLightComponent":
+                case "DominantPointLightComponent":
+                case "DominantDirectionalLightComponent":
+                    if (newGame == MEGame.UDK)
+                    {
+                        return new GenericObjectBinary(Array.Empty<byte>());
+                    }
+                    else if (export.Game == MEGame.UDK && newGame != MEGame.UDK)
+                    {
+                        return new GenericObjectBinary(new byte[8]);
+                    }
+                    break;
+            }
+
             //no conversion neccesary
             return new GenericObjectBinary(export.getBinaryData());
         }
@@ -173,7 +194,17 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 os.WriteInt32(height);
 
             }
-            os.WriteInt32(bin.ReadInt32());
+
+            int unk1 = 0;
+            if (export.Game != MEGame.UDK)
+            {
+                unk1 = bin.ReadInt32();
+            }
+            if (newGame != MEGame.UDK)
+            {
+                os.WriteInt32(unk1);
+            }
+
             Guid textureGuid = export.Game != MEGame.ME1 ? bin.ReadGuid() : Guid.NewGuid();
 
             if (newGame != MEGame.ME1)
@@ -181,10 +212,31 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 os.WriteGuid(textureGuid);
             }
 
+            if (export.Game == MEGame.UDK)
+            {
+                bin.Skip(32);
+            }
+            if (newGame == MEGame.UDK)
+            {
+                os.WriteZeros(4 * 8);
+            }
+
+            if (export.Game == MEGame.ME3)
+            {
+                bin.Skip(4);
+            }
             if (newGame == MEGame.ME3)
             {
                 os.WriteInt32(0);
-                if (export.ClassName == "LightMapTexture2D")
+            }
+            if (export.ClassName == "LightMapTexture2D")
+            {
+                int lightMapFlags = 0;
+                if (export.Game >= MEGame.ME3)
+                {
+                    lightMapFlags = bin.ReadInt32();
+                }
+                if (newGame >= MEGame.ME3)
                 {
                     os.WriteInt32(0);//LightMapFlags noflag
                 }

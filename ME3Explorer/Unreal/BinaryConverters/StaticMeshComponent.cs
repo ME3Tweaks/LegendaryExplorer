@@ -25,7 +25,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 StaticMeshComponentLODInfo lodInfo = LODData[i];
                 uIndexes.AddRange(lodInfo.ShadowMaps.Select((uIndex, j) => (uIndex, $"LODData[{i}].ShadowMaps[{j}]")));
-                uIndexes.AddRange(lodInfo.ShadowMaps.Select((uIndex, j) => (uIndex, $"LODData[{i}].ShadowVertexBuffers[{j}]")));
+                uIndexes.AddRange(lodInfo.ShadowVertexBuffers.Select((uIndex, j) => (uIndex, $"LODData[{i}].ShadowVertexBuffers[{j}]")));
                 uIndexes.AddRange(lodInfo.LightMap.GetUIndexes(game, $"LODData[{i}]."));
             }
 
@@ -338,7 +338,7 @@ namespace ME3Explorer
 
                 if (sc.Game == MEGame.UDK)
                 {
-                    byte dummy = 0;
+                    int dummy = 0;
                     sc.Serialize(ref dummy);
                 }
             }

@@ -19,6 +19,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public UIndex[] ModelComponents;
         public UIndex[] GameSequences;
         public OrderedMultiValueDictionary<UIndex, StreamableTextureInstanceList> TextureToInstancesMap;
+        public OrderedMultiValueDictionary<UIndex, uint> MeshComponentsWithDynamiclighting;//UDK
         public byte[] ApexMesh;//ME3 only
         public byte[] CachedPhysBSPData; //BulkSerialized
         public OrderedMultiValueDictionary<UIndex, CachedPhysSMData> CachedPhysSMDataMap;
@@ -57,14 +58,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref TextureToInstancesMap, SCExt.Serialize, SCExt.Serialize);
             if (sc.Game == MEGame.UDK)
             {
-                if (sc.IsLoading)
-                {
-                    sc.ms.Skip(sc.ms.ReadInt32() * 8);
-                }
-                else
-                {
-                    sc.ms.WriteInt32(0);
-                }
+                sc.Serialize(ref MeshComponentsWithDynamiclighting, SCExt.Serialize, SCExt.Serialize);
+            }
+            else
+            {
+                MeshComponentsWithDynamiclighting = new OrderedMultiValueDictionary<UIndex, uint>();
             }
             if (sc.Game >= MEGame.ME3)
             {

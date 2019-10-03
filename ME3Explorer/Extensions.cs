@@ -894,6 +894,11 @@ namespace ME3Explorer
 
             return (word << (31 - from)) >> (31 - from + to);
         }
+
+        public static unsafe bool IsBinarilyIdentical(this float f1, float f2)
+        {
+            return *((int*)&f1) == *((int*)&f2);
+        }
     }
 
     public static class Enums

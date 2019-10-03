@@ -772,8 +772,11 @@ namespace ME3Explorer
 
         private List<ITreeItem> StartLightComponentScan(byte[] data, int binarystart)
         {
-
             var subnodes = new List<ITreeItem>();
+            if (Pcc.Game == MEGame.UDK)
+            {
+                return subnodes;
+            }
             try
             {
                 var bin = new MemoryStream(data);
@@ -820,7 +823,7 @@ namespace ME3Explorer
                 var bin = new MemoryStream(data);
 
 
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game >= MEGame.ME3)
                 {
                     int count;
                     subnodes.Add(new BinInterpNode(bin.Position, $"DominantLightShadowMap ({count = bin.ReadInt32()})")
@@ -1374,6 +1377,10 @@ namespace ME3Explorer
                         new BinInterpNode(bin.Position, $"CamOrthoZoom: {bin.ReadSingle()}")
                     }
                 }));
+                if (Pcc.Game == MEGame.UDK)
+                {
+                    subnodes.Add(MakeFloatNode(bin, "unkFloat"));
+                }
                 subnodes.Add(MakeEntryNode(bin, "Null"));
                 if (Pcc.Game == MEGame.ME1)
                 {
@@ -6896,15 +6903,27 @@ namespace ME3Explorer
                         Tag = NodeType.StructLeafInt
                     });
                 }
-                bin.Skip(4);
+
+                if (Pcc.Game != MEGame.UDK)
+                {
+                    bin.Skip(4);
+                }
                 if (CurrentLoadedExport.FileRef.Game != MEGame.ME1)
                 {
                     subnodes.Add(MakeGuidNode(bin, "Texture GUID"));
                 }
 
-                if (Pcc.Game == MEGame.ME3 && CurrentLoadedExport.ClassName == "LightMapTexture2D")
+                if (Pcc.Game == MEGame.UDK)
                 {
-                    bin.Skip(4);
+                    bin.Skip(8 * 4);
+                }
+
+                if (Pcc.Game >= MEGame.ME3 && CurrentLoadedExport.ClassName == "LightMapTexture2D")
+                {
+                    if (Pcc.Game == MEGame.ME3)
+                    {
+                        bin.Skip(4);
+                    }
                     subnodes.Add(new BinInterpNode(bin.Position, $"LightMapFlags: {(ELightMapFlags)bin.ReadInt32()}"));
                 }
             }

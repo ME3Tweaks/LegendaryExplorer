@@ -111,6 +111,17 @@ namespace ME3Explorer.SharedUI
                 currentInfo.baseClass = export.SuperClassName;
                 classList = classList.ToDictionary(entry => entry.Key, entry => entry.Value);
                 classList[temp] = currentInfo;
+                classExport = classExport.SuperClass as ExportEntry;
+                while (!classList.ContainsKey(currentInfo.baseClass) && classExport != null)
+                {
+                    currentInfo = UnrealObjectInfo.generateClassInfo(classExport);
+                    if (currentInfo == null)
+                    {
+                        break;
+                    }
+                    classList[classExport.ObjectName] = currentInfo;
+                    classExport = classExport.SuperClass as ExportEntry;
+                }
             }
             while (classList.ContainsKey(temp) && temp != "Object")
             {

@@ -404,7 +404,7 @@ namespace ME3Explorer
         {
             if (Pcc.Game == MEGame.UDK)
             {
-                MessageBox.Show("Cannot add properties to UDK UPK files.", "Unsupported operation");
+                MessageBox.Show("Cannot add properties to UDK files.", "Unsupported operation");
                 return;
             }
 

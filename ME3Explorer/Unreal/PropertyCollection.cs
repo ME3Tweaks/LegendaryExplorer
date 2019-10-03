@@ -201,7 +201,6 @@ namespace ME3Explorer.Unreal
                             break;
                         case PropertyType.IntProperty:
                             IntProperty ip = new IntProperty(stream, nameRef);
-                            ip.StartOffset = propertyStartPosition;
                             prop = ip;
                             break;
                         case PropertyType.FloatProperty:
@@ -235,19 +234,9 @@ namespace ME3Explorer.Unreal
                                         //Attempt to get info without lookup first
                                         var enumname = UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName);
                                         ClassInfo classInfo = null;
-                                        if (enumname == null)
+                                        if (enumname == null && entry is ExportEntry exp)
                                         {
-                                            if (entry != null)
-                                            {
-                                                if (entry.FileRef.Game == MEGame.ME1)
-                                                {
-                                                    classInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo((ExportEntry)entry);
-                                                }
-                                                if (entry.FileRef.Game == MEGame.ME2)
-                                                {
-                                                    classInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo((ExportEntry)entry);
-                                                }
-                                            }
+                                            classInfo = UnrealObjectInfo.generateClassInfo(exp);
                                         }
 
                                         //Use DB info or attempt lookup
@@ -277,8 +266,14 @@ namespace ME3Explorer.Unreal
                         case PropertyType.ArrayProperty:
                             {
                                 //Debug.WriteLine("Reading array properties, starting at 0x" + stream.Position.ToString("X5"));
+                                var valStart = stream.Position;
                                 prop = ReadArrayProperty(stream, export, typeName, nameRef, IncludeNoneProperties: includeNoneProperty, parsingEntry: entry);
-                                prop.StartOffset = propertyStartPosition;
+                                //this can happen with m_aObjComments that were hex edited with old versions of the toolset
+                                //technically valid, so we should support reading them
+                                if (stream.Position < valStart + size)
+                                {
+                                    stream.JumpTo(valStart + size);
+                                }
                             }
                             break;
                         case PropertyType.StrProperty:
@@ -299,10 +294,7 @@ namespace ME3Explorer.Unreal
                             }
                             break;
                         case PropertyType.None:
-                            if (includeNoneProperty)
-                            {
-                                prop = new NoneProperty(stream);
-                            }
+                            prop = new NoneProperty(stream);
                             break;
                     }
 
@@ -325,7 +317,8 @@ namespace ME3Explorer.Unreal
                 {
                     if (entry != null)
                     {
-                        Debug.WriteLine(entry.UIndex + " " + entry.ObjectName.Instanced + " - Invalid properties: Does not end with None");
+                        Debug.WriteLine(entry.FileRef.FilePath);
+                        Debug.WriteLine($"#{entry.UIndex} {entry.ObjectName.Instanced} - Invalid properties: Does not end with None");
                     }
 #if DEBUG
                     props.endOffset = (int)stream.Position;
@@ -336,7 +329,7 @@ namespace ME3Explorer.Unreal
 #endif
                 }
                 //remove None Property
-                if (!includeNoneProperty)
+                if (props[props.Count - 1].PropType == PropertyType.None && !includeNoneProperty)
                 {
                     props.RemoveAt(props.Count - 1);
                 }
@@ -510,19 +503,9 @@ namespace ME3Explorer.Unreal
                         //Attempt to get info without lookup first
                         var enumname = UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType);
                         ClassInfo classInfo = null;
-                        if (enumname == null)
+                        if (enumname == null && parsingEntry is ExportEntry parsingExport)
                         {
-                            if (parsingEntry != null)
-                            {
-                                if (parsingEntry.FileRef.Game == MEGame.ME1)
-                                {
-                                    classInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo((ExportEntry)parsingEntry);
-                                }
-                                if (parsingEntry.FileRef.Game == MEGame.ME2)
-                                {
-                                    classInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo((ExportEntry)parsingEntry);
-                                }
-                            }
+                            classInfo = UnrealObjectInfo.generateClassInfo(parsingExport);
                         }
 
                         //Use DB info or attempt lookup
@@ -542,24 +525,10 @@ namespace ME3Explorer.Unreal
 
                         var props = new List<StructProperty>();
                         var propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType);
-                        if (propertyInfo == null && parsingEntry != null)
+                        if (propertyInfo == null && parsingEntry is ExportEntry parsingExport)
                         {
-                            ClassInfo currentInfo;
-                            switch (parsingEntry.FileRef.Game)
-                            {
-                                case MEGame.ME1:
-                                    currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(parsingEntry as ExportEntry);
-                                    break;
-                                case MEGame.ME2:
-                                    currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(parsingEntry as ExportEntry);
-                                    break;
-                                case MEGame.ME3:
-                                default:
-                                    currentInfo = ME3UnrealObjectInfo.generateClassInfo(parsingEntry as ExportEntry);
-                                    break;
-                            }
-                            currentInfo.baseClass = ((ExportEntry)parsingEntry).SuperClassName;
-                            propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo);
+                            var currentInfo = UnrealObjectInfo.generateClassInfo(parsingExport);
+                            propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo, parsingExport);
                         }
 
                         string arrayStructType = propertyInfo?.Reference;
@@ -1057,7 +1026,16 @@ namespace ME3Explorer.Unreal
         public float Value
         {
             get => _value;
-            set => SetProperty(ref _value, value);
+            set
+            {
+                //There is more than one way to represent 0 for float binary, and the normal == does not distinguish between them
+                //for our purposes, we need to write out the exact binary we read in if no changes were made, so a custom comparison is needed
+                if (!_value.IsBinarilyIdentical(value))
+                {
+                    _value = value;
+                    OnPropertyChanged(nameof(Value));
+                }
+            }
         }
 
         public FloatProperty(Stream stream, NameReference? name = null) : base(name)

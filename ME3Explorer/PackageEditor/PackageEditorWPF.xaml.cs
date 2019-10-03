@@ -3723,22 +3723,10 @@ namespace ME3Explorer
             d.Show();
         }
 
-        private void ListLinkerValues_Click(object sender, RoutedEventArgs e)
-        {
-            var strs = new List<string>();
-            foreach (ExportEntry exp in Pcc.Exports.Where(x => x.LinkerIndex >= 0).OrderBy(x => x.LinkerIndex))
-            {
-                strs.Add($"UI:{exp.UIndex} -> LI:{BitConverter.ToInt32(exp.Data, 0)} = {exp.InstancedFullPath}");
-            }
-
-            var d = new ListDialog(strs, "Linker Indexes", "Here are the linker indexes in this file", this);
-            d.Show();
-        }
-
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            var filePaths = /*MELoadedFiles.GetAllFiles(MEGame.ME3).Concat*/(MELoadedFiles.GetAllFiles(MEGame.ME2)).Concat(MELoadedFiles.GetAllFiles(MEGame.ME1));
+            var filePaths = MELoadedFiles.GetAllFiles(MEGame.ME3).Concat(MELoadedFiles.GetAllFiles(MEGame.ME2)).Concat(MELoadedFiles.GetAllFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
@@ -4490,6 +4478,59 @@ namespace ME3Explorer
                 File.WriteAllBytes(file, ms.ToArray());
                 Debug.WriteLine("Done");
             }
+        }
+
+        private void RunPropertyCollectionTest(object sender, RoutedEventArgs e)
+        {
+            var filePaths = /*MELoadedFiles.GetOfficialFiles(MEGame.ME3).Concat*/(MELoadedFiles.GetOfficialFiles(MEGame.ME2)).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
+            
+            IsBusy = true;
+            BusyText = "Scanning";
+            Task.Run(() =>
+            {
+                foreach (string filePath in filePaths)
+                {
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                    Debug.WriteLine(filePath);
+                    foreach (ExportEntry export in pcc.Exports)
+                    {
+                        try
+                        {
+                            byte[] originalData = export.Data;
+                            PropertyCollection props = export.GetProperties();
+                            export.WriteProperties(props);
+                            byte[] resultData = export.Data;
+                            if (!originalData.SequenceEqual(resultData))
+                            {
+                                string userFolder = Path.Combine(@"C:\Users", Environment.UserName);
+                                File.WriteAllBytes(Path.Combine(userFolder, $"c.bin"), resultData);
+                                File.WriteAllBytes(Path.Combine(userFolder, $"o.bin"), originalData);
+                                return (filePath, export.UIndex);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            return (filePath, export.UIndex);
+                        }
+                    }
+                }
+
+                return (null, 0);
+
+            }).ContinueWithOnUIThread(prevTask => 
+            {
+                IsBusy = false;
+                (string filePath, int uIndex) = prevTask.Result;
+                if (filePath == null)
+                {
+                    MessageBox.Show(this, "No errors occured!");
+                }
+                else
+                {
+                    LoadFile(filePath, uIndex);
+                    MessageBox.Show(this, $"Error at #{uIndex} in {filePath}!");
+                }
+            });
         }
     }
 }

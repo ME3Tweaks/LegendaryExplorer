@@ -16,6 +16,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         private UIndex PersistentFaceFXAnimSet; //ME3
         private readonly LevelViewportInfo[] EditorViews = new LevelViewportInfo[4];
         private UIndex DecalManager; //ME1
+        private float unkFloat; //UDK
         private UIndex[] ExtraReferencedObjects;
 
         protected override void Serialize(SerializingContainer2 sc)
@@ -34,6 +35,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
 
                 sc.Serialize(ref EditorViews[i]);
+            }
+
+            if (sc.Game == MEGame.UDK)
+            {
+                sc.Serialize(ref unkFloat);
             }
             int dummy = 0;
             sc.Serialize(ref dummy);

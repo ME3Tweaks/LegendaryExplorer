@@ -294,6 +294,7 @@ namespace ME3Explorer.Packages
                 //export data
                 foreach (ExportEntry e in exports)
                 {
+                    UpdateUDKOffsets(e, (int)ms.Position);
                     e.DataOffset = (int)ms.Position;
 
                     ms.WriteFromBuffer(e.Data);
@@ -363,6 +364,41 @@ namespace ME3Explorer.Packages
 
             ms.WriteInt32(0);//empty additionalPackagesToCook array
             ms.WriteInt32(0);//empty TextureAllocations
+        }
+
+        private static void UpdateUDKOffsets(ExportEntry export, int newDataOffset)
+        {
+            if (export.IsDefaultObject)
+            {
+                return; //this is not actually instance of that class
+            }
+            //update offsets for pcc-stored mips in Textures
+            if (export.IsTexture())
+            {
+                int baseOffset = newDataOffset + export.propsEnd();
+                MemoryStream binData = new MemoryStream(export.getBinaryData());
+                binData.Skip(12);
+                binData.WriteInt32(baseOffset + (int)binData.Position + 4);
+                for (int i = binData.ReadInt32(); i > 0 && binData.Position < binData.Length; i--)
+                {
+                    var storageFlags = (StorageFlags)binData.ReadInt32();
+                    if (!storageFlags.HasFlag(StorageFlags.externalFile)) //pcc-stored
+                    {
+                        int uncompressedSize = binData.ReadInt32();
+                        int compressedSize = binData.ReadInt32();
+                        binData.WriteInt32(baseOffset + (int)binData.Position + 4);//update offset
+                        binData.Seek((storageFlags == StorageFlags.noFlags ? uncompressedSize : compressedSize) + 8, SeekOrigin.Current); //skip texture and width + height values
+                    }
+                    else
+                    {
+                        binData.Seek(20, SeekOrigin.Current);//skip whole rest of mip definition
+                    }
+                }
+
+                binData.Skip(40);
+                binData.WriteInt32(baseOffset + (int)binData.Position + 4);
+                export.setBinaryData(binData.ToArray());
+            }
         }
     }
 }

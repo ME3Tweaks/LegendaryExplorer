@@ -47,8 +47,8 @@ namespace ME3Explorer.Unreal
             {
                 MEGame.ME1 => ME1UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
                 MEGame.ME2 => ME2UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
-                MEGame.ME3 => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName),
-                MEGame.UDK => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName) ?? UDKUnrealObjectInfo.getEnumTypefromProp(typeName, propName),
+                MEGame.ME3 => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo),
+                MEGame.UDK => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo) ?? UDKUnrealObjectInfo.getEnumTypefromProp(typeName, propName),
                 _ => null
             };
 
@@ -137,7 +137,7 @@ namespace ME3Explorer.Unreal
                     if (res2 == ArrayType.Int && ME2UnrealObjectInfo.ArrayTypeLookupJustFailed)
                     {
                         ME2UnrealObjectInfo.ArrayTypeLookupJustFailed = false;
-                        Debug.WriteLine("[ME2] Array type lookup failed for " + propName + " in class " + className + " in export " + parsingEntry.FileRef.GetEntryString(parsingEntry.UIndex));
+                        Debug.WriteLine($"[ME2] Array type lookup failed for {propName} in class {className} in export {parsingEntry.FileRef.GetEntryString(parsingEntry.UIndex)} in {parsingEntry.FileRef.FilePath}");
                     }
 #endif
                     return res2;
@@ -153,7 +153,7 @@ namespace ME3Explorer.Unreal
                             var ures = UDKUnrealObjectInfo.getArrayType(className, propName: propName, export: parsingEntry as ExportEntry);
                             if (ures == ArrayType.Int && UDKUnrealObjectInfo.ArrayTypeLookupJustFailed)
                             {
-                                Debug.WriteLine("[UDK] Array type lookup failed for " + propName + " in class " + className + " in export " + parsingEntry.FileRef.GetEntryString(parsingEntry.UIndex));
+                                Debug.WriteLine($"[UDK] Array type lookup failed for {propName} in class {className} in export {parsingEntry.FileRef.GetEntryString(parsingEntry.UIndex)} in {parsingEntry.FileRef.FilePath}");
                                 UDKUnrealObjectInfo.ArrayTypeLookupJustFailed = false;
                             }
                             else
@@ -161,7 +161,7 @@ namespace ME3Explorer.Unreal
                                 return ures;
                             }
                         }
-                        Debug.WriteLine("[ME3] Array type lookup failed for " + propName + " in class " + className + " in export " + parsingEntry.FileRef.GetEntryString(parsingEntry.UIndex));
+                        Debug.WriteLine($"[ME3] Array type lookup failed for {propName} in class {className} in export {parsingEntry.FileRef.GetEntryString(parsingEntry.UIndex)} in {parsingEntry.FileRef.FilePath}");
                         ME3UnrealObjectInfo.ArrayTypeLookupJustFailed = false;
                     }
 #endif
@@ -178,24 +178,24 @@ namespace ME3Explorer.Unreal
         /// <param name="containingClassOrStructName">Name of containing class or struct name</param>
         /// <param name="nonVanillaClassInfo">Dynamically built property info</param>
         /// <returns></returns>
-        public static PropertyInfo GetPropertyInfo(MEGame game, string propname, string containingClassOrStructName, ClassInfo nonVanillaClassInfo = null)
+        public static PropertyInfo GetPropertyInfo(MEGame game, string propname, string containingClassOrStructName, ClassInfo nonVanillaClassInfo = null, ExportEntry containingExport = null)
         {
             bool inStruct = false;
             PropertyInfo p = null;
             switch (game)
             {
                 case MEGame.ME1:
-                    p = ME1UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo);
+                    p = ME1UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
                     break;
                 case MEGame.ME2:
-                    p = ME2UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo);
+                    p = ME2UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
                     break;
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo);
+                    p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
                     if (p == null && game == MEGame.UDK)
                     {
-                        p = UDKUnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo);
+                        p = UDKUnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
                     }
                     break;
             }
@@ -291,6 +291,7 @@ namespace ME3Explorer.Unreal
                     return ME1UnrealObjectInfo.Classes;
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.Classes;
+                case MEGame.UDK:
                 case MEGame.ME3:
                     return ME3UnrealObjectInfo.Classes;
                 default:
@@ -306,6 +307,7 @@ namespace ME3Explorer.Unreal
                     return ME1UnrealObjectInfo.Structs;
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.Structs;
+                case MEGame.UDK:
                 case MEGame.ME3:
                     return ME3UnrealObjectInfo.Structs;
                 default:
@@ -321,6 +323,7 @@ namespace ME3Explorer.Unreal
                     return ME1UnrealObjectInfo.Enums;
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.Enums;
+                case MEGame.UDK:
                 case MEGame.ME3:
                     return ME3UnrealObjectInfo.Enums;
                 default:
@@ -330,18 +333,19 @@ namespace ME3Explorer.Unreal
 
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
         {
-            switch (export.FileRef.Game)
+            if (export.ClassName != "ScriptStruct" && !export.IsClass && export.Class is ExportEntry classExport)
             {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.generateClassInfo(export, isStruct);
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.generateClassInfo(export, isStruct);
-                case MEGame.ME3:
-                case MEGame.UDK:
-                    return ME3UnrealObjectInfo.generateClassInfo(export, isStruct);
+                export = classExport;
             }
 
-            return null;
+            return export.FileRef.Game switch
+            {
+                MEGame.ME1 => ME1UnrealObjectInfo.generateClassInfo(export, isStruct),
+                MEGame.ME2 => ME2UnrealObjectInfo.generateClassInfo(export, isStruct),
+                MEGame.ME3 => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
+                MEGame.UDK => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
+                _ => null
+            };
         }
 
         public static UProperty getDefaultProperty(MEGame game, string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
@@ -432,12 +436,12 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static string getEnumTypefromProp(string className, string propName)
+        public static string getEnumTypefromProp(string className, string propName, ClassInfo nonVanillaClassInfo = null)
         {
-            PropertyInfo p = getPropertyInfo(className, propName);
+            PropertyInfo p = getPropertyInfo(className, propName, nonVanillaClassInfo: nonVanillaClassInfo);
             if (p == null)
             {
-                p = getPropertyInfo(className, propName, true);
+                p = getPropertyInfo(className, propName, true, nonVanillaClassInfo);
             }
             return p?.Reference;
         }

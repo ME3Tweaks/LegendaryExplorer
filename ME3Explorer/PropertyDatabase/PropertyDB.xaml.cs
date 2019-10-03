@@ -1785,9 +1785,9 @@ namespace ME3Explorer.PropertyDatabase
                             }
                         }
                     }
-                    catch (Exception e) when (!App.IsDebug)
+                    catch (Exception e)
                     {
-                        MessageBox.Show($"Exception Bug detected in single file: {ShortFileName} Export:{exp.UIndex}");
+                        MessageBox.Show($"Exception Bug detected in single file: {exp.FileRef.FilePath} Export:{exp.UIndex}");
                     }
                 }
             }
