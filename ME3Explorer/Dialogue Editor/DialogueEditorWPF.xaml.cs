@@ -170,6 +170,7 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand StageDirectionsModCommand { get; set; }
         public ICommand RecenterCommand { get; set; }
         public ICommand UpdateLayoutDefaultsCommand { get; set; }
+        public ICommand SearchCommand { get; set; }
 
         private bool HasWwbank(object param)
         {
@@ -384,7 +385,10 @@ namespace ME3Explorer.Dialogue_Editor
             DefaultColorsCommand = new GenericCommand(ResetColorsToDefault);
             RecenterCommand = new GenericCommand(graphEditor_PanTo);
             UpdateLayoutDefaultsCommand = new RelayCommand(UpdateLayoutDefaults);
+            SearchCommand = new GenericCommand(SearchDialogue, CurrentObjects.Any);
+
         }
+
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
             if (FileQueuedForLoad != null)
@@ -4062,7 +4066,26 @@ namespace ME3Explorer.Dialogue_Editor
                     break;
             }
         }
+        private void SearchDialogue()
+        {
+            const string input = "Enter a TLK StringRef or the part of a line.";
+            string searchtext = PromptDialog.Prompt(this, input, "Search Dialogue");
 
+            if(!string.IsNullOrEmpty(searchtext))
+            {
+                DiagNode tgt = CurrentObjects.OfType<DiagNode>().FirstOrDefault(d => d.Node.LineStrRef.ToString().Contains(searchtext) || d.Node.Line.Contains(searchtext)); 
+                if (tgt != null)
+                {
+                    DialogueNode_Selected(tgt);
+                    graphEditor.Camera.AnimateViewToCenterBounds(tgt.GlobalFullBounds, false, 100);
+                    graphEditor.Refresh();
+                }
+                else
+                {
+                    MessageBox.Show($"{searchtext} not found");
+                }
+            }
+        }
         private void GoToBoxOpen()
         {
             if (!GotoBox.IsDropDownOpen)

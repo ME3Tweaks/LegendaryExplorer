@@ -62,6 +62,7 @@
         <KeyBinding Key="G" Modifiers="Control" Command="{Binding GoToCommand}"/>
         <KeyBinding Key="C" Modifiers="Control+Shift" Command="{Binding RecenterCommand}"/>
         <KeyBinding Key="M" Modifiers="Control+Shift" Command="{Binding SaveViewCommand}"/>
+        <KeyBinding Key="F" Modifiers="Control" Command="{Binding SearchCommand}"/>
     </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Stretch">
@@ -101,6 +102,8 @@
             </MenuItem>
 
             <MenuItem Header="Tools" Padding="4">
+                <MenuItem Header="Search" Command="{Binding SearchCommand}" InputGestureText="Ctrl+F" ToolTip="Search by string or text"/>
+                <Separator/>
                 <MenuItem Header="Manage TLKs" Command="{Binding LoadTLKManagerCommand}" ToolTip="Load TLK Manager"/>
                 <MenuItem Header="Save Image" Command="{Binding SaveImageCommand}" ToolTip="Save image of full Dialogue"/>
                 <MenuItem Header="Test for looping paths" Command="{Binding TestPathsCommand}" ToolTip="Test the dialogue for looping paths." IsEnabled="{Binding SelectedConv, Converter={StaticResource NullEnabledConverter}}"/>
