@@ -5,7 +5,6 @@ using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
-using ME3Explorer.Unreal.Classes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -24,14 +23,14 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace ME3Explorer.PropertyDatabase
+namespace ME3Explorer.AssetDatabase
 {
 
 
     /// <summary>
-    /// Interaction logic for PropertyDB
+    /// Interaction logic for AssetDB
     /// </summary>
-    public partial class PropertyDB : WPFBase
+    public partial class AssetDB : WPFBase
     {
         #region Declarations
         public string dbCurrentBuild { get; set; } = "1.0"; //If changes are made that invalidate old databases edit this.
@@ -174,14 +173,14 @@ namespace ME3Explorer.PropertyDatabase
 
         #region Startup/Exit
 
-        public PropertyDB()
+        public AssetDB()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Property and Asset Database", new WeakReference(this));
             LoadCommands();
 
             //Get default db / gane
-            CurrentDBPath = Properties.Settings.Default.PropertyDBPath;
-            Enum.TryParse<MEGame>(Properties.Settings.Default.PropertyDBGame, out MEGame game);
+            CurrentDBPath = Properties.Settings.Default.AssetDBPath;
+            Enum.TryParse<MEGame>(Properties.Settings.Default.AssetDBGame, out MEGame game);
 
             InitializeComponent();
 
@@ -210,13 +209,13 @@ namespace ME3Explorer.PropertyDatabase
             OpenUsagePkgCommand = new RelayCommand(OpenUsagePkg, IsUsageSelected);
         }
                
-        private void PropertyDB_Closing(object sender, CancelEventArgs e)
+        private void AssetDB_Closing(object sender, CancelEventArgs e)
         {
             if (e.Cancel)
                 return;
 
-            Properties.Settings.Default.PropertyDBPath = CurrentDBPath;
-            Properties.Settings.Default.PropertyDBGame = currentGame.ToString();
+            Properties.Settings.Default.AssetDBPath = CurrentDBPath;
+            Properties.Settings.Default.AssetDBGame = currentGame.ToString();
             EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
             MeshRendererTab_MeshRenderer.UnloadExport();
             meshPcc?.Dispose();
@@ -243,7 +242,7 @@ namespace ME3Explorer.PropertyDatabase
                 JsonSerializer serializer = new JsonSerializer();
                 var readData = new PropsDataBase();
                 using (ZipArchive archive = ZipFile.OpenRead(CurrentDBPath))
-                using (var jsonstream = archive.GetEntry($"PropertyDB{currentGame}.json").Open())
+                using (var jsonstream = archive.GetEntry($"AssetDB{currentGame}.json").Open())
                 using (StreamReader sr = new StreamReader(jsonstream))
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
@@ -293,7 +292,7 @@ namespace ME3Explorer.PropertyDatabase
             {
                 using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
                 {
-                    var zipFile = archive.CreateEntry($"PropertyDB{currentGame}.json");
+                    var zipFile = archive.CreateEntry($"AssetDB{currentGame}.json");
 
                     using (var entryStream = zipFile.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
@@ -351,7 +350,7 @@ namespace ME3Explorer.PropertyDatabase
                     switchME3_menu.IsChecked = true;
                     break;
             }
-            CurrentDBPath = Path.Combine(App.AppDataFolder, $"PropertyDB{currentGame}.zip");
+            CurrentDBPath = Path.Combine(App.AppDataFolder, $"AssetDB{currentGame}.zip");
 
             LoadDatabase();
         }
@@ -1139,7 +1138,6 @@ namespace ME3Explorer.PropertyDatabase
 
         #endregion
 
-
     }
     #region Database
     /// <summary>
@@ -1411,7 +1409,7 @@ namespace ME3Explorer.PropertyDatabase
         /// <summary>
         /// Dumps Property data to concurrent dictionary
         /// </summary>
-        public void dumpPackageFile(MEGame GameBeingDumped, PropertyDB dbScanner)
+        public void dumpPackageFile(MEGame GameBeingDumped, AssetDB dbScanner)
         {
             using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
             {

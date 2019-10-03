@@ -310,16 +310,16 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Property & Asset Database",
-                type = typeof(PropertyDatabase.PropertyDB),
-                icon = Application.Current.FindResource("iconPropertyDatabase") as ImageSource,
+                name = "Asset Database",
+                type = typeof(AssetDatabase.AssetDB),
+                icon = Application.Current.FindResource("iconAssetDatabase") as ImageSource,
                 open = () =>
                 {
-                    (new PropertyDatabase.PropertyDB()).Show();
+                    (new AssetDatabase.AssetDB()).Show();
                 },
                 tags = new List<string> { "utility", "mesh", "material", "class", "animation" },
                 subCategory = "Databases",
-                description = "Scans games and creates a database of classes, animations, materials and meshes.\n\nIndividual assets can be opened directly from the interface."
+                description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes.\n\nIndividual assets can be opened directly from the interface with tools for editing."
             });
             set.Add(new Tool
             {
