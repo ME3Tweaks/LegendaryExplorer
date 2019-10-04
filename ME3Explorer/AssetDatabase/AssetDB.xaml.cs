@@ -6,6 +6,7 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -124,6 +126,7 @@ namespace ME3Explorer.AssetDatabase
         private IMEPackage meshPcc;
         private IMEPackage textPcc;
         public ICommand GenerateDBCommand { get; set; }
+        public ICommand SaveDBCommand { get; set; }
         public ICommand SwitchMECommand { get; set; }
         public ICommand CancelDumpCommand { get; set; }
         public ICommand OpenSourcePkgCommand { get; set; }
@@ -207,6 +210,7 @@ namespace ME3Explorer.AssetDatabase
         private void LoadCommands()
         {
             GenerateDBCommand = new GenericCommand(GenerateDatabase);
+            SaveDBCommand = new GenericCommand(SaveDatabase);
             FilterSeqClassCommand = new RelayCommand(SetFilters, IsViewingClass);
             FilterMatCommand = new RelayCommand(SetFilters, IsViewingMaterials);
             FilterMeshCommand = new RelayCommand(SetFilters, IsViewingMeshes);
@@ -273,7 +277,7 @@ namespace ME3Explorer.AssetDatabase
                         OverallProgressValue = 30;
                         var jsonstream = await Task.Run(() => archive.GetEntry($"AssetDB{currentGame}.json").Open());
                         OverallProgressValue = 60;
-                        readData = await Task.Run(() => DeserializeJsonAsync(jsonstream));
+                        readData = await Task.Run(() => ParseDBAsync(jsonstream));
                     }
                 }
                 catch
@@ -288,11 +292,13 @@ namespace ME3Explorer.AssetDatabase
                     var warn = MessageBox.Show("This database is out of date. A new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
                     if (warn != MessageBoxResult.Cancel)
                         GenerateDatabase();
+                    IsBusy = false;
                     return;
                 }
 
                 CurrentDataBase.meGame = readData.meGame;
                 CurrentDataBase.GenerationDate = readData.GenerationDate;
+                CurrentDataBase.DataBaseversion = readData.DataBaseversion;
                 CurrentDataBase.FileList.Clear();
                 CurrentDataBase.FileList.AddRange(readData.FileList);
                 CurrentDataBase.ClassRecords.Clear();
@@ -313,7 +319,7 @@ namespace ME3Explorer.AssetDatabase
                 var end = DateTime.UtcNow;
                 double length = (end - start).TotalMilliseconds;
                 CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} LoadTime: {length}ms";
-                await Task.Delay(3000);
+                await Task.Delay(5000);
 #endif
                 CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count}";
 
@@ -334,14 +340,218 @@ namespace ME3Explorer.AssetDatabase
                     return serializer.Deserialize<PropsDataBase>(reader);
                 }
             }
+
+            //Idea to improve deserialization split JSON into parts and then deserialize each part Async
         }
 
+        //private enum SplitState
+        //{
+        //    InPrefix,
+        //    InSplitProperty,
+        //    InSplitArray,
+        //    InPostfix,
+        //}
+
+        //public static void SplitJson(JsonReader textReader, string tokenName, long maxItems, Func<int, TextWriter> createStream, Formatting formatting)
+        //{
+        //    List<JProperty> prefixProperties = new List<JProperty>();
+        //    List<JProperty> postFixProperties = new List<JProperty>();
+        //    List<JsonWriter> writers = new List<JsonWriter>();
+
+        //    SplitState state = SplitState.InPrefix;
+        //    long count = 0;
+
+        //    try
+        //    {
+        //        using (var reader = new JsonTextReader(textReader))
+        //        {
+        //            bool doRead = true;
+        //            while (doRead ? reader.Read() : true)
+        //            {
+        //                doRead = true;
+        //                if (reader.TokenType == JsonToken.Comment || reader.TokenType == JsonToken.None)
+        //                    continue;
+        //                if (reader.Depth == 0)
+        //                {
+        //                    if (reader.TokenType != JsonToken.StartObject && reader.TokenType != JsonToken.EndObject)
+        //                        throw new JsonException("JSON root container is not an Object");
+        //                }
+        //                else if (reader.Depth == 1 && reader.TokenType == JsonToken.PropertyName)
+        //                {
+        //                    if ((string)reader.Value == tokenName)
+        //                    {
+        //                        state = SplitState.InSplitProperty;
+        //                    }
+        //                    else
+        //                    {
+        //                        if (state == SplitState.InSplitProperty)
+        //                            state = SplitState.InPostfix;
+        //                        var property = JProperty.Load(reader);
+        //                        doRead = false; // JProperty.Load() will have already advanced the reader.
+        //                        if (state == SplitState.InPrefix)
+        //                        {
+        //                            prefixProperties.Add(property);
+        //                        }
+        //                        else
+        //                        {
+        //                            postFixProperties.Add(property);
+        //                        }
+        //                    }
+        //                }
+        //                else if (reader.Depth == 1 && reader.TokenType == JsonToken.StartArray && state == SplitState.InSplitProperty)
+        //                {
+        //                    state = SplitState.InSplitArray;
+        //                }
+        //                else if (reader.Depth == 1 && reader.TokenType == JsonToken.EndArray && state == SplitState.InSplitArray)
+        //                {
+        //                    state = SplitState.InSplitProperty;
+        //                }
+
+        //                else if (state == SplitState.InSplitArray && reader.Depth == 2)
+        //                {
+        //                    if (count % maxItems == 0)
+        //                    {
+        //                        var writer = new JsonTextWriter(createStream(writers.Count)) { Formatting = formatting };
+        //                        writers.Add(writer);
+        //                        writer.WriteStartObject();
+        //                        foreach (var property in prefixProperties)
+        //                            property.WriteTo(writer);
+        //                        writer.WritePropertyName(tokenName);
+        //                        writer.WriteStartArray();
+        //                    }
+        //                    count++;
+        //                    writers.Last().WriteToken(reader, true);
+        //                }
+        //                else
+        //                {
+        //                    throw new JsonException("Internal error");
+        //                }
+        //            }
+        //        }
+        //        foreach (var writer in writers)
+        //            using (writer)
+        //            {
+        //                writer.WriteEndArray();
+        //                foreach (var property in postFixProperties)
+        //                    property.WriteTo(writer);
+        //                writer.WriteEndObject();
+        //            }
+        //    }
+        //    finally
+        //    {
+        //        // Make sure files are closed in the event of an exception.
+        //        foreach (var writer in writers)
+        //            using (writer)
+        //            {
+        //            }
+        //    }
+        //}
+        private PropsDataBase ParseDBAsync(Stream jsonstream)
+        {
+            PropsDataBase newDB = new PropsDataBase();
+            JToken jfiles = null;
+            JToken jclass = null;
+            JToken jmats = null;
+            JToken janims = null;
+            JToken jmesh = null;
+            JToken jps = null;
+            JToken jtext = null;
+            using (StreamReader sr = new StreamReader(jsonstream))
+            {
+                var builders = new List<StringBuilder>();
+                using (JsonReader reader = new JsonTextReader(sr))
+                {
+                    bool readValues = true;
+                    int n = 0;
+                    string token = null;
+                    while(readValues)
+                    {
+                        n++;
+                        reader.Read();
+                        if (reader.Depth == 0 || reader.Value == null)
+                        {
+                            continue;
+                        }
+                        if (reader.TokenType == JsonToken.PropertyName)
+                        {
+                            token = reader.Value.ToString();
+                            continue;
+                        }
+                        switch(token)
+                        {
+                            case "meGame":
+                                MEGame meG = MEGame.Unknown;
+                                Enum.TryParse(reader.Value.ToString(), out meG);
+                                newDB.meGame = meG;
+                                break;
+                            case "GenerationDate":
+                                newDB.GenerationDate = reader.Value.ToString();
+                                break;
+                            case "DataBaseversion":
+                                newDB.DataBaseversion = reader.Value.ToString();
+                                readValues = false;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    n = 0;
+                    while (reader.Depth >= 1)
+                    {
+                        n++;
+                        reader.Read();
+                        var jt = JToken.Load(reader);
+                        switch (n)
+                        {
+                            case 1: //"FileList"
+                                jfiles = jt;
+                                break;
+                            case 2: //"Classes"
+                                jclass = jt;
+                                newDB.ClassRecords.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<ClassRecord>>(jt.ToString()));
+                                break;
+                            case 3: //"Materials"
+                                jmats = jt;
+                                newDB.Materials.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<Material>>(jt.First.ToString()));
+                                break;
+                            case 4: //"Anims"
+                                janims = jt;
+                                newDB.Animations.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<Animation>>(jt.ToString()));
+                                break;
+                            case 5: //"Meshes"
+                                jmesh = jt;
+                                newDB.Meshes.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<MeshRecord>>(jt.First.ToString()));
+                                break;
+                            case 6: //"PS"
+                                jps = jt;
+                                newDB.Particles.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<ParticleSys>>(jt.ToString()));
+                                break;
+                            case 7: //"Textures"
+                                jtext = jt;
+                                newDB.Textures.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<TextureRecord>>(jt.First.ToString()));
+                                break;
+                            default:
+                                break;
+                        }
+
+                    }
+                }
+            }
+
+            
+            //Do filelist
+            var fileLXZ = jfiles.First.ToObject<List<string>>();
+            newDB.FileList.AddRange(fileLXZ);
+
+            //Idea to improve deserialization split JSON into parts and then deserialize each part Async
+            return newDB;
+        }
         public async void SaveDatabase()
         {
             BusyHeader = "Saving database";
             BusyText = "Please wait...";
             OverallProgressMaximum = 100;
-            OverallProgressValue = 0;
+            OverallProgressValue = 50;
             IsBusy = true;
             CurrentOverallOperationText = $"Database saving...";
 
@@ -354,15 +564,15 @@ namespace ME3Explorer.AssetDatabase
                     using (var entryStream = zipFile.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
-                        var jsondb = JsonConvert.SerializeObject(CurrentDataBase);
-                        OverallProgressValue = 50;
-                        streamWriter.Write(jsondb);
+                        var jsondb = await Task.Run(() => JsonConvert.SerializeObject(CurrentDataBase));
+                        IsBusy = false;
+                        await Task.Run(() => streamWriter.Write(jsondb));
                     }
                 }
             }
             CurrentOverallOperationText = $"Database saved.";
             OverallProgressValue = 100;
-            IsBusy = false;
+
             await Task.Delay(5000);
             CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count}";
         }
