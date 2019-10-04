@@ -175,7 +175,7 @@ namespace ME3Explorer.AssetDatabase
 
         public AssetDB()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Property and Asset Database", new WeakReference(this));
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Asset Database", new WeakReference(this));
             LoadCommands();
 
             //Get default db / gane
@@ -194,7 +194,15 @@ namespace ME3Explorer.AssetDatabase
                 SwitchGame(MEGame.ME3);
 
             }
+
+            Activate();
         }
+
+
+        private async void Delay(int time = 1000)
+        {
+            await Task.Delay(time);
+        } 
 
         private void LoadCommands()
         {
@@ -230,7 +238,7 @@ namespace ME3Explorer.AssetDatabase
             ScanGame();
         }
 
-        public void LoadDatabase()
+        public async void LoadDatabase()
         {
             if (CurrentDBPath == null)
             {
@@ -239,17 +247,43 @@ namespace ME3Explorer.AssetDatabase
 
             if (File.Exists(CurrentDBPath))
             {
-                JsonSerializer serializer = new JsonSerializer();
+                BusyHeader = "Loading database";
+                BusyText = "Please wait...";
+                OverallProgressMaximum = 100;
+                OverallProgressValue = 0;
+                IsBusy = true;
+                var start = DateTime.UtcNow;
+
                 var readData = new PropsDataBase();
-                using (ZipArchive archive = ZipFile.OpenRead(CurrentDBPath))
-                using (var jsonstream = archive.GetEntry($"AssetDB{currentGame}.json").Open())
-                using (StreamReader sr = new StreamReader(jsonstream))
-                using (JsonReader reader = new JsonTextReader(sr))
+
+                //Sync load
+                //using (ZipArchive archive = ZipFile.OpenRead(CurrentDBPath))
+                //using (var jsonstream = archive.GetEntry($"AssetDB{currentGame}.json").Open())
+                //using (StreamReader sr = new StreamReader(jsonstream))
+                //using (JsonReader reader = new JsonTextReader(sr))
+                //{
+                //    readData = serializer.Deserialize<PropsDataBase>(reader);
+                //}
+
+                //Async load
+                try
                 {
-                    readData = serializer.Deserialize<PropsDataBase>(reader);
+                    using (ZipArchive archive = await Task.Run(() => new ZipArchive((Stream)new FileStream(CurrentDBPath, FileMode.Open))))
+                    {
+                        OverallProgressValue = 30;
+                        var jsonstream = await Task.Run(() => archive.GetEntry($"AssetDB{currentGame}.json").Open());
+                        OverallProgressValue = 60;
+                        readData = await Task.Run(() => DeserializeJsonAsync(jsonstream));
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("Compressed archive: " + currentGame + " is corrupted.");
                 }
 
-                if(readData.DataBaseversion == null || readData.DataBaseversion != dbCurrentBuild)
+                OverallProgressValue = 100;
+
+                if (readData.DataBaseversion == null || readData.DataBaseversion != dbCurrentBuild)
                 {
                     var warn = MessageBox.Show("This database is out of date. A new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
                     if (warn != MessageBoxResult.Cancel)
@@ -274,18 +308,41 @@ namespace ME3Explorer.AssetDatabase
                 CurrentDataBase.Textures.Clear();
                 CurrentDataBase.Textures.AddRange(readData.Textures);
 
+                IsBusy = false;
+#if DEBUG
+                var end = DateTime.UtcNow;
+                double length = (end - start).TotalMilliseconds;
+                CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} LoadTime: {length}ms";
+                await Task.Delay(3000);
+#endif
                 CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count}";
-                
+
             }
             else
             {
                 CurrentOverallOperationText = "No database found.";
             }
+        }
 
+        private PropsDataBase DeserializeJsonAsync(Stream jsonstream)
+        {
+            using (StreamReader sr = new StreamReader(jsonstream))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                using (JsonReader reader = new JsonTextReader(sr))
+                {
+                    return serializer.Deserialize<PropsDataBase>(reader);
+                }
+            }
         }
 
         public async void SaveDatabase()
         {
+            BusyHeader = "Saving database";
+            BusyText = "Please wait...";
+            OverallProgressMaximum = 100;
+            OverallProgressValue = 0;
+            IsBusy = true;
             CurrentOverallOperationText = $"Database saving...";
 
             using (var fileStream = new FileStream(CurrentDBPath, FileMode.Create))
@@ -298,11 +355,14 @@ namespace ME3Explorer.AssetDatabase
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         var jsondb = JsonConvert.SerializeObject(CurrentDataBase);
+                        OverallProgressValue = 50;
                         streamWriter.Write(jsondb);
                     }
                 }
             }
             CurrentOverallOperationText = $"Database saved.";
+            OverallProgressValue = 100;
+            IsBusy = false;
             await Task.Delay(5000);
             CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count}";
         }
@@ -536,6 +596,16 @@ namespace ME3Explorer.AssetDatabase
                     ToggleRenderTexture();
                     btn_TextRenderToggle.IsChecked = false;
                     btn_TextRenderToggle.Content = "Toggle Texture Rendering";
+                }
+
+                if(selected.TabIndex == 6)
+                {
+                    menu_OpenUsage.Header = "Open File";
+                }
+
+                if (unselected.TabIndex == 6)
+                {
+                    menu_OpenUsage.Header = "Open Usage";
                 }
             }
 

@@ -33,7 +33,7 @@
                     </MenuItem>
                     <MenuItem Header="Tools" Padding="4">
                         <MenuItem Header="Open Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor."/>
-                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                        <MenuItem Header="Open Usage" Name="menu_OpenUsage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
                         <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
                         <Separator/>
                         <MenuItem Header="Filter Classes">
@@ -297,7 +297,7 @@
                                 </SharedUI:ListBoxScroll.ItemTemplate>
                             </SharedUI:ListBoxScroll>
                             <DockPanel x:Name="details_Mesh" MinWidth="350" Margin="3">
-                                <ToggleButton x:Name="btn_MeshRenderToggle" Content="Toggle Mesh Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_MeshRenderToggle_Click" IsChecked="{Binding IsMeshRendering}"></ToggleButton>
+                                <ToggleButton x:Name="btn_MeshRenderToggle" Content="Toggle Mesh Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_MeshRenderToggle_Click" IsChecked="False"></ToggleButton>
                                 <meshplorer:MeshRendererWPF x:Name="MeshRendererTab_MeshRenderer"/>
 
                             </DockPanel>
@@ -435,7 +435,7 @@
                                 </SharedUI:ListBoxScroll.ItemContainerStyle>
                             </SharedUI:ListBoxScroll>
                             <DockPanel x:Name="details_Textures" MinWidth="350" MaxWidth="550" Margin="3">
-                                <ToggleButton x:Name="btn_TextRenderToggle" Content="Toggle Texture Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_TextRenderToggle_Click" IsChecked="{Binding IsTextRendering}"></ToggleButton>
+                                <ToggleButton x:Name="btn_TextRenderToggle" Content="Toggle Texture Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_TextRenderToggle_Click" IsChecked="False"></ToggleButton>
                                 <global:TextureViewerExportLoader x:Name="EmbeddedTextureViewerTab_EmbededTextureViewer"/>
                             </DockPanel>
                             <SharedUI:ListBoxScroll x:Name="lstbx_TextureUsages" DockPanel.Dock="Right" MinWidth="250" ItemsSource="{Binding SelectedItem.TextureUsages, ElementName=lstbx_Textures }"  >
