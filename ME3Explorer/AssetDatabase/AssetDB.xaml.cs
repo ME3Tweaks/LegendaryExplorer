@@ -35,7 +35,7 @@ namespace ME3Explorer.AssetDatabase
     public partial class AssetDB : WPFBase
     {
         #region Declarations
-        public string dbCurrentBuild { get; set; } = "1.0"; //If changes are made that invalidate old databases edit this.
+        public static string dbCurrentBuild { get; set; } = "1.0"; //If changes are made that invalidate old databases edit this.
         private int _currentView;
         public int currentView { get => _currentView; set => SetProperty(ref _currentView, value); }
 
@@ -45,7 +45,8 @@ namespace ME3Explorer.AssetDatabase
         public string BusyText { get => _busyText; set => SetProperty(ref _busyText, value); }
         private string _busyHeader;
         public string BusyHeader { get => _busyHeader; set => SetProperty(ref _busyHeader, value); }
-
+        private bool _BusyUnk;
+        public bool BusyUnk { get => _BusyUnk; set => SetProperty(ref _BusyUnk, value); }
         public MEGame currentGame { get; set; }
         private string CurrentDBPath { get; set; }
         public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(), new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>());
@@ -92,7 +93,7 @@ namespace ME3Explorer.AssetDatabase
         private static BackgroundWorker dbworker = new BackgroundWorker();
         public BlockingCollection<ClassRecord> _dbqueue = new BlockingCollection<ClassRecord>();
         private ActionBlock<ClassScanSingleFileTask> ProcessingQueue;
-
+        private ConcurrentQueue<PropsDataBase> deserializingQueue = new ConcurrentQueue<PropsDataBase>();
         /// <summary>
         /// Cancelation of dumping
         /// </summary>
@@ -169,8 +170,6 @@ namespace ME3Explorer.AssetDatabase
         {
             //Not applicable
         }
-
-
 
         #endregion
 
@@ -251,15 +250,14 @@ namespace ME3Explorer.AssetDatabase
 
             if (File.Exists(CurrentDBPath))
             {
+                CurrentOverallOperationText = "Loading database";
                 BusyHeader = "Loading database";
                 BusyText = "Please wait...";
-                OverallProgressMaximum = 100;
-                OverallProgressValue = 0;
+                BusyUnk = true;
                 IsBusy = true;
+                ClearDataBase();
                 var start = DateTime.UtcNow;
-
-                var readData = new PropsDataBase();
-
+                
                 //Sync load
                 //using (ZipArchive archive = ZipFile.OpenRead(CurrentDBPath))
                 //using (var jsonstream = archive.GetEntry($"AssetDB{currentGame}.json").Open())
@@ -269,60 +267,65 @@ namespace ME3Explorer.AssetDatabase
                 //    readData = serializer.Deserialize<PropsDataBase>(reader);
                 //}
 
-                //Async load
-                try
+                ////Async load
+                await Task.Factory.StartNew(() => ParseDBAsync());
+                while (deserializingQueue.Count > 0)
                 {
-                    using (ZipArchive archive = await Task.Run(() => new ZipArchive((Stream)new FileStream(CurrentDBPath, FileMode.Open))))
+                    deserializingQueue.TryDequeue(out PropsDataBase pdb);
+                    switch (pdb.DataBaseversion)
                     {
-                        OverallProgressValue = 30;
-                        var jsonstream = await Task.Run(() => archive.GetEntry($"AssetDB{currentGame}.json").Open());
-                        OverallProgressValue = 60;
-                        readData = await Task.Run(() => ParseDBAsync(jsonstream));
+                        case "Class":
+                            CurrentDataBase.ClassRecords.AddRange(pdb.ClassRecords);
+                            break;
+                        case "Materials":
+                            CurrentDataBase.Materials.AddRange(pdb.Materials);
+                            break;
+                        case "Anims":
+                            CurrentDataBase.Animations.AddRange(pdb.Animations);
+                            break;
+                        case "Meshes":
+                            CurrentDataBase.Meshes.AddRange(pdb.Meshes);
+                            break;
+                        case "Particles":
+                            CurrentDataBase.Particles.AddRange(pdb.Particles);
+                            break;
+                        case "Textures":
+                            CurrentDataBase.Textures.AddRange(pdb.Textures);
+                            break;
+                        default:
+                            CurrentDataBase.meGame = pdb.meGame;
+                            CurrentDataBase.GenerationDate = pdb.GenerationDate;
+                            CurrentDataBase.DataBaseversion = pdb.DataBaseversion;
+                            CurrentDataBase.FileList.AddRange(pdb.FileList);
+                            //Single thread async load only
+                            CurrentDataBase.ClassRecords.AddRange(pdb.ClassRecords);
+                            CurrentDataBase.Materials.AddRange(pdb.Materials);
+                            CurrentDataBase.Animations.AddRange(pdb.Animations);
+                            CurrentDataBase.Meshes.AddRange(pdb.Meshes);
+                            CurrentDataBase.Particles.AddRange(pdb.Particles);
+                            CurrentDataBase.Textures.AddRange(pdb.Textures);
+                            break;
                     }
                 }
-                catch
-                {
-                    MessageBox.Show("Compressed archive: " + currentGame + " is corrupted.");
-                }
 
-                OverallProgressValue = 100;
-
-                if (readData.DataBaseversion == null || readData.DataBaseversion != dbCurrentBuild)
+                if (CurrentDataBase.DataBaseversion == null || CurrentDataBase.DataBaseversion != dbCurrentBuild)
                 {
                     var warn = MessageBox.Show("This database is out of date. A new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
                     if (warn != MessageBoxResult.Cancel)
                         GenerateDatabase();
+                    ClearDataBase();
                     IsBusy = false;
                     return;
                 }
 
-                CurrentDataBase.meGame = readData.meGame;
-                CurrentDataBase.GenerationDate = readData.GenerationDate;
-                CurrentDataBase.DataBaseversion = readData.DataBaseversion;
-                CurrentDataBase.FileList.Clear();
-                CurrentDataBase.FileList.AddRange(readData.FileList);
-                CurrentDataBase.ClassRecords.Clear();
-                CurrentDataBase.ClassRecords.AddRange(readData.ClassRecords);
-                CurrentDataBase.Animations.Clear();
-                CurrentDataBase.Animations.AddRange(readData.Animations);
-                CurrentDataBase.Materials.Clear();
-                CurrentDataBase.Materials.AddRange(readData.Materials);
-                CurrentDataBase.Meshes.Clear();
-                CurrentDataBase.Meshes.AddRange(readData.Meshes);
-                CurrentDataBase.Particles.Clear();
-                CurrentDataBase.Particles.AddRange(readData.Particles);
-                CurrentDataBase.Textures.Clear();
-                CurrentDataBase.Textures.AddRange(readData.Textures);
-
                 IsBusy = false;
+
+                CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count}";
 #if DEBUG
                 var end = DateTime.UtcNow;
                 double length = (end - start).TotalMilliseconds;
-                CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} LoadTime: {length}ms";
-                await Task.Delay(5000);
+                CurrentOverallOperationText = $"{CurrentOverallOperationText} LoadTime: {length}ms";
 #endif
-                CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count}";
-
             }
             else
             {
@@ -330,221 +333,129 @@ namespace ME3Explorer.AssetDatabase
             }
         }
 
-        private PropsDataBase DeserializeJsonAsync(Stream jsonstream)
+        private void ParseDBSnippets(JToken jt, string type)
         {
-            using (StreamReader sr = new StreamReader(jsonstream))
+            var pdb = new PropsDataBase();
+            pdb.DataBaseversion = type;
+            switch(type)
             {
-                JsonSerializer serializer = new JsonSerializer();
-                using (JsonReader reader = new JsonTextReader(sr))
-                {
-                    return serializer.Deserialize<PropsDataBase>(reader);
-                }
+
+                case "Class":
+                    pdb.ClassRecords.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<ClassRecord>>(jt.First.ToString()));
+                    break;
+                case "Materials":
+                    pdb.Materials.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<Material>>(jt.First.ToString()));
+                    break;
+                case "Anims":
+                    pdb.Animations.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<Animation>>(jt.First.ToString()));
+                    break;
+                case "Meshes":
+                    pdb.Meshes.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<MeshRecord>>(jt.First.ToString()));
+                    break;
+                case "Particles":
+                    pdb.Particles.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<ParticleSys>>(jt.First.ToString()));
+                    break;
+                case "Textures":
+                    pdb.Textures.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<TextureRecord>>(jt.First.ToString()));
+                    break;
             }
 
-            //Idea to improve deserialization split JSON into parts and then deserialize each part Async
+            deserializingQueue.Enqueue(pdb);
         }
-
-        //private enum SplitState
-        //{
-        //    InPrefix,
-        //    InSplitProperty,
-        //    InSplitArray,
-        //    InPostfix,
-        //}
-
-        //public static void SplitJson(JsonReader textReader, string tokenName, long maxItems, Func<int, TextWriter> createStream, Formatting formatting)
-        //{
-        //    List<JProperty> prefixProperties = new List<JProperty>();
-        //    List<JProperty> postFixProperties = new List<JProperty>();
-        //    List<JsonWriter> writers = new List<JsonWriter>();
-
-        //    SplitState state = SplitState.InPrefix;
-        //    long count = 0;
-
-        //    try
-        //    {
-        //        using (var reader = new JsonTextReader(textReader))
-        //        {
-        //            bool doRead = true;
-        //            while (doRead ? reader.Read() : true)
-        //            {
-        //                doRead = true;
-        //                if (reader.TokenType == JsonToken.Comment || reader.TokenType == JsonToken.None)
-        //                    continue;
-        //                if (reader.Depth == 0)
-        //                {
-        //                    if (reader.TokenType != JsonToken.StartObject && reader.TokenType != JsonToken.EndObject)
-        //                        throw new JsonException("JSON root container is not an Object");
-        //                }
-        //                else if (reader.Depth == 1 && reader.TokenType == JsonToken.PropertyName)
-        //                {
-        //                    if ((string)reader.Value == tokenName)
-        //                    {
-        //                        state = SplitState.InSplitProperty;
-        //                    }
-        //                    else
-        //                    {
-        //                        if (state == SplitState.InSplitProperty)
-        //                            state = SplitState.InPostfix;
-        //                        var property = JProperty.Load(reader);
-        //                        doRead = false; // JProperty.Load() will have already advanced the reader.
-        //                        if (state == SplitState.InPrefix)
-        //                        {
-        //                            prefixProperties.Add(property);
-        //                        }
-        //                        else
-        //                        {
-        //                            postFixProperties.Add(property);
-        //                        }
-        //                    }
-        //                }
-        //                else if (reader.Depth == 1 && reader.TokenType == JsonToken.StartArray && state == SplitState.InSplitProperty)
-        //                {
-        //                    state = SplitState.InSplitArray;
-        //                }
-        //                else if (reader.Depth == 1 && reader.TokenType == JsonToken.EndArray && state == SplitState.InSplitArray)
-        //                {
-        //                    state = SplitState.InSplitProperty;
-        //                }
-
-        //                else if (state == SplitState.InSplitArray && reader.Depth == 2)
-        //                {
-        //                    if (count % maxItems == 0)
-        //                    {
-        //                        var writer = new JsonTextWriter(createStream(writers.Count)) { Formatting = formatting };
-        //                        writers.Add(writer);
-        //                        writer.WriteStartObject();
-        //                        foreach (var property in prefixProperties)
-        //                            property.WriteTo(writer);
-        //                        writer.WritePropertyName(tokenName);
-        //                        writer.WriteStartArray();
-        //                    }
-        //                    count++;
-        //                    writers.Last().WriteToken(reader, true);
-        //                }
-        //                else
-        //                {
-        //                    throw new JsonException("Internal error");
-        //                }
-        //            }
-        //        }
-        //        foreach (var writer in writers)
-        //            using (writer)
-        //            {
-        //                writer.WriteEndArray();
-        //                foreach (var property in postFixProperties)
-        //                    property.WriteTo(writer);
-        //                writer.WriteEndObject();
-        //            }
-        //    }
-        //    finally
-        //    {
-        //        // Make sure files are closed in the event of an exception.
-        //        foreach (var writer in writers)
-        //            using (writer)
-        //            {
-        //            }
-        //    }
-        //}
-        private PropsDataBase ParseDBAsync(Stream jsonstream)
+        private async void ParseDBAsync()
         {
-            PropsDataBase newDB = new PropsDataBase();
-            JToken jfiles = null;
-            JToken jclass = null;
-            JToken jmats = null;
-            JToken janims = null;
-            JToken jmesh = null;
-            JToken jps = null;
-            JToken jtext = null;
-            using (StreamReader sr = new StreamReader(jsonstream))
+            PropsDataBase readData = new PropsDataBase();
+            //Async load
+            try
             {
-                var builders = new List<StringBuilder>();
-                using (JsonReader reader = new JsonTextReader(sr))
+                using (ZipArchive archive = new ZipArchive((Stream)new FileStream(CurrentDBPath, FileMode.Open)))
                 {
-                    bool readValues = true;
-                    int n = 0;
-                    string token = null;
-                    while(readValues)
+                    var jsonstream = archive.GetEntry($"AssetDB{currentGame}.json").Open();
+                    JToken jfiles = null;
+                    using (StreamReader sr = new StreamReader(jsonstream))
                     {
-                        n++;
-                        reader.Read();
-                        if (reader.Depth == 0 || reader.Value == null)
+                        using (JsonReader reader = new JsonTextReader(sr))
                         {
-                            continue;
-                        }
-                        if (reader.TokenType == JsonToken.PropertyName)
-                        {
-                            token = reader.Value.ToString();
-                            continue;
-                        }
-                        switch(token)
-                        {
-                            case "meGame":
-                                MEGame meG = MEGame.Unknown;
-                                Enum.TryParse(reader.Value.ToString(), out meG);
-                                newDB.meGame = meG;
-                                break;
-                            case "GenerationDate":
-                                newDB.GenerationDate = reader.Value.ToString();
-                                break;
-                            case "DataBaseversion":
-                                newDB.DataBaseversion = reader.Value.ToString();
-                                readValues = false;
-                                break;
-                            default:
-                                break;
+                            var Serializer = new JsonSerializer();
+                            readData = Serializer.Deserialize<PropsDataBase>(reader);
+                            //while (reader.Depth == 0) { reader.Read(); } //Get past root nodes
+                            //var builders = new List<JToken>();
+                            //int n = 0;
+                            //while (reader.Depth >= 1)
+                            //{
+                            //    JToken jt = null;
+                            //    try
+                            //    {
+                            //        jt = JToken.Load(reader);
+                            //    }
+                            //    catch
+                            //    {
+                            //        continue;
+                            //    }
+                            //    builders.Add(jt);
+                            //    n++;
+                            //    switch (n)
+                            //    {
+                            //        case 1: //"meGame"
+                            //            MEGame meG = MEGame.Unknown;
+                            //            Enum.TryParse(jt.First.ToString(), out meG);
+                            //            readData.meGame = meG;
+                            //            break;
+                            //        case 2: //"GenerationDate"
+                            //            readData.GenerationDate = jt.First.ToString();
+                            //            break;
+                            //        case 3: //"DataBaseversion"
+                            //            readData.DataBaseversion = jt.First.ToString();
+                            //            break;
+                            //        case 4: //"FileList"
+                            //            jfiles = jt;
+                            //            break;
+                            //        case 5: //"Classes"
+                            //            var tskC = new Task(() => ParseDBSnippets(jt, "Class"));
+                            //            tskC.Start();
+                            //            break;
+                            //        case 6: //"Materials"
+                            //            var tskM = new Task(() => ParseDBSnippets(jt, "Materials"));
+                            //            tskM.Start();
+                            //            break;
+                            //        case 7: //"Anims"
+                            //            var tskA = new Task(() => ParseDBSnippets(jt, "Anims"));
+                            //            tskA.Start();
+                            //            break;
+                            //        case 8: //"Meshes"
+                            //            var tskMR = new Task(() => ParseDBSnippets(jt, "Meshes"));
+                            //            tskMR.Start();
+                            //            break;
+                            //        case 9: //"PS"
+                            //            var tskP = new Task(() => ParseDBSnippets(jt, "Particles"));
+                            //            tskP.Start();
+                            //            break;
+                            //        case 10: //"Textures"
+                            //            var tskT = new Task(() => ParseDBSnippets(jt, "Textures"));
+                            //            tskT.Start();
+                            //            break;
+                            //        default:
+                            //            break;
+                            //    }
+                            //}
                         }
                     }
-                    n = 0;
-                    while (reader.Depth >= 1)
-                    {
-                        n++;
-                        reader.Read();
-                        var jt = JToken.Load(reader);
-                        switch (n)
-                        {
-                            case 1: //"FileList"
-                                jfiles = jt;
-                                break;
-                            case 2: //"Classes"
-                                jclass = jt;
-                                newDB.ClassRecords.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<ClassRecord>>(jt.ToString()));
-                                break;
-                            case 3: //"Materials"
-                                jmats = jt;
-                                newDB.Materials.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<Material>>(jt.First.ToString()));
-                                break;
-                            case 4: //"Anims"
-                                janims = jt;
-                                newDB.Animations.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<Animation>>(jt.ToString()));
-                                break;
-                            case 5: //"Meshes"
-                                jmesh = jt;
-                                newDB.Meshes.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<MeshRecord>>(jt.First.ToString()));
-                                break;
-                            case 6: //"PS"
-                                jps = jt;
-                                newDB.Particles.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<ParticleSys>>(jt.ToString()));
-                                break;
-                            case 7: //"Textures"
-                                jtext = jt;
-                                newDB.Textures.AddRange(JsonConvert.DeserializeObject<ObservableCollectionExtended<TextureRecord>>(jt.First.ToString()));
-                                break;
-                            default:
-                                break;
-                        }
 
-                    }
+
+                    //Do filelist
+                    //if (jfiles != null)
+                    //{
+                    //    var fileLXZ = jfiles.First.ToObject<List<string>>();
+                    //    readData.FileList.AddRange(fileLXZ);
+                    //}
+                    deserializingQueue.Enqueue(readData);
                 }
             }
-
-            
-            //Do filelist
-            var fileLXZ = jfiles.First.ToObject<List<string>>();
-            newDB.FileList.AddRange(fileLXZ);
-
-            //Idea to improve deserialization split JSON into parts and then deserialize each part Async
-            return newDB;
+            catch
+            {
+                MessageBox.Show("Compressed archive: " + currentGame + " is corrupted.");
+            }
+            await Task.Delay(1);
         }
         public async void SaveDatabase()
         {
@@ -679,14 +590,18 @@ namespace ME3Explorer.AssetDatabase
                 usagepkg = CurrentDataBase.FileList[s.Item1];
                 usageexp = s.Item2;
             }
-            else if (lstbx_Files.SelectedIndex >= 0 && currentView == 5)
+            else if (lstbx_Textures.SelectedIndex >= 0 && currentView == 5)
+            {
+                usagepkg = lstbx_Files.SelectedItem.ToString();
+            }
+            else if (lstbx_Files.SelectedIndex >= 0 && currentView == 6)
             {
                 usagepkg = lstbx_Files.SelectedItem.ToString();
             }
 
             if (usagepkg == null)
             {
-                MessageBox.Show("Usage file unknown.");
+                MessageBox.Show("File not found.");
                 return;
             }
 
@@ -779,7 +694,7 @@ namespace ME3Explorer.AssetDatabase
             }
         }
 
-        private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) //Fires if Tab moves away
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e) //Fires if Tab moves away
         {
             if (e.AddedItems == e.RemovedItems || e.RemovedItems.Count == 0)
             {
@@ -1240,6 +1155,7 @@ namespace ME3Explorer.AssetDatabase
             MidDock.IsEnabled = false;
             OverallProgressMaximum = files.Count;
             OverallProgressValue = 0;
+            BusyUnk = false;
             CurrentOverallOperationText = $"Generating Database...";
 
             //Clear database
