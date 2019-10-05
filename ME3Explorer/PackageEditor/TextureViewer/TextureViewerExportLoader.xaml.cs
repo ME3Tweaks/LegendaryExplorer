@@ -65,6 +65,22 @@ namespace ME3Explorer
             set => SetProperty(ref _textureCRC, value);
         }
 
+        public bool ViewerModeOnly
+        {
+            get => (bool)GetValue(ViewerModeOnlyProperty);
+            set => SetValue(ViewerModeOnlyProperty, value);
+        }
+        /// <summary>
+        /// Set to true to hide all of the editor controls
+        /// </summary>
+        public static readonly DependencyProperty ViewerModeOnlyProperty = DependencyProperty.Register(
+            "ViewerModeOnly", typeof(bool), typeof(TextureViewerExportLoader), new PropertyMetadata(false, ViewerModeOnlyCallback));
+        private static void ViewerModeOnlyCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            TextureViewerExportLoader i = (TextureViewerExportLoader)obj;
+            i.OnPropertyChanged(nameof(ViewerModeOnly));
+        }
+
         public TextureViewerExportLoader()
         {
             MemoryAnalyzer.AddTrackedMemoryItem("Embedded Texture Viewer Export Loader", new WeakReference(this));
@@ -81,7 +97,12 @@ namespace ME3Explorer
         private void LoadCommands()
         {
             ExportToPNGCommand = new GenericCommand(ExportToPNG, NonEmptyMipSelected);
-            ReplaceFromPNGCommand = new GenericCommand(ReplaceFromFile, NonEmptyMipSelected);
+            ReplaceFromPNGCommand = new GenericCommand(ReplaceFromFile, CanReplaceTexture);
+        }
+
+        private bool CanReplaceTexture()
+        {
+            return CurrentLoadedExport != null && CurrentLoadedExport.FileRef.CanReconstruct && !ViewerModeOnly;
         }
 
         private void ReplaceFromFile()

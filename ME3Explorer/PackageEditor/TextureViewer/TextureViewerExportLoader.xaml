@@ -10,9 +10,11 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <Converters:EntryGameMatchVisibilityConverter x:Key="EntryGameMatchVisibilityConverter"/>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibiltyConverter"/>
+        <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     </UserControl.Resources>
     <DockPanel>
-        <ListBox Name="Mips_ListBox"  DockPanel.Dock="Left"  MinWidth="200" ItemsSource="{Binding MipList}" DisplayMemberPath="MipDisplayString" SelectionChanged="MipList_SelectedItemChanged" ScrollViewer.CanContentScroll="False">
+        <ListBox Name="Mips_ListBox"  DockPanel.Dock="Left"  MinWidth="200" ItemsSource="{Binding MipList}" DisplayMemberPath="MipDisplayString" SelectionChanged="MipList_SelectedItemChanged" ScrollViewer.CanContentScroll="False" Visibility="{Binding ViewerModeOnly, Converter={StaticResource BoolToVisibiltyConverter}, ConverterParameter='Not'}">
             <ListBox.ItemContainerStyle>
                 <Style>
                     <Style.Triggers>
@@ -43,7 +45,7 @@
                 <Button Grid.Row="0" Grid.Column="2" Content="Export to PNG" Command="{Binding ExportToPNGCommand}" Padding="5,2" Margin="3"/>
                 <Button Grid.Row="1" Grid.Column="2" Content="Replace from File" Command="{Binding ReplaceFromPNGCommand}" Padding="5,2" Margin="3" />
                 <TextBlock Grid.Row="0" Grid.Column="3" Text="Texture Cache:" VerticalAlignment="Center" Margin="3,6" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}"/>
-                <ComboBox Grid.Row="1" Grid.Column="3" Width="200" VerticalContentAlignment="Center" Margin="3" ItemsSource="{Binding AvailableTFCNames}"  ToolTip="Changing the texture cache requires changing the texture" Name="TextureCacheComboBox" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}"/>
+                <ComboBox Grid.Row="1" Grid.Column="3" Width="200" VerticalContentAlignment="Center" Margin="3" ItemsSource="{Binding AvailableTFCNames}"  ToolTip="Changing the texture cache requires changing the texture" Name="TextureCacheComboBox" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}" IsEnabled="{Binding ViewerModeOnly, Converter={StaticResource InverseBooleanConverter}}"/>
 
             </Grid>
             <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
