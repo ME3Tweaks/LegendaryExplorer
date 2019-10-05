@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
 using ME3Explorer.SharedUI;
@@ -14,6 +15,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using SharpDX;
+using Matrix = SharpDX.Matrix;
 using SkeletalMesh = ME3Explorer.Unreal.BinaryConverters.SkeletalMesh;
 using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
 
@@ -159,10 +161,15 @@ namespace ME3Explorer.Meshplorer
             set => SetProperty(ref _showCollisionMesh, value);
         }
 
+        private bool startingUp = true;
         public MeshRendererWPF()
         {
             DataContext = this;
             InitializeComponent();
+            var color = (System.Windows.Media.Color?) ColorConverter.ConvertFromString(Properties.Settings.Default.MeshplorerBackgroundColor);
+            Background_ColorPicker.SelectedColor = color;
+            SceneViewer.Context.BackgroundColor = new SharpDX.Color(color.Value.R, color.Value.G, color.Value.B);
+            startingUp = false;
         }
 
         public static bool CanParseStatic(ExportEntry exportEntry)
@@ -185,7 +192,7 @@ namespace ME3Explorer.Meshplorer
         {
             UnloadExport();
             SceneViewer.InitializeD3D();
-            SceneViewer.Context.BackgroundColor = new SharpDX.Color(128, 128, 128);
+            //SceneViewer.Context.BackgroundColor = new SharpDX.Color(128, 128, 128);
 
             CurrentLoadedExport = exportEntry;
 
@@ -428,7 +435,11 @@ namespace ME3Explorer.Meshplorer
 
         private void BackgroundColorPicker_Changed(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
         {
-            SceneViewer.Context.BackgroundColor = new SharpDX.Color(Background_ColorPicker.SelectedColor.Value.R, Background_ColorPicker.SelectedColor.Value.G, Background_ColorPicker.SelectedColor.Value.B);
+            if (!startingUp && e.NewValue.HasValue)
+            {
+                var s = e.NewValue.Value.ToString();
+                SceneViewer.Context.BackgroundColor = new SharpDX.Color(e.NewValue.Value.R, e.NewValue.Value.G, e.NewValue.Value.B);
+            }
         }
 
         public override void UnloadExport()

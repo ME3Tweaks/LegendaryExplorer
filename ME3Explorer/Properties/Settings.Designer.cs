@@ -322,22 +322,7 @@ namespace ME3Explorer.Properties {
                 this["AssetDBPath"] = value;
             }
         }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AssetDBGame
-        {
-            get
-            {
-                return ((string)(this["AssetDBGame"]));
-            }
-            set
-            {
-                this["AssetDBGame"] = value;
-            }
-        }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
@@ -419,6 +404,30 @@ namespace ME3Explorer.Properties {
             }
             set {
                 this["SequenceEditor_MaxVarStringLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#dbfbff")]
+        public string MeshplorerBackgroundColor {
+            get {
+                return ((string)(this["MeshplorerBackgroundColor"]));
+            }
+            set {
+                this["MeshplorerBackgroundColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ME3")]
+        public string AssetDBGame {
+            get {
+                return ((string)(this["AssetDBGame"]));
+            }
+            set {
+                this["AssetDBGame"] = value;
             }
         }
     }

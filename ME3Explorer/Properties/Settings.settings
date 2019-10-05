@@ -98,5 +98,11 @@
     <Setting Name="SequenceEditor_MaxVarStringLength" Type="System.UInt16" Scope="User">
       <Value Profile="(Default)">12</Value>
     </Setting>
+    <Setting Name="MeshplorerBackgroundColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#dbfbff</Value>
+    </Setting>
+    <Setting Name="AssetDBGame" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ME3</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
