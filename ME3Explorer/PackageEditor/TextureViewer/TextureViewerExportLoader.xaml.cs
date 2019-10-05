@@ -279,11 +279,8 @@ namespace ME3Explorer
                 CurrentLoadedExport = exportEntry;
                 CurrentLoadedFormat = format.Value.Name;
                 MipList.ReplaceAll(mips);
-                TextureCRC = Texture2D.GetMipCRC(topmip, format.Value);
-
-
-
-                if (Settings.Default.EmbeddedTextureViewer_AutoLoad)
+                TextureCRC = Texture2D.GetTextureCRC(exportEntry);
+                if (Settings.Default.EmbeddedTextureViewer_AutoLoad || ViewerModeOnly)
                 {
                     Mips_ListBox.SelectedIndex = MipList.IndexOf(topmip);
                 }
