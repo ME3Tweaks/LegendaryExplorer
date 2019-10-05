@@ -332,44 +332,45 @@ namespace ME3Explorer
 
                 int lodDataCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"LODData count: {lodDataCount}"));
-                subnodes.AddRange(ReadList(lodDataCount, i => new BinInterpNode(bin.Position, $"LODData {i}")
+                subnodes.AddRange(ReadList(lodDataCount, i =>
                 {
-                    IsExpanded = true,
-                    Items =
+                    BinInterpNode node = new BinInterpNode(bin.Position, $"LODData {i}")
                     {
-                        new BinInterpNode(bin.Position, $"ShadowMaps ({bin.ReadInt32()})")
+                        IsExpanded = true
+                    };
+                    node.Items.Add(new BinInterpNode(bin.Position, $"ShadowMaps ({bin.ReadInt32()})")
+                    {
+                        Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, $"{j}"))
+                    });
+                    node.Items.Add(new BinInterpNode(bin.Position, $"ShadowVertexBuffers ({bin.ReadInt32()})")
+                    {
+                        Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, $"{j}"))
+                    });
+                    node.Items.Add(MakeLightMapNode(bin));
+                    node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new List<ITreeItem>
+                    {
+                        new BinInterpNode(bin.Position, $"bLoadVertexColorData ({bLoadVertexColorData = bin.ReadBoolByte()})"),
+                        ListInitHelper.ConditionalAdd(bLoadVertexColorData, () => new ITreeItem[]
                         {
-                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, $"{j}"))
-                        },
-                        new BinInterpNode(bin.Position, $"ShadowVertexBuffers ({bin.ReadInt32()})")
-                        {
-                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, $"{j}"))
-                        },
-                        MakeLightMapNode(bin),
-                        ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new List<ITreeItem>
-                        {
-                            new BinInterpNode(bin.Position, $"bLoadVertexColorData ({bLoadVertexColorData = bin.ReadBoolByte()})"),
-                            ListInitHelper.ConditionalAdd(bLoadVertexColorData, () => new ITreeItem[]
+                            new BinInterpNode(bin.Position, "OverrideVertexColors ")
                             {
-                                new BinInterpNode(bin.Position, "OverrideVertexColors ")
+                                Items =
                                 {
-                                    Items =
+                                    MakeUInt32Node(bin, "Stride:"),
+                                    new BinInterpNode(bin.Position, $"NumVertices: {numVertices = bin.ReadUInt32()}"),
+                                    ListInitHelper.ConditionalAdd(numVertices > 0, () => new ITreeItem[]
                                     {
-                                        MakeUInt32Node(bin, "Stride:"),
-                                        new BinInterpNode(bin.Position, $"NumVertices: {numVertices = bin.ReadUInt32()}"),
-                                        ListInitHelper.ConditionalAdd(numVertices > 0, () => new ITreeItem[]
+                                        MakeInt32Node(bin, "FColor size"),
+                                        new BinInterpNode(bin.Position, $"VertexData ({bin.ReadInt32()})")
                                         {
-                                            MakeInt32Node(bin, "FColor size"),
-                                            new BinInterpNode(bin.Position, $"VertexData ({bin.ReadInt32()})")
-                                            {
-                                                Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeColorNode(bin, $"{j}"))
-                                            },
-                                        }),
-                                    }
+                                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeColorNode(bin, $"{j}"))
+                                        },
+                                    }),
                                 }
-                            })
+                            }
                         })
-                    }
+                    }));
+                    return node;
                 }));
 
                 binarystart = (int)bin.Position;
@@ -562,7 +563,7 @@ namespace ME3Explorer
                             MakeVectorNode(bin, "ScaleVector 1"),
                             MakeVectorNode(bin, "ScaleVector 2"),
                             MakeVectorNode(bin, "ScaleVector 3"),
-                            Pcc.Game != MEGame.ME3 ? MakeVectorNode(bin, "ScaleVector 4") : null,
+                            Pcc.Game < MEGame.ME3 ? MakeVectorNode(bin, "ScaleVector 4") : null,
                             MakeUInt32Node(bin, "BulkDataFlags:"),
                             new BinInterpNode(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
                             new BinInterpNode(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
@@ -5651,7 +5652,10 @@ namespace ME3Explorer
                 bin.JumpTo(binarystart);
 
                 nodes.Add(MakeMaterialResourceNode(bin, "ShaderMap 3 Material Resource"));
-                nodes.Add(MakeMaterialResourceNode(bin, "ShaderMap 2 Material Resource"));
+                if (Pcc.Game != MEGame.UDK)
+                {
+                    nodes.Add(MakeMaterialResourceNode(bin, "ShaderMap 2 Material Resource"));
+                }
 
             }
             catch (Exception ex)
@@ -5769,7 +5773,7 @@ namespace ME3Explorer
                 nodes.Add(MakeInt32Node(bin, "MaxTextureDependencyLength"));
                 nodes.Add(MakeGuidNode(bin, "ID"));
                 nodes.Add(MakeUInt32Node(bin, "NumUserTexCoords"));
-                if (Pcc.Game == MEGame.ME3)
+                if (Pcc.Game >= MEGame.ME3)
                 {
                     nodes.Add(MakeArrayNode(bin, "UniformExpressionTextures", i => MakeEntryNode(bin, $"{i}")));
                 }
@@ -5782,12 +5786,12 @@ namespace ME3Explorer
                 }
                 nodes.Add(MakeBoolIntNode(bin, "bUsesSceneColor"));
                 nodes.Add(MakeBoolIntNode(bin, "bUsesSceneDepth"));
-                nodes.Add(ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME3, () => new ITreeItem[]
+                nodes.Add(ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new List<ITreeItem>
                 {
                     MakeBoolIntNode(bin, "bUsesDynamicParameter"),
                     MakeBoolIntNode(bin, "bUsesLightmapUVs"),
                     MakeBoolIntNode(bin, "bUsesMaterialVertexPositionOffset"),
-                    MakeBoolIntNode(bin, "unknown bool?")
+                    ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.ME3, () => MakeBoolIntNode(bin, "unknown bool?"))
                 }));
                 nodes.Add(new BinInterpNode(bin.Position, $"UsingTransforms: {(ECoordTransformUsage)bin.ReadUInt32()}"));
                 if (Pcc.Game == MEGame.ME1)

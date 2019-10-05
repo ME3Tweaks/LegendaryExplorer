@@ -21,7 +21,9 @@ using Gammtek.Conduit;
 using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 using StreamHelpers;
+using Matrix = SharpDX.Matrix;
 
 namespace ME3Explorer
 {
@@ -898,6 +900,23 @@ namespace ME3Explorer
         public static unsafe bool IsBinarilyIdentical(this float f1, float f2)
         {
             return *((int*)&f1) == *((int*)&f2);
+        }
+
+        public static Rotator GetRotator(this Matrix m)
+        {
+            //https://stackoverflow.com/a/50240439/1968930
+            var roll = Math.Atan2(m[1, 2], m[2, 2]);
+            var c2 = Math.Sqrt(Math.Pow(m[0, 0], 2) + Math.Pow(m[0, 1], 2));
+            var pitch = Math.Atan2(-m[0, 2], c2);
+            var s1 = Math.Sin(roll);
+            var c1 = Math.Cos(roll);
+            var yaw = Math.Atan2(s1 * m[2, 0] - c1 * m[1, 0], c1 * m[1, 1] - s1 * m[2, 1]);
+            return new Rotator(RadToURR(pitch), RadToURR(yaw), RadToURR(roll));
+
+            static int RadToURR(double d)
+            {
+                return ((float)((d * (180/Math.PI)) % 360.0)).ToUnrealRotationUnits();
+            }
         }
     }
 

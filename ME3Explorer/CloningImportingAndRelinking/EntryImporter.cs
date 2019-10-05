@@ -12,7 +12,7 @@ using StreamHelpers;
 
 namespace ME3Explorer
 {
-    public class EntryImporter
+    public static class EntryImporter
     {
         public enum PortingOption
         {
@@ -545,5 +545,19 @@ namespace ME3Explorer
         public static bool CanImport(string className, MEGame game) => CanImport(UnrealObjectInfo.GetClassOrStructInfo(game, className), game);
 
         public static bool CanImport(ClassInfo classInfo, MEGame game) => classInfo != null && IsSafeToImportFrom(classInfo.pccPath, game);
+
+        public static byte[] CreateStack(MEGame game, int stateNodeUIndex)
+        {
+            var ms = new MemoryStream();
+            ms.WriteInt32(stateNodeUIndex);
+            ms.WriteInt32(stateNodeUIndex);
+            ms.WriteFromBuffer(game switch
+            {
+                MEGame.UDK => UDKStackDummy,
+                MEGame.ME3 => me3StackDummy,
+                _ => me1Me2StackDummy
+            });
+            return ms.ToArray();
+        }
     }
 }

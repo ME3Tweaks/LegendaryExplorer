@@ -54,6 +54,8 @@ namespace ME3Explorer.Packages
             }
         }
 
+        public List<IEntry> FlattenTreeOf(IEntry entry) => FlattenTreeOf(entry.UIndex);
+
         public List<IEntry> FlattenTreeOf(int uIndex)
         {
             var entries = new List<IEntry> {this[uIndex].Data};

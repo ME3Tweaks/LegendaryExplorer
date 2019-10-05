@@ -16,7 +16,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
         protected override void Serialize(SerializingContainer2 sc)
         {
             sc.Serialize(ref SM3MaterialResource);
-            sc.Serialize(ref SM2MaterialResource);
+            if (sc.Game != MEGame.UDK)
+            {
+                sc.Serialize(ref SM2MaterialResource);
+            }
         }
 
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
@@ -84,6 +87,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
         //end ME3
         public uint UsingTransforms; //ECoordTransformUsage
         public TextureLookup[] TextureLookups; //not ME1
+        public uint udkUnk1;
+        public uint udkUnk2;
+        public uint udkUnk3;
+        public uint udkUnk4;
         //begin ME1
         public ME1MaterialUniformExpressionsElement[] Me1MaterialUniformExpressionsList;
         public int unk1;
@@ -99,7 +106,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public virtual List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             List<(UIndex uIndex, string)> uIndexes = TextureDependencyLengthMap.Keys().Select((uIndex, i) => (uIndex, $"TextureDependencyLengthMap[{i}]")).ToList();
-            if (game == MEGame.ME3)
+            if (game >= MEGame.ME3)
             {
                 uIndexes.AddRange(UniformExpressionTextures.Select((uIndex, i) => (uIndex, $"UniformExpressionTextures[{i}]")));
             }
@@ -420,7 +427,7 @@ namespace ME3Explorer
             sc.Serialize(ref mres.MaxTextureDependencyLength);
             sc.Serialize(ref mres.ID);
             sc.Serialize(ref mres.NumUserTexCoords);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref mres.UniformExpressionTextures, Serialize);
             }
@@ -438,12 +445,15 @@ namespace ME3Explorer
             }
             sc.Serialize(ref mres.bUsesSceneColor);
             sc.Serialize(ref mres.bUsesSceneDepth);
-            if (sc.Game == MEGame.ME3)
+            if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref mres.bUsesDynamicParameter);
                 sc.Serialize(ref mres.bUsesLightmapUVs);
                 sc.Serialize(ref mres.bUsesMaterialVertexPositionOffset);
-                sc.Serialize(ref mres.unkBool1);
+                if (sc.Game == MEGame.ME3)
+                {
+                    sc.Serialize(ref mres.unkBool1);
+                }
             }
             sc.Serialize(ref mres.UsingTransforms);
             if (sc.Game == MEGame.ME1)
@@ -453,8 +463,18 @@ namespace ME3Explorer
             else
             {
                 sc.Serialize(ref mres.TextureLookups, Serialize);
-                int dummy = 0;
-                sc.Serialize(ref dummy);
+                if (sc.Game == MEGame.UDK)
+                {
+                    sc.Serialize(ref mres.udkUnk1);
+                    sc.Serialize(ref mres.udkUnk2);
+                    sc.Serialize(ref mres.udkUnk3);
+                    sc.Serialize(ref mres.udkUnk4);
+                }
+                else
+                {
+                    int dummy = 0;
+                    sc.Serialize(ref dummy);
+                }
             }
             if (sc.Game == MEGame.ME1)
             {

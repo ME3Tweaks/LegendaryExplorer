@@ -219,6 +219,10 @@ namespace ME3Explorer
             }
             else
             {
+                if (sc.Game != MEGame.ME3 && lmap.LightMapType > ELightMapType.LMT_2D)
+                {
+                    lmap = new LightMap();
+                }
                 sc.ms.WriteInt32((int)lmap.LightMapType);
             }
 

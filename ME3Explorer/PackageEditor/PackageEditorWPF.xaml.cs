@@ -36,6 +36,7 @@ using Gammtek.Conduit.Extensions.IO;
 using ME2Explorer.Unreal;
 using ME3Explorer.Dialogue_Editor;
 using ME3Explorer.Meshplorer;
+using ME3Explorer.StaticLighting;
 using ME3Explorer.Unreal.BinaryConverters;
 using UsefulThings;
 using static ME3Explorer.Packages.MEPackage;
@@ -4531,6 +4532,14 @@ namespace ME3Explorer
                     MessageBox.Show(this, $"Error at #{uIndex} in {filePath}!");
                 }
             });
+        }
+
+        private void UDKifyTest(object sender, RoutedEventArgs e)
+        {
+            if (Pcc != null)
+            {
+                StaticLightingGenerator.GenerateUDKFileForLevel(Pcc);
+            }
         }
     }
 }

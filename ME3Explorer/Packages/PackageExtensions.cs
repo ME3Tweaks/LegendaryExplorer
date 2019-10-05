@@ -329,5 +329,25 @@ namespace ME3Explorer.Packages
                 }
             }
         }
+
+        public static void AddArchetypeProperties(this ExportEntry stmActor)
+        {
+            ExportEntry archetype = stmActor.Archetype as ExportEntry;
+            while (archetype != null)
+            {
+                var archProps = archetype.GetProperties();
+                foreach (UProperty prop in archProps)
+                {
+                    if (!stmActor.GetProperties().ContainsNamedProp(prop.Name))
+                    {
+                        stmActor.WriteProperty(prop);
+                    }
+                }
+
+                archetype = archetype.Archetype as ExportEntry;
+            }
+        }
+
+        public static void setBinaryData(this ExportEntry export, ObjectBinary bin) => export.setBinaryData(bin.ToBytes(export.FileRef));
     }
 }

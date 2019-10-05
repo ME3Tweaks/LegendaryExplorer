@@ -203,10 +203,10 @@ namespace ME3Explorer.Packages
                     Flags |= EPackageFlags.Map;
                 }
 
-                //UDK does not like it when non-Package exports have the forced export flag, which seems to be common in ME files
+                //UDK does not like it when exports have the forced export flag, which is common in ME files
                 foreach (ExportEntry export in exports)
                 {
-                    if (export.ClassName != "Package")
+                    //if (export.ClassName != "Package")
                     {
                         export.ExportFlags &= ~EExportFlags.ForcedExport;
                     }

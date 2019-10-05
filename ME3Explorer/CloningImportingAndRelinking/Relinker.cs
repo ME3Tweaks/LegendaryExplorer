@@ -376,12 +376,13 @@ namespace ME3Explorer
                 ExportEntry sourceExport = importingPCC.GetUExport(uIndex);
                 string fullPath = sourceExport.FullPath;
                 int indexValue = sourceExport.indexValue;
-                var existingExport = destinationPcc.Exports.FirstOrDefault(x => x.FullPath == fullPath && indexValue == x.indexValue);
-                if (existingExport != null)
+                IEntry existingEntry = destinationPcc.Exports.FirstOrDefault(x => x.FullPath == fullPath && indexValue == x.indexValue);
+                existingEntry ??= destinationPcc.Imports.FirstOrDefault(x => x.FullPath == fullPath);
+                if (existingEntry != null)
                 {
-                    Debug.WriteLine($"Relink hit [EXPERIMENTAL]: Existing export in file was found, linking to it:  " +
-                                    $"{uIndex} {sourceExport.InstancedFullPath} -> {existingExport.InstancedFullPath}");
-                    uIndex = existingExport.UIndex;
+                    Debug.WriteLine($"Relink hit [EXPERIMENTAL]: Existing entry in file was found, linking to it:  " +
+                                    $"{uIndex} {sourceExport.InstancedFullPath} -> {existingEntry.InstancedFullPath}");
+                    uIndex = existingEntry.UIndex;
 
                 }
                 else if (importExportDependencies)

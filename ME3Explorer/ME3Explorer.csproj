@@ -788,6 +788,7 @@
     <Compile Include="Main Window\TaskPane.xaml.cs">
       <DependentUpon>TaskPane.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StaticLighting\StaticLightingGenerator.cs" />
     <Compile Include="TFCCompactor\TFCCompactor.xaml.cs">
       <DependentUpon>TFCCompactor.xaml</DependentUpon>
     </Compile>
@@ -819,6 +820,7 @@
     <Compile Include="Unreal\BinaryConverters\BioDynamicAnimSet.cs" />
     <Compile Include="Unreal\BinaryConverters\BioPawn.cs" />
     <Compile Include="Unreal\BinaryConverters\BioStage.cs" />
+    <Compile Include="Unreal\BinaryConverters\StaticCollectionActor.cs" />
     <Compile Include="Unreal\BinaryConverters\UClass.cs" />
     <Compile Include="Unreal\BinaryConverters\DecalComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\EntryPruner.cs" />

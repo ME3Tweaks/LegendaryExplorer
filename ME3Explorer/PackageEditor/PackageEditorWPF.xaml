@@ -241,6 +241,7 @@
                     <MenuItem Header="Open this map in game" Command="{Binding OpenMapInGameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                     <MenuItem Header="Correct Orikon Wwise Offsets" Click="CorrectOnDiskOffsetsForWwise_Click"/>
                     <MenuItem Header="Run PropertyCollection test" Click="RunPropertyCollectionTest"/>
+                    <MenuItem Header="UDKify" Click="UDKifyTest"/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
