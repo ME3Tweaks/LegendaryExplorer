@@ -8,6 +8,7 @@
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        Loaded="AssetDB_Loaded"
         Closing="AssetDB_Closing"
         AllowDrop="True"
         Icon="/Resources/AssetDatabase_256x256.ico"

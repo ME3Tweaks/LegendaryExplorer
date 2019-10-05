@@ -184,21 +184,10 @@ namespace ME3Explorer.AssetDatabase
             //Get default db / gane
             CurrentDBPath = Properties.Settings.Default.AssetDBPath;
             Enum.TryParse<MEGame>(Properties.Settings.Default.AssetDBGame, out MEGame game);
+            currentGame = game;
 
             InitializeComponent();
 
-            if (CurrentDBPath != null && CurrentDBPath.EndsWith("zip") && File.Exists(CurrentDBPath) && game != MEGame.Unknown)
-            {
-                SwitchGame(game.ToString());
-            }
-            else
-            {
-                CurrentDBPath = null;
-                SwitchGame(MEGame.ME3);
-
-            }
-
-            Activate();
         }
 
         private void LoadCommands()
@@ -214,7 +203,25 @@ namespace ME3Explorer.AssetDatabase
             GoToSuperclassCommand = new RelayCommand(GoToSuperClass, IsClassSelected);
             OpenUsagePkgCommand = new RelayCommand(OpenUsagePkg, IsUsageSelected);
         }
+        private void AssetDB_Loaded(object sender, RoutedEventArgs e)
+        {
+            CurrentOverallOperationText = "Starting Up";
+            BusyHeader = "Loading database";
+            BusyText = "Please wait...";
+            IsBusy = true;
+            BusyUnk = true;
 
+            if (CurrentDBPath != null && CurrentDBPath.EndsWith("zip") && File.Exists(CurrentDBPath) && currentGame != MEGame.Unknown && currentGame != MEGame.UDK)
+            {
+                SwitchGame(currentGame);
+            }
+            else
+            {
+                CurrentDBPath = null;
+                SwitchGame(MEGame.ME3);
+            }
+            Activate();
+        }
         private void AssetDB_Closing(object sender, CancelEventArgs e)
         {
             if (e.Cancel)
@@ -249,74 +256,42 @@ namespace ME3Explorer.AssetDatabase
                 BusyText = "Please wait...";
                 BusyUnk = true;
                 IsBusy = true;
-                ClearDataBase();
+
                 var start = DateTime.UtcNow;
-                deserializingQueue = new BlockingCollection<PropsDataBase>();
+
                 ////Async load
-                await Task.Factory.StartNew(() => ParseDBAsync()); //with ParseDBAsync as void or Task, UI thread still locks
-                
-                int n = 0;
-                while(deserializingQueue.Count  == 0)
-                {
-                    await Task.Delay(500); //
-                }
-                
-                foreach (PropsDataBase pdb in deserializingQueue.GetConsumingEnumerable())
-                {
-                    n++;
-                    switch (pdb.DataBaseversion)
-                    {
-                        case "CONVERT":
-                            CurrentDataBase.meGame = pdb.meGame;
-                            CurrentDataBase.GenerationDate = pdb.GenerationDate;
-                            CurrentDataBase.DataBaseversion = dbCurrentBuild;
-                            CurrentDataBase.FileList.AddRange(pdb.FileList);
-                            CurrentDataBase.ClassRecords.AddRange(pdb.ClassRecords);
-                            CurrentDataBase.Materials.AddRange(pdb.Materials);
-                            CurrentDataBase.Animations.AddRange(pdb.Animations);
-                            CurrentDataBase.Meshes.AddRange(pdb.Meshes);
-                            CurrentDataBase.Particles.AddRange(pdb.Particles);
-                            CurrentDataBase.Textures.AddRange(pdb.Textures);
-                            SaveDatabase();
-                            MessageBox.Show($"{currentGame} database was at version 1.0.  It has been converted to v{dbCurrentBuild}", "Asset Database", MessageBoxButton.OK);
-                            break;
-                        case "Mat":
-                            CurrentDataBase.Materials.AddRange(pdb.Materials);
-                            break;
-                        case "Anim":
-                            CurrentDataBase.Animations.AddRange(pdb.Animations);
-                            break;
-                        case "Mesh":
-                            CurrentDataBase.Meshes.AddRange(pdb.Meshes);
-                            break;
-                        case "Ps":
-                            CurrentDataBase.Particles.AddRange(pdb.Particles);
-                            break;
-                        case "Txt":
-                            CurrentDataBase.Textures.AddRange(pdb.Textures);
-                            break;
-                        default:
-                            CurrentDataBase.meGame = pdb.meGame;
-                            CurrentDataBase.GenerationDate = pdb.GenerationDate;
-                            CurrentDataBase.DataBaseversion = pdb.DataBaseversion;
-                            CurrentDataBase.FileList.AddRange(pdb.FileList);
-                            CurrentDataBase.ClassRecords.AddRange(pdb.ClassRecords);
-                            break;
-                    }
-                    if(n == 6) { deserializingQueue.CompleteAdding(); }
-                }
+                PropsDataBase pdb = await ParseDBAsync(); //THIS STILL FREEZES THE UI THREAD....
+                CurrentDataBase.meGame = pdb.meGame;
+                CurrentDataBase.GenerationDate = pdb.GenerationDate;
+                CurrentDataBase.DataBaseversion = pdb.DataBaseversion;
+                CurrentDataBase.FileList.AddRange(pdb.FileList);
+                CurrentDataBase.ClassRecords.AddRange(pdb.ClassRecords);
+                CurrentDataBase.Materials.AddRange(pdb.Materials);
+                CurrentDataBase.Animations.AddRange(pdb.Animations);
+                CurrentDataBase.Meshes.AddRange(pdb.Meshes);
+                CurrentDataBase.Particles.AddRange(pdb.Particles);
+                CurrentDataBase.Textures.AddRange(pdb.Textures);
 
                 if (CurrentDataBase.DataBaseversion == null || CurrentDataBase.DataBaseversion != dbCurrentBuild)
                 {
-                    var warn = MessageBox.Show("This database is out of date. A new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
-                    if (warn != MessageBoxResult.Cancel)
+                    if(CurrentDataBase.DataBaseversion == "CONVERSION")
                     {
-                        GenerateDatabase();
+                        CurrentDataBase.DataBaseversion = dbCurrentBuild;
+                        SaveDatabase();
+                        MessageBox.Show($"{currentGame} database was at version 1.0.  It has been converted to v{dbCurrentBuild}", "Asset Database", MessageBoxButton.OK);
+                    }
+                    else
+                    {
+                        var warn = MessageBox.Show("This database is out of date. A new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
+                        if (warn != MessageBoxResult.Cancel)
+                        {
+                            GenerateDatabase();
+                            return;
+                        }
+                        ClearDataBase();
+                        IsBusy = false;
                         return;
                     }
-                    ClearDataBase();
-                    IsBusy = false;
-                    return;
                 }
 
                 IsBusy = false;
@@ -332,8 +307,10 @@ namespace ME3Explorer.AssetDatabase
                 CurrentOverallOperationText = "No database found.";
             }
         }
-        private async void ParseDBAsync()
+        public async Task<PropsDataBase> ParseDBAsync()
         {
+            deserializingQueue = new BlockingCollection<PropsDataBase>();
+            var readData = new PropsDataBase();
             try
             {
                 Dictionary<string, ZipArchiveEntry> archiveEntries = new Dictionary<string, ZipArchiveEntry>();
@@ -370,12 +347,57 @@ namespace ME3Explorer.AssetDatabase
                         }
                     }
                 }
-                
+
+                int n = 0;
+                foreach (PropsDataBase pdb in deserializingQueue.GetConsumingEnumerable())
+                {
+                    n++;
+                    switch (pdb.DataBaseversion)
+                    {
+                        case "CONVERT":
+                            readData.meGame = pdb.meGame;
+                            readData.GenerationDate = pdb.GenerationDate;
+                            readData.DataBaseversion = "CONVERSION";
+                            readData.FileList.AddRange(pdb.FileList);
+                            readData.ClassRecords.AddRange(pdb.ClassRecords);
+                            readData.Materials.AddRange(pdb.Materials);
+                            readData.Animations.AddRange(pdb.Animations);
+                            readData.Meshes.AddRange(pdb.Meshes);
+                            readData.Particles.AddRange(pdb.Particles);
+                            readData.Textures.AddRange(pdb.Textures);
+
+                            break;
+                        case "Mat":
+                            readData.Materials.AddRange(pdb.Materials);
+                            break;
+                        case "Anim":
+                            readData.Animations.AddRange(pdb.Animations);
+                            break;
+                        case "Mesh":
+                            readData.Meshes.AddRange(pdb.Meshes);
+                            break;
+                        case "Ps":
+                            readData.Particles.AddRange(pdb.Particles);
+                            break;
+                        case "Txt":
+                            readData.Textures.AddRange(pdb.Textures);
+                            break;
+                        default:
+                            readData.meGame = pdb.meGame;
+                            readData.GenerationDate = pdb.GenerationDate;
+                            readData.DataBaseversion = pdb.DataBaseversion;
+                            readData.FileList.AddRange(pdb.FileList);
+                            readData.ClassRecords.AddRange(pdb.ClassRecords);
+                            break;
+                    }
+                    if (n == 6) { deserializingQueue.CompleteAdding(); }
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error ParseDB");
             }
+            return readData;
         }
         private void JsonFileParse(string filename)
         {
