@@ -444,7 +444,7 @@
                             </SharedUI:ListBoxScroll>
                             <DockPanel x:Name="details_Textures" MinWidth="350" MaxWidth="550" Margin="3">
                                 <ToggleButton x:Name="btn_TextRenderToggle" Content="Toggle Texture Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_TextRenderToggle_Click" IsChecked="False"></ToggleButton>
-                                <global:TextureViewerExportLoader x:Name="EmbeddedTextureViewerTab_EmbededTextureViewer"/>
+                                <global:TextureViewerExportLoader x:Name="EmbeddedTextureViewerTab_EmbededTextureViewer" ViewerModeOnly="True"/>
                             </DockPanel>
                             <SharedUI:ListBoxScroll x:Name="lstbx_TextureUsages" DockPanel.Dock="Right" MinWidth="250" ItemsSource="{Binding SelectedItem.TextureUsages, ElementName=lstbx_Textures }"  >
                                 <SharedUI:ListBoxScroll.ItemTemplate>
