@@ -370,8 +370,8 @@
     <Compile Include="Packages\EntryTree.cs" />
     <Compile Include="Packages\PackageExtensions.cs" />
     <Compile Include="Packages\UnrealPackageFile.cs" />
-    <Compile Include="PropertyDatabase\PropertyDB.xaml.cs">
-      <DependentUpon>PropertyDB.xaml</DependentUpon>
+    <Compile Include="AssetDatabase\AssetDB.xaml.cs">
+      <DependentUpon>AssetDB.xaml</DependentUpon>
     </Compile>
     <Compile Include="Scene3D\SceneRenderContext.cs" />
     <Compile Include="Scene3D\SceneRenderControlWPF.cs" />
@@ -1052,7 +1052,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PropertyDatabase\PropertyDB.xaml">
+    <Page Include="AssetDatabase\AssetDB.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1420,20 +1420,15 @@
     <Resource Include="Resources\meshplorer_256x256.ico" />
     <Resource Include="Resources\ploteditor_256x256.ico" />
     <Resource Include="Resources\plotdatabase_256x256.ico" />
-    <Resource Include="Resources\ImageEngine_256x256.ico" />
     <Resource Include="Resources\facefxa_256x256.ico" />
     <Resource Include="Resources\memoryanalyzer_256x256.ico" />
     <Resource Include="Resources\BikExtractor_256x256.ico" />
     <Resource Include="Resources\InterpViewer_256x256.ico" />
     <Resource Include="Resources\sfareditor_256x256.ico" />
-    <Resource Include="Resources\udkexplorer_256x256.ico" />
     <Resource Include="Resources\wwisebankeditor_256x256.ico" />
-    <Resource Include="Resources\meshdatabase_256x256.ico" />
     <Resource Include="Resources\tpftools_256x256.ico" />
-    <Resource Include="Resources\propertydatabase_256x256.ico" />
     <Resource Include="Resources\animationexplorer_256x256.ico" />
     <Resource Include="Resources\psaviewer_256x256.ico" />
-    <Resource Include="Resources\pskviewer_256x256.ico" />
     <Resource Include="Resources\scriptdatabase_256x256.ico" />
     <Resource Include="Resources\modmaker_256x256.ico" />
     <Resource Include="Resources\coalescededitor_256x256.ico" />
@@ -1454,6 +1449,7 @@
     <Resource Include="PackageEditor\EntryIcons\icon_function.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_class.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_default.png" />
+    <Resource Include="Resources\AssetDatabase_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
