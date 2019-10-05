@@ -18,7 +18,13 @@
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
-    <xctk:BusyIndicator IsBusy="{Binding IsBusy, FallbackValue=True}">
+    <Window.InputBindings>
+        <KeyBinding Key="G" Modifiers="Control"  Command="{Binding GenerateDBCommand}"/>
+        <KeyBinding Key="D1" Modifiers="Control" Command="{Binding SwitchMECommand}" CommandParameter="ME1"/>
+        <KeyBinding Key="D2" Modifiers="Control" Command="{Binding SwitchMECommand}" CommandParameter="ME2"/>
+        <KeyBinding Key="D3" Modifiers="Control" Command="{Binding SwitchMECommand}" CommandParameter="ME3"/>
+    </Window.InputBindings>
+    <xctk:BusyIndicator x:Name="dbBusyIndicator" IsBusy="{Binding IsBusy, FallbackValue=True}">
         <DockPanel>
             <DockPanel DockPanel.Dock="Top">
                 <xctk:WatermarkTextBox DockPanel.Dock="Right"  Watermark="Search" Name="FilterBox" Width="300" KeyUp="FilterBox_KeyUp" ToolTip="Filter and find classes" IsEnabled="true" HorizontalAlignment="Right" HorizontalContentAlignment="Left">
@@ -518,7 +524,7 @@
                 <StackPanel DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
                     <TextBlock Text="{Binding BusyHeader}" FontWeight="Bold" TextAlignment="Center"/>
                     <TextBlock Text="{Binding BusyText}"/>
-                    <ProgressBar Name="bsy_prgAbs" Value="{Binding OverallProgressValue}" Maximum="{Binding OverallProgressMaximum}" IsIndeterminate="{Binding BusyUnk}"  Margin="0,5,0,0" Height="15" />
+                    <ProgressBar Value="{Binding OverallProgressValue}" Maximum="{Binding OverallProgressMaximum}" IsIndeterminate="{Binding BusyUnk}"  Margin="0,5,0,0" Height="15" />
                     <Button Content="Cancel" HorizontalAlignment="center" Margin="0,5,0,0" Padding="3"  Command="{Binding CancelDumpCommand}"/>
                 </StackPanel>
             </DataTemplate>

@@ -45,8 +45,8 @@ namespace ME3Explorer.AssetDatabase
         public string BusyText { get => _busyText; set => SetProperty(ref _busyText, value); }
         private string _busyHeader;
         public string BusyHeader { get => _busyHeader; set => SetProperty(ref _busyHeader, value); }
-        private bool _BusyUnk;
-        public bool BusyUnk { get => _BusyUnk; set => SetProperty(ref _BusyUnk, value); }
+        private bool _busyUnk;
+        public bool BusyUnk { get => _busyUnk; set => SetProperty(ref _busyUnk, value); }
         public MEGame currentGame { get; set; }
         private string CurrentDBPath { get; set; }
         public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, null, new List<string>(), new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(),
@@ -201,11 +201,6 @@ namespace ME3Explorer.AssetDatabase
             Activate();
         }
 
-        private async void Delay(int time = 1000)
-        {
-            await Task.Delay(time);
-        }
-
         private void LoadCommands()
         {
             GenerateDBCommand = new GenericCommand(GenerateDatabase);
@@ -258,15 +253,20 @@ namespace ME3Explorer.AssetDatabase
                 var start = DateTime.UtcNow;
                 deserializingQueue = new BlockingCollection<PropsDataBase>();
                 ////Async load
-                await Task.Factory.StartNew(() => ParseDBAsync());
+                await Task.Factory.StartNew(() => ParseDBAsync()); //with ParseDBAsync as void or Task, UI thread still locks
+                
                 int n = 0;
+                while(deserializingQueue.Count  == 0)
+                {
+                    await Task.Delay(500); //
+                }
+                
                 foreach (PropsDataBase pdb in deserializingQueue.GetConsumingEnumerable())
                 {
                     n++;
                     switch (pdb.DataBaseversion)
                     {
                         case "CONVERT":
-                            n = 6;
                             CurrentDataBase.meGame = pdb.meGame;
                             CurrentDataBase.GenerationDate = pdb.GenerationDate;
                             CurrentDataBase.DataBaseversion = dbCurrentBuild;
@@ -278,7 +278,7 @@ namespace ME3Explorer.AssetDatabase
                             CurrentDataBase.Particles.AddRange(pdb.Particles);
                             CurrentDataBase.Textures.AddRange(pdb.Textures);
                             SaveDatabase();
-                            MessageBox.Show("Saved as v2.0.");
+                            MessageBox.Show($"{currentGame} database was at version 1.0.  It has been converted to v{dbCurrentBuild}", "Asset Database", MessageBoxButton.OK);
                             break;
                         case "Mat":
                             CurrentDataBase.Materials.AddRange(pdb.Materials);
@@ -341,7 +341,6 @@ namespace ME3Explorer.AssetDatabase
                 {
                     if (archive.Entries.Count == 1)
                     {
-                        MessageBox.Show($"{currentGame} database is at version 1.0.  It will be now converted into 2.0", "Asset Database", MessageBoxButton.OK);
                         PropsDataBase pdb = new PropsDataBase();
                         var jsonstream = archive.GetEntry($"AssetDB{currentGame}.json").Open();
                         using (StreamReader sr = new StreamReader(jsonstream))
@@ -359,6 +358,11 @@ namespace ME3Explorer.AssetDatabase
                     else
                     {
                         string path = Path.GetFullPath(App.AppDataFolder);
+                        foreach(var f in Directory.GetFiles(path, $"*DB{currentGame}.json", SearchOption.TopDirectoryOnly).ToList())
+                        {
+                            File.Delete(f);  //Clear up temp files if crash
+                        }
+                        
                         await Task.Run(() => archive.ExtractToDirectory(path));  //TO DO: Find out how to pass streams rather than files
                         foreach (ZipArchiveEntry entry in archive.Entries)
                         {
@@ -370,8 +374,7 @@ namespace ME3Explorer.AssetDatabase
             }
             catch (Exception e)
             {
-                MessageBox.Show("Compressed archive: " + currentGame + $" is corrupted. Do you want to regenerate?", "Asset Database", MessageBoxButton.OKCancel);
-                IsBusy = false;
+                Console.WriteLine("Error ParseDB");
             }
         }
         private void JsonFileParse(string filename)
@@ -511,7 +514,6 @@ namespace ME3Explorer.AssetDatabase
             CurrentDataBase.Particles.ClearEx();
             CurrentDataBase.Textures.ClearEx();
         }
-
         public void SwitchGame(object param)
         {
             var p = param as string;
