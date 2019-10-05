@@ -330,10 +330,9 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public static void AddArchetypeProperties(this ExportEntry stmActor)
+        public static void CondenseArchetypes(this ExportEntry stmActor)
         {
-            ExportEntry archetype = stmActor.Archetype as ExportEntry;
-            while (archetype != null)
+            while (stmActor.Archetype is ExportEntry archetype)
             {
                 var archProps = archetype.GetProperties();
                 foreach (UProperty prop in archProps)
@@ -344,7 +343,7 @@ namespace ME3Explorer.Packages
                     }
                 }
 
-                archetype = archetype.Archetype as ExportEntry;
+                stmActor.Archetype = archetype.Archetype;
             }
         }
 

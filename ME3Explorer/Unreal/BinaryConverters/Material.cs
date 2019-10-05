@@ -26,7 +26,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
         {
             var uIndexes = new List<(UIndex, string)>();
             uIndexes.AddRange(SM3MaterialResource.GetUIndexes(game));
-            uIndexes.AddRange(SM2MaterialResource.GetUIndexes(game));
+            if (game != MEGame.UDK)
+            {
+                uIndexes.AddRange(SM2MaterialResource.GetUIndexes(game));
+            }
             return uIndexes;
         }
     }

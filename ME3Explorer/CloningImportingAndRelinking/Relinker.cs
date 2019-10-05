@@ -219,7 +219,7 @@ namespace ME3Explorer
                             }
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception e) when (!App.IsDebug)
                     {
                         relinkFailedReport.Add($"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed due to exception: {e.Message}");
                     }

@@ -1042,57 +1042,55 @@ namespace ME3Explorer.Packages
             if (newGame == MEGame.ME3)
             {
                 //change all materials to default material, but try to preserve diff and norm textures
-                using (var resourcePCC = MEPackageHandler.OpenME3Package(Path.Combine(App.ExecFolder, "ME3Resources.pcc")))
+                using var resourcePCC = MEPackageHandler.OpenME3Package(App.CustomResourceFilePath(MEGame.ME3));
+                var normDiffMat = resourcePCC.Exports.First(exp => exp.ObjectName == "NormDiffMaterial");
+
+                foreach (ExportEntry mat in exports.Where(exp => exp.ClassName == "Material" || exp.ClassName  == "MaterialInstanceConstant"))
                 {
-                    var normDiffMat = resourcePCC.Exports.First(exp => exp.ObjectName == "NormDiffMaterial");
-
-                    foreach (ExportEntry mat in exports.Where(exp => exp.ClassName == "Material" || exp.ClassName  == "MaterialInstanceConstant"))
+                    UIndex[] textures = Array.Empty<UIndex>();
+                    if (mat.ClassName == "Material")
                     {
-                        UIndex[] textures = Array.Empty<UIndex>();
-                        if (mat.ClassName == "Material")
-                        {
-                            textures = ObjectBinary.From<Material>(mat).SM3MaterialResource.UniformExpressionTextures;
-                        }
-                        else if(mat.GetProperty<BoolProperty>("bHasStaticPermutationResource")?.Value == true)
-                        {
-                            textures = ObjectBinary.From<MaterialInstance>(mat).SM3StaticPermutationResource.UniformExpressionTextures;
-                        }
-                        else if (mat.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> texParams)
-                        {
-                            textures = texParams.Select(structProp => new UIndex(structProp.GetProp<ObjectProperty>("ParameterValue")?.Value ?? 0)).ToArray();
-                        }
-                        else if(mat.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentProp && GetEntry(parentProp.Value) is ExportEntry parent && parent.ClassName == "Material")
-                        {
-                            textures = ObjectBinary.From<Material>(parent).SM3MaterialResource.UniformExpressionTextures;
-                        }
+                        textures = ObjectBinary.From<Material>(mat).SM3MaterialResource.UniformExpressionTextures;
+                    }
+                    else if(mat.GetProperty<BoolProperty>("bHasStaticPermutationResource")?.Value == true)
+                    {
+                        textures = ObjectBinary.From<MaterialInstance>(mat).SM3StaticPermutationResource.UniformExpressionTextures;
+                    }
+                    else if (mat.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> texParams)
+                    {
+                        textures = texParams.Select(structProp => new UIndex(structProp.GetProp<ObjectProperty>("ParameterValue")?.Value ?? 0)).ToArray();
+                    }
+                    else if(mat.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentProp && GetEntry(parentProp.Value) is ExportEntry parent && parent.ClassName == "Material")
+                    {
+                        textures = ObjectBinary.From<Material>(parent).SM3MaterialResource.UniformExpressionTextures;
+                    }
 
-                        EntryImporter.ReplaceExportDataWithAnother(normDiffMat, mat);
-                        int norm = 0;
-                        int diff = 0;
-                        foreach (UIndex texture in textures)
+                    EntryImporter.ReplaceExportDataWithAnother(normDiffMat, mat);
+                    int norm = 0;
+                    int diff = 0;
+                    foreach (UIndex texture in textures)
+                    {
+                        if (GetEntry(texture) is IEntry tex)
                         {
-                            if (GetEntry(texture) is IEntry tex)
+                            if (diff == 0 && tex.ObjectName.Name.Contains("diff", StringComparison.OrdinalIgnoreCase))
                             {
-                                if (diff == 0 && tex.ObjectName.Name.Contains("diff", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    diff = texture;
-                                }
-                                else if (norm == 0 && tex.ObjectName.Name.Contains("norm", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    norm = texture;
-                                }
+                                diff = texture;
+                            }
+                            else if (norm == 0 && tex.ObjectName.Name.Contains("norm", StringComparison.OrdinalIgnoreCase))
+                            {
+                                norm = texture;
                             }
                         }
-                        if (diff == 0)
-                        {
-                            diff = EntryImporter.GetOrAddCrossImportOrPackage("EngineMaterials.DefaultDiffuse", resourcePCC, this).UIndex;
-                        }
-
-                        var matBin = ObjectBinary.From<Material>(mat);
-                        matBin.SM3MaterialResource.UniformExpressionTextures = new UIndex[] { norm, diff };
-                        mat.setBinaryData(matBin.ToBytes(this));
-                        mat.Class = imports.First(imp => imp.ObjectName == "Material");
                     }
+                    if (diff == 0)
+                    {
+                        diff = EntryImporter.GetOrAddCrossImportOrPackage("EngineMaterials.DefaultDiffuse", resourcePCC, this).UIndex;
+                    }
+
+                    var matBin = ObjectBinary.From<Material>(mat);
+                    matBin.SM3MaterialResource.UniformExpressionTextures = new UIndex[] { norm, diff };
+                    mat.setBinaryData(matBin.ToBytes(this));
+                    mat.Class = imports.First(imp => imp.ObjectName == "Material");
                 }
             }
 
@@ -1109,37 +1107,35 @@ namespace ME3Explorer.Packages
             {
                 //ME3 can't deal with compressed textures in a pcc, so we'll need to stuff them into a tfc
                 string tfcName = Path.GetFileNameWithoutExtension(FilePath);
-                using (var tfc = File.OpenWrite(Path.ChangeExtension(FilePath, "tfc")))
-                {
-                    Guid tfcGuid = Guid.NewGuid();
-                    tfc.WriteGuid(tfcGuid);
+                using var tfc = File.OpenWrite(Path.ChangeExtension(FilePath, "tfc"));
+                Guid tfcGuid = Guid.NewGuid();
+                tfc.WriteGuid(tfcGuid);
 
-                    foreach (ExportEntry texport in exports.Where(exp => exp.IsTexture()))
+                foreach (ExportEntry texport in exports.Where(exp => exp.IsTexture()))
+                {
+                    List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(texport, null);
+                    var offsets = new List<int>();
+                    foreach (Texture2DMipInfo mipInfo in mips)
                     {
-                        var mips = Texture2D.GetTexture2DMipInfos(texport, null);
-                        var offsets = new List<int>();
-                        foreach (Texture2DMipInfo mipInfo in mips)
+                        if (mipInfo.storageType == StorageTypes.pccLZO || mipInfo.storageType == StorageTypes.pccZlib)
                         {
-                            if (mipInfo.storageType == StorageTypes.pccLZO || mipInfo.storageType == StorageTypes.pccZlib)
+                            offsets.Add((int)tfc.Position);
+                            byte[] mip;
+                            if (mipInfo.storageType == StorageTypes.pccLZO)
                             {
-                                offsets.Add((int)tfc.Position);
-                                byte[] mip;
-                                if (mipInfo.storageType == StorageTypes.pccLZO)
-                                {
-                                    mip = TextureCompression.CompressTexture(Texture2D.GetTextureData(mipInfo), StorageTypes.extZlib);
-                                }
-                                else
-                                {
-                                    mip = Texture2D.GetTextureData(mipInfo, false);
-                                }
-                                tfc.WriteFromBuffer(mip);
+                                mip = TextureCompression.CompressTexture(Texture2D.GetTextureData(mipInfo), StorageTypes.extZlib);
                             }
+                            else
+                            {
+                                mip = Texture2D.GetTextureData(mipInfo, false);
+                            }
+                            tfc.WriteFromBuffer(mip);
                         }
-                        offsets.Add((int)tfc.Position);
-                        texport.setBinaryData(ExportBinaryConverter.ConvertTexture2D(texport, Game, offsets, StorageTypes.extZlib));
-                        texport.WriteProperty(new NameProperty(tfcName, "TextureFileCacheName"));
-                        texport.WriteProperty(tfcGuid.ToGuidStructProp("TFCFileGuid"));
                     }
+                    offsets.Add((int)tfc.Position);
+                    texport.setBinaryData(ExportBinaryConverter.ConvertTexture2D(texport, Game, offsets, StorageTypes.extZlib));
+                    texport.WriteProperty(new NameProperty(tfcName, "TextureFileCacheName"));
+                    texport.WriteProperty(tfcGuid.ToGuidStructProp("TFCFileGuid"));
                 }
             }
         }

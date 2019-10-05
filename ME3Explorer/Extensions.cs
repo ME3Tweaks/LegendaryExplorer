@@ -915,7 +915,7 @@ namespace ME3Explorer
 
             static int RadToURR(double d)
             {
-                return ((float)((d * (180/Math.PI)) % 360.0)).ToUnrealRotationUnits();
+                return ((float)(d * (180.0/Math.PI))).ToUnrealRotationUnits();
             }
         }
     }
