@@ -34,7 +34,7 @@ namespace ME3Explorer.AssetDatabase
     public partial class AssetDB : WPFBase
     {
         #region Declarations
-        public static string dbCurrentBuild { get; set; } = "2.0"; //If changes are made that invalidate old databases edit this.
+        public const string dbCurrentBuild = "2.0"; //If changes are made that invalidate old databases edit this.
         private int _currentView;
         public int currentView { get => _currentView; set => SetProperty(ref _currentView, value); }
 
@@ -188,7 +188,6 @@ namespace ME3Explorer.AssetDatabase
             InitializeComponent();
 
         }
-
         private void LoadCommands()
         {
             GenerateDBCommand = new GenericCommand(GenerateDatabase);
@@ -203,7 +202,6 @@ namespace ME3Explorer.AssetDatabase
             OpenUsagePkgCommand = new RelayCommand(OpenUsagePkg, IsUsageSelected);
             SetCRCCommand = new RelayCommand(SetCRCScan);
         }
-
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)
         {
             CurrentOverallOperationText = "Starting Up";
@@ -238,11 +236,7 @@ namespace ME3Explorer.AssetDatabase
 
         #endregion
 
-        #region UserCommands
-        public void GenerateDatabase()
-        {
-            ScanGame();
-        }
+        #region Database I/O        
         public async void LoadDatabase()
         {
             if (CurrentDBPath == null)
@@ -537,6 +531,13 @@ namespace ME3Explorer.AssetDatabase
             CurrentDataBase.Particles.ClearEx();
             CurrentDataBase.Textures.ClearEx();
         }
+        #endregion
+
+        #region UserCommands
+        public void GenerateDatabase()
+        {
+            ScanGame();
+        }
         public void SwitchGame(object param)
         {
             var p = param as string;
@@ -545,7 +546,14 @@ namespace ME3Explorer.AssetDatabase
             switchME3_menu.IsChecked = false;
             FilterBox.Clear();
             ClearDataBase();
-
+            MeshRendererTab_MeshRenderer.UnloadExport();
+            meshPcc?.Dispose();
+            btn_MeshRenderToggle.IsChecked = false;
+            btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
+            EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
+            textPcc?.Dispose();
+            btn_TextRenderToggle.IsChecked = false;
+            btn_TextRenderToggle.Content = "Toggle Texture Rendering";
             switch (p)
             {
                 case "ME1":
@@ -802,7 +810,6 @@ namespace ME3Explorer.AssetDatabase
             if (btn_MeshRenderToggle.IsChecked == true && (lstbx_Meshes.SelectedIndex >= 0) && CurrentDataBase.Meshes[lstbx_Meshes.SelectedIndex].MeshUsages.Count > 0 && currentView == 3)
             {
                 showmesh = true;
-                
             }
 
             if (!showmesh)
@@ -822,24 +829,31 @@ namespace ME3Explorer.AssetDatabase
                 MessageBox.Show($"{currentGame} has not been found. Please check your ME3Explorer settings");
                 return;
             }
-
             filename = $"{filename}.*";
-            var filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault();
-            if (filePath == null)
+            var files = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).ToList();
+            if (files.IsEmpty())
             {
                 MessageBox.Show($"File {filename} not found.");
                 return;
             }
 
-            if (meshPcc != null)
+            if (meshPcc != null) //unload existing file
             {
                 MeshRendererTab_MeshRenderer.UnloadExport();
                 meshPcc.Dispose();
             }
-            meshPcc = MEPackageHandler.OpenMEPackage(filePath);
-            var meshExp = meshPcc.GetUExport(selecteditem.MeshUsages[0].Item2);
-            MeshRendererTab_MeshRenderer.LoadExport(meshExp);
 
+            foreach(var filePath in files)  //handle cases of mods/dlc having same file.
+            {
+                meshPcc = MEPackageHandler.OpenMEPackage(filePath);
+                var uexpIdx = selecteditem.MeshUsages[0].Item2;
+                if(uexpIdx <= meshPcc.ExportCount && meshPcc.GetUExport(uexpIdx).ObjectName == selecteditem.MeshName)
+                {
+                    var meshExp = meshPcc.GetUExport(uexpIdx);
+                    MeshRendererTab_MeshRenderer.LoadExport(meshExp);
+                    break;
+                }
+            }
         }
         private void ToggleRenderTexture()
         {
@@ -868,8 +882,8 @@ namespace ME3Explorer.AssetDatabase
             }
 
             filename = $"{filename}.*";
-            var filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault();
-            if (filePath == null)
+            var files = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).ToList();
+            if (files.IsEmpty())
             {
                 MessageBox.Show($"File {filename} not found.");
                 return;
@@ -880,10 +894,18 @@ namespace ME3Explorer.AssetDatabase
                 EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
                 textPcc.Dispose();
             }
-            textPcc = MEPackageHandler.OpenMEPackage(filePath);
-            var TextExp = textPcc.GetUExport(selecteditem.TextureUsages[0].Item2);
-            EmbeddedTextureViewerTab_EmbededTextureViewer.LoadExport(TextExp);
 
+            foreach (var filePath in files)  //handle cases of mods/dlc having same file.
+            {
+                textPcc = MEPackageHandler.OpenMEPackage(filePath);
+                var uexpIdx = selecteditem.TextureUsages[0].Item2;
+                if (uexpIdx <= textPcc.ExportCount && textPcc.GetUExport(uexpIdx).ObjectName == selecteditem.TextureName)
+                {
+                    var TextExp = textPcc.GetUExport(uexpIdx);
+                    EmbeddedTextureViewerTab_EmbededTextureViewer.LoadExport(TextExp);
+                    break;
+                }
+            }
         }
         private void SetCRCScan(object obj)
         {
@@ -1158,7 +1180,6 @@ namespace ME3Explorer.AssetDatabase
         }
         private void FilterBox_KeyUp(object sender, KeyEventArgs e)
         {
-           
            Filter();
         }
 
