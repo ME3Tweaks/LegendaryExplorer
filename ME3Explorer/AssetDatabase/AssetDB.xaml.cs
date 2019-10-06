@@ -5,8 +5,8 @@ using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
+using ME3Explorer.Unreal.Classes;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -15,7 +15,6 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -137,7 +136,7 @@ namespace ME3Explorer.AssetDatabase
         public ICommand FilterSeqClassCommand { get; set; }
         public ICommand FilterMatCommand { get; set; }
         public ICommand FilterMeshCommand { get; set; }
-
+        public ICommand SetCRCCommand { get; set; }
         private bool CanCancelDump(object obj)
         {
             return ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation && !DumpCanceled;
@@ -202,7 +201,9 @@ namespace ME3Explorer.AssetDatabase
             OpenSourcePkgCommand = new RelayCommand(OpenSourcePkg, IsClassSelected);
             GoToSuperclassCommand = new RelayCommand(GoToSuperClass, IsClassSelected);
             OpenUsagePkgCommand = new RelayCommand(OpenUsagePkg, IsUsageSelected);
+            SetCRCCommand = new RelayCommand(SetCRCScan);
         }
+
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)
         {
             CurrentOverallOperationText = "Starting Up";
@@ -884,6 +885,22 @@ namespace ME3Explorer.AssetDatabase
             EmbeddedTextureViewerTab_EmbededTextureViewer.LoadExport(TextExp);
 
         }
+        private void SetCRCScan(object obj)
+        {
+            if(menu_checkCRC.IsChecked)
+            {
+                menu_checkCRC.IsChecked = false;
+            }
+            else
+            {
+                var crcdlg = MessageBox.Show("Do you want to turn on CRC checking? This will significantly increase scan times.", "Asset Database", MessageBoxButton.YesNo);
+                if(crcdlg == MessageBoxResult.Yes)
+                {
+                    menu_checkCRC.IsChecked = true;
+                }
+            }
+
+        }
         #endregion
 
         #region Filters
@@ -1190,6 +1207,7 @@ namespace ME3Explorer.AssetDatabase
             OverallProgressValue = 0;
             BusyUnk = false;
             CurrentOverallOperationText = $"Generating Database...";
+            bool scanCRC = menu_checkCRC.IsChecked;
 
             //Clear database
             ClearDataBase();
@@ -1219,7 +1237,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 if (x.DumpCanceled)
                 {
-                    OverallProgressValue++;
+                    //OverallProgressValue++;
                     return;
                 }
                 Application.Current.Dispatcher.Invoke(() => CurrentDumpingItems.Add(x));
@@ -1238,7 +1256,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 var filekey = CurrentDataBase.FileList.Count;
                 CurrentDataBase.FileList.Add(Path.GetFileNameWithoutExtension(item));
-                var threadtask = new ClassScanSingleFileTask(item, filekey);
+                var threadtask = new ClassScanSingleFileTask(item, filekey, scanCRC);
                 AllDumpingItems.Add(threadtask); //For setting cancelation value
                 ProcessingQueue.Post(threadtask); // Post all items to the block
 
@@ -1607,7 +1625,7 @@ namespace ME3Explorer.AssetDatabase
             int fileindex = (Int32)values[0];
             var listofFiles = values[1] as List<string>;
             if (fileindex == 0 || listofFiles.Count == 0)
-                return "Error file not found";
+                return $"Error file name not found";
             return listofFiles[fileindex];
         }
 
@@ -1629,16 +1647,18 @@ namespace ME3Explorer.AssetDatabase
             set => SetProperty(ref _shortFileName, value);
         }
 
-        public ClassScanSingleFileTask(string file, int filekey)
+        public ClassScanSingleFileTask(string file, int filekey, bool scanCRC)
         {
             File = file;
             ShortFileName = Path.GetFileNameWithoutExtension(file);
             FileKey = filekey;
+            ScanCRC = scanCRC;
         }
 
         public bool DumpCanceled;
         private readonly int FileKey;
         private readonly string File;
+        private readonly bool ScanCRC;
 
         /// <summary>
         /// Dumps Property data to concurrent dictionary
@@ -1649,6 +1669,10 @@ namespace ME3Explorer.AssetDatabase
             {
                 foreach (ExportEntry exp in pcc.Exports)
                 {
+                    if (DumpCanceled)
+                    {
+                        return;
+                    }
                     try
                     {
                         string pClass = exp.ClassName;  //Handle basic class record
@@ -1764,7 +1788,7 @@ namespace ME3Explorer.AssetDatabase
                                 var NewPropertyRecord = new PropertyRecord(pName, pType);
                                 pList.Add(NewPropertyRecord);
 
-                                if (exp.ClassName == "Material" && !dbScanner.GeneratedMats.ContainsKey(pExp)) //Run material settings
+                                if (exp.ClassName == "Material" && !dbScanner.GeneratedMats.ContainsKey(pExp) && !pIsdefault) //Run material settings
                                 {
                                     var pSet = new Tuple<string, string, string>(null, null, null);
                                     var matSet_name = p.Name;
@@ -1915,10 +1939,7 @@ namespace ME3Explorer.AssetDatabase
                                 if (IsSkel)
                                 {
                                     var bin = ObjectBinary.From<Unreal.BinaryConverters.SkeletalMesh>(exp);
-                                    if(bin != null)
-                                    {
-                                        bones = bin.RefSkeleton.Length;
-                                    }
+                                    bones = bin != null ? bin.RefSkeleton.Length: 0;
                                 }
                                 var NewMeshRec = new MeshRecord(pExp, IsSkel, bones, new ObservableCollectionExtended<Tuple<int, int>> { new Tuple<int, int>(FileKey, pExportUID) });
                                 if (!dbScanner.GeneratedMeshes.TryAdd(pExp, NewMeshRec))
@@ -1945,13 +1966,8 @@ namespace ME3Explorer.AssetDatabase
                                 }
 
                                 bool IsDLC = pcc.IsInOfficialDLC();
-                                int EmCnt = 0;
                                 var EmtProp = exp.GetProperty<ArrayProperty<ObjectProperty>>("Emitters");
-                                if(EmtProp != null)
-                                {
-                                    EmCnt = EmtProp.Count;
-                                }
-
+                                int EmCnt = EmtProp != null ? EmtProp.Count: 0;
                                 var NewPS = new ParticleSys(pExp, parent, IsDLC, EmCnt, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
                                 if (!dbScanner.GeneratedPS.TryAdd(pExp, NewPS))
                                 {
@@ -1969,40 +1985,8 @@ namespace ME3Explorer.AssetDatabase
 
                             if (exp.ClassName == "Texture2D" && !pIsdefault)
                             {
-                                string parent = null;
-                                if (GameBeingDumped == MEGame.ME1 && File.EndsWith(".upk"))
-                                {
-                                    parent = ShortFileName;
-                                }
-                                else
-                                {
-                                    parent = GetTopParentPackage(exp);
-                                }
-
                                 bool IsDLC = pcc.IsInOfficialDLC();
-                                string pformat = "n/a";
-                                var formp = exp.GetProperty<EnumProperty>("Format");
-                                if (formp != null)
-                                {
-                                    pformat = formp.Value.Name.ToString() ;
-                                }
-                                int psizeX = 0;
-                                var propX = exp.GetProperty<IntProperty>("SizeX");
-                                if (propX != null)
-                                {
-                                    psizeX = propX;
-                                }
-                                int psizeY = 0;
-                                var propY = exp.GetProperty<IntProperty>("SizeY");
-                                if (propY != null)
-                                {
-                                    psizeY = propY;
-                                }
-
-                                string cRC = "n/a"; //TO DO ADD MAGIC
-
-                                var NewTex = new TextureRecord(pExp, parent, IsDLC, pformat, psizeX, psizeY, cRC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
-                                if (!dbScanner.GeneratedText.TryAdd(pExp, NewTex))
+                                if (dbScanner.GeneratedText.ContainsKey(pExp))
                                 {
                                     var t = dbScanner.GeneratedText[pExp];
                                     lock (t)
@@ -2013,6 +1997,34 @@ namespace ME3Explorer.AssetDatabase
                                             t.IsDLCOnly = IsDLC;
                                         }
                                     }
+                                }
+                                else
+                                {
+                                    string parent = null;
+                                    if (GameBeingDumped == MEGame.ME1 && File.EndsWith(".upk"))
+                                    {
+                                        parent = ShortFileName;
+                                    }
+                                    else
+                                    {
+                                        parent = GetTopParentPackage(exp);
+                                    }
+
+                                    var formp = exp.GetProperty<EnumProperty>("Format");
+                                    string pformat = formp != null ? formp.Value.Name.ToString() : "n/a";
+                                    var propX = exp.GetProperty<IntProperty>("SizeX");
+                                    int psizeX = propX != null ? propX.Value : 0;
+                                    var propY = exp.GetProperty<IntProperty>("SizeY");
+                                    int psizeY = propY != null ? propY.Value : 0;
+                                    string cRC = "n/a";
+                                    if (ScanCRC)
+                                    {
+                                        cRC = Texture2D.GetTextureCRC(exp).ToString("X8");
+                                    }
+                                    
+
+                                    var NewTex = new TextureRecord(pExp, parent, IsDLC, pformat, psizeX, psizeY, cRC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
+                                    dbScanner.GeneratedText.TryAdd(pExp, NewTex);
                                 }
                             }
                         }
