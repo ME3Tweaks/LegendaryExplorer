@@ -328,7 +328,7 @@ namespace ME3Explorer.Unreal.Classes
         public static byte[] GetTextureData(Texture2DMipInfo mipToLoad, bool decompress = true)
         {
             var imagebytes = new byte[decompress ? mipToLoad.uncompressedSize : mipToLoad.compressedSize];
-            Debug.WriteLine("getting texture data for " + mipToLoad.Export.FullPath);
+            //Debug.WriteLine("getting texture data for " + mipToLoad.Export.FullPath);
             if (mipToLoad.storageType == StorageTypes.pccUnc)
             {
                 Buffer.BlockCopy(mipToLoad.Export.Data, mipToLoad.localExportOffset, imagebytes, 0, mipToLoad.uncompressedSize);

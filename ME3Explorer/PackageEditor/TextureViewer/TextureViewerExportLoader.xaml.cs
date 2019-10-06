@@ -496,18 +496,27 @@ namespace ME3Explorer
                         //else 
                     }
                 }
-                //ME2,ME3: Force compression type (not implemented yet)
-                if (texture.Export.Game != MEGame.ME1)
-                {
-                    if (mipmap.storageType == StorageTypes.extLZO)
-                        mipmap.storageType = StorageTypes.extZlib;
-                    if (mipmap.storageType == StorageTypes.pccLZO)
-                        mipmap.storageType = StorageTypes.pccZlib;
-                    if (mipmap.storageType == StorageTypes.extUnc)
-                    {
 
-                    }
+                //ME2,ME3: Force compression type (not implemented yet)
+                if (texture.Export.Game == MEGame.ME3)
+                {
+                    if (mipmap.storageType == StorageTypes.extLZO) //ME3 LZO -> ZLIB
+                        mipmap.storageType = StorageTypes.extZlib;
+                    if (mipmap.storageType == StorageTypes.pccLZO) //ME3 PCC LZO -> PCCZLIB
+                        mipmap.storageType = StorageTypes.pccZlib;
+                    if (mipmap.storageType == StorageTypes.extUnc) //ME3 Uncomp -> ZLib
+                        mipmap.storageType = StorageTypes.extZlib;
                 }
+                else if (texture.Export.Game == MEGame.ME2)
+                {
+                    if (mipmap.storageType == StorageTypes.extZlib) //ME2 ZLib -> LZO
+                        mipmap.storageType = StorageTypes.extLZO;
+                    if (mipmap.storageType == StorageTypes.pccZlib) //M2 ZLib -> LZO
+                        mipmap.storageType = StorageTypes.pccLZO;
+                    if (mipmap.storageType == StorageTypes.extUnc) //ME2 Uncomp -> LZO
+                        mipmap.storageType = StorageTypes.extLZO;
+                }
+
 
                 //Investigate. this has something to do with archive storage types
                 //if (mod.arcTexture != null)
