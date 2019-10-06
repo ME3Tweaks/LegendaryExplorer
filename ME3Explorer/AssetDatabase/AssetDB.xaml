@@ -18,6 +18,16 @@
         <local:FileIndexToNameConverter x:Key="FileIndexToNameConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <DataTemplate x:Key="PropertyTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock FontSize="10" Text="{Binding Type}" VerticalAlignment="Center" Foreground="Gray"/>
+                <TextBlock Grid.Column="1"  Text="{Binding Property}" />
+            </Grid>
+        </DataTemplate>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="G" Modifiers="Control"  Command="{Binding GenerateDBCommand}"/>
@@ -25,7 +35,7 @@
         <KeyBinding Key="D2" Modifiers="Control" Command="{Binding SwitchMECommand}" CommandParameter="ME2"/>
         <KeyBinding Key="D3" Modifiers="Control" Command="{Binding SwitchMECommand}" CommandParameter="ME3"/>
     </Window.InputBindings>
-    <xctk:BusyIndicator x:Name="dbBusyIndicator" IsBusy="{Binding IsBusy, FallbackValue=True}">
+    <xctk:BusyIndicator x:Name="dbBusyIndicator" IsBusy="{Binding IsBusy, FallbackValue=False}">
         <DockPanel>
             <DockPanel DockPanel.Dock="Top">
                 <xctk:WatermarkTextBox DockPanel.Dock="Right"  Watermark="Search" Name="FilterBox" Width="300" KeyUp="FilterBox_KeyUp" ToolTip="Filter and find classes" IsEnabled="true" HorizontalAlignment="Right" HorizontalContentAlignment="Left">
@@ -90,7 +100,7 @@
                     <!-- Classes-->
                     <TabItem Header="Classes" TabIndex="0">
                         <DockPanel>
-                            <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}"  >
+                            <SharedUI:ListBoxScroll x:Name="lstbx_Classes" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}">
                                 <SharedUI:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -108,17 +118,7 @@
                                     </ContextMenu>
                                 </SharedUI:ListBoxScroll.ContextMenu>
                             </SharedUI:ListBoxScroll>
-                            <SharedUI:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyRecords, ElementName=lstbx_Classes }" >
-                                <SharedUI:ListBoxScroll.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Property}" />
-                                            <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center"/>
-                                            <TextBlock FontSize="10" Text="{Binding Type}" VerticalAlignment="Center"/>
-                                            <TextBlock FontSize="10" Text=")" VerticalAlignment="Center" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </SharedUI:ListBoxScroll.ItemTemplate>
+                            <SharedUI:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200" ItemsSource="{Binding SelectedItem.PropertyRecords, ElementName=lstbx_Classes }" ItemTemplate="{StaticResource PropertyTemplate}" >
                                 <SharedUI:ListBoxScroll.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor." />

@@ -241,6 +241,7 @@ namespace ME3Explorer.AssetDatabase
         {
             if (CurrentDBPath == null)
             {
+                IsBusy = false;
                 return;
             }
 
@@ -269,7 +270,7 @@ namespace ME3Explorer.AssetDatabase
 
                 if (CurrentDataBase.DataBaseversion == null || CurrentDataBase.DataBaseversion != dbCurrentBuild)
                 {
-                    if(CurrentDataBase.DataBaseversion == "CONVERSION")
+                    if (CurrentDataBase.DataBaseversion == "CONVERSION")
                     {
                         CurrentDataBase.DataBaseversion = dbCurrentBuild;
                         SaveDatabase();
@@ -299,6 +300,7 @@ namespace ME3Explorer.AssetDatabase
             }
             else
             {
+                IsBusy = false;
                 CurrentOverallOperationText = "No database found.";
             }
         }
@@ -330,11 +332,11 @@ namespace ME3Explorer.AssetDatabase
                     else
                     {
                         string path = Path.GetFullPath(App.AppDataFolder);
-                        foreach(var f in Directory.GetFiles(path, $"*DB{currentGame}.json", SearchOption.TopDirectoryOnly).ToList())
+                        foreach (var f in Directory.GetFiles(path, $"*DB{currentGame}.json", SearchOption.TopDirectoryOnly).ToList())
                         {
                             File.Delete(f);  //Clear up temp files if crash
                         }
-                        
+
                         await Task.Run(() => archive.ExtractToDirectory(path));  //TO DO: Find out how to pass streams rather than files
                         foreach (ZipArchiveEntry entry in archive.Entries)
                         {
@@ -475,7 +477,7 @@ namespace ME3Explorer.AssetDatabase
                 using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
                 {
                     await Task.WhenAll(masterSrl, mtlSrl, animSrl, mshSrl, psSrl, txtSrl);
-                    
+
                     var masterjson = archive.CreateEntry($"MasterDB{currentGame}.json");
                     using (var entryStream = masterjson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
@@ -766,7 +768,7 @@ namespace ME3Explorer.AssetDatabase
                     btn_TextRenderToggle.Content = "Toggle Texture Rendering";
                 }
 
-                if(selected.TabIndex == 6)
+                if (selected.TabIndex == 6)
                 {
                     menu_OpenUsage.Header = "Open File";
                 }
@@ -843,11 +845,11 @@ namespace ME3Explorer.AssetDatabase
                 meshPcc.Dispose();
             }
 
-            foreach(var filePath in files)  //handle cases of mods/dlc having same file.
+            foreach (var filePath in files)  //handle cases of mods/dlc having same file.
             {
                 meshPcc = MEPackageHandler.OpenMEPackage(filePath);
                 var uexpIdx = selecteditem.MeshUsages[0].Item2;
-                if(uexpIdx <= meshPcc.ExportCount && meshPcc.GetUExport(uexpIdx).ObjectName == selecteditem.MeshName)
+                if (uexpIdx <= meshPcc.ExportCount && meshPcc.GetUExport(uexpIdx).ObjectName == selecteditem.MeshName)
                 {
                     var meshExp = meshPcc.GetUExport(uexpIdx);
                     MeshRendererTab_MeshRenderer.LoadExport(meshExp);
@@ -909,14 +911,14 @@ namespace ME3Explorer.AssetDatabase
         }
         private void SetCRCScan(object obj)
         {
-            if(menu_checkCRC.IsChecked)
+            if (menu_checkCRC.IsChecked)
             {
                 menu_checkCRC.IsChecked = false;
             }
             else
             {
                 var crcdlg = MessageBox.Show("Do you want to turn on CRC checking? This will significantly increase scan times.", "Asset Database", MessageBoxButton.YesNo);
-                if(crcdlg == MessageBoxResult.Yes)
+                if (crcdlg == MessageBoxResult.Yes)
                 {
                     menu_checkCRC.IsChecked = true;
                 }
@@ -930,11 +932,11 @@ namespace ME3Explorer.AssetDatabase
         {
             var cr = d as ClassRecord;
             bool showthis = true;
-            if(FilterBox.Text != null && cr != null)
+            if (FilterBox.Text != null && cr != null)
             {
                 showthis = cr.Class.ToLower().Contains(FilterBox.Text.ToLower());
             }
-            if(showthis && menu_fltrSeq.IsChecked && (!cr.Class.ToLower().StartsWith("seq") && !cr.Class.ToLower().StartsWith("bioseq") && !cr.Class.ToLower().StartsWith("sfxseq") && !cr.Class.ToLower().StartsWith("rvrseq")))
+            if (showthis && menu_fltrSeq.IsChecked && (!cr.Class.ToLower().StartsWith("seq") && !cr.Class.ToLower().StartsWith("bioseq") && !cr.Class.ToLower().StartsWith("sfxseq") && !cr.Class.ToLower().StartsWith("rvrseq")))
             {
                 showthis = false;
             }
@@ -1055,7 +1057,7 @@ namespace ME3Explorer.AssetDatabase
             ICollectionView viewP = CollectionViewSource.GetDefaultView(CurrentDataBase.Particles);
             ICollectionView viewT = CollectionViewSource.GetDefaultView(CurrentDataBase.Textures);
             ICollectionView filesFiltered = CollectionViewSource.GetDefaultView(CurrentDataBase.FileList);
-            
+
             filesFiltered.SortDescriptions.Add(new SortDescription("", ListSortDirection.Ascending));
             filesFiltered.Filter = FileFilter;
             viewC.Filter = ClassFilter;
@@ -1076,7 +1078,7 @@ namespace ME3Explorer.AssetDatabase
         private void SetFilters(object obj)
         {
             var param = obj as string;
-            switch(param)
+            switch (param)
             {
                 case "Seq":
                     menu_fltrSeq.IsChecked = !menu_fltrSeq.IsChecked;
@@ -1096,7 +1098,7 @@ namespace ME3Explorer.AssetDatabase
                     }
                     break;
                 case "Oneside":
-                    if(!menu_fltrMat1side.IsChecked)
+                    if (!menu_fltrMat1side.IsChecked)
                     {
                         menu_fltrMat1side.IsChecked = true;
                         menu_fltrMat2side.IsChecked = false;
@@ -1180,7 +1182,7 @@ namespace ME3Explorer.AssetDatabase
         }
         private void FilterBox_KeyUp(object sender, KeyEventArgs e)
         {
-           Filter();
+            Filter();
         }
 
         #endregion
@@ -1303,7 +1305,7 @@ namespace ME3Explorer.AssetDatabase
         }
         private void dbworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            
+
             dbworker.CancelAsync();
             CommandManager.InvalidateRequerySuggested();
 
@@ -1897,7 +1899,7 @@ namespace ME3Explorer.AssetDatabase
                                 if (!dbScanner.GeneratedMats.TryAdd(pExp, NewMat))
                                 {
                                     var eMat = dbScanner.GeneratedMats[pExp];
-                                    lock(eMat)
+                                    lock (eMat)
                                     {
                                         eMat.MaterialUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC));
                                         if (eMat.IsDLCOnly)
@@ -1960,7 +1962,7 @@ namespace ME3Explorer.AssetDatabase
                                 if (IsSkel)
                                 {
                                     var bin = ObjectBinary.From<Unreal.BinaryConverters.SkeletalMesh>(exp);
-                                    bones = bin != null ? bin.RefSkeleton.Length: 0;
+                                    bones = bin != null ? bin.RefSkeleton.Length : 0;
                                 }
                                 var NewMeshRec = new MeshRecord(pExp, IsSkel, bones, new ObservableCollectionExtended<Tuple<int, int>> { new Tuple<int, int>(FileKey, pExportUID) });
                                 if (!dbScanner.GeneratedMeshes.TryAdd(pExp, NewMeshRec))
@@ -1988,7 +1990,7 @@ namespace ME3Explorer.AssetDatabase
 
                                 bool IsDLC = pcc.IsInOfficialDLC();
                                 var EmtProp = exp.GetProperty<ArrayProperty<ObjectProperty>>("Emitters");
-                                int EmCnt = EmtProp != null ? EmtProp.Count: 0;
+                                int EmCnt = EmtProp != null ? EmtProp.Count : 0;
                                 var NewPS = new ParticleSys(pExp, parent, IsDLC, EmCnt, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
                                 if (!dbScanner.GeneratedPS.TryAdd(pExp, NewPS))
                                 {
@@ -2042,7 +2044,7 @@ namespace ME3Explorer.AssetDatabase
                                     {
                                         cRC = Texture2D.GetTextureCRC(exp).ToString("X8");
                                     }
-                                    
+
 
                                     var NewTex = new TextureRecord(pExp, parent, IsDLC, pformat, psizeX, psizeY, cRC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
                                     dbScanner.GeneratedText.TryAdd(pExp, NewTex);
