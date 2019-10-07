@@ -2,18 +2,24 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using SharpDX;
+using SlavaGu.ConsoleAppLauncher;
+using Matrix = SharpDX.Matrix;
 using SkeletalMesh = ME3Explorer.Unreal.BinaryConverters.SkeletalMesh;
 using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
 
@@ -122,6 +128,14 @@ namespace ME3Explorer.Meshplorer
             set => SetProperty(ref _isBusy, value);
         }
 
+        private bool _busyProgressIndeterminate = true;
+
+        public bool BusyProgressIndeterminate
+        {
+            get => _busyProgressIndeterminate;
+            set => SetProperty(ref _busyProgressIndeterminate, value);
+        }
+
         private string _busyText;
 
         public string BusyText
@@ -129,8 +143,24 @@ namespace ME3Explorer.Meshplorer
             get => _busyText;
             set => SetProperty(ref _busyText, value);
         }
+
+        private int _busyProgressBarMax = 100;
+
+        public int BusyProgressBarMax
+        {
+            get => _busyProgressBarMax;
+            set => SetProperty(ref _busyProgressBarMax, value);
+        }
+
+        private int _busyProgressBarValue;
+        public int BusyProgressBarValue
+        {
+            get => _busyProgressBarValue;
+            set => SetProperty(ref _busyProgressBarValue, value);
+        }
         #endregion
 
+        #region Bindings
         private bool _isStaticMesh;
         public bool IsStaticMesh
         {
@@ -158,11 +188,71 @@ namespace ME3Explorer.Meshplorer
             get => _showCollisionMesh;
             set => SetProperty(ref _showCollisionMesh, value);
         }
+        #endregion
 
+        private bool startingUp = true;
         public MeshRendererWPF()
         {
             DataContext = this;
+            LoadCommands();
             InitializeComponent();
+            var color = (System.Windows.Media.Color?)ColorConverter.ConvertFromString(Properties.Settings.Default.MeshplorerBackgroundColor);
+            Background_ColorPicker.SelectedColor = color;
+            SceneViewer.Context.BackgroundColor = new SharpDX.Color(color.Value.R, color.Value.G, color.Value.B);
+            startingUp = false;
+        }
+
+        public ICommand UModelExportCommand { get; set; }
+        private void LoadCommands()
+        {
+            UModelExportCommand = new GenericCommand(EnsureUModel, ExportLoaded);
+        }
+
+        private bool ExportLoaded() => CurrentLoadedExport != null;
+        private void ExportViaUModel()
+        {
+            var dlg = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select output directory"
+            };
+            if (dlg.ShowDialog(Window.GetWindow(this)) == CommonFileDialogResult.Ok)
+            {
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.DoWork += (a, b) =>
+                {
+                    string umodel = Path.Combine(App.StaticExecutablesDirectory, "umodel", "umodel.exe");
+                    List<string> args = new List<string>();
+                    args.Add("-export");
+                    args.Add($"-out=\"{dlg.FileName}\"");
+                    args.Add($"\"{CurrentLoadedExport.FileRef.FilePath}\"");
+                    args.Add(CurrentLoadedExport.ObjectName);
+                    args.Add(CurrentLoadedExport.ClassName);
+
+                    var arguments = string.Join(" ", args);
+                    Debug.WriteLine("Running process: " + umodel + " " + arguments);
+                    //Log.Information("Running process: " + exe + " " + args);
+
+
+                    var umodelProcess = new ConsoleApp(umodel, arguments);
+                    //BACKGROUND_MEM_PROCESS_ERRORS = new List<string>();
+                    //BACKGROUND_MEM_PROCESS_PARSED_ERRORS = new List<string>();
+                    IsBusy = true;
+                    BusyText = "Exporting via UModel\nThis may take a few minutes";
+                    BusyProgressIndeterminate = true;
+                    umodelProcess.ConsoleOutput += (o, args2) => { Debug.WriteLine(args2.Line); };
+                    umodelProcess.Run();
+                    while (umodelProcess.State == AppState.Running)
+                    {
+                        Thread.Sleep(100); //this is kind of hacky but it works
+                    }
+
+                    Process.Start("explorer", dlg.FileName);
+                };
+                bw.RunWorkerCompleted += (a, b) => { IsBusy = false; };
+                bw.RunWorkerAsync();
+            }
         }
 
         public static bool CanParseStatic(ExportEntry exportEntry)
@@ -185,7 +275,7 @@ namespace ME3Explorer.Meshplorer
         {
             UnloadExport();
             SceneViewer.InitializeD3D();
-            SceneViewer.Context.BackgroundColor = new SharpDX.Color(128, 128, 128);
+            //SceneViewer.Context.BackgroundColor = new SharpDX.Color(128, 128, 128);
 
             CurrentLoadedExport = exportEntry;
 
@@ -197,6 +287,7 @@ namespace ME3Explorer.Meshplorer
                 loadMesh = () =>
                 {
                     BusyText = "Fetching assets";
+                    BusyProgressIndeterminate = true;
                     IsBusy = true;
                     var meshObject = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
                     ModelPreview.PreloadedModelData pmd = new ModelPreview.PreloadedModelData
@@ -337,6 +428,47 @@ namespace ME3Explorer.Meshplorer
             }
         }
 
+        private void EnsureUModel()
+        {
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += EnsureUModel_BackgroundThread;
+            bw.RunWorkerCompleted += (a, b) =>
+            {
+                if (b.Result is string message)
+                {
+                    BusyText = "Error downloading umodel";
+                    MessageBox.Show($"An error occured fetching umodel. Please comes to the ME3Tweaks Discord for assistance.\n\n{message}", "Error fetching umodel");
+                }
+                else if (b.Result == null)
+                {
+                    ExportViaUModel();
+                }
+
+                IsBusy = false;
+            };
+            bw.RunWorkerAsync();
+        }
+        public void EnsureUModel_BackgroundThread(object sender, DoWorkEventArgs args)
+        {
+            void progressCallback(long bytesDownloaded, long bytesToDownload)
+            {
+                BusyProgressBarMax = (int)bytesToDownload;
+                BusyProgressBarValue = (int)bytesDownloaded;
+            }
+            //try{
+            BusyText = "Downloading umodel";
+            BusyProgressIndeterminate = false;
+            BusyProgressBarValue = 0;
+            IsBusy = true;
+            args.Result = OnlineContent.EnsureStaticZippedExecutable("umodel_win32.zip", "umodel", "umodel.exe", progressCallback);
+            //}
+            //catch (Exception e)
+            //{
+            //    args.Result = "Error downloading required files:\n" + ExceptionHandlerDialogWPF.FlattenException(e);
+            //}
+        }
+
+
         private WorldMesh GetMeshFromAggGeom(StructProperty aggGeom)
         {
             if (aggGeom?.GetProp<ArrayProperty<StructProperty>>("ConvexElems") is ArrayProperty<StructProperty> convexElems)
@@ -428,7 +560,11 @@ namespace ME3Explorer.Meshplorer
 
         private void BackgroundColorPicker_Changed(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
         {
-            SceneViewer.Context.BackgroundColor = new SharpDX.Color(Background_ColorPicker.SelectedColor.Value.R, Background_ColorPicker.SelectedColor.Value.G, Background_ColorPicker.SelectedColor.Value.B);
+            if (!startingUp && e.NewValue.HasValue)
+            {
+                var s = e.NewValue.Value.ToString();
+                SceneViewer.Context.BackgroundColor = new SharpDX.Color(e.NewValue.Value.R, e.NewValue.Value.G, e.NewValue.Value.B);
+            }
         }
 
         public override void UnloadExport()

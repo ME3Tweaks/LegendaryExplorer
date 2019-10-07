@@ -47,6 +47,16 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
+        public static uint GetTextureCRC(ExportEntry export)
+        {
+            PropertyCollection properties = export.GetProperties();
+            var format = properties.GetProp<EnumProperty>("Format");
+            var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
+            List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache!= null ? cache.Value : null);
+            var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+            return Texture2D.GetMipCRC(topmip, format.Value);
+        }
+
         public void RemoveEmptyMipsFromMipList()
         {
             Mips.RemoveAll(x => x.storageType == StorageTypes.empty);
@@ -318,7 +328,7 @@ namespace ME3Explorer.Unreal.Classes
         public static byte[] GetTextureData(Texture2DMipInfo mipToLoad, bool decompress = true)
         {
             var imagebytes = new byte[decompress ? mipToLoad.uncompressedSize : mipToLoad.compressedSize];
-            Debug.WriteLine("getting texture data for " + mipToLoad.Export.FullPath);
+            //Debug.WriteLine("getting texture data for " + mipToLoad.Export.FullPath);
             if (mipToLoad.storageType == StorageTypes.pccUnc)
             {
                 Buffer.BlockCopy(mipToLoad.Export.Data, mipToLoad.localExportOffset, imagebytes, 0, mipToLoad.uncompressedSize);

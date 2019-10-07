@@ -1450,6 +1450,7 @@
     <Resource Include="PackageEditor\EntryIcons\icon_class.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_default.png" />
     <Resource Include="Resources\AssetDatabase_256x256.ico" />
+    <Resource Include="Meshplorer\umodel.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
