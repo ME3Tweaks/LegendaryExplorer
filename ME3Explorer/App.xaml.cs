@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -81,6 +82,7 @@ namespace ME3Explorer
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            ServicePointManager.SecurityProtocol |=  SecurityProtocolType.Tls12;
             //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
             DispatcherHelper.Initialize();
             SYNCHRONIZATION_CONTEXT = TaskScheduler.FromCurrentSynchronizationContext();
