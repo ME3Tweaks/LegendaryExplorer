@@ -4073,7 +4073,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             if(!string.IsNullOrEmpty(searchtext))
             {
-                DiagNode tgt = CurrentObjects.OfType<DiagNode>().FirstOrDefault(d => d.Node.LineStrRef.ToString().Contains(searchtext) || d.Node.Line.Contains(searchtext)); 
+                DiagNode tgt = CurrentObjects.OfType<DiagNode>().FirstOrDefault(d => d.Node.LineStrRef.ToString().Contains(searchtext) || d.Node.Line.ToLower().Contains(searchtext.ToLower())); 
                 if (tgt != null)
                 {
                     DialogueNode_Selected(tgt);
