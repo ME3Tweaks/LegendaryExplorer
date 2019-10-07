@@ -103,7 +103,7 @@ namespace ME3Explorer
             List<string> relinkResults = null;
             if (shouldRelink)
             {
-                relinkResults = Relinker.RelinkAll(relinkMap, sourcePcc, portingOption == PortingOption.CloneAllDependencies);
+                relinkResults = Relinker.RelinkAll(relinkMap, portingOption == PortingOption.CloneAllDependencies);
             }
 
             return relinkResults;

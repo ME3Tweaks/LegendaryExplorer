@@ -278,7 +278,7 @@ namespace ME3Explorer.Packages
                     ms.WriteInt32(thumbnail.Height);
                     ms.WriteInt32(thumbnail.Data.Length);
                     ms.WriteFromBuffer(thumbnail.Data);
-                    File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(FilePath), $"{thumbnail.PathName}({thumbnail.ClassName}).png"), thumbnail.Data);
+                    //File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(FilePath), $"{thumbnail.PathName}({thumbnail.ClassName}).png"), thumbnail.Data);
                 }
                 thumbnailTableOffset = (int)ms.Position;
                 ms.WriteInt32(ThumbnailTable.Count);

@@ -17,7 +17,7 @@ namespace ME3Explorer
             EntryTree tree = new EntryTree(entry.FileRef);
             cloneTreeRecursive(entry, newRoot);
             IMEPackage pcc = entry.FileRef;
-            Relinker.RelinkAll(objectMap, pcc);
+            Relinker.RelinkAll(objectMap);
             return newRoot;
 
             void cloneTreeRecursive(IEntry originalRootNode, IEntry newRootNode)

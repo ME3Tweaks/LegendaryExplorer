@@ -17,9 +17,9 @@ namespace ME3Explorer
         /// <summary>
         /// Attempts to relink unreal property data and object pointers in binary when cross porting an export
         /// </summary>
-        public static List<string> RelinkAll(IDictionary<IEntry, IEntry> crossPccObjectMap, IMEPackage importpcc, bool importExportDependencies = false)
+        public static List<string> RelinkAll(IDictionary<IEntry, IEntry> crossPccObjectMap, bool importExportDependencies = false)
         {
-            var relinkFailedReport = new List<string>();
+            var relinkReport = new List<string>();
             //relink each modified export
 
             //We must convert this to a list, as this list will be updated as imports are cross mapped during relinking.
@@ -35,199 +35,210 @@ namespace ME3Explorer
                 (IEntry src, IEntry dest) = crossPCCObjectMappingList[i];
                 if (src is ExportEntry sourceExport && dest is ExportEntry relinkingExport)
                 {
-                    //Relink stack
-                    if (relinkingExport.HasStack)
-                    {
-                        byte[] stack = relinkingExport.GetStack();
-
-                        int uIndex = BitConverter.ToInt32(stack, 0);
-                        string relinkResult = relinkUIndex(sourceExport.FileRef, relinkingExport, ref uIndex, "Stack: Node",
-                                                           crossPCCObjectMappingList, "", importExportDependencies);
-                        if (relinkResult is null)
-                        {
-                            stack.OverwriteRange(0, BitConverter.GetBytes(uIndex));
-                        }
-                        else
-                        {
-                            relinkFailedReport.Add(relinkResult);
-                        }
-                        uIndex = BitConverter.ToInt32(stack, 4);
-                        relinkResult = relinkUIndex(sourceExport.FileRef, relinkingExport, ref uIndex, "Stack: StateNode",
-                                                           crossPCCObjectMappingList, "", importExportDependencies);
-                        if (relinkResult is null)
-                        {
-                            stack.OverwriteRange(4, BitConverter.GetBytes(uIndex));
-                        }
-                        else
-                        {
-                            relinkFailedReport.Add(relinkResult);
-                        }
-
-                        relinkingExport.SetStack(stack);
-                    }
-
-                    //Relink Properties
-                    PropertyCollection transplantProps = sourceExport.GetProperties();
-                    relinkFailedReport.AddRange(relinkPropertiesRecursive(importpcc, relinkingExport, transplantProps, crossPCCObjectMappingList, "", importExportDependencies));
-                    relinkingExport.WriteProperties(transplantProps);
-
-                    //Relink Binary
-                    try
-                    {
-                        if (relinkingExport.Game != importpcc.Game && (relinkingExport.IsClass || relinkingExport.ClassName == "State" || relinkingExport.ClassName == "Function"))
-                        {
-                            relinkFailedReport.Add($"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed. Cannot port {relinkingExport.ClassName} between games!");
-                            continue;
-                        }
-
-                        if (ObjectBinary.From(relinkingExport) is ObjectBinary objBin)
-                        {
-                            List<(UIndex, string)> indices = objBin.GetUIndexes(relinkingExport.FileRef.Game);
-
-                            foreach ((UIndex uIndex, string propName) in indices)
-                            {
-                                string result = relinkUIndex(importpcc, relinkingExport, ref uIndex.value, $"(Binary Property: {propName})", crossPCCObjectMappingList, "",
-                                                             importExportDependencies);
-                                if (result != null)
-                                {
-                                    relinkFailedReport.Add(result);
-                                }
-                            }
-
-                            //UStruct is abstract baseclass for Class, State, and Function, and can have script in it
-                            if (objBin is UStruct uStructBinary && uStructBinary.ScriptBytes.Length > 0)
-                            {
-                                if (relinkingExport.Game == MEGame.ME3)
-                                {
-                                    (List<Token> tokens, _) = Bytecode.ParseBytecode(uStructBinary.ScriptBytes, sourceExport);
-                                    foreach (Token token in tokens)
-                                    {
-                                        relinkFailedReport.AddRange(RelinkToken(token, uStructBinary.ScriptBytes, sourceExport, relinkingExport, crossPCCObjectMappingList,
-                                                                                importExportDependencies));
-                                    }
-                                }
-                                else
-                                {
-                                    relinkFailedReport.Add($"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed. {relinkingExport.ClassName} contains script, " +
-                                                           $"which cannot be relinked for {relinkingExport.Game}");
-                                }
-                            }
-
-                            relinkingExport.setBinaryData(objBin.ToBytes(relinkingExport.FileRef));
-                            continue;
-                        }
-
-                        byte[] binarydata = relinkingExport.getBinaryData();
-
-                        if (binarydata.Length > 0)
-                        {
-                            switch (relinkingExport.ClassName)
-                            {
-                                //todo: make a WwiseEvent ObjectBinary class
-                                case "WwiseEvent":
-                                    {
-                                        void relinkAtPosition(int binaryPosition, string propertyName)
-                                        {
-                                            int uIndex = BitConverter.ToInt32(binarydata, binaryPosition);
-                                            string relinkResult = relinkUIndex(importpcc, relinkingExport, ref uIndex, propertyName,
-                                                                               crossPCCObjectMappingList, "", importExportDependencies);
-                                            if (relinkResult is null)
-                                            {
-                                                binarydata.OverwriteRange(binaryPosition, BitConverter.GetBytes(uIndex));
-                                            }
-                                            else
-                                            {
-                                                relinkFailedReport.Add(relinkResult);
-                                            }
-                                        }
-
-                                        if (relinkingExport.FileRef.Game == MEGame.ME3)
-                                        {
-                                            int count = BitConverter.ToInt32(binarydata, 0);
-                                            for (int j = 0; j < count; j++)
-                                            {
-                                                relinkAtPosition(4 + (j * 4), $"(Binary Property: WwiseStreams[{j}])");
-                                            }
-
-                                            relinkingExport.setBinaryData(binarydata);
-                                        }
-                                        else if (relinkingExport.FileRef.Game == MEGame.ME2)
-                                        {
-                                            int parsingPos = 4;
-                                            int linkCount = BitConverter.ToInt32(binarydata, parsingPos);
-                                            parsingPos += 4;
-                                            for (int j = 0; j < linkCount; j++)
-                                            {
-                                                int bankcount = BitConverter.ToInt32(binarydata, parsingPos);
-                                                parsingPos += 4;
-                                                for (int k = 0; k < bankcount; k++)
-                                                {
-                                                    relinkAtPosition(parsingPos, $"(Binary Property: link[{j}].WwiseBanks[{k}])");
-
-                                                    parsingPos += 4;
-                                                }
-
-                                                int wwisestreamcount = BitConverter.ToInt32(binarydata, parsingPos);
-                                                parsingPos += 4;
-                                                for (int k = 0; k < wwisestreamcount; k++)
-                                                {
-                                                    relinkAtPosition(parsingPos, $"(Binary Property: link[{j}].WwiseStreams[{k}])");
-
-                                                    parsingPos += 4;
-                                                }
-                                            }
-
-                                            relinkingExport.setBinaryData(binarydata);
-                                        }
-                                    }
-                                    break;
-                                case "DominantDirectionalLightComponent":
-                                case "SphericalHarmonicLightComponent":
-                                case "DominantPointLightComponent":
-                                case "StaticLightCollectionActor":
-                                case "DominantSpotLightComponent":
-                                case "DirectionalLightComponent":
-                                case "StaticMeshCollectionActor":
-                                case "TerrainWeightMapTexture":
-                                case "PhysicsAssetInstance":
-                                case "PointLightComponent":
-                                case "ShadowMapTexture2D":
-                                case "SpotLightComponent":
-                                case "LightMapTexture2D":
-                                case "SkyLightComponent":
-                                case "TextureFlipBook":
-                                case "BrushComponent":
-                                case "FaceFXAnimSet":
-                                case "TextureMovie":
-                                case "AnimSequence":
-                                case "RB_BodySetup":
-                                case "MorphTarget":
-                                case "ShadowMap1D":
-                                case "WwiseStream":
-                                case "WwiseBank":
-                                case "Texture2D":
-                                    //these classes have binary but do not need relinking
-                                    break;
-                                default:
-                                    if (binarydata.Any(b => b != 0))
-                                    {
-                                        relinkFailedReport.Add($"{relinkingExport.UIndex} {relinkingExport.FullPath} has unparsed binary. " +
-                                                               $"This binary may contain items that need to be relinked. Come to the Discord server " +
-                                                               $"(click ME3Tweaks logo in main window for invite) and ask devs to parse this class.");
-                                    }
-                                    break;
-                            }
-                        }
-                    }
-                    catch (Exception e) when (!App.IsDebug)
-                    {
-                        relinkFailedReport.Add($"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed due to exception: {e.Message}");
-                    }
+                    relinkReport.AddRange(Relink(sourceExport, relinkingExport, crossPCCObjectMappingList, importExportDependencies));
                 }
             }
 
             crossPccObjectMap.Clear();
             crossPccObjectMap.AddRange(crossPCCObjectMappingList);
+            return relinkReport;
+        }
+
+        public static List<string> Relink(ExportEntry sourceExport, ExportEntry relinkingExport, OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, bool importExportDependencies = false)
+        {
+            var relinkFailedReport = new List<string>();
+            IMEPackage sourcePcc = sourceExport.FileRef;
+            //Relink stack
+            if (relinkingExport.HasStack)
+            {
+                byte[] stack = relinkingExport.GetStack();
+
+                int uIndex = BitConverter.ToInt32(stack, 0);
+                string relinkResult = relinkUIndex(sourceExport.FileRef, relinkingExport, ref uIndex, "Stack: Node",
+                                                   crossPCCObjectMappingList, "", importExportDependencies);
+                if (relinkResult is null)
+                {
+                    stack.OverwriteRange(0, BitConverter.GetBytes(uIndex));
+                }
+                else
+                {
+                    relinkFailedReport.Add(relinkResult);
+                }
+
+                uIndex = BitConverter.ToInt32(stack, 4);
+                relinkResult = relinkUIndex(sourceExport.FileRef, relinkingExport, ref uIndex, "Stack: StateNode",
+                                            crossPCCObjectMappingList, "", importExportDependencies);
+                if (relinkResult is null)
+                {
+                    stack.OverwriteRange(4, BitConverter.GetBytes(uIndex));
+                }
+                else
+                {
+                    relinkFailedReport.Add(relinkResult);
+                }
+
+                relinkingExport.SetStack(stack);
+            }
+
+            //Relink Properties
+            PropertyCollection transplantProps = sourceExport.GetProperties();
+            relinkFailedReport.AddRange(relinkPropertiesRecursive(sourcePcc, relinkingExport, transplantProps, crossPCCObjectMappingList, "", importExportDependencies));
+            relinkingExport.WriteProperties(transplantProps);
+
+            //Relink Binary
+            try
+            {
+                if (relinkingExport.Game != sourcePcc.Game && (relinkingExport.IsClass || relinkingExport.ClassName == "State" || relinkingExport.ClassName == "Function"))
+                {
+                    relinkFailedReport.Add($"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed. Cannot port {relinkingExport.ClassName} between games!");
+                    return relinkFailedReport;
+                }
+
+                if (ObjectBinary.From(relinkingExport) is ObjectBinary objBin)
+                {
+                    List<(UIndex, string)> indices = objBin.GetUIndexes(relinkingExport.FileRef.Game);
+
+                    foreach ((UIndex uIndex, string propName) in indices)
+                    {
+                        string result = relinkUIndex(sourcePcc, relinkingExport, ref uIndex.value, $"(Binary Property: {propName})", crossPCCObjectMappingList, "",
+                                                     importExportDependencies);
+                        if (result != null)
+                        {
+                            relinkFailedReport.Add(result);
+                        }
+                    }
+
+                    //UStruct is abstract baseclass for Class, State, and Function, and can have script in it
+                    if (objBin is UStruct uStructBinary && uStructBinary.ScriptBytes.Length > 0)
+                    {
+                        if (relinkingExport.Game == MEGame.ME3)
+                        {
+                            (List<Token> tokens, _) = Bytecode.ParseBytecode(uStructBinary.ScriptBytes, sourceExport);
+                            foreach (Token token in tokens)
+                            {
+                                relinkFailedReport.AddRange(RelinkToken(token, uStructBinary.ScriptBytes, sourceExport, relinkingExport, crossPCCObjectMappingList,
+                                                                        importExportDependencies));
+                            }
+                        }
+                        else
+                        {
+                            relinkFailedReport.Add($"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed. {relinkingExport.ClassName} contains script, " +
+                                                   $"which cannot be relinked for {relinkingExport.Game}");
+                        }
+                    }
+
+                    relinkingExport.setBinaryData(objBin.ToBytes(relinkingExport.FileRef));
+                    return relinkFailedReport;
+                }
+
+                byte[] binarydata = relinkingExport.getBinaryData();
+
+                if (binarydata.Length > 0)
+                {
+                    switch (relinkingExport.ClassName)
+                    {
+                        //todo: make a WwiseEvent ObjectBinary class
+                        case "WwiseEvent":
+                        {
+                            void relinkAtPosition(int binaryPosition, string propertyName)
+                            {
+                                int uIndex = BitConverter.ToInt32(binarydata, binaryPosition);
+                                string relinkResult = relinkUIndex(sourcePcc, relinkingExport, ref uIndex, propertyName,
+                                                                   crossPCCObjectMappingList, "", importExportDependencies);
+                                if (relinkResult is null)
+                                {
+                                    binarydata.OverwriteRange(binaryPosition, BitConverter.GetBytes(uIndex));
+                                }
+                                else
+                                {
+                                    relinkFailedReport.Add(relinkResult);
+                                }
+                            }
+
+                            if (relinkingExport.FileRef.Game == MEGame.ME3)
+                            {
+                                int count = BitConverter.ToInt32(binarydata, 0);
+                                for (int j = 0; j < count; j++)
+                                {
+                                    relinkAtPosition(4 + (j * 4), $"(Binary Property: WwiseStreams[{j}])");
+                                }
+
+                                relinkingExport.setBinaryData(binarydata);
+                            }
+                            else if (relinkingExport.FileRef.Game == MEGame.ME2)
+                            {
+                                int parsingPos = 4;
+                                int linkCount = BitConverter.ToInt32(binarydata, parsingPos);
+                                parsingPos += 4;
+                                for (int j = 0; j < linkCount; j++)
+                                {
+                                    int bankcount = BitConverter.ToInt32(binarydata, parsingPos);
+                                    parsingPos += 4;
+                                    for (int k = 0; k < bankcount; k++)
+                                    {
+                                        relinkAtPosition(parsingPos, $"(Binary Property: link[{j}].WwiseBanks[{k}])");
+
+                                        parsingPos += 4;
+                                    }
+
+                                    int wwisestreamcount = BitConverter.ToInt32(binarydata, parsingPos);
+                                    parsingPos += 4;
+                                    for (int k = 0; k < wwisestreamcount; k++)
+                                    {
+                                        relinkAtPosition(parsingPos, $"(Binary Property: link[{j}].WwiseStreams[{k}])");
+
+                                        parsingPos += 4;
+                                    }
+                                }
+
+                                relinkingExport.setBinaryData(binarydata);
+                            }
+                        }
+                            break;
+                        case "DominantDirectionalLightComponent":
+                        case "SphericalHarmonicLightComponent":
+                        case "DominantPointLightComponent":
+                        case "StaticLightCollectionActor":
+                        case "DominantSpotLightComponent":
+                        case "DirectionalLightComponent":
+                        case "StaticMeshCollectionActor":
+                        case "TerrainWeightMapTexture":
+                        case "PhysicsAssetInstance":
+                        case "PointLightComponent":
+                        case "ShadowMapTexture2D":
+                        case "SpotLightComponent":
+                        case "LightMapTexture2D":
+                        case "SkyLightComponent":
+                        case "TextureFlipBook":
+                        case "BrushComponent":
+                        case "FaceFXAnimSet":
+                        case "TextureMovie":
+                        case "AnimSequence":
+                        case "RB_BodySetup":
+                        case "MorphTarget":
+                        case "ShadowMap1D":
+                        case "WwiseStream":
+                        case "WwiseBank":
+                        case "Texture2D":
+                            //these classes have binary but do not need relinking
+                            break;
+                        default:
+                            if (binarydata.Any(b => b != 0))
+                            {
+                                relinkFailedReport.Add($"{relinkingExport.UIndex} {relinkingExport.FullPath} has unparsed binary. " +
+                                                       $"This binary may contain items that need to be relinked. Come to the Discord server " +
+                                                       $"(click ME3Tweaks logo in main window for invite) and ask devs to parse this class.");
+                            }
+
+                            break;
+                    }
+                }
+            }
+            catch (Exception e) when (!App.IsDebug)
+            {
+                relinkFailedReport.Add($"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed due to exception: {e.Message}");
+            }
+
             return relinkFailedReport;
         }
 
@@ -238,7 +249,7 @@ namespace ME3Explorer
             var relinkResults = new List<string>();
             foreach (UProperty prop in transplantProps)
             {
-                Debug.WriteLine($"{prefix} Relink recursive on {prop.Name}");
+                //Debug.WriteLine($"{prefix} Relink recursive on {prop.Name}");
                 if (prop is StructProperty structProperty)
                 {
                     relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, relinkingExport, structProperty.Properties, crossPCCObjectMappingList,
@@ -305,14 +316,14 @@ namespace ME3Explorer
             }
             int sourceObjReference = uIndex;
 
-            Debug.WriteLine($"{prefix} Relinking:{propertyName}");
+            //Debug.WriteLine($"{prefix} Relinking:{propertyName}");
 
             if (crossPCCObjectMappingList.TryGetValue(entry => entry.UIndex == sourceObjReference, out IEntry targetEntry))
             {
                 //relink
                 uIndex = targetEntry.UIndex;
 
-                Debug.WriteLine($"{prefix} Relink hit: {sourceObjReference}{propertyName} : {targetEntry.FullPath}");
+                //Debug.WriteLine($"{prefix} Relink hit: {sourceObjReference}{propertyName} : {targetEntry.FullPath}");
             }
             else if (uIndex < 0) //It's an unmapped import
             {
@@ -347,7 +358,7 @@ namespace ME3Explorer
                     {
                         crossPCCObjectMappingList.Add(origImport, crossImport); //add to mapping to speed up future relinks
                         uIndex = crossImport.UIndex;
-                        Debug.WriteLine($"Relink hit: Dynamic CrossImport for {origvalue} {importingPCC.GetEntry(origvalue).FullPath} -> {uIndex}");
+                       // Debug.WriteLine($"Relink hit: Dynamic CrossImport for {origvalue} {importingPCC.GetEntry(origvalue).FullPath} -> {uIndex}");
 
                     }
                     else
@@ -380,8 +391,7 @@ namespace ME3Explorer
                 existingEntry ??= destinationPcc.Imports.FirstOrDefault(x => x.FullPath == fullPath);
                 if (existingEntry != null)
                 {
-                    Debug.WriteLine($"Relink hit [EXPERIMENTAL]: Existing entry in file was found, linking to it:  " +
-                                    $"{uIndex} {sourceExport.InstancedFullPath} -> {existingEntry.InstancedFullPath}");
+                    //Debug.WriteLine($"Relink hit [EXPERIMENTAL]: Existing entry in file was found, linking to it:  {uIndex} {sourceExport.InstancedFullPath} -> {existingEntry.InstancedFullPath}");
                     uIndex = existingEntry.UIndex;
 
                 }

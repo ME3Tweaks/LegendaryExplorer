@@ -136,9 +136,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
 
             int mipCount = bin.ReadInt32();
+            long mipCountPosition = os.Position;
             os.WriteInt32(mipCount);
             List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, export.GetProperty<NameProperty>("TextureFileCacheName")?.Value);
             int offsetIdx = 0;
+            int trueMipCount = 0;
             for (int i = 0; i < mipCount; i++)
             {
                 var storageType = (StorageTypes)bin.ReadInt32();
@@ -184,7 +186,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
                 int width = bin.ReadInt32();
                 int height = bin.ReadInt32();
-
+                if (storageType == StorageTypes.empty)
+                {
+                    continue;
+                }
+                trueMipCount++;
                 os.WriteInt32((int)storageType);
                 os.WriteInt32(uncompressedSize);
                 os.WriteInt32(compressedSize);
@@ -194,6 +200,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 os.WriteInt32(height);
 
             }
+
+            long postMipPosition = os.Position;
+            os.JumpTo(mipCountPosition);
+            os.WriteInt32(trueMipCount);
+            os.JumpTo(postMipPosition);
 
             int unk1 = 0;
             if (export.Game != MEGame.UDK)
