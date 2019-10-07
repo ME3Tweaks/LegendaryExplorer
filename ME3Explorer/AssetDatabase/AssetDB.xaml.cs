@@ -249,7 +249,7 @@ namespace ME3Explorer.AssetDatabase
             var start = DateTime.UtcNow;
 
             ////Async load
-            PropsDataBase pdb = await ParseDBAsync(); //THIS STILL FREEZES THE UI THREAD....
+            PropsDataBase pdb = await ParseDBAsync(currentGame, CurrentDBPath);
             CurrentDataBase.meGame = pdb.meGame;
             CurrentDataBase.GenerationDate = pdb.GenerationDate;
             CurrentDataBase.DataBaseversion = pdb.DataBaseversion;
@@ -291,46 +291,58 @@ namespace ME3Explorer.AssetDatabase
             CurrentOverallOperationText = $"{CurrentOverallOperationText} LoadTime: {length}ms";
 #endif
         }
-        public async Task<PropsDataBase> ParseDBAsync()
+        public async Task<PropsDataBase> ParseDBAsync(MEGame dbgame, string dbpath)
         {
             deserializingQueue = new BlockingCollection<PropsDataBase>();
-            var readData = new PropsDataBase();
+            
             try
             {
-                Dictionary<string, ZipArchiveEntry> archiveEntries = new Dictionary<string, ZipArchiveEntry>();
-                using (ZipArchive archive = new ZipArchive((Stream)new FileStream(CurrentDBPath, FileMode.Open)))
+                await Task.Run(() =>
                 {
-                    if (archive.Entries.Count == 1)
+                    Dictionary<string, ZipArchiveEntry> archiveEntries = new Dictionary<string, ZipArchiveEntry>();
+                    using (ZipArchive archive = new ZipArchive((Stream)new FileStream(dbpath, FileMode.Open)))
                     {
-                        PropsDataBase pdb = new PropsDataBase();
-                        var jsonstream = archive.GetEntry($"AssetDB{currentGame}.json").Open();
-                        using (StreamReader sr = new StreamReader(jsonstream))
+                        if (archive.Entries.Count == 1)
                         {
-                            using (JsonReader reader = new JsonTextReader(sr))
+                            PropsDataBase pdb = new PropsDataBase();
+                            var jsonstream = archive.GetEntry($"AssetDB{dbgame}.json").Open();
+                            using (StreamReader sr = new StreamReader(jsonstream))
                             {
-                                var Serializer = new JsonSerializer();
-                                pdb = Serializer.Deserialize<PropsDataBase>(reader);
+                                using (JsonReader reader = new JsonTextReader(sr))
+                                {
+                                    var Serializer = new JsonSerializer();
+                                    pdb = Serializer.Deserialize<PropsDataBase>(reader);
+                                }
+                            }
+                            pdb.DataBaseversion = "CONVERT";
+                            deserializingQueue.Add(pdb);
+                            deserializingQueue.CompleteAdding();
+                        }
+                        else
+                        {
+
+                            foreach (ZipArchiveEntry entry in archive.Entries)
+                            {
+                                string dbType = entry.Name.Substring(0, entry.Name.Length - 10);
+                                var ms = new MemoryStream();
+                                using (Stream estream = entry.Open())
+                                {
+                                    estream.CopyTo(ms);
+                                }
+                                ms.Position = 0;
+                                var unitTask = Task.Factory.StartNew(() => JsonFileParse(ms, dbType));
                             }
                         }
-                        pdb.DataBaseversion = "CONVERT";
-                        deserializingQueue.Add(pdb);
-                        deserializingQueue.CompleteAdding();
                     }
-                    else
-                    {
-                        string path = Path.GetFullPath(App.AppDataFolder);
-                        foreach (var f in Directory.GetFiles(path, $"*DB{currentGame}.json", SearchOption.TopDirectoryOnly).ToList())
-                        {
-                            File.Delete(f);  //Clear up temp files if crash
-                        }
-
-                        await Task.Run(() => archive.ExtractToDirectory(path));  //TO DO: Find out how to pass streams rather than files
-                        foreach (ZipArchiveEntry entry in archive.Entries)
-                        {
-                            var unitTask = Task.Factory.StartNew(() => JsonFileParse(entry.FullName));
-                        }
-                    }
-                }
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error ParseDB");
+            }
+            return await Task<PropsDataBase>.Run(() =>
+            {
+                var readData = new PropsDataBase();
 
                 int n = 0;
                 foreach (PropsDataBase pdb in deserializingQueue.GetConsumingEnumerable())
@@ -349,7 +361,6 @@ namespace ME3Explorer.AssetDatabase
                             readData.Meshes.AddRange(pdb.Meshes);
                             readData.Particles.AddRange(pdb.Particles);
                             readData.Textures.AddRange(pdb.Textures);
-
                             break;
                         case "Mat":
                             readData.Materials.AddRange(pdb.Materials);
@@ -376,21 +387,16 @@ namespace ME3Explorer.AssetDatabase
                     }
                     if (n == 6) { deserializingQueue.CompleteAdding(); }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error ParseDB");
-            }
-            return readData;
+
+                return readData;
+            });
         }
-        private void JsonFileParse(string filename)
+        private void JsonFileParse(MemoryStream ms, string dbType)
         {
-            string dbType = filename.Substring(0, filename.Length - 10);
+            
             PropsDataBase readData = new PropsDataBase();
             readData.DataBaseversion = dbType;
-            string filepath = Path.Combine(App.AppDataFolder, filename);
-            using (FileStream fs = new FileStream(filepath, FileMode.Open))
-            using (StreamReader sr = new StreamReader(fs))
+            using (StreamReader sr = new StreamReader(ms))
             {
                 using (JsonTextReader reader = new JsonTextReader(sr))
                 {
@@ -438,7 +444,7 @@ namespace ME3Explorer.AssetDatabase
 
             deserializingQueue.Add(readData);
 
-            File.Delete(filepath);
+            //File.Delete(filepath);
         }
         public async void SaveDatabase()
         {
@@ -746,7 +752,7 @@ namespace ME3Explorer.AssetDatabase
             var selected = item.SelectedItem as TabItem;
             var unselected = e.RemovedItems[0] as TabItem;
 
-            if (unselected != null && selected.TabIndex != unselected.TabIndex)
+            if (selected != null && unselected != null && selected?.TabIndex != unselected.TabIndex)
             {
                 FilterBox.Clear();
                 Filter();
