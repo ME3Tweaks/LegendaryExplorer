@@ -22,8 +22,10 @@ using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
+using SharpDX;
 using StreamHelpers;
 using Matrix = SharpDX.Matrix;
+using Point = System.Windows.Point;
 
 namespace ME3Explorer
 {
@@ -787,7 +789,7 @@ namespace ME3Explorer
         /// Converts Degrees to Unreal rotation units
         /// </summary>
         public static int ToUnrealRotationUnits(this float degrees) => Convert.ToInt32(degrees * 65536f / 360f);
-
+        
         /// <summary>
         /// Converts Unreal rotation units to Degrees
         /// </summary>
@@ -904,18 +906,26 @@ namespace ME3Explorer
 
         public static Rotator GetRotator(this Matrix m)
         {
-            //https://stackoverflow.com/a/50240439/1968930
-            var roll = Math.Atan2(m[1, 2], m[2, 2]);
-            var c2 = Math.Sqrt(Math.Pow(m[0, 0], 2) + Math.Pow(m[0, 1], 2));
-            var pitch = Math.Atan2(-m[0, 2], c2);
-            var s1 = Math.Sin(roll);
-            var c1 = Math.Cos(roll);
-            var yaw = Math.Atan2(s1 * m[2, 0] - c1 * m[1, 0], c1 * m[1, 1] - s1 * m[2, 1]);
+            var xAxis = new Vector3(m[0, 0], m[0, 1], m[0, 2]);
+            var yAxis = new Vector3(m[1, 0], m[1, 1], m[1, 2]);
+            var zAxis = new Vector3(m[2, 0], m[2, 1], m[2, 2]);
+
+            var pitch = Math.Atan2(xAxis.Z, Math.Sqrt(Math.Pow(xAxis.X, 2) + Math.Pow(xAxis.Y, 2)));
+            var yaw = Math.Atan2(xAxis.Y, xAxis.X);
+
+            var sy = Math.Sin(yaw);
+            var cy = Math.Cos(yaw);
+
+
+            var syAxis = new Vector3((float)-sy, (float)cy, 0f);
+
+            var roll = Math.Atan2(Vector3.Dot(zAxis, syAxis), Vector3.Dot(yAxis, syAxis));
+
             return new Rotator(RadToURR(pitch), RadToURR(yaw), RadToURR(roll));
 
             static int RadToURR(double d)
             {
-                return ((float)(d * (180.0/Math.PI))).ToUnrealRotationUnits();
+                return ((float)(d * (180.0 / Math.PI))).ToUnrealRotationUnits();
             }
         }
     }

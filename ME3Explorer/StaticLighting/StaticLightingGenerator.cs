@@ -5,9 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
+using ME3Explorer.Unreal.Classes;
 using SharpDX;
 
 namespace ME3Explorer.StaticLighting
@@ -16,6 +18,8 @@ namespace ME3Explorer.StaticLighting
     {
         public static void GenerateUDKFileForLevel(IMEPackage pcc)
         {
+            #region AssetPackage
+
             string meshPackageName = $"{Path.GetFileNameWithoutExtension(pcc.FilePath)}Meshes";
             string meshFile = Path.Combine(@"C:\UDK\Custom\UDKGame\Content\Shared\", $"{meshPackageName}.upk");
             MEPackageHandler.CreateAndSavePackage(meshFile, MEGame.UDK);
@@ -23,16 +27,21 @@ namespace ME3Explorer.StaticLighting
             meshPackage.getEntryOrAddImport("Core.Package");
 
             IEntry defMat = meshPackage.getEntryOrAddImport("EngineMaterials.DefaultMaterial", "Material", "Engine");
+            var allMats = new HashSet<int>();
+            var relinkMap = new Dictionary<IEntry, IEntry>();
+            #region StaticMeshes
 
             List<ExportEntry> staticMeshes = pcc.Exports.Where(exp => exp.ClassName == "StaticMesh").ToList();
-
             foreach (ExportEntry mesh in staticMeshes)
             {
+                var mats = new Queue<int>();
                 StaticMesh stm = ObjectBinary.From<StaticMesh>(mesh);
                 foreach (StaticMeshRenderData lodModel in stm.LODModels)
                 {
                     foreach (StaticMeshElement meshElement in lodModel.Elements)
                     {
+                        mats.Enqueue(meshElement.Material);
+                        allMats.Add(meshElement.Material);
                         meshElement.Material = 0;
                     }
                 }
@@ -42,19 +51,103 @@ namespace ME3Explorer.StaticLighting
                 }
                 mesh.setBinaryData(stm.ToBytes(pcc));
                 IEntry newParent = EntryImporter.GetOrAddCrossImportOrPackage(mesh.ParentFullPath, pcc, meshPackage);
-                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, mesh, meshPackage, newParent, true, out IEntry ent);
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, mesh, meshPackage, newParent, false, out IEntry ent, relinkMap);
                 ExportEntry portedMesh = (ExportEntry)ent;
                 stm = ObjectBinary.From<StaticMesh>(portedMesh);
                 foreach (StaticMeshRenderData lodModel in stm.LODModels)
                 {
                     foreach (StaticMeshElement meshElement in lodModel.Elements)
                     {
-                        meshElement.Material = defMat.UIndex;
+                        meshElement.Material = mats.Dequeue();
                     }
                 }
                 portedMesh.setBinaryData(stm.ToBytes(meshPackage));
             }
+
+            #endregion
+
+            #region Materials
+            using (IMEPackage udkResources = MEPackageHandler.OpenUDKPackage(App.CustomResourceFilePath(MEGame.UDK)))
+            {
+                ExportEntry normDiffMat = udkResources.Exports.First(exp => exp.ObjectName == "NormDiffMat");
+                foreach (int matUIndex in allMats)
+                {
+                    if (pcc.GetEntry(matUIndex) is ExportEntry matExp)
+                    {
+                        List<IEntry> textures = new MaterialInstanceConstant(matExp).Textures;
+                        ExportEntry diff = null;
+                        ExportEntry norm = null;
+                        foreach (IEntry texEntry in textures)
+                        {
+                            if (texEntry is ExportEntry texport)
+                            {
+                                if (texport.ObjectName.Name.ToLower().Contains("diff"))
+                                {
+                                    diff = texport;
+                                }
+                                else if (texport.ObjectName.Name.ToLower().Contains("norm"))
+                                {
+                                    norm = texport;
+                                }
+                            }
+                        }
+                        if (diff == null)
+                        {
+                            relinkMap[matExp] = defMat;
+                            continue;
+                        }
+                        else
+                        {
+                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, diff, meshPackage, null, false, out IEntry ent);
+                            diff = (ExportEntry)ent;
+                            diff.RemoveProperty("TextureFileCacheName");
+                            diff.RemoveProperty("TFCFileGuid");
+                            diff.RemoveProperty("LODGroup");
+                        }
+                        if (norm != null)
+                        {
+                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, norm, meshPackage, null, false, out IEntry ent);
+                            norm = (ExportEntry)ent;
+                            norm.RemoveProperty("TextureFileCacheName");
+                            norm.RemoveProperty("TFCFileGuid");
+                            norm.RemoveProperty("LODGroup");
+                        }
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, normDiffMat, meshPackage, null, true, out IEntry matEnt);
+                        ExportEntry newMat = (ExportEntry)matEnt;
+                        newMat.ObjectName = matExp.ObjectName;
+                        Material matBin = ObjectBinary.From<Material>(newMat);
+                        matBin.SM3MaterialResource.UniformExpressionTextures = new UIndex[]{ norm?.UIndex ?? 0, diff.UIndex };
+                        newMat.setBinaryData(matBin);
+                        relinkMap[matExp] = newMat;
+                        if (newMat.GetProperty<ArrayProperty<ObjectProperty>>("Expressions") is {} expressionsProp && expressionsProp.Count >= 2)
+                        {
+                            ExportEntry diffExpression = meshPackage.GetUExport(expressionsProp[0].Value);
+                            ExportEntry normExpression = meshPackage.GetUExport(expressionsProp[1].Value);
+                            diffExpression.WriteProperty(new ObjectProperty(diff.UIndex, "Texture"));
+                            normExpression.WriteProperty(new ObjectProperty(norm?.UIndex ?? 0, "Texture"));
+                        }
+                    }
+                    else if (pcc.GetEntry(matUIndex) is ImportEntry matImp)
+                    {
+                        relinkMap[matImp] = defMat;
+                    }
+                }
+
+                var relinkMapping = new OrderedMultiValueDictionary<IEntry, IEntry>(relinkMap);
+                foreach (ExportEntry stmExport in staticMeshes)
+                {
+                    if (relinkMap.TryGetValue(stmExport, out IEntry destEnt) && destEnt is ExportEntry destExp)
+                    {
+                        Relinker.Relink(stmExport, destExp, relinkMapping);
+                    }
+                }
+            }
+            #endregion
+
+
             meshPackage.Save();
+
+            #endregion
 
 
             var staticMeshActors = new List<ExportEntry>();
@@ -123,6 +216,7 @@ namespace ME3Explorer.StaticLighting
                             //StructProperty scaleProp;
                             smc.CondenseArchetypes();
                             smc.setBinaryData(emptySMCBin);
+                            smc.RemoveProperty("bBioIsReceivingDecals");
                             smc.RemoveProperty("bBioForcePreComputedShadows");
                             smc.RemoveProperty("bUsePreComputedShadows");
                             smc.RemoveProperty("bAcceptsLights");
@@ -156,7 +250,8 @@ namespace ME3Explorer.StaticLighting
                             var props = new PropertyCollection
                             {
                                 new ObjectProperty(result.UIndex, "StaticMeshComponent"),
-                                new NameProperty("StaticMeshActor", "Tag"),
+                                new NameProperty(new NameReference(Path.GetFileNameWithoutExtension(smc.FileRef.FilePath), smc.UIndex),
+                                                 "Tag"),
                                 new ObjectProperty(result.UIndex, "CollisionComponent")
                             };
                             if (locationProp != null)

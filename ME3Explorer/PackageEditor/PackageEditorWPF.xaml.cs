@@ -613,7 +613,7 @@ namespace ME3Explorer
         {
             Debug.WriteLine("Performing multi-relink");
             var entry = crossPCCObjectMap.Keys.FirstOrDefault();
-            var relinkResults = Relinker.RelinkAll(crossPCCObjectMap, entry.FileRef);
+            var relinkResults = Relinker.RelinkAll(crossPCCObjectMap);
             crossPCCObjectMap.Clear();
 
 
@@ -3141,7 +3141,7 @@ namespace ME3Explorer
                     }
                 }
 
-                Relinker.RelinkAll(objectMap, sourceFile);
+                Relinker.RelinkAll(objectMap);
 
                 xPos -= (itemsToAddToLevel.Count / 2) * 55.0f;
                 foreach (ExportEntry addingExport in itemsToAddToLevel)
