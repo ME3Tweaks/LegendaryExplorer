@@ -3998,6 +3998,7 @@ namespace ME3Explorer.Unreal
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, field));
 
             int type = BitConverter.ToInt32(memory, start + 5);
+            t.inPackageReferences.Add((start + 5, Token.INPACKAGEREFTYPE_ENTRY, type));
             int skip = BitConverter.ToInt16(memory, start + 7);
             int pos = start + 11;
             Token a = ReadToken(pos, export);
@@ -4603,7 +4604,8 @@ namespace ME3Explorer.Unreal
             int pos = start + a.raw.Length + 1;
             int expSize = BitConverter.ToInt16(memory, pos);
             pos += 2;
-            int bSize = memory[pos];
+            int unkRef = BitConverter.ToInt32(memory, pos);
+            t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_ENTRY, unkRef));
             pos += 5;
             Token b = ReadToken(pos, export);
             t.inPackageReferences.AddRange(b.inPackageReferences);

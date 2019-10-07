@@ -99,6 +99,19 @@ namespace ME3Explorer.Packages
             NameCount = names.Count;
         }
 
+        public int GetNextIndexForName(string name)
+        {
+            int index = 0;
+            foreach (ExportEntry ent in exports)
+            {
+                if (name == ent.ObjectName && ent.ObjectName.Number > index)
+                {
+                    index = ent.ObjectName.Number;
+                }
+            }
+            return index + 1;
+        }
+
         #endregion
 
         #region Exports

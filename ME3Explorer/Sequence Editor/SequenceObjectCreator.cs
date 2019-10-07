@@ -113,7 +113,11 @@ namespace ME3Explorer.Sequence_Editor
                     {
                         filepath = info.pccPath; //Used for dynamic lookup
                     }
-                    if (game == MEGame.ME1 && !File.Exists(filepath))
+                    else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                    {
+                        filepath = App.CustomResourceFilePath(game);
+                    }
+                    else if (game == MEGame.ME1)
                     {
                         filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
                     }

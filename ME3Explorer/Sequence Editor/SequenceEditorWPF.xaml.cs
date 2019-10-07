@@ -160,8 +160,9 @@ namespace ME3Explorer.Sequence_Editor
             ExportEntry newSeqObj = new ExportEntry(Pcc, properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info))
             {
                 Class = classEntry,
-                ObjectName = info.ClassName
+                ObjectName = new NameReference(info.ClassName, Pcc.GetNextIndexForName(info.ClassName))
             };
+            newSeqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             Pcc.AddExport(newSeqObj);
             addObject(newSeqObj);
         }

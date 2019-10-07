@@ -303,6 +303,10 @@ namespace ME2Explorer.Unreal
                     {
                         filepath = info.pccPath; //Used for dynamic lookup
                     }
+                    else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                    {
+                        filepath = App.CustomResourceFilePath(MEGame.ME2);
+                    }
                     if (File.Exists(filepath))
                     {
                         using (IMEPackage importPCC = MEPackageHandler.OpenME2Package(filepath))

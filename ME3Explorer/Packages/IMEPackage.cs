@@ -165,6 +165,8 @@ namespace ME3Explorer.Packages
         string getObjectName(int index);
         string GetNameEntry(int index);
 
+        int GetNextIndexForName(string name);
+
         //editing
         void addName(string name);
         int FindNameOrAdd(string name);

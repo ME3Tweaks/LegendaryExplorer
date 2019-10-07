@@ -134,7 +134,7 @@ namespace ME3Explorer.Packages
             UProperty propToRemove = null;
             foreach (UProperty prop in props)
             {
-                if (prop.Name.Name == propname)
+                if (prop.Name == propname)
                 {
                     propToRemove = prop;
                     break;

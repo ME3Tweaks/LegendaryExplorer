@@ -217,10 +217,11 @@ namespace ME3Explorer.StaticLighting
                             smc.CondenseArchetypes();
                             smc.setBinaryData(emptySMCBin);
                             smc.RemoveProperty("bBioIsReceivingDecals");
-                            smc.RemoveProperty("bBioForcePreComputedShadows");
-                            smc.RemoveProperty("bUsePreComputedShadows");
+                            smc.RemoveProperty("bBioForcePrecomputedShadows");
+                            //smc.RemoveProperty("bUsePreComputedShadows");
                             smc.RemoveProperty("bAcceptsLights");
                             smc.RemoveProperty("IrrelevantLights");
+                            smc.RemoveProperty("Materials"); //should make use of this?
                             smc.ObjectName = new NameReference("StaticMeshComponent", smcIndex++);
                             if (parent.ClassName == "StaticMeshCollectionActor")
                             {

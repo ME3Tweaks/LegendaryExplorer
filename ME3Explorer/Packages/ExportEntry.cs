@@ -636,22 +636,12 @@ namespace ME3Explorer.Packages
 
         public ExportEntry Clone()
         {
-            int index = 0;
-            string name = ObjectName.Name;
-            foreach (ExportEntry ent in FileRef.Exports)
-            {
-                if (name == ent.ObjectName.Name && ent.ObjectName.Number > index)
-                {
-                    index = ent.ObjectName.Number;
-                }
-            }
-            index++;
             return new ExportEntry(FileRef)
             {
                 _header = _header.TypedClone(),
                 HeaderOffset = 0,
                 Data = this.Data,
-                indexValue = index
+                indexValue = FileRef.GetNextIndexForName(ObjectName)
             };
         }
     }

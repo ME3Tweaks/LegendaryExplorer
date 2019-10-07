@@ -84,6 +84,10 @@ namespace ME3Explorer.Unreal
                         {
                             filepath = info.pccPath; //Used for dynamic lookup
                         }
+                        else if (info.pccPath == Me3ExplorerCustomNativeAdditionsName)
+                        {
+                            filepath = App.CustomResourceFilePath(game);
+                        }
                         if (game == MEGame.ME1 && !File.Exists(filepath))
                         {
                             filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
@@ -633,6 +637,10 @@ namespace ME3Explorer.Unreal
                         if (File.Exists(info.pccPath))
                         {
                             filepath = info.pccPath; //Used for dynamic lookup
+                        }
+                        else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                        {
+                            filepath = App.CustomResourceFilePath(MEGame.ME3);
                         }
                         if (File.Exists(filepath))
                         {
