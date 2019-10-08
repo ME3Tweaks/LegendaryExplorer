@@ -96,7 +96,7 @@
                 </StatusBarItem>
             </StatusBar>
             <DockPanel Name="MidDock">
-                <TabControl SelectedIndex="{Binding currentView, Mode=OneWayToSource}" SelectionChanged="TabControl_SelectionChanged">
+                <TabControl SelectedIndex="{Binding currentView, Mode=TwoWay}" SelectionChanged="TabControl_SelectionChanged">
                     <!-- Classes-->
                     <TabItem Header="Classes" TabIndex="0">
                         <DockPanel>
@@ -491,7 +491,7 @@
                     <!-- FileList -->
                     <TabItem Header="Files" TabIndex="6">
                         <DockPanel>
-                            <SharedUI:ListBoxScroll x:Name="lstbx_Files" DockPanel.Dock="Left" MinWidth="300" >
+                            <SharedUI:ListBoxScroll x:Name="lstbx_Files" DockPanel.Dock="Left" MinWidth="300">
                                 <SharedUI:ListBoxScroll.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Open in Package Editor" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this file in Package Editor.">
@@ -499,7 +499,7 @@
                                                 <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
                                             </MenuItem.Icon>
                                         </MenuItem>
-                                        <MenuItem Header="Open in Sequence Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="SeqEd" ToolTip="Opens this file in Sequence Editor." >
+                                        <MenuItem Header="Open in Sequence Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="SeqEd" ToolTip="Opens this file in Sequence Editor.">
                                             <MenuItem.Icon>
                                                 <Image Source="/Resources/sequenceeditor_256x256.ico" Width="64"/>
                                             </MenuItem.Icon>
@@ -532,7 +532,7 @@
                 <StackPanel DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
                     <TextBlock Text="{Binding BusyHeader}" FontWeight="Bold" TextAlignment="Center"/>
                     <TextBlock Text="{Binding BusyText}"/>
-                    <ProgressBar Value="{Binding OverallProgressValue}" Maximum="{Binding OverallProgressMaximum}" IsIndeterminate="{Binding BusyUnk}"  Margin="0,5,0,0" Height="15" />
+                    <ProgressBar Value="{Binding OverallProgressValue}" Maximum="{Binding OverallProgressMaximum}" IsIndeterminate="{Binding BusyBarInd}"  Margin="0,5,0,0" Height="15" />
                     <Button Content="Cancel" HorizontalAlignment="center" Margin="0,5,0,0" Padding="3"  Command="{Binding CancelDumpCommand}"/>
                 </StackPanel>
             </DataTemplate>

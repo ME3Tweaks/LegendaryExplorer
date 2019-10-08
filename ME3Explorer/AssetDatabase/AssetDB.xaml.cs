@@ -44,8 +44,8 @@ namespace ME3Explorer.AssetDatabase
         public string BusyText { get => _busyText; set => SetProperty(ref _busyText, value); }
         private string _busyHeader;
         public string BusyHeader { get => _busyHeader; set => SetProperty(ref _busyHeader, value); }
-        private bool _busyUnk;
-        public bool BusyUnk { get => _busyUnk; set => SetProperty(ref _busyUnk, value); }
+        private bool _BusyBarInd;
+        public bool BusyBarInd { get => _BusyBarInd; set => SetProperty(ref _BusyBarInd, value); }
         public MEGame currentGame { get; set; }
         private string CurrentDBPath { get; set; }
         public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, null, new List<string>(), new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(),
@@ -123,7 +123,7 @@ namespace ME3Explorer.AssetDatabase
             get => _overallProgressMaximum;
             set => SetProperty(ref _overallProgressMaximum, value);
         }
-        public ICollectionView filesFiltered { get; set; }
+        //public ICollectionView filesFiltered { get; set; }
         private IMEPackage meshPcc;
         private IMEPackage textPcc;
         public ICommand GenerateDBCommand { get; set; }
@@ -208,7 +208,7 @@ namespace ME3Explorer.AssetDatabase
             BusyHeader = "Loading database";
             BusyText = "Please wait...";
             IsBusy = true;
-            BusyUnk = true;
+            BusyBarInd = true;
 
             if (CurrentDBPath != null && CurrentDBPath.EndsWith("zip") && File.Exists(CurrentDBPath) && currentGame != MEGame.Unknown && currentGame != MEGame.UDK)
             {
@@ -239,111 +239,110 @@ namespace ME3Explorer.AssetDatabase
         #region Database I/O        
         public async void LoadDatabase()
         {
-            if (CurrentDBPath == null)
+
+            CurrentOverallOperationText = "Loading database";
+            BusyHeader = "Loading database";
+            BusyText = "Please wait...";
+            BusyBarInd = true;
+            IsBusy = true;
+
+            var start = DateTime.UtcNow;
+
+            ////Async load
+            PropsDataBase pdb = await ParseDBAsync(currentGame, CurrentDBPath);
+            CurrentDataBase.meGame = pdb.meGame;
+            CurrentDataBase.GenerationDate = pdb.GenerationDate;
+            CurrentDataBase.DataBaseversion = pdb.DataBaseversion;
+            CurrentDataBase.FileList.AddRange(pdb.FileList);
+            CurrentDataBase.ClassRecords.AddRange(pdb.ClassRecords);
+            CurrentDataBase.Materials.AddRange(pdb.Materials);
+            CurrentDataBase.Animations.AddRange(pdb.Animations);
+            CurrentDataBase.Meshes.AddRange(pdb.Meshes);
+            CurrentDataBase.Particles.AddRange(pdb.Particles);
+            CurrentDataBase.Textures.AddRange(pdb.Textures);
+
+            if (CurrentDataBase.DataBaseversion == null || CurrentDataBase.DataBaseversion != dbCurrentBuild)
             {
-                IsBusy = false;
-                return;
-            }
-
-            if (File.Exists(CurrentDBPath))
-            {
-                CurrentOverallOperationText = "Loading database";
-                BusyHeader = "Loading database";
-                BusyText = "Please wait...";
-                BusyUnk = true;
-                IsBusy = true;
-
-                var start = DateTime.UtcNow;
-
-                ////Async load
-                PropsDataBase pdb = await ParseDBAsync(); //THIS STILL FREEZES THE UI THREAD....
-                CurrentDataBase.meGame = pdb.meGame;
-                CurrentDataBase.GenerationDate = pdb.GenerationDate;
-                CurrentDataBase.DataBaseversion = pdb.DataBaseversion;
-                CurrentDataBase.FileList.AddRange(pdb.FileList);
-                CurrentDataBase.ClassRecords.AddRange(pdb.ClassRecords);
-                CurrentDataBase.Materials.AddRange(pdb.Materials);
-                CurrentDataBase.Animations.AddRange(pdb.Animations);
-                CurrentDataBase.Meshes.AddRange(pdb.Meshes);
-                CurrentDataBase.Particles.AddRange(pdb.Particles);
-                CurrentDataBase.Textures.AddRange(pdb.Textures);
-
-                if (CurrentDataBase.DataBaseversion == null || CurrentDataBase.DataBaseversion != dbCurrentBuild)
+                if (CurrentDataBase.DataBaseversion == "CONVERSION")
                 {
-                    if (CurrentDataBase.DataBaseversion == "CONVERSION")
+                    CurrentDataBase.DataBaseversion = dbCurrentBuild;
+                    SaveDatabase();
+                    MessageBox.Show($"{currentGame} database was at version 1.0.  It has been converted to v{dbCurrentBuild}", "Asset Database", MessageBoxButton.OK);
+                }
+                else
+                {
+                    var warn = MessageBox.Show("This database is out of date. A new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
+                    if (warn != MessageBoxResult.Cancel)
                     {
-                        CurrentDataBase.DataBaseversion = dbCurrentBuild;
-                        SaveDatabase();
-                        MessageBox.Show($"{currentGame} database was at version 1.0.  It has been converted to v{dbCurrentBuild}", "Asset Database", MessageBoxButton.OK);
-                    }
-                    else
-                    {
-                        var warn = MessageBox.Show("This database is out of date. A new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
-                        if (warn != MessageBoxResult.Cancel)
-                        {
-                            GenerateDatabase();
-                            return;
-                        }
-                        ClearDataBase();
-                        IsBusy = false;
+                        GenerateDatabase();
                         return;
                     }
+                    ClearDataBase();
+                    IsBusy = false;
+                    return;
                 }
+            }
 
-                IsBusy = false;
-                CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count}";
+            IsBusy = false;
+            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count}";
 #if DEBUG
-                var end = DateTime.UtcNow;
-                double length = (end - start).TotalMilliseconds;
-                CurrentOverallOperationText = $"{CurrentOverallOperationText} LoadTime: {length}ms";
+            var end = DateTime.UtcNow;
+            double length = (end - start).TotalMilliseconds;
+            CurrentOverallOperationText = $"{CurrentOverallOperationText} LoadTime: {length}ms";
 #endif
-            }
-            else
-            {
-                IsBusy = false;
-                CurrentOverallOperationText = "No database found.";
-            }
         }
-        public async Task<PropsDataBase> ParseDBAsync()
+        public async Task<PropsDataBase> ParseDBAsync(MEGame dbgame, string dbpath)
         {
             deserializingQueue = new BlockingCollection<PropsDataBase>();
-            var readData = new PropsDataBase();
+            
             try
             {
-                Dictionary<string, ZipArchiveEntry> archiveEntries = new Dictionary<string, ZipArchiveEntry>();
-                using (ZipArchive archive = new ZipArchive((Stream)new FileStream(CurrentDBPath, FileMode.Open)))
+                await Task.Run(() =>
                 {
-                    if (archive.Entries.Count == 1)
+                    Dictionary<string, ZipArchiveEntry> archiveEntries = new Dictionary<string, ZipArchiveEntry>();
+                    using (ZipArchive archive = new ZipArchive((Stream)new FileStream(dbpath, FileMode.Open)))
                     {
-                        PropsDataBase pdb = new PropsDataBase();
-                        var jsonstream = archive.GetEntry($"AssetDB{currentGame}.json").Open();
-                        using (StreamReader sr = new StreamReader(jsonstream))
+                        if (archive.Entries.Count == 1)
                         {
-                            using (JsonReader reader = new JsonTextReader(sr))
+                            PropsDataBase pdb = new PropsDataBase();
+                            var jsonstream = archive.GetEntry($"AssetDB{dbgame}.json").Open();
+                            using (StreamReader sr = new StreamReader(jsonstream))
                             {
-                                var Serializer = new JsonSerializer();
-                                pdb = Serializer.Deserialize<PropsDataBase>(reader);
+                                using (JsonReader reader = new JsonTextReader(sr))
+                                {
+                                    var Serializer = new JsonSerializer();
+                                    pdb = Serializer.Deserialize<PropsDataBase>(reader);
+                                }
+                            }
+                            pdb.DataBaseversion = "CONVERT";
+                            deserializingQueue.Add(pdb);
+                            deserializingQueue.CompleteAdding();
+                        }
+                        else
+                        {
+
+                            foreach (ZipArchiveEntry entry in archive.Entries)
+                            {
+                                string dbType = entry.Name.Substring(0, entry.Name.Length - 10);
+                                var ms = new MemoryStream();
+                                using (Stream estream = entry.Open())
+                                {
+                                    estream.CopyTo(ms);
+                                }
+                                ms.Position = 0;
+                                var unitTask = Task.Factory.StartNew(() => JsonFileParse(ms, dbType));
                             }
                         }
-                        pdb.DataBaseversion = "CONVERT";
-                        deserializingQueue.Add(pdb);
-                        deserializingQueue.CompleteAdding();
                     }
-                    else
-                    {
-                        string path = Path.GetFullPath(App.AppDataFolder);
-                        foreach (var f in Directory.GetFiles(path, $"*DB{currentGame}.json", SearchOption.TopDirectoryOnly).ToList())
-                        {
-                            File.Delete(f);  //Clear up temp files if crash
-                        }
-
-                        await Task.Run(() => archive.ExtractToDirectory(path));  //TO DO: Find out how to pass streams rather than files
-                        foreach (ZipArchiveEntry entry in archive.Entries)
-                        {
-                            var unitTask = Task.Factory.StartNew(() => JsonFileParse(entry.FullName));
-                        }
-                    }
-                }
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error ParseDB");
+            }
+            return await Task<PropsDataBase>.Run(() =>
+            {
+                var readData = new PropsDataBase();
 
                 int n = 0;
                 foreach (PropsDataBase pdb in deserializingQueue.GetConsumingEnumerable())
@@ -362,7 +361,6 @@ namespace ME3Explorer.AssetDatabase
                             readData.Meshes.AddRange(pdb.Meshes);
                             readData.Particles.AddRange(pdb.Particles);
                             readData.Textures.AddRange(pdb.Textures);
-
                             break;
                         case "Mat":
                             readData.Materials.AddRange(pdb.Materials);
@@ -389,21 +387,16 @@ namespace ME3Explorer.AssetDatabase
                     }
                     if (n == 6) { deserializingQueue.CompleteAdding(); }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error ParseDB");
-            }
-            return readData;
+
+                return readData;
+            });
         }
-        private void JsonFileParse(string filename)
+        private void JsonFileParse(MemoryStream ms, string dbType)
         {
-            string dbType = filename.Substring(0, filename.Length - 10);
+            
             PropsDataBase readData = new PropsDataBase();
             readData.DataBaseversion = dbType;
-            string filepath = Path.Combine(App.AppDataFolder, filename);
-            using (FileStream fs = new FileStream(filepath, FileMode.Open))
-            using (StreamReader sr = new StreamReader(fs))
+            using (StreamReader sr = new StreamReader(ms))
             {
                 using (JsonTextReader reader = new JsonTextReader(sr))
                 {
@@ -451,13 +444,13 @@ namespace ME3Explorer.AssetDatabase
 
             deserializingQueue.Add(readData);
 
-            File.Delete(filepath);
+            //File.Delete(filepath);
         }
         public async void SaveDatabase()
         {
             BusyHeader = "Saving database";
             BusyText = "Please wait...";
-            BusyUnk = true;
+            BusyBarInd = true;
             IsBusy = true;
             CurrentOverallOperationText = $"Database saving...";
 
@@ -532,6 +525,8 @@ namespace ME3Explorer.AssetDatabase
             CurrentDataBase.Meshes.ClearEx();
             CurrentDataBase.Particles.ClearEx();
             CurrentDataBase.Textures.ClearEx();
+            FilterBox.Clear();
+            Filter();
         }
         #endregion
 
@@ -546,8 +541,8 @@ namespace ME3Explorer.AssetDatabase
             switchME1_menu.IsChecked = false;
             switchME2_menu.IsChecked = false;
             switchME3_menu.IsChecked = false;
-            FilterBox.Clear();
             ClearDataBase();
+            currentView = 0;
             MeshRendererTab_MeshRenderer.UnloadExport();
             meshPcc?.Dispose();
             btn_MeshRenderToggle.IsChecked = false;
@@ -579,7 +574,15 @@ namespace ME3Explorer.AssetDatabase
             }
             CurrentDBPath = Path.Combine(App.AppDataFolder, $"AssetDB{currentGame}.zip");
 
-            LoadDatabase();
+            if (CurrentDBPath != null && File.Exists(CurrentDBPath))
+            {
+                LoadDatabase();
+            }
+            else
+            {
+                IsBusy = false;
+                CurrentOverallOperationText = "No database found.";
+            }
         }
         private void GoToSuperClass(object obj)
         {
@@ -749,7 +752,7 @@ namespace ME3Explorer.AssetDatabase
             var selected = item.SelectedItem as TabItem;
             var unselected = e.RemovedItems[0] as TabItem;
 
-            if (unselected != null && selected.TabIndex != unselected.TabIndex)
+            if (selected != null && unselected != null && selected?.TabIndex != unselected.TabIndex)
             {
                 FilterBox.Clear();
                 Filter();
@@ -778,7 +781,6 @@ namespace ME3Explorer.AssetDatabase
                     menu_OpenUsage.Header = "Open Usage";
                 }
             }
-
         }
         private void lstbx_Meshes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -1035,8 +1037,11 @@ namespace ME3Explorer.AssetDatabase
             if (FilterBox.Text != null && tr != null)
             {
                 showthis = tr.TextureName.ToLower().Contains(FilterBox.Text.ToLower());
+                if (!showthis)
+                {
+                    showthis = tr.CRC.ToLower().Contains(FilterBox.Text.ToLower());
+                }
             }
-
             return showthis;
         }
         private bool FileFilter(object d)
@@ -1228,7 +1233,7 @@ namespace ME3Explorer.AssetDatabase
             MidDock.IsEnabled = false;
             OverallProgressMaximum = files.Count;
             OverallProgressValue = 0;
-            BusyUnk = false;
+            BusyBarInd = false;
             CurrentOverallOperationText = $"Generating Database...";
             bool scanCRC = menu_checkCRC.IsChecked;
 
