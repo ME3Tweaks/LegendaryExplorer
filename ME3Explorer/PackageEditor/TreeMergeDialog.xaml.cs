@@ -36,6 +36,7 @@ namespace ME3Explorer.PackageEditorWPFControls
         public ICommand AddSingularCommand { get; set; }
         public ICommand MergeTreeCommand { get; set; }
         public ICommand CloneTreeCommand { get; set; }
+        public ICommand CloneAllReferencesCommand { get; set; }
 
         public TreeMergeDialog(IEntry sourceEntry, IEntry targetEntry)
         {
@@ -54,41 +55,48 @@ namespace ME3Explorer.PackageEditorWPFControls
 
         private void LoadCommands()
         {
-            ReplaceDataCommand = new RelayCommand(ReplaceData, CanReplaceData);
-            MergeTreeCommand = new RelayCommand(MergeTree, CanMergeTree);
-            AddSingularCommand = new RelayCommand(AddSingular, CanAddSingular);
-            CloneTreeCommand = new RelayCommand(CloneTree, CanCloneTree);
+            ReplaceDataCommand = new GenericCommand(ReplaceData, CanReplaceData);
+            MergeTreeCommand = new GenericCommand(MergeTree, CanMergeTree);
+            AddSingularCommand = new GenericCommand(AddSingular, CanAddSingular);
+            CloneTreeCommand = new GenericCommand(CloneTree, CanCloneTree);
+            CloneAllReferencesCommand = new GenericCommand(CloneAllReferences);
         }
 
-        private void CloneTree(object obj)
+        private void CloneAllReferences()
+        {
+            PortingOptionChosen = EntryImporter.PortingOption.CloneAllDependencies;
+            Close();
+        }
+
+        private void CloneTree()
         {
             PortingOptionChosen = EntryImporter.PortingOption.CloneTreeAsChild;
             Close();
         }
 
-        private void AddSingular(object obj)
+        private void AddSingular()
         {
             PortingOptionChosen = EntryImporter.PortingOption.AddSingularAsChild;
             Close();
         }
 
-        private void MergeTree(object obj)
+        private void MergeTree()
         {
             PortingOptionChosen = EntryImporter.PortingOption.MergeTreeChildren;
             Close();
         }
 
-        private bool CanMergeTree(object obj)
+        private bool CanMergeTree()
         {
             return /*EntryTypesMatch() &&*/ sourceHasChildren && targetHasChildren;
         }
 
-        private bool CanAddSingular(object obj)
+        private bool CanAddSingular()
         {
             return true; //this is always allowed
         }
 
-        private bool CanCloneTree(object obj)
+        private bool CanCloneTree()
         {
             return sourceHasChildren;
         }
@@ -98,13 +106,13 @@ namespace ME3Explorer.PackageEditorWPFControls
             return (sourceEntry is ExportEntry && targetEntry is ExportEntry) || (sourceEntry is ImportEntry && targetEntry is ImportEntry);
         }
 
-        private void ReplaceData(object obj)
+        private void ReplaceData()
         {
             PortingOptionChosen = EntryImporter.PortingOption.ReplaceSingular;
             Close();
         }
 
-        private bool CanReplaceData(object obj)
+        private bool CanReplaceData()
         {
             return (sourceEntry is ExportEntry && targetEntry is ExportEntry && sourceEntry.ClassName == targetEntry.ClassName);
         }
