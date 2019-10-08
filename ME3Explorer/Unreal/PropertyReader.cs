@@ -52,6 +52,16 @@ namespace ME3Explorer.Unreal
             return !string.Equals(s, r.Name, StringComparison.OrdinalIgnoreCase);
         }
 
+
+        public static bool operator ==(string s, NameReference r)
+        {
+            return string.Equals(s, r.Name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool operator !=(string s, NameReference r)
+        {
+            return !string.Equals(s, r.Name, StringComparison.OrdinalIgnoreCase);
+        }
         #region IEquatable
         public static bool operator ==(NameReference n1, NameReference n2)
         {

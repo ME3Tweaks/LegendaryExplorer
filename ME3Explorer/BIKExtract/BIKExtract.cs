@@ -29,7 +29,7 @@ namespace ME3Explorer
         {
             string path = string.Empty;
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.Filter = "Movies.tfc|Movies.tfc";
+            openFileDialog1.Filter = "*.tfc|*.tfc";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 path = openFileDialog1.FileName;

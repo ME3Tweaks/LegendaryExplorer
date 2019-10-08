@@ -157,7 +157,7 @@ namespace ME3Explorer.Packages
     {
         public static bool IsTrash(this IEntry entry)
         {
-            return entry.ObjectName == UnrealPackageFile.TrashPackageName || entry.Parent?.ObjectName == UnrealPackageFile.TrashPackageName;
+            return entry.ObjectName == UnrealPackageFile.TrashPackageName || entry.Parent?.ObjectName.Name == UnrealPackageFile.TrashPackageName;
         }
 
         public static bool IsTexture(this IEntry entry) =>

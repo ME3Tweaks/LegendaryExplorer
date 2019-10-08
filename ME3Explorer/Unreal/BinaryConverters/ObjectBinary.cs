@@ -19,6 +19,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
         public static ObjectBinary From(ExportEntry export)
         {
+            if (export.IsDefaultObject)
+            {
+                //DefaultObjects don't have binary
+                return null;
+            }
             string className = export.ClassName;
             if (export.IsOrInheritsFrom("BioPawn"))
             {
