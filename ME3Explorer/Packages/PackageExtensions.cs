@@ -238,50 +238,57 @@ namespace ME3Explorer.Packages
             int baseUIndex = baseEntry.UIndex;
             foreach (ExportEntry exp in baseEntry.FileRef.Exports)
             {
-                if (exp == baseEntry)
+                try
                 {
-                    continue;
-                }
-                //find header references
-                if (exp.Archetype == baseEntry)
-                {
-                    result.AddToListAt(exp, "Header: Archetype");
-                }
-                if (exp.Class == baseEntry)
-                {
-                    result.AddToListAt(exp, "Header: Class");
-                }
-                if (exp.SuperClass == baseEntry)
-                {
-                    result.AddToListAt(exp, "Header: SuperClass");
-                }
-                if (exp.HasComponentMap && exp.ComponentMap.Any(kvp => kvp.Value == baseUIndex))
-                {
-                    result.AddToListAt(exp, "Header: ComponentMap");
-                }
-
-                //find stack references
-                if (exp.HasStack && exp.Data is byte[] data
-                 && (baseUIndex == BitConverter.ToInt32(data, 0) || baseUIndex == BitConverter.ToInt32(data, 4)))
-                {
-                    result.AddToListAt(exp, "Stack");
-                }
-
-
-                //find property references
-                findPropertyReferences(exp.GetProperties(), exp, "Property:");
-
-                //find binary references
-                if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
-                {
-                    List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
-                    foreach ((UIndex uIndex, string propName) in indices)
+                    if (exp == baseEntry)
                     {
-                        if (uIndex == baseUIndex)
+                        continue;
+                    }
+                    //find header references
+                    if (exp.Archetype == baseEntry)
+                    {
+                        result.AddToListAt(exp, "Header: Archetype");
+                    }
+                    if (exp.Class == baseEntry)
+                    {
+                        result.AddToListAt(exp, "Header: Class");
+                    }
+                    if (exp.SuperClass == baseEntry)
+                    {
+                        result.AddToListAt(exp, "Header: SuperClass");
+                    }
+                    if (exp.HasComponentMap && exp.ComponentMap.Any(kvp => kvp.Value == baseUIndex))
+                    {
+                        result.AddToListAt(exp, "Header: ComponentMap");
+                    }
+
+                    //find stack references
+                    if (exp.HasStack && exp.Data is byte[] data
+                                     && (baseUIndex == BitConverter.ToInt32(data, 0) || baseUIndex == BitConverter.ToInt32(data, 4)))
+                    {
+                        result.AddToListAt(exp, "Stack");
+                    }
+
+
+                    //find property references
+                    findPropertyReferences(exp.GetProperties(), exp, "Property:");
+
+                    //find binary references
+                    if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
+                    {
+                        List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
+                        foreach ((UIndex uIndex, string propName) in indices)
                         {
-                            result.AddToListAt(exp, $"(Binary prop: {propName})");
+                            if (uIndex == baseUIndex)
+                            {
+                                result.AddToListAt(exp, $"(Binary prop: {propName})");
+                            }
                         }
                     }
+                }
+                catch (Exception e)
+                {
+                    result.AddToListAt(exp, "Exception occured while reading this export!");
                 }
             }
 

@@ -168,7 +168,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public Guid BaseMaterialId;
         public StaticSwitchParameter[] StaticSwitchParameters;
         public StaticComponentMaskParameter[] StaticComponentMaskParameters;
-        public NormalParameter[] NormalParameters;
+        public NormalParameter[] NormalParameters;//ME3
     }
 
     #region MaterialUniformExpressions
@@ -538,7 +538,14 @@ namespace ME3Explorer
             sc.Serialize(ref paramSet.BaseMaterialId);
             sc.Serialize(ref paramSet.StaticSwitchParameters, Serialize);
             sc.Serialize(ref paramSet.StaticComponentMaskParameters, Serialize);
-            sc.Serialize(ref paramSet.NormalParameters, Serialize);
+            if (sc.Game >= MEGame.ME3)
+            {
+                sc.Serialize(ref paramSet.NormalParameters, Serialize);
+            }
+            else if (sc.IsLoading)
+            {
+                paramSet.NormalParameters = new StaticParameterSet.NormalParameter[0];
+            }
         }
         public static void Serialize(this SerializingContainer2 sc, ref StaticParameterSet.StaticSwitchParameter param)
         {
