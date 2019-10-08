@@ -61,32 +61,32 @@ namespace ME3Explorer.Packages
             {
                 case MEGame.ME1:
                 case MEGame.ME2:
-                {
+                    {
 
-                    long start = stream.Position;
-                    stream.Seek(40, SeekOrigin.Current);
-                    int count = stream.ReadInt32();
-                    stream.Seek(4 + count * 12, SeekOrigin.Current);
-                    count = stream.ReadInt32();
-                    stream.Seek(16, SeekOrigin.Current);
-                    stream.Seek(4 + count * 4, SeekOrigin.Current);
-                    long end = stream.Position;
-                    stream.Seek(start, SeekOrigin.Begin);
-                    //read header
-                    _header = stream.ReadToBuffer((int)(end - start));
-                    break;
-                }
+                        long start = stream.Position;
+                        stream.Seek(40, SeekOrigin.Current);
+                        int count = stream.ReadInt32();
+                        stream.Seek(4 + count * 12, SeekOrigin.Current);
+                        count = stream.ReadInt32();
+                        stream.Seek(16, SeekOrigin.Current);
+                        stream.Seek(4 + count * 4, SeekOrigin.Current);
+                        long end = stream.Position;
+                        stream.Seek(start, SeekOrigin.Begin);
+                        //read header
+                        _header = stream.ReadToBuffer((int)(end - start));
+                        break;
+                    }
                 case MEGame.ME3:
                 case MEGame.UDK:
-                {
-                    stream.Seek(44, SeekOrigin.Current);
-                    int count = stream.ReadInt32();
-                    stream.Seek(-48, SeekOrigin.Current);
+                    {
+                        stream.Seek(44, SeekOrigin.Current);
+                        int count = stream.ReadInt32();
+                        stream.Seek(-48, SeekOrigin.Current);
 
-                    int expInfoSize = 68 + (count * 4);
-                    _header = stream.ReadToBuffer(expInfoSize);
-                    break;
-                }
+                        int expInfoSize = 68 + (count * 4);
+                        _header = stream.ReadToBuffer(expInfoSize);
+                        break;
+                    }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -147,6 +147,9 @@ namespace ME3Explorer.Packages
                 int dataSize = _header != null ? DataSize : (_data?.Length ?? 0);
                 _header = value;
                 DataSize = dataSize; //should never be altered by Header overwrite
+
+                EntryHasPendingChanges = true;
+                HeaderChanged = true;
             }
         }
 
@@ -389,7 +392,7 @@ namespace ME3Explorer.Packages
 
         public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
 
-        public string InstancedFullPath => FileRef.IsEntry(idxLink)? $"{ParentInstancedFullPath}.{ObjectName.Instanced}" : ObjectName.Instanced;
+        public string InstancedFullPath => FileRef.IsEntry(idxLink) ? $"{ParentInstancedFullPath}.{ObjectName.Instanced}" : ObjectName.Instanced;
 
         public bool HasParent => FileRef.IsEntry(idxLink);
 
@@ -524,7 +527,7 @@ namespace ME3Explorer.Packages
 
             if (IsClass)
             {
-                return new PropertyCollection { endOffset = 4, IsImmutable = true};
+                return new PropertyCollection { endOffset = 4, IsImmutable = true };
             } //no properties
 
             //else if (!includeNoneProperties)
@@ -571,7 +574,7 @@ namespace ME3Explorer.Packages
             if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
             {
                 //DominantLightShadowMap, which goes before everything for some reason
-                int count = BitConverter.ToInt32(_data, 0);  
+                int count = BitConverter.ToInt32(_data, 0);
                 start += count * 2 + 4;
             }
 
@@ -601,7 +604,8 @@ namespace ME3Explorer.Packages
         public int NetIndex
         {
             get => BitConverter.ToInt32(_data, GetPropertyStart() - 4);
-            set {
+            set
+            {
                 if (value != NetIndex)
                 {
                     var data = Data;
