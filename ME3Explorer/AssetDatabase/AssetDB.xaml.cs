@@ -585,11 +585,17 @@ namespace ME3Explorer.AssetDatabase
         }
         private void GoToSuperClass(object obj)
         {
-            var sClass = CurrentDataBase.ClassRecords[lstbx_Classes.SelectedIndex].SuperClass;
+            var cr = lstbx_Classes.SelectedItem as ClassRecord;
+            var sClass = cr.SuperClass;
             if (sClass == null)
             {
                 MessageBox.Show("SuperClass unknown.");
                 return;
+            }
+            if(FilterBox.Text != null)
+            {
+                FilterBox.Clear();
+                Filter();
             }
             var scidx = CurrentDataBase.ClassRecords.IndexOf(CurrentDataBase.ClassRecords.Where(r => r.Class == sClass).FirstOrDefault());
             if (scidx >= 0)
@@ -659,8 +665,9 @@ namespace ME3Explorer.AssetDatabase
         }
         private void OpenSourcePkg(object obj)
         {
-            var sourcepkg = CurrentDataBase.ClassRecords[lstbx_Classes.SelectedIndex].Definition_package;
-            var sourceexp = CurrentDataBase.ClassRecords[lstbx_Classes.SelectedIndex].Definition_UID;
+            var cr = lstbx_Classes.SelectedItem as ClassRecord;
+            var sourcepkg = cr.Definition_package;
+            var sourceexp = cr.Definition_UID;
             if (sourcepkg == null)
             {
                 MessageBox.Show("Definition file unknown.");
@@ -732,15 +739,8 @@ namespace ME3Explorer.AssetDatabase
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e) //Fires if Tab moves away
         {
-            if (e.RemovedItems.Count == 0 || e.AddedItems.Count == 0 || e.AddedItems == e.RemovedItems)
-            {
-                return;
-            }
-            //var item = sender as TabControl;
-            //var selected = item.SelectedItem as TabItem;
-            //var unselected = e.RemovedItems[0] as TabItem;
-            
-            //if (selected != null && unselected != null && selected?.TabIndex != unselected.TabIndex)
+            e.Handled = true;
+
             if (currentView != previousView)
             {
                 FilterBox.Clear();
@@ -769,10 +769,12 @@ namespace ME3Explorer.AssetDatabase
                 {
                     menu_OpenUsage.Header = "Open Usage";
                 }
+                previousView = currentView;
             }
         }
         private void lstbx_Meshes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            e.Handled = true;
             if (currentView == 3 && lstbx_Meshes.SelectedIndex >= 0)
             {
                 ToggleRenderMesh();
@@ -780,6 +782,7 @@ namespace ME3Explorer.AssetDatabase
         }
         private void lstbx_Textures_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            e.Handled = true;
             if (currentView == 5 && lstbx_Textures.SelectedIndex >= 0)
             {
                 ToggleRenderTexture();
@@ -989,6 +992,10 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
+            if (showthis && menu_fltrMatTalk.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "ScalarParameter" && x.Item2.ToLower().Contains("talk")))
+            {
+                showthis = false;
+            }
             return showthis;
         }
         bool MeshFilter(object d)
@@ -1173,6 +1180,9 @@ namespace ME3Explorer.AssetDatabase
                     break;
                 case "TextP":
                     menu_fltrMatText.IsChecked = !menu_fltrMatText.IsChecked;
+                    break;
+                case "TalkS":
+                    menu_fltrMatTalk.IsChecked = !menu_fltrMatTalk.IsChecked;
                     break;
                 case "Skel":
                     if (!menu_fltrSkM.IsChecked)

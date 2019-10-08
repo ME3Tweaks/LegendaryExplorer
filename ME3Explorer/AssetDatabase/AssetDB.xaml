@@ -70,6 +70,7 @@
                             <Separator/>
                             <MenuItem Name="menu_fltrMatColor" Header="Must have color setting" Command="{Binding FilterMatCommand}" CommandParameter="Vcolor" ToolTip="Show if has color parameter" StaysOpenOnClick="True"/>
                             <MenuItem Name="menu_fltrMatText" Header="Must have texture setting" Command="{Binding FilterMatCommand}" CommandParameter="TextP" ToolTip="Show only if has texture parameter." StaysOpenOnClick="True"/>
+                            <MenuItem Name="menu_fltrMatTalk" Header="Must have talk scalar setting" Command="{Binding FilterMatCommand}" CommandParameter="TalkS" ToolTip="Show only if has talk scalar." StaysOpenOnClick="True"/>
                         </MenuItem>
                         <MenuItem Header="Filter Meshes">
                             <MenuItem Name="menu_fltrSkM" Header="Only Skeleton Meshes" Command="{Binding FilterMeshCommand}" CommandParameter="Skel" ToolTip="Show Skeleton Meshes only." StaysOpenOnClick="True"/>
@@ -107,6 +108,12 @@
                                             <TextBlock Text="{Binding Class}" />
                                             <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
                                             <TextBlock FontSize="10" Text="{Binding Path=ClassUsages.Count}" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+                                            <TextBlock FontSize="10" Text=" , " VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+                                            <TextBlock FontSize="10" Text="{Binding Path=SuperClass}" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+                                            <TextBlock FontSize="10" Text=" , " VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+                                            <TextBlock FontSize="10" Text="{Binding Path=Definition_package}" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+                                            <TextBlock FontSize="10" Text=" #" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+                                            <TextBlock FontSize="10" Text="{Binding Path=Definition_UID}" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
                                             <TextBlock FontSize="10" Text=")" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
                                         </StackPanel>
                                     </DataTemplate>
