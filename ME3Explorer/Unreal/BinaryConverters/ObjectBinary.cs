@@ -51,7 +51,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     {
                         return From<MaterialInstance>(export);
                     }
-                    return new GenericObjectBinary(Array.Empty<byte>());
+                    return Array.Empty<byte>();
                 case "FracturedStaticMesh":
                     return From<FracturedStaticMesh>(export);
                 case "StaticMesh":
@@ -111,6 +111,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 case "ClassProperty":
                 case "DelegateProperty":
                     return From<UTwoReferenceProperty>(export);
+                case "ShaderCache":
+                    return From<ShaderCache>(export);
                 default:
                     return null;
             }
@@ -120,7 +122,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
         public virtual List<(UIndex, string)> GetUIndexes(MEGame game) => new List<(UIndex, string)>();
 
-        public virtual void WriteTo(Stream ms, IMEPackage pcc, int fileOffset)
+        public virtual void WriteTo(Stream ms, IMEPackage pcc, int fileOffset = 0)
         {
             Serialize(new SerializingContainer2(ms, pcc, false, fileOffset));
         }
@@ -130,6 +132,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
             var ms = new MemoryStream();
             WriteTo(ms, pcc, fileOffset);
             return ms.ToArray();
+        }
+
+        public static implicit operator ObjectBinary(byte[] buff)
+        {
+            return new GenericObjectBinary(buff);
         }
     }
 

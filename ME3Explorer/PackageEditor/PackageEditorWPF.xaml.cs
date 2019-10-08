@@ -4382,7 +4382,7 @@ namespace ME3Explorer
                 if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
                 {
                     var shaderCache = ObjectBinary.From<ShaderCache>(shaderCacheExport);
-                    foreach (Shader shader in shaderCache.Shaders.Values)
+                    foreach (Shader shader in shaderCache.Shaders.Values())
                     {
                         string shaderType = shader.ShaderType;
                         string pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");

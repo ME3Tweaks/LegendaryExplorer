@@ -7,57 +7,58 @@ using System.Threading.Tasks;
 using Direct3D9_Shader_Model_3_Disassembler;
 using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 using StreamHelpers;
 
 namespace ME3Explorer.Unreal.BinaryConverters
 {
-    //For reading only
-    class ShaderCache : ObjectBinary
+    public class ShaderCache : ObjectBinary
     {
-        public Dictionary<Guid, Shader> Shaders;
-        public Dictionary<Guid, MaterialShaderMap> MaterialShaderMaps;
+        public OrderedMultiValueDictionary<NameReference, uint> ShaderTypeCRCMap;
+        public OrderedMultiValueDictionary<Guid, Shader> Shaders;
+        public OrderedMultiValueDictionary<NameReference, uint> VertexFactoryTypeCRCMap;
+        public OrderedMultiValueDictionary<StaticParameterSet, MaterialShaderMap> MaterialShaderMaps;
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            sc.ms.SkipByte();
-            int nameMapCount = sc.ms.ReadInt32();
-            sc.ms.Skip(nameMapCount * 12);
-            if (sc.Game == MEGame.ME3)
+            byte platform = 0;
+            sc.Serialize(ref platform);
+            sc.Serialize(ref ShaderTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
+            if (sc.Game == MEGame.ME3 && sc.IsLoading)
             {
-                nameMapCount = sc.ms.ReadInt32();
+                int nameMapCount = sc.ms.ReadInt32();
                 sc.ms.Skip(nameMapCount * 12);
             }
-
-            int shaderCount = sc.ms.ReadInt32();
-            Shaders = new Dictionary<Guid, Shader>(shaderCount);
-            for (int i = 0; i < shaderCount; i++)
+            else if (sc.Game == MEGame.ME3 && sc.IsSaving)
             {
-                Shader shader = null;
-                sc.Serialize(ref shader);
-                Shaders.Add(shader.Guid, shader);
+                sc.ms.WriteInt32(0);
             }
-            //Vertex Factory Name Map
-            nameMapCount = sc.ms.ReadInt32();
-            sc.ms.Skip(nameMapCount * 12);
 
-            int msmCount = sc.ms.ReadInt32();
-            MaterialShaderMaps = new Dictionary<Guid, MaterialShaderMap>(msmCount);
-            for (int i = 0; i < msmCount; i++)
+            if (sc.IsLoading)
             {
-                MaterialShaderMap msm = null;
-                sc.Serialize(ref msm);
-                //todo: There can be multiple shadermaps with the same ID, but different static parameters.
-                //need to deal with this at some point, this is a quick fix.
-                if(!MaterialShaderMaps.ContainsKey(msm.ID)) MaterialShaderMaps.Add(msm.ID, msm);
+                int shaderCount = sc.ms.ReadInt32();
+                Shaders = new OrderedMultiValueDictionary<Guid, Shader>(shaderCount);
+                for (int i = 0; i < shaderCount; i++)
+                {
+                    Shader shader = null;
+                    sc.Serialize(ref shader);
+                    Shaders.Add(shader.Guid, shader);
+                }
             }
-        }
+            else
+            {
+                sc.ms.WriteInt32(Shaders.Count);
+                foreach ((_, Shader shader) in Shaders)
+                {
+                    var temp = shader;
+                    sc.Serialize(ref temp);
+                }
+            }
 
-        /// <summary>
-        /// Cannot write a ShaderCache
-        /// </summary>
-        public override void WriteTo(Stream ms, IMEPackage pcc, int fileOffset)
-        {
-            throw new InvalidOperationException();
+            sc.Serialize(ref VertexFactoryTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
+            sc.Serialize(ref MaterialShaderMaps, SCExt.Serialize, SCExt.Serialize);
+            int dummy = 0;
+            sc.Serialize(ref dummy);
         }
     }
 
@@ -73,6 +74,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public Guid Guid;
         public ShaderFrequency Frequency;
         public byte[] ShaderByteCode;
+        public uint ParameterMapCRC;
+        public int InstructionCount;
+        public byte[] unkBytes;
         private string dissassembly;
         private ShaderInfo info;
 
@@ -97,12 +101,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
     public class MaterialShaderMap
     {
-        public StaticParameterSet StaticParameters;
-        public Guid ID;
         //usually empty! Shaders are in MeshShaderMaps
-        public List<Guid> Shaders;
-        public Dictionary<NameReference, List<Guid>> MeshShaderMaps;
+        public OrderedMultiValueDictionary<NameReference, ShaderReference> Shaders;
+        public MeshShaderMap[] MeshShaderMaps;
+        public Guid ID;
         public string FriendlyName;
+        public StaticParameterSet StaticParameters;
         //ME3
         public MaterialUniformExpression[] UniformPixelVectorExpressions;
         public MaterialUniformExpression[] UniformPixelScalarExpressions;
@@ -112,67 +116,130 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public MaterialUniformExpression[] UniformVertexScalarExpressions;
     }
 
-    public static class ShaderCacheSCExt
+    public class ShaderReference
     {
-        //only for reading
+        public Guid Id;
+        public NameReference ShaderType;
+    }
+
+    public class MeshShaderMap
+    {
+        public OrderedMultiValueDictionary<NameReference, ShaderReference> Shaders;
+        public NameReference VertexFactoryType;
+    }
+}
+
+namespace ME3Explorer
+{
+    using Unreal.BinaryConverters;
+
+    public static partial class SCExt
+    {
         public static void Serialize(this SerializingContainer2 sc, ref Shader shader)
         {
-            shader = new Shader();
+            if (sc.IsLoading)
+            {
+                shader = new Shader();
+            }
             sc.Serialize(ref shader.ShaderType);
             sc.Serialize(ref shader.Guid);
-            int endOffset = sc.ms.ReadInt32();
-            sc.ms.SkipByte();
-            shader.Frequency = (ShaderFrequency)sc.ms.ReadByte();
-            sc.Serialize(ref shader.ShaderByteCode, SCExt.Serialize);
-            sc.ms.JumpTo(endOffset - sc.startOffset);
+            int endOffset = 0;
+            long endOffsetPos = sc.ms.Position;
+            sc.Serialize(ref endOffset);
+            byte platform = 0;
+            sc.Serialize(ref platform);
+            sc.Serialize(ref shader.Frequency);
+            sc.Serialize(ref shader.ShaderByteCode, Serialize);
+            sc.Serialize(ref shader.ParameterMapCRC);
+            sc.Serialize(ref shader.Guid);//intentional duplicate
+            sc.Serialize(ref shader.ShaderType);//intentional duplicate
+            sc.Serialize(ref shader.InstructionCount);
+            if (sc.IsLoading)
+            {
+                shader.unkBytes = sc.ms.ReadToBuffer(endOffset - sc.FileOffset);
+            }
+            else
+            {
+                sc.ms.WriteFromBuffer(shader.unkBytes);
+                endOffset = sc.FileOffset;
+                long endPos = sc.ms.Position;
+                sc.ms.JumpTo(endOffsetPos);
+                sc.ms.WriteInt32(endOffset);
+                sc.ms.JumpTo(endPos);
+            }
         }
-        //only for reading
+
         public static void Serialize(this SerializingContainer2 sc, ref MaterialShaderMap msm)
         {
-            msm = new MaterialShaderMap();
-            sc.Serialize(ref msm.StaticParameters);
+            if (sc.IsLoading)
+            {
+                msm = new MaterialShaderMap();
+            }
             if (sc.Game == MEGame.ME3)
             {
-                sc.ms.Skip(8); //versions
+                uint unrealVersion = MEPackage.ME3UnrealVersion;
+                uint licenseeVersion = MEPackage.ME3LicenseeVersion;
+                sc.Serialize(ref unrealVersion);
+                sc.Serialize(ref licenseeVersion);
             }
-
-            sc.ms.SkipInt32(); //endoffset
-            int shaderCount = sc.ms.ReadInt32();
-            msm.Shaders = new List<Guid>(shaderCount);
-            for (int j = 0; j < shaderCount; j++)
-            {
-                sc.ms.Skip(8);
-                msm.Shaders.Add(sc.ms.ReadGuid());
-                sc.ms.Skip(8);
-            }
-            int meshShaderMapsCount = sc.ms.ReadInt32();
-            msm.MeshShaderMaps = new Dictionary<NameReference, List<Guid>>(meshShaderMapsCount);
-            for (int i = 0; i < meshShaderMapsCount; i++)
-            {
-                int meshShaderCount = sc.ms.ReadInt32();
-                var list = new List<Guid>(meshShaderCount);
-                for (int j = 0; j < meshShaderCount; j++)
-                {
-                    sc.ms.Skip(8);
-                    list.Add(sc.ms.ReadGuid());
-                    sc.ms.Skip(8);
-                }
-                msm.MeshShaderMaps.Add(sc.ms.ReadNameReference(sc.Pcc), list);
-            }
+            long endOffsetPos = sc.ms.Position;
+            int dummy = 0;
+            sc.Serialize(ref dummy);//file offset of end of MaterialShaderMap
+            sc.Serialize(ref msm.Shaders, Serialize, Serialize);
+            sc.Serialize(ref msm.MeshShaderMaps, Serialize);
             sc.Serialize(ref msm.ID);
             sc.Serialize(ref msm.FriendlyName);
-            StaticParameterSet duplicateSet = null;
-            sc.Serialize(ref duplicateSet);
+            sc.Serialize(ref msm.StaticParameters);
 
             if (sc.Game == MEGame.ME3)
             {
-                sc.Serialize(ref msm.UniformPixelVectorExpressions, SCExt.Serialize);
-                sc.Serialize(ref msm.UniformPixelScalarExpressions, SCExt.Serialize);
-                sc.Serialize(ref msm.Uniform2DTextureExpressions, SCExt.Serialize);
-                sc.Serialize(ref msm.UniformCubeTextureExpressions, SCExt.Serialize);
-                sc.Serialize(ref msm.UniformVertexVectorExpressions, SCExt.Serialize);
-                sc.Serialize(ref msm.UniformVertexScalarExpressions, SCExt.Serialize);
-                sc.ms.SkipInt32();
+                sc.Serialize(ref msm.UniformPixelVectorExpressions, Serialize);
+                sc.Serialize(ref msm.UniformPixelScalarExpressions, Serialize);
+                sc.Serialize(ref msm.Uniform2DTextureExpressions, Serialize);
+                sc.Serialize(ref msm.UniformCubeTextureExpressions, Serialize);
+                sc.Serialize(ref msm.UniformVertexVectorExpressions, Serialize);
+                sc.Serialize(ref msm.UniformVertexScalarExpressions, Serialize);
+                int platform = 0;
+                sc.Serialize(ref platform);
+            }
+
+            if (sc.IsSaving)
+            {
+                long endOffset = sc.ms.Position;
+                int endOffsetInFile = sc.FileOffset;
+                sc.ms.JumpTo(endOffsetPos);
+                sc.ms.WriteInt32(endOffsetInFile);
+                sc.ms.JumpTo(endOffset);
+            }
+        }
+        public static void Serialize(this SerializingContainer2 sc, ref ShaderReference shaderRef)
+        {
+            if (sc.IsLoading)
+            {
+                shaderRef = new ShaderReference();
+            }
+            sc.Serialize(ref shaderRef.Id);
+            sc.Serialize(ref shaderRef.ShaderType);
+        }
+        public static void Serialize(this SerializingContainer2 sc, ref MeshShaderMap msm)
+        {
+            if (sc.IsLoading)
+            {
+                msm = new MeshShaderMap();
+            }
+            sc.Serialize(ref msm.Shaders, Serialize, Serialize);
+            sc.Serialize(ref msm.VertexFactoryType);
+        }
+
+        public static void Serialize(this SerializingContainer2 sc, ref ShaderFrequency sf)
+        {
+            if (sc.IsLoading)
+            {
+                sf = (ShaderFrequency)sc.ms.ReadByte();
+            }
+            else
+            {
+                sc.ms.WriteByte((byte)sf);
             }
         }
     }

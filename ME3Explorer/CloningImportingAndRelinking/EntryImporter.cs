@@ -212,7 +212,7 @@ namespace ME3Explorer
 
             //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
             //for unsupported classes, this will just copy over the binary
-            byte[] binaryData = ExportBinaryConverter.ConvertPostPropBinary(sourceExport, destPackage.Game).ToBytes(destPackage);
+            ObjectBinary binaryData = ExportBinaryConverter.ConvertPostPropBinary(sourceExport, destPackage.Game);
 
             //Set class.
             IEntry classValue = null;
@@ -276,7 +276,8 @@ namespace ME3Explorer
                 ObjectName = sourceExport.ObjectName,
                 idxLink = link,
                 SuperClass = superclass,
-                Archetype = archetype
+                Archetype = archetype,
+                DataOffset = 0
             };
             destPackage.AddExport(newExport);
             if (objectMapping != null)

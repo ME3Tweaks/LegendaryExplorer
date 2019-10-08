@@ -16,7 +16,7 @@ namespace ME3Explorer.Unreal.Classes
         public ExportEntry Export;
         public List<IEntry> Textures = new List<IEntry>();
 
-        public Guid MaterialShaderMapID;
+        public StaticParameterSet StaticParameterSet;
         public MaterialShaderMap ShaderMap;
         public List<Shader> Shaders;
 
@@ -64,7 +64,7 @@ namespace ME3Explorer.Unreal.Classes
             if (export.ClassName == "Material")
             {
                 var parsedMaterial = ObjectBinary.From<Material>(export);
-                MaterialShaderMapID = parsedMaterial.SM3MaterialResource.ID;
+                StaticParameterSet = (StaticParameterSet)parsedMaterial.SM3MaterialResource.ID;
                 foreach (var v in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
                 {
                     IEntry tex = export.FileRef.GetEntry(v.value);
@@ -76,7 +76,7 @@ namespace ME3Explorer.Unreal.Classes
             }
             else if (export.ClassName == "MaterialInstanceConstant")
             {
-                
+                StaticParameterSet = ObjectBinary.From<MaterialInstance>(export).SM3StaticParameterSet;
                 //Read Local
                 if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> textureparams)
                 {
@@ -151,21 +151,27 @@ namespace ME3Explorer.Unreal.Classes
                 }
             }
 
-            if (shaderCache.MaterialShaderMaps.TryGetValue(MaterialShaderMapID, out ShaderMap))
+            if (shaderCache.MaterialShaderMaps.TryGetValue(StaticParameterSet, out ShaderMap))
             {
-                if (!ShaderMap.MeshShaderMaps.TryGetValue(vertexFactory, out List<Guid> shaderGuids))
+                IEnumerable<Guid> shaderGuids;
+                if (ShaderMap.MeshShaderMaps.FirstOrDefault(msm => msm.VertexFactoryType == vertexFactory) is MeshShaderMap meshShaderMap)
+                {
+                    shaderGuids = meshShaderMap.Shaders.Values().Select(shaderRef => shaderRef.Id);
+                }
+                else
                 {
                     //Can't find the vertex factory we want, so just grab the first one? I have no idea what I'm doing
-                    shaderGuids = ShaderMap.MeshShaderMaps.First().Value;
+                    shaderGuids = ShaderMap.MeshShaderMaps.First().Shaders.Values().Select(shaderRef => shaderRef.Id);
                 }
 
-                foreach (Guid shaderGuid in shaderGuids)
+                foreach (Guid id in shaderGuids)
                 {
-                    if (shaderCache.Shaders.TryGetValue(shaderGuid, out Shader shader))
+                    if (shaderCache.Shaders.TryGetValue(id, out Shader shader))
                     {
                         Shaders.Add(shader);
                     }
                 }
+
             }
         }
 

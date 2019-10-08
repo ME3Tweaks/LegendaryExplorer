@@ -138,7 +138,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public uint unk5;
     }
 
-    public class StaticParameterSet
+    public class StaticParameterSet : IEquatable<StaticParameterSet>
     {
         public class StaticSwitchParameter
         {
@@ -169,6 +169,89 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public StaticSwitchParameter[] StaticSwitchParameters;
         public StaticComponentMaskParameter[] StaticComponentMaskParameters;
         public NormalParameter[] NormalParameters;//ME3
+
+        #region IEquatable
+
+        public bool Equals(StaticParameterSet other)
+        {
+            if (other is null || other.BaseMaterialId != BaseMaterialId || other.StaticSwitchParameters.Length != StaticSwitchParameters.Length ||
+                other.StaticComponentMaskParameters.Length != StaticComponentMaskParameters.Length || other.NormalParameters.Length != NormalParameters.Length)
+            {
+                return false;
+            }
+            //bOverride is intentionally left out of the following comparisons
+            for (int i = 0; i < StaticSwitchParameters.Length; i++)
+            {
+                var a = StaticSwitchParameters[i];
+                var b = other.StaticSwitchParameters[i];
+                if (a.ParameterName != b.ParameterName || a.ExpressionGUID != b.ExpressionGUID || a.Value != b.Value)
+                {
+                    return false;
+                }
+            }
+            for (int i = 0; i < StaticComponentMaskParameters.Length; i++)
+            {
+                var a = StaticComponentMaskParameters[i];
+                var b = other.StaticComponentMaskParameters[i];
+                if (a.ParameterName != b.ParameterName || a.ExpressionGUID != b.ExpressionGUID || a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A)
+                {
+                    return false;
+                }
+            }
+            for (int i = 0; i < NormalParameters.Length; i++)
+            {
+                var a = NormalParameters[i];
+                var b = other.NormalParameters[i];
+                if (a.ParameterName != b.ParameterName || a.ExpressionGUID != b.ExpressionGUID || a.CompressionSettings != b.CompressionSettings)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((StaticParameterSet)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = BaseMaterialId.GetHashCode();
+                hashCode = (hashCode * 397) ^ StaticSwitchParameters.GetHashCode();
+                hashCode = (hashCode * 397) ^ StaticComponentMaskParameters.GetHashCode();
+                hashCode = (hashCode * 397) ^ NormalParameters.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(StaticParameterSet left, StaticParameterSet right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(StaticParameterSet left, StaticParameterSet right)
+        {
+            return !Equals(left, right);
+        }
+        #endregion
+
+        public static explicit operator StaticParameterSet(Guid guid)
+        {
+            return new StaticParameterSet
+            {
+                BaseMaterialId = guid,
+                StaticSwitchParameters = new StaticSwitchParameter[0],
+                StaticComponentMaskParameters = new StaticComponentMaskParameter[0],
+                NormalParameters = new NormalParameter[0]
+            };
+        }
     }
 
     #region MaterialUniformExpressions

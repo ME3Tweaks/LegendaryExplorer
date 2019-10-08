@@ -47,6 +47,12 @@ namespace ME3Explorer.Packages
 
     public sealed class MEPackage : UnrealPackageFile, IMEPackage, IDisposable
     {
+        public const ushort ME3UnrealVersion = 684;
+        public const ushort ME3LicenseeVersion = 194;
+        public const ushort ME2UnrealVersion = 512;
+        public const ushort ME2LicenseeVersion = 130;
+        public const ushort ME1UnrealVersion = 491;
+        public const ushort ME1LicenseeVersion = 1008;
         public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a seperate class
 
         public bool CanReconstruct =>
@@ -136,13 +142,13 @@ namespace ME3Explorer.Packages
                 ushort licenseeVersion = fs.ReadUInt16();
                 switch (unrealVersion)
                 {
-                    case 491 when licenseeVersion == 1008:
+                    case ME1UnrealVersion when licenseeVersion == ME1LicenseeVersion:
                         Game = MEGame.ME1;
                         break;
-                    case 512 when licenseeVersion == 130:
+                    case ME2UnrealVersion when licenseeVersion == ME2LicenseeVersion:
                         Game = MEGame.ME2;
                         break;
-                    case 684 when licenseeVersion == 194:
+                    case ME3UnrealVersion when licenseeVersion == ME3LicenseeVersion:
                         Game = MEGame.ME3;
                         break;
                     default:
@@ -420,16 +426,16 @@ namespace ME3Explorer.Packages
             switch (Game)
             {
                 case MEGame.ME1:
-                    ms.WriteUInt16(491);
-                    ms.WriteUInt16(1008);
+                    ms.WriteUInt16(ME1UnrealVersion);
+                    ms.WriteUInt16(ME1LicenseeVersion);
                     break;
                 case MEGame.ME2:
-                    ms.WriteUInt16(512);
-                    ms.WriteUInt16(130);
+                    ms.WriteUInt16(ME2UnrealVersion);
+                    ms.WriteUInt16(ME2LicenseeVersion);
                     break;
                 case MEGame.ME3:
-                    ms.WriteUInt16(684);
-                    ms.WriteUInt16(194);
+                    ms.WriteUInt16(ME3UnrealVersion);
+                    ms.WriteUInt16(ME3LicenseeVersion);
                     break;
             }
             ms.WriteInt32(FullHeaderSize);

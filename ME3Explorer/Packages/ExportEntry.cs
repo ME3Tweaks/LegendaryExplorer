@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 using StreamHelpers;
 using static ME3Explorer.Unreal.UnrealFlags;
 
@@ -22,11 +23,12 @@ namespace ME3Explorer.Packages
         public int Index { get; set; }
         public int UIndex => Index + 1;
 
-        public ExportEntry(IMEPackage file, byte[] prePropBinary = null, PropertyCollection properties = null, byte[] binary = null, bool isClass = false)
+        public ExportEntry(IMEPackage file, byte[] prePropBinary = null, PropertyCollection properties = null, ObjectBinary binary = null, bool isClass = false)
         {
             FileRef = file;
             OriginalDataSize = 0;
             _header = new byte[HasComponentMap ? 72 : 68];
+            DataOffset = 0;
             ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
 
             var ms = new MemoryStream();
@@ -43,10 +45,8 @@ namespace ME3Explorer.Packages
                 }
                 properties.WriteTo(ms, file);
             }
-            if (binary != null)
-            {
-                ms.WriteFromBuffer(binary);
-            }
+
+            binary?.WriteTo(ms, file);
 
             _data = ms.ToArray();
             DataSize = _data.Length;
@@ -645,7 +645,8 @@ namespace ME3Explorer.Packages
                 _header = _header.TypedClone(),
                 HeaderOffset = 0,
                 Data = this.Data,
-                indexValue = FileRef.GetNextIndexForName(ObjectName)
+                indexValue = FileRef.GetNextIndexForName(ObjectName),
+                DataOffset = 0
             };
         }
     }

@@ -18,7 +18,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         {
             if (export.getBinaryData().Length == 0)
             {
-                return new GenericObjectBinary(new byte[0]);
+                return Array.Empty<byte>();
             }
 
             if (From(export) is ObjectBinary objbin)
@@ -28,7 +28,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
             if (export.IsTexture())
             {
-                return new GenericObjectBinary(ConvertTexture2D(export, newGame));
+                return ConvertTexture2D(export, newGame);
             }
 
             switch (export.ClassName)
@@ -43,17 +43,17 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 case "DominantDirectionalLightComponent":
                     if (newGame == MEGame.UDK)
                     {
-                        return new GenericObjectBinary(Array.Empty<byte>());
+                        return Array.Empty<byte>();
                     }
                     else if (export.Game == MEGame.UDK && newGame != MEGame.UDK)
                     {
-                        return new GenericObjectBinary(new byte[8]);
+                        return new byte[8];
                     }
                     break;
             }
 
             //no conversion neccesary
-            return new GenericObjectBinary(export.getBinaryData());
+            return export.getBinaryData();
         }
 
         public static byte[] ConvertPrePropBinary(ExportEntry export, MEGame newGame)

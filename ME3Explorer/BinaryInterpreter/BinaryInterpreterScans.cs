@@ -103,7 +103,7 @@ namespace ME3Explorer
                 {
                     var nodes = new List<ITreeItem>();
                     materialShaderMaps.Items.Add(new BinInterpNode(bin.Position, $"Material Shader Map {i}") { Items = nodes });
-                    nodes.AddRange(ReadFStaticParameterSet(bin));
+                    nodes.Add(ReadFStaticParameterSet(bin));
 
                     if (Pcc.Game == MEGame.ME3)
                     {
@@ -151,7 +151,7 @@ namespace ME3Explorer
 
                     nodes.Add(MakeStringNode(bin, "Friendly Name"));
 
-                    nodes.AddRange(ReadFStaticParameterSet(bin));
+                    nodes.Add(ReadFStaticParameterSet(bin));
 
                     if (Pcc.Game == MEGame.ME3)
                     {
@@ -5679,9 +5679,9 @@ namespace ME3Explorer
                 bin.JumpTo(binarystart);
 
                 nodes.Add(MakeMaterialResourceNode(bin, "Material Resource"));
-                nodes.AddRange(ReadFStaticParameterSet(bin));
+                nodes.Add(ReadFStaticParameterSet(bin));
                 nodes.Add(MakeMaterialResourceNode(bin, "2nd Material Resource"));
-                nodes.AddRange(ReadFStaticParameterSet(bin));
+                nodes.Add(ReadFStaticParameterSet(bin));
             }
             catch (Exception ex)
             {
@@ -5689,9 +5689,14 @@ namespace ME3Explorer
             }
             return nodes;
         }
-        private List<ITreeItem> ReadFStaticParameterSet(MemoryStream bin)
+        private BinInterpNode ReadFStaticParameterSet(MemoryStream bin)
         {
             var nodes = new List<ITreeItem>();
+            var result = new BinInterpNode(bin.Position, "StaticParameterSet")
+            {
+                IsExpanded = true,
+                Items = nodes
+            };
 
             nodes.Add(new BinInterpNode(bin.Position, $"Base Material GUID {bin.ReadValueGuid()}") { Length = 16 });
             int staticSwitchParameterCount = bin.ReadInt32();
@@ -5756,7 +5761,7 @@ namespace ME3Explorer
                 }
             }
 
-            return nodes;
+            return result;
         }
 
         private BinInterpNode MakeMaterialResourceNode(MemoryStream bin, string name)
