@@ -35,9 +35,9 @@ namespace ME3Explorer.AssetDatabase
     {
         #region Declarations
         public const string dbCurrentBuild = "2.0"; //If changes are made that invalidate old databases edit this.
+        private int previousView { get; set; }
         private int _currentView;
-        public int currentView { get => _currentView; set => SetProperty(ref _currentView, value); }
-
+        public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
         private bool _isBusy;
         public bool IsBusy { get => _isBusy; set => SetProperty(ref _isBusy, value); }
         private string _busyText;
@@ -46,7 +46,7 @@ namespace ME3Explorer.AssetDatabase
         public string BusyHeader { get => _busyHeader; set => SetProperty(ref _busyHeader, value); }
         private bool _BusyBarInd;
         public bool BusyBarInd { get => _BusyBarInd; set => SetProperty(ref _BusyBarInd, value); }
-        public MEGame currentGame { get; set; }
+        public MEGame currentGame;
         private string CurrentDBPath { get; set; }
         public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, null, new List<string>(), new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(),
             new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>(), new ObservableCollectionExtended<ParticleSys>(), new ObservableCollectionExtended<TextureRecord>());
@@ -123,7 +123,6 @@ namespace ME3Explorer.AssetDatabase
             get => _overallProgressMaximum;
             set => SetProperty(ref _overallProgressMaximum, value);
         }
-        //public ICollectionView filesFiltered { get; set; }
         private IMEPackage meshPcc;
         private IMEPackage textPcc;
         public ICommand GenerateDBCommand { get; set; }
@@ -730,53 +729,43 @@ namespace ME3Explorer.AssetDatabase
                     break;
             }
         }
-        private void btn_MeshRenderToggle_Click(object sender, RoutedEventArgs e)
-        {
-            ToggleRenderMesh();
-            if (btn_MeshRenderToggle.IsChecked == true)
-            {
-                btn_MeshRenderToggle.Content = "Untoggle Mesh Rendering";
-            }
-            else
-            {
-                btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
-            }
-        }
+
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e) //Fires if Tab moves away
         {
-            if (e.AddedItems == e.RemovedItems || e.RemovedItems.Count == 0)
+            if (e.RemovedItems.Count == 0 || e.AddedItems.Count == 0 || e.AddedItems == e.RemovedItems)
             {
                 return;
             }
-            var item = sender as TabControl;
-            var selected = item.SelectedItem as TabItem;
-            var unselected = e.RemovedItems[0] as TabItem;
-
-            if (selected != null && unselected != null && selected?.TabIndex != unselected.TabIndex)
+            //var item = sender as TabControl;
+            //var selected = item.SelectedItem as TabItem;
+            //var unselected = e.RemovedItems[0] as TabItem;
+            
+            //if (selected != null && unselected != null && selected?.TabIndex != unselected.TabIndex)
+            if (currentView != previousView)
             {
                 FilterBox.Clear();
                 Filter();
 
-                if (unselected.TabIndex == 3)
+                if (previousView == 3)
                 {
                     ToggleRenderMesh();
                     btn_MeshRenderToggle.IsChecked = false;
                     btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
                 }
 
-                if (unselected.TabIndex == 5)
+                if (previousView == 5)
                 {
                     ToggleRenderTexture();
                     btn_TextRenderToggle.IsChecked = false;
                     btn_TextRenderToggle.Content = "Toggle Texture Rendering";
                 }
 
-                if (selected.TabIndex == 6)
+                if (currentView == 6)
                 {
                     menu_OpenUsage.Header = "Open File";
                 }
 
-                if (unselected.TabIndex == 6)
+                if (previousView == 6)
                 {
                     menu_OpenUsage.Header = "Open Usage";
                 }
@@ -806,6 +795,18 @@ namespace ME3Explorer.AssetDatabase
             else
             {
                 btn_TextRenderToggle.Content = "Toggle Texture Rendering";
+            }
+        }
+        private void btn_MeshRenderToggle_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleRenderMesh();
+            if (btn_MeshRenderToggle.IsChecked == true)
+            {
+                btn_MeshRenderToggle.Content = "Untoggle Mesh Rendering";
+            }
+            else
+            {
+                btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
             }
         }
         private void ToggleRenderMesh()
@@ -1055,30 +1056,45 @@ namespace ME3Explorer.AssetDatabase
         }
         private void Filter()
         {
-            ICollectionView viewM = CollectionViewSource.GetDefaultView(CurrentDataBase.Materials);
-            ICollectionView viewA = CollectionViewSource.GetDefaultView(CurrentDataBase.Animations);
-            ICollectionView viewS = CollectionViewSource.GetDefaultView(CurrentDataBase.Meshes);
-            ICollectionView viewC = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
-            ICollectionView viewP = CollectionViewSource.GetDefaultView(CurrentDataBase.Particles);
-            ICollectionView viewT = CollectionViewSource.GetDefaultView(CurrentDataBase.Textures);
-            ICollectionView filesFiltered = CollectionViewSource.GetDefaultView(CurrentDataBase.FileList);
-
-            filesFiltered.SortDescriptions.Add(new SortDescription("", ListSortDirection.Ascending));
-            filesFiltered.Filter = FileFilter;
-            viewC.Filter = ClassFilter;
-            viewM.Filter = MaterialFilter;
-            viewS.Filter = MeshFilter;
-            viewA.Filter = AnimFilter;
-            viewP.Filter = PSFilter;
-            viewT.Filter = TexFilter;
-
-            lstbx_Anims.ItemsSource = viewP;
-            lstbx_Materials.ItemsSource = viewM;
-            lstbx_Anims.ItemsSource = viewA;
-            lstbx_Meshes.ItemsSource = viewS;
-            lstbx_Classes.ItemsSource = viewC;
-            lstbx_Textures.ItemsSource = viewT;
-            lstbx_Files.ItemsSource = filesFiltered;
+            switch(currentView)
+            {
+                case 1: //Materials
+                    ICollectionView viewM = CollectionViewSource.GetDefaultView(CurrentDataBase.Materials);
+                    viewM.Filter = MaterialFilter;
+                    lstbx_Materials.ItemsSource = viewM;
+                    break;
+                case 2: //Animations
+                    ICollectionView viewA = CollectionViewSource.GetDefaultView(CurrentDataBase.Animations);
+                    viewA.Filter = AnimFilter;
+                    lstbx_Anims.ItemsSource = viewA;
+                    break;
+                case 3: //Meshes
+                    ICollectionView viewS = CollectionViewSource.GetDefaultView(CurrentDataBase.Meshes);
+                    viewS.Filter = MeshFilter;
+                    lstbx_Meshes.ItemsSource = viewS;
+                    break;
+                case 4: //Particles
+                    ICollectionView viewP = CollectionViewSource.GetDefaultView(CurrentDataBase.Particles);
+                    viewP.Filter = PSFilter;
+                    lstbx_Particles.ItemsSource = viewP;
+                    break;
+                case 5: //Textures
+                    ICollectionView viewT = CollectionViewSource.GetDefaultView(CurrentDataBase.Textures);
+                    viewT.Filter = TexFilter;
+                    lstbx_Textures.ItemsSource = viewT;
+                    break;
+                case 6: //Files
+                    ICollectionView filesFiltered = CollectionViewSource.GetDefaultView(CurrentDataBase.FileList);
+                    filesFiltered.SortDescriptions.Add(new SortDescription("", ListSortDirection.Ascending));
+                    filesFiltered.Filter = FileFilter;
+                    lstbx_Files.ItemsSource = filesFiltered;
+                    break;
+                default: //Classes
+                    ICollectionView viewC = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
+                    viewC.Filter = ClassFilter;
+                    lstbx_Classes.ItemsSource = viewC;
+                    break;
+            }
         }
         private void SetFilters(object obj)
         {
