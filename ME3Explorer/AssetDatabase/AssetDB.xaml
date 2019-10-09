@@ -27,6 +27,9 @@
                 <TextBlock Grid.Column="1"  Text="{Binding Property}" />
             </Grid>
         </DataTemplate>
+        <Style x:Key="FileLVHeader" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="G" Modifiers="Control"  Command="{Binding GenerateDBCommand}"/>
@@ -151,25 +154,22 @@
                                     <RowDefinition Height="24"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" Grid.Row="0" ToolTip="Shows all the files that use this class, and the first export number&#x0a;Right click to open in Package Editor"/>
-                                <ListView x:Name="lstbx_Usages" MinWidth="200" ItemsSource="{Binding SelectedItem.ClassUsages, ElementName=lstbx_Classes }" Grid.Row="1" >
-                                    <ListView.ItemTemplate>
+                                <TextBlock Text="Usages (Bold is default class settings)" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" Grid.Row="0" ToolTip="Shows all the files that use this class, and the first export number&#x0a;Right click to open in Package Editor"/>
+                                <SharedUI:ListBoxScroll x:Name="lstbx_Usages" MinWidth="200" ItemsSource="{Binding SelectedItem.ClassUsages, ElementName=lstbx_Classes }" Grid.Row="1" >
+                                    <SharedUI:ListBoxScroll.ItemTemplate>
                                         <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock>
-                                                    <TextBlock.Text>
-                                                        <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                            <Binding Path="FileKey"/>
-                                                            <Binding Path="CurrentDataBase.FileList" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                                <TextBlock Text=" #"/>
-                                                <TextBlock Text="{Binding ExportUID}" />
-                                            </StackPanel>
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                        <Binding Path="FileKey"/>
+                                                        <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                        <Binding Path="ExportUID"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
                                         </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                    <ListView.ItemContainerStyle>
+                                    </SharedUI:ListBoxScroll.ItemTemplate>
+                                    <SharedUI:ListBoxScroll.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Path=IsDefault}" Value="True">
@@ -178,15 +178,15 @@
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </ListView.ItemContainerStyle>
-                                    <ListView.ContextMenu>
+                                    </SharedUI:ListBoxScroll.ItemContainerStyle>
+                                    <SharedUI:ListBoxScroll.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor" />
                                             <MenuItem Header="Open Class Definition" Command="{Binding OpenSourcePkgCommand}" ToolTip="Opens this class definition in Package Editor" />
                                             <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties"/>
                                         </ContextMenu>
-                                    </ListView.ContextMenu>
-                                </ListView>
+                                    </SharedUI:ListBoxScroll.ContextMenu>
+                                </SharedUI:ListBoxScroll>
                             </Grid>
                         </DockPanel>
                     </TabItem>
@@ -242,21 +242,18 @@
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files that use the material (grey is official DLC w shadercache)&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
                             <SharedUI:ListBoxScroll x:Name="lstbx_MatUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.MaterialUsages, ElementName=lstbx_Materials}" Grid.Row="1" Grid.Column="2">
                                     <SharedUI:ListBoxScroll.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock>
-                                                    <TextBlock.Text>
-                                                        <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                            <Binding Path="Item1"/>
-                                                            <Binding Path="CurrentDataBase.FileList" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                                <TextBlock Text=" #"/>
-                                                <TextBlock Text="{Binding Item2}" />
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </SharedUI:ListBoxScroll.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                    <Binding Path="Item1"/>
+                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                    <Binding Path="Item2"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </SharedUI:ListBoxScroll.ItemTemplate>
                                     <SharedUI:ListBoxScroll.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Style.Triggers>
@@ -290,45 +287,44 @@
                             <TextBlock Text="Animsequences" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Animations within the game" Grid.Row="0" Grid.Column="0"/>
                             <SharedUI:ListBoxScroll x:Name="lstbx_Anims" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Animations}"  DisplayMemberPath="AnimSequence" Grid.Row="1" Grid.Column="0"/>
                             <TextBlock Text="Details" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Details of each animation" Grid.Row="0" Grid.Column="1"/>
-                            <StackPanel x:Name="details_Anim" MinWidth="200" Margin="8" Grid.Row="1" Grid.Column="1">
-                                <StackPanel.Style>
-                                    <Style>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=lstbx_Anims, Path=SelectedIndex}" Value=">=0">
-                                                <Setter Property="StackPanel.Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </StackPanel.Style>
-                                <TextBlock Text="Sequence Name: " Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding Path=SelectedItem.SeqName, ElementName=lstbx_Anims}" />
-                                <TextBlock Text="Animation Group: " Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding Path=SelectedItem.AnimData, ElementName=lstbx_Anims}" />
-                                <TextBlock Text="Length (s): " Margin="0,5,0,0" />
-                                <TextBlock Text="{Binding Path=SelectedItem.Length, ElementName=lstbx_Anims}"/>
-                                <TextBlock Text="Number of Frames (runs at 30fps): " Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding Path=SelectedItem.Frames, ElementName=lstbx_Anims}" />
-                                <TextBlock Text="Compression Format: " Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding Path=SelectedItem.Compression, ElementName=lstbx_Anims}" />
-                                <TextBlock Text="Key Format: " Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding Path=SelectedItem.KeyFormat, ElementName=lstbx_Anims}" />
-                            </StackPanel>
+                            <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
+                                <StackPanel x:Name="details_Anim" MinWidth="200" Margin="8">
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=lstbx_Anims, Path=SelectedIndex}" Value=">=0">
+                                                    <Setter Property="StackPanel.Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <TextBlock Text="Sequence Name: " Margin="0,5,0,0"/>
+                                    <TextBlock Text="{Binding Path=SelectedItem.SeqName, ElementName=lstbx_Anims}" />
+                                    <TextBlock Text="Animation Group: " Margin="0,5,0,0"/>
+                                    <TextBlock Text="{Binding Path=SelectedItem.AnimData, ElementName=lstbx_Anims}" />
+                                    <TextBlock Text="Length (s): " Margin="0,5,0,0" />
+                                    <TextBlock Text="{Binding Path=SelectedItem.Length, ElementName=lstbx_Anims}"/>
+                                    <TextBlock Text="Number of Frames (runs at 30fps): " Margin="0,5,0,0"/>
+                                    <TextBlock Text="{Binding Path=SelectedItem.Frames, ElementName=lstbx_Anims}" />
+                                    <TextBlock Text="Compression Format: " Margin="0,5,0,0"/>
+                                    <TextBlock Text="{Binding Path=SelectedItem.Compression, ElementName=lstbx_Anims}" />
+                                    <TextBlock Text="Key Format: " Margin="0,5,0,0"/>
+                                    <TextBlock Text="{Binding Path=SelectedItem.KeyFormat, ElementName=lstbx_Anims}" />
+                                </StackPanel>
+                            </Border>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this animsequence&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
                             <SharedUI:ListBoxScroll x:Name="lstbx_AnimUsages" MinWidth="200" ItemsSource="{Binding SelectedItem.AnimUsages, ElementName=lstbx_Anims }" Grid.Row="1" Grid.Column="2">
                                 <SharedUI:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                        <Binding Path="Item1"/>
-                                                        <Binding Path="CurrentDataBase.FileList" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                            <TextBlock Text="  #"/>
-                                            <TextBlock Text="{Binding Item2}" />
-                                        </StackPanel>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                    <Binding Path="Item1"/>
+                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                    <Binding Path="Item2"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </SharedUI:ListBoxScroll.ItemTemplate>
                                 <SharedUI:ListBoxScroll.ContextMenu>
@@ -368,26 +364,25 @@
                                 </SharedUI:ListBoxScroll.ItemTemplate>
                             </SharedUI:ListBoxScroll>
                             <TextBlock Text="Viewer" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Toggle the viewer on or off" Grid.Row="0" Grid.Column="1"/>
-                            <DockPanel x:Name="details_Mesh" MinWidth="350" Margin="3" Grid.Row="1" Grid.Column="1">
-                                <ToggleButton x:Name="btn_MeshRenderToggle" Content="Toggle Mesh Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_MeshRenderToggle_Click" IsChecked="False"></ToggleButton>
-                                <meshplorer:MeshRendererWPF x:Name="MeshRendererTab_MeshRenderer"/>
-                            </DockPanel>
+                            <Border BorderBrush="LightSlateGray" BorderThickness="0.7" Grid.Row="1" Grid.Column="1">
+                                <DockPanel x:Name="details_Mesh" MinWidth="350" Margin="3" >
+                                    <ToggleButton x:Name="btn_MeshRenderToggle" Content="Toggle Mesh Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_MeshRenderToggle_Click" IsChecked="False"></ToggleButton>
+                                    <meshplorer:MeshRendererWPF x:Name="MeshRendererTab_MeshRenderer" />
+                                </DockPanel>
+                            </Border>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this Mesh&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
                             <SharedUI:ListBoxScroll x:Name="lstbx_MeshUsages" DockPanel.Dock="Right" MinWidth="250" ItemsSource="{Binding SelectedItem.MeshUsages, ElementName=lstbx_Meshes }" Grid.Row="2" Grid.Column="2" >
                                 <SharedUI:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                        <Binding Path="Item1"/>
-                                                        <Binding Path="CurrentDataBase.FileList" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                            <TextBlock Text="  #"/>
-                                            <TextBlock Text="{Binding Item2}" />
-                                        </StackPanel>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                    <Binding Path="Item1"/>
+                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                    <Binding Path="Item2"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </SharedUI:ListBoxScroll.ItemTemplate>
                                 <SharedUI:ListBoxScroll.ContextMenu>
@@ -432,39 +427,38 @@
                                 </SharedUI:ListBoxScroll.ItemContainerStyle>
                             </SharedUI:ListBoxScroll>
                             <TextBlock Text="Details" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Additional details" Grid.Row="0" Grid.Column="1"/>
-                            <StackPanel x:Name="details_PS" MinWidth="200" Margin="3" Grid.Row="1" Grid.Column="1">
-                                <StackPanel.Style>
-                                    <Style>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=lstbx_Particles, Path=SelectedIndex}" Value=">=0">
-                                                <Setter Property="StackPanel.Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </StackPanel.Style>
-                                <TextBlock Text="Parent Package: " Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding Path=SelectedItem.ParentPackage, ElementName=lstbx_Particles}" />
-                                <TextBlock Text="System Complexity (emitter count): " Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding Path=SelectedItem.EmitterCount, ElementName=lstbx_Particles}" />
-                                <TextBlock Text="Is DLC Only: " Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding Path=SelectedItem.IsDLCOnly, ElementName=lstbx_Particles}" />
-                            </StackPanel>
+                            <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
+                                <StackPanel x:Name="details_PS" MinWidth="200" Margin="3">
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=lstbx_Particles, Path=SelectedIndex}" Value=">=0">
+                                                    <Setter Property="StackPanel.Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <TextBlock Text="Parent Package: " Margin="0,5,0,0"/>
+                                    <TextBlock Text="{Binding Path=SelectedItem.ParentPackage, ElementName=lstbx_Particles}" />
+                                    <TextBlock Text="System Complexity (emitter count): " Margin="0,5,0,0"/>
+                                    <TextBlock Text="{Binding Path=SelectedItem.EmitterCount, ElementName=lstbx_Particles}" />
+                                    <TextBlock Text="Is DLC Only: " Margin="0,5,0,0"/>
+                                    <TextBlock Text="{Binding Path=SelectedItem.IsDLCOnly, ElementName=lstbx_Particles}" />
+                                </StackPanel>
+                            </Border>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this effect&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
                             <SharedUI:ListBoxScroll x:Name="lstbx_PSUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.PSUsages, ElementName=lstbx_Particles }" Grid.Row="1" Grid.Column="2">
                                 <SharedUI:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                        <Binding Path="Item1"/>
-                                                        <Binding Path="CurrentDataBase.FileList" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                            <TextBlock Text=" #"/>
-                                            <TextBlock Text="{Binding Item2}" />
-                                        </StackPanel>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                    <Binding Path="Item1"/>
+                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                    <Binding Path="Item2"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </SharedUI:ListBoxScroll.ItemTemplate>
                                 <SharedUI:ListBoxScroll.ItemContainerStyle>
@@ -529,26 +523,25 @@
                                 </SharedUI:ListBoxScroll.ItemContainerStyle>
                             </SharedUI:ListBoxScroll>
                             <TextBlock Text="Texture Viewer" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Click button to toggle the viewer" Grid.Row="0" Grid.Column="1"/>
-                            <DockPanel x:Name="details_Textures" MinWidth="350" MaxWidth="550" Margin="3" Grid.Row="1" Grid.Column="1">
-                                <ToggleButton x:Name="btn_TextRenderToggle" Content="Toggle Texture Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_TextRenderToggle_Click" IsChecked="False"></ToggleButton>
-                                <global:TextureViewerExportLoader x:Name="EmbeddedTextureViewerTab_EmbededTextureViewer" ViewerModeOnly="True"/>
-                            </DockPanel>
+                            <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
+                                <DockPanel x:Name="details_Textures" MinWidth="350" MaxWidth="550" Margin="3">
+                                    <ToggleButton x:Name="btn_TextRenderToggle" Content="Toggle Texture Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_TextRenderToggle_Click"/>
+                                    <global:TextureViewerExportLoader x:Name="EmbeddedTextureViewerTab_EmbededTextureViewer" ViewerModeOnly="True"/>
+                                </DockPanel>
+                            </Border>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this texture&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
                             <SharedUI:ListBoxScroll x:Name="lstbx_TextureUsages"  MinWidth="250" ItemsSource="{Binding SelectedItem.TextureUsages, ElementName=lstbx_Textures }" Grid.Row="1" Grid.Column="2">
                                 <SharedUI:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
                                             <TextBlock>
                                                 <TextBlock.Text>
                                                     <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
                                                         <Binding Path="Item1"/>
-                                                        <Binding Path="CurrentDataBase.FileList" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                        <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                        <Binding Path="Item2"/>
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                             </TextBlock>
-                                            <TextBlock Text="  #"/>
-                                            <TextBlock Text="{Binding Item2}" />
-                                        </StackPanel>
                                     </DataTemplate>
                                 </SharedUI:ListBoxScroll.ItemTemplate>
                                 <SharedUI:ListBoxScroll.ItemContainerStyle>
@@ -572,9 +565,15 @@
                     <!-- FileList -->
                     <TabItem Header="Files" TabIndex="6">
                         <DockPanel>
-                            <TextBlock Text="Files (right click to open in toolkit)" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files in the game" DockPanel.Dock="Top"/>
-                            <SharedUI:ListBoxScroll x:Name="lstbx_Files" DockPanel.Dock="Bottom" MinWidth="300">
-                                <SharedUI:ListBoxScroll.ContextMenu>
+                            <TextBlock Text="All game files (right click to open in toolkit)" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files in the game" DockPanel.Dock="Top"/>
+                            <ListView x:Name="lstbx_Files" DockPanel.Dock="Bottom" MinWidth="300" ItemsSource="{Binding Path=FileListExtended}" GridViewColumnHeader.Click="files_ColumnHeader_Click">
+                                <ListView.View>
+                                    <GridView ColumnHeaderContainerStyle="{StaticResource FileLVHeader}">
+                                        <GridViewColumn DisplayMemberBinding="{Binding Item1}" Width="260" Header="File"/>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Item2}" Width="260" Header="Source (Basegame, DLC or Mod directory)" />
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Open in Package Editor" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this file in Package Editor.">
                                             <MenuItem.Icon>
@@ -602,8 +601,8 @@
                                             </MenuItem.Icon>
                                         </MenuItem>
                                     </ContextMenu>
-                                </SharedUI:ListBoxScroll.ContextMenu>
-                            </SharedUI:ListBoxScroll>
+                                </ListView.ContextMenu>
+                            </ListView>
                         </DockPanel>
                     </TabItem>
                 </TabControl>
