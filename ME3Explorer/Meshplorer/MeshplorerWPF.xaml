@@ -28,13 +28,7 @@
         <Converters:EntryFileTypeIconPathConverter x:Key="EntryFileTypeIconPathConverter"/>
         <Converters:EmbeddedFileToolTipConverter x:Key="EmbeddedFileToolTipConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
-        <ContextMenu x:Key="MyMenu">
-            <MenuItem Header="Open in Package Editor" ToolTip="Opens this mesh in Package Editor" Click="OpenInPackageEditor_Clicked"/>
-        </ContextMenu>
-        <Style x:Key="MeshExports_ListboxItemStyle" TargetType="{x:Type ListBoxItem}">
-            <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>
-            <Setter Property="Padding" Value="0"/>
-        </Style>
+        <SharedUI:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
     </Window.Resources>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel>
@@ -133,7 +127,7 @@
                     </Grid>
                 </StackPanel>
 
-                <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectedItem="{Binding CurrentExport}" ItemContainerStyle="{StaticResource MeshExports_ListboxItemStyle}">
+                <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectedItem="{Binding CurrentExport}">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type packages:ExportEntry}">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
@@ -159,6 +153,16 @@
                                 </DataTrigger>
                             </DataTemplate.Triggers>
                         </DataTemplate>
+                        <ContextMenu x:Key="MyMenu">
+                            <MenuItem Header="Open in Package Editor" ToolTip="Opens this mesh in Package Editor" Click="OpenInPackageEditor_Clicked"/>
+                            <MenuItem Header="Replace Mesh from UDK" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ReplaceFromUDKCommand}"/>
+                            <MenuItem Header="Export Mesh to UDK" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportToUDKCommand}"/>
+                            <MenuItem Header="Convert ME3 Skeletal Mesh to ME3 Static Mesh" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ConvertToStaticMeshCommand}"/>
+                        </ContextMenu>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
                     </ListBox.Resources>
                 </ListBox>
 

@@ -14,6 +14,7 @@ using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 using ME3Explorer.Scene3D;
 using ME3Explorer.Unreal.BinaryConverters;
+using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Unreal.ME3Enums;
 using StreamHelpers;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
@@ -5938,7 +5939,26 @@ namespace ME3Explorer
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(MakeBoxSphereBoundsNode(bin, "Bounds"));
-                subnodes.Add(MakeArrayNode(bin, "Materials", i => MakeEntryNode(bin, $"{i}"), true));
+                subnodes.Add(MakeArrayNode(bin, "Materials", i =>
+                {
+                    var matNode = MakeEntryNode(bin, $"{i}");
+                    try
+                    {
+                        if (Pcc.GetUExport(bin.Skip(-4).ReadInt32()) is ExportEntry matExport)
+                        {
+                            foreach (IEntry texture in new MaterialInstanceConstant(matExport).Textures)
+                            {
+                                matNode.Items.Add(new BinInterpNode($"#{texture.UIndex} {CurrentLoadedExport.FileRef.GetEntryString(texture.UIndex)}"));
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        matNode.Items.Add(new BinInterpNode("Error reading Material!"));
+                    }
+
+                    return matNode;
+                }, true));
                 subnodes.Add(MakeVectorNode(bin, "Origin"));
                 subnodes.Add(MakeRotatorNode(bin, "Rotation Origin"));
                 subnodes.Add(MakeArrayNode(bin, "RefSkeleton", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadNameReference(Pcc).Instanced}")
@@ -6660,7 +6680,23 @@ namespace ME3Explorer
                     Items = ReadList(matOffsets.Count, i =>
                     {
                         bin.JumpTo(matOffsets[i]);
-                        return MakeEntryNode(bin, $"Material[{i}]");
+                        var matNode = MakeEntryNode(bin, $"Material[{i}]");
+                        try
+                        {
+                            if (Pcc.GetUExport(bin.Skip(-4).ReadInt32()) is ExportEntry matExport)
+                            {
+                                foreach (IEntry texture in new MaterialInstanceConstant(matExport).Textures)
+                                {
+                                    matNode.Items.Add(new BinInterpNode($"#{texture.UIndex} {CurrentLoadedExport.FileRef.GetEntryString(texture.UIndex)}"));
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            matNode.Items.Add(new BinInterpNode("Error reading Material!"));
+                        }
+
+                        return matNode;
                     })
                 });
             }
