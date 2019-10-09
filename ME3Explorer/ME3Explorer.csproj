@@ -860,6 +860,7 @@
     <Compile Include="Unreal\BinaryConverters\UStruct.cs" />
     <Compile Include="Unreal\CommonStructs.cs" />
     <Compile Include="Unreal\DLCPackage2.cs" />
+    <Compile Include="Unreal\ME3Enums.cs" />
     <Compile Include="Unreal\SerializingContainer2.cs" />
     <Compile Include="Unreal\BinaryConverters\TreeNode.cs" />
     <Compile Include="Unreal\BinaryConverters\UnrealStructs.cs" />
@@ -882,9 +883,6 @@
     <Compile Include="Unreal\DLCUnpacker.cs" />
     <Compile Include="Unreal\HuffmanCompression.cs" />
     <Compile Include="Packages\MEPackageHandler.cs" />
-    <Compile Include="Unreal\ME3Classes.cs" />
-    <Compile Include="Unreal\ME3Enums.cs" />
-    <Compile Include="Unreal\ME3Structs.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropertyCollection.cs" />
     <Compile Include="Unreal\PSAFile.cs" />

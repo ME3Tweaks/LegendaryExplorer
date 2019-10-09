@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer.Packages;
-using ME3Explorer.Unreal.ME3Structs;
 using SharpDX;
 using Guid = System.Guid;
 

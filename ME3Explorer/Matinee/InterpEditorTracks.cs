@@ -8,7 +8,6 @@ using ME3Explorer.SharedUI;
 using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.ME3Structs;
 using Color = System.Windows.Media.Color;
 
 namespace ME3Explorer.Matinee
@@ -138,11 +137,11 @@ namespace ME3Explorer.Matinee
         public InterpTrackFloatBase(ExportEntry export) : base(export)
         {
             var floatTrackProp = export.GetProperty<StructProperty>("FloatTrack");
-            if (floatTrackProp?.GetStruct<InterpCurveFloat>() is InterpCurveFloat curveFloat)
+            if (floatTrackProp != null)
             {
-                foreach (var curvePoint in curveFloat.Points)
+                foreach (var curvePoint in floatTrackProp.GetPropOrDefault<ArrayProperty<StructProperty>>("Points"))
                 {
-                    Keys.Add(new Key(curvePoint.InVal));
+                    Keys.Add(new Key(curvePoint.GetProp<FloatProperty>("InVal")));
                 }
             }
         }
@@ -152,11 +151,11 @@ namespace ME3Explorer.Matinee
         public InterpTrackVectorBase(ExportEntry export) : base(export)
         {
             var vectorTrackProp = export.GetProperty<StructProperty>("VectorTrack");
-            if (vectorTrackProp?.GetStruct<InterpCurveVector>() is InterpCurveVector curveVector)
+            if (vectorTrackProp != null)
             {
-                foreach (var curvePoint in curveVector.Points)
+                foreach (var curvePoint in vectorTrackProp.GetPropOrDefault<ArrayProperty<StructProperty>>("Points"))
                 {
-                    Keys.Add(new Key(curvePoint.InVal));
+                    Keys.Add(new Key(curvePoint.GetProp<FloatProperty>("InVal")));
                 }
             }
         }
@@ -168,9 +167,9 @@ namespace ME3Explorer.Matinee
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("EventTrack");
             if (trackKeys != null)
             {
-                foreach (var trackKey in trackKeys.AsStructs<EventTrackKey>())
+                foreach (var trackKey in trackKeys)
                 {
-                    Keys.Add(new Key(trackKey.Time));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("StartTime")));
                 }
             }
         }
@@ -184,8 +183,7 @@ namespace ME3Explorer.Matinee
             {
                 foreach (StructProperty trackKey in trackKeys)
                 {
-                    var fTime = trackKey.GetProp<FloatProperty>("StartTime");
-                    Keys.Add(new Key(fTime));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("StartTime")));
                 }
             }
         }
@@ -197,9 +195,9 @@ namespace ME3Explorer.Matinee
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("AnimSeqs");
             if (trackKeys != null)
             {
-                foreach (var trackKey in trackKeys.AsStructs<AnimControlTrackKey>())
+                foreach (var trackKey in trackKeys)
                 {
-                    Keys.Add(new Key(trackKey.StartTime));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("StartTime")));
                 }
             }
         }
@@ -217,9 +215,9 @@ namespace ME3Explorer.Matinee
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("VisibilityTrack");
             if (trackKeys != null)
             {
-                foreach (var trackKey in trackKeys.AsStructs<VisibilityTrackKey>())
+                foreach (var trackKey in trackKeys)
                 {
-                    Keys.Add(new Key(trackKey.Time));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("Time")));
                 }
             }
         }
@@ -231,9 +229,9 @@ namespace ME3Explorer.Matinee
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("ToggleTrack");
             if (trackKeys != null)
             {
-                foreach (var trackKey in trackKeys.AsStructs<ToggleTrackKey>())
+                foreach (var trackKey in trackKeys)
                 {
-                    Keys.Add(new Key(trackKey.Time));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("Time")));
                 }
             }
         }
@@ -245,9 +243,9 @@ namespace ME3Explorer.Matinee
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("WwiseEvents");
             if (trackKeys != null)
             {
-                foreach (var trackKey in trackKeys.AsStructs<WwiseEventTrackKey>())
+                foreach (var trackKey in trackKeys)
                 {
-                    Keys.Add(new Key(trackKey.Time));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("Time")));
                 }
             }
         }
@@ -259,9 +257,9 @@ namespace ME3Explorer.Matinee
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("CutTrack");
             if (trackKeys != null)
             {
-                foreach (var trackKey in trackKeys.AsStructs<DirectorTrackCut>())
+                foreach (var trackKey in trackKeys)
                 {
-                    Keys.Add(new Key(trackKey.Time));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("Time")));
                 }
             }
         }

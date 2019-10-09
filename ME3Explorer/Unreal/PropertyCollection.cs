@@ -9,7 +9,6 @@ using System.Collections;
 using System.Diagnostics;
 using System.Collections.Concurrent;
 using System.Reflection;
-using MassEffect.Windows.Data;
 using ME3Explorer.SharedUI;
 using StreamHelpers;
 using PropertyInfo = ME3Explorer.Packages.PropertyInfo;
@@ -774,179 +773,6 @@ namespace ME3Explorer.Unreal
                 }, StaticArrayIndex);
             }
         }
-
-        /// <summary>
-        /// EXPERIMENTAL - USE WITH CAUTION - ONLY WORKS FOR ME3
-        /// </summary>
-        public T GetStruct<T>() where T : class, new()
-        {
-            T uStruct = new T();
-            MethodInfo getPropMethodInfo = this.GetType().GetMethod(nameof(GetProp));
-            if (typeof(T).Name != StructType)
-            {
-                throw new NotSupportedException($"{typeof(T).Name} does not match the StructProperty's struct type: {StructType}");
-            }
-
-            if (!ME3UnrealObjectInfo.Structs.TryGetValue(StructType, out ClassInfo classInfo))
-            {
-                throw new ArgumentException($"{StructType} is not a recognized struct!");
-            }
-            FieldInfo[] fields = typeof(T).GetFields();
-            foreach (FieldInfo info in fields)
-            {
-                if (classInfo.properties.TryGetValue(info.Name, out PropertyInfo propInfo)
-                 && getPropMethodInfo.MakeGenericMethod(getUPropertyType(propInfo)).Invoke(this, new object[] { info.Name }) is UProperty uProp)
-                {
-                    info.SetValue(uStruct, getUPropertyValue(uProp, propInfo));
-                }
-            }
-
-            return uStruct;
-
-            Type getUPropertyType(PropertyInfo propInfo)
-            {
-                switch (propInfo.Type)
-                {
-                    case PropertyType.StructProperty:
-                        return typeof(StructProperty);
-                    case PropertyType.IntProperty:
-                        return typeof(IntProperty);
-                    case PropertyType.FloatProperty:
-                        return typeof(FloatProperty);
-                    case PropertyType.DelegateProperty:
-                        return typeof(DelegateProperty);
-                    case PropertyType.ObjectProperty:
-                        return typeof(ObjectProperty);
-                    case PropertyType.NameProperty:
-                        return typeof(NameProperty);
-                    case PropertyType.BoolProperty:
-                        return typeof(BoolProperty);
-                    case PropertyType.BioMask4Property:
-                        return typeof(BioMask4Property);
-                    case PropertyType.ByteProperty when propInfo.IsEnumProp():
-                        return typeof(EnumProperty);
-                    case PropertyType.ByteProperty:
-                        return typeof(ByteProperty);
-                    case PropertyType.ArrayProperty:
-                        {
-                            if (Enum.TryParse(propInfo.Reference, out PropertyType arrayType))
-                            {
-                                return typeof(ArrayProperty<>).MakeGenericType(getUPropertyType(new PropertyInfo(arrayType)));
-                            }
-                            if (ME3UnrealObjectInfo.Classes.ContainsKey(propInfo.Reference))
-                            {
-                                return typeof(ArrayProperty<ObjectProperty>);
-                            }
-                            return typeof(ArrayProperty<StructProperty>);
-                        }
-                    case PropertyType.StrProperty:
-                        return typeof(StrProperty);
-                    case PropertyType.StringRefProperty:
-                        return typeof(StringRefProperty);
-                    case PropertyType.None:
-                    case PropertyType.Unknown:
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            object getUPropertyValue(UProperty prop, PropertyInfo propInfo)
-            {
-                switch (prop)
-                {
-                    case ArrayPropertyBase arrayPropertyBase:
-                        {
-                            List<object> objVals = arrayPropertyBase.Properties.Select(p => getUPropertyValue(p, propInfo)).ToList();
-                            Type arrayType = getArrayPropertyValueType(arrayPropertyBase, propInfo);
-                            //IEnumerable<arrayType> typedEnumerable = objVals.Cast<arrayType>();
-                            var typedEnumerable = typeof(Enumerable).InvokeGenericMethod(nameof(Enumerable.Cast), arrayType, null, objVals);
-                            //return typedEnumerable.ToArray();
-                            return typeof(Enumerable).InvokeGenericMethod(nameof(Enumerable.ToArray), arrayType, null, typedEnumerable);
-                        }
-                    case BioMask4Property bioMask4Property:
-                        return bioMask4Property.Value;
-                    case BoolProperty boolProperty:
-                        return boolProperty.Value;
-                    case ByteProperty byteProperty:
-                        return byteProperty.Value;
-                    case DelegateProperty delegateProperty:
-                        return delegateProperty.Value;
-                    case EnumProperty enumProperty:
-                        var enumType = Type.GetType($"ME3Explorer.Unreal.ME3Enums.{propInfo.Reference}");
-                        return Enum.Parse(enumType, enumProperty.Value.Instanced);
-                    case FloatProperty floatProperty:
-                        return floatProperty.Value;
-                    case IntProperty intProperty:
-                        return intProperty.Value;
-                    case NameProperty nameProperty:
-                        return nameProperty.Value;
-                    case ObjectProperty objectProperty:
-                        return objectProperty.Value;
-                    case StringRefProperty stringRefProperty:
-                        return stringRefProperty.Value;
-                    case StrProperty strProperty:
-                        return strProperty.Value;
-                    case StructProperty structProperty:
-                        {
-                            Type structType = Type.GetType($"ME3Explorer.Unreal.ME3Structs.{propInfo.Reference}");
-                            //return structProperty.GetStruct<structType>();
-                            return typeof(StructProperty).InvokeGenericMethod(nameof(structProperty.GetStruct), structType, structProperty);
-                        }
-                    case UnknownProperty unknownProperty:
-                    case NoneProperty noneProperty:
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            Type getArrayPropertyValueType(ArrayPropertyBase arrProp, PropertyInfo propInfo)
-            {
-                switch (arrProp)
-                {
-                    case ArrayProperty<IntProperty> _:
-                        return typeof(int);
-                    case ArrayProperty<StringRefProperty> _:
-                        return typeof(int);
-                    case ArrayProperty<ObjectProperty> _:
-                        return typeof(int);
-                    case ArrayProperty<DelegateProperty> _:
-                        return typeof(ScriptDelegate);
-                    case ArrayProperty<FloatProperty> _:
-                        return typeof(float);
-                    case ArrayProperty<BoolProperty> _:
-                        return typeof(bool);
-                    case ArrayProperty<StrProperty> _:
-                        return typeof(string);
-                    case ArrayProperty<ByteProperty> _:
-                    case ImmutableByteArrayProperty _:
-                        return typeof(byte);
-                    case ArrayProperty<BioMask4Property> _:
-                        return typeof(byte);
-                    case ArrayProperty<NameProperty> _:
-                        return typeof(NameReference);
-                    case ArrayProperty<EnumProperty> _:
-                        return Type.GetType($"ME3Explorer.Unreal.ME3Enums.{propInfo.Reference}");
-                    case ArrayProperty<StructProperty> _:
-                        return Type.GetType($"ME3Explorer.Unreal.ME3Structs.{propInfo.Reference}");
-                    default:
-                        throw new NotImplementedException();
-                }
-            }
-        }
-    }
-
-    public static class StructArrayExtensions
-    {
-        /// <summary>
-        /// EXPERIMENTAL - ONLY WORKS FOR ME3
-        /// </summary>
-        public static IEnumerable<T> AsStructs<T>(this ArrayProperty<StructProperty> arrayProperty) where T : class, new()
-        {
-            foreach (StructProperty structProperty in arrayProperty)
-            {
-                yield return structProperty.GetStruct<T>();
-            }
-        }
     }
 
     [DebuggerDisplay("IntProperty | {Name} = {Value}")]
@@ -1076,7 +902,7 @@ namespace ME3Explorer.Unreal
 
         public static implicit operator float(FloatProperty p)
         {
-            return p.Value;
+            return p?.Value ?? 0;
         }
     }
 
