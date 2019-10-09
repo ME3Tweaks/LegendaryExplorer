@@ -776,6 +776,9 @@ namespace ME3Explorer.AssetDatabase
                 Filter();
                 switch (currentView) 
                 {
+                    case 1:
+                        FilterBox.Watermark = "Search (by material name or parent package)";
+                        break;
                     case 5:
                         FilterBox.Watermark = "Search (by texture name or CRC if compiled)";
                         break;
@@ -922,14 +925,14 @@ namespace ME3Explorer.AssetDatabase
                 showText = true;
             }
 
-            if (!showText)
+            var selecteditem = lstbx_Textures.SelectedItem as TextureRecord;
+            if (!showText || selecteditem.CFormat == "TextureCube")
             {
                 EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
                 textPcc?.Dispose();
                 return;
             }
-            var selecteditem = lstbx_Textures.SelectedItem as TextureRecord;
-
+            
             var filekey = selecteditem.TextureUsages[0].Item1;
             var filename = CurrentDataBase.FileList[filekey].Item1;
             string rootPath = MEDirectories.GamePath(currentGame);
@@ -1010,6 +1013,10 @@ namespace ME3Explorer.AssetDatabase
             if (!String.IsNullOrEmpty(FilterBox.Text) && mr != null)
             {
                 showthis = mr.MaterialName.ToLower().Contains(FilterBox.Text.ToLower());
+                if(!showthis)
+                {
+                    showthis = mr.ParentPackage.ToLower().Contains(FilterBox.Text.ToLower());
+                }
             }
             if (showthis && menu_fltrMatUnlit.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "LightingModel" && x.Item3 == "MLM_Unlit"))
             {
@@ -1499,6 +1506,12 @@ namespace ME3Explorer.AssetDatabase
             //Add Textures
             CurrentDataBase.Textures.AddRange(GeneratedText.Values);
             CurrentDataBase.Textures.Sort(x => x.TextureName);
+
+            foreach (var f in CurrentDataBase.FileList)
+            {
+                var cd = CurrentDataBase.ContentDir[f.Item2];
+                FileListExtended.Add(new Tuple<string, string>(f.Item1, cd));
+            }
 
             GeneratedClasses.Clear();
             GeneratedAnims.Clear();
@@ -2189,7 +2202,7 @@ namespace ME3Explorer.AssetDatabase
                                 }
                             }
 
-                            if (exp.ClassName == "Texture2D" && !pIsdefault)
+                            if ((exp.ClassName == "Texture2D" || exp.ClassName == "TextureCube") && !pIsdefault)
                             {
                                 bool IsDLC = pcc.IsInOfficialDLC();
                                 if (dbScanner.GeneratedText.ContainsKey(pExp))
@@ -2216,19 +2229,23 @@ namespace ME3Explorer.AssetDatabase
                                         parent = GetTopParentPackage(exp);
                                     }
 
-                                    var formp = exp.GetProperty<EnumProperty>("Format");
-                                    string pformat = formp != null ? formp.Value.Name.ToString() : "n/a";
-                                    var propX = exp.GetProperty<IntProperty>("SizeX");
-                                    int psizeX = propX != null ? propX.Value : 0;
-                                    var propY = exp.GetProperty<IntProperty>("SizeY");
-                                    int psizeY = propY != null ? propY.Value : 0;
+                                    string pformat = "TextureCube";
+                                    int psizeX = 0;
+                                    int psizeY = 0;
                                     string cRC = "n/a";
-                                    if (ScanCRC)
+                                    if (exp.ClassName != "TextureCube")
                                     {
-                                        cRC = Texture2D.GetTextureCRC(exp).ToString("X8");
+                                        var formp = exp.GetProperty<EnumProperty>("Format");
+                                        pformat = formp != null ? formp.Value.Name.ToString() : "n/a";
+                                        var propX = exp.GetProperty<IntProperty>("SizeX");
+                                        psizeX = propX != null ? propX.Value : 0;
+                                        var propY = exp.GetProperty<IntProperty>("SizeY");
+                                        psizeY = propY != null ? propY.Value : 0;
+                                        if (ScanCRC)
+                                        {
+                                            cRC = Texture2D.GetTextureCRC(exp).ToString("X8");
+                                        }
                                     }
-
-
                                     var NewTex = new TextureRecord(pExp, parent, IsDLC, pformat, psizeX, psizeY, cRC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
                                     dbScanner.GeneratedText.TryAdd(pExp, NewTex);
                                 }
