@@ -654,11 +654,6 @@ namespace ME3Explorer.MetadataEditor
             Header_Hexbox_Host.Dispose();
         }
 
-        public override void PoppedOut(MenuItem recentsMenuItem)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// This class is used when stuffing into the list. It makes "0" searchable by having the UIndex property.
         /// </summary>

@@ -194,15 +194,15 @@ namespace ME3Explorer.CurveEd
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-                var props = exportEntry.GetProperties();
-                foreach (var prop in props)
+            var props = exportEntry.GetProperties();
+            foreach (var prop in props)
+            {
+                if (prop is StructProperty structProp 
+                    && Enum.TryParse(structProp.StructType, out CurveType _))
                 {
-                    if (prop is StructProperty structProp 
-                        && Enum.TryParse(structProp.StructType, out CurveType _))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
+            }
             return false;
         }
 
@@ -210,18 +210,15 @@ namespace ME3Explorer.CurveEd
         {
             UnloadExport();
             if (TrackList.ItemsSource is List<InterpCurve> curvelist)
-                foreach (var interpCurve in curvelist)
             {
-                foreach (var curve in interpCurve.Curves)
+                foreach (var interpCurve in curvelist)
                 {
-                    curve.SaveChanges = null;
+                    foreach (var curve in interpCurve.Curves)
+                    {
+                        curve.SaveChanges = null;
+                    }
                 }
             }
-        }
-
-        public override void PoppedOut(MenuItem recentsMenuItem)
-        {
-            //throw new NotImplementedException();
         }
     }
 }

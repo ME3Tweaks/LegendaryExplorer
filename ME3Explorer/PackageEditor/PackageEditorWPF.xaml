@@ -24,6 +24,7 @@
                 xmlns:me1tlkeditor="clr-namespace:ME3Explorer.ME1TlkEditor"
                 xmlns:packageEditor="clr-namespace:ME3Explorer.PackageEditor"
                 xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
+                xmlns:materialViewer="clr-namespace:ME3Explorer.MaterialViewer"
                 Title="Package Editor" Height="720" Width="1100"
         Icon="..\Resources\packageeditorwpf_256x256.ico"
         DragOver="Window_DragOver"
@@ -518,6 +519,12 @@
                             <TextBlock Text="Scaleform" ToolTip="Launch embedded files in external tools"/>
                         </TabItem.Header>
                         <packageEditor:JPEXExternalExportLoader x:Name="JPEXLauncherTab_JPEXLauncher"/>
+                    </TabItem>
+                    <TabItem Name="MaterialViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Shader Viewer" ToolTip="View Material's Shaders"/>
+                        </TabItem.Header>
+                        <materialViewer:MaterialExportLoader x:Name="MaterialViewerTab_MaterialExportLoader"/>
                     </TabItem>
                 </TabControl>
             </Grid>

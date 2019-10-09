@@ -158,23 +158,16 @@ namespace ME3Explorer.PackageEditor
             return parsableClasses.Contains(exportEntry.ClassName) && !exportEntry.IsDefaultObject;
         }
 
-        public override void PoppedOut(MenuItem recentsMenuItem)
-        {
-            //throw new NotImplementedException();
-        }
-
         public override void LoadExport(ExportEntry exportEntry)
         {
             GetJPEXInstallationStatus();
             CurrentLoadedExport = exportEntry;
-            //throw new NotImplementedException();
         }
 
         public override void UnloadExport()
         {
             CurrentLoadedExport = null;
             CurrentJPEXExportedFilepath = null;
-            //throw new NotImplementedException();
         }
 
         public override void PopOut()

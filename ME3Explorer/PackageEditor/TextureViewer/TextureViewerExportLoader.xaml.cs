@@ -205,10 +205,6 @@ namespace ME3Explorer
         }
 
         public override bool CanParse(ExportEntry exportEntry) => exportEntry.IsTexture();
-        public override void PoppedOut(MenuItem recentsMenuItem)
-        {
-            //not implemented right now
-        }
 
         public override void PopOut()
         {

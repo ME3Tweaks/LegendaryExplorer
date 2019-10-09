@@ -52,11 +52,6 @@ namespace ME3Explorer
             return !exportEntry.IsDefaultObject && exportEntry.ObjectName != "Default2DA" && (exportEntry.ClassName == "Bio2DA" || exportEntry.ClassName == "Bio2DANumberedRows");
         }
 
-        public override void PoppedOut(MenuItem recentsMenuItem)
-        {
-            //throw new NotImplementedException();
-        }
-
         public override void LoadExport(ExportEntry exportEntry)
         {
             CurrentLoadedExport = exportEntry;

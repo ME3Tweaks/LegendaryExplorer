@@ -304,6 +304,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MaterialViewer\MaterialExportLoader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Matinee\InterpEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -359,6 +363,9 @@
     <Compile Include="Deconstructors.cs" />
     <Compile Include="Dialogue Editor\DialogueObjects.cs" />
     <Compile Include="MassEffectModder\MassEffectModderIPCWrapper.cs" />
+    <Compile Include="MaterialViewer\MaterialExportLoader.xaml.cs">
+      <DependentUpon>MaterialExportLoader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Meshplorer\MeshplorerWPF.xaml.cs">
       <DependentUpon>MeshplorerWPF.xaml</DependentUpon>
     </Compile>

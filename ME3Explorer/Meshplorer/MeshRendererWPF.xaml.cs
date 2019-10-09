@@ -266,11 +266,6 @@ namespace ME3Explorer.Meshplorer
             return CanParseStatic(exportEntry);
         }
 
-        public override void PoppedOut(MenuItem recentsMenuItem)
-        {
-            //throw new NotImplementedException();
-        }
-
         public override void LoadExport(ExportEntry exportEntry)
         {
             UnloadExport();

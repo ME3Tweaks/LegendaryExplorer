@@ -67,11 +67,6 @@ namespace ME3Explorer
             return ((exportEntry.ClassName == "Function" || exportEntry.ClassName == "State") && exportEntry.FileRef.Game != MEGame.UDK);
         }
 
-        public override void PoppedOut(MenuItem recentsMenuItem)
-        {
-            //throw new NotImplementedException();
-        }
-
         public override void LoadExport(ExportEntry exportEntry)
         {
             BytecodeStart = 0;

@@ -1625,6 +1625,7 @@ namespace ME3Explorer
             ExportLoaders[ME1TlkEditorWPFTab_ME1TlkEditor] = ME1TlkEditorWPF_Tab;
             ExportLoaders[JPEXLauncherTab_JPEXLauncher] = JPEXLauncher_Tab;
             ExportLoaders[MeshRendererTab_MeshRenderer] = MeshRenderer_Tab;
+            ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
 
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
@@ -4396,7 +4397,7 @@ namespace ME3Explorer
 
         private void DumpMaterialShaders()
         {
-            if (TryGetSelectedExport(out ExportEntry matExport) && matExport.ClassName == "Material")
+            if (TryGetSelectedExport(out ExportEntry matExport) && matExport.IsOrInheritsFrom("MaterialInterface"))
             {
                 var dlg = new CommonOpenFileDialog("Pick a folder to save Shaders to.")
                 {
