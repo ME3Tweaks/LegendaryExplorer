@@ -619,15 +619,7 @@ namespace ME3Explorer.Unreal
                         return new ArrayProperty<FloatProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.Byte:
-                    {
-                        var props = new List<ByteProperty>();
-                        for (int i = 0; i < count; i++)
-                        {
-                            long startPos = stream.Position;
-                            props.Add(new ByteProperty(stream) { StartOffset = startPos });
-                        }
-                        return new ArrayProperty<ByteProperty>(arrayOffset, props, name);
-                    }
+                    return new ImmutableByteArrayProperty(arrayOffset, count, stream, name);
                 case ArrayType.Int:
                 default:
                     {
@@ -926,6 +918,7 @@ namespace ME3Explorer.Unreal
                     case ArrayProperty<StrProperty> _:
                         return typeof(string);
                     case ArrayProperty<ByteProperty> _:
+                    case ImmutableByteArrayProperty _:
                         return typeof(byte);
                     case ArrayProperty<BioMask4Property> _:
                         return typeof(byte);
@@ -1317,7 +1310,7 @@ namespace ME3Explorer.Unreal
 
         public static implicit operator bool(BoolProperty p)
         {
-            return p.Value;
+            return p?.Value == true;
         }
     }
 
@@ -1477,6 +1470,58 @@ namespace ME3Explorer.Unreal
         public UProperty this[int index] => Properties[index];
 
         public abstract void SwapElements(int i, int j);
+    }
+
+    public class ImmutableByteArrayProperty : ArrayPropertyBase
+    {
+        public byte[] bytes;
+        public ImmutableByteArrayProperty(long startOffset, int count, Stream stream, NameReference? name) : base(name)
+        {
+            ValueOffset = startOffset;
+            bytes = stream.ReadToBuffer(count);
+        }
+
+        public ImmutableByteArrayProperty(byte[] array, NameReference? name) : base(name)
+        {
+            bytes = array;
+        }
+        public ImmutableByteArrayProperty(NameReference? name) : base(name)
+        {
+            bytes = Array.Empty<byte>();
+        }
+
+        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        {
+            if (!valueOnly)
+            {
+                stream.WriteArrayProperty(pcc, Name, bytes.Length, () =>
+                {
+                    Stream m = new MemoryStream();
+                    m.WriteFromBuffer(bytes);
+                    return m;
+                }, StaticArrayIndex);
+            }
+            else
+            {
+                stream.WriteInt32(bytes.Length);
+                stream.WriteFromBuffer(bytes);
+            }
+        }
+
+        public override IReadOnlyList<UProperty> Properties => new List<UProperty>();
+        public override int Count => bytes.Length;
+        public override void Clear()
+        {
+            bytes = Array.Empty<byte>();
+        }
+
+        public override void RemoveAt(int index)
+        {
+        }
+
+        public override void SwapElements(int i, int j)
+        {
+        }
     }
 
     [DebuggerDisplay("ArrayProperty<{typeof(T).Name,nq}> | {Name}, Length = {Values.Count}")]

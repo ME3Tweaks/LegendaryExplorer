@@ -369,7 +369,7 @@ namespace ME1Explorer.Unreal
                         case ArrayType.Int:
                             return new ArrayProperty<IntProperty>(propName);
                         case ArrayType.Byte:
-                            return new ArrayProperty<ByteProperty>(propName);
+                            return new ImmutableByteArrayProperty(propName);
                         default:
                             return null;
                     }

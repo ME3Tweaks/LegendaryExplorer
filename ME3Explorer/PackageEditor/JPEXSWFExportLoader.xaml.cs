@@ -28,7 +28,7 @@ namespace ME3Explorer.PackageEditor
     /// </summary>
     public partial class JPEXExternalExportLoader : ExportLoaderControl
     {
-        private static string[] parsableClasses = { "BioSWF", "GFxMovieInfo" };
+        private static readonly string[] parsableClasses = { "BioSWF", "GFxMovieInfo" };
         private bool _jpexIsInstalled;
 
         public ICommand OpenFileInJPEXCommand { get; private set; }
@@ -97,8 +97,7 @@ namespace ME3Explorer.PackageEditor
                 var props = CurrentLoadedExport.GetProperties();
                 string dataPropName = CurrentLoadedExport.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
 
-                //This may be more efficient if it is copied with blockcopy instead.
-                byte[] data = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName).Select(x => x.Value).ToArray();
+                byte[] data = props.GetProp<ImmutableByteArrayProperty>(dataPropName).bytes;
                 string writeoutPath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".swf");
 
                 File.WriteAllBytes(writeoutPath, data);
@@ -123,9 +122,9 @@ namespace ME3Explorer.PackageEditor
             var props = CurrentLoadedExport.GetProperties();
 
             string dataPropName = CurrentLoadedExport.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
-            var rawData = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName);
+            var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
             //Write SWF data
-            rawData.Values = bytes.Select(b => new ByteProperty(b)).ToList();
+            rawData.bytes = bytes;
 
             //Write SWF metadata
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME1 || CurrentLoadedExport.FileRef.Game == MEGame.ME2)

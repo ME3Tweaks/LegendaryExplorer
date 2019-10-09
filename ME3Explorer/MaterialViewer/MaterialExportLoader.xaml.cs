@@ -52,7 +52,9 @@ namespace ME3Explorer.MaterialViewer
 
         public ObservableCollectionExtended<TreeViewMeshShaderMap> MeshShaderMaps { get; } = new ObservableCollectionExtended<TreeViewMeshShaderMap>();
 
-        public override bool CanParse(ExportEntry exportEntry) => exportEntry.IsOrInheritsFrom("MaterialInterface") && !exportEntry.IsDefaultObject;
+        public override bool CanParse(ExportEntry exportEntry) => !exportEntry.IsDefaultObject &&
+                                                                  (exportEntry.ClassName == "Material" || exportEntry.IsOrInheritsFrom("MaterialInstance") &&
+                                                                   exportEntry.GetProperty<BoolProperty>("bHasStaticPermutationResource"));
 
         public override void LoadExport(ExportEntry exportEntry)
         {

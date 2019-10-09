@@ -434,9 +434,9 @@ namespace ME3Explorer
                                 var props = matchingExport.GetProperties();
 
                                 string dataPropName = matchingExport.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
-                                var rawData = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName);
+                                var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
                                 //Write SWF data
-                                rawData.Values = bytes.Select(b => new ByteProperty(b)).ToList(); //Need to find way to optimize this
+                                rawData.bytes = bytes;
 
                                 //Write SWF metadata
                                 if (matchingExport.FileRef.Game == MEGame.ME1 || matchingExport.FileRef.Game == MEGame.ME2)
@@ -1006,17 +1006,8 @@ namespace ME3Explorer
                             {
                                 var props = exp.GetProperties();
                                 string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
-                                var DataProp = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName);
-                                byte[] data = null;
-                                if (DataProp.Count > 10000)
-                                {
-                                    data = new byte[DataProp.Count];
-                                    Buffer.BlockCopy(exp.Data, (int)DataProp[0].ValueOffset, data, 0, data.Length);
-                                }
-                                else
-                                {
-                                    data = DataProp.Select(x => x.Value).ToArray();
-                                }
+                                var DataProp = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
+                                byte[] data = DataProp.bytes;
 
                                 if (savePath == null)
                                 {
@@ -1091,9 +1082,9 @@ namespace ME3Explorer
                                     var props = exp.GetProperties();
 
                                     string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
-                                    var rawData = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName);
+                                    var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
                                     //Write SWF data
-                                    rawData.Values = bytes.Select(b => new ByteProperty(b)).ToList();
+                                    rawData.bytes = bytes;
 
                                     //Write SWF metadata
                                     if (exp.FileRef.Game == MEGame.ME1 || exp.FileRef.Game == MEGame.ME2)
