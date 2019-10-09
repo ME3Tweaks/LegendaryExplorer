@@ -76,7 +76,10 @@ namespace ME3Explorer.Unreal.Classes
             }
             else if (export.ClassName == "MaterialInstanceConstant")
             {
-                StaticParameterSet = ObjectBinary.From<MaterialInstance>(export).SM3StaticParameterSet;
+                if (ObjectBinary.From(export) is MaterialInstance matInstBin)
+                {
+                    StaticParameterSet = matInstBin.SM3StaticParameterSet;
+                }
                 //Read Local
                 if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> textureparams)
                 {
