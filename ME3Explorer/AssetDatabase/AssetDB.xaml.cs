@@ -774,6 +774,18 @@ namespace ME3Explorer.AssetDatabase
             {
                 FilterBox.Clear();
                 Filter();
+                switch (currentView) 
+                {
+                    case 5:
+                        FilterBox.Watermark = "Search (by texture name or CRC if compiled)";
+                        break;
+                    case 6:
+                        FilterBox.Watermark = "Search (by filename or source directory)";
+                        break;
+                    default:
+                        FilterBox.Watermark = "Search";
+                        break;
+                }
 
                 if (previousView == 3)
                 {
