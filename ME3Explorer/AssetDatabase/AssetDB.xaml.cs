@@ -137,6 +137,7 @@ namespace ME3Explorer.AssetDatabase
         public ICommand FilterSeqClassCommand { get; set; }
         public ICommand FilterMatCommand { get; set; }
         public ICommand FilterMeshCommand { get; set; }
+        public ICommand FilterTexCommand { get; set; }
         public ICommand SetCRCCommand { get; set; }
         private bool CanCancelDump(object obj)
         {
@@ -196,6 +197,7 @@ namespace ME3Explorer.AssetDatabase
             FilterSeqClassCommand = new RelayCommand(SetFilters, IsViewingClass);
             FilterMatCommand = new RelayCommand(SetFilters, IsViewingMaterials);
             FilterMeshCommand = new RelayCommand(SetFilters, IsViewingMeshes);
+            FilterTexCommand = new RelayCommand(SetFilters, IsViewingTextures);
             SwitchMECommand = new RelayCommand(SwitchGame);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             OpenSourcePkgCommand = new RelayCommand(OpenSourcePkg, IsClassSelected);
@@ -1112,6 +1114,14 @@ namespace ME3Explorer.AssetDatabase
                     showthis = tr.CRC.ToLower().Contains(FilterBox.Text.ToLower());
                 }
             }
+            if (showthis && menu_TCube.IsChecked && tr.CFormat != "TextureCube")
+            {
+                showthis = false;
+            }
+            if (showthis && menu_T1024.IsChecked && tr.SizeX < 1024 && tr.SizeY < 1024)
+            {
+                showthis = false;
+            }
             return showthis;
         }
         private bool FileFilter(object d)
@@ -1271,6 +1281,12 @@ namespace ME3Explorer.AssetDatabase
                     {
                         menu_fltrStM.IsChecked = false;
                     }
+                    break;
+                case "Cube":
+                    menu_TCube.IsChecked = !menu_TCube.IsChecked;
+                    break;
+                case "1024":
+                    menu_T1024.IsChecked = !menu_T1024.IsChecked;
                     break;
                 default:
                     break;
