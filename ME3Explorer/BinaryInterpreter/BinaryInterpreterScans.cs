@@ -6683,7 +6683,7 @@ namespace ME3Explorer
                         var matNode = MakeEntryNode(bin, $"Material[{i}]");
                         try
                         {
-                            if (Pcc.GetUExport(bin.Skip(-4).ReadInt32()) is ExportEntry matExport)
+                            if (Pcc.GetEntry(bin.Skip(-4).ReadInt32()) is ExportEntry matExport)
                             {
                                 foreach (IEntry texture in new MaterialInstanceConstant(matExport).Textures)
                                 {

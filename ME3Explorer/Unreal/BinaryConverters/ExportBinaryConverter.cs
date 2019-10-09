@@ -186,7 +186,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
                 int width = bin.ReadInt32();
                 int height = bin.ReadInt32();
-                if (storageType == StorageTypes.empty)
+                if (newGame == MEGame.UDK && storageType == StorageTypes.empty)
                 {
                     continue;
                 }
