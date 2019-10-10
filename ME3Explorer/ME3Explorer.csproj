@@ -366,6 +366,7 @@
     <Compile Include="MaterialViewer\MaterialExportLoader.xaml.cs">
       <DependentUpon>MaterialExportLoader.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MaterialViewer\ShaderCacheReader.cs" />
     <Compile Include="Meshplorer\MeshplorerWPF.xaml.cs">
       <DependentUpon>MeshplorerWPF.xaml</DependentUpon>
     </Compile>
