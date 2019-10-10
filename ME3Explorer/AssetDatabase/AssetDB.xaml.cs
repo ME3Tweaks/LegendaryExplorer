@@ -903,20 +903,24 @@ namespace ME3Explorer.AssetDatabase
 
             foreach (var filePath in files)  //handle cases of mods/dlc having same file.
             {
-                if(cdir.ToLower() == "biogame" && filePath.ToLower().Contains("dlc"))
+                bool isBaseFile = cdir.ToLower() == "biogame";
+                bool isDLCFile = filePath.ToLower().Contains("dlc");
+                if (isBaseFile == isDLCFile)
                 {
                     continue;
                 }
                 meshPcc = MEPackageHandler.OpenMEPackage(filePath);
                 var uexpIdx = selecteditem.MeshUsages[0].Item2;
-                if (uexpIdx <= meshPcc.ExportCount && meshPcc.GetUExport(uexpIdx).ObjectName == selecteditem.MeshName)
+                if (uexpIdx <= meshPcc.ExportCount)
                 {
                     var meshExp = meshPcc.GetUExport(uexpIdx);
-                    MeshRendererTab_MeshRenderer.LoadExport(meshExp);
-                    break;
+                    if (meshExp.ObjectName == selecteditem.MeshName)
+                    {
+                        MeshRendererTab_MeshRenderer.LoadExport(meshExp);
+                        break;
+                    }
                 }
-
-
+                meshPcc.Dispose();
             }
         }
         private void ToggleRenderTexture()
@@ -961,18 +965,24 @@ namespace ME3Explorer.AssetDatabase
 
             foreach (var filePath in files)  //handle cases of mods/dlc having same file.
             {
-                if (cdir.ToLower() == "biogame" && filePath.ToLower().Contains("dlc"))
+                bool isBaseFile = cdir.ToLower() == "biogame";
+                bool isDLCFile = filePath.ToLower().Contains("dlc");
+                if ( isBaseFile == isDLCFile )
                 {
                     continue;
                 }
                 textPcc = MEPackageHandler.OpenMEPackage(filePath);
                 var uexpIdx = selecteditem.TextureUsages[0].Item2;
-                if (uexpIdx <= textPcc.ExportCount && textPcc.GetUExport(uexpIdx).ObjectName == selecteditem.TextureName)
+                if (uexpIdx <= textPcc.ExportCount)
                 {
-                    var TextExp = textPcc.GetUExport(uexpIdx);
-                    EmbeddedTextureViewerTab_EmbededTextureViewer.LoadExport(TextExp);
-                    break;
+                    var textExp = textPcc.GetUExport(uexpIdx);
+                    if (textExp.ObjectName == selecteditem.TextureName || textExp.ObjectName == selecteditem.TextureName.Substring(textExp.Parent.ObjectName.ToString().Length + 1))
+                    {
+                        EmbeddedTextureViewerTab_EmbededTextureViewer.LoadExport(textExp);
+                        break;
+                    }
                 }
+                textPcc.Dispose();
             }
         }
         private void SetCRCScan(object obj)
@@ -2221,6 +2231,11 @@ namespace ME3Explorer.AssetDatabase
                             if ((exp.ClassName == "Texture2D" || exp.ClassName == "TextureCube") && !pIsdefault)
                             {
                                 bool IsDLC = pcc.IsInOfficialDLC();
+                                if(exp.Parent.ClassName == "TextureCube")
+                                {
+                                    pExp = $"{exp.Parent.ObjectName}_{pExp}";
+                                }
+
                                 if (dbScanner.GeneratedText.ContainsKey(pExp))
                                 {
                                     var t = dbScanner.GeneratedText[pExp];

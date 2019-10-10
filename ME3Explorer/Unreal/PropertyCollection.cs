@@ -633,6 +633,23 @@ namespace ME3Explorer.Unreal
             }
         }
 
+        /// <summary>
+        /// Removes the first matching property name from the collection.
+        /// </summary>
+        /// <param name="propname">Property name to remove</param>
+        internal bool RemoveNamedProperty(string propname)
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                var property = this[i];
+                if (property.Name.Name.Equals(propname, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    RemoveAt(i);
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     public abstract class UProperty : NotifyPropertyChangedBase
