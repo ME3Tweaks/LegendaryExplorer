@@ -3585,16 +3585,22 @@ namespace ME3Explorer
         private void BuildME1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
             ME1UnrealObjectInfo.generateInfo();
+            this.RestoreAndBringToFront();
+            MessageBox.Show(this, "Done");
         }
 
         private void BuildME2ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
             ME2Explorer.Unreal.ME2UnrealObjectInfo.generateInfo();
+            this.RestoreAndBringToFront();
+            MessageBox.Show(this, "Done");
         }
 
         private void BuildME3ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
             ME3UnrealObjectInfo.generateInfo();
+            this.RestoreAndBringToFront();
+            MessageBox.Show(this, "Done");
         }
 
         private void BuildAllObjectInfo_Clicked(object sender, RoutedEventArgs e)
@@ -3602,6 +3608,8 @@ namespace ME3Explorer
             ME1UnrealObjectInfo.generateInfo();
             ME2Explorer.Unreal.ME2UnrealObjectInfo.generateInfo();
             ME3UnrealObjectInfo.generateInfo();
+            this.RestoreAndBringToFront();
+            MessageBox.Show(this, "Done");
         }
 
         private void RefreshProperties_Clicked(object sender, RoutedEventArgs e)

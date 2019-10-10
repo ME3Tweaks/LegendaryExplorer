@@ -1,4 +1,1706 @@
 {
+  "SequenceObjects": {
+    "SequenceObject": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SequenceOp": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SequenceAction": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_EffectsMaterial": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SetProximityRange": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SequenceEvent": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_DisengagedCover": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_EngagedCover": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_HearNoise": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_ProximityAlarm": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SequenceVariable": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqVar_StrRef": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqVar_StrRefLiteral": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_Initialized": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "Sequence": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "DialogueTree": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "InterpData": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ActivateRemoteEvent": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "SeqAct_Latent": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ActorFactory": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "SeqAct_ActorFactoryEx": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_AIAbortMoveToActor": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_AIMoveToActor": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ApplySoundNode": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_AssignController": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_AttachToActor": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "SeqAct_AttachToEvent": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_CameraLookAt": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_CauseDamage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_CauseDamageRadial": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ChangeCollision": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_CommitMapChange": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ConsoleCommand": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_CrossFadeMusicTracks": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_Delay": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_DelaySwitch": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_Destroy": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_FinishSequence": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ForceFeedback": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ForceGarbageCollection": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ForceMaterialMipsResident": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_Gate": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_GetDistance": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_GetProperty": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_GetVelocity": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_GiveInventory": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_HealDamage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_Interp": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "SeqAct_IsInObjectList": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_LevelStreamingBase": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_LevelStreaming": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_LevelVisibility": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_Log": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "SeqAct_MakeNoise": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ModifyCover": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetSequenceVariable": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ModifyObjectList": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_MoveToActor": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_MultiLevelStreaming": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_PlayCameraAnim": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_PlayFaceFXAnim": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_PlayReplicatedSound": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_PlaySound": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "SeqAct_Possess": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_PrepareMapChange": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_Switch": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_RandomSwitch": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_RangeSwitch": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetBlockRigidBody": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetBool": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetCameraTarget": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetDamageInstigator": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetDOFParams": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetFloat": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "SeqAct_SetInt": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "SeqAct_SetMaterial": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetMatInstScalarParam": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetMatInstTexParam": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetMatInstVectorParam": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetMotionBlurParams": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetMusicTrack": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetName": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetObject": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "SeqAct_SetParticleSysParam": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetPhysics": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetRigidBodyIgnoreVehicles": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetSkeletalMesh": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetStaticMesh": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetString": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetVector": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_Teleport": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_Timer": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_Toggle": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ToggleCinematicMode": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ToggleDynamicChannel": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ToggleGodMode": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ToggleHidden": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ToggleHUD": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "SeqAct_ToggleInput": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_Trace": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_UpdateDynamicCover": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_WaitForLevelsVisible": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SequenceCondition": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_CompareBool": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_CompareFloat": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_CompareInt": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_CompareName": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_CompareObject": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_CompareString": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_GetServerType": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_Increment": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_IncrementFloat": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_IsInCombat": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_IsLoggedIn": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_IsSameTeam": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_SwitchBase": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_SwitchClass": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_SwitchName": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqCond_SwitchObject": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_AISeeEnemy": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_Console": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_ConstraintBroken": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_Death": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "SeqEvent_Destroyed": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_GetInventory": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_LevelBeginning": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_LevelLoaded": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_LevelReset": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_LevelStartup": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_LOS": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_Mover": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_PickupStatusChange": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_PlayerSpawned": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_ProjectileLanded": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_RemoteEvent": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_RigidBodyCollision": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_SeeDeath": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_SequenceActivated": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_TakeDamage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_Touch": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_UnTouch": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqEvent_Used": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SequenceFrame": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SequenceFrameWrapped": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SequenceReference": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_Bool": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_External": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_Float": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_Int": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_Object": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_MusicTrack": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_MusicTrackBank": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_Name": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_Named": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_ObjectList": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_ObjectVolume": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_Player": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_RandomFloat": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_RandomInt": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_ScopedNamed": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_String": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_UIRange": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_Union": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_Vector": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ChangeState": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ActivateState": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ActivateInitialState": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ActivateLevelEvent": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UIAction_TabControl": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ActivatePage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_DataStore": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_DataStoreField": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_AddDataField": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_ChangeVisibility": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_Scene": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_CloseScene": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ConsoleCommand": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_CreateOnlineGame": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_DeactivateState": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_EnablePage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_FindOnlineGames": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_GetPageReference": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_FindPageByCaption": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_FindPageByIndex": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_GetActivePage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_GetCellValue": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 5
+    },
+    "UIAction_GetDatafieldValue": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 5
+    },
+    "UIAction_GetLastFocused": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_GetValue": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_GetListIndex": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_GetListItemCount": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_GetLoggedInPlayerCount": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_GetNATType": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_GetPageCount": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_GetPrivilegeLevel": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_GetProgressBarValue": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_GetTextValue": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_InsertPage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_JoinOnlineGame": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_MoveListItem": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UIAction_OpenScene": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_PlaySound": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_PlayUISoundCue": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_PublishValue": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_RefreshBindingValue": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_RefreshStats": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_RemovePage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_ReplacePage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_SaveProfileSettings": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_SetValue": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_SetBoolValue": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_SetControllerId": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_SetDatafieldValue": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 5
+    },
+    "UIAction_SetDatastoreBinding": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_SetFocus": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_SetLabelText": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "UIAction_SetListIndex": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_SetProgressBarValue": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ShowAchievementsUI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ShowContentMarketplaceUI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ShowDeviceSelectionUI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ShowFeedbackUI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ShowFriendInviteUI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ShowFriendsUI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ShowGamercardForServerHost": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ShowGamerCardUI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ShowKeyboardUI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ShowLoginUI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ShowMembershipMarketplaceUI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ShowMessagesUI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIAction_ShowPlayersUI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_OnClick": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UICond_SwitchWidget": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_ValueChanged": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_CheckValueChanged": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UIEvent_ComboboxValueChanged": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UIEvent_ListIndexChanged": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UIEvent_MetaObject": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_NumericOptionListValueChanged": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_OnDoubleClick": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_State": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_OnEnterState": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UIEvent_OnLeaveState": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UIEvent_OptionListValueChanged": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_ProcessInput": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_ProgressBarValueChanged": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_Scene": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_SceneActivated": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 5
+    },
+    "UIEvent_SceneDeactivated": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 5
+    },
+    "UIEvent_SliderValueChanged": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_SubmitData": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_SubmitListData": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UIEvent_SubmitTextData": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UIEvent_TabControl": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_TabPageActivated": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UIEvent_TabPageEnabled": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIEvent_TabPageInserted": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UIEvent_TabPageRemoved": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UIEvent_TextValueChanged": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "UISequence": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "UIStateSequence": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_EndCurrentConvNode": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_ConvNode": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ModifyPropertyPawn": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqVar_ObjectFindByTag": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_AttachCrustEffect": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_BlackScreen": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_NearClipPlane": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SetLightEnvQuality": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_StageSwitchCamera": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SetWeapon": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_SetGestureMode": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SetSkelControl": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_LeaveActionStation": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_DisableRender": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ChangeAPState": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_AttachVisualEffect": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_Delay": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_PositionFSActors": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_Conversation": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ModifyPropertyArtPlaceable": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqVar_ObjectListFindByTag": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ChangeUseCase": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_GetPropertyArtPlaceable": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqEvt_ArtPlaceableTransition": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_OnCastAt": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_AOECauseDamage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_CauseDamage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_DoActionInRadius": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_GetPropertyPawn": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_GetSquadInfo": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 5
+    },
+    "BioSeqAct_PopupLootGui": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ScalarMathUnit": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqCond_IsDriving": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_FaceOnlyVO": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_GetFromObjectList": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_GrantScaledXP": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_InterruptAmbientConversation": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_PMCheckState": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_PMExecuteTransition": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ResumeWalking": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_StartConversation": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_WalkWaypointSet": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqEvt_Pawn_WaypointReached": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ChangeStrategy": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_SetSquadFaction": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_BioToggleCinematicMode": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_CopyPlayerHeadToTarget": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_MusicVolumeDisable": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_MusicVolumeEnable": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_PauseGalaxyMap": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_PMCheckConditional": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqVar_StoryManagerInt": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_AutoSave": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_InitLoadingMovie": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_OverrideStagePlacement": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_PlayLoadingMovie": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_PMExecuteConsequence": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SetStreamingState": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ShowMessage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_StopLoadingMovie": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_ArtPlaceableUsed": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_BackgroundStreamingDone": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqEvt_OnPlayerActivate": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_AddToParty": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_DUISetBarFillPercent": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_DUISetElementColor": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_DUISetElementVisible": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_DUISetTextStringRef": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_AbilityEnable": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ActionStation": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 5
+    },
+    "BioSeqAct_SwitchWeighted": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_TeleportToObject": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ToggleSave": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_SeePlayer": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqEvt_TakeDamage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_DoActionInVolume": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SetLookAtTarget": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_AddSquadToPerception": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_BioActorFactory": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_DUISetElementPulsing": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_EnterVehicle": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_ExitVehicle": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 4
+    },
+    "BioSeqAct_HUDDisplayState": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_IsQA": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_LockTarget": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ModifyPropertyNavigation": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_ModifyPropertyVehicle": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_SetRadarDisplay": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ShowPartySelectionGUI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SkillGame": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_AreaMap": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_ArtPlaceableSkillGameSuccess": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_ForegroundStreamingDone": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqEvt_MemberRemoved": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqEvt_VehicleExit": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqEvt_VehicleLeaveWorld": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqVar_StoryManagerFloat": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_AreaTransition": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_DUIClear": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_FollowSquadLeader": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_GetUseCase": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_GrantBonusTalent": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_HideAllWeapons": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_IncreaseTalentMaxRank": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_MiniGame": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_NonCombatArea": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_ResurrectHenchman": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SelectWeapon": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SetActionState": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SetBase": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SetCanWalkOffLedges": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SpawnHenchman": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_SquadStartHoldingPosition": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SquadStopHoldingPosition": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqCond_InCombat": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_ArtPlaceablePlotFail": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_ArtPlaceableSkillGameFailed": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_PlayerInput": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqEvt_VehicleEnter": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_ClearAllActions": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_Crouch": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_FireWeaponAt": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_MoveToObject": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_SetSuperMode": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_UnLockTarget": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_UsePowerOn": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 3
+    },
+    "BioSeqAct_InitFSMode": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SetCameraToBone": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_GetClass": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_GetGamerProfileOption": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ShowLatentTutorial": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_CheckDifficulty": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ShowMessageBox": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 2
+    },
+    "BioSeqAct_GetSquad": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_GetTalentRank": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ActorFactoryWithOwner": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_CopyFloatList": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_DiscardInventory": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_Get2DAString": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_GetDifficulty": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_GetNthNearestSpawnPoint": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_GetPawnActorType": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_GetPlayerMaxGrenades": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_GetPlayerMaxMedigel": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_GetWeightedComponentDistance": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_HealToxicDamage": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ModifyFloatList": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ModifyPawnMaxHealth": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_RestoreShields": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SetDifficulty": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_SortFloatList": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_UnapplyGameProperties": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqAct_ZeroAllCooldowns": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "SeqVar_FloatList": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_AttachVFX": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_ChangeAI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_OpenShop": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_RestoreAI": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_SetClassification": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_DUISetCounterValue": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_DUITimer": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    },
+    "BioSeqAct_AwardAchievement": {
+      "inputLinks": null,
+      "ObjInstanceVersion": 1
+    }
+  },
   "Classes": {
     "BioDeathVFXCore": {
       "properties": [],

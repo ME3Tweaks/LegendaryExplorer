@@ -34,7 +34,7 @@ namespace Direct3D9_Shader_Model_3_Disassembler
 
             int instructionCount = 0;
             int texInstructionCount = 0;
-            int indent = 1;
+            int indent = 2;
             var shaderInfo = new ShaderInfo
             {
                 Frequency = shaderType
@@ -211,7 +211,7 @@ namespace Direct3D9_Shader_Model_3_Disassembler
                     //writer?.WriteLine($"{d3d9types.opcodeNames[opcode]} (instruction size: {instructionSize})");
                     var parameters = new List<string>();
                     string line;
-                    void setLineStart() => line = $"{new string(' ', indent * 4)}{d3d9types.opcodeNames[opcode]}";
+                    void setLineStart() => line = $"{new string(' ', indent * 2)}{d3d9types.opcodeNames[opcode]}";
 
                     string appendComparison()
                     {
@@ -313,6 +313,7 @@ namespace Direct3D9_Shader_Model_3_Disassembler
                             break;
                         case OpcodeType.D3DSIO_REP:
                         case OpcodeType.D3DSIO_IF:
+                            line += " ";
                             parameters.Add(ReadSourceParameterToken(inStream, shaderType));
                             indent++;
                             break;

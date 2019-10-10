@@ -1568,38 +1568,35 @@ namespace ME3Explorer.Sequence_Editor
 
         static void addObjectToSequence(ExportEntry newObject, bool removeLinks, ExportEntry sequenceExport)
         {
-            var seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-            if (seqObjs != null)
+            var seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects") ?? new ArrayProperty<ObjectProperty>("SequenceObjects");
+            seqObjs.Add(new ObjectProperty(newObject));
+            sequenceExport.WriteProperty(seqObjs);
+
+            PropertyCollection newObjectProps = newObject.GetProperties();
+            newObjectProps.AddOrReplaceProp(new ObjectProperty(sequenceExport, "ParentSequence"));
+            if (removeLinks)
             {
-                seqObjs.Add(new ObjectProperty(newObject));
-                sequenceExport.WriteProperty(seqObjs);
-
-                PropertyCollection newObjectProps = newObject.GetProperties();
-                newObjectProps.AddOrReplaceProp(new ObjectProperty(sequenceExport, "ParentSequence"));
-                if (removeLinks)
+                var outLinksProp = newObjectProps.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outLinksProp != null)
                 {
-                    var outLinksProp = newObjectProps.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-                    if (outLinksProp != null)
+                    foreach (var prop in outLinksProp)
                     {
-                        foreach (var prop in outLinksProp)
-                        {
-                            prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
-                        }
-                    }
-
-                    var varLinksProp = newObjectProps.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-                    if (varLinksProp != null)
-                    {
-                        foreach (var prop in varLinksProp)
-                        {
-                            prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
-                        }
+                        prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
                     }
                 }
 
-                newObject.WriteProperties(newObjectProps);
-                newObject.Parent = sequenceExport;
+                var varLinksProp = newObjectProps.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+                if (varLinksProp != null)
+                {
+                    foreach (var prop in varLinksProp)
+                    {
+                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
+                    }
+                }
             }
+
+            newObject.WriteProperties(newObjectProps);
+            newObject.Parent = sequenceExport;
         }
 
         static void cloneSequence(ExportEntry exp, ExportEntry parentSequence)

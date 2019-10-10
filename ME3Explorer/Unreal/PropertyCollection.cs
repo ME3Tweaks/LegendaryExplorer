@@ -849,7 +849,7 @@ namespace ME3Explorer.Unreal
 
         public static implicit operator int(IntProperty p)
         {
-            return p.Value;
+            return p?.Value ?? 0;
         }
     }
 

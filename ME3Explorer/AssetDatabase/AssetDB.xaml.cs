@@ -1429,6 +1429,10 @@ namespace ME3Explorer.AssetDatabase
             foreach (var f in files)
             {
                 var contdir = GetContentPath(new DirectoryInfo(f));
+                if (contdir == null)
+                {
+                    continue;
+                }
                 var dirkey = CurrentDataBase.ContentDir.IndexOf(contdir.Name);
                 if (dirkey < 0)
                 {
@@ -1609,6 +1613,10 @@ namespace ME3Explorer.AssetDatabase
         }
         private DirectoryInfo GetContentPath(DirectoryInfo directory)
         {
+            if (directory == null)
+            {
+                return null;
+            }
             var parent = directory.Parent;
             if (!directory.Name.StartsWith("Cooked"))
             {
