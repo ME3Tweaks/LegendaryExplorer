@@ -336,6 +336,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="APIKeysPrivate.cs" />
+    <Compile Include="APIKeysPublic.cs" />
     <Compile Include="ASI\ASIManager.xaml.cs">
       <DependentUpon>ASIManager.xaml</DependentUpon>
     </Compile>
