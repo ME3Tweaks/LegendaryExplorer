@@ -693,21 +693,26 @@ namespace ME3Explorer.AssetDatabase
                 return;
             }
 
-            OpenInToolkit(tool, usagepkg, usageexp, contentdir);
+            OpenInToolkit(tool, usagepkg, contentdir, usageexp);
         }
         private void OpenSourcePkg(object obj)
         {
             var cr = lstbx_Classes.SelectedItem as ClassRecord;
             var sourcepkg = cr.Definition_package;
             var sourceexp = cr.Definition_UID;
-            if (sourcepkg == null)
+
+            int sourcedefaultUsage = cr.ClassUsages.FirstOrDefault(u => u.IsDefault == true).FileKey;
+           
+            if (sourcepkg == null || sourcedefaultUsage == 0)
             {
                 MessageBox.Show("Definition file unknown.");
                 return;
             }
-            OpenInToolkit("PackageEditor", sourcepkg, sourceexp);
+            var contentdir = FileListExtended[sourcedefaultUsage].Item2;
+
+            OpenInToolkit("PackageEditor", sourcepkg, contentdir, sourceexp);
         }
-        private void OpenInToolkit(string tool, string filename, int export = 0, string contentdir = null)
+        private void OpenInToolkit(string tool, string filename, string contentdir, int export = 0)
         {
             string filePath = null;
             string rootPath = MEDirectories.GamePath(currentGame);
