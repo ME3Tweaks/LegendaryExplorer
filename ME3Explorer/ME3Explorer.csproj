@@ -1491,8 +1491,7 @@
     <PostBuildEvent>xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)"
 
 xcopy /f /e /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
-echo "$(ProjectDir)$(OutDir)x64\e_sqlite3.dll"
-move "$(ProjectDir)$(OutDir)x64\e_sqlite3.dll" "$(ProjectDir)$(OutDir)\lib\e_sqlite3.dll"
+move "$(ProjectDir)$(OutDir)x64\e_sqlite3.dll" "$(ProjectDir)$(OutDir)e_sqlite3.dll"
 rmdir /s /q "$(ProjectDir)$(OutDir)x86"
 rmdir /s /q "$(ProjectDir)$(OutDir)x64"
 rmdir /s /q "$(ProjectDir)$(OutDir)fr-CA"
