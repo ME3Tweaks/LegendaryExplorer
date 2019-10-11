@@ -110,7 +110,8 @@ namespace ME3Explorer.FileHexViewer
                         if (pcc.Game != MEGame.ME2)
                         {
                             inStream.ReadValueS64(); //Read 8 bytes
-                        } else
+                        }
+                        else
                         {
                             inStream.ReadValueS32(); //4 bytes
                         }
@@ -162,7 +163,7 @@ namespace ME3Explorer.FileHexViewer
                 {
                     usedExportsSpaces.Add(new UsedSpace
                     {
-                        UsedFor = $"Export {exp.UIndex}",
+                        UsedFor = $"Export {exp.UIndex} - {exp.ObjectName} ({exp.ClassName})",
                         UsedSpaceStart = exp.DataOffset,
                         UsedSpaceEnd = exp.DataOffset + exp.DataSize,
                         Export = exp
@@ -170,51 +171,70 @@ namespace ME3Explorer.FileHexViewer
                 }
 
                 usedExportsSpaces = usedExportsSpaces.OrderBy(x => x.UsedSpaceStart).ToList();
-                List<UsedSpace> continuousBlocks = new List<UsedSpace>();
-                UsedSpace continuous = new UsedSpace
+                int endOffset = 0;
+                List<UsedSpace> displayedUsedSpace = new List<UsedSpace>();
+                foreach (var usedSpace in usedExportsSpaces)
                 {
-                    UsedFor = $"Continuous Export Data {usedExportsSpaces[0].Export.UIndex} {usedExportsSpaces[0].Export.ObjectName.Instanced} ({usedExportsSpaces[0].Export.ClassName})",
-                    UsedSpaceStart = usedExportsSpaces[0].UsedSpaceStart,
-                    UsedSpaceEnd = usedExportsSpaces[0].UsedSpaceEnd,
-                    Export = usedExportsSpaces[0].Export
-                };
-
-                for (int i = 1; i < usedExportsSpaces.Count; i++)
-                {
-                    UsedSpace u = usedExportsSpaces[i];
-                    if (continuous.UsedSpaceEnd == u.UsedSpaceStart)
+                    if (endOffset != 0 && usedSpace.UsedSpaceStart != endOffset)
                     {
-                        continuous.UsedSpaceEnd = u.UsedSpaceEnd;
-                    }
-                    else
-                    {
-                        if (continuous.UsedSpaceEnd > u.UsedSpaceStart)
-                        {
-                            Debug.WriteLine("Possible overlap detected!");
-                        }
-                        continuousBlocks.Add(continuous);
-                        UsedSpace unused = new UsedSpace()
+                        //unused space
+                        displayedUsedSpace.Add(new UsedSpace()
                         {
                             UsedFor = "Unused space",
-                            UsedSpaceStart = continuous.UsedSpaceEnd,
-                            UsedSpaceEnd = u.UsedSpaceStart,
+                            UsedSpaceStart = endOffset,
+                            UsedSpaceEnd = usedSpace.UsedSpaceStart,
                             Unused = true
-                        };
-                        continuousBlocks.Add(unused);
-
-                        continuous = new UsedSpace
-                        {
-                            UsedFor = $"Continuous Export Data {u.Export.UIndex} {u.Export.ObjectName.Instanced} ({u.Export.ClassName})",
-                            UsedSpaceStart = u.UsedSpaceStart,
-                            UsedSpaceEnd = u.UsedSpaceEnd,
-                            Export = u.Export
-                        };
+                        });
+                        endOffset = usedSpace.UsedSpaceStart;
                     }
-
+                    displayedUsedSpace.Add(usedSpace);
+                    endOffset = usedSpace.UsedSpaceEnd;
                 }
-                continuousBlocks.Add(continuous);
+
+                //List<UsedSpace> continuousBlocks = new List<UsedSpace>();
+                //UsedSpace continuous = new UsedSpace
+                //{
+                //    UsedFor = $"Continuous Export Data {usedExportsSpaces[0].Export.UIndex} {usedExportsSpaces[0].Export.ObjectName.Instanced} ({usedExportsSpaces[0].Export.ClassName})",
+                //    UsedSpaceStart = usedExportsSpaces[0].UsedSpaceStart,
+                //    UsedSpaceEnd = usedExportsSpaces[0].UsedSpaceEnd,
+                //    Export = usedExportsSpaces[0].Export
+                //};
+
+                //for (int i = 1; i < usedExportsSpaces.Count; i++)
+                //{
+                //    UsedSpace u = usedExportsSpaces[i];
+                //    if (continuous.UsedSpaceEnd == u.UsedSpaceStart)
+                //    {
+                //        continuous.UsedSpaceEnd = u.UsedSpaceEnd;
+                //    }
+                //    else
+                //    {
+                //        if (continuous.UsedSpaceEnd > u.UsedSpaceStart)
+                //        {
+                //            Debug.WriteLine("Possible overlap detected!");
+                //        }
+                //        continuousBlocks.Add(continuous);
+                //        UsedSpace unused = new UsedSpace()
+                //        {
+                //            UsedFor = "Unused space",
+                //            UsedSpaceStart = continuous.UsedSpaceEnd,
+                //            UsedSpaceEnd = u.UsedSpaceStart,
+                //            Unused = true
+                //        };
+                //        continuousBlocks.Add(unused);
+
+                //        continuous = new UsedSpace
+                //        {
+                //            UsedFor = $"Continuous Export Data {u.Export.UIndex} {u.Export.ObjectName.Instanced} ({u.Export.ClassName})",
+                //            UsedSpaceStart = u.UsedSpaceStart,
+                //            UsedSpaceEnd = u.UsedSpaceEnd,
+                //            Export = u.Export
+                //        };
+                //    }
+                //}
+                //continuousBlocks.Add(continuous);
                 UnusedSpaceList.AddRange(used);
-                UnusedSpaceList.AddRange(continuousBlocks);
+                UnusedSpaceList.AddRange(displayedUsedSpace);
             }
         }
 
