@@ -44,6 +44,13 @@ namespace ME3Explorer.MaterialViewer
         }
         #endregion
 
+        private string _topInfoText;
+        public string TopInfoText
+        {
+            get => _topInfoText;
+            set => SetProperty(ref _topInfoText, value);
+        }
+
         public MaterialExportLoader()
         {
             InitializeComponent();
@@ -75,14 +82,16 @@ namespace ME3Explorer.MaterialViewer
                         var seekFreeShaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
                         if (seekFreeShaderCache.MaterialShaderMaps.TryGetValue(sps, out MaterialShaderMap msm))
                         {
-                            return GetMeshShaderMaps(msm, seekFreeShaderCache);
+                            string topInfoText = $"Shaders in #{seekFreeShaderCacheExport.UIndex} SeekFreeShaderCache";
+                            return (GetMeshShaderMaps(msm, seekFreeShaderCache), topInfoText);
                         }
                     }
 
                     MaterialShaderMap msmFromGlobalCache = ShaderCacheReader.GetMaterialShaderMap(Pcc.Game, sps);
                     if (msmFromGlobalCache != null)
                     {
-                        return GetMeshShaderMaps(msmFromGlobalCache);
+                        var topInfoText = $"Shaders in {ShaderCacheReader.shaderFileName}";
+                        return (GetMeshShaderMaps(msmFromGlobalCache), topInfoText);
                     }
                 }
                 catch (Exception)
@@ -90,13 +99,15 @@ namespace ME3Explorer.MaterialViewer
                     //
                 }
 
-                return null;
+                return (null, "MaterialShaderMap not found!");
             }).ContinueWithOnUIThread(prevTask =>
             {
                 MeshShaderMaps.ClearEx();
-                if (prevTask.Result != null)
+                (IEnumerable<TreeViewMeshShaderMap> treeviewItems, string topInfoText) = prevTask.Result;
+                TopInfoText = topInfoText;
+                if (treeviewItems != null)
                 {
-                    MeshShaderMaps.AddRange(prevTask.Result);
+                    MeshShaderMaps.AddRange(treeviewItems);
                 }
                 IsBusy = false;
             });
@@ -132,6 +143,7 @@ namespace ME3Explorer.MaterialViewer
             CurrentLoadedExport = null;
             MeshShaderMaps.ClearEx();
             shaderDissasemblyTextBlock.Text = "";
+            TopInfoText = "";
         }
 
         public override void PopOut()

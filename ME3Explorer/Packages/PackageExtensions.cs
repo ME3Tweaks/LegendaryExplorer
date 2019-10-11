@@ -354,6 +354,6 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public static void setBinaryData(this ExportEntry export, ObjectBinary bin) => export.setBinaryData(bin.ToBytes(export.FileRef));
+        public static void setBinaryData(this ExportEntry export, ObjectBinary bin) => export.setBinaryData(bin.ToBytes(export.FileRef, export.DataOffset + export.propsEnd()));
     }
 }

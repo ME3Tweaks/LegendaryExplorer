@@ -35,6 +35,7 @@ using System.Windows.Threading;
 using Gammtek.Conduit.Extensions.IO;
 using ME2Explorer.Unreal;
 using ME3Explorer.Dialogue_Editor;
+using ME3Explorer.MaterialViewer;
 using ME3Explorer.Meshplorer;
 using ME3Explorer.StaticLighting;
 using ME3Explorer.Unreal.BinaryConverters;
@@ -229,6 +230,7 @@ namespace ME3Explorer
         public ICommand FindReferencesCommand { get; set; }
         public ICommand OpenMapInGameCommand { get; set; }
         public ICommand OpenExportInCommand { get; set; }
+        public ICommand CompactShaderCacheCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -258,6 +260,7 @@ namespace ME3Explorer
             PopoutCurrentViewCommand = new GenericCommand(PopoutCurrentView, ExportIsSelected);
             MultidropRelinkingCommand = new GenericCommand(EnableMultirelinkingMode, PackageIsLoaded);
             PerformMultiRelinkCommand = new GenericCommand(PerformMultiRelink, CanPerformMultiRelink);
+            CompactShaderCacheCommand = new GenericCommand(CompactShaderCache, HasShaderCache);
 
             OpenFileCommand = new GenericCommand(OpenFile);
             NewFileCommand = new GenericCommand(NewFile);
@@ -272,7 +275,7 @@ namespace ME3Explorer
             BulkImportSWFCommand = new GenericCommand(BulkImportSWFs, PackageIsLoaded);
             OpenExportInCommand = new RelayCommand(OpenExportIn, CanOpenExportIn);
 
-            DumpAllShadersCommand = new GenericCommand(DumpAllShaders, () => PackageIsLoaded() && Pcc.Exports.Any(exp => exp.ClassName == "ShaderCache"));
+            DumpAllShadersCommand = new GenericCommand(DumpAllShaders, HasShaderCache);
             DumpMaterialShadersCommand = new GenericCommand(DumpMaterialShaders, PackageIsLoaded);
 
             OpenMapInGameCommand = new GenericCommand(OpenMapInGame, () => PackageIsLoaded() && Pcc.Game != MEGame.UDK && Pcc.Exports.Any(exp => exp.ClassName == "Level"));
@@ -4561,6 +4564,19 @@ namespace ME3Explorer
             {
                 StaticLightingGenerator.GenerateUDKFileForLevel(Pcc);
             }
+        }
+
+        private bool HasShaderCache()
+        {
+            return PackageIsLoaded() && Pcc.Exports.Any(exp => exp.ClassName == "ShaderCache");
+        }
+
+        private void CompactShaderCache()
+        {
+            IsBusy = true;
+            BusyText = "Compacting local ShaderCaches";
+            Task.Run(() => ShaderCacheManipulator.CompactShaderCaches(Pcc))
+                .ContinueWithOnUIThread(_ => IsBusy = false);
         }
     }
 }

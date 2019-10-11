@@ -14,7 +14,7 @@ namespace ME3Explorer.MaterialViewer
 {
     public static class ShaderCacheReader
     {
-        private const string shaderFileName = "RefShaderCache-PC-D3D-SM3.upk";
+        public const string shaderFileName = "RefShaderCache-PC-D3D-SM3.upk";
         private static string shaderfilePath(MEGame game) => Path.Combine(MEDirectories.CookedPath(game), shaderFileName);
 
         private static Dictionary<Guid, int> ME3ShaderOffsets;
