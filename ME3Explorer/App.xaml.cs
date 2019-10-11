@@ -20,6 +20,9 @@ using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 namespace ME3Explorer
 {
@@ -83,6 +86,18 @@ namespace ME3Explorer
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             ServicePointManager.SecurityProtocol |=  SecurityProtocolType.Tls12;
+            //API keys are not stored in the git repository for ME3Explorer.
+            //You will need to provide your own keys for use by defining public properties
+            //in a partial APIKeys class.
+#if !DEBUG
+            //We should only track things like this in release mode so we don't pollute our dataset
+            var props = typeof(APIKeys).GetProperties();
+            if (APIKeys.HasAppCenterKey)
+            {
+                AppCenter.Start(APIKeys.AppCenterKey,
+                    typeof(Analytics), typeof(Crashes));
+            }
+#endif
             //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
             DispatcherHelper.Initialize();
             SYNCHRONIZATION_CONTEXT = TaskScheduler.FromCurrentSynchronizationContext();

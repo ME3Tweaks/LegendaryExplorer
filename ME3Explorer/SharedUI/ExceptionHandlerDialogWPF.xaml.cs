@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.AppCenter.Crashes;
 
 namespace ME3Explorer.SharedUI
 {
@@ -32,7 +34,11 @@ namespace ME3Explorer.SharedUI
             ExceptionMessage_TextBlock.Text = exception.Message;
             var errorSize = MeasureString(flattened);
 
-            Height = Math.Min(900, errorSize.Height+250);
+            Height = Math.Min(900, errorSize.Height + 250);
+            Crashes.TrackError(exception, new Dictionary<string, string>()
+            {
+                { "BuildDate", SharedUI.BuildInfo.GetBuildDateTime(Assembly.GetExecutingAssembly().Location).ToShortDateString()}
+            });
         }
 
         private Size MeasureString(string candidate)
