@@ -18,8 +18,9 @@ namespace ME2Explorer.Unreal
         public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, List<NameReference>> Enums = new Dictionary<string, List<NameReference>>();
+        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new Dictionary<string, SequenceObjectInfo>();
 
-        private static readonly string jsonPath = Path.Combine(ME3Explorer.App.ExecFolder, "ME2ObjectInfo.json");
+        private static readonly string jsonPath = Path.Combine(App.ExecFolder, "ME2ObjectInfo.json");
 
         public static void loadfromJSON()
         {
@@ -30,6 +31,7 @@ namespace ME2Explorer.Unreal
                 {
                     string raw = File.ReadAllText(jsonPath);
                     var blob = JsonConvert.DeserializeAnonymousType(raw, new { Classes, Structs, Enums });
+                    //SequenceObjects = blob.SequenceObjects;
                     Classes = blob.Classes;
                     Structs = blob.Structs;
                     Enums = blob.Enums;
@@ -46,6 +48,22 @@ namespace ME2Explorer.Unreal
             catch
             {
             }
+        }
+
+        public static SequenceObjectInfo getSequenceObjectInfo(string className)
+        {
+            if (SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo))
+            {
+                if (seqInfo.inputLinks != null)
+                {
+                    return SequenceObjects[className];
+                }
+                if (Classes.TryGetValue(className, out ClassInfo info) && info.baseClass != "Object" && info.baseClass != "Class")
+                {
+                    return getSequenceObjectInfo(info.baseClass);
+                }
+            }
+            return null;
         }
 
         public static string getEnumTypefromProp(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
@@ -398,6 +416,7 @@ namespace ME2Explorer.Unreal
             var NewClasses = new Dictionary<string, ClassInfo>();
             var NewStructs = new Dictionary<string, ClassInfo>();
             var NewEnums = new Dictionary<string, List<NameReference>>();
+            var NewSequenceObjects = new Dictionary<string, SequenceObjectInfo>();
 
             foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.ME2))
             {
@@ -407,11 +426,12 @@ namespace ME2Explorer.Unreal
                     for (int j = 1; j <= pcc.ExportCount; j++)
                     {
                         ExportEntry exportEntry = pcc.GetUExport(j);
-                        if (exportEntry.ClassName == "Enum")
+                        string className = exportEntry.ClassName;
+                        if (className == "Enum")
                         {
                             generateEnumValues(exportEntry, NewEnums);
                         }
-                        else if (exportEntry.ClassName == "Class")
+                        else if (className == "Class")
                         {
                             string objectName = exportEntry.ObjectName;
                             if (!NewClasses.ContainsKey(objectName))
@@ -419,13 +439,27 @@ namespace ME2Explorer.Unreal
                                 NewClasses.Add(objectName, generateClassInfo(exportEntry));
                             }
                         }
-                        else if (exportEntry.ClassName == "ScriptStruct")
+                        else if (className == "ScriptStruct")
                         {
                             string objectName = exportEntry.ObjectName;
                             if (!NewStructs.ContainsKey(objectName))
                             {
                                 NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
 
+                            }
+                        }
+                        else if (exportEntry.IsOrInheritsFrom("SequenceObject"))
+                        {
+                            if (!NewSequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
+                            {
+                                seqObjInfo = new SequenceObjectInfo();
+                                NewSequenceObjects.Add(className, seqObjInfo);
+                            }
+
+                            int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
+                            if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
+                            {
+                                seqObjInfo.ObjInstanceVersion = objInstanceVersion;
                             }
                         }
                     }
@@ -476,8 +510,7 @@ namespace ME2Explorer.Unreal
 
             NewClasses["SFXWeapon"].properties.Add("InstantHitDamageTypes", new PropertyInfo(PropertyType.ArrayProperty, "Class"));
 
-            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(new { Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
-            MessageBox.Show("Done");
+            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(new { SequenceObjects = NewSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
         }
 
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)

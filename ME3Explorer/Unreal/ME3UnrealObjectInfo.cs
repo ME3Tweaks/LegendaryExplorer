@@ -42,6 +42,16 @@ namespace ME3Explorer.Unreal
                 _ => false
             };
 
+        public static SequenceObjectInfo getSequenceObjectInfo(MEGame game, string className) =>
+            game switch
+            {
+                MEGame.ME1 => ME1UnrealObjectInfo.getSequenceObjectInfo(className),
+                MEGame.ME2 => ME2UnrealObjectInfo.getSequenceObjectInfo(className),
+                MEGame.ME3 => ME3UnrealObjectInfo.getSequenceObjectInfo(className),
+                MEGame.UDK => ME3UnrealObjectInfo.getSequenceObjectInfo(className),
+                _ => null
+            };
+
         public static string GetEnumType(MEGame game, string propName, string typeName, ClassInfo nonVanillaClassInfo = null) =>
             game switch
             {
@@ -368,13 +378,14 @@ namespace ME3Explorer.Unreal
             return null;
         }
     }
+    public class SequenceObjectInfo
+    {
+        public List<string> inputLinks;
+        public int ObjInstanceVersion = 1;
+    }
 
     public static class ME3UnrealObjectInfo
     {
-        public class SequenceObjectInfo
-        {
-            public List<string> inputLinks = new List<string>();
-        }
 
         public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
@@ -420,19 +431,15 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static SequenceObjectInfo getSequenceObjectInfo(string objectName)
+        public static SequenceObjectInfo getSequenceObjectInfo(string className)
         {
-            if (objectName.StartsWith("Default__"))
+            if (SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo))
             {
-                objectName = objectName.Substring(9);
-            }
-            if (SequenceObjects.TryGetValue(objectName, out SequenceObjectInfo seqInfo))
-            {
-                if (seqInfo.inputLinks?.Count > 0)
+                if (seqInfo.inputLinks != null)
                 {
-                    return SequenceObjects[objectName];
+                    return SequenceObjects[className];
                 }
-                if (Classes.TryGetValue(objectName, out ClassInfo info) && info.baseClass != "Object" && info.baseClass != "Class")
+                if (Classes.TryGetValue(className, out ClassInfo info) && info.baseClass != "Object" && info.baseClass != "Class")
                 {
                     return getSequenceObjectInfo(info.baseClass);
                 }
@@ -761,33 +768,48 @@ namespace ME3Explorer.Unreal
                     for (int i = 1; i <= pcc.ExportCount; i++)
                     {
                         ExportEntry exportEntry = pcc.GetUExport(i);
-                        if (exportEntry.ClassName == "Enum")
+                        string className = exportEntry.ClassName;
+                        string objectName = exportEntry.ObjectName.Name;
+                        if (className == "Enum")
                         {
                             generateEnumValues(exportEntry, NewEnums);
                         }
-                        else if (exportEntry.ClassName == "Class")
+                        else if (className == "Class")
                         {
-                            string objectName = exportEntry.ObjectName.Name;
                             if (!NewClasses.ContainsKey(objectName))
                             {
                                 NewClasses.Add(objectName, generateClassInfo(exportEntry));
                             }
-                            if ((objectName.Contains("SeqAct") || objectName.Contains("SeqCond") || objectName.Contains("SequenceLatentAction") ||
-                                 objectName == "SequenceOp" || objectName == "SequenceAction" || objectName == "SequenceCondition") && !newSequenceObjects.ContainsKey(objectName))
+                            if (UnrealObjectInfo.IsOrInheritsFrom(objectName, "SequenceObject", MEGame.ME3))
                             {
-                                SequenceObjectInfo sequenceObjectInfo = generateSequenceObjectInfo(i, pcc);
-                                if (sequenceObjectInfo.inputLinks.Count > 0)
+                                List<string> inputLinks = generateSequenceObjectInfo(i, pcc);
+                                if (!newSequenceObjects.TryGetValue(objectName, out SequenceObjectInfo seqObjInfo))
                                 {
-                                    newSequenceObjects.Add(objectName, sequenceObjectInfo);
+                                    seqObjInfo = new SequenceObjectInfo();
+                                    newSequenceObjects.Add(objectName, seqObjInfo);
                                 }
+                                seqObjInfo.inputLinks = inputLinks;
                             }
                         }
-                        else if (exportEntry.ClassName == "ScriptStruct")
+                        else if (className == "ScriptStruct")
                         {
-                            string objectName = exportEntry.ObjectName.Name;
                             if (!NewStructs.ContainsKey(objectName))
                             {
                                 NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
+                            }
+                        }
+                        else if (exportEntry.IsOrInheritsFrom("SequenceObject"))
+                        {
+                            if (!newSequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
+                            {
+                                seqObjInfo = new SequenceObjectInfo();
+                                newSequenceObjects.Add(className, seqObjInfo);
+                            }
+
+                            int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
+                            if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
+                            {
+                                seqObjInfo.ObjInstanceVersion = objInstanceVersion;
                             }
                         }
                     }
@@ -890,22 +912,23 @@ namespace ME3Explorer.Unreal
 
             File.WriteAllText(jsonPath,
                 JsonConvert.SerializeObject(new { SequenceObjects = newSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
-            MessageBox.Show("Done");
         }
 
-        private static SequenceObjectInfo generateSequenceObjectInfo(int i, IMEPackage pcc)
+        private static List<string> generateSequenceObjectInfo(int i, IMEPackage pcc)
         {
-            SequenceObjectInfo info = new SequenceObjectInfo();
             //+1 to get the Default__ instance
             var inLinks = pcc.GetUExport(i + 1).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
             if (inLinks != null)
             {
+                var inputLinks = new List<string>();
                 foreach (var seqOpInputLink in inLinks)
                 {
-                    info.inputLinks.Add(seqOpInputLink.GetProp<StrProperty>("LinkDesc").Value);
+                    inputLinks.Add(seqOpInputLink.GetProp<StrProperty>("LinkDesc").Value);
                 }
+                return inputLinks;
             }
-            return info;
+
+            return null;
         }
 
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)

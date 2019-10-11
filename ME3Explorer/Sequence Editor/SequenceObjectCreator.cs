@@ -90,94 +90,93 @@ namespace ME3Explorer.Sequence_Editor
         public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, ClassInfo info)
         {
             MEGame game = pcc.Game;
+            PropertyCollection defaults = new PropertyCollection();
             if (info.ClassName == "Sequence")
             {
-                return new PropertyCollection { new ArrayProperty<ObjectProperty>("SequenceObjects") };
+                defaults.Add(new ArrayProperty<ObjectProperty>("SequenceObjects"));
             }
-            if (info.IsOrInheritsFrom(SequenceVariableName, game))
+            else if (!info.IsOrInheritsFrom(SequenceVariableName, game))
             {
-                return new PropertyCollection();
-            }
-
-            PropertyCollection defaults = new PropertyCollection();
-
-            ArrayProperty<StructProperty> varLinksProp = null;
-            ArrayProperty<StructProperty> outLinksProp = null;
-            Dictionary<string, ClassInfo> classes = UnrealObjectInfo.GetClasses(game);
-            try
-            {
-                while (info != null && (varLinksProp == null || outLinksProp == null))
+                ArrayProperty<StructProperty> varLinksProp = null;
+                ArrayProperty<StructProperty> outLinksProp = null;
+                Dictionary<string, ClassInfo> classes = UnrealObjectInfo.GetClasses(game);
+                try
                 {
-                    string filepath = Path.Combine(MEDirectories.BioGamePath(game), info.pccPath);
-                    if (File.Exists(info.pccPath))
+                    ClassInfo classInfo = info;
+                    while (classInfo != null && (varLinksProp == null || outLinksProp == null))
                     {
-                        filepath = info.pccPath; //Used for dynamic lookup
-                    }
-                    else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
-                    {
-                        filepath = App.CustomResourceFilePath(game);
-                    }
-                    else if (game == MEGame.ME1)
-                    {
-                        filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
-                    }
-                    if (File.Exists(filepath))
-                    {
-                        using IMEPackage importPCC = MEPackageHandler.OpenMEPackage(filepath);
-                        ExportEntry classExport = importPCC.GetUExport(info.exportIndex);
-                        UClass classBin = ObjectBinary.From<UClass>(classExport);
-                        ExportEntry classDefaults = importPCC.GetUExport(classBin.Defaults);
-
-                        foreach (var prop in classDefaults.GetProperties())
+                        string filepath = Path.Combine(MEDirectories.BioGamePath(game), classInfo.pccPath);
+                        if (File.Exists(classInfo.pccPath))
                         {
-                            if (varLinksProp == null && prop.Name == "VariableLinks" && prop is ArrayProperty<StructProperty> vlp)
+                            filepath = classInfo.pccPath; //Used for dynamic lookup
+                        }
+                        else if (classInfo.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                        {
+                            filepath = App.CustomResourceFilePath(game);
+                        }
+                        else if (game == MEGame.ME1)
+                        {
+                            filepath = Path.Combine(ME1Directory.gamePath, classInfo.pccPath); //for files from ME1 DLC
+                        }
+                        if (File.Exists(filepath))
+                        {
+                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackage(filepath);
+                            ExportEntry classExport = importPCC.GetUExport(classInfo.exportIndex);
+                            UClass classBin = ObjectBinary.From<UClass>(classExport);
+                            ExportEntry classDefaults = importPCC.GetUExport(classBin.Defaults);
+
+                            foreach (var prop in classDefaults.GetProperties())
                             {
-                                varLinksProp = vlp;
-                                //relink ExpectedType
-                                foreach (StructProperty varLink in varLinksProp)
+                                if (varLinksProp == null && prop.Name == "VariableLinks" && prop is ArrayProperty<StructProperty> vlp)
                                 {
-                                    if (varLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
-                                        importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                        EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName) is IEntry portedExpectedVar)
+                                    varLinksProp = vlp;
+                                    //relink ExpectedType
+                                    foreach (StructProperty varLink in varLinksProp)
                                     {
-                                        expectedTypeProp.Value = portedExpectedVar.UIndex;
+                                        if (varLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
+                                            importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
+                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName) is IEntry portedExpectedVar)
+                                        {
+                                            expectedTypeProp.Value = portedExpectedVar.UIndex;
+                                        }
                                     }
                                 }
-                            }
-                            if (outLinksProp == null && prop.Name == "OutputLinks" && prop is ArrayProperty<StructProperty> olp)
-                            {
-                                outLinksProp = olp;
+                                if (outLinksProp == null && prop.Name == "OutputLinks" && prop is ArrayProperty<StructProperty> olp)
+                                {
+                                    outLinksProp = olp;
+                                }
                             }
                         }
-                    }
 
-                    classes.TryGetValue(info.baseClass, out info);
+                        classes.TryGetValue(classInfo.baseClass, out classInfo);
+                    }
+                }
+                catch
+                {
+                    // ignored
+                }
+                if (varLinksProp != null)
+                {
+                    defaults.Add(varLinksProp);
+                }
+                if (outLinksProp != null)
+                {
+                    defaults.Add(outLinksProp);
+                }
+
+                //remove links if empty
+                if (defaults.GetProp<ArrayProperty<StructProperty>>("OutputLinks") is { } outLinks && outLinks.Count == 0)
+                {
+                    defaults.Remove(outLinks);
+                }
+                if (defaults.GetProp<ArrayProperty<StructProperty>>("VariableLinks") is { } varLinks && varLinks.IsEmpty())
+                {
+                    defaults.Remove(varLinks);
                 }
             }
-            catch
-            {
-                // ignored
-            }
-            if (varLinksProp != null)
-            {
-                defaults.Add(varLinksProp);
-            }
-            if (outLinksProp != null)
-            {
-                defaults.Add(outLinksProp);
-            }
 
-            //remove links if empty
-            if (defaults.GetProp<ArrayProperty<StructProperty>>("OutputLinks") is ArrayProperty<StructProperty> outLinks && outLinks.Count == 0)
-            {
-                defaults.Remove(outLinks);
-            }
-            if (defaults.GetProp<ArrayProperty<StructProperty>>("VariableLinks") is ArrayProperty<StructProperty> varLinks && varLinks.IsEmpty())
-            {
-                defaults.Remove(varLinks);
-            }
-
-
+            int objInstanceVersion = UnrealObjectInfo.getSequenceObjectInfo(game, info.ClassName)?.ObjInstanceVersion ?? 1;
+            defaults.Add(new IntProperty(objInstanceVersion, "ObjInstanceVersion"));
 
             return defaults;
         }

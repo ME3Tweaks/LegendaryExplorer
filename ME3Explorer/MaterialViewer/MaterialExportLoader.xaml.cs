@@ -44,6 +44,13 @@ namespace ME3Explorer.MaterialViewer
         }
         #endregion
 
+        private string _topInfoText;
+        public string TopInfoText
+        {
+            get => _topInfoText;
+            set => SetProperty(ref _topInfoText, value);
+        }
+
         public MaterialExportLoader()
         {
             InitializeComponent();
@@ -52,7 +59,7 @@ namespace ME3Explorer.MaterialViewer
 
         public ObservableCollectionExtended<TreeViewMeshShaderMap> MeshShaderMaps { get; } = new ObservableCollectionExtended<TreeViewMeshShaderMap>();
 
-        public override bool CanParse(ExportEntry exportEntry) => !exportEntry.IsDefaultObject &&
+        public override bool CanParse(ExportEntry exportEntry) => !exportEntry.IsDefaultObject && exportEntry.Game != MEGame.UDK &&
                                                                   (exportEntry.ClassName == "Material" || exportEntry.IsOrInheritsFrom("MaterialInstance") &&
                                                                    exportEntry.GetProperty<BoolProperty>("bHasStaticPermutationResource"));
 
@@ -75,20 +82,16 @@ namespace ME3Explorer.MaterialViewer
                         var seekFreeShaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
                         if (seekFreeShaderCache.MaterialShaderMaps.TryGetValue(sps, out MaterialShaderMap msm))
                         {
-                            return GetMeshShaderMaps(seekFreeShaderCache, msm);
+                            string topInfoText = $"Shaders in #{seekFreeShaderCacheExport.UIndex} SeekFreeShaderCache";
+                            return (GetMeshShaderMaps(msm, seekFreeShaderCache), topInfoText);
                         }
                     }
 
-                    string shaderCachePath = Path.Combine(MEDirectories.CookedPath(Pcc.Game), "RefShaderCache-PC-D3D-SM3.upk");
-                    if (File.Exists(shaderCachePath))
+                    MaterialShaderMap msmFromGlobalCache = ShaderCacheReader.GetMaterialShaderMap(Pcc.Game, sps);
+                    if (msmFromGlobalCache != null)
                     {
-                        using IMEPackage refShaderCachePackage = MEPackageHandler.OpenMEPackage(shaderCachePath);
-
-                        var refShaderCache = ObjectBinary.From<ShaderCache>(refShaderCachePackage.Exports[0]);
-                        if (refShaderCache.MaterialShaderMaps.TryGetValue(sps, out MaterialShaderMap msm))
-                        {
-                            return GetMeshShaderMaps(refShaderCache, msm);
-                        }
+                        var topInfoText = $"Shaders in {ShaderCacheReader.shaderFileName}";
+                        return (GetMeshShaderMaps(msmFromGlobalCache), topInfoText);
                     }
                 }
                 catch (Exception)
@@ -96,19 +99,21 @@ namespace ME3Explorer.MaterialViewer
                     //
                 }
 
-                return null;
+                return (null, "MaterialShaderMap not found!");
             }).ContinueWithOnUIThread(prevTask =>
             {
                 MeshShaderMaps.ClearEx();
-                if (prevTask.Result != null)
+                (IEnumerable<TreeViewMeshShaderMap> treeviewItems, string topInfoText) = prevTask.Result;
+                TopInfoText = topInfoText;
+                if (treeviewItems != null)
                 {
-                    MeshShaderMaps.AddRange(prevTask.Result);
+                    MeshShaderMaps.AddRange(treeviewItems);
                 }
                 IsBusy = false;
             });
         }
 
-        public IEnumerable<TreeViewMeshShaderMap> GetMeshShaderMaps(ShaderCache shaderCache, MaterialShaderMap msm)
+        public IEnumerable<TreeViewMeshShaderMap> GetMeshShaderMaps(MaterialShaderMap msm, ShaderCache shaderCache = null)
         {
             var result = new List<TreeViewMeshShaderMap>();
             foreach (MeshShaderMap meshShaderMap in msm.MeshShaderMaps)
@@ -119,9 +124,10 @@ namespace ME3Explorer.MaterialViewer
                     var tvs = new TreeViewShader
                     {
                         Id = shaderReference.Id,
-                        ShaderType = shaderReference.ShaderType
+                        ShaderType = shaderReference.ShaderType,
+                        Game = Pcc.Game
                     };
-                    if (shaderCache.Shaders.TryGetValue(shaderReference.Id, out Shader shader))
+                    if (shaderCache != null && shaderCache.Shaders.TryGetValue(shaderReference.Id, out Shader shader))
                     {
                         tvs.DissasembledShader = ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode)).Disassemble();
                     }
@@ -137,6 +143,7 @@ namespace ME3Explorer.MaterialViewer
             CurrentLoadedExport = null;
             MeshShaderMaps.ClearEx();
             shaderDissasemblyTextBlock.Text = "";
+            TopInfoText = "";
         }
 
         public override void PopOut()
@@ -173,8 +180,14 @@ namespace ME3Explorer.MaterialViewer
 
     public class TreeViewShader
     {
+        public MEGame Game;
         public Guid Id { get; set; }
         public string ShaderType { get; set; }
-        public string DissasembledShader { get; set; }
+        private string dissasembledShader;
+        public string DissasembledShader
+        {
+            get => dissasembledShader ??= ShaderCacheReader.GetShaderDissasembly(Game, Id);
+            set => dissasembledShader = value;
+        }
     }
 }
