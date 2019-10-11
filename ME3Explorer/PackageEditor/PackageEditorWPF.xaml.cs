@@ -40,7 +40,6 @@ using ME3Explorer.Meshplorer;
 using ME3Explorer.StaticLighting;
 using ME3Explorer.Unreal.BinaryConverters;
 using UsefulThings;
-using static ME3Explorer.Packages.MEPackage;
 using static ME3Explorer.Unreal.UnrealFlags;
 using Guid = System.Guid;
 
@@ -845,7 +844,7 @@ namespace ME3Explorer
                     items.Add($"0x{ms.Position - 4:X2} Unknown 7: {unknown7} (0x{unknown7:X8})");
                 }
 
-                CompressionType compressionType = (CompressionType)ms.ReadUInt32();
+                UnrealPackageFile.CompressionType compressionType = (UnrealPackageFile.CompressionType)ms.ReadUInt32();
                 items.Add($"0x{ms.Position - 4:X2} Package Compression Type: {compressionType.ToString()}");
 
             }
@@ -3878,7 +3877,7 @@ namespace ME3Explorer
                                 int unknown8 = fs.ReadInt32();
                             }
 
-                            CompressionType compressionType = (CompressionType)fs.ReadUInt32();
+                            UnrealPackageFile.CompressionType compressionType = (UnrealPackageFile.CompressionType)fs.ReadUInt32();
                             int numChunks = fs.ReadInt32();
                             var compressedOffsets = new int[numChunks];
                             for (int i = 0; i < numChunks; i++)

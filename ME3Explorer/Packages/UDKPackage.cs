@@ -24,20 +24,8 @@ namespace ME3Explorer.Packages
             WriteHeader(ms);
             return ms.ToArray();
         }
-        public int FullHeaderSize { get; private set; }
-        public EPackageFlags Flags { get; private set; }
-        public bool IsCompressed => false;
 
-        public override int NameCount { get; protected set; }
-        public int NameOffset { get; private set; }
-        public override int ExportCount { get; protected set; }
-        public int ExportOffset { get; private set; }
-        public override int ImportCount { get; protected set; }
-        public int ImportOffset { get; private set; }
-        public int DependencyTableOffset { get; private set; }
-        public Guid PackageGuid { get; set; }
-
-        public bool CanReconstruct => false;
+        public bool CanReconstruct => true;
 
         #region HeaderMisc
         private class Thumbnail
@@ -116,10 +104,10 @@ namespace ME3Explorer.Packages
 
                 Flags = (EPackageFlags)fs.ReadUInt32();
 
-                if (Flags.HasFlag(EPackageFlags.Compressed))
-                {
-                    throw new FormatException("Cannot read compressed UDK packages!");
-                }
+                //if (Flags.HasFlag(EPackageFlags.Compressed))
+                //{
+                //    throw new FormatException("Cannot read compressed UDK packages!");
+                //}
 
                 NameCount = fs.ReadInt32();
                 NameOffset = fs.ReadInt32();
@@ -146,34 +134,43 @@ namespace ME3Explorer.Packages
                 fs.Skip(generationsTableCount * 12);
                 engineVersion = fs.ReadInt32();
                 cookedContentVersion = fs.ReadInt32();
-                fs.SkipInt32();//compression flags
-                fs.SkipInt32();//chunks
+
+                //skip compression type chunks. Decompressor will handle that
+                long compressionInfoOffset = fs.Position;
+                fs.SkipInt32();
+                int numChunks = fs.ReadInt32();
+                fs.Skip(numChunks * 16);
+
                 packageSource = fs.ReadUInt32();
                 //additional packages to cook, and texture allocation, but we don't care about those, so we won't read them in.
 
                 #endregion
-
-
-                fs.JumpTo(NameOffset);
-                for (int i = 0; i < NameCount; i++)
+                Stream inStream = fs;
+                if (IsCompressed && numChunks > 0)
                 {
-                    names.Add(fs.ReadUnrealString());
-                    fs.Skip(8);
+                    inStream = CompressionHelper.DecompressUDK(fs, compressionInfoOffset);
                 }
 
-                fs.JumpTo(ImportOffset);
+                inStream.JumpTo(NameOffset);
+                for (int i = 0; i < NameCount; i++)
+                {
+                    names.Add(inStream.ReadUnrealString());
+                    inStream.Skip(8);
+                }
+
+                inStream.JumpTo(ImportOffset);
                 for (int i = 0; i < ImportCount; i++)
                 {
-                    ImportEntry imp = new ImportEntry(this, fs) { Index = i };
+                    ImportEntry imp = new ImportEntry(this, inStream) { Index = i };
                     imp.PropertyChanged += importChanged;
                     imports.Add(imp);
                 }
 
                 //read exportTable (ExportEntry constructor reads export data)
-                fs.JumpTo(ExportOffset);
+                inStream.JumpTo(ExportOffset);
                 for (int i = 0; i < ExportCount; i++)
                 {
-                    ExportEntry e = new ExportEntry(this, fs) { Index = i };
+                    ExportEntry e = new ExportEntry(this, inStream) { Index = i };
                     e.PropertyChanged += exportChanged;
                     exports.Add(e);
                 }

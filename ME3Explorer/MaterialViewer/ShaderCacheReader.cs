@@ -58,7 +58,7 @@ namespace ME3Explorer.MaterialViewer
                 fs.Skip(1);
                 int nameCount = fs.ReadInt32();
                 fs.Skip(nameCount * 12);
-                if (game == MEGame.ME3)
+                if (game == MEGame.ME3 || game == MEGame.ME1)
                 {
                     nameCount = fs.ReadInt32();
                     fs.Skip(nameCount * 12);
@@ -73,8 +73,12 @@ namespace ME3Explorer.MaterialViewer
                     offsetDict.Add(shaderGuid, (int)fs.Position + 2);
                     fs.Skip(shaderEndOffset - fs.Position);
                 }
-                nameCount = fs.ReadInt32();
-                fs.Skip(nameCount * 12);
+
+                if (game != MEGame.ME1)
+                {
+                    nameCount = fs.ReadInt32();
+                    fs.Skip(nameCount * 12);
+                }
                 switch (game)
                 {
                     case MEGame.ME3:

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using ME3Explorer.Unreal;
 
 namespace ME3Explorer.Packages
 {
@@ -24,9 +25,26 @@ namespace ME3Explorer.Packages
                 return exports.Any(entry => entry.DataChanged || entry.HeaderChanged) || imports.Any(entry => entry.HeaderChanged) || namesAdded > 0;
             }
         }
-        public abstract int NameCount { get; protected set; }
-        public abstract int ExportCount { get; protected set; }
-        public abstract int ImportCount { get; protected set; }
+        public int FullHeaderSize { get; protected set; }
+        public UnrealFlags.EPackageFlags Flags { get; protected set; }
+
+        public int NameCount { get; protected set; }
+        public int NameOffset { get; protected set; }
+        public int ExportCount { get; protected set; }
+        public int ExportOffset { get; protected set; }
+        public int ImportCount { get; protected set; }
+        public int ImportOffset { get; protected set; }
+        public int DependencyTableOffset { get; protected set; }
+        public Guid PackageGuid { get; set; }
+
+        public bool IsCompressed => Flags.HasFlag(UnrealFlags.EPackageFlags.Compressed);
+
+        public enum CompressionType
+        {
+            None = 0,
+            Zlib,
+            LZO
+        }
 
         public List<ME1Explorer.Unreal.Classes.TalkFile> LocalTalkFiles { get; } = new List<ME1Explorer.Unreal.Classes.TalkFile>();
 

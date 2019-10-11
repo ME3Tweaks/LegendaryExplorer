@@ -34,6 +34,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.ms.WriteInt32(0);
             }
 
+            if (sc.Game == MEGame.ME1)
+            {
+                sc.Serialize(ref VertexFactoryTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
+            }
+
             if (sc.IsLoading)
             {
                 int shaderCount = sc.ms.ReadInt32();
@@ -55,7 +60,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 }
             }
 
-            sc.Serialize(ref VertexFactoryTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
+            if (sc.Game != MEGame.ME1)
+            {
+                sc.Serialize(ref VertexFactoryTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
+            }
             sc.Serialize(ref MaterialShaderMaps, SCExt.Serialize, SCExt.Serialize);
             int dummy = 0;
             sc.Serialize(ref dummy);
@@ -126,6 +134,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
     {
         public OrderedMultiValueDictionary<NameReference, ShaderReference> Shaders;
         public NameReference VertexFactoryType;
+        public uint unk;//ME1
     }
 }
 
@@ -229,6 +238,10 @@ namespace ME3Explorer
             }
             sc.Serialize(ref msm.Shaders, Serialize, Serialize);
             sc.Serialize(ref msm.VertexFactoryType);
+            if (sc.Game == MEGame.ME1)
+            {
+                sc.Serialize(ref msm.unk);
+            }
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref ShaderFrequency sf)

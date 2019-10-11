@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Gibbed.IO;
 //using AmaroK86.MassEffect3.ZlibBlock;
 using System.Threading.Tasks;
 using LZO2Helper;
-using static ME3Explorer.Packages.MEPackage;
+using StreamHelpers;
 
 namespace ME3Explorer.Packages
 {
@@ -59,8 +58,8 @@ namespace ME3Explorer.Packages
             using (FileStream input = File.OpenRead(pccFileName))
             {
                 input.Seek(4, SeekOrigin.Begin); //skip package tag
-                ushort versionLo = input.ReadValueU16();
-                ushort versionHi = input.ReadValueU16();
+                ushort versionLo = input.ReadUInt16();
+                ushort versionHi = input.ReadUInt16();
 
                 //ME3
                 if (versionLo == 684 && versionHi == 194)
@@ -87,12 +86,12 @@ namespace ME3Explorer.Packages
         public static MemoryStream DecompressME1orME2(Stream raw)
         {
             raw.Seek(4, SeekOrigin.Begin);
-            ushort versionLo = raw.ReadValueU16();
-            ushort versionHi = raw.ReadValueU16();
+            ushort versionLo = raw.ReadUInt16();
+            ushort versionHi = raw.ReadUInt16();
             raw.Seek(12, SeekOrigin.Begin);
-            int tempNameSize = raw.ReadValueS32();
+            int tempNameSize = raw.ReadInt32();
             raw.Seek(64 + tempNameSize, SeekOrigin.Begin);
-            int tempGenerations = raw.ReadValueS32();
+            int tempGenerations = raw.ReadInt32();
             raw.Seek(32 + tempGenerations * 12, SeekOrigin.Current);
 
             //if ME1
@@ -100,11 +99,11 @@ namespace ME3Explorer.Packages
             {
                 raw.Seek(4, SeekOrigin.Current);
             }
-            CompressionType compressionType = (CompressionType)raw.ReadValueU32();
+            UnrealPackageFile.CompressionType compressionType = (UnrealPackageFile.CompressionType)raw.ReadUInt32();
 
 
             int pos = 4;
-            int NumChunks = raw.ReadValueS32();
+            int NumChunks = raw.ReadInt32();
             var Chunks = new List<Chunk>();
 
             //DebugOutput.PrintLn("Reading chunk headers...");
@@ -112,10 +111,10 @@ namespace ME3Explorer.Packages
             {
                 Chunk c = new Chunk
                 {
-                    uncompressedOffset = raw.ReadValueS32(),
-                    uncompressedSize = raw.ReadValueS32(),
-                    compressedOffset = raw.ReadValueS32(),
-                    compressedSize = raw.ReadValueS32()
+                    uncompressedOffset = raw.ReadInt32(),
+                    uncompressedSize = raw.ReadInt32(),
+                    compressedOffset = raw.ReadInt32(),
+                    compressedSize = raw.ReadInt32()
                 };
                 c.Compressed = new byte[c.compressedSize];
                 c.Uncompressed = new byte[c.uncompressedSize];
@@ -130,7 +129,7 @@ namespace ME3Explorer.Packages
             {
                 Chunk c = Chunks[i];
                 raw.Seek(c.compressedOffset, SeekOrigin.Begin);
-                c.Compressed = raw.ReadBytes(c.compressedSize);
+                c.Compressed = raw.ReadToBuffer(c.compressedSize);
 
                 ChunkHeader h = new ChunkHeader
                 {
@@ -173,14 +172,14 @@ namespace ME3Explorer.Packages
 
                     switch (compressionType)
                     {
-                        case CompressionType.LZO:
+                        case UnrealPackageFile.CompressionType.LZO:
                         {
                             if (
                                     LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
                                 throw new Exception("LZO decompression failed!");
                             break;
                         }
-                        case CompressionType.Zlib:
+                        case UnrealPackageFile.CompressionType.Zlib:
                         {
                             if (ZlibHelper.Zlib.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
                                 throw new Exception("Zlib decompression failed!");
@@ -203,7 +202,7 @@ namespace ME3Explorer.Packages
             foreach (Chunk c in Chunks)
             {
                 result.Seek(c.uncompressedOffset, SeekOrigin.Begin);
-                result.WriteBytes(c.Uncompressed);
+                result.WriteFromBuffer(c.Uncompressed);
             }
 
             return result;
@@ -217,16 +216,14 @@ namespace ME3Explorer.Packages
         public static MemoryStream DecompressME3(Stream input)
         {
             input.Seek(0, SeekOrigin.Begin);
-            var magic = input.ReadValueU32(Endian.Little);
-            if (magic != 0x9E2A83C1 &&
-                magic.Swap() != 0x9E2A83C1)
+            var magic = input.ReadUInt32();
+            if (magic != 0x9E2A83C1)
             {
                 throw new FormatException("not a pcc file");
             }
-            var endian = magic == 0x9E2A83C1 ? Endian.Little : Endian.Big;
 
-            var versionLo = input.ReadValueU16(endian);
-            var versionHi = input.ReadValueU16(endian);
+            var versionLo = input.ReadUInt16();
+            var versionHi = input.ReadUInt16();
 
             if (versionLo != 684 &&
                 versionHi != 194)
@@ -239,7 +236,7 @@ namespace ME3Explorer.Packages
             input.Seek(4, SeekOrigin.Current);
             headerSize += 4;
 
-            var folderNameLength = input.ReadValueS32(endian);
+            var folderNameLength = input.ReadInt32();
             headerSize += 4;
 
             var folderNameByteLength =
@@ -248,7 +245,7 @@ namespace ME3Explorer.Packages
             headerSize += folderNameByteLength;
 
             var packageFlagsOffset = input.Position;
-            var packageFlags = input.ReadValueU32(endian);
+            var packageFlags = input.ReadUInt32();
             headerSize += 4;
 
             if ((packageFlags & 0x02000000u) == 0)
@@ -262,20 +259,20 @@ namespace ME3Explorer.Packages
                 headerSize += 4;
             }
 
-            uint nameCount = input.ReadValueU32(endian);
-            uint nameOffset = input.ReadValueU32(endian);
+            uint nameCount = input.ReadUInt32();
+            uint nameOffset = input.ReadUInt32();
 
             input.Seek(52, SeekOrigin.Current);
             headerSize += 60;
 
-            var generationsCount = input.ReadValueU32(endian);
+            var generationsCount = input.ReadUInt32();
             input.Seek(generationsCount * 12, SeekOrigin.Current);
             headerSize += generationsCount * 12;
 
             input.Seek(20, SeekOrigin.Current);
             headerSize += 24;
 
-            var blockCount = input.ReadValueU32(endian);
+            var blockCount = input.ReadUInt32();
             int headBlockOff = (int)input.Position;
             var afterBlockTableOffset = headBlockOff + (blockCount * 16);
             var indataOffset = afterBlockTableOffset + 8;
@@ -285,7 +282,7 @@ namespace ME3Explorer.Packages
             output.Seek(0, SeekOrigin.Begin);
 
             output.WriteFromStream(input, headerSize);
-            output.WriteValueU32(0, endian); // block count
+            output.WriteUInt32(0);// block count
 
             input.Seek(afterBlockTableOffset, SeekOrigin.Begin);
             output.WriteFromStream(input, 8);
@@ -303,10 +300,10 @@ namespace ME3Explorer.Packages
             for (int i = 0; i < blockCount; i++)
             {
                 input.Seek(headBlockOff, SeekOrigin.Begin);
-                uncompressedOffsets[i] = input.ReadValueU32(endian);
-                var uncompressedSize = input.ReadValueU32(endian);
-                var compressedOffset = input.ReadValueU32(endian);
-                var compressedSize = input.ReadValueU32(endian);
+                uncompressedOffsets[i] = input.ReadUInt32();
+                var uncompressedSize = input.ReadUInt32();
+                var compressedOffset = input.ReadUInt32();
+                var compressedSize = input.ReadUInt32();
                 headBlockOff = (int)input.Position;
 
                 var buff = new byte[compressedSize];
@@ -319,13 +316,123 @@ namespace ME3Explorer.Packages
             for (int i = 0; i < blockCount; i++)
             {
                 output.Seek(uncompressedOffsets[i], SeekOrigin.Begin);
-                output.WriteBytes(tasks[i].Result);
+                output.WriteFromBuffer(tasks[i].Result);
             }
 
             //Do not change the IsCompressed bit as it will not accurately reflect the state of the file on disk.
             //output.Seek(packageFlagsOffset, SeekOrigin.Begin);
-            //output.WriteValueU32(packageFlags & ~0x02000000u, endian); //Mark file as decompressed.
+            //output.WriteUInt32(packageFlags & ~0x02000000u, ); //Mark file as decompressed.
             return output;
+        }
+        public static MemoryStream DecompressUDK(Stream raw, long compressionInfoOffset)
+        {
+            raw.JumpTo(compressionInfoOffset);
+            UnrealPackageFile.CompressionType compressionType = (UnrealPackageFile.CompressionType)raw.ReadUInt32();
+
+
+            int NumChunks = raw.ReadInt32();
+            var Chunks = new List<Chunk>();
+
+            //DebugOutput.PrintLn("Reading chunk headers...");
+            for (int i = 0; i < NumChunks; i++)
+            {
+                Chunk c = new Chunk
+                {
+                    uncompressedOffset = raw.ReadInt32(),
+                    uncompressedSize = raw.ReadInt32(),
+                    compressedOffset = raw.ReadInt32(),
+                    compressedSize = raw.ReadInt32()
+                };
+                c.Compressed = new byte[c.compressedSize];
+                c.Uncompressed = new byte[c.uncompressedSize];
+                //DebugOutput.PrintLn("Chunk " + i + ", compressed size = " + c.compressedSize + ", uncompressed size = " + c.uncompressedSize);
+                //DebugOutput.PrintLn("Compressed offset = " + c.compressedOffset + ", uncompressed offset = " + c.uncompressedOffset);
+                Chunks.Add(c);
+            }
+
+            //DebugOutput.PrintLn("\tRead Chunks...");
+            int count = 0;
+            for (int i = 0; i < Chunks.Count; i++)
+            {
+                Chunk c = Chunks[i];
+                raw.Seek(c.compressedOffset, SeekOrigin.Begin);
+                c.Compressed = raw.ReadToBuffer(c.compressedSize);
+
+                ChunkHeader h = new ChunkHeader
+                {
+                    magic = BitConverter.ToInt32(c.Compressed, 0),
+                    blocksize = BitConverter.ToInt32(c.Compressed, 4),
+                    compressedsize = BitConverter.ToInt32(c.Compressed, 8),
+                    uncompressedsize = BitConverter.ToInt32(c.Compressed, 12)
+                };
+                if (h.magic != -1641380927)
+                    throw new FormatException("Chunk magic number incorrect");
+                //DebugOutput.PrintLn("Chunkheader read: Magic = " + h.magic + ", Blocksize = " + h.blocksize + ", Compressed Size = " + h.compressedsize + ", Uncompressed size = " + h.uncompressedsize);
+                int pos = 16;
+                int blockCount = (h.uncompressedsize % h.blocksize == 0)
+                    ?
+                    h.uncompressedsize / h.blocksize
+                    :
+                    h.uncompressedsize / h.blocksize + 1;
+                var BlockList = new List<Block>();
+                //DebugOutput.PrintLn("\t\t" + count + " Read Blockheaders...");
+                for (int j = 0; j < blockCount; j++)
+                {
+                    Block b = new Block
+                    {
+                        compressedsize = BitConverter.ToInt32(c.Compressed, pos),
+                        uncompressedsize = BitConverter.ToInt32(c.Compressed, pos + 4)
+                    };
+                    //DebugOutput.PrintLn("Block " + j + ", compressed size = " + b.compressedsize + ", uncompressed size = " + b.uncompressedsize);
+                    pos += 8;
+                    BlockList.Add(b);
+                }
+                int outpos = 0;
+                //DebugOutput.PrintLn("\t\t" + count + " Read and decompress Blocks...");
+                foreach (Block b in BlockList)
+                {
+                    var datain = new byte[b.compressedsize];
+                    var dataout = new byte[b.uncompressedsize];
+                    for (int j = 0; j < b.compressedsize; j++)
+                        datain[j] = c.Compressed[pos + j];
+                    pos += b.compressedsize;
+
+                    switch (compressionType)
+                    {
+                        case UnrealPackageFile.CompressionType.LZO:
+                            {
+                                if (
+                                        LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                                    throw new Exception("LZO decompression failed!");
+                                break;
+                            }
+                        case UnrealPackageFile.CompressionType.Zlib:
+                            {
+                                if (ZlibHelper.Zlib.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                                    throw new Exception("Zlib decompression failed!");
+                                break;
+                            }
+                        default:
+                            throw new Exception("Unknown compression type for this package.");
+                    }
+                    for (int j = 0; j < b.uncompressedsize; j++)
+                        c.Uncompressed[outpos + j] = dataout[j];
+                    outpos += b.uncompressedsize;
+                }
+                c.header = h;
+                c.blocks = BlockList;
+                count++;
+                Chunks[i] = c;
+            }
+
+            MemoryStream result = new MemoryStream();
+            foreach (Chunk c in Chunks)
+            {
+                result.Seek(c.uncompressedOffset, SeekOrigin.Begin);
+                result.WriteFromBuffer(c.Uncompressed);
+            }
+
+            return result;
         }
         #endregion
 
@@ -350,19 +457,14 @@ namespace ME3Explorer.Packages
         {
             uncompressedPcc.Position = 0;
 
-            var magic = uncompressedPcc.ReadValueU32(Endian.Little);
-            if (magic != 0x9E2A83C1 &&
-                magic.Swap() != 0x9E2A83C1)
+            var magic = uncompressedPcc.ReadUInt32();
+            if (magic != 0x9E2A83C1)
             {
                 throw new FormatException("not a pcc package");
             }
-            var endian = magic == 0x9E2A83C1 ?
-                Endian.Little : Endian.Big;
-            var encoding = endian == Endian.Little ?
-                Encoding.Unicode : Encoding.BigEndianUnicode;
 
-            var versionLo = uncompressedPcc.ReadValueU16(endian);
-            var versionHi = uncompressedPcc.ReadValueU16(endian);
+            var versionLo = uncompressedPcc.ReadUInt16();
+            var versionHi = uncompressedPcc.ReadUInt16();
 
             if (versionLo != 684 &&
                 versionHi != 194)
@@ -372,23 +474,23 @@ namespace ME3Explorer.Packages
 
             uncompressedPcc.Seek(4, SeekOrigin.Current);
 
-            var folderNameLength = uncompressedPcc.ReadValueS32(endian);
+            var folderNameLength = uncompressedPcc.ReadInt32();
             var folderNameByteLength =
                 folderNameLength >= 0 ? folderNameLength : (-folderNameLength * 2);
             uncompressedPcc.Seek(folderNameByteLength, SeekOrigin.Current);
 
             var packageFlagsOffset = uncompressedPcc.Position;
-            var packageFlags = uncompressedPcc.ReadValueU32(endian);
+            var packageFlags = uncompressedPcc.ReadUInt32();
 
             if ((packageFlags & 8) != 0)
             {
                 uncompressedPcc.Seek(4, SeekOrigin.Current);
             }
 
-            var nameCount = uncompressedPcc.ReadValueU32(endian);
-            var namesOffset = uncompressedPcc.ReadValueU32(endian);
-            var exportCount = uncompressedPcc.ReadValueU32(endian);
-            var exportInfosOffset = uncompressedPcc.ReadValueU32(endian);
+            var nameCount = uncompressedPcc.ReadUInt32();
+            var namesOffset = uncompressedPcc.ReadUInt32();
+            var exportCount = uncompressedPcc.ReadUInt32();
+            var exportInfosOffset = uncompressedPcc.ReadUInt32();
             var exportDataOffsets = new SortedDictionary<uint, uint>();
 
             Stream data;
@@ -405,18 +507,18 @@ namespace ME3Explorer.Packages
             data.Seek(exportInfosOffset, SeekOrigin.Begin);
             for (uint i = 0; i < exportCount; i++)
             {
-                var classIndex = data.ReadValueS32(endian);
+                var classIndex = data.ReadInt32();
                 data.Seek(4, SeekOrigin.Current);
-                var outerIndex = data.ReadValueS32(endian);
-                var objectNameIndex = data.ReadValueS32(endian);
+                var outerIndex = data.ReadInt32();
+                var objectNameIndex = data.ReadInt32();
                 data.Seek(16, SeekOrigin.Current);
 
-                uint exportDataSize = data.ReadValueU32(endian);
-                uint exportDataOffset = data.ReadValueU32(endian);
+                uint exportDataSize = data.ReadUInt32();
+                uint exportDataOffset = data.ReadUInt32();
                 exportDataOffsets.Add(exportDataOffset, exportDataSize);
 
                 data.Seek(4, SeekOrigin.Current);
-                var count = data.ReadValueU32(endian);
+                var count = data.ReadUInt32();
                 data.Seek(count * 4, SeekOrigin.Current);
                 data.Seek(20, SeekOrigin.Current);
             }
@@ -431,15 +533,15 @@ namespace ME3Explorer.Packages
 
             //add compressed pcc flag
             uncompressedPcc.Seek(12, SeekOrigin.Begin);
-            folderNameLength = uncompressedPcc.ReadValueS32();
+            folderNameLength = uncompressedPcc.ReadInt32();
             folderNameByteLength =
                 folderNameLength >= 0 ? folderNameLength : (-folderNameLength * 2);
             uncompressedPcc.Seek(folderNameByteLength, SeekOrigin.Current);
             outputStream.Seek(uncompressedPcc.Position, SeekOrigin.Begin);
 
-            packageFlags = uncompressedPcc.ReadValueU32();
+            packageFlags = uncompressedPcc.ReadUInt32();
             packageFlags |= 0x02000000; // add compression flag
-            outputStream.WriteValueU32(packageFlags);
+            outputStream.WriteUInt32(packageFlags);
 
             outputStream.Seek(buffer.Length, SeekOrigin.Begin);
 
@@ -479,7 +581,7 @@ namespace ME3Explorer.Packages
             }
             blockSizes.Add(countSize);
 
-            outputStream.WriteValueS32(blockSizes.Count);
+            outputStream.WriteInt32(blockSizes.Count);
             long outOffsetBlockInfo = outputStream.Position;
             long outOffsetData = namesOffset + (blockSizes.Count * 16);
 
@@ -488,15 +590,15 @@ namespace ME3Explorer.Packages
             foreach (int currentUncBlockSize in blockSizes)
             {
                 outputStream.Seek(outOffsetBlockInfo, SeekOrigin.Begin);
-                outputStream.WriteValueU32((uint)uncompressedPcc.Position);
-                outputStream.WriteValueS32(currentUncBlockSize);
-                outputStream.WriteValueU32((uint)outOffsetData);
+                outputStream.WriteUInt32((uint)uncompressedPcc.Position);
+                outputStream.WriteInt32(currentUncBlockSize);
+                outputStream.WriteUInt32((uint)outOffsetData);
 
                 byte[] inputBlock = new byte[currentUncBlockSize];
                 uncompressedPcc.Read(inputBlock, 0, currentUncBlockSize);
                 byte[] compressedBlock = AmaroK86.MassEffect3.ZlibBlock.ZBlock.Compress(inputBlock);
 
-                outputStream.WriteValueS32(compressedBlock.Length);
+                outputStream.WriteInt32(compressedBlock.Length);
                 outOffsetBlockInfo = outputStream.Position;
 
                 outputStream.Seek(outOffsetData, SeekOrigin.Begin);

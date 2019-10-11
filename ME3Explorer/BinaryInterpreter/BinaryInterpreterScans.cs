@@ -34,7 +34,7 @@ namespace ME3Explorer
 
                 subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatform)bin.ReadByte()}") { Length = 1 });
 
-                int mapCount = Pcc.Game == MEGame.ME3 ? 2 : 1;
+                int mapCount = Pcc.Game >= MEGame.ME3 ? 2 : 1;
                 for (; mapCount > 0; mapCount--)
                 {
                     int vertexMapCount = bin.ReadInt32();
@@ -49,6 +49,11 @@ namespace ME3Explorer
                     }
                 }
 
+                if (Pcc.Game == MEGame.ME1)
+                {
+                    ReadVertexFactoryMap();
+                }
+
                 int embeddedShaderFileCount = bin.ReadInt32();
                 var embeddedShaderCount = new BinInterpNode(bin.Position - 4, $"Embedded Shader File Count: {embeddedShaderFileCount}");
                 subnodes.Add(embeddedShaderCount);
@@ -59,7 +64,11 @@ namespace ME3Explorer
 
                     shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.Instanced}") { Length = 8 });
                     shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadValueGuid()}") { Length = 16 });
-
+                    if (Pcc.Game == MEGame.UDK)
+                    {
+                        shaderNode.Items.Add(MakeGuidNode(bin, "2nd Guid?"));
+                        shaderNode.Items.Add(MakeUInt32Node(bin, "unk?"));
+                    }
                     int shaderEndOffset = bin.ReadInt32();
                     shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader End Offset: {shaderEndOffset}") { Length = 4 });
 
@@ -86,15 +95,22 @@ namespace ME3Explorer
                     bin.JumpTo(shaderEndOffset - dataOffset);
                 }
 
-                int vertexFactoryMapCount = bin.ReadInt32();
-                var factoryMapNode = new BinInterpNode(bin.Position - 4, $"Vertex Factory Name Mapping, {vertexFactoryMapCount} items");
-                subnodes.Add(factoryMapNode);
-
-                for (int i = 0; i < vertexFactoryMapCount; i++)
+                void ReadVertexFactoryMap()
                 {
-                    NameReference shaderName = bin.ReadNameReference(Pcc);
-                    int shaderCRC = bin.ReadInt32();
-                    factoryMapNode.Items.Add(new BinInterpNode(bin.Position - 12, $"{shaderCRC:X8} {shaderName.Instanced}") { Length = 12 });
+                    int vertexFactoryMapCount = bin.ReadInt32();
+                    var factoryMapNode = new BinInterpNode(bin.Position - 4, $"Vertex Factory Name Mapping, {vertexFactoryMapCount} items");
+                    subnodes.Add(factoryMapNode);
+
+                    for (int i = 0; i < vertexFactoryMapCount; i++)
+                    {
+                        NameReference shaderName = bin.ReadNameReference(Pcc);
+                        int shaderCRC = bin.ReadInt32();
+                        factoryMapNode.Items.Add(new BinInterpNode(bin.Position - 12, $"{shaderCRC:X8} {shaderName.Instanced}") {Length = 12});
+                    }
+                }
+                if (Pcc.Game == MEGame.ME2 || Pcc.Game == MEGame.ME3)
+                {
+                    ReadVertexFactoryMap();
                 }
 
                 int materialShaderMapcount = bin.ReadInt32();
@@ -106,7 +122,7 @@ namespace ME3Explorer
                     materialShaderMaps.Items.Add(new BinInterpNode(bin.Position, $"Material Shader Map {i}") { Items = nodes });
                     nodes.Add(ReadFStaticParameterSet(bin));
 
-                    if (Pcc.Game == MEGame.ME3)
+                    if (Pcc.Game >= MEGame.ME3)
                     {
                         nodes.Add(new BinInterpNode(bin.Position, $"Unreal Version {bin.ReadInt32()}") { Length = 4 });
                         nodes.Add(new BinInterpNode(bin.Position, $"Licensee Version {bin.ReadInt32()}") { Length = 4 });
@@ -146,6 +162,10 @@ namespace ME3Explorer
                             nodes3.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
                         }
                         nodes2.Add(new BinInterpNode(bin.Position, $"Vertex Factory Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
+                        if (Pcc.Game == MEGame.ME1)
+                        {
+                            nodes2.Add(MakeUInt32Node(bin, "Unk"));
+                        }
                     }
 
                     nodes.Add(new BinInterpNode(bin.Position, $"MaterialId: {bin.ReadValueGuid()}") { Length = 16 });
@@ -154,7 +174,7 @@ namespace ME3Explorer
 
                     nodes.Add(ReadFStaticParameterSet(bin));
 
-                    if (Pcc.Game == MEGame.ME3)
+                    if (Pcc.Game >= MEGame.ME3)
                     {
                         string[] uniformExpressionArrays =
                         {
@@ -5739,7 +5759,7 @@ namespace ME3Explorer
                 subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadValueGuid()}") { Length = 16 });
             }
 
-            if (Pcc.Game == MEGame.ME3)
+            if (Pcc.Game >= MEGame.ME3)
             {
                 int NormalParameterCount = bin.ReadInt32();
                 var NormalParametersNode = new BinInterpNode(bin.Position - 4, $"Normal Parameters, {NormalParameterCount} items")
@@ -5757,6 +5777,28 @@ namespace ME3Explorer
                     });
                     subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
                     subnodes.Add(new BinInterpNode(bin.Position, $"CompressionSettings: {(TextureCompressionSettings)bin.ReadByte()}") { Length = 1 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBooleanInt()}") { Length = 4 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadValueGuid()}") { Length = 16 });
+                }
+            }
+            if (Pcc.Game == MEGame.UDK)
+            {
+                int TerrainWeightParametersCount = bin.ReadInt32();
+                var TerrainWeightParametersNode = new BinInterpNode(bin.Position - 4, $"Terrain Weight Parameters, {TerrainWeightParametersCount} items")
+                {
+                    Length = 4
+                };
+                nodes.Add(TerrainWeightParametersNode);
+                for (int i = 0; i < TerrainWeightParametersCount; i++)
+                {
+                    var subnodes = new List<ITreeItem>();
+                    TerrainWeightParametersNode.Items.Add(new BinInterpNode(bin.Position, $"Parameter {i}")
+                    {
+                        Length = 32,
+                        Items = subnodes
+                    });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
+                    subnodes.Add(MakeInt32Node(bin, "WeightmapIndex"));
                     subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBooleanInt()}") { Length = 4 });
                     subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadValueGuid()}") { Length = 16 });
                 }

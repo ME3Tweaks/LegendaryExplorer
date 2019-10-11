@@ -60,35 +60,12 @@ namespace ME3Explorer.Packages
             Game == MEGame.ME2 ||
             Game == MEGame.ME1 && !exports.Any(x => x.IsTexture() && x.idxLink == 0 && Texture2D.GetTexture2DMipInfos(x, null).Any(mip => mip.storageType == StorageTypes.pccLZO ||
                                                                                                                                           mip.storageType == StorageTypes.pccZlib));
-        public int FullHeaderSize { get; private set; }
-        public EPackageFlags Flags { get; private set; }
-
-        public override int NameCount { get; protected set; }
-        public int NameOffset { get; private set; }
-        public override int ExportCount { get; protected set; }
-        public int ExportOffset { get; private set; }
-        public override int ImportCount { get; protected set; }
-        public int ImportOffset { get; private set; }
-        public int DependencyTableOffset { get; private set; }
-        public Guid PackageGuid { get; set; }
-
+        
         public byte[] getHeader()
         {
             var ms = new MemoryStream();
             WriteHeader(ms);
             return ms.ToArray();
-        }
-
-        public bool IsCompressed
-        {
-            get => Flags.HasFlag(EPackageFlags.Compressed);
-        }
-
-        public enum CompressionType
-        {
-            None = 0,
-            Zlib,
-            LZO
         }
 
         #region HeaderMisc
