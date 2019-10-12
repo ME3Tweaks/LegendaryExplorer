@@ -145,20 +145,20 @@ namespace ME3Explorer.AssetDatabase
         }
         private bool IsClassSelected(object obj)
         {
-            return lstbx_Classes.SelectedIndex >= 0 && currentView == 0;
+            return lstbx_Classes.SelectedIndex >= 0 && currentView == 1;
         }
         private bool IsUsageSelected(object obj)
         {
-            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 0) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 1) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 2)
-                || (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3) || (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 4) || (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 5) || currentView == 6;
+            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 1) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5)
+                || (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3) || (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6) || (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4) || currentView == 0;
         }
         private bool IsViewingClass(object obj)
         {
-            return currentView == 0;
+            return currentView == 1;
         }
         private bool IsViewingMaterials(object obj)
         {
-            return currentView == 1;
+            return currentView == 2;
         }
         private bool IsViewingMeshes(object obj)
         {
@@ -166,7 +166,7 @@ namespace ME3Explorer.AssetDatabase
         }
         private bool IsViewingTextures(object obj)
         {
-            return currentView == 5;
+            return currentView == 4;
         }
         public override void handleUpdate(List<PackageUpdate> updates)
         {
@@ -638,26 +638,19 @@ namespace ME3Explorer.AssetDatabase
             int usageexp = 0;
             string contentdir = null;
 
-            if (lstbx_Usages.SelectedIndex >= 0 && currentView == 0)
+            if (lstbx_Usages.SelectedIndex >= 0 && currentView == 1)
             {
                 var c = lstbx_Usages.SelectedItem as ClassUsage;
                 usagepkg = FileListExtended[c.FileKey].Item1;
-                contentdir = FileListExtended[c.FileKey].Item2; 
+                contentdir = FileListExtended[c.FileKey].Item2;
                 usageexp = c.ExportUID;
             }
-            else if (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 1)
+            else if (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2)
             {
                 var m = lstbx_MatUsages.SelectedItem as Tuple<int, int, bool>;
                 usagepkg = FileListExtended[m.Item1].Item1;
                 contentdir = FileListExtended[m.Item1].Item2;
                 usageexp = m.Item2;
-            }
-            else if (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 2)
-            {
-                var a = lstbx_AnimUsages.SelectedItem as Tuple<int, int>;
-                usagepkg = FileListExtended[a.Item1].Item1;
-                contentdir = FileListExtended[a.Item1].Item2;
-                usageexp = a.Item2;
             }
             else if (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3)
             {
@@ -666,21 +659,28 @@ namespace ME3Explorer.AssetDatabase
                 contentdir = FileListExtended[s.Item1].Item2;
                 usageexp = s.Item2;
             }
-            else if (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 4)
-            {
-                var ps = lstbx_PSUsages.SelectedItem as Tuple<int, int, bool>;
-                usagepkg = FileListExtended[ps.Item1].Item1;
-                contentdir = FileListExtended[ps.Item1].Item2;
-                usageexp = ps.Item2;
-            }
-            else if (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 5)
+            else if (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4)
             {
                 var t = lstbx_TextureUsages.SelectedItem as Tuple<int, int, bool>;
                 usagepkg = FileListExtended[t.Item1].Item1;
                 contentdir = FileListExtended[t.Item1].Item2;
                 usageexp = t.Item2;
             }
-            else if (lstbx_Files.SelectedIndex >= 0 && currentView == 6)
+            else if (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5)
+            {
+                var a = lstbx_AnimUsages.SelectedItem as Tuple<int, int>;
+                usagepkg = FileListExtended[a.Item1].Item1;
+                contentdir = FileListExtended[a.Item1].Item2;
+                usageexp = a.Item2;
+            }
+            else if (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6)
+            {
+                var ps = lstbx_PSUsages.SelectedItem as Tuple<int, int, bool>;
+                usagepkg = FileListExtended[ps.Item1].Item1;
+                contentdir = FileListExtended[ps.Item1].Item2;
+                usageexp = ps.Item2;
+            }
+            else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
             {
                 var fileref = (Tuple<string, string>)lstbx_Files.SelectedItem;
                 usagepkg = fileref.Item1;
@@ -783,13 +783,13 @@ namespace ME3Explorer.AssetDatabase
                 Filter();
                 switch (currentView) 
                 {
-                    case 1:
+                    case 2:
                         FilterBox.Watermark = "Search (by material name or parent package)";
                         break;
-                    case 5:
+                    case 4:
                         FilterBox.Watermark = "Search (by texture name or CRC if compiled)";
                         break;
-                    case 6:
+                    case 0:
                         FilterBox.Watermark = "Search (by filename or source directory)";
                         break;
                     default:
@@ -804,19 +804,19 @@ namespace ME3Explorer.AssetDatabase
                     btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
                 }
 
-                if (previousView == 5)
+                if (previousView == 4)
                 {
                     ToggleRenderTexture();
                     btn_TextRenderToggle.IsChecked = false;
                     btn_TextRenderToggle.Content = "Toggle Texture Rendering";
                 }
 
-                if (currentView == 6)
+                if (currentView == 0)
                 {
                     menu_OpenUsage.Header = "Open File";
                 }
 
-                if (previousView == 6)
+                if (previousView == 0)
                 {
                     menu_OpenUsage.Header = "Open Usage";
                 }
@@ -834,7 +834,7 @@ namespace ME3Explorer.AssetDatabase
         private void lstbx_Textures_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             e.Handled = true;
-            if (currentView == 5 && lstbx_Textures.SelectedIndex >= 0)
+            if (currentView == 4 && lstbx_Textures.SelectedIndex >= 0)
             {
                 ToggleRenderTexture();
             }
@@ -931,7 +931,7 @@ namespace ME3Explorer.AssetDatabase
         private void ToggleRenderTexture()
         {
             bool showText = false;
-            if (btn_TextRenderToggle.IsChecked == true && (lstbx_Textures.SelectedIndex >= 0) && CurrentDataBase.Textures[lstbx_Textures.SelectedIndex].TextureUsages.Count > 0 && currentView == 5)
+            if (btn_TextRenderToggle.IsChecked == true && (lstbx_Textures.SelectedIndex >= 0) && CurrentDataBase.Textures[lstbx_Textures.SelectedIndex].TextureUsages.Count > 0 && currentView == 4)
             {
                 showText = true;
             }
@@ -1158,39 +1158,38 @@ namespace ME3Explorer.AssetDatabase
         {
             switch (currentView)
             {
-                case 1: //Materials
+                case 1:  //Classes
+                    ICollectionView viewC = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
+                    viewC.Filter = ClassFilter;
+                    lstbx_Classes.ItemsSource = viewC;
+                    break;
+                case 2: //Materials
                     ICollectionView viewM = CollectionViewSource.GetDefaultView(CurrentDataBase.Materials);
                     viewM.Filter = MaterialFilter;
                     lstbx_Materials.ItemsSource = viewM;
-                    break;
-                case 2: //Animations
-                    ICollectionView viewA = CollectionViewSource.GetDefaultView(CurrentDataBase.Animations);
-                    viewA.Filter = AnimFilter;
-                    lstbx_Anims.ItemsSource = viewA;
                     break;
                 case 3: //Meshes
                     ICollectionView viewS = CollectionViewSource.GetDefaultView(CurrentDataBase.Meshes);
                     viewS.Filter = MeshFilter;
                     lstbx_Meshes.ItemsSource = viewS;
                     break;
-                case 4: //Particles
-                    ICollectionView viewP = CollectionViewSource.GetDefaultView(CurrentDataBase.Particles);
-                    viewP.Filter = PSFilter;
-                    lstbx_Particles.ItemsSource = viewP;
-                    break;
-                case 5: //Textures
+                case 4: //Textures
                     ICollectionView viewT = CollectionViewSource.GetDefaultView(CurrentDataBase.Textures);
                     viewT.Filter = TexFilter;
                     lstbx_Textures.ItemsSource = viewT;
                     break;
-                case 6: //Files
-                    lstbx_Files.Items.Filter = FileFilter;
-
+                case 5: //Animations
+                    ICollectionView viewA = CollectionViewSource.GetDefaultView(CurrentDataBase.Animations);
+                    viewA.Filter = AnimFilter;
+                    lstbx_Anims.ItemsSource = viewA;
                     break;
-                default: //Classes
-                    ICollectionView viewC = CollectionViewSource.GetDefaultView(CurrentDataBase.ClassRecords);
-                    viewC.Filter = ClassFilter;
-                    lstbx_Classes.ItemsSource = viewC;
+                case 6: //Particles
+                    ICollectionView viewP = CollectionViewSource.GetDefaultView(CurrentDataBase.Particles);
+                    viewP.Filter = PSFilter;
+                    lstbx_Particles.ItemsSource = viewP;
+                    break;
+                default: //Files
+                    lstbx_Files.Items.Filter = FileFilter;
                     break;
             }
         }
@@ -1937,7 +1936,7 @@ namespace ME3Explorer.AssetDatabase
                         string pExp = exp.ObjectName;
                         if (exp.indexValue > 0)
                         {
-                            pExp = $"{pExp}_{exp.indexValue}";
+                            pExp = $"{pExp}_{exp.indexValue - 1}";
                         }
                         string pSuperClass = null;
                         string pDefinitionPackage = null;
@@ -2153,32 +2152,21 @@ namespace ME3Explorer.AssetDatabase
                                 if (pSeq != null)
                                 {
                                     aSeq = pSeq.Value;
-                                    aGrp = pExp.Replace(aSeq, null);
+                                    aGrp = pExp.Replace($"{aSeq}_", null);
                                 }
-                                float aLength = 0;
+                                
                                 var pLength = exp.GetProperty<FloatProperty>("SequenceLength");
-                                if (pLength != null)
-                                {
-                                    aLength = pLength.Value;
-                                }
-                                int aFrames = 0;
+                                float aLength = pLength != null? pLength.Value : 0;
+
                                 var pFrames = exp.GetProperty<IntProperty>("NumFrames");
-                                if (pFrames != null)
-                                {
-                                    aFrames = pFrames.Value;
-                                }
-                                string aComp = "None";
+                                int aFrames = pFrames != null? pFrames.Value : 0;
+
                                 var pComp = exp.GetProperty<EnumProperty>("RotationCompressionFormat");
-                                if (pComp != null)
-                                {
-                                    aComp = pComp.Value.ToString();
-                                }
-                                string aKeyF = "None";
+                                string aComp = pComp != null ? pComp.Value.ToString() : "None";
+
                                 var pKeyF = exp.GetProperty<EnumProperty>("KeyEncodingFormat");
-                                if (pKeyF != null)
-                                {
-                                    aKeyF = pKeyF.Value.ToString();
-                                }
+                                string aKeyF = pKeyF != null? pKeyF.Value.ToString():"None";
+
                                 var NewAnim = new Animation(pExp, aSeq, aGrp, aLength, aFrames, aComp, aKeyF, new ObservableCollectionExtended<Tuple<int, int>>() { new Tuple<int, int>(FileKey, pExportUID) });
                                 if (!dbScanner.GeneratedAnims.TryAdd(pExp, NewAnim))
                                 {
