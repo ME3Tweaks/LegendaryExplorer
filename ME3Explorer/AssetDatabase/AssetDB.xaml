@@ -104,8 +104,51 @@
             </StatusBar>
             <DockPanel Name="MidDock">
                 <TabControl SelectedIndex="{Binding currentView, Mode=TwoWay}" SelectionChanged="TabControl_SelectionChanged">
+                    <!-- FileList -->
+                    <TabItem Header="Files" TabIndex="0">
+                        <DockPanel>
+                            <TextBlock Text="All game files (right click to open in various tools)" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files in the game" DockPanel.Dock="Top"/>
+                            <ListView x:Name="lstbx_Files" DockPanel.Dock="Bottom" MinWidth="300" ItemsSource="{Binding Path=FileListExtended}" GridViewColumnHeader.Click="files_ColumnHeader_Click">
+                                <ListView.View>
+                                    <GridView ColumnHeaderContainerStyle="{StaticResource FileLVHeader}">
+                                        <GridViewColumn DisplayMemberBinding="{Binding Item1}" Width="260" Header="File"/>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Item2}" Width="260" Header="Source (Basegame, DLC or Mod directory)" />
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Open in Package Editor" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this file in Package Editor.">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Open in Sequence Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="SeqEd" ToolTip="Opens this file in Sequence Editor.">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources/sequenceeditor_256x256.ico" Width="64"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Open in Meshplorer" Command="{Binding OpenUsagePkgCommand}" CommandParameter="Meshplorer" ToolTip="Opens this file in Meshplorer Editor.">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources/meshplorer_256x256.ico" Width="64"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Open in Pathfinding Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="PathEd" ToolTip="Opens this file in Pathfinding Editor.">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources/pathfindingeditor_256x256.ico" Width="64"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Open in Dialogue Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="DlgEd" ToolTip="Opens this file in Dialogue Editor.">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources/dialogueeditor_256x256.ico" Width="64"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                            </ListView>
+                        </DockPanel>
+                    </TabItem>
                     <!-- Classes-->
-                    <TabItem Header="Classes" TabIndex="0">
+                    <TabItem Header="Classes" TabIndex="1">
                         <DockPanel>
                             <Grid DockPanel.Dock="Left">
                                 <Grid.RowDefinitions>
@@ -195,7 +238,7 @@
                         </DockPanel>
                     </TabItem>
                     <!-- Materials -->
-                    <TabItem Header="Materials" TabIndex="1">
+                    <TabItem Header="Materials" TabIndex="2">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="24"/>
@@ -276,8 +319,150 @@
                                 </SharedUI:ListBoxScroll>
                             </Grid>
                     </TabItem>
+                    <!-- Meshes -->
+                    <TabItem Header="Meshes" TabIndex="3">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition MinWidth="200" Width="20*"/>
+                                <ColumnDefinition MinWidth="400" Width="30*"/>
+                                <ColumnDefinition Width="15*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Meshes" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Meshes within the game" Grid.Row="0" Grid.Column="0"/>
+                            <SharedUI:ListBoxScroll x:Name="lstbx_Meshes" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Meshes}" SelectionChanged="lstbx_Meshes_SelectionChanged" Grid.Row="1" Grid.Column="0">
+                                <SharedUI:ListBoxScroll.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding MeshName}" />
+                                            <StackPanel Orientation="Horizontal" Name="details_skelmesh" Visibility="{Binding IsSkeleton, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                <TextBlock FontSize="10" Text=" (Skeletal Mesh " VerticalAlignment="Center"/>
+                                                <TextBlock FontSize="10" Text=", Bone Count: " VerticalAlignment="Center" />
+                                                <TextBlock FontSize="10" Text="{Binding BoneCount}" VerticalAlignment="Center" />
+                                                <TextBlock FontSize="10" Text=")  " VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </SharedUI:ListBoxScroll.ItemTemplate>
+                            </SharedUI:ListBoxScroll>
+                            <TextBlock Text="Viewer" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Toggle the viewer on or off" Grid.Row="0" Grid.Column="1"/>
+                            <Border BorderBrush="LightSlateGray" BorderThickness="0.7" Grid.Row="1" Grid.Column="1">
+                                <DockPanel x:Name="details_Mesh" MinWidth="350" Margin="3" >
+                                    <ToggleButton x:Name="btn_MeshRenderToggle" Content="Toggle Mesh Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_MeshRenderToggle_Click" IsChecked="False"></ToggleButton>
+                                    <meshplorer:MeshRendererWPF x:Name="MeshRendererTab_MeshRenderer" />
+                                </DockPanel>
+                            </Border>
+                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this Mesh&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
+                            <SharedUI:ListBoxScroll x:Name="lstbx_MeshUsages" DockPanel.Dock="Right" MinWidth="250" ItemsSource="{Binding SelectedItem.MeshUsages, ElementName=lstbx_Meshes }" Grid.Row="2" Grid.Column="2" >
+                                <SharedUI:ListBoxScroll.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                    <Binding Path="Item1"/>
+                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                    <Binding Path="Item2"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </SharedUI:ListBoxScroll.ItemTemplate>
+                                <SharedUI:ListBoxScroll.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                        <MenuItem Header="Open in Meshplorer" Command="{Binding OpenUsagePkgCommand}" CommandParameter="Meshplorer" ToolTip="Opens this Usage in Meshplorer." />
+                                    </ContextMenu>
+                                </SharedUI:ListBoxScroll.ContextMenu>
+                            </SharedUI:ListBoxScroll>
+                        </Grid>
+                    </TabItem>
+                    <!-- Textures -->
+                    <TabItem Header="Textures" TabIndex="4">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Textures" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the textures in the game (Grey is DLC only)" Grid.Row="0" Grid.Column="0"/>
+                            <SharedUI:ListBoxScroll x:Name="lstbx_Textures" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Textures}" SelectionChanged="lstbx_Textures_SelectionChanged" Grid.Row="1" Grid.Column="0">
+                                <SharedUI:ListBoxScroll.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding TextureName}" />
+                                            <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center"/>
+                                            <TextBlock FontSize="10" Text="{Binding ParentPackage}" VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text=", " VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text="{Binding CFormat}" VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text=", " VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text="{Binding SizeX}" VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text="x" VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text="{Binding SizeY}" VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text=", " VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text="{Binding CRC, StringFormat='0x{0}'}" VerticalAlignment="Center" />
+                                            <TextBlock FontSize="10" Text=")  " VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </SharedUI:ListBoxScroll.ItemTemplate>
+                                <SharedUI:ListBoxScroll.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsDLCOnly}" Value="True">
+                                                <Setter Property="Background" Value="LightGray"/>
+                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </SharedUI:ListBoxScroll.ItemContainerStyle>
+                            </SharedUI:ListBoxScroll>
+                            <TextBlock Text="Texture Viewer" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Click button to toggle the viewer" Grid.Row="0" Grid.Column="1"/>
+                            <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
+                                <DockPanel x:Name="details_Textures" MinWidth="350" MaxWidth="550" Margin="3">
+                                    <ToggleButton x:Name="btn_TextRenderToggle" Content="Toggle Texture Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_TextRenderToggle_Click"/>
+                                    <global:TextureViewerExportLoader x:Name="EmbeddedTextureViewerTab_EmbededTextureViewer" ViewerModeOnly="True"/>
+                                </DockPanel>
+                            </Border>
+                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this texture&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
+                            <SharedUI:ListBoxScroll x:Name="lstbx_TextureUsages"  MinWidth="250" ItemsSource="{Binding SelectedItem.TextureUsages, ElementName=lstbx_Textures }" Grid.Row="1" Grid.Column="2">
+                                <SharedUI:ListBoxScroll.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                    <Binding Path="Item1"/>
+                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                    <Binding Path="Item2"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </SharedUI:ListBoxScroll.ItemTemplate>
+                                <SharedUI:ListBoxScroll.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=Item3}" Value="True">
+                                                <Setter Property="Background" Value="LightGray"/>
+                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </SharedUI:ListBoxScroll.ItemContainerStyle>
+                                <SharedUI:ListBoxScroll.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                    </ContextMenu>
+                                </SharedUI:ListBoxScroll.ContextMenu>
+                            </SharedUI:ListBoxScroll>
+                        </Grid>
+                    </TabItem>
                     <!-- Animations -->
-                    <TabItem Header="Animations" TabIndex="2">
+                    <TabItem Header="Animations" TabIndex="5">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="24"/>
@@ -339,67 +524,8 @@
                             </SharedUI:ListBoxScroll>
                         </Grid>
                     </TabItem>
-                    <!-- Meshes -->
-                    <TabItem Header="Meshes" TabIndex="3">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="24"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition MinWidth="200" Width="20*"/>
-                                <ColumnDefinition MinWidth="400" Width="30*"/>
-                                <ColumnDefinition Width="15*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Meshes" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Meshes within the game" Grid.Row="0" Grid.Column="0"/>
-                            <SharedUI:ListBoxScroll x:Name="lstbx_Meshes" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Meshes}" SelectionChanged="lstbx_Meshes_SelectionChanged" Grid.Row="1" Grid.Column="0">
-                                <SharedUI:ListBoxScroll.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding MeshName}" />
-                                            <StackPanel Orientation="Horizontal" Name="details_skelmesh" Visibility="{Binding IsSkeleton, Converter={StaticResource BoolToVisibilityConverter}}">
-                                                <TextBlock FontSize="10" Text=" (Skeletal Mesh " VerticalAlignment="Center"/>
-                                                <TextBlock FontSize="10" Text=", Bone Count: " VerticalAlignment="Center" />
-                                                <TextBlock FontSize="10" Text="{Binding BoneCount}" VerticalAlignment="Center" />
-                                                <TextBlock FontSize="10" Text=")  " VerticalAlignment="Center" />
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </SharedUI:ListBoxScroll.ItemTemplate>
-                            </SharedUI:ListBoxScroll>
-                            <TextBlock Text="Viewer" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Toggle the viewer on or off" Grid.Row="0" Grid.Column="1"/>
-                            <Border BorderBrush="LightSlateGray" BorderThickness="0.7" Grid.Row="1" Grid.Column="1">
-                                <DockPanel x:Name="details_Mesh" MinWidth="350" Margin="3" >
-                                    <ToggleButton x:Name="btn_MeshRenderToggle" Content="Toggle Mesh Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_MeshRenderToggle_Click" IsChecked="False"></ToggleButton>
-                                    <meshplorer:MeshRendererWPF x:Name="MeshRendererTab_MeshRenderer" />
-                                </DockPanel>
-                            </Border>
-                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this Mesh&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
-                            <SharedUI:ListBoxScroll x:Name="lstbx_MeshUsages" DockPanel.Dock="Right" MinWidth="250" ItemsSource="{Binding SelectedItem.MeshUsages, ElementName=lstbx_Meshes }" Grid.Row="2" Grid.Column="2" >
-                                <SharedUI:ListBoxScroll.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock>
-                                            <TextBlock.Text>
-                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                    <Binding Path="Item1"/>
-                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                    <Binding Path="Item2"/>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </SharedUI:ListBoxScroll.ItemTemplate>
-                                <SharedUI:ListBoxScroll.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
-                                        <MenuItem Header="Open in Meshplorer" Command="{Binding OpenUsagePkgCommand}" CommandParameter="Meshplorer" ToolTip="Opens this Usage in Meshplorer." />
-                                    </ContextMenu>
-                                </SharedUI:ListBoxScroll.ContextMenu>
-                            </SharedUI:ListBoxScroll>
-                        </Grid>
-                    </TabItem>
                     <!-- ParticleSystems -->
-                    <TabItem Header="Particle Systems" TabIndex="4">
+                    <TabItem Header="Particle Systems" TabIndex="6">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="24"/>
@@ -482,132 +608,6 @@
                                 </SharedUI:ListBoxScroll.ContextMenu>
                             </SharedUI:ListBoxScroll>
                         </Grid>
-                    </TabItem>
-                    <!-- Textures -->
-                    <TabItem Header="Textures" TabIndex="5">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="24"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Textures" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the textures in the game (Grey is DLC only)" Grid.Row="0" Grid.Column="0"/>
-                            <SharedUI:ListBoxScroll x:Name="lstbx_Textures" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Textures}" SelectionChanged="lstbx_Textures_SelectionChanged" Grid.Row="1" Grid.Column="0">
-                                <SharedUI:ListBoxScroll.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding TextureName}" />
-                                            <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center"/>
-                                            <TextBlock FontSize="10" Text="{Binding ParentPackage}" VerticalAlignment="Center" />
-                                            <TextBlock FontSize="10" Text=", " VerticalAlignment="Center" />
-                                            <TextBlock FontSize="10" Text="{Binding CFormat}" VerticalAlignment="Center" />
-                                            <TextBlock FontSize="10" Text=", " VerticalAlignment="Center" />
-                                            <TextBlock FontSize="10" Text="{Binding SizeX}" VerticalAlignment="Center" />
-                                            <TextBlock FontSize="10" Text="x" VerticalAlignment="Center" />
-                                            <TextBlock FontSize="10" Text="{Binding SizeY}" VerticalAlignment="Center" />
-                                            <TextBlock FontSize="10" Text=", " VerticalAlignment="Center" />
-                                            <TextBlock FontSize="10" Text="{Binding CRC, StringFormat='0x{0}'}" VerticalAlignment="Center" />
-                                            <TextBlock FontSize="10" Text=")  " VerticalAlignment="Center" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </SharedUI:ListBoxScroll.ItemTemplate>
-                                <SharedUI:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsDLCOnly}" Value="True">
-                                                <Setter Property="Background" Value="LightGray"/>
-                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </SharedUI:ListBoxScroll.ItemContainerStyle>
-                            </SharedUI:ListBoxScroll>
-                            <TextBlock Text="Texture Viewer" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Click button to toggle the viewer" Grid.Row="0" Grid.Column="1"/>
-                            <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
-                                <DockPanel x:Name="details_Textures" MinWidth="350" MaxWidth="550" Margin="3">
-                                    <ToggleButton x:Name="btn_TextRenderToggle" Content="Toggle Texture Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_TextRenderToggle_Click"/>
-                                    <global:TextureViewerExportLoader x:Name="EmbeddedTextureViewerTab_EmbededTextureViewer" ViewerModeOnly="True"/>
-                                </DockPanel>
-                            </Border>
-                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this texture&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
-                            <SharedUI:ListBoxScroll x:Name="lstbx_TextureUsages"  MinWidth="250" ItemsSource="{Binding SelectedItem.TextureUsages, ElementName=lstbx_Textures }" Grid.Row="1" Grid.Column="2">
-                                <SharedUI:ListBoxScroll.ItemTemplate>
-                                    <DataTemplate>
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                        <Binding Path="Item1"/>
-                                                        <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                        <Binding Path="Item2"/>
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                    </DataTemplate>
-                                </SharedUI:ListBoxScroll.ItemTemplate>
-                                <SharedUI:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=Item3}" Value="True">
-                                                <Setter Property="Background" Value="LightGray"/>
-                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </SharedUI:ListBoxScroll.ItemContainerStyle>
-                                <SharedUI:ListBoxScroll.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
-                                    </ContextMenu>
-                                </SharedUI:ListBoxScroll.ContextMenu>
-                            </SharedUI:ListBoxScroll>
-                        </Grid>
-                    </TabItem>
-                    <!-- FileList -->
-                    <TabItem Header="Files" TabIndex="6">
-                        <DockPanel>
-                            <TextBlock Text="All game files (right click to open in toolkit)" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files in the game" DockPanel.Dock="Top"/>
-                            <ListView x:Name="lstbx_Files" DockPanel.Dock="Bottom" MinWidth="300" ItemsSource="{Binding Path=FileListExtended}" GridViewColumnHeader.Click="files_ColumnHeader_Click">
-                                <ListView.View>
-                                    <GridView ColumnHeaderContainerStyle="{StaticResource FileLVHeader}">
-                                        <GridViewColumn DisplayMemberBinding="{Binding Item1}" Width="260" Header="File"/>
-                                        <GridViewColumn DisplayMemberBinding="{Binding Item2}" Width="260" Header="Source (Basegame, DLC or Mod directory)" />
-                                    </GridView>
-                                </ListView.View>
-                                <ListView.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Open in Package Editor" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this file in Package Editor.">
-                                            <MenuItem.Icon>
-                                                <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <MenuItem Header="Open in Sequence Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="SeqEd" ToolTip="Opens this file in Sequence Editor.">
-                                            <MenuItem.Icon>
-                                                <Image Source="/Resources/sequenceeditor_256x256.ico" Width="64"/>
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <MenuItem Header="Open in Meshplorer" Command="{Binding OpenUsagePkgCommand}" CommandParameter="Meshplorer" ToolTip="Opens this file in Meshplorer Editor.">
-                                            <MenuItem.Icon>
-                                                <Image Source="/Resources/meshplorer_256x256.ico" Width="64"/>
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <MenuItem Header="Open in Pathfinding Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="PathEd" ToolTip="Opens this file in Pathfinding Editor.">
-                                            <MenuItem.Icon>
-                                                <Image Source="/Resources/pathfindingeditor_256x256.ico" Width="64"/>
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <MenuItem Header="Open in Dialogue Editor" Command="{Binding OpenUsagePkgCommand}" CommandParameter="DlgEd" ToolTip="Opens this file in Dialogue Editor.">
-                                            <MenuItem.Icon>
-                                                <Image Source="/Resources/dialogueeditor_256x256.ico" Width="64"/>
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                    </ContextMenu>
-                                </ListView.ContextMenu>
-                            </ListView>
-                        </DockPanel>
                     </TabItem>
                 </TabControl>
             </DockPanel>
