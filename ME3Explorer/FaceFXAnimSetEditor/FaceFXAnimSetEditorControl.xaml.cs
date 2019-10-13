@@ -292,7 +292,7 @@ namespace ME3Explorer.FaceFX
 
         private void linesListBox_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent("FaceFxLine"))
+            if (e.Data.GetDataPresent("FaceFXLine"))
             {
                 e.Effects = DragDropEffects.Copy;
             }
@@ -697,6 +697,8 @@ namespace ME3Explorer.FaceFX
                         return;
                     }
                 }
+
+                j += SelectedLine.numKeys[i];
             }
             for (int i = 0; i < SelectedLine.points.Length; i++)
             {
