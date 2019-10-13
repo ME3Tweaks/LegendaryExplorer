@@ -295,6 +295,7 @@ namespace ME3Explorer.FaceFX
             if (e.Data.GetDataPresent("FaceFXLine"))
             {
                 e.Effects = DragDropEffects.Copy;
+                e.Handled = true;
             }
         }
 

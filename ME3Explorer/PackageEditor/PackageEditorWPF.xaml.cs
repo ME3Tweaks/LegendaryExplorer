@@ -3035,11 +3035,6 @@ namespace ME3Explorer
                     e.Handled = true;
                 }
             }
-            else
-            {
-                e.Effects = DragDropEffects.None;
-                e.Handled = true;
-            }
         }
 
 
