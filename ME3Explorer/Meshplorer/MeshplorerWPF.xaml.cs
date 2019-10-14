@@ -12,6 +12,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 
 namespace ME3Explorer
@@ -57,7 +58,10 @@ namespace ME3Explorer
         public MeshplorerWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Meshplorer WPF", new WeakReference(this));
-
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "Meshplorer" }
+            });
             DataContext = this;
             LoadCommands();
             InitializeComponent();

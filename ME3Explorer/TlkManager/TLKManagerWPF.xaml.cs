@@ -23,6 +23,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.TlkManagerNS
 {
@@ -42,7 +43,10 @@ namespace ME3Explorer.TlkManagerNS
         public TLKManagerWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("TLK Manager WPF", new WeakReference(this));
-
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "TLK Manager" }
+            });
             DataContext = this;
             LoadCommands();
             InitializeComponent();

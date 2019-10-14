@@ -35,6 +35,7 @@ using System.Windows.Threading;
 using System.Xml.Linq;
 using FontAwesome5.WPF;
 using FontAwesome5;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -87,6 +88,10 @@ namespace ME3Explorer.Soundplorer
         public SoundplorerWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Soundplorer WPF", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "Soundplorer" }
+            });
             DataContext = this;
             LoadCommands();
             InitializeComponent();
@@ -732,6 +737,10 @@ namespace ME3Explorer.Soundplorer
                         afcCompactWorker.DoWork += CompactAFCBackgroundThread;
                         afcCompactWorker.RunWorkerCompleted += compactAFCBackgroundThreadCompleted;
                         afcCompactWorker.RunWorkerAsync((dlg.FileName, result));
+                        Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+                        {
+                            { "Toolname", "AFC Compactor" }
+                        });
                     }
                     else
                     {

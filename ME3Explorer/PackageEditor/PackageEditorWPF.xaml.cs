@@ -39,6 +39,7 @@ using ME3Explorer.MaterialViewer;
 using ME3Explorer.Meshplorer;
 using ME3Explorer.StaticLighting;
 using ME3Explorer.Unreal.BinaryConverters;
+using Microsoft.AppCenter.Analytics;
 using UsefulThings;
 using static ME3Explorer.Unreal.UnrealFlags;
 using Guid = System.Guid;
@@ -1662,7 +1663,10 @@ namespace ME3Explorer
         public PackageEditorWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Editor", new WeakReference(this));
-
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "Package Editor WPF" }
+            });
             CurrentView = CurrentViewMode.Tree;
             LoadCommands();
 

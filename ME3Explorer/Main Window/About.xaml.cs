@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer
 {
@@ -22,6 +23,10 @@ namespace ME3Explorer
         public About()
         {
             InitializeComponent();
+            //azure testing. Will remove once testing is done.
+            MessageBox.Show("Analytics enabled: " + Analytics.IsEnabledAsync());
+            MessageBox.Show("App Center Key: " + (APIKeys.HasAppCenterKey ? APIKeys.AppCenterKey : "No app center key"));
+
         }
     }
 }

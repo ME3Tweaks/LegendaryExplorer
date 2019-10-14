@@ -26,6 +26,7 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using ME3Explorer.Dialogue_Editor.BioConversationExtended;
+using Microsoft.AppCenter.Analytics;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 using InterpEditor = ME3Explorer.Matinee.InterpEditor;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
@@ -223,6 +224,10 @@ namespace ME3Explorer.Dialogue_Editor
         public DialogueEditorWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Dialogue Editor", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "Dialogue Editor" }
+            });
             LoadCommands();
             StatusText = "Select package file to load";
             SelectedSpeaker = new SpeakerExtended(-3, "None");

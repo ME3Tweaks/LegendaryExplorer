@@ -23,6 +23,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.AssetDatabase
 {
@@ -180,6 +181,10 @@ namespace ME3Explorer.AssetDatabase
         public AssetDB()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Asset Database", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "Asset Database" }
+            });
             LoadCommands();
 
             //Get default db / gane

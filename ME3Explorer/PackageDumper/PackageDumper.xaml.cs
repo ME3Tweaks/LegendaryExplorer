@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.PackageDumper
 {
@@ -177,6 +178,10 @@ namespace ME3Explorer.PackageDumper
         public PackageDumper(Window owner = null)
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Dumper", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "Package Dumper" }
+            });
             Owner = owner;
             DataContext = this;
             LoadCommands();

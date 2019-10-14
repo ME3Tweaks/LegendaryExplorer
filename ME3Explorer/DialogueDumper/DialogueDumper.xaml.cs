@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.AppCenter.Analytics;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 
 namespace ME3Explorer.DialogueDumper
@@ -198,6 +199,10 @@ namespace ME3Explorer.DialogueDumper
         public DialogueDumper(Window owner = null)
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Dialogue Dumper", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "Dialogue Dumper" }
+            });
             Owner = owner;
             LoadCommands();
             ListViewHeight = 25 * App.CoreCount;

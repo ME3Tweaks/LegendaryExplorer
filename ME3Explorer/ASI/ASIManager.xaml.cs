@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml.Linq;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.ASI
 {
@@ -131,6 +132,10 @@ namespace ME3Explorer.ASI
         public ASIManager()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("ASI Manager", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "ASI Manager" }
+            });
             DataContext = this;
 
             if (!Directory.Exists(ASIManagerDataFolder))

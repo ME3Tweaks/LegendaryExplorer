@@ -35,10 +35,7 @@ namespace ME3Explorer.SharedUI
             var errorSize = MeasureString(flattened);
 
             Height = Math.Min(900, errorSize.Height + 250);
-            Crashes.TrackError(exception, new Dictionary<string, string>()
-            {
-                { "BuildDate", SharedUI.BuildInfo.GetBuildDateTime(Assembly.GetExecutingAssembly().Location).ToShortDateString()}
-            });
+            Crashes.TrackError(exception);
         }
 
         private Size MeasureString(string candidate)

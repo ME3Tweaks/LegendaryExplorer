@@ -21,6 +21,7 @@ using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Microsoft.AppCenter.Analytics;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
@@ -114,6 +115,10 @@ namespace ME3Explorer.Pathfinding_Editor
         public PathfindingEditorWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Pathfinding Editor WPF", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "Pathfinding Editor" }
+            });
             DataContext = this;
             StatusText = "Select package file to load";
             LoadCommands();

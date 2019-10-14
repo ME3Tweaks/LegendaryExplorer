@@ -12,6 +12,7 @@ using Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using ME3Explorer;
 using ME3Explorer.Packages;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 
 namespace MassEffect.NativesEditor.Views
@@ -21,6 +22,10 @@ namespace MassEffect.NativesEditor.Views
         public PlotEditor()
         {
             ME3Explorer.ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Plot Editor", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "Plot Editor" }
+            });
             InitializeComponent();
             LoadRecentList();
             RefreshRecent(false);
