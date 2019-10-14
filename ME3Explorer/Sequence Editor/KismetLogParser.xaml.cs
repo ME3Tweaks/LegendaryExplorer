@@ -50,7 +50,7 @@ namespace ME3Explorer.Sequence_Editor
 
         public void LoadLog(MEGame game, IMEPackage pcc = null)
         {
-            Analytics.TrackEvent("Used tool", new Dictionary { "Toolname", "Kismet Logger for " + game });
+            Analytics.TrackEvent("Used tool", new Dictionary<string,string>(){ { "Toolname", "Kismet Logger for " + game }});
             Pcc = pcc;
             Game = game;
             LogLines.ClearEx();
