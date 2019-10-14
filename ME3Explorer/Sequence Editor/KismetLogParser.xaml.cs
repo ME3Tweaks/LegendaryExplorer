@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.VisualBasic.Logging;
 using Path = System.IO.Path;
 
@@ -30,11 +31,11 @@ namespace ME3Explorer.Sequence_Editor
         static readonly string KismetLogME3Path = Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "KismetLog.txt");
         static readonly string KismetLogME2Path = Path.Combine(ME2Directory.gamePath, "Binaries", "KismetLog.txt");
         static readonly string KismetLogME1Path = Path.Combine(ME1Directory.gamePath, "Binaries", "KismetLog.txt");
-        public static string KismetLogPath(MEGame game) => game == MEGame.ME3 ? KismetLogME3Path : 
-                                                           game == MEGame.ME2 ? KismetLogME2Path : 
+        public static string KismetLogPath(MEGame game) => game == MEGame.ME3 ? KismetLogME3Path :
+                                                           game == MEGame.ME2 ? KismetLogME2Path :
                                                            game == MEGame.ME1 ? KismetLogME1Path : null;
 
-        public Action<string, int> ExportFound { get; set; } 
+        public Action<string, int> ExportFound { get; set; }
 
         public KismetLogParser()
         {
@@ -49,6 +50,7 @@ namespace ME3Explorer.Sequence_Editor
 
         public void LoadLog(MEGame game, IMEPackage pcc = null)
         {
+            Analytics.TrackEvent("Used tool", new Dictionary { "Toolname", "Kismet Logger for " + game });
             Pcc = pcc;
             Game = game;
             LogLines.ClearEx();
