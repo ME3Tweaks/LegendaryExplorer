@@ -2422,6 +2422,8 @@ namespace ME3Explorer.Dialogue_Editor
             int rowAt = 0;
             int columnAt = 0;
             int maxrow = 0;
+            Dictionary<int, int> columnlevels = new Dictionary<int, int>(); // records the max row in each column
+            columnlevels.Add(0, -1);
             const float COLUMN_SPACING = 220;
             const float WATERFALL_SPACING = 40;
             const float ROW_SPACING = 200;
@@ -2429,6 +2431,7 @@ namespace ME3Explorer.Dialogue_Editor
             List<DStart> startNodes = CurrentObjects.OfType<DStart>().ToList();
             List<DiagNode> allNodes = CurrentObjects.OfType<DiagNode>().OrderBy(n => n.NodeUID).ToList();
             var BranchStack = new Stack<(DiagNode node, int column)>();
+            var thisBranch = new Dictionary<int, DiagNode>(); //list of items in this branch column, diagnode
 
             //TAKE First Start - use to get first layer of waterfall.
             //add to first layer until end. any other branches add to branch stack LIFO to create second etc layer.
@@ -2436,37 +2439,41 @@ namespace ME3Explorer.Dialogue_Editor
 
             while (allNodes.Count > 0)
             {
+                maxrow = columnlevels.Values.Max(); //Reset rows on new start node
+                for (int i = 0; i < columnlevels.Count; i++)
+                {
+                    columnlevels[i] = maxrow;
+                }
                 DStart firstNode = startNodes.FirstOrDefault();
                 if(firstNode != null)
                 {
-                    if (rowAt > maxrow)
-                    {
-                        maxrow = rowAt;
-                    }
-                    else
-                    {
-                        rowAt = maxrow;
-                    }
-
+                    rowAt = maxrow + 1;
                     columnAt = 0;
-                    
-                    firstNode.SetOffset(columnAt, maxrow * ROW_SPACING);
-                    maxrow++;
+                    firstNode.SetOffset(columnAt, rowAt * ROW_SPACING);
+                    columnlevels[columnAt] = rowAt;
                     startNodes.Remove(firstNode);
                     visitedNodes.Add(firstNode.NodeUID);
                     DiagNode nextNode = allNodes.FirstOrDefault(x => x.NodeUID == firstNode.StartNumber);
                     if (nextNode != null && !visitedNodes.Contains(nextNode.NodeUID))
                     {
-                        while (!(nextNode == null && BranchStack.IsEmpty()))
+                        while (!(nextNode == null && thisBranch.IsEmpty() && BranchStack.IsEmpty()))
                         {
                             var thisNode = nextNode;
                             nextNode = null;
                             if (thisNode != null && !visitedNodes.Contains(thisNode.NodeUID))
                             {
                                 columnAt++;
-                                thisNode.SetOffset(columnAt * COLUMN_SPACING, rowAt * ROW_SPACING + columnAt * WATERFALL_SPACING);
                                 visitedNodes.Add(thisNode.NodeUID);
                                 allNodes.Remove(thisNode);
+                                thisBranch.Add(columnAt, thisNode);
+                                if(columnlevels.TryGetValue(columnAt, out int cmax))
+                                {
+                                    cmax = rowAt;
+                                }
+                                else
+                                {
+                                    columnlevels.Add(columnAt, rowAt);
+                                }
                                 if (thisNode.Links.Count != 0)
                                 {
                                     int r = 0;
@@ -2491,18 +2498,38 @@ namespace ME3Explorer.Dialogue_Editor
                                     }
                                 }
                             }
-                            else if(!BranchStack.IsEmpty())//REACHED END OF BRANCH PULL nextNode from STACK
+                            else if(!thisBranch.IsEmpty()) //REACHED END OF BRANCH Set the positions of the previous branch
                             {
+                                int tgtRowAt = rowAt;
+                                if(thisBranch.First().Key != 1) //Test if this is inside branch
+                                {
+                                    foreach (var dn in thisBranch)
+                                    {
+                                        var col = dn.Key;
+                                        var priormax = columnlevels[col];
+                                        if (priormax >= tgtRowAt)
+                                        {
+                                            tgtRowAt = priormax + 1;
+                                        }
+                                    }
+                                }
+
+                                foreach (var dn in thisBranch)
+                                {
+                                    dn.Value.SetOffset(dn.Key * COLUMN_SPACING, tgtRowAt * ROW_SPACING + dn.Key * WATERFALL_SPACING);
+                                    columnlevels[dn.Key] = tgtRowAt;
+                                }
+                                
+                                thisBranch.Clear();
+                            }
+                            else if(!BranchStack.IsEmpty())//PRIOR BRANCH IS DONE PULL nextNode from STACK of sub-branches
+                            {
+                                
                                 (nextNode, columnAt) = BranchStack.Pop();
 
                                 if(visitedNodes.Contains(nextNode.NodeUID)) //if nextnode is already up, make sure stack is pulled again without moving down.
                                 {
                                     nextNode = null;
-                                }
-                                else
-                                {
-                                    rowAt++;
-                                    maxrow++;
                                 }
                             }
                         }
@@ -2510,8 +2537,8 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 else //everything else is orphan.
                 {
-                    int orphanrowEntry = maxrow;
-                    int orphanrowReply = maxrow;
+                    int orphanrowEntry = maxrow + 1;
+                    int orphanrowReply = maxrow + 1;
                     foreach (var obj in allNodes)
                     {
                         if (obj.Node.IsReply)
