@@ -26,7 +26,7 @@ steps:
       $numlines = $($discordmessage | measure).Count
       if ($numlines > 0) { $discordmessage=$($discordmessage -split '\n')[0] }
       Write-Host "##vso[task.setvariable variable=discordmessage]$discordmessage"
-      $apikeysprivatefile = "namespace ME3Explorer`n{`n    public static partial class APIKeys`n    {`n        public static string Private_AppCenter {get;} = `"$($env:AppCenterKey)`";`n    }`n}"
+      $apikeysprivatefile = "namespace ME3Explorer`n{`n    public static partial class APIKeys`n    {`n        public static string Private_AppCenter {get;} = `"$(AppCenterKey)`";`n    }`n}"
       Set-Content -Path "$(Build.Repository.LocalPath)\ME3Explorer\APIKeysPrivate.cs" -Value $apikeysprivatefile
       (Get-Content .\ME3Explorer\Properties\AssemblyInfo.cs).replace("0`"","$(Build.BuildId)`"") | out-file -FilePath .\ME3Explorer\Properties\AssemblyInfo.cs
       
