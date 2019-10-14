@@ -15,7 +15,7 @@ namespace ME3Explorer
         private static readonly string[] ME1FilePatterns = { "*.u", "*.upk", "*.sfm" };
         private const string ME2and3FilePattern = "*.pcc";
 
-        private static readonly string[] ME2and3FilePatternIncludeTFC = { "*.pcc", "*.tfc" };
+        //private static readonly string[] ME2and3FilePatternIncludeTFC = { "*.pcc", "*.tfc" };
 
         private static Dictionary<string, string> cachedME1LoadedFiles;
         private static Dictionary<string, string> cachedME2LoadedFiles;
@@ -25,13 +25,26 @@ namespace ME3Explorer
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public static Dictionary<string, string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFC = false)
+        public static Dictionary<string, string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false)
         {
             if (!forceReload)
             {
                 if (game == MEGame.ME1 && cachedME1LoadedFiles != null) return cachedME1LoadedFiles;
-                if (game == MEGame.ME2 && cachedME2LoadedFiles != null) return cachedME2LoadedFiles;
-                if (game == MEGame.ME3 && cachedME3LoadedFiles != null) return cachedME3LoadedFiles;
+                if (game == MEGame.ME2 && cachedME2LoadedFiles != null)
+                {
+                    bool useCached = true;
+                    useCached &= !includeTFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                    useCached &= !includeAFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (useCached) return cachedME2LoadedFiles;
+                }
+
+                if (game == MEGame.ME3 && cachedME3LoadedFiles != null)
+                {
+                    bool useCached = true;
+                    useCached &= !includeTFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                    useCached &= !includeAFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (useCached) return cachedME3LoadedFiles;
+                }
             }
 
             //make dictionary from basegame files
@@ -43,7 +56,7 @@ namespace ME3Explorer
 
             foreach (string directory in GetEnabledDLCFiles(game).OrderBy(dir => GetMountPriority(dir, game)).Prepend(MEDirectories.BioGamePath(game)))
             {
-                foreach (string filePath in GetCookedFiles(game, directory,includeTFC))
+                foreach (string filePath in GetCookedFiles(game, directory, includeTFCs, includeAFCs))
                 {
                     string fileName = Path.GetFileName(filePath);
                     if (fileName != null) loadedFiles[fileName] = filePath;
@@ -60,18 +73,17 @@ namespace ME3Explorer
         public static IEnumerable<string> GetAllFiles(MEGame game) => GetEnabledDLCFiles(game).Prepend(MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory));
         public static IEnumerable<string> GetOfficialFiles(MEGame game) => GetOfficialDLCFiles(game).Prepend(MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory));
 
-        private static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false)
+        private static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false, bool includeAFCs = false)
         {
             if (game == MEGame.ME1)
                 return ME1FilePatterns.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, "CookedPC"), pattern, SearchOption.AllDirectories));
-            if (includeTFCs)
-            {
-                return ME2and3FilePatternIncludeTFC.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC"), pattern, SearchOption.AllDirectories));
-            }
-            else
-            {
-                return Directory.EnumerateFiles(Path.Combine(directory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC"), ME2and3FilePattern);
-            }
+
+            List<string> extensions = new List<string>();
+            if (includeTFCs) extensions.Add("*.tfc");
+            if (includeAFCs) extensions.Add("*.afc");
+            extensions.Add("*pcc"); //This is last, as any of the lookup methods will see if any of these files types exist in-order. By putting pcc's last, the lookups will be searched first when using
+            //includeTFC or includeAFC.
+            return extensions.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC"), pattern, SearchOption.AllDirectories));
         }
 
         /// <summary>

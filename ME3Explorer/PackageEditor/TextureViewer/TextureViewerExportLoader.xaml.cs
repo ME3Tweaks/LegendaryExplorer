@@ -768,7 +768,7 @@ namespace ME3Explorer
                             }
 
                             //Check game
-                            var gameFiles = MELoadedFiles.GetFilesLoadedInGame(mipmap.Export.Game);
+                            var gameFiles = MELoadedFiles.GetFilesLoadedInGame(mipmap.Export.Game, includeTFCs: true);
                             if (gameFiles.TryGetValue(tfcarchive, out string archiveFile))
                             {
                                 try

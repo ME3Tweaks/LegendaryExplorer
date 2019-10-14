@@ -394,7 +394,7 @@ namespace ME3Explorer.TFCCompactor
                 //Copy basegame TFCs to cookedDiretory
                 var basegameDirToCopyFrom = MEDirectories.CookedPath(SelectedGame.Game);
                 var tfcs = Directory.GetFiles(basegameDirToCopyFrom, "*.tfc").ToList();
-                var currentgamefiles = MELoadedFiles.GetFilesLoadedInGame(SelectedGame.Game, forceReload: true, includeTFC: true);
+                var currentgamefiles = MELoadedFiles.GetFilesLoadedInGame(SelectedGame.Game, forceReload: true, includeTFCs: true);
                 //var debug = currentgamefiles.Where(x => x.Value.Contains(".tfc")).ToList();
                 //debug.ForEach(x => Debug.WriteLine(x));
                 foreach (var tfc in tfcsToStage)

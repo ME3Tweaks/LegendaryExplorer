@@ -141,7 +141,9 @@ namespace ME3Explorer.Unreal.Classes
                 return path; //in current directory of this pcc file
             }
 
-            return MELoadedFiles.GetFilesLoadedInGame(export.FileRef.Game).TryGetValue(FileName + ".afc", out string afcPath) ? afcPath : "";
+            var gameFiles = MELoadedFiles.GetFilesLoadedInGame(export.FileRef.Game, includeAFCs: true);
+            gameFiles.TryGetValue(FileName + ".afc", out string afcPath);
+            return afcPath ?? "";
         }
 
         /// <summary>
@@ -294,7 +296,7 @@ namespace ME3Explorer.Unreal.Classes
 
             procStartInfo.UseShellExecute = false;
             procStartInfo.CreateNoWindow = true;
-            Process proc = new Process {StartInfo = procStartInfo};
+            Process proc = new Process { StartInfo = procStartInfo };
             proc.Start();
 
             MemoryStream outputData = new MemoryStream();
