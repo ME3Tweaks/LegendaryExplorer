@@ -113,11 +113,19 @@
             </MenuItem>
 
             <MenuItem Header="View Options" Padding="4">
-                <MenuItem Header="Adjust spoken line text size" ToolTip="Adjust the size of the spoken line text beside the title box.">
+                <MenuItem Header="Adjust spoken line text size" ToolTip="Adjust the size of the spoken line text beside the title box">
                     <MenuItem Name="Menu_LineSize_00" Header="Turned off" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="00"/>
                     <MenuItem Name="Menu_LineSize_10" Header="1.0 (default)" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="10"/>
                     <MenuItem Name="Menu_LineSize_15" Header="1.5" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="15"/>
                     <MenuItem Name="Menu_LineSize_20" Header="2.0" IsCheckable="True" Command="{Binding ChangeLineSizeCommand}" CommandParameter="20"/>
+                </MenuItem>
+                <MenuItem Header="Adjust spacing" ToolTip="Adjust the spacing of the autolayout" StaysOpenOnClick="True">
+                    <TextBlock Text="Adjust Row Spacing: (default is 200)"/>
+                    <xctk:IntegerUpDown x:Name="RwSpce_Picker" Value="{Binding RowSpace}" Minimum="50" ToolTip="Adjust the size between rows (default is 200)" Increment="10" ValueChanged="Spacing_ValueChanged" HorizontalAlignment="Stretch"/>
+                    <TextBlock Text="Adjust Column Spacing: (default is 200)"/>
+                    <xctk:IntegerUpDown x:Name="CmSpce_Picker" Value="{Binding ColumnSpace}" Minimum="50" ToolTip="Adjust the size between columns (default is 200)" Increment="10" ValueChanged="Spacing_ValueChanged" HorizontalAlignment="Stretch"/>
+                    <TextBlock Text="Adjust Waterfall steepness: (default is 40)"/>
+                    <xctk:IntegerUpDown x:Name="WtSpce_Picker" Value="{Binding WaterfallSpace}" Minimum="0" ToolTip="Adjust the steepness of the decline in waterfall layout (default is 40)" Increment="10" ValueChanged="Spacing_ValueChanged" HorizontalAlignment="Stretch"/>
                 </MenuItem>
                 <MenuItem Header="Adjust graph color settings" >
                     <TextBlock Text="Spoken Text: "/>
@@ -132,10 +140,10 @@
                     <TextBlock Text="Reply Header: "/>
                     <xctk:ColorPicker Name="ClrPcker_Reply" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"/>
                        <Separator/>
-                    <TextBlock Text="Paragon Interrupt: " ToolTip="Adjust the color of Paragon Interrupt."/>
-                    <xctk:ColorPicker Name="ClrPcker_ParaInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ToolTip="Adjust the color of Paragon Interrupt."/>
-                    <TextBlock Text="Renegade Interrupt: " ToolTip="Adjust the color of Renegade Interrupt." />
-                    <xctk:ColorPicker Name="ClrPcker_RenInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ToolTip="Adjust the color of Renegade Interrupt."/>
+                    <TextBlock Text="Paragon Interrupt: " ToolTip="Adjust the color of Paragon Interrupt"/>
+                    <xctk:ColorPicker Name="ClrPcker_ParaInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ToolTip="Adjust the color of Paragon Interrupt"/>
+                    <TextBlock Text="Renegade Interrupt: " ToolTip="Adjust the color of Renegade Interrupt" />
+                    <xctk:ColorPicker Name="ClrPcker_RenInt" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch" ToolTip="Adjust the color of Renegade Interrupt"/>
                     <TextBlock Text="Agree: " />
                     <xctk:ColorPicker Name="ClrPcker_Agree" SelectedColorChanged="ChangeLineColor" HorizontalAlignment="Stretch"/>
                     <TextBlock Text="Disagree: " />
@@ -153,13 +161,13 @@
                 <MenuItem Header="Save Current Layout" Command="{Binding SaveViewCommand}" InputGestureText="Ctrl+Shift+M" ToolTip="Save the node layout" IsEnabled="{Binding SelectedConv, Converter={StaticResource NullVisibilityConverter}}"/>
                 <MenuItem Header="Re-Center view" Command="{Binding RecenterCommand}" InputGestureText="Ctrl+Shift+C" ToolTip="Recenter to starting nodes" IsEnabled="{Binding SelectedConv, Converter={StaticResource NullVisibilityConverter}}"/>
                 <Separator/>
-                <MenuItem Name="ManualSaveView_MenuItem" Header="Manual-Save Layouts" Command="{Binding UpdateLayoutDefaultsCommand}" CommandParameter="Lay_Manual" IsCheckable="True" ToolTip="Layouts are saved manually, if no prior save it will default to autolayout."/>
-                <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save Layouts" Command="{Binding UpdateLayoutDefaultsCommand}" CommandParameter="Lay_AutoSave" IsCheckable="True" ToolTip="Layouts are saved automatically, if no prior save it will default to autolayout."/>
+                <MenuItem Name="ManualSaveView_MenuItem" Header="Manual-Save Layouts" Command="{Binding UpdateLayoutDefaultsCommand}" CommandParameter="Lay_Manual" IsCheckable="True" ToolTip="Layouts are saved manually, if no prior save it will default to autolayout"/>
+                <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save Layouts" Command="{Binding UpdateLayoutDefaultsCommand}" CommandParameter="Lay_AutoSave" IsCheckable="True" ToolTip="Layouts are saved automatically, if no prior save it will default to autolayout"/>
                 <MenuItem Name="AutoGenView_MenuItem" Header="Auto-Generate Layouts" Command="{Binding UpdateLayoutDefaultsCommand}" CommandParameter="Lay_AutoGen" IsCheckable="True" ToolTip="Layouts are never saved and always regenerated."/>
                 <Separator/>
-                <MenuItem Name="Column_MenuItem" Header="Default Auto Layout is Simple Column" Command="{Binding UpdateLayoutDefaultsCommand}"  CommandParameter="Auto_Column" IsCheckable="True" ToolTip="Default layout without an existing save will be in 3 simple columns."/>
-                <MenuItem Name="AdvColumn_MenuItem" Header="Default Auto Layout is Complex Column" Command="{Binding UpdateLayoutDefaultsCommand}" CommandParameter="Auto_AdvColumn" IsCheckable="True" ToolTip="Default layout without an existing save will be cascading columns."/>
-                <MenuItem Name="Waterfall_MenuItem" Header="Default Auto Layout is Waterfall" Command="{Binding UpdateLayoutDefaultsCommand}" CommandParameter="Auto_Waterfall" IsCheckable="True" ToolTip="Default layout without an existing save will be cascading branches."/>
+                <MenuItem Name="Column_MenuItem" Header="Default Auto Layout is Simple Column" Command="{Binding UpdateLayoutDefaultsCommand}"  CommandParameter="Auto_Column" IsCheckable="True" ToolTip="Default layout without an existing save will be in 3 simple columns"/>
+                <MenuItem Name="AdvColumn_MenuItem" Header="Default Auto Layout is Complex Column" Command="{Binding UpdateLayoutDefaultsCommand}" CommandParameter="Auto_AdvColumn" IsCheckable="True" ToolTip="Default layout without an existing save will be cascading columns"/>
+                <MenuItem Name="Waterfall_MenuItem" Header="Default Auto Layout is Waterfall" Command="{Binding UpdateLayoutDefaultsCommand}" CommandParameter="Auto_Waterfall" IsCheckable="True" ToolTip="Default layout without an existing save will be cascading branches"/>
                 <Separator/>
                 <MenuItem Header="Re-Run Auto Layout" Command="{Binding AutoLayoutCommand}" InputGestureText="Ctrl+L" ToolTip="Re-run default autogenerated layout now"/>
             </MenuItem>

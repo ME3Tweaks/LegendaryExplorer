@@ -135,7 +135,12 @@ namespace ME3Explorer.Dialogue_Editor
         public float StartPoDStarts;
         public float StartPoDiagNodes;
         public float StartPoDReplyNodes;
-
+        private int _RowSpace = 200;
+        public int RowSpace { get => _RowSpace; set => SetProperty(ref _RowSpace, value); }
+        private int _ColumnSpacee = 200;
+        public int ColumnSpace { get => _ColumnSpacee; set => SetProperty(ref _ColumnSpacee, value); }
+        private int _WaterfallSpace = 40;
+        public int WaterfallSpace { get => _WaterfallSpace; set => SetProperty(ref _WaterfallSpace, value); }
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
@@ -238,7 +243,6 @@ namespace ME3Explorer.Dialogue_Editor
 
             Node_Combo_GUIStyle.ItemsSource = Enums.GetValues<EConvGUIStyles>();
             Node_Combo_ReplyType.ItemsSource = Enums.GetValues<EReplyTypes>();
-
             if (File.Exists(OptionsPath)) //Handle options
             {
                 var options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(OptionsPath));
@@ -321,6 +325,21 @@ namespace ME3Explorer.Dialogue_Editor
                 {
                     int.TryParse(options["LayoutMode"].ToString(), out int l);
                     LayoutMode = l;
+                }
+                if (options.ContainsKey("RowSpace"))
+                {
+                    int.TryParse(options["RowSpace"].ToString(), out int rs);
+                    RowSpace = rs;
+                }
+                if (options.ContainsKey("ColumnSpace"))
+                {
+                    int.TryParse(options["ColumnSpace"].ToString(), out int cs);
+                    ColumnSpace = cs;
+                }
+                if (options.ContainsKey("WaterfallSpace"))
+                {
+                    int.TryParse(options["WaterfallSpace"].ToString(), out int ws);
+                    WaterfallSpace = ws;
                 }
                 if (options.ContainsKey("LinesAtTop"))
                     HideEntryOutput_MenuItem.IsChecked = (bool)options["LinesAtTop"];
@@ -450,6 +469,9 @@ namespace ME3Explorer.Dialogue_Editor
                 {"OutputNumbers", DObj.OutputNumbers},
                 {"AutoSaveMode", SaveViewMode},
                 {"LayoutMode", LayoutMode},
+                {"RowSpace", RowSpace},
+                {"ColumnSpace", ColumnSpace},
+                {"WaterfallSpace", WaterfallSpace},
             };
             string outputFile = JsonConvert.SerializeObject(options);
             if (!Directory.Exists(DialogueEditorDataFolder))
@@ -2278,18 +2300,13 @@ namespace ME3Explorer.Dialogue_Editor
             int maxStartrow = -1;
             float maxobjHeight = 0;
             float rowShift = 0;
-            const float COLUMN_SPACING = 350;
-            const float WATERFALL_SPACING = 40;
-            const float ROW_SPACING = 200;
+            float COLUMN_SPACING = float.TryParse(ColumnSpace.ToString(), out float clmSp) ? clmSp + 150 : 350;
+            float WATERFALL_SPACING = float.TryParse(WaterfallSpace.ToString(), out float wSp) ? wSp : 40;
+            float ROW_SPACING = float.TryParse(RowSpace.ToString(), out float rowSp) ? rowSp : 200;
             var visitedNodes = new HashSet<int>();
             List<DStart> startNodes = CurrentObjects.OfType<DStart>().ToList();
             List<DiagNode> allNodes = CurrentObjects.OfType<DiagNode>().OrderBy(n => n.NodeUID).ToList();
             var BranchQueue = new Queue<DiagNode>();
-
-            //TAKE First Start - use to get first stack of columns
-            //add to first layer until end. any other branches add to branch stack LIFO to create second etc layer.
-            // If no branches in stack then go back to new start.
-            // Every start
 
             while (allNodes.Count > 0)
             {
@@ -2424,9 +2441,9 @@ namespace ME3Explorer.Dialogue_Editor
             int maxrow = 0;
             Dictionary<int, int> columnlevels = new Dictionary<int, int>(); // records the max row in each column
             columnlevels.Add(0, -1);
-            const float COLUMN_SPACING = 220;
-            const float WATERFALL_SPACING = 40;
-            const float ROW_SPACING = 200;
+            float COLUMN_SPACING = float.TryParse(ColumnSpace.ToString(), out float clmSp) ? clmSp : 200;
+            float WATERFALL_SPACING = float.TryParse(WaterfallSpace.ToString(), out float wSp) ? wSp : 40;
+            float ROW_SPACING = float.TryParse(RowSpace.ToString(), out float rowSp) ? rowSp : 200;
             var visitedNodes = new HashSet<int>();
             List<DStart> startNodes = CurrentObjects.OfType<DStart>().ToList();
             List<DiagNode> allNodes = CurrentObjects.OfType<DiagNode>().OrderBy(n => n.NodeUID).ToList();
@@ -4267,6 +4284,14 @@ namespace ME3Explorer.Dialogue_Editor
             ClrPcker_Reply.SelectedColor = DObj.replyColor.ToWPFColor();
             ClrPcker_ReplyPen.SelectedColor = DObj.replyPenColor.ToWPFColor();
         }
+        private void Spacing_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if(e.NewValue == e.OldValue)
+            {
+                return;
+            }
+            RefreshView();
+        }
 
         #endregion
 
@@ -4315,6 +4340,7 @@ namespace ME3Explorer.Dialogue_Editor
 
 
         #endregion Helpers
+
 
     }
 }
