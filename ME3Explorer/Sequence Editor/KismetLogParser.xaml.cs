@@ -28,11 +28,11 @@ namespace ME3Explorer.Sequence_Editor
     /// </summary>
     public partial class KismetLogParser : NotifyPropertyChangedControlBase
     {
-        static readonly string KismetLogME3Path = Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "KismetLog.txt");
-        static readonly string KismetLogME2Path = Path.Combine(ME2Directory.gamePath, "Binaries", "KismetLog.txt");
-        static readonly string KismetLogME1Path = Path.Combine(ME1Directory.gamePath, "Binaries", "KismetLog.txt");
-        public static string KismetLogPath(MEGame game) => game == MEGame.ME3 ? KismetLogME3Path :
-                                                           game == MEGame.ME2 ? KismetLogME2Path :
+        static string KismetLogME3Path => ME3Directory.gamePath != null ? Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "KismetLog.txt") : "";
+        static string KismetLogME2Path => ME2Directory.gamePath != null ? Path.Combine(ME2Directory.gamePath, "Binaries", "KismetLog.txt") : "";
+        static string KismetLogME1Path => ME1Directory.gamePath != null ? Path.Combine(ME1Directory.gamePath, "Binaries", "KismetLog.txt") : "";
+        public static string KismetLogPath(MEGame game) => game == MEGame.ME3 ? KismetLogME3Path : 
+                                                           game == MEGame.ME2 ? KismetLogME2Path : 
                                                            game == MEGame.ME1 ? KismetLogME1Path : null;
 
         public Action<string, int> ExportFound { get; set; }
