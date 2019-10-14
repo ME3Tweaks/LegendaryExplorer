@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer.Unreal;
-using Gibbed.IO;
 using System.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;

@@ -16,7 +16,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Be.Windows.Forms;
-using Gibbed.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using Microsoft.Win32;
@@ -95,25 +94,25 @@ namespace ME3Explorer.FileHexViewer
                 inStream.Seek(pcc.NameOffset, SeekOrigin.Begin);
                 for (int i = 0; i < pcc.NameCount; i++)
                 {
-                    int strLength = inStream.ReadValueS32();
+                    int strLength = inStream.ReadInt32();
                     if (strLength < 0)
                     {
-                        inStream.ReadString(strLength * -2, true, Encoding.Unicode);
+                        inStream.ReadStringUnicodeNull(strLength * -2);
                         if (pcc.Game == MEGame.ME2)
                         {
-                            inStream.ReadValueS32();
+                            inStream.ReadInt32();
                         }
                     }
                     else if (strLength > 0)
                     {
-                        inStream.ReadString(strLength, true, Encoding.ASCII); //-1 cause we also read trailing null.
+                        inStream.ReadStringASCIINull(strLength); //-1 cause we also read trailing null.
                         if (pcc.Game != MEGame.ME2)
                         {
-                            inStream.ReadValueS64(); //Read 8 bytes
+                            inStream.ReadInt64(); //Read 8 bytes
                         }
                         else
                         {
-                            inStream.ReadValueS32(); //4 bytes
+                            inStream.ReadInt32(); //4 bytes
                         }
                     }
                 }

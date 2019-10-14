@@ -217,7 +217,6 @@
     <Compile Include="TypeSwitch.cs" />
     <Compile Include="Windows\AutoComplete.cs" />
     <Compile Include="Windows\PathCharType.cs" />
-    <Compile Include="Windows\PInvoke.cs" />
     <Compile Include="Windows\ShMisc.cs" />
     <Compile Include="Windows\ShPath.cs" />
     <Compile Include="Windows\WindowsApi.cs" />

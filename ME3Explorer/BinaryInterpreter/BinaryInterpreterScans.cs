@@ -8,7 +8,6 @@ using System.Text;
 using System.Windows.Media;
 using DocumentFormat.OpenXml.Drawing;
 using Gammtek.Conduit.Extensions.IO;
-using Gibbed.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
@@ -63,7 +62,7 @@ namespace ME3Explorer
                     var shaderNode = new BinInterpNode(bin.Position - 8, $"Shader {i} {shaderName.Instanced}");
 
                     shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.Instanced}") { Length = 8 });
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadValueGuid()}") { Length = 16 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadGuid()}") { Length = 16 });
                     if (Pcc.Game == MEGame.UDK)
                     {
                         shaderNode.Items.Add(MakeGuidNode(bin, "2nd Guid?"));
@@ -84,7 +83,7 @@ namespace ME3Explorer
 
                     shaderNode.Items.Add(MakeInt32Node(bin, "ParameterMap CRC"));
 
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadValueGuid()}") { Length = 16 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadGuid()}") { Length = 16 });
 
                     shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
 
@@ -137,7 +136,7 @@ namespace ME3Explorer
                     for (int j = 0; j < unkCount; j++)
                     {
                         unkNodes.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
-                        unkNodes.Add(new BinInterpNode(bin.Position, $"GUID: {bin.ReadValueGuid()}") { Length = 16 });
+                        unkNodes.Add(new BinInterpNode(bin.Position, $"GUID: {bin.ReadGuid()}") { Length = 16 });
                         unkNodes.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
                     }
 
@@ -158,7 +157,7 @@ namespace ME3Explorer
                             shaders.Items.Add(new BinInterpNode(bin.Position, $"Shader {k}") { Items = nodes3 });
 
                             nodes3.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
-                            nodes3.Add(new BinInterpNode(bin.Position, $"GUID: {bin.ReadValueGuid()}") { Length = 16 });
+                            nodes3.Add(new BinInterpNode(bin.Position, $"GUID: {bin.ReadGuid()}") { Length = 16 });
                             nodes3.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
                         }
                         nodes2.Add(new BinInterpNode(bin.Position, $"Vertex Factory Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
@@ -168,7 +167,7 @@ namespace ME3Explorer
                         }
                     }
 
-                    nodes.Add(new BinInterpNode(bin.Position, $"MaterialId: {bin.ReadValueGuid()}") { Length = 16 });
+                    nodes.Add(new BinInterpNode(bin.Position, $"MaterialId: {bin.ReadGuid()}") { Length = 16 });
 
                     nodes.Add(MakeStringNode(bin, "Friendly Name"));
 
@@ -1263,7 +1262,7 @@ namespace ME3Explorer
 
                 if (Pcc.Game >= MEGame.ME3)
                 {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"LightingGuid: {bin.ReadValueGuid()}") { Length = 16 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"LightingGuid: {bin.ReadGuid()}") { Length = 16 });
 
                     int lightmassSettingsCount = bin.ReadInt32();
                     subnodes.Add(new BinInterpNode(bin.Position - 4, $"LightmassSettings ({lightmassSettingsCount})")
@@ -1504,8 +1503,7 @@ namespace ME3Explorer
                         ms.ReadInt32();
                     }
 
-                    var strLen = ms.ReadUInt32();
-                    var line = Gibbed.IO.StreamHelpers.ReadString(ms, strLen, true, Encoding.ASCII);
+                    var line = ms.ReadUnrealString();
                     if (label != null)
                     {
                         subnodes.Add(new BinInterpNode
@@ -2492,7 +2490,7 @@ namespace ME3Explorer
                             //offset += 1;
                             MemoryStream ms = new MemoryStream(data);
                             ms.Position = offset;
-                            wpRef = Gibbed.IO.StreamHelpers.ReadString(ms, wpStrLgth, true, Encoding.ASCII);
+                            wpRef = ms.ReadStringASCIINull(wpStrLgth);
                         }
                         nTaskIDs.Items.Add(new BinInterpNode
                         {
@@ -3118,7 +3116,7 @@ namespace ME3Explorer
                         {
                             MemoryStream ms = new MemoryStream(data);
                             ms.Position = offset;
-                            sndRef = Gibbed.IO.StreamHelpers.ReadString(ms, sndStrLgth, true, Encoding.ASCII);
+                            sndRef = ms.ReadStringASCIINull(sndStrLgth);
                         }
                         PageIDs.Items.Add(new BinInterpNode
                         {
@@ -5111,30 +5109,17 @@ namespace ME3Explorer
                         Name = "_" + offset,
                         Tag = NodeType.IntProperty
                     });
-                    offset += 4;
 
                     //value is stored as a literal string in binary.
                     MemoryStream stream = new MemoryStream(data) { Position = offset };
-                    if (literalStringLength < 0)
+                    offset += 4;
+                    string str = stream.ReadUnrealString();
+                    subnodes.Add(new BinInterpNode
                     {
-                        string str = Gibbed.IO.StreamHelpers.ReadString(stream, (literalStringLength * -2), true, Encoding.Unicode);
-                        subnodes.Add(new BinInterpNode
-                        {
-                            Header = $"0x{offset:X5} Const Literal Value: {str}",
-                            Name = "_" + offset,
-                            Tag = NodeType.StrProperty
-                        });
-                    }
-                    else
-                    {
-                        string str = Gibbed.IO.StreamHelpers.ReadString(stream, (literalStringLength), false, Encoding.ASCII);
-                        subnodes.Add(new BinInterpNode
-                        {
-                            Header = $"0x{offset:X5} Const Literal Value: {str}",
-                            Name = "_" + offset,
-                            Tag = NodeType.StrProperty
-                        });
-                    }
+                        Header = $"0x{offset:X5} Const Literal Value: {str}",
+                        Name = "_" + offset,
+                        Tag = NodeType.StrProperty
+                    });
                 }
             }
             catch (Exception ex)
@@ -5398,7 +5383,7 @@ namespace ME3Explorer
                     int guidToIntMapCount;
                     subnodes.Add(new BinInterpNode(bin.Position, $"guidToIntMap?: ({guidToIntMapCount = bin.ReadInt32()})")
                     {
-                        Items = ReadList(guidToIntMapCount, i => MakeInt32Node(bin, $"{bin.ReadValueGuid()}"))
+                        Items = ReadList(guidToIntMapCount, i => MakeInt32Node(bin, $"{bin.ReadGuid()}"))
                     });
 
                     int coverListCount;
@@ -5416,7 +5401,7 @@ namespace ME3Explorer
                     int guidToIntMap2Count;
                     subnodes.Add(new BinInterpNode(bin.Position, $"2nd guidToIntMap?: ({guidToIntMap2Count = bin.ReadInt32()})")
                     {
-                        Items = ReadList(guidToIntMap2Count, i => MakeInt32Node(bin, $"{bin.ReadValueGuid()}"))
+                        Items = ReadList(guidToIntMap2Count, i => MakeInt32Node(bin, $"{bin.ReadGuid()}"))
                     });
 
                     int navListCount;
@@ -5719,7 +5704,7 @@ namespace ME3Explorer
                 Items = nodes
             };
 
-            nodes.Add(new BinInterpNode(bin.Position, $"Base Material GUID {bin.ReadValueGuid()}") { Length = 16 });
+            nodes.Add(new BinInterpNode(bin.Position, $"Base Material GUID {bin.ReadGuid()}") { Length = 16 });
             int staticSwitchParameterCount = bin.ReadInt32();
             var staticSwitchParamsNode = new BinInterpNode(bin.Position - 4, $"Static Switch Parameters, {staticSwitchParameterCount} items") { Length = 4 };
 
@@ -5729,7 +5714,7 @@ namespace ME3Explorer
                 var paramName = bin.ReadNameReference(Pcc);
                 var paramVal = bin.ReadBooleanInt();
                 var paramOverride = bin.ReadBooleanInt();
-                Guid g = bin.ReadValueGuid();
+                Guid g = bin.ReadGuid();
                 staticSwitchParamsNode.Items.Add(new BinInterpNode(bin.Position - 32, $"{j}: Name: {paramName.Instanced}, Value: {paramVal}, Override: {paramOverride}\nGUID:{g}")
                 {
                     Length = 32
@@ -5756,7 +5741,7 @@ namespace ME3Explorer
                 subnodes.Add(new BinInterpNode(bin.Position, $"B: {bin.ReadBooleanInt()}") { Length = 4 });
                 subnodes.Add(new BinInterpNode(bin.Position, $"A: {bin.ReadBooleanInt()}") { Length = 4 });
                 subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBooleanInt()}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadValueGuid()}") { Length = 16 });
+                subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadGuid()}") { Length = 16 });
             }
 
             if (Pcc.Game >= MEGame.ME3)
@@ -5778,7 +5763,7 @@ namespace ME3Explorer
                     subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
                     subnodes.Add(new BinInterpNode(bin.Position, $"CompressionSettings: {(TextureCompressionSettings)bin.ReadByte()}") { Length = 1 });
                     subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBooleanInt()}") { Length = 4 });
-                    subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadValueGuid()}") { Length = 16 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadGuid()}") { Length = 16 });
                 }
             }
             if (Pcc.Game == MEGame.UDK)
@@ -5800,7 +5785,7 @@ namespace ME3Explorer
                     subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
                     subnodes.Add(MakeInt32Node(bin, "WeightmapIndex"));
                     subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBooleanInt()}") { Length = 4 });
-                    subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadValueGuid()}") { Length = 16 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadGuid()}") { Length = 16 });
                 }
             }
 

@@ -54,6 +54,7 @@
     <Compile Include="LZO2Helper.cs" />
     <Compile Include="SevenZipHelper.cs" />
     <Compile Include="StreamIO.cs" />
+    <Compile Include="ZlibBlock\ZlibBlock.cs" />
     <Compile Include="ZlibHelper.cs" />
   </ItemGroup>
   <ItemGroup>
