@@ -24,6 +24,7 @@ namespace ME3Explorer
         {
             InitializeComponent();
             //azure testing. Will remove once testing is done.
+            //force rebuild.
             MessageBox.Show("Analytics enabled: " + Analytics.IsEnabledAsync().ToString());
             MessageBox.Show("App Center Key: " + (APIKeys.HasAppCenterKey ? APIKeys.AppCenterKey : "No app center key"));
 
