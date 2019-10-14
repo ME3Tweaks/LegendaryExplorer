@@ -1307,10 +1307,6 @@
     <EmbeddedResource Include="Resources\KismetFont.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmaroK86\AmaroK86Lib.csproj">
-      <Project>{9010228E-4393-47E2-9DEE-FB5090A1D1AB}</Project>
-      <Name>AmaroK86Lib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
       <Name>Be.Windows.Forms.HexBox</Name>
@@ -1334,10 +1330,6 @@
     <ProjectReference Include="..\Piccolo\Piccolo.csproj">
       <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>
       <Name>Piccolo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tools\Gibbed.IO\Gibbed.IO.csproj">
-      <Project>{047857ba-daa3-4ca7-afb8-a1b082b28c6a}</Project>
-      <Name>Gibbed.IO</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

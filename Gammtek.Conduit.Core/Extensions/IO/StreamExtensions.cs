@@ -619,38 +619,6 @@ namespace Gammtek.Conduit.Extensions.IO
 			return stream.ReadStringInternalStatic(encoding, (uint) size, trailingNull);
 		}
 
-		internal static string ReadStringInternalDynamic(this Stream stream, Encoding encoding, char end)
-		{
-			var characterSize = encoding.GetByteCount("e");
-
-			Debug.Assert(characterSize == 1 || characterSize == 2 || characterSize == 4);
-
-			var characterEnd = end.ToString(CultureInfo.InvariantCulture);
-
-			var i = 0;
-			var data = new byte[128 * characterSize];
-
-			while (true)
-			{
-				if (i + characterSize > data.Length)
-				{
-					Array.Resize(ref data, data.Length + (128 * characterSize));
-				}
-
-				var read = stream.Read(data, i, characterSize);
-				Debug.Assert(read == characterSize);
-
-				if (encoding.GetString(data, i, characterSize) == characterEnd)
-				{
-					break;
-				}
-
-				i += characterSize;
-			}
-
-			return i == 0 ? "" : encoding.GetString(data, 0, i);
-		}
-
 		internal static string ReadStringInternalStatic(this Stream stream, Encoding encoding, uint size, bool trailingNull)
 		{
 			var data = new byte[size];
@@ -671,54 +639,6 @@ namespace Gammtek.Conduit.Extensions.IO
 			}
 
 			return value;
-		}
-
-		public static string ReadStringZ(this Stream stream)
-		{
-			return stream.ReadStringInternalDynamic(DefaultEncoding, '\0');
-		}
-
-		public static string ReadStringZ(this Stream stream, Encoding encoding)
-		{
-			return stream.ReadStringInternalDynamic(encoding, '\0');
-		}
-
-		public static T ReadStructure<T>(this Stream stream)
-		{
-			var structureSize = Marshal.SizeOf(typeof (T));
-			var buffer = new byte[structureSize];
-
-			if (stream.Read(buffer, 0, structureSize) != structureSize)
-			{
-				throw new EndOfStreamException("could not read all of data for structure");
-			}
-
-			var handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-
-			var structure = (T) Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof (T));
-
-			handle.Free();
-
-			return structure;
-		}
-
-		public static T ReadStructure<T>(this Stream stream, int size)
-		{
-			var structureSize = Marshal.SizeOf(typeof (T));
-			var buffer = new byte[Math.Max(structureSize, size)];
-
-			if (stream.Read(buffer, 0, size) != size)
-			{
-				throw new EndOfStreamException("could not read all of data for structure");
-			}
-
-			var handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-
-			var structure = (T) Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof (T));
-
-			handle.Free();
-
-			return structure;
 		}
 
 		public static MemoryStream ReadToMemoryStream(this Stream stream, long size, int buffer = 0x40000)
@@ -1018,20 +938,6 @@ namespace Gammtek.Conduit.Extensions.IO
 			stream.WriteStringInternalStatic(encoding, value);
 		}
 
-		public static void WriteString(this Stream stream, string value, int size, Encoding encoding)
-		{
-			stream.WriteStringInternalStatic(encoding, value, size);
-		}
-
-		internal static void WriteStringInternalDynamic(this Stream stream, Encoding encoding, string value, char end)
-		{
-			var data = encoding.GetBytes(value);
-			stream.Write(data, 0, data.Length);
-
-			data = encoding.GetBytes(end.ToString(CultureInfo.InvariantCulture));
-			stream.Write(data, 0, data.Length);
-		}
-
 		internal static void WriteStringInternalStatic(this Stream stream, Encoding encoding, string value)
 		{
 			var data = encoding.GetBytes(value);
@@ -1045,42 +951,6 @@ namespace Gammtek.Conduit.Extensions.IO
 
 			Array.Resize(ref data, size);
 			stream.Write(data, 0, size);
-		}
-
-		public static void WriteStringZ(this Stream stream, string value)
-		{
-			stream.WriteStringInternalDynamic(DefaultEncoding, value, '\0');
-		}
-
-		public static void WriteStringZ(this Stream stream, string value, Encoding encoding)
-		{
-			stream.WriteStringInternalDynamic(encoding, value, '\0');
-		}
-
-		public static void WriteStructure<T>(this Stream stream, T structure)
-		{
-			var structureSize = Marshal.SizeOf(typeof (T));
-			var buffer = new byte[structureSize];
-			var handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-
-			Marshal.StructureToPtr(structure, handle.AddrOfPinnedObject(), false);
-
-			handle.Free();
-
-			stream.Write(buffer, 0, buffer.Length);
-		}
-
-		public static void WriteStructure<T>(this Stream stream, T structure, int size)
-		{
-			var structureSize = Marshal.SizeOf(typeof (T));
-			var buffer = new byte[Math.Max(structureSize, size)];
-			var handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-
-			Marshal.StructureToPtr(structure, handle.AddrOfPinnedObject(), false);
-
-			handle.Free();
-
-			stream.Write(buffer, 0, buffer.Length);
 		}
 
 		public static void WriteUInt16(this Stream stream, ushort value, ByteOrder byteOrder = ByteOrder.LittleEndian)

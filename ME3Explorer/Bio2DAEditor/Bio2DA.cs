@@ -1,6 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Gammtek.Conduit.Extensions;
-using Gibbed.IO;
+using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using System;
