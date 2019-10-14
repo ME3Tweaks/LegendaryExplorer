@@ -409,7 +409,7 @@ namespace ME3Explorer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#dbfbff")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#999999")]
         public string MeshplorerBackgroundColor {
             get {
                 return ((string)(this["MeshplorerBackgroundColor"]));
@@ -428,6 +428,18 @@ namespace ME3Explorer.Properties {
             }
             set {
                 this["AssetDBGame"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PackageEditor_HideInterpreterHexBox {
+            get {
+                return ((bool)(this["PackageEditor_HideInterpreterHexBox"]));
+            }
+            set {
+                this["PackageEditor_HideInterpreterHexBox"] = value;
             }
         }
     }

@@ -41,7 +41,7 @@ namespace ME3Explorer
             set => SetValue(HideHexBoxProperty, value);
         }
         public static readonly DependencyProperty HideHexBoxProperty = DependencyProperty.Register(
-            "HideHexBox", typeof(bool), typeof(InterpreterWPF), new PropertyMetadata(false, HideHexBoxChangedCallback));
+            nameof(HideHexBox), typeof(bool), typeof(InterpreterWPF), new PropertyMetadata(false, DisableHexBoxChangedCallback));
 
         public bool ForceSimpleMode
         {
@@ -49,12 +49,11 @@ namespace ME3Explorer
             set => SetValue(ForceSimpleModeProperty, value);
         }
         public static readonly DependencyProperty ForceSimpleModeProperty = DependencyProperty.Register(
-            "ForceSimpleMode", typeof(bool), typeof(InterpreterWPF), new PropertyMetadata(false, ForceSimpleModeChangedCallback));
+            nameof(ForceSimpleMode), typeof(bool), typeof(InterpreterWPF), new PropertyMetadata(false, ForceSimpleModeChangedCallback));
 
-        public bool AdvancedView
-        {
-            get => !ForceSimpleMode && Properties.Settings.Default.InterpreterWPF_AdvancedDisplay;
-        }
+        public bool AdvancedView => !ForceSimpleMode && Properties.Settings.Default.InterpreterWPF_AdvancedDisplay;
+
+        public bool ShowPropOffsets => !HideHexBox && AdvancedView;
 
         private bool _hasUnsavedChanges;
         public bool HasUnsavedChanges
@@ -129,6 +128,7 @@ namespace ME3Explorer
             if (e.PropertyName == nameof(Properties.Settings.Default.InterpreterWPF_AdvancedDisplay))
             {
                 OnPropertyChanged(nameof(AdvancedView));
+                OnPropertyChanged(nameof(ShowPropOffsets));
             }
         }
 
@@ -136,14 +136,15 @@ namespace ME3Explorer
         {
             InterpreterWPF i = (InterpreterWPF)obj;
             i.OnPropertyChanged(nameof(AdvancedView));
+            i.OnPropertyChanged(nameof(ShowPropOffsets));
         }
 
-        private static void HideHexBoxChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        private static void DisableHexBoxChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             InterpreterWPF i = (InterpreterWPF)obj;
             if ((bool)e.NewValue)
             {
-                i.Interpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = i.SaveHexChange_Button.Visibility = Visibility.Collapsed;
+                i.Interpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexbox_Button.Visibility = i.SaveHexChange_Button.Visibility = Visibility.Collapsed;
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(0);
                 i.HexboxColumnDefinition.MinWidth = 0;
                 i.HexboxColumnDefinition.MaxWidth = 0;
@@ -151,12 +152,13 @@ namespace ME3Explorer
             }
             else
             {
-                i.Interpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = i.SaveHexChange_Button.Visibility = Visibility.Visible;
+                i.Interpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexbox_Button.Visibility = i.SaveHexChange_Button.Visibility = Visibility.Visible;
                 i.HexboxColumnDefinition.Width = new GridLength(285);
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
                 i.HexboxColumnDefinition.MinWidth = 220;
                 i.HexboxColumnDefinition.MaxWidth = 718;
             }
+            i.OnPropertyChanged(nameof(ShowPropOffsets));
         }
 
         public UPropertyTreeViewEntry SelectedItem { get; set; }
@@ -176,7 +178,7 @@ namespace ME3Explorer
         public ICommand MoveArrayElementUpCommand { get; set; }
         public ICommand MoveArrayElementDownCommand { get; set; }
         public ICommand SaveHexChangesCommand { get; set; }
-        public ICommand ToggleHexBoxWidthCommand { get; set; }
+        public ICommand ToggleHexBoxCommand { get; set; }
         public ICommand AddArrayElementCommand { get; set; }
         public ICommand RemoveArrayElementCommand { get; set; }
         public ICommand ClearArrayCommand { get; set; }
@@ -197,7 +199,7 @@ namespace ME3Explorer
             PopoutInterpreterForObjectValueCommand = new GenericCommand(PopoutInterpreterForObj, ObjectPropertyExportIsSelected);
 
             SaveHexChangesCommand = new GenericCommand(Interpreter_SaveHexChanges, IsExportLoaded);
-            ToggleHexBoxWidthCommand = new GenericCommand(Interpreter_ToggleHexboxWidth);
+            ToggleHexBoxCommand = new GenericCommand(ToggleHexbox);
             AddArrayElementCommand = new GenericCommand(AddArrayElement, CanAddArrayElement);
             RemoveArrayElementCommand = new GenericCommand(RemoveArrayElement, ArrayElementIsSelected);
             MoveArrayElementUpCommand = new GenericCommand(MoveArrayElementUp, CanMoveArrayElementUp);
@@ -1130,16 +1132,16 @@ namespace ME3Explorer
             }
         }
 
-        private void Interpreter_ToggleHexboxWidth()
+        public void ToggleHexbox()
         {
-            GridLength len = HexboxColumnDefinition.Width;
-            if (len.Value < HexboxColumnDefinition.MaxWidth)
+            if (HideHexBox)
             {
-                HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MaxWidth);
+                Properties.Settings.Default.PackageEditor_HideInterpreterHexBox = HideHexBox = false;
             }
             else
             {
-                HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MinWidth);
+                Properties.Settings.Default.PackageEditor_HideInterpreterHexBox = HideHexBox = true;
+                ToggleHexbox_Button.Visibility = Visibility.Visible;
             }
         }
 

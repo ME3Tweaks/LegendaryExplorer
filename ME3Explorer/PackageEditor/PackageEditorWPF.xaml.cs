@@ -1663,7 +1663,6 @@ namespace ME3Explorer
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Editor", new WeakReference(this));
 
-            //ME3UnrealObjectInfo.generateInfo();
             CurrentView = CurrentViewMode.Tree;
             LoadCommands();
 
@@ -1689,6 +1688,9 @@ namespace ME3Explorer
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
             BinaryInterpreterTab_BinaryInterpreter.SetParentNameList(NamesList); //reference to this control for name editor set
             Bio2DATab_Bio2DAEditor.SetParentNameList(NamesList); //reference to this control for name editor set
+
+            InterpreterTab_Interpreter.HideHexBox = Properties.Settings.Default.PackageEditor_HideInterpreterHexBox;
+            InterpreterTab_Interpreter.ToggleHexbox_Button.Visibility = Visibility.Visible;
 
             RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
             LoadRecentList();
