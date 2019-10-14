@@ -376,7 +376,17 @@ namespace ME3Explorer.Packages
 
         public NameReference ObjectName
         {
-            get => new NameReference(ObjectNameString, indexValue);
+            get
+            {
+                try
+                {
+                    return new NameReference(ObjectNameString, indexValue);
+                }
+                catch (Exception e)
+                {
+                    return new NameReference("ERROR: INVALID NAME INDEX", 0);
+                }
+            }
             set => (ObjectNameString, indexValue) = value;
         }
 
