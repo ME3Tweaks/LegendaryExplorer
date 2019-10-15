@@ -35,6 +35,14 @@ namespace ME3Explorer.Unreal.BinaryConverters
             uIndices.AddRange(LocalFunctionMap.Select((kvp, i) => (kvp.Value, $"LocalFunctions[{i}]")));
             return uIndices;
         }
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = base.GetNames(game);
+
+            names.AddRange(LocalFunctionMap.Select((kvp, i) => (kvp.Key, $"LocalFunctions[{i}]")));
+
+            return names;
+        }
     }
 
     [Flags]

@@ -75,6 +75,29 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
             return uIndices;
         }
+
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = base.GetNames(game);
+
+            names.Add((ClassConfigName, nameof(ClassConfigName)));
+            if (game <= MEGame.ME2)
+            {
+                names.AddRange(unkNameList1.Select((name, i) => (name, $"unkNameList1[{i}]")));
+            }
+            names.AddRange(ComponentNameToDefaultObjectMap.Select((kvp, i) => (kvp.Key, $"ComponentNameToDefaultObjectMap[{i}]")));
+            if (game == MEGame.ME3)
+            {
+                names.Add((unkName2, nameof(unkName2)));
+            }
+
+            if (game <= MEGame.ME2)
+            {
+                names.AddRange(unkNameList2.Select((name, i) => (name, $"unkNameList2[{i}]")));
+            }
+
+            return names;
+        }
     }
 }
 

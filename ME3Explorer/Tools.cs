@@ -149,7 +149,7 @@ namespace ME3Explorer
                 {
                     (new BIKExtract()).Show();
                 },
-                tags = new List<string> { "utility", "bik", "movie" },
+                tags = new List<string> { "utility", "bik", "movie", "bink", "video", "tfc" },
                 subCategory = "Extractors + Repackers",
                 description = "BIK Movie Extractor is a utility for extracting BIK videos from the ME3 Movies.tfc. This file contains small resolution videos played during missions, such as footage of Miranda in Sanctuary.",
             });

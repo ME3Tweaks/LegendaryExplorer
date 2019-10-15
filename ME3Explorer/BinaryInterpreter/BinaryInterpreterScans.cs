@@ -4427,7 +4427,6 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        //TODO: unfinished. currently does not display the properties for the list of BioStageCamera objects at the end
         private List<ITreeItem> StartBioStageScan(byte[] data, ref int binarystart)
         {
             /*
@@ -4459,7 +4458,7 @@ namespace ME3Explorer
                         var name = new NameReference(CurrentLoadedExport.FileRef.GetNameEntry(nameindex), num);
                         subnodes.Add(new BinInterpNode
                         {
-                            Header = $"{(pos - binarystart):X4} Camera: {name.Instanced}",
+                            Header = $"{(pos - binarystart):X4} Array Name: {name.Instanced}",
                             Name = $"_{pos.ToString()}",
                             Tag = NodeType.StructLeafName
                         });
@@ -5830,7 +5829,7 @@ namespace ME3Explorer
                 if (Pcc.Game == MEGame.ME1)
                 {
                     int count = bin.ReadInt32();
-                    var unkListNode = new BinInterpNode(bin.Position - 4, $"MaterialExpressions list? ({count} items)");
+                    var unkListNode = new BinInterpNode(bin.Position - 4, $"MaterialUniformExpressions list? ({count} items)");
                     nodes.Add(unkListNode);
                     for (int i = 0; i < count; i++)
                     {

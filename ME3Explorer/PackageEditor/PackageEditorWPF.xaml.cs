@@ -202,6 +202,7 @@ namespace ME3Explorer
         public ICommand EditNameCommand { get; set; }
         public ICommand AddNameCommand { get; set; }
         public ICommand CopyNameCommand { get; set; }
+        public ICommand FindNameUsagesCommand { get; set; }
         public ICommand RebuildStreamingLevelsCommand { get; set; }
         public ICommand ExportEmbeddedFileCommand { get; set; }
         public ICommand ImportEmbeddedFileCommand { get; set; }
@@ -247,6 +248,7 @@ namespace ME3Explorer
             EditNameCommand = new GenericCommand(EditName, NameIsSelected);
             AddNameCommand = new RelayCommand(AddName, CanAddName);
             CopyNameCommand = new GenericCommand(CopyName, NameIsSelected);
+            FindNameUsagesCommand = new GenericCommand(FindNameUsages, NameIsSelected);
             RebuildStreamingLevelsCommand = new GenericCommand(RebuildStreamingLevels, PackageIsLoaded);
             ExportEmbeddedFileCommand = new GenericCommand(ExportEmbeddedFilePrompt, DoesSelectedItemHaveEmbeddedFile);
             ImportEmbeddedFileCommand = new GenericCommand(ImportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
@@ -970,6 +972,24 @@ namespace ME3Explorer
             catch (Exception)
             {
                 //don't bother, clippy is not having it today
+            }
+        }
+
+        private void FindNameUsages()
+        {
+            if (LeftSide_ListView.SelectedItem is IndexedName iName)
+            {
+                string name = iName.Name.Name;
+                BusyText = $"Finding usages of '{name}'...";
+                IsBusy = true;
+                Task.Run(() => Pcc.FindUsagesOfName(name)).ContinueWithOnUIThread(prevTask =>
+                {
+                    IsBusy = false;
+                    var dlg = new ListDialog(prevTask.Result.SelectMany(kvp => kvp.Value.Select(refName => $"#{kvp.Key.UIndex} {kvp.Key.ObjectName.Instanced}: {refName}")).ToList(),
+                                             $"{prevTask.Result.Count} Objects that use '{name}'",
+                                             "There may be additional usages of this name in the unparsed binary of some objects", this);
+                    dlg.Show();
+                });
             }
         }
 

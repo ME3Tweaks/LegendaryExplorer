@@ -81,6 +81,16 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
             return uIndexes;
         }
+
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = new List<(NameReference, string)>();
+
+            names.AddRange(RefSkeleton.Select((bone, i) => (bone.Name, $"RefSkeleton[{i}].BoneName")));
+            names.AddRange(NameIndexMap.Select((kvp, i) => (kvp.Key, $"NameIndexMap[{i}]")));
+
+            return names;
+        }
     }
 
     public class MeshBone

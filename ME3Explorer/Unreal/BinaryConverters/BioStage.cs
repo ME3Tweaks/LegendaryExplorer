@@ -11,13 +11,17 @@ namespace ME3Explorer.Unreal.BinaryConverters
 {
     public class BioStage : ObjectBinary
     {
-        private int length;
+        public int length;
         public OrderedMultiValueDictionary<NameReference, PropertyCollection> CameraList; //PropertyCollection is struct of type BioStageCamera, which contains nothing that needs relinking
 
         protected override void Serialize(SerializingContainer2 sc)
         {
             if (sc.Game != MEGame.ME3)
             {
+                if (sc.IsLoading)
+                {
+                    CameraList = new OrderedMultiValueDictionary<NameReference, PropertyCollection>();
+                }
                 return;
             }
             long startPos = sc.ms.Position;

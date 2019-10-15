@@ -37,6 +37,15 @@ namespace ME3Explorer.Unreal.BinaryConverters
             uIndices.Add((ArraySizeEnum, "ArraySizeEnum"));
             return uIndices;
         }
+
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = base.GetNames(game);
+
+            names.Add((Category, nameof(Category)));
+
+            return names;
+        }
     }
 }
 

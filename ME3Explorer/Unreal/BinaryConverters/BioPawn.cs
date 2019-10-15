@@ -19,5 +19,14 @@ namespace ME3Explorer.Unreal.BinaryConverters
         {
             return AnimationMap.Select((kvp, i) => (kvp.Value, $"AnimationMap[{i}]")).ToList();
         }
+
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = new List<(NameReference, string)>();
+
+            names.AddRange(AnimationMap.Select((kvp, i) => (kvp.Key, $"AnimationMap[{i}]")));
+
+            return names;
+        }
     }
 }

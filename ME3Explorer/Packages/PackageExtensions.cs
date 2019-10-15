@@ -10,7 +10,6 @@ namespace ME3Explorer.Packages
 {
     public static class MEPackageExtensions
     {
-
         public static string GetEntryString(this IMEPackage pcc, int index)
         {
             if (index == 0)
@@ -111,6 +110,173 @@ namespace ME3Explorer.Packages
                 }
             }
             return false;
+        }
+
+        public static Dictionary<IEntry, List<string>> FindUsagesOfName(this IMEPackage pcc, string name)
+        {
+            var result = new Dictionary<IEntry, List<string>>();
+            foreach (ExportEntry exp in pcc.Exports)
+            {
+                try
+                {
+                    //find header references
+                    if (exp.ObjectName.Name == name)
+                    {
+                        result.AddToListAt(exp, "Header: Object Name");
+                    }
+                    if (exp.HasComponentMap && exp.ComponentMap.Any(kvp => kvp.Key.Name == name))
+                    {
+                        result.AddToListAt(exp, "Header: ComponentMap");
+                    }
+
+                    if ((!exp.IsDefaultObject && exp.IsOrInheritsFrom("Component") || pcc.Game == MEGame.UDK && exp.ClassName.EndsWith("Component")) &&
+                        exp.ParentFullPath.Contains("Default__") && 
+                        exp.DataSize >= 12 && BitConverter.ToInt32(exp.Data, 4) is int nameIdx && pcc.IsName(nameIdx) &&
+                        pcc.GetNameEntry(nameIdx) == name)
+                    {
+                        result.AddToListAt(exp, "Component TemplateName (0x4)");
+                    }
+
+                    //find property references
+                    findPropertyReferences(exp.GetProperties(), exp, false, "Property: ");
+
+                    //find binary references
+                    if (!exp.IsDefaultObject && ObjectBinary.From(exp) is { } objBin)
+                    {
+                        if (objBin is BioStage bioStage)
+                        {
+                            if (bioStage.length > 0 && name == "m_aCameraList")
+                            {
+                                result.AddToListAt(exp, "(Binary prop: m_aCameraList name)");
+                            }
+                            int i = 0;
+                            foreach ((NameReference key, PropertyCollection props) in bioStage.CameraList)
+                            {
+                                if (key.Name == name)
+                                {
+                                    result.AddToListAt(exp, $"(Binary prop: m_aCameraList[{i}])");
+                                }
+                                findPropertyReferences(props, exp, false, "Binary prop: m_aCameraList[{i}].");
+                                ++i;
+                            }
+                        }
+                        else if (objBin is UScriptStruct scriptStruct)
+                        {
+                            findPropertyReferences(scriptStruct.Defaults, exp, false, "Binary Property:");
+                        }
+                        else
+                        {
+                            List<(NameReference, string)> names = objBin.GetNames(exp.FileRef.Game);
+                            foreach ((NameReference nameRef, string propName) in names)
+                            {
+                                if (nameRef.Name == name)
+                                {
+                                    result.AddToListAt(exp, $"(Binary prop: {propName})");
+                                }
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    result.AddToListAt(exp, "Exception occured while reading this export!");
+                }
+            }
+
+            foreach (ImportEntry import in pcc.Imports)
+            {
+                try
+                {
+                    if (import.ObjectName.Name == name)
+                    {
+                        result.AddToListAt(import, "ObjectName");
+                    }
+                    if (import.PackageFile == name)
+                    {
+                        result.AddToListAt(import, "PackageFile");
+                    }
+                    if (import.ClassName == name)
+                    {
+                        result.AddToListAt(import, "Class");
+                    }
+                }
+                catch (Exception e)
+                {
+                    result.AddToListAt(import, "Exception occured while reading this import!");
+                }
+            }
+
+            return result;
+
+            void findPropertyReferences(PropertyCollection props, ExportEntry exp, bool isInImmutable = false, string prefix = "")
+            {
+                foreach (UProperty prop in props)
+                {
+                    if (!isInImmutable && prop.Name.Name == name)
+                    {
+                        result.AddToListAt(exp, $"{prefix}{prop.Name} name");
+                    }
+                    switch (prop)
+                    {
+                        case NameProperty nameProperty:
+                            if (nameProperty.Value.Name == name)
+                            {
+                                result.AddToListAt(exp, $"{prefix}{nameProperty.Name} value");
+                            }
+                            break;
+                        case DelegateProperty delegateProperty:
+                            if (delegateProperty.Value.FunctionName.Name == name)
+                            {
+                                result.AddToListAt(exp, $"{prefix}{delegateProperty.Name} function name");
+                            }
+                            break;
+                        case EnumProperty enumProperty:
+                            if (pcc.Game >= MEGame.ME3 && !isInImmutable && enumProperty.EnumType.Name == name)
+                            {
+                                result.AddToListAt(exp, $"{prefix}{enumProperty.Name} enum type");
+                            }
+                            if (enumProperty.Value.Name == name)
+                            {
+                                result.AddToListAt(exp, $"{prefix}{enumProperty.Name} enum value");
+                            }
+                            break;
+                        case StructProperty structProperty:
+                            if (!isInImmutable && structProperty.StructType == name)
+                            {
+                                result.AddToListAt(exp, $"{prefix}{structProperty.Name} struct type");
+                            }
+                            findPropertyReferences(structProperty.Properties, exp, structProperty.IsImmutable, $"{prefix}{structProperty.Name}: ");
+                            break;
+                        case ArrayProperty<NameProperty> arrayProperty:
+                            for (int i = 0; i < arrayProperty.Count; i++)
+                            {
+                                NameProperty nameProp = arrayProperty[i];
+                                if (nameProp.Value.Name == name)
+                                {
+                                    result.AddToListAt(exp, $"{prefix}{arrayProperty.Name}[{i}]");
+                                }
+                            }
+                            break;
+                        case ArrayProperty<EnumProperty> arrayProperty:
+                            for (int i = 0; i < arrayProperty.Count; i++)
+                            {
+                                EnumProperty enumProp = arrayProperty[i];
+                                if (enumProp.Value.Name == name)
+                                {
+                                    result.AddToListAt(exp, $"{prefix}{arrayProperty.Name}[{i}]");
+                                }
+                            }
+                            break;
+                        case ArrayProperty<StructProperty> arrayProperty:
+                            for (int i = 0; i < arrayProperty.Count; i++)
+                            {
+                                StructProperty structProp = arrayProperty[i];
+                                findPropertyReferences(structProp.Properties, exp, structProp.IsImmutable, $"{prefix}{arrayProperty.Name}[{i}].");
+                            }
+                            break;
+                    }
+                }
+            }
         }
     }
     public static class ExportEntryExtensions

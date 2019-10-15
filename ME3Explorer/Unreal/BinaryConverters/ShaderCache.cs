@@ -68,6 +68,24 @@ namespace ME3Explorer.Unreal.BinaryConverters
             int dummy = 0;
             sc.Serialize(ref dummy);
         }
+
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = base.GetNames(game);
+
+            names.AddRange(ShaderTypeCRCMap.Select((kvp, i) => (kvp.Key, $"ShaderTypeCRCMap[{i}]")));
+            names.AddRange(Shaders.Select((kvp, i) => (kvp.Value.ShaderType, $"Shaders[{i}].ShaderType")));
+            names.AddRange(VertexFactoryTypeCRCMap.Select((kvp, i) => (kvp.Key, $"VertexFactoryTypeCRCMap[{i}]")));
+
+            int j = 0;
+            foreach ((StaticParameterSet key, MaterialShaderMap msm) in MaterialShaderMaps)
+            {
+                names.AddRange(msm.GetNames(game).Select(tuple => (tuple.Item1, $"MaterialShaderMaps[{j}].{tuple.Item2}")));
+                ++j;
+            }
+
+            return names;
+        }
     }
 
     public enum ShaderFrequency : byte
@@ -122,6 +140,58 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public MaterialUniformExpressionTexture[] UniformCubeTextureExpressions;
         public MaterialUniformExpression[] UniformVertexVectorExpressions;
         public MaterialUniformExpression[] UniformVertexScalarExpressions;
+
+        public  List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = new List<(NameReference, string)>();
+
+            names.AddRange(Shaders.Select((kvp, i) => (kvp.Key, $"Shaders[{i}].ShaderType")));
+
+            int j = 0;
+            foreach (var msm in MeshShaderMaps)
+            {
+                names.Add((msm.VertexFactoryType, $"MeshShaderMaps[{j}].VertexFactoryType"));
+                names.AddRange(msm.Shaders.Select((kvp, i) => (kvp.Key, $"MeshShaderMaps[{j}].Shaders[{i}].ShaderType")));
+                ++j;
+            }
+            names.AddRange(StaticParameters.GetNames(game).Select(tuple => (tuple.Item1, $"StaticParameters.{tuple.Item2}")));
+
+            if (game >= MEGame.ME3)
+            {
+                var uniformExpressionArrays = new List<(string, MaterialUniformExpression[])>
+                {
+                    (nameof(UniformPixelVectorExpressions), UniformPixelVectorExpressions),
+                    (nameof(UniformPixelScalarExpressions), UniformPixelScalarExpressions),
+                    (nameof(Uniform2DTextureExpressions), Uniform2DTextureExpressions),
+                    (nameof(UniformCubeTextureExpressions), UniformCubeTextureExpressions),
+                    (nameof(UniformCubeTextureExpressions), UniformVertexVectorExpressions),
+                    (nameof(UniformCubeTextureExpressions), UniformVertexScalarExpressions),
+                };
+
+                foreach ((string prefix, MaterialUniformExpression[] expressions) in uniformExpressionArrays)
+                {
+                    for (int i = 0; i < expressions.Length; i++)
+                    {
+                        MaterialUniformExpression expression = expressions[i];
+                        names.Add((expression.ExpressionType, $"{prefix}[{i}].ExpressionType"));
+                        switch (expression)
+                        {
+                            case MaterialUniformExpressionTextureParameter texParamExpression:
+                                names.Add((texParamExpression.ParameterName, $"{prefix}[{i}].ParameterName"));
+                                break;
+                            case MaterialUniformExpressionScalarParameter scalarParameterExpression:
+                                names.Add((scalarParameterExpression.ParameterName, $"{prefix}[{i}].ParameterName"));
+                                break;
+                            case MaterialUniformExpressionVectorParameter vecParameterExpression:
+                                names.Add((vecParameterExpression.ParameterName, $"{prefix}[{i}].ParameterName"));
+                                break;
+                        }
+                    }
+                }
+            }
+
+            return names;
+        }
     }
 
     public class ShaderReference

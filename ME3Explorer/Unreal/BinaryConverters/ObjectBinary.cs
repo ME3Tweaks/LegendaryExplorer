@@ -121,6 +121,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         protected abstract void Serialize(SerializingContainer2 sc);
 
         public virtual List<(UIndex, string)> GetUIndexes(MEGame game) => new List<(UIndex, string)>();
+        public virtual List<(NameReference, string)> GetNames(MEGame game) => new List<(NameReference, string)>();
 
         public virtual void WriteTo(Stream ms, IMEPackage pcc, int fileOffset = 0)
         {

@@ -41,7 +41,33 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 return mat.GetUIndexes(game).Select(tuple => (tuple.Item1, $"CachedTerrainMaterials[{i}].{tuple.Item2}"));
             }));
+            if (game != MEGame.ME1)
+            {
+                uIndexes.AddRange(CachedTerrainMaterials2.SelectMany((mat, i) =>
+                {
+                    return mat.GetUIndexes(game).Select(tuple => (tuple.Item1, $"CachedTerrainMaterials2[{i}].{tuple.Item2}"));
+                }));
+            }
             return uIndexes;
+        }
+
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = new List<(NameReference, string)>();
+
+            names.AddRange(CachedTerrainMaterials.SelectMany((mat, i) =>
+            {
+                return mat.GetNames(game).Select(tuple => (tuple.Item1, $"CachedTerrainMaterials[{i}].{tuple.Item2}"));
+            }));
+            if (game != MEGame.ME1)
+            {
+                names.AddRange(CachedTerrainMaterials2.SelectMany((mat, i) =>
+                {
+                    return mat.GetNames(game).Select(tuple => (tuple.Item1, $"CachedTerrainMaterials2[{i}].{tuple.Item2}"));
+                }));
+            }
+
+            return names;
         }
     }
 

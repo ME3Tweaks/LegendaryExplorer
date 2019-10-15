@@ -32,6 +32,19 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
             return uIndexes;
         }
+
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = new List<(NameReference, string)>();
+
+            names.AddRange(SM3MaterialResource.GetNames(game));
+            if (game != MEGame.UDK)
+            {
+                names.AddRange(SM2MaterialResource.GetNames(game));
+            }
+
+            return names;
+        }
     }
     public class MaterialInstance : ObjectBinary
     {
@@ -43,16 +56,37 @@ namespace ME3Explorer.Unreal.BinaryConverters
         {
             sc.Serialize(ref SM3StaticPermutationResource);
             sc.Serialize(ref SM3StaticParameterSet);
-            sc.Serialize(ref SM2StaticPermutationResource);
-            sc.Serialize(ref SM2StaticParameterSet);
+            if (sc.Game != MEGame.UDK)
+            {
+                sc.Serialize(ref SM2StaticPermutationResource);
+                sc.Serialize(ref SM2StaticParameterSet);
+            }
         }
 
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)>();
             uIndexes.AddRange(SM3StaticPermutationResource.GetUIndexes(game));
-            uIndexes.AddRange(SM2StaticPermutationResource.GetUIndexes(game));
+            if (game != MEGame.UDK)
+            {
+                uIndexes.AddRange(SM2StaticPermutationResource.GetUIndexes(game));
+            }
             return uIndexes;
+        }
+
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = new List<(NameReference, string)>();
+
+            names.AddRange(SM3StaticPermutationResource.GetNames(game));
+            names.AddRange(SM3StaticParameterSet.GetNames(game));
+            if (game != MEGame.UDK)
+            {
+                names.AddRange(SM2StaticPermutationResource.GetNames(game));
+                names.AddRange(SM2StaticParameterSet.GetNames(game));
+            }
+
+            return names;
         }
     }
 
@@ -121,8 +155,73 @@ namespace ME3Explorer.Unreal.BinaryConverters
                                                                .Select((flipParam, i) => (flipParam.TextureIndex, $"UniformPixelScalarExpressions[{i}]")));
                 uIndexes.AddRange(Uniform2DTextureExpressions.Select((texParam, i) => (texParam.TextureIndex, $"Uniform2DTextureExpressions[{i}]")));
                 uIndexes.AddRange(UniformCubeTextureExpressions.Select((texParam, i) => (texParam.TextureIndex, $"UniformCubeTextureExpressions[{i}]")));
+                if (game == MEGame.ME1)
+                {
+                    int j = 0;
+                    foreach (ME1MaterialUniformExpressionsElement expressionsElement in Me1MaterialUniformExpressionsList)
+                    {
+                        uIndexes.AddRange(expressionsElement.UniformPixelVectorExpressions.OfType<MaterialUniformExpressionFlipbookParameter>()
+                                                                       .Select((flipParam, i) => (flipParam.TextureIndex, $"MaterialUniformExpressions[{j}].UniformPixelVectorExpressions[{i}]")));
+                        uIndexes.AddRange(expressionsElement.UniformPixelScalarExpressions.OfType<MaterialUniformExpressionFlipbookParameter>()
+                                                                       .Select((flipParam, i) => (flipParam.TextureIndex, $"MaterialUniformExpressions[{j}].UniformPixelScalarExpressions[{i}]")));
+                        uIndexes.AddRange(expressionsElement.Uniform2DTextureExpressions.Select((texParam, i) => (texParam.TextureIndex, $"MaterialUniformExpressions[{j}].Uniform2DTextureExpressions[{i}]")));
+                        uIndexes.AddRange(expressionsElement.UniformCubeTextureExpressions.Select((texParam, i) => (texParam.TextureIndex, $"MaterialUniformExpressions[{j}].UniformCubeTextureExpressions[{i}]")));
+                        ++j;
+                    }
+                }
             }
             return uIndexes;
+        }
+
+        public List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = new List<(NameReference, string)>();
+
+            if (game <= MEGame.ME2)
+            {
+                var uniformExpressionArrays = new List<(string, MaterialUniformExpression[])>
+                {
+                    (nameof(UniformPixelVectorExpressions), UniformPixelVectorExpressions),
+                    (nameof(UniformPixelScalarExpressions), UniformPixelScalarExpressions),
+                    (nameof(Uniform2DTextureExpressions), Uniform2DTextureExpressions),
+                    (nameof(UniformCubeTextureExpressions), UniformCubeTextureExpressions),
+                };
+                if (game == MEGame.ME1)
+                {
+                    int j = 0;
+                    foreach (ME1MaterialUniformExpressionsElement expressionsElement in Me1MaterialUniformExpressionsList)
+                    {
+                        uniformExpressionArrays.Add(($"MaterialUniformExpressions[{j}].UniformPixelVectorExpressions", expressionsElement.UniformPixelVectorExpressions));
+                        uniformExpressionArrays.Add(($"MaterialUniformExpressions[{j}].UniformPixelScalarExpressions", expressionsElement.UniformPixelScalarExpressions));
+                        uniformExpressionArrays.Add(($"MaterialUniformExpressions[{j}].Uniform2DTextureExpressions", expressionsElement.Uniform2DTextureExpressions));
+                        uniformExpressionArrays.Add(($"MaterialUniformExpressions[{j}].UniformCubeTextureExpressions", expressionsElement.UniformCubeTextureExpressions));
+                        ++j;
+                    }
+                }
+
+                foreach ((string prefix, MaterialUniformExpression[] expressions)  in uniformExpressionArrays)
+                {
+                    for (int i = 0; i < expressions.Length; i++)
+                    {
+                        MaterialUniformExpression expression = expressions[i];
+                        names.Add((expression.ExpressionType, $"{prefix}[{i}].ExpressionType"));
+                        switch (expression)
+                        {
+                            case MaterialUniformExpressionTextureParameter texParamExpression:
+                                names.Add((texParamExpression.ParameterName, $"{prefix}[{i}].ParameterName"));
+                                break;
+                            case MaterialUniformExpressionScalarParameter scalarParameterExpression:
+                                names.Add((scalarParameterExpression.ParameterName, $"{prefix}[{i}].ParameterName"));
+                                break;
+                            case MaterialUniformExpressionVectorParameter vecParameterExpression:
+                                names.Add((vecParameterExpression.ParameterName, $"{prefix}[{i}].ParameterName"));
+                                break;
+                        }
+                    }
+                }
+            }
+
+            return names;
         }
     }
 
@@ -251,6 +350,20 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 StaticComponentMaskParameters = new StaticComponentMaskParameter[0],
                 NormalParameters = new NormalParameter[0]
             };
+        }
+
+        public List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = new List<(NameReference, string)>();
+
+            names.AddRange(StaticSwitchParameters.Select((param, i) => (param.ParameterName, $"{nameof(StaticSwitchParameters)}[{i}].ParameterName")));
+            names.AddRange(StaticComponentMaskParameters.Select((param, i) => (param.ParameterName, $"{nameof(StaticComponentMaskParameters)}[{i}].ParameterName")));
+            if (game >= MEGame.ME3)
+            {
+                names.AddRange(NormalParameters.Select((param, i) => (param.ParameterName, $"{nameof(NormalParameters)}[{i}].ParameterName")));
+            }
+
+            return names;
         }
     }
 

@@ -33,6 +33,15 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.Serialize(ref FriendlyName);
             }
         }
+
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = base.GetNames(game);
+
+            names.Add((FriendlyName, nameof(FriendlyName)));
+
+            return names;
+        }
     }
 
     public enum FunctionFlags : uint

@@ -38,6 +38,23 @@ namespace ME3Explorer.Unreal.BinaryConverters
         {
             return new List<(UIndex, string)> { (Owner, "Owner") };
         }
+
+        public override List<(NameReference, string)> GetNames(MEGame game)
+        {
+            var names = new List<(NameReference, string)>();
+
+            for (int i = 0; i < Elements.Length; i++)
+            {
+                Poly poly = Elements[i];
+                names.Add((poly.ItemName, $"Elements[{i}].ItemName"));
+                if (game >= MEGame.ME3)
+                {
+                    names.Add((poly.ItemName, $"Elements[{i}].RulesetVariation"));
+                }
+            }
+
+            return names;
+        }
     }
     public class Poly
     {
