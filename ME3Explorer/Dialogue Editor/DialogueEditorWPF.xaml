@@ -251,11 +251,16 @@
                         <!--Convo Panel-->
                         <StackPanel Name="Convo_Panel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" Visibility="Collapsed" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <DockPanel >
-                                <DockPanel HorizontalAlignment="Stretch" DockPanel.Dock="Left">
-                                    <TextBlock  Name="ConvoDet_Header" Text="Conversation Details"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Top"/>
-                                    <TextBlock Text="Export:"  HorizontalAlignment="Stretch" TextAlignment="Left" FontWeight="Normal" FontSize="15" DockPanel.Dock="Bottom"/>
+                                <TextBlock  Name="ConvoDet_Header" Text="Conversation Details"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Top"/>
+                                <DockPanel HorizontalAlignment="Stretch" DockPanel.Dock="Bottom">
+                                    <TextBlock Text="Export:"  HorizontalAlignment="Stretch" TextAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" FontSize="15" DockPanel.Dock="Left"/>
+                                    <Button Name="OpenConvPackEd_Button" Grid.Column="0" Command="{Binding OpenInCommand}" CommandParameter="PackEdConv" Padding="2" ToolTip="Open the conversation in Package Editor"  DockPanel.Dock="Right">
+                                        <Button.Content>
+                                            <fa:ImageAwesome Icon="Solid_Cube" Width="16" Height="16" Foreground="DarkBlue"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <TextBlock Name="Convo_UID" Text="{Binding Path=SelectedConv.ExportUID}" VerticalAlignment="Center" TextAlignment="Right" FontWeight="Bold" FontSize="20" Margin="6,0,10,0"/>
                                 </DockPanel>
-                                <TextBlock Name="Convo_UID" Text="{Binding Path=SelectedConv.ExportUID}" VerticalAlignment="Center" TextAlignment="Right" FontWeight="Bold" FontSize="20" DockPanel.Dock="Right"/>
                             </DockPanel>
                             <TextBlock Name="Convo_Name"  Text="{Binding Path=SelectedConv.ConvName}"  HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="20" TextWrapping="Wrap" TextAlignment="Left" Margin="2,4,2,4"/>
                             <DockPanel HorizontalAlignment="Stretch">
@@ -551,6 +556,11 @@
                                             <TextBlock Text="Male:" FontSize="12"/>
                                             <DockPanel HorizontalAlignment="Stretch">
                                                 <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Male audio for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
+                                                <Button Name="WwStreamMPackEd_Button" Command="{Binding OpenInCommand}" CommandParameter="PackEd_StreamM" Padding="3" ToolTip="Open this stream in Package Editor" DockPanel.Dock="Right">
+                                                    <Button.Content>
+                                                        <fa:ImageAwesome Icon="Solid_Cube" Width="16" Height="16" Foreground="DarkBlue"/>
+                                                    </Button.Content>
+                                                </Button>
                                                 <Button Name="Open_WwStreamM_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_StreamM" ToolTip="Open in Soundplorer">
                                                     <Button.Content>
                                                         <fa:ImageAwesome Icon="Solid_VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
@@ -573,6 +583,11 @@
                                             <TextBlock Text="Female:" FontSize="12"/>
                                             <DockPanel HorizontalAlignment="Stretch">
                                                 <TextBlock Text="Wwisestream:"  VerticalAlignment="Bottom" HorizontalAlignment="Left" ToolTip="Female audio for this line." DockPanel.Dock="Left" FontSize="15" Margin="3"/>
+                                                <Button Name="WwStreamFPackEd_Button" Command="{Binding OpenInCommand}" CommandParameter="PackEd_StreamF" Padding="3" ToolTip="Open this stream in Package Editor" DockPanel.Dock="Right">
+                                                    <Button.Content>
+                                                        <fa:ImageAwesome Icon="Solid_Cube" Width="16" Height="16" Foreground="DarkBlue"/>
+                                                    </Button.Content>
+                                                </Button>
                                                 <Button Name="Open_WwStreamF_Button" Padding="3" DockPanel.Dock="Right" Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_StreamF" ToolTip="Open this stream in Soundplorer">
                                                     <Button.Content>
                                                         <fa:ImageAwesome Icon="Solid_VolumeUp" Width="16" Height="16" Foreground="DarkBlue"/>
