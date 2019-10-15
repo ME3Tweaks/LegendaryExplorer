@@ -942,7 +942,7 @@ namespace ME3Explorer.AssetDatabase
             }
 
             var selecteditem = lstbx_Textures.SelectedItem as TextureRecord;
-            if (!showText || selecteditem.CFormat == "TextureCube")
+            if (!showText || selecteditem.CFormat == "TextureCube" || selecteditem.CFormat == "TextureMovie")
             {
                 EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
                 textPcc?.Dispose();
@@ -1138,6 +1138,10 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
+            if (showthis && menu_TMovie.IsChecked && tr.CFormat != "TextureMovie")
+            {
+                showthis = false;
+            }
             if (showthis && menu_T1024.IsChecked && tr.SizeX < 1024 && tr.SizeY < 1024)
             {
                 showthis = false;
@@ -1303,6 +1307,9 @@ namespace ME3Explorer.AssetDatabase
                     break;
                 case "Cube":
                     menu_TCube.IsChecked = !menu_TCube.IsChecked;
+                    break;
+                case "Movie":
+                    menu_TMovie.IsChecked = !menu_TMovie.IsChecked;
                     break;
                 case "1024":
                     menu_T1024.IsChecked = !menu_T1024.IsChecked;
@@ -2234,7 +2241,7 @@ namespace ME3Explorer.AssetDatabase
                                 }
                             }
 
-                            if ((exp.ClassName == "Texture2D" || exp.ClassName == "TextureCube") && !pIsdefault)
+                            if ((exp.ClassName == "Texture2D" || exp.ClassName == "TextureCube" || exp.ClassName == "TextureMovie") && !pIsdefault)
                             {
                                 bool IsDLC = pcc.IsInOfficialDLC();
                                 if(exp.Parent.ClassName == "TextureCube")
@@ -2272,16 +2279,20 @@ namespace ME3Explorer.AssetDatabase
                                     string cRC = "n/a";
                                     if (exp.ClassName != "TextureCube")
                                     {
-                                        var formp = exp.GetProperty<EnumProperty>("Format");
-                                        pformat = formp != null ? formp.Value.Name.ToString() : "n/a";
+                                        pformat = "TextureMovie";
+                                        if (exp.ClassName != "TextureMovie")
+                                        {
+                                            var formp = exp.GetProperty<EnumProperty>("Format");
+                                            pformat = formp != null ? formp.Value.Name.ToString() : "n/a";
+                                            if (ScanCRC)
+                                            {
+                                                cRC = Texture2D.GetTextureCRC(exp).ToString("X8");
+                                            }
+                                        }
                                         var propX = exp.GetProperty<IntProperty>("SizeX");
                                         psizeX = propX != null ? propX.Value : 0;
                                         var propY = exp.GetProperty<IntProperty>("SizeY");
                                         psizeY = propY != null ? propY.Value : 0;
-                                        if (ScanCRC)
-                                        {
-                                            cRC = Texture2D.GetTextureCRC(exp).ToString("X8");
-                                        }
                                     }
                                     var NewTex = new TextureRecord(pExp, parent, IsDLC, pformat, psizeX, psizeY, cRC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
                                     dbScanner.GeneratedText.TryAdd(pExp, NewTex);
