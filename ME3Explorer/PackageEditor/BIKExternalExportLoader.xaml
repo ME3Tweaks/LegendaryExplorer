@@ -1,0 +1,33 @@
+﻿<me3Explorer:ExportLoaderControl x:Class="ME3Explorer.PackageEditor.BIKExternalExportLoader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ME3Explorer.PackageEditor"
+             xmlns:me3Explorer="clr-namespace:ME3Explorer"
+                                 xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+                                 mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    </UserControl.Resources>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+        <StackPanel MaxWidth="500" VerticalAlignment="Center">
+            <TextBlock FontWeight="Bold" FontSize="22"  TextAlignment="Center"><Run Text="Bik TextureMovie "/><Run Text="Player / "/><Run Text="Replacer"/></TextBlock>
+            <Image Source="bink.jpg" MaxWidth="320" Cursor="Hand" Height="212" Width="278" Margin="10" MouseLeftButtonUp="Image_MouseUp"/>
+            <TextBlock FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"><Run Text="Open this movie in RadTools for playback."/><LineBreak/><Run Text="RadTools must be installed.  If you don't have the tools click above to download."/><LineBreak/><Run Text="[IMPORT YET TO BE IMPLEMENTED]"/><LineBreak/><Run/></TextBlock>
+            <DockPanel>
+                <CheckBox Name="isExternal_ChkBx" IsChecked="{Binding IsExternallyCached, Mode=OneWay}" DockPanel.Dock="Left" Margin="5"/>
+                <TextBlock Text="Movie stored in Movie cache" Visibility="{Binding IsExternallyCached, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <TextBlock Text="Movie stored in locally" Visibility="{Binding IsExternallyCached, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </DockPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30">
+                <Button Content="Playback in RadTools" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding OpenFileInRADCommand}" Padding="7" Margin="5,0,0,0"/>
+                <Button Content="Import saved file" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding ImportRADSavedFileCommand}" Margin="5,0,0,0" Padding="7"/>
+            </StackPanel>
+            <TextBlock Foreground="Red" Text="RadTools is not installed. Click the image above to download it." Visibility="{Binding RADNotInstalled, Converter={StaticResource BoolToVisibilityConverter}}" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>
+        </StackPanel>
+    </StackPanel>
+</me3Explorer:ExportLoaderControl>

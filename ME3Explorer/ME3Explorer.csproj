@@ -400,6 +400,9 @@
       <DependentUpon>MeshRendererWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="OnlineContent.cs" />
+    <Compile Include="PackageEditor\BIKExternalExportLoader.xaml.cs">
+      <DependentUpon>BIKExternalExportLoader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PackageEditor\TextureViewer\ParallelCRC.cs" />
     <Compile Include="Packages\EntryTree.cs" />
     <Compile Include="Packages\PackageExtensions.cs" />
@@ -1069,6 +1072,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PackageEditor\BIKExternalExportLoader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="PackageEditor\TextureViewer\TextureViewerExportLoader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1476,6 +1483,7 @@
     <Resource Include="PackageEditor\EntryIcons\icon_default.png" />
     <Resource Include="Resources\AssetDatabase_256x256.ico" />
     <Resource Include="Meshplorer\umodel.ico" />
+    <Resource Include="PackageEditor\bink.jpg" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
