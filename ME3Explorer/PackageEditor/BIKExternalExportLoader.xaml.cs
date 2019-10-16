@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,8 +35,11 @@ namespace ME3Explorer.PackageEditor
         private bool _radIsInstalled;
         public VlcControl MoviePlayer = new VlcControl();
         public ICommand OpenFileInRADCommand { get; private set; }
-        public ICommand ImportRADSavedFileCommand { get; private set; }
-        public ICommand PlayFileInVLCCommand { get; private set; }
+        public ICommand ImportBikFileCommand { get; private set; }
+        public ICommand PlayBikInVLCCommand { get; private set; }
+        public ICommand PauseVLCCommand { get; private set; }
+        public ICommand StopVLCCommand { get; private set; }
+        public ICommand RewindVLCCommand { get; private set; }
         public ICommand ExtractBikCommand { get; private set; }
         public bool RADIsInstalled
         {
@@ -47,6 +51,17 @@ namespace ME3Explorer.PackageEditor
             }
         }
         public bool RADNotInstalled => !RADIsInstalled;
+        private bool _vlcIsInstalled;
+        public bool VLCIsInstalled
+        {
+            get => _vlcIsInstalled;
+            set
+            {
+                SetProperty(ref _vlcIsInstalled, value);
+                OnPropertyChanged(nameof(VLCNotInstalled));
+            }
+        }
+        public bool VLCNotInstalled => !VLCIsInstalled;
         private bool _isexternallyCached;
         public bool IsExternallyCached { get => _isexternallyCached; set => SetProperty(ref _isexternallyCached, value); }
         private bool _islocallyCached;
@@ -57,37 +72,102 @@ namespace ME3Explorer.PackageEditor
         public string TfcName { get => _tfcName; set => SetProperty(ref _tfcName, value); }
         private string _bikfileName;
         public string BikFileName { get => _bikfileName; set => SetProperty(ref _bikfileName, value); }
-
+        private bool _isvlcPlaying;
+        public bool IsVLCPlaying { get => _isvlcPlaying; set => SetProperty(ref _isvlcPlaying, value); }
+        private bool _showInfo;
+        public bool ShowInfo { get => _showInfo; set => SetProperty(ref _showInfo, value); }
         private string RADExecutableLocation;
+        private string VLCDirectory;
         private string CurrentRADExportedFilepath;
-
+        private bool IsExportable()
+        {
+            return !IsExternalFile;
+        }
+        private bool IsMoviePlaying()
+        {
+            return VLCIsInstalled && IsVLCPlaying;
+        }
+        private bool IsMovieStopped()
+        {
+            return VLCIsInstalled && !IsVLCPlaying;
+        }
         public BIKExternalExportLoader()
         {
             DataContext = this;
             GetRADInstallationStatus();
+            GetVLCInstallationStatus();
             LoadCommands();
             InitializeComponent();
             vlcplayer_WinFormsHost.Child = MoviePlayer;
 
             // Load VLC library
-            string vlcDLLLink = @"c:\Program Files\VideoLAN\VLC\"; //NEED TO FIX THIS
-            var libDirectory = new DirectoryInfo(vlcDLLLink);
-            if(!File.Exists(Path.Combine(vlcDLLLink, "libvlc.dll")))
+
+            //var currentAssembly = Assembly.GetEntryAssembly();  //LOAD NUGET 
+            //var currentDirectory = new FileInfo(currentAssembly.Location).DirectoryName;
+            //currentDirectory = Path.Combine(currentDirectory, "lib");
+            //var libDirectory = new DirectoryInfo(currentDirectory);
+
+
+            var libDirectory = new DirectoryInfo(VLCDirectory);
+
+            if (!VLCIsInstalled || !File.Exists(Path.Combine(VLCDirectory, "libvlc.dll")))
             {
                 Debug.WriteLine("VLC library not found.");
-                
+                video_Panel.Visibility = Visibility.Collapsed;
+
             }
             else
             {
                 MoviePlayer.BeginInit();
                 MoviePlayer.VlcLibDirectory = libDirectory;
+                if (!ShowInfo)
+                {
+                    MoviePlayer.VlcMediaplayerOptions = new string[] { "--video-title-show" };  //Can we find options to show frame counts/frame rates/time etc
+                }
                 MoviePlayer.EndInit();
+                MoviePlayer.Playing += (sender, e) => {
+                    IsVLCPlaying = true;
+                    Debug.WriteLine("Started");
+                };
+                MoviePlayer.Stopped += (sender, e) => {
+                    IsVLCPlaying = false;
+                    Debug.WriteLine("Stopped");
+                };
+                MoviePlayer.EncounteredError += (sender, e) =>
+                {
+                    Console.Error.Write("An error occurred");
+                    IsVLCPlaying = false;
+                };
+
+                MoviePlayer.EndReached += (sender, e) => {
+                    IsVLCPlaying = false;
+                    Debug.WriteLine("Reached End");
+                    //ThreadPool.QueueUserWorkItem(_ => ResetPlayer(MoviePlayer)  ) ;
+                };
             }
         }
-        public BIKExternalExportLoader(bool autoplayPopout)
+
+        static void ResetPlayer(Object obj )
         {
+            var vlcplayer = obj as VlcControl;
+            vlcplayer.Pause();
+            vlcplayer.VlcMediaPlayer.Time = 0;
+            Debug.WriteLine("Reached End");
+        }
+
+        public BIKExternalExportLoader(bool autoplayPopout, bool showcontrols = false)
+        {
+            //Always collapse the editing tools
+            biktools_Panel.Visibility = Visibility.Collapsed;
+            if (!showcontrols)
+            {
+                bikcontrols_Panel.Visibility = Visibility.Collapsed;
+            }
             //Add autoplay in VLC window
-            //Hide all windows
+            if (autoplayPopout)
+            {
+                PlayExportInVLC();
+            }
 
         }
 
@@ -116,16 +196,42 @@ namespace ME3Explorer.PackageEditor
             RADIsInstalled = false;
             RADExecutableLocation = null;
         }
+        private void GetVLCInstallationStatus()
+        {
+            if (VLCIsInstalled) return;
+            try
+            {
+                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\VideoLAN\VLC"))
+                {
+                    if (key != null)
+                    {
+                        if (key.GetValue("InstallDir") is string InstallDir)
+                        {
+                            VLCDirectory = InstallDir;
+                            VLCIsInstalled = true;
+                            return;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)  //just for demonstration...it's always best to handle specific exceptions
+            {
+                //react appropriately
+            }
+            VLCIsInstalled = false;
+            VLCDirectory = null;
+        }
 
         private void LoadCommands()
         {
             OpenFileInRADCommand = new GenericCommand(OpenExportInRAD, () => RADIsInstalled);
-            ImportRADSavedFileCommand = new GenericCommand(ImportBikFile, RADExportFileExists);
-            PlayFileInVLCCommand = new GenericCommand(PlayExportInVLC);
-            ExtractBikCommand = new GenericCommand(SaveBikToFile);
+            ImportBikFileCommand = new GenericCommand(ImportBikFile, IsExportable);
+            PlayBikInVLCCommand = new GenericCommand(PlayExportInVLC, IsMovieStopped);
+            PauseVLCCommand = new GenericCommand(PauseMoviePlayer, IsMoviePlaying);
+            RewindVLCCommand = new GenericCommand(RewindMoviePlayer, IsMoviePlaying);
+            StopVLCCommand = new GenericCommand(StopMoviePlayer, IsMoviePlaying);
+            ExtractBikCommand = new GenericCommand(SaveBikToFile, IsExportable);
         }
-
-        private bool RADExportFileExists() => CurrentLoadedExport != null && File.Exists(Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".bik"));
 
         private void GetBikProps()
         {
@@ -161,7 +267,6 @@ namespace ME3Explorer.PackageEditor
                 }
             }
         }
-
         private void OpenExportInRAD()
         {
             try
@@ -187,11 +292,35 @@ namespace ME3Explorer.PackageEditor
         }
         private void PlayExportInVLC()
         {
+            var bik = MoviePlayer.GetCurrentMedia();
+            if (bik == null)
+            {
+                MemoryStream bikMovie = GetMovie();
 
-            MemoryStream bikMovie = GetMovie();
-            if(bikMovie != null)
-                MoviePlayer.Play(bikMovie);
-
+                if (bikMovie != null)
+                    MoviePlayer.Play(bikMovie);
+            }
+            else
+            {
+                MoviePlayer.Pause();
+            }
+            IsVLCPlaying = true;
+        }
+        private void PauseMoviePlayer()
+        {
+            IsVLCPlaying = false;
+            MoviePlayer.Pause();
+        }
+        private void RewindMoviePlayer()
+        {
+            MoviePlayer.VlcMediaPlayer.Time = 0;
+        }
+        private void StopMoviePlayer()
+        {
+            MoviePlayer.Stop();
+            var bik = MoviePlayer.GetCurrentMedia();
+            bik?.Dispose();
+            MoviePlayer.ResetMedia();
         }
         private MemoryStream GetMovie()
         {
@@ -333,11 +462,6 @@ namespace ME3Explorer.PackageEditor
             //CurrentLoadedExport.WriteProperties(props);
         }
 
-        private void OpenWithRAD_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         public override bool CanParse(ExportEntry exportEntry)
         {
             return parsableClasses.Contains(exportEntry.ClassName) && !exportEntry.IsDefaultObject;
@@ -346,18 +470,26 @@ namespace ME3Explorer.PackageEditor
         public override void LoadExport(ExportEntry exportEntry)
         {
             GetRADInstallationStatus();
-            MoviePlayer.Stop();
-            var bik = MoviePlayer.GetCurrentMedia();
-            bik?.Dispose();
+            if(VLCIsInstalled)
+            {
+                MoviePlayer.Stop();
+                MoviePlayer.ResetMedia();
+                //var bik = MoviePlayer.GetCurrentMedia();
+                //bik?.Dispose();
+            }
             CurrentLoadedExport = exportEntry;
             GetBikProps();
         }
 
         public override void UnloadExport()
         {
-            MoviePlayer.Stop();
-            var bik = MoviePlayer.GetCurrentMedia();
-            bik?.Dispose();
+            if (VLCIsInstalled)
+            {
+                MoviePlayer.Stop();
+                MoviePlayer.ResetMedia();
+                //var bik = MoviePlayer.GetCurrentMedia();
+                //bik?.Dispose();
+            }
             CurrentLoadedExport = null;
             CurrentRADExportedFilepath = null;
         }
@@ -378,6 +510,14 @@ namespace ME3Explorer.PackageEditor
             if (dlg == MessageBoxResult.No)
                 return;
             Process.Start("http://www.radgametools.com/bnkdown.htm");
+        }
+
+        private void DownloadVLC_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = MessageBox.Show("Open the VideoLAN (VLC) website?", "Warning", MessageBoxButton.YesNo);
+            if (dlg == MessageBoxResult.No)
+                return;
+            Process.Start("https://www.videolan.org/vlc/");
         }
     }
 }
