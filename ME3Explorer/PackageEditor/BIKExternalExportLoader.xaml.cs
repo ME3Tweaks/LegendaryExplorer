@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,20 +20,23 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using Microsoft.Win32;
+using Vlc.DotNet.Forms;
 using Path = System.IO.Path;
 
 namespace ME3Explorer.PackageEditor
 {
     /// <summary>
-    /// Interaction logic for ExternalToolLauncher.xaml
+    /// Interaction logic for MovieViewerTab.xaml
     /// </summary>
     public partial class BIKExternalExportLoader : ExportLoaderControl
     {
-        private static readonly string[] parsableClasses = { "TextureMovie" };
+        private static readonly string[] parsableClasses = { "TextureMovie", "BioLoadingMovie", "BioSeqAct_MovieBink", "SFXInterpTrackMovieBink", "SFXSeqAct_PlatformMovieBink" };
         private bool _radIsInstalled;
-
+        public VlcControl MoviePlayer = new VlcControl();
         public ICommand OpenFileInRADCommand { get; private set; }
         public ICommand ImportRADSavedFileCommand { get; private set; }
+        public ICommand PlayFileInVLCCommand { get; private set; }
+        public ICommand ExtractBikCommand { get; private set; }
         public bool RADIsInstalled
         {
             get => _radIsInstalled;
@@ -43,10 +47,16 @@ namespace ME3Explorer.PackageEditor
             }
         }
         public bool RADNotInstalled => !RADIsInstalled;
-        public bool _isexternallyCached;
+        private bool _isexternallyCached;
         public bool IsExternallyCached { get => _isexternallyCached; set => SetProperty(ref _isexternallyCached, value); }
-        public string _tfcName;
+        private bool _islocallyCached;
+        public bool IsLocallyCached { get => _islocallyCached; set => SetProperty(ref _islocallyCached, value); }
+        private bool _isexternalFile;
+        public bool IsExternalFile { get => _isexternalFile; set => SetProperty(ref _isexternalFile, value); }
+        private string _tfcName;
         public string TfcName { get => _tfcName; set => SetProperty(ref _tfcName, value); }
+        private string _bikfileName;
+        public string BikFileName { get => _bikfileName; set => SetProperty(ref _bikfileName, value); }
 
         private string RADExecutableLocation;
         private string CurrentRADExportedFilepath;
@@ -57,6 +67,28 @@ namespace ME3Explorer.PackageEditor
             GetRADInstallationStatus();
             LoadCommands();
             InitializeComponent();
+            vlcplayer_WinFormsHost.Child = MoviePlayer;
+
+            // Load VLC library
+            string vlcDLLLink = @"c:\Program Files\VideoLAN\VLC\"; //NEED TO FIX THIS
+            var libDirectory = new DirectoryInfo(vlcDLLLink);
+            if(!File.Exists(Path.Combine(vlcDLLLink, "libvlc.dll")))
+            {
+                Debug.WriteLine("VLC library not found.");
+                
+            }
+            else
+            {
+                MoviePlayer.BeginInit();
+                MoviePlayer.VlcLibDirectory = libDirectory;
+                MoviePlayer.EndInit();
+            }
+        }
+        public BIKExternalExportLoader(bool autoplayPopout)
+        {
+            //Add autoplay in VLC window
+            //Hide all windows
+
         }
 
         private void GetRADInstallationStatus()
@@ -89,66 +121,56 @@ namespace ME3Explorer.PackageEditor
         {
             OpenFileInRADCommand = new GenericCommand(OpenExportInRAD, () => RADIsInstalled);
             ImportRADSavedFileCommand = new GenericCommand(ImportBikFile, RADExportFileExists);
+            PlayFileInVLCCommand = new GenericCommand(PlayExportInVLC);
+            ExtractBikCommand = new GenericCommand(SaveBikToFile);
         }
 
         private bool RADExportFileExists() => CurrentLoadedExport != null && File.Exists(Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".bik"));
 
-        private void GetCacheProps()
+        private void GetBikProps()
         {
+            IsExternallyCached = false;
+            IsExternalFile = false;
+            IsLocallyCached = false;
+            TfcName = "None";
+            BikFileName = "No file";
             var props = CurrentLoadedExport.GetProperties();
-            var tfcprop = props.GetProp<NameProperty>("TextureFileCacheName");
-            if (tfcprop == null)
+            if(CurrentLoadedExport.ClassName == "TextureMovie")
             {
-                IsExternallyCached = false;
-                TfcName = "None";
-                return;
+                var tfcprop = props.GetProp<NameProperty>("TextureFileCacheName");
+                if (tfcprop == null)
+                {
+                    IsLocallyCached = true;
+                    return;
+                }
+                IsExternallyCached = true;
+                TfcName = tfcprop.Value;
             }
-            IsExternallyCached = true;
-            TfcName = tfcprop.Value;
+            else
+            {
+                string propbikName = "m_sMovieName";
+                if(CurrentLoadedExport.ClassName == "BioLoadingMovie")
+                {
+                    propbikName = "MovieName";
+                }
+                var bikprop = props.GetProp<StrProperty>(propbikName);
+                if(bikprop != null)
+                {
+                    BikFileName = bikprop.ToString();
+                    IsExternalFile = true;
+                }
+            }
         }
+
         private void OpenExportInRAD()
         {
             try
             {
-                var props = CurrentLoadedExport.GetProperties();
-                var binary = CurrentLoadedExport.getBinaryData();
-                int length = BitConverter.ToInt32(binary, 4);
-                int offset = BitConverter.ToInt32(binary, 12);
-
-                byte[] bikMovie = new byte[] { };
-                
-                if(IsExternallyCached) //is contained in TFC
-                {
-                    string filePath = null;
-                    string rootPath = MEDirectories.GamePath(Pcc.Game);
-                    if (rootPath == null || !Directory.Exists(rootPath))
-                    {
-                        MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
-                        return;
-                    }
-
-                    string filename = $"{TfcName}.tfc";
-                    filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault();
-                    if (filePath == null || !File.Exists(filePath))
-                    {
-                        MessageBox.Show($"Movie cache {filename} has not been found.");
-                        return;
-                    }
-                    var movieMS = GetMovieFromTFC(filePath, offset, length);
-                    bikMovie = movieMS.ToArray();
-                }
-                else //is locally contained
-                {
-                    bikMovie = binary.Slice(16, length).ToArray();
-                    if(bikMovie == null)
-                    {
-                        MessageBox.Show($"Embedded texture movie has not been found.");
-                        return;
-                    }
-                }
+                MemoryStream bikMovie = GetMovie();
+                byte[] data = bikMovie.ToArray();
                 string writeoutPath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".bik");
 
-                File.WriteAllBytes(writeoutPath, bikMovie);
+                File.WriteAllBytes(writeoutPath, data);
 
                 Process process = new Process();
                 // Configure the process using the StartInfo properties.
@@ -163,24 +185,123 @@ namespace ME3Explorer.PackageEditor
                 MessageBox.Show("Error launching RADTools:\n\n" + ExceptionHandlerDialogWPF.FlattenException(ex));
             }
         }
-
-        private MemoryStream GetMovieFromTFC(string tfcpath, int offset, int length)
+        private void PlayExportInVLC()
         {
-            MemoryStream textureMovie = new MemoryStream();
-            using (FileStream fs = new FileStream(tfcpath, FileMode.Open, FileAccess.Read))
-            {
-                fs.Position = offset;
-                int bikend = offset + length;
-                while(fs.Position < bikend)
-                {
-                    fs.CopyTo(textureMovie);
-                }
-            }
 
-            return textureMovie;
+            MemoryStream bikMovie = GetMovie();
+            if(bikMovie != null)
+                MoviePlayer.Play(bikMovie);
+
+        }
+        private MemoryStream GetMovie()
+        {
+            try
+            {
+                MemoryStream bikMovie = new MemoryStream();
+                if (IsExternalFile)
+                {
+                    string filePath = null;
+                    string rootPath = MEDirectories.GamePath(Pcc.Game);
+                    if (rootPath == null || !Directory.Exists(rootPath))
+                    {
+                        MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
+                        return null;
+                    }
+
+                    string filename = $"{BikFileName}.bik";
+                    filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault();
+                    if (filePath == null || !File.Exists(filePath))
+                    {
+                        MessageBox.Show($"Bik file {BikFileName}.bik has not been found.");
+                        return null;
+                    }
+                    using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                    {
+
+                        fs.CopyTo(bikMovie);
+                    }
+                }
+                else
+                {
+                    var binary = CurrentLoadedExport.getBinaryData();
+                    int length = BitConverter.ToInt32(binary, 4);
+                    int offset = BitConverter.ToInt32(binary, 12);
+
+                    if (IsExternallyCached)
+                    {
+                        string filePath = null;
+                        string rootPath = MEDirectories.GamePath(Pcc.Game);
+                        if (rootPath == null || !Directory.Exists(rootPath))
+                        {
+                            MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
+                            return null;
+                        }
+
+                        string filename = $"{TfcName}.tfc";
+                        filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault();
+                        if (filePath == null || !File.Exists(filePath))
+                        {
+                            MessageBox.Show($"Movie cache {filename} has not been found.");
+                            return null;
+                        }
+                        using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                        {
+                            fs.Position = offset;
+                            int bikend = offset + length;
+                            while (fs.Position < bikend)
+                            {
+                                fs.CopyTo(bikMovie);
+                            }
+                        }
+                    }
+                    else if (IsLocallyCached) //is locally contained
+                    {
+                        byte[] bikBytes = binary.Slice(16, length).ToArray();
+                        if (bikBytes == null)
+                        {
+                            MessageBox.Show($"Embedded texture movie has not been found.");
+                            return null;
+                        }
+                        using (var writer = new BinaryWriter(bikMovie))
+                        {
+                            writer.Write(bikBytes);
+                        }
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+
+                return bikMovie;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error loading movie: " + ExceptionHandlerDialogWPF.FlattenException(ex));
+                MessageBox.Show("Error loading movie:\n\n" + ExceptionHandlerDialogWPF.FlattenException(ex));
+            }
+            return null;
         }
 
-
+        private void SaveBikToFile()
+        {
+            string fileFilter = $"*.bik |*.bik";
+            SaveFileDialog d = new SaveFileDialog { Filter = fileFilter };
+            if (d.ShowDialog() == true)
+            {
+                var bikStream = GetMovie();
+                if(bikStream != null)
+                {
+                    bikStream.Seek(0, SeekOrigin.Begin);
+                    using (FileStream fs = new FileStream(d.FileName, FileMode.Create))
+                    {
+                        bikStream.CopyTo(fs);
+                        fs.Flush();
+                    }
+                    MessageBox.Show("Done");
+                }
+            }
+        }
         private void ImportBikFile()
         {
             //var bytes = File.ReadAllBytes(CurrentRADExportedFilepath);
@@ -225,12 +346,18 @@ namespace ME3Explorer.PackageEditor
         public override void LoadExport(ExportEntry exportEntry)
         {
             GetRADInstallationStatus();
+            MoviePlayer.Stop();
+            var bik = MoviePlayer.GetCurrentMedia();
+            bik?.Dispose();
             CurrentLoadedExport = exportEntry;
-            GetCacheProps();
+            GetBikProps();
         }
 
         public override void UnloadExport()
         {
+            MoviePlayer.Stop();
+            var bik = MoviePlayer.GetCurrentMedia();
+            bik?.Dispose();
             CurrentLoadedExport = null;
             CurrentRADExportedFilepath = null;
         }
