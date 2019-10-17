@@ -3624,7 +3624,8 @@ namespace ME3Explorer
                     var pos = bin.Position;
                     var mName = bin.ReadStringASCII(bin.ReadInt32());
                     nameTable.Add(mName);
-                    nametabObj.Add(new BinInterpNode(bin.Skip(versionID != 1610 ? 0 : 4).Position, $"{m}: {mName}"));
+                    nametabObj.Add(new BinInterpNode(pos, $"{m}: {mName}"));
+                    bin.Skip(versionID != 1610 ? 0 : 4);
                 }
 
                 subnodes.Add(new BinInterpNode(nametablePos, $"Names: {nameCount} items")
@@ -3825,23 +3826,19 @@ namespace ME3Explorer
                     subnodes.Add(MakeInt32Node(bin, "Unknown"));
                 }
 
-                int lineCount = bin.ReadInt32();
-                var lines = new List<ITreeItem>();
+                subnodes.Add(new BinInterpNode(bin.Position - 4, $"unknown: {bin.ReadInt32()}"));
 
-                subnodes.Add(new BinInterpNode(bin.Position - 4, $"FaceFXLines: {lineCount} items")
-                {
-                    Items = lines
-                });
+                subnodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
+                int lineCount;
+                subnodes.Add(new BinInterpNode(bin.Position, $"line count: {lineCount = bin.ReadInt32()}") { Length = 4 });
                 for (int i = 0; i < lineCount; i++)
                 {
                     var nodes = new List<ITreeItem>();
-                    lines.Add(new BinInterpNode(bin.Position, $"{i}")
+                    subnodes.Add(new BinInterpNode(bin.Position, $"FaceFXLine {i}")
                     {
                         Items = nodes
                     });
-                    nodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
-                    nodes.Add(MakeInt32Node(bin, "Unknown"));
-                    nodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
+                    nodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") {Length = 4});
                     int animationCount = bin.ReadInt32();
                     var anims = new List<ITreeItem>();
                     nodes.Add(new BinInterpNode(bin.Position - 4, $"Animations: {animationCount} items")
@@ -3855,11 +3852,11 @@ namespace ME3Explorer
                         {
                             Items = animNodes
                         });
-                        animNodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
+                        animNodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") {Length = 4});
                         animNodes.Add(MakeInt32Node(bin, "Unknown"));
                         if (versionID == 1610)
                         {
-                            animNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                            animNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") {Length = 2});
                         }
                     }
 
@@ -3884,30 +3881,49 @@ namespace ME3Explorer
                         {
                             if (versionID == 1610)
                             {
-                                nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                                nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") {Length = 2});
                             }
+
                             nodes.Add(new BinInterpNode(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
                             {
                                 Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpNode(bin.Position, $"{bin.ReadInt32()} keys"))
                             });
                         }
                     }
-                    nodes.Add(new BinInterpNode(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
-                    nodes.Add(new BinInterpNode(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") { Length = 4 });
+
+                    nodes.Add(new BinInterpNode(bin.Position, $"Fade In Time: {bin.ReadFloat()}") {Length = 4});
+                    nodes.Add(new BinInterpNode(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") {Length = 4});
                     nodes.Add(MakeInt32Node(bin, "Unknown"));
                     if (versionID == 1610)
                     {
-                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") {Length = 2});
+                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") {Length = 2});
                     }
+
                     nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.ReadStringASCII(bin.ReadInt32())}"));
                     if (versionID == 1610)
                     {
-                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") {Length = 2});
                     }
+
                     nodes.Add(new BinInterpNode(bin.Position, $"ID: {bin.ReadStringASCII(bin.ReadInt32())}"));
                     nodes.Add(MakeInt32Node(bin, "index"));
                 }
+
+                subnodes.Add(MakeInt32Node(bin, "unknown"));
+
+                subnodes.Add(MakeArrayNode(bin, "Unknown Table D", i => new BinInterpNode(bin.Position, $"{i}")
+                {
+                    IsExpanded = true,
+                    Items =
+                    {
+                        new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") {Length = 4},
+                        new BinInterpNode(bin.Position, $"Name?: {nameTable[bin.ReadInt32()]}") {Length = 4},
+                        MakeFloatNode(bin, "unk float")
+                    }
+                }));
+                subnodes.Add(MakeArrayNode(bin, "Unknown list E", i => new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
+
             }
             catch (Exception ex)
             {

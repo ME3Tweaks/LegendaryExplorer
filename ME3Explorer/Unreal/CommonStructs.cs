@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer.Unreal.BinaryConverters;
 using SharpDX;
+using StreamHelpers;
 
 namespace ME3Explorer.Unreal
 {
+    //Methods for working with common StructProperty types
     public static class CommonStructs
     {
-        public static StructProperty Vector(Vector3 vec, NameReference? name = null) => Vector(vec.X, vec.Y, vec.Z, name);
-        public static StructProperty Vector(float x, float y, float z, NameReference? name = null)
+        public static StructProperty Vector3(Vector3 vec, NameReference? name = null) => Vector3(vec.X, vec.Y, vec.Z, name);
+        public static StructProperty Vector3(float x, float y, float z, NameReference? name = null)
         {
             return new StructProperty("Vector", new PropertyCollection
             {
@@ -21,8 +24,11 @@ namespace ME3Explorer.Unreal
             }, name, true);
         }
 
-        public static Vector3 GetVector(StructProperty vecProp) =>
+        public static Vector3 GetVector3(StructProperty vecProp) =>
             new Vector3(vecProp.GetProp<FloatProperty>("X"), vecProp.GetProp<FloatProperty>("Y"), vecProp.GetProp<FloatProperty>("Z"));
+
+        public static Vector2 GetVector2(StructProperty vecProp) =>
+            new Vector2(vecProp.GetProp<FloatProperty>("X"), vecProp.GetProp<FloatProperty>("Y"));
 
         public static StructProperty Rotator(Rotator rot, NameReference? name = null) => Rotator(rot.Pitch,rot.Yaw, rot.Roll, name);
         public static StructProperty Rotator(int pitch, int yaw, int roll, NameReference? name = null)
@@ -68,6 +74,32 @@ namespace ME3Explorer.Unreal
                     new FloatProperty(m.M43, "Z")
                 }, "W", true)
             }, name, true);
+        }
+
+        public static StructProperty Guid(Guid guid, NameReference? name = null)
+        {
+            byte[] guidBytes = guid.ToByteArray();
+            return new StructProperty("Guid", new PropertyCollection
+            {
+                new IntProperty(BitConverter.ToInt32(guidBytes, 0), "A"),
+                new IntProperty(BitConverter.ToInt32(guidBytes, 4), "B"),
+                new IntProperty(BitConverter.ToInt32(guidBytes, 8), "C"),
+                new IntProperty(BitConverter.ToInt32(guidBytes, 12), "D")
+            }, name, true);
+        }
+
+        public static Guid GetGuid(StructProperty guidProp)
+        {
+            int a = guidProp.GetProp<IntProperty>("A");
+            int b = guidProp.GetProp<IntProperty>("B");
+            int c = guidProp.GetProp<IntProperty>("C");
+            int d = guidProp.GetProp<IntProperty>("D");
+            var ms = new MemoryStream(16);
+            ms.WriteInt32(a);
+            ms.WriteInt32(b);
+            ms.WriteInt32(c);
+            ms.WriteInt32(d);
+            return new Guid(ms.ToArray());
         }
     }
 }

@@ -21,54 +21,12 @@ namespace ME3Explorer.Pathfinding_Editor
         private static bool ClassesDBLoaded;
         internal static string ClassesDatabasePath = Path.Combine(App.ExecFolder, "pathfindingclassdb.json");
 
-        /// <summary>
-        /// Converts struct property to SharpDX Vector 3
-        /// </summary>
-        /// <param name="vectorStruct">Vector Struct to convert</param>
-        /// <returns></returns>
-        public static Vector3 GetVector3(StructProperty vectorStruct)
-        {
-            Vector3 v = new Vector3
-            {
-                X = vectorStruct.GetProp<FloatProperty>("X"),
-                Y = vectorStruct.GetProp<FloatProperty>("Y"),
-                Z = vectorStruct.GetProp<FloatProperty>("Z")
-            };
-            return v;
-        }
-
-        /// <summary>
-        /// Converts struct property to SharpDX Vector 2
-        /// </summary>
-        /// <param name="vectorStruct">Vector Struct to convert</param>
-        /// <returns></returns>
-        public static Vector2 GetVector2(StructProperty vectorStruct)
-        {
-            Vector2 v = new Vector2
-            {
-                X = vectorStruct.GetProp<FloatProperty>("X"),
-                Y = vectorStruct.GetProp<FloatProperty>("Y")
-            };
-            return v;
-        }
-
-        public static void GenerateNewRandomGUID(ExportEntry export)
+        public static void GenerateNewNavGUID(ExportEntry export)
         {
             StructProperty guidProp = export.GetProperty<StructProperty>("NavGuid");
             if (guidProp != null)
             {
-                Random rnd = new Random();
-                IntProperty A = guidProp.GetProp<IntProperty>("A");
-                IntProperty B = guidProp.GetProp<IntProperty>("B");
-                IntProperty C = guidProp.GetProp<IntProperty>("C");
-                IntProperty D = guidProp.GetProp<IntProperty>("D");
-                byte[] data = export.Data;
-
-                data.OverwriteRange((int)A.ValueOffset, BitConverter.GetBytes(rnd.Next()));
-                data.OverwriteRange((int)B.ValueOffset, BitConverter.GetBytes(rnd.Next()));
-                data.OverwriteRange((int)C.ValueOffset, BitConverter.GetBytes(rnd.Next()));
-                data.OverwriteRange((int)D.ValueOffset, BitConverter.GetBytes(rnd.Next()));
-                export.Data = data;
+                export.WriteProperty(CommonStructs.Guid(Guid.NewGuid(), "NavGuid"));
             }
         }
 
@@ -360,21 +318,6 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
         /// <summary>
-        /// Writes the buffer to the memory array starting at position pos
-        /// </summary>
-        /// <param name="memory">Memory array to overwrite onto</param>
-        /// <param name="pos">Position to start writing at</param>
-        /// <param name="buff">byte array to write, in order</param>
-        /// <returns>Modified memory</returns>
-        public static byte[] WriteMem(byte[] memory, int pos, byte[] buff)
-        {
-            for (int i = 0; i < buff.Length; i++)
-                memory[pos + i] = buff[i];
-
-            return memory;
-        }
-
-        /// <summary>
         /// Gets the end name of a ReachSpec for property parsing. ME1 uses Nav, while ME2 and above use Actor.
         /// </summary>
         /// <param name="export">export used to determine which game is being parsed</param>
@@ -518,9 +461,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public static void SetLocation(ExportEntry export, float x, float y, float z)
         {
-            StructProperty prop = export.GetProperty<StructProperty>("location");
-            SetLocation(prop, x, y, z);
-            export.WriteProperty(prop);
+            export.WriteProperty(CommonStructs.Vector3(x, y, z, "location"));
         }
 
         public static void SetLocation(StructProperty prop, float x, float y, float z)

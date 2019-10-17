@@ -226,7 +226,7 @@ namespace ME3Explorer.StaticLighting
                             if (parent.ClassName == "StaticMeshCollectionActor")
                             {
                                 Matrix m = componentToMatrixMap[smc.UIndex];
-                                locationProp = CommonStructs.Vector(m.TranslationVector, "Location");
+                                locationProp = CommonStructs.Vector3(m.TranslationVector, "Location");
                                 rotationProp = CommonStructs.Rotator(m.GetRotator(), "Rotation");
                                 //scaleProp = CommonStructs.Vector(m.ScaleVector, "Scale3D");
                                 //smc.WriteProperty(CommonStructs.Matrix(m, "CachedParentToWorld"));
@@ -303,7 +303,7 @@ namespace ME3Explorer.StaticLighting
                                 if (parent.ClassName == "StaticLightCollectionActor")
                                 {
                                     Matrix m = componentToMatrixMap[lightComponent.UIndex];
-                                    locationProp = CommonStructs.Vector(m.TranslationVector, "Location");
+                                    locationProp = CommonStructs.Vector3(m.TranslationVector, "Location");
                                     rotationProp = CommonStructs.Rotator(m.GetRotator(), "Rotation");
                                 }
                                 else
@@ -345,7 +345,7 @@ namespace ME3Explorer.StaticLighting
                                 if (parent.ClassName == "StaticLightCollectionActor")
                                 {
                                     Matrix m = componentToMatrixMap[lightComponent.UIndex];
-                                    locationProp = CommonStructs.Vector(m.TranslationVector, "Location");
+                                    locationProp = CommonStructs.Vector3(m.TranslationVector, "Location");
                                     rotationProp = CommonStructs.Rotator(m.GetRotator(), "Rotation");
                                 }
                                 else
@@ -387,7 +387,7 @@ namespace ME3Explorer.StaticLighting
                                 if (parent.ClassName == "StaticLightCollectionActor")
                                 {
                                     Matrix m = componentToMatrixMap[lightComponent.UIndex];
-                                    locationProp = CommonStructs.Vector(m.TranslationVector, "Location");
+                                    locationProp = CommonStructs.Vector3(m.TranslationVector, "Location");
                                     rotationProp = CommonStructs.Rotator(m.GetRotator(), "Rotation");
                                 }
                                 else

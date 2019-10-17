@@ -4366,7 +4366,7 @@ namespace ME3Explorer
                 Random r = new Random();
                 for (uint i = 0; i < numheights; i++)
                 {
-                    SharedPathfinding.WriteMem(binarydata, (int)(4 + (i * 2)), BitConverter.GetBytes((short)(r.Next(2000) + 13000)));
+                    binarydata.OverwriteRange((int)(4 + i * 2), BitConverter.GetBytes((short)(r.Next(2000) + 13000)));
                 }
 
                 terrain.setBinaryData(binarydata);
@@ -4541,17 +4541,17 @@ namespace ME3Explorer
                     {
                         if (firstNavPoint.GetProperty<StructProperty>("Location") is StructProperty locProp)
                         {
-                            (x, y, z) = CommonStructs.GetVector(locProp);
+                            (x, y, z) = CommonStructs.GetVector3(locProp);
                         }
                         else if (firstNavPoint.GetProperty<StructProperty>("location") is StructProperty locProp2)
                         {
-                            (x, y, z) = CommonStructs.GetVector(locProp2);
+                            (x, y, z) = CommonStructs.GetVector3(locProp2);
                         }
                     }
 
                     playerStart = new ExportEntry(tempPcc, properties: new PropertyCollection
                     {
-                        CommonStructs.Vector(x, y, z, "location")
+                        CommonStructs.Vector3(x, y, z, "location")
                     })
                     {
                         Parent = levelExport,

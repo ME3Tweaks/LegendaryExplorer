@@ -148,10 +148,10 @@ namespace ME3Explorer.SplineNodes
                 var pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
                 StructProperty point0 = pointsProp[0];
                 StructProperty point1 = pointsProp[1];
-                a = SharedPathfinding.GetVector2(point0.GetProp<StructProperty>("OutVal"));
-                tan1 = SharedPathfinding.GetVector2(point0.GetProp<StructProperty>("LeaveTangent"));
-                tan2 = SharedPathfinding.GetVector2(point1.GetProp<StructProperty>("ArriveTangent"));
-                d = SharedPathfinding.GetVector2(point1.GetProp<StructProperty>("OutVal"));
+                a = CommonStructs.GetVector2(point0.GetProp<StructProperty>("OutVal"));
+                tan1 = CommonStructs.GetVector2(point0.GetProp<StructProperty>("LeaveTangent"));
+                tan2 = CommonStructs.GetVector2(point1.GetProp<StructProperty>("ArriveTangent"));
+                d = CommonStructs.GetVector2(point1.GetProp<StructProperty>("OutVal"));
                 const float w = 25;
                 const float h = 25;
                 shape = PPath.CreateEllipse(0, 0, w, h);

@@ -2851,69 +2851,28 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             if (nodeEntry != null)
             {
-                ExportEntry subComponentEntry = null;
-                if (nodeEntry.GetProperty<ObjectProperty>("CollisionComponent") is ObjectProperty collisionComponentProperty)
+
+                ExportEntry newNodeEntry = (ExportEntry)EntryCloner.cloneTree(nodeEntry);
+
+                //empty the pathlist
+                PropertyCollection newExportProps = newNodeEntry.GetProperties();
+                var pathList = newExportProps.GetProp<ArrayProperty<ObjectProperty>>("PathList");
+                if (pathList != null && pathList.Count > 0)
                 {
-                    subComponentEntry = nodeEntry.FileRef.GetUExport(collisionComponentProperty.Value);
-                }
-                else if (nodeEntry.GetProperty<ObjectProperty>("ParticleSystemComponent") is ObjectProperty psComponentProperty)
-                {
-                    subComponentEntry = nodeEntry.FileRef.GetUExport(psComponentProperty.Value);
-                }
-
-                if (subComponentEntry != null)
-                {
-                    ExportEntry newNodeEntry = nodeEntry.Clone();
-                    nodeEntry.FileRef.AddExport(newNodeEntry);
-                    ExportEntry newSubcomponent = subComponentEntry.Clone();
-                    nodeEntry.FileRef.AddExport(newSubcomponent);
-                    newSubcomponent.idxLink = newNodeEntry.UIndex;
-
-                    //Update the cloned nodes to be new items
-                    bool changed = false;
-
-                    //empty the pathlist
-                    PropertyCollection newExportProps = newNodeEntry.GetProperties();
-
-                    var PathList = newExportProps.GetProp<ArrayProperty<ObjectProperty>>("PathList");
-                    if (PathList != null && PathList.Count > 0)
-                    {
-                        changed = true;
-                        PathList.Clear();
-                    }
-
-                    foreach (UProperty prop in newExportProps)
-                    {
-                        if (prop is ObjectProperty objProp)
-                        {
-                            if (objProp.Value == subComponentEntry.UIndex)
-                            {
-                                objProp.Value = newSubcomponent.UIndex;
-                                changed = true;
-                            }
-                        }
-                    }
-
-                    if (changed)
-                    {
-                        newNodeEntry.WriteProperties(newExportProps);
-                    }
-
-                    var oldloc = SharedPathfinding.GetLocation(newNodeEntry);
-                    SharedPathfinding.SetLocation(newNodeEntry, (float)oldloc.X + 50, (float)oldloc.Y + 50, (float)oldloc.Z);
-
-                    SharedPathfinding.GenerateNewRandomGUID(newNodeEntry);
-                    //Add cloned node to persistentlevel
-                    var level = Unreal.BinaryConverters.ObjectBinary.From<Unreal.BinaryConverters.Level>(PersistentLevelExport);
-                    level.Actors.Add(newNodeEntry.UIndex);
-                    PersistentLevelExport.Data = level.ToBytes(Pcc);
-
-                    SharedPathfinding.ReindexMatchingObjects(newNodeEntry);
-                    SharedPathfinding.ReindexMatchingObjects(newSubcomponent);
-                    return newNodeEntry;
+                    pathList.Clear();
+                    newNodeEntry.WriteProperties(newExportProps);
                 }
 
-                MessageBox.Show("Can't clone this type type yet.");
+                var oldloc = SharedPathfinding.GetLocation(newNodeEntry);
+                SharedPathfinding.SetLocation(newNodeEntry, (float)oldloc.X + 50, (float)oldloc.Y + 50, (float)oldloc.Z);
+
+                SharedPathfinding.GenerateNewNavGUID(newNodeEntry);
+                //Add cloned node to persistentlevel
+                var level = Unreal.BinaryConverters.ObjectBinary.From<Unreal.BinaryConverters.Level>(PersistentLevelExport);
+                level.Actors.Add(newNodeEntry.UIndex);
+                PersistentLevelExport.setBinaryData(level);
+
+                return newNodeEntry;
             }
             return null;
         }
@@ -3465,8 +3424,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 uint itemexportid = BitConverter.ToUInt32(data, start);
                 if (itemexportid == nodeEntry.UIndex)
                 {
-                    SharedPathfinding.WriteMem(data, countoffset, BitConverter.GetBytes(numberofitems - 1));
-                    byte[] destarray = new byte[data.Length - 4];
+                    data.OverwriteRange(countoffset, BitConverter.GetBytes(numberofitems - 1));
+                    var destarray = new byte[data.Length - 4];
                     Buffer.BlockCopy(data, 0, destarray, 0, start);
                     Buffer.BlockCopy(data, start + 4, destarray, start, data.Length - (start + 4));
                     //Debug.WriteLine(data.Length);
@@ -3500,7 +3459,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             if (ActiveNodes_ListBox.SelectedItem is ExportEntry nodeEntry)
             {
-                SharedPathfinding.GenerateNewRandomGUID(nodeEntry);
+                SharedPathfinding.GenerateNewNavGUID(nodeEntry);
             }
         }
 
