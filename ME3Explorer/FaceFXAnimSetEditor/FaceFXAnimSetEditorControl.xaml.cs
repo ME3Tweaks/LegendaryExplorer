@@ -233,8 +233,8 @@ namespace ME3Explorer.FaceFX
                     leaveTangent = x.LeaveTangent
                 }).ToArray();
                 SelectedLine.numKeys = numKeys.ToArray();
-                FaceFX.Save();
             }
+            FaceFX?.Save();
         }
 
         public void SelectLineByName(string name)

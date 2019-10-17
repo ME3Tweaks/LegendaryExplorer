@@ -588,7 +588,7 @@ namespace ME3Explorer
             COMBINED_PRINTFLAGS = PRF_CLIENT | PRF_CHILDREN | PRF_NON_CLIENT;
 
             System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(control.Width, control.Height);
-            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bitmap);
+            using System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bitmap);
 
             // paint control onto graphics
             IntPtr hWnd = control.Handle;
