@@ -1,5 +1,5 @@
 [![Download latest release](https://raw.github.com/Mgamerz/ME3Explorer/Beta/ME3Explorer/Resources/toolset_splash.png)](https://github.com/Mgamerz/ME3Explorer/releases/latest)
-[![Build Status](https://dev.azure.com/Mgamerz2/ME3Explorer/_apis/build/status/ME3Tweaks.ME3Explorer?branchName=Beta)](https://dev.azure.com/Mgamerz2/ME3Explorer/_build/latest?definitionId=2&branchName=Beta)
+[![Build Status](https://dev.azure.com/ME3Tweaks/ME3Explorer/_apis/build/status/ME3Tweaks.ME3Explorer?branchName=Beta)](https://dev.azure.com/Mgamerz2/ME3Explorer/_build/latest?definitionId=2&branchName=Beta)
 
 ME3Explorer is a fan-made modding toolkit for _Mass Effect 3_ on the PC. It has limited support for both _Mass Effect_ and _Mass Effect 2_. ME3Explorer does not support Mass Effect games on any other platforms.
 
