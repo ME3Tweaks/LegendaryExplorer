@@ -3,7 +3,10 @@
 
 ME3Explorer is a fan-made modding toolkit for _Mass Effect 3_ on the PC. It has limited support for both _Mass Effect_ and _Mass Effect 2_. ME3Explorer does not support Mass Effect games on any other platforms.
 
-This fork is updated by ME3Tweaks and contains bleeding edge features for developers. Development is done on the [beta branch](https://github.com/Mgamerz/ME3Explorer/tree/Beta), and releases are merged into the [master](https://github.com/Mgamerz/ME3Explorer/tree/master) branch. This fork is not affiliated with the upstream main version of ME3Explorer and is the only actively maintained version of the toolset.
+This fork is updated by ME3Tweaks and contains bleeding edge features for developers. Development is done on the [beta branch](https://github.com/Mgamerz/ME3Explorer/tree/Beta), and releases are merged into the [master](https://github.com/Mgamerz/ME3Explorer/tree/master) branch. This fork is not affiliated with the upstream version of ME3Explorer and is the only actively maintained version of the toolset.
+
+## New to modding?
+[Check out our github wiki](https://github.com/ME3Tweaks/ME3Explorer/wiki) which has tutorials on various modding subjects. Want to contribute? Sign up for github and start writing tutorials today for other users.
 
 ## Features
 All releases starting with 3.0.7.0 on this fork are signed with the ME3Tweaks code signing certificate.
