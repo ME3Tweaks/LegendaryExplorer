@@ -6,27 +6,37 @@
              xmlns:local="clr-namespace:ME3Explorer.PackageEditor"
              xmlns:fa="http://schemas.fontawesome.com/icons/"
              xmlns:me3Explorer="clr-namespace:ME3Explorer"
-                                 xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-                                 mc:Ignorable="d" 
+             xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+             mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-        <Converters:FontAwesomeStateColorConverter x:Key="FontAwesomeStateColorConverter"/>
     </UserControl.Resources>
     <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" LastChildFill="True">
         <StackPanel Name="biktools_Panel" MaxWidth="500" VerticalAlignment="Center" HorizontalAlignment="Center" DockPanel.Dock="Bottom">
-            <DockPanel>
-                <TextBlock Text="Movie Filename: " Visibility="{Binding IsExternalFile, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <TextBlock Text="{Binding BikFileName}" Visibility="{Binding IsExternalFile, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <TextBlock Text="Movie stored in TFC cache: " Visibility="{Binding IsExternallyCached, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <TextBlock Text="{Binding TfcName}" Visibility="{Binding IsExternallyCached, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <TextBlock Text="Movie stored locally in:" Visibility="{Binding IsLocallyCached, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <TextBlock Text="{Binding CurrentLoadedExport.ExportName}" Visibility="{Binding IsLocallyCached, Converter={StaticResource BoolToVisibilityConverter}}"/>
-            </DockPanel>
+            <StackPanel HorizontalAlignment="Center">
+                <DockPanel Name ="External_Dock" Visibility="{Binding IsExternalFile, Converter={StaticResource BoolToVisibilityConverter}}" >
+                    <TextBlock Text="Movie Filename: " FontSize="18" DockPanel.Dock="Left"/>
+                    <TextBlock Text="{Binding BikFileName}" FontSize="18" DockPanel.Dock="Right"/>
+                </DockPanel>
+                <DockPanel x:Name="TFC_Cache_Dock" Visibility="{Binding IsExternallyCached, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TextBlock Text="Movie stored in TFC cache: " FontSize="18" VerticalAlignment="Center"/>
+                    <ComboBox Width="200" VerticalContentAlignment="Center" Margin="3" FontSize="13" ItemsSource="{Binding AvailableTFCNames}"  ToolTip="Changing the movie cache requires changing the movie" Name="TextureCacheComboBox" IsEnabled="{Binding ViewerModeOnly, Converter={StaticResource InverseBooleanConverter}}"/>
+                </DockPanel>
+                <DockPanel Name="local_dock" Visibility="{Binding IsLocallyCached, Converter={StaticResource BoolToVisibilityConverter}}" >
+                    <TextBlock Text="Movie stored locally in: " FontSize="18"/>
+                    <TextBlock Text="{Binding CurrentLoadedExport.ObjectName}" FontSize="18"/>
+                    <TextBlock Text="  #" FontSize="18"/>
+                    <TextBlock Text="{Binding CurrentLoadedExport.UIndex}" FontSize="18"/>
+                    <Button Name="local2External_btn" FontSize="13" Margin="5,3" Padding="3" ToolTip="Change to external and set cache" Command="{Binding ChangeLocaltoExtCommand}">
+                        <fa:ImageAwesome Icon="Solid_ExternalLinkAlt" Height="12" Width="12" Foreground="DarkSlateGray"/>
+                    </Button>
+                </DockPanel>
+            </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30">
-                <Image Source="bink.jpg" MaxWidth="320" Cursor="Hand" Height="28" Width="28" Margin="10" MouseLeftButtonUp="Image_MouseUp" ToolTip="Click logo to go to RadTools site for download"/>
+                <Image Source="bink.jpg" MaxWidth="320" Cursor="Hand" Height="28" Width="28" Margin="10" MouseLeftButtonUp="DownloadRad_MouseUp" ToolTip="Click logo to go to RadTools site for download"/>
                 <Button Content="Playback in RadTools" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding OpenFileInRADCommand}" Padding="7" Margin="5,0,0,0" ToolTip="Open the file externally in Rad Tools"/>
                 <Button Content="Extract bik to file" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding ExtractBikCommand}" Padding="7" Margin="5,0,0,0"/>
                 <Button Content="Import saved file" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding ImportBikFileCommand}" Margin="5,0,0,0" Padding="7"/>
@@ -51,7 +61,5 @@
             </StackPanel>
             <WindowsFormsHost x:Name="vlcplayer_WinFormsHost" MinWidth="256" MinHeight="128" Background="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Top"/>
         </DockPanel>
-
-
     </DockPanel>
 </me3Explorer:ExportLoaderControl>
