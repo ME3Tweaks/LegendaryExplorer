@@ -23,17 +23,14 @@
                 </DockPanel>
                 <DockPanel x:Name="TFC_Cache_Dock" Visibility="{Binding IsExternallyCached, Converter={StaticResource BoolToVisibilityConverter}}">
                     <TextBlock Text="Movie stored in TFC cache: " FontSize="18" VerticalAlignment="Center"/>
-                    <ComboBox Width="200" VerticalContentAlignment="Center" Margin="3" FontSize="13" ItemsSource="{Binding AvailableTFCNames}"  ToolTip="Changing the movie cache requires changing the movie" Name="TextureCacheComboBox" IsEnabled="{Binding ViewerModeOnly, Converter={StaticResource InverseBooleanConverter}}"/>
                 </DockPanel>
                 <DockPanel Name="local_dock" Visibility="{Binding IsLocallyCached, Converter={StaticResource BoolToVisibilityConverter}}" >
                     <TextBlock Text="Movie stored locally in: " FontSize="18"/>
                     <TextBlock Text="{Binding CurrentLoadedExport.ObjectName}" FontSize="18"/>
                     <TextBlock Text="  #" FontSize="18"/>
                     <TextBlock Text="{Binding CurrentLoadedExport.UIndex}" FontSize="18"/>
-                    <Button Name="local2External_btn" FontSize="13" Margin="5,3" Padding="3" ToolTip="Change to external and set cache" Command="{Binding ChangeLocaltoExtCommand}">
-                        <fa:ImageAwesome Icon="Solid_ExternalLinkAlt" Height="12" Width="12" Foreground="DarkSlateGray"/>
-                    </Button>
                 </DockPanel>
+                <ComboBox Width="200" VerticalContentAlignment="Center" Margin="3" FontSize="13" SelectedItem="{Binding TfcName}" ItemsSource="{Binding AvailableTFCNames}"  ToolTip="Select a different cache" Name="TextureCacheComboBox" IsEnabled="{Binding IsExternalFile, Converter={StaticResource InverseBooleanConverter}}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30">
                 <Image Source="bink.jpg" MaxWidth="320" Cursor="Hand" Height="28" Width="28" Margin="10" MouseLeftButtonUp="DownloadRad_MouseUp" ToolTip="Click logo to go to RadTools site for download"/>
@@ -59,6 +56,7 @@
                     <fa:ImageAwesome Icon="Solid_Stop" Height="24" Width="24"/>
                 </Button>
             </StackPanel>
+            <TextBlock Name="Warning_text" Foreground="Red" Text="Error: Bik is not found or corrupted." Visibility="Collapsed" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top"/>
             <WindowsFormsHost x:Name="vlcplayer_WinFormsHost" MinWidth="256" MinHeight="128" Background="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Top"/>
         </DockPanel>
     </DockPanel>
