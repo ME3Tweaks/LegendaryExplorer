@@ -7016,10 +7016,22 @@ namespace ME3Explorer
         {
             /*
              *  
-             *  count +4
+             *  count +4   //ME3
              *      stream length in TFC +4
              *      stream length in TFC +4 (repeat)
              *      stream offset in TFC +4
+             *      
+             *      //ME1/2 THIS IS REPEATED
+             *      unknown 0  +4
+             *      unknown 0  +4
+             *      unknown 0  +4
+             *      offset (1st)
+             *      count +4  (0) 
+             *      stream length in TFC +4 (or locally)
+             *      stream length in TFC +4 (repeat)
+             *      stream 2nd offset in TFC +4
+             *      
+             *      
              *  
              */
             var subnodes = new List<ITreeItem>();
@@ -7034,24 +7046,49 @@ namespace ME3Explorer
 
                 });
                 pos += 4;
-                int length = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new BinInterpNode
+                if(Pcc.Game == MEGame.ME3)
                 {
-                    Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
-                    Name = "_" + pos,
+                    int length = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
+                        Name = "_" + pos,
 
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
-                length = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new BinInterpNode
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                    length = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                }
+                else
                 {
-                    Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
-                    Name = "_" + pos,
+                    int unkME2 = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} Unknown: {unkME2} ",
+                        Name = "_" + pos,
 
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                    unkME2 = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} Unknown: {unkME2} ",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                }
+
                 int offset = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinInterpNode
                 {
@@ -7061,6 +7098,47 @@ namespace ME3Explorer
                     Tag = NodeType.StructLeafInt
                 });
                 pos += 4;
+
+                if(Pcc.Game != MEGame.ME3)
+                {
+                    int unkT = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} Unknown: {unkT} ",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                    int length = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                    length = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                    offset = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} bik 2nd offset in file: {offset} (0x{offset:X})",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                }
+
                 if (pos < data.Length && CurrentLoadedExport.GetProperty<NameProperty>("Filename") == null)
                 {
                     subnodes.Add(new BinInterpNode

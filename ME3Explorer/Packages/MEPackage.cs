@@ -775,6 +775,11 @@ namespace ME3Explorer.Packages
             {
                 byte[] binData = export.getBinaryData();
                 binData.OverwriteRange(12, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 16));
+                if (export.Game != MEGame.ME3)
+                {
+                    binData.OverwriteRange(24, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 16));
+                }
+                
                 export.setBinaryData(binData);
             }
             //update offsets for pcc-stored mips in Textures
