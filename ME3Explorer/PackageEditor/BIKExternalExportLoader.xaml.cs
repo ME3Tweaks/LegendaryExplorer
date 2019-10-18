@@ -109,6 +109,28 @@ namespace ME3Explorer.PackageEditor
         {
             return VLCIsInstalled && !IsVLCPlaying;
         }
+        public bool ViewerModeOnly
+        {
+            get => (bool)GetValue(ViewerModeOnlyProperty);
+            set => SetValue(ViewerModeOnlyProperty, value);
+        }
+        /// <summary>
+        /// Set to true to hide all of the editor controls
+        /// </summary>
+        public static readonly DependencyProperty ViewerModeOnlyProperty = DependencyProperty.Register(
+            "ViewerModeOnly", typeof(bool), typeof(BIKExternalExportLoader), new PropertyMetadata(false, ViewerModeOnlyCallback));
+
+        private static void ViewerModeOnlyCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            BIKExternalExportLoader i = (BIKExternalExportLoader)obj;
+            i.OnPropertyChanged(nameof(ViewerModeOnly));
+        }
+
+        private const string MOVE_TO_EXTERNAL_STRING = "<Move to External Cache>";
+        private const string MOVE_TO_LOCAL_STRING = "<Move to Local File>";
+        private const string STORE_LOCAL_STRING = "<Store Locally>";
+        private const string NEW_TFC_STRING = "<Create New Movie TFC>";
+
         #endregion
 
         #region StartUp
@@ -119,16 +141,18 @@ namespace ME3Explorer.PackageEditor
             GetVLCInstallationStatus();
             LoadCommands();
             InitializeComponent();
-            vlcplayer_WinFormsHost.Child = MoviePlayer;
+            
             TextureCacheComboBox.SelectionChanged += TextureCacheComboBox_SelectionChanged;
 
-            var libDirectory = new DirectoryInfo(VLCDirectory);
-            if (!VLCIsInstalled || !File.Exists(Path.Combine(VLCDirectory, "libvlc.dll")))
+
+            if (!VLCIsInstalled)
             {
                 Debug.WriteLine("VLC library not found.");
             }
             else // Load VLC library
             {
+                var libDirectory = new DirectoryInfo(VLCDirectory);
+                vlcplayer_WinFormsHost.Child = MoviePlayer;
                 MoviePlayer.BeginInit();
                 MoviePlayer.VlcLibDirectory = libDirectory;
                 if (ShowInfo)
@@ -156,8 +180,6 @@ namespace ME3Explorer.PackageEditor
 
         public BIKExternalExportLoader(bool autoplayPopout, bool showcontrols = false)
         {
-            //Always collapse the editing tools
-            biktools_Panel.Visibility = Visibility.Collapsed;
             if (!showcontrols)
             {
                 bikcontrols_Panel.Visibility = Visibility.Collapsed;
@@ -205,14 +227,17 @@ namespace ME3Explorer.PackageEditor
                     {
                         if (key.GetValue("InstallDir") is string InstallDir)
                         {
-                            VLCDirectory = InstallDir;
-                            VLCIsInstalled = true;
-                            return;
+                            if (File.Exists(Path.Combine(InstallDir, "libvlc.dll")))
+                            {
+                                VLCDirectory = InstallDir;
+                                VLCIsInstalled = true;
+                                return;
+                            }
                         }
                     }
                 }
             }
-            catch (Exception ex)  //just for demonstration...it's always best to handle specific exceptions
+            catch (Exception ex)
             {
                 //react appropriately
             }
@@ -238,12 +263,17 @@ namespace ME3Explorer.PackageEditor
             if (VLCIsInstalled)
             {
                 MoviePlayer.Stop();
-                MoviePlayer.ResetMedia();
+                var bik = MoviePlayer.GetCurrentMedia();
+                if(bik != null)
+                {
+                    MoviePlayer.ResetMedia();
+                    bik.Dispose();
+                }
             }
             CurrentLoadedExport = exportEntry;
             AvailableTFCNames.ClearEx();
-            AvailableTFCNames.Add("<Store Locally>");
-            AvailableTFCNames.Add("<Create New Movie TFC>");
+            AvailableTFCNames.Add(STORE_LOCAL_STRING);
+            AvailableTFCNames.Add(NEW_TFC_STRING);
             AvailableTFCNames.AddRange(exportEntry.FileRef.Names.Where(x => x.StartsWith("Textures_DLC_") || x.StartsWith("Movies_DLC_")));
 
             GetBikProps();
@@ -253,14 +283,19 @@ namespace ME3Explorer.PackageEditor
             }
             
             TextureCacheComboBox.SelectedItem = TfcName;
-            
         }
         public override void UnloadExport()
         {
             if (VLCIsInstalled)
             {
                 MoviePlayer.Stop();
-                MoviePlayer.ResetMedia();
+                var bik = MoviePlayer.GetCurrentMedia();
+                if (bik != null)
+                {
+                    MoviePlayer.ResetMedia();
+                    bik.Dispose();
+                }
+
             }
             CurrentLoadedExport = null;
             Warning_text.Visibility = Visibility.Collapsed;
@@ -288,11 +323,11 @@ namespace ME3Explorer.PackageEditor
                 if (tfcprop == null)
                 {
                     IsLocallyCached = true;
-                    AvailableTFCNames.Insert(0, "<Move to External Cache>");
-                    TfcName = "<Store Locally>";
+                    AvailableTFCNames.Insert(0, MOVE_TO_EXTERNAL_STRING);
+                    TfcName = STORE_LOCAL_STRING;
                     return;
                 }
-                AvailableTFCNames.Insert(0, "<Move to Local File>");
+                AvailableTFCNames.Insert(0, MOVE_TO_LOCAL_STRING);
                 IsExternallyCached = true;
                 TfcName = tfcprop.Value;
             }
@@ -365,8 +400,11 @@ namespace ME3Explorer.PackageEditor
         {
             MoviePlayer.Stop();
             var bik = MoviePlayer.GetCurrentMedia();
-            bik?.Dispose();
-            MoviePlayer.ResetMedia();
+            if(bik != null)
+            {
+                MoviePlayer.ResetMedia();
+                bik.Dispose();
+            }
         }
         private MemoryStream GetMovie()
         {
@@ -658,7 +696,7 @@ namespace ME3Explorer.PackageEditor
 
             switch(newSelection)
             {
-                case "<Move to External Cache>": //Before was local move to external
+                case MOVE_TO_EXTERNAL_STRING: //Before was local move to external
                     var adlg = MessageBox.Show($"Do you want to move the bik at {CurrentLoadedExport.ObjectNameString} to an external tfc?", "Move to External", MessageBoxButton.OKCancel);
                     if (adlg == MessageBoxResult.OK)
                     {
@@ -706,7 +744,7 @@ namespace ME3Explorer.PackageEditor
                         TfcName = oldselection;
                     }
                     break;
-                case "<Move to Local File>": //Before was external move to local
+                case MOVE_TO_LOCAL_STRING: //Before was external move to local
                     var swELdlg = MessageBox.Show($"Do you want to move the bik from {oldselection}.tfc\ninto {Path.GetFileName(CurrentLoadedExport.FileRef.FilePath)}?\nThis is not recommended for large files.", "Move to Local", MessageBoxButton.OKCancel);
                     if (swELdlg == MessageBoxResult.Cancel)
                     {
@@ -715,7 +753,7 @@ namespace ME3Explorer.PackageEditor
                     }
                     SwitchExternalToLocal();
                     break;
-                case "<Store Locally>":  //Overwrite locally from new file
+                case STORE_LOCAL_STRING:  //Overwrite locally from new file
                     var impdlg = MessageBox.Show($"Do you want to import a new bik file into {Path.GetFileName(CurrentLoadedExport.FileRef.FilePath)}?\nThis is not recommended for large files.", "Warning", MessageBoxButton.YesNo);
                     if (impdlg == MessageBoxResult.No)
                     {
@@ -724,11 +762,11 @@ namespace ME3Explorer.PackageEditor
                     }
                     CurrentLoadedExport.RemoveProperty("TextureFileCacheName");
                     IsLocallyCached = true;
-                    TfcName = "<Store Locally>";
+                    TfcName = STORE_LOCAL_STRING;
                     IsExternallyCached = false;
                     ImportBikFile();
                     break;
-                case "<Create New Movie TFC>":
+                case NEW_TFC_STRING:
                     if(IsLocallyCached) //=> if was local create tfc 
                     {
                         var bdlg = MessageBox.Show($"Do you want to overwrite {CurrentLoadedExport.ObjectNameString}\nwith a new bik file cached at a new tfc?", "Create a New TFC", MessageBoxButton.OKCancel);
