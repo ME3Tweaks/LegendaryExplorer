@@ -237,6 +237,7 @@ namespace ME3Explorer.AssetDatabase
             Properties.Settings.Default.AssetDBPath = CurrentDBPath;
             Properties.Settings.Default.AssetDBGame = currentGame.ToString();
             EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
+            BIKExternalExportLoaderTab_BIKExternalExportLoader.UnloadExport();
             MeshRendererTab_MeshRenderer.UnloadExport();
             meshPcc?.Dispose();
             textPcc?.Dispose();
@@ -942,9 +943,10 @@ namespace ME3Explorer.AssetDatabase
             }
 
             var selecteditem = lstbx_Textures.SelectedItem as TextureRecord;
-            if (!showText || selecteditem.CFormat == "TextureCube" || selecteditem.CFormat == "TextureMovie")
+            if (!showText || selecteditem.CFormat == "TextureCube")
             {
                 EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
+                BIKExternalExportLoaderTab_BIKExternalExportLoader.UnloadExport();
                 textPcc?.Dispose();
                 return;
             }
@@ -970,6 +972,7 @@ namespace ME3Explorer.AssetDatabase
             if (textPcc != null)
             {
                 EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
+                BIKExternalExportLoaderTab_BIKExternalExportLoader.UnloadExport();
                 textPcc.Dispose();
             }
 
@@ -986,9 +989,22 @@ namespace ME3Explorer.AssetDatabase
                 if (uexpIdx <= textPcc.ExportCount)
                 {
                     var textExp = textPcc.GetUExport(uexpIdx);
-                    if (textExp.ObjectName == selecteditem.TextureName || textExp.ObjectName == selecteditem.TextureName.Substring(textExp.Parent.ObjectName.ToString().Length + 1))
+                    string cubemapParent = textExp.Parent.ClassName == "CubeMap" ? selecteditem.TextureName.Substring(textExp.Parent.ObjectName.ToString().Length + 1) : null;
+                    string indexedName = $"{textExp.ObjectNameString}_{textExp.indexValue - 1}";
+                    if (textExp.ClassName.StartsWith("Texture") && (textExp.ObjectNameString == selecteditem.TextureName || selecteditem.TextureName == indexedName || textExp.ObjectNameString == cubemapParent))
                     {
-                        EmbeddedTextureViewerTab_EmbededTextureViewer.LoadExport(textExp);
+                        if(selecteditem.CFormat == "TextureMovie")
+                        {
+                            BIKExternalExportLoaderTab_BIKExternalExportLoader.LoadExport(textExp);
+                            BIKExternalExportLoaderTab_BIKExternalExportLoader.Visibility = Visibility.Visible;
+                            EmbeddedTextureViewerTab_EmbededTextureViewer.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            EmbeddedTextureViewerTab_EmbededTextureViewer.LoadExport(textExp);
+                            EmbeddedTextureViewerTab_EmbededTextureViewer.Visibility = Visibility.Visible;
+                            BIKExternalExportLoaderTab_BIKExternalExportLoader.Visibility = Visibility.Collapsed;
+                        }
                         break;
                     }
                 }
