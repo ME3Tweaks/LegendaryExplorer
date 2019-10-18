@@ -7016,7 +7016,7 @@ namespace ME3Explorer
         {
             /*
              *  
-             *  count +4   //ME3
+             *      flag 1 = external cache / 0 = local storage +4   //ME3
              *      stream length in TFC +4
              *      stream length in TFC +4 (repeat)
              *      stream offset in TFC +4
@@ -7041,7 +7041,7 @@ namespace ME3Explorer
                 int unk1 = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"{(pos - binarystart):X4} Unknown: {unk1}",
+                    Header = $"{(pos - binarystart):X4} Flag (0 = local, 1 = external): {unk1}",
                     Name = "_" + pos,
 
                 });
@@ -7104,7 +7104,7 @@ namespace ME3Explorer
                     int unkT = BitConverter.ToInt32(data, pos);
                     subnodes.Add(new BinInterpNode
                     {
-                        Header = $"{(pos - binarystart):X4} Unknown: {unkT} ",
+                        Header = $"{(pos - binarystart):X4} Flag (0 = local, 1 = external): {unkT} ",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt
