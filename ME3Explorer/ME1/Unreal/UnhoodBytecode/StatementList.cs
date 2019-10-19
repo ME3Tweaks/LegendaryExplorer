@@ -322,7 +322,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         {
             get
             {
-                return $"0x{Token.GetOffset():X6} | {Token}";
+                var fullLen = scriptSize.ToString("X").Length;
+                return $"0x{Token.GetOffset().ToString("X"+fullLen)} | {Token}";
             }
         }
         public Statement(int startOffset, BytecodeToken token)
@@ -373,6 +374,12 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     result.Append(label).Append(":").NewLine();
                 }
             }
+        }
+
+        private int scriptSize;
+        internal void SetPaddingForScriptSize(int scriptSize)
+        {
+            this.scriptSize = scriptSize;
         }
     }
 

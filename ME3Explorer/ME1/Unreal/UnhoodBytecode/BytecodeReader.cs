@@ -115,7 +115,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
     class UncondJumpToken : JumpToken
     {
-        public UncondJumpToken(int targetOffset, int offset) : base("jump to 0x" + targetOffset.ToString("X6"), targetOffset, offset)
+        public UncondJumpToken(int targetOffset, int offset) : base("jump to 0x" + targetOffset.ToString("X"), targetOffset, offset)
         {
         }
     }
@@ -125,7 +125,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         private readonly BytecodeToken _condition;
 
         public JumpIfNotToken(int targetOffset, BytecodeToken condition, int offset)
-            : base("if (!" + condition + ") jump to 0x" + targetOffset.ToString("X6"), targetOffset, offset)
+            : base("if (!" + condition + ") jump to 0x" + targetOffset.ToString("X"), targetOffset, offset)
         {
             _condition = condition;
         }
@@ -201,7 +201,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
     class EndOfScriptToken : BytecodeToken
     {
-        public EndOfScriptToken(int offset) : base("", offset) { }
+        public EndOfScriptToken(int offset) : base("[End of script]", offset) { }
     }
 
     public class LabelTableToken : BytecodeToken

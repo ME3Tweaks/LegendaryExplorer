@@ -160,7 +160,8 @@ namespace ME3Explorer
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 3 (TextPos??)", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
 
                 pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+                int scriptSize = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", scriptSize, pos));
                 pos += 4;
                 BytecodeStart = pos;
                 var func = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
@@ -178,6 +179,7 @@ namespace ME3Explorer
                 for (int i = 0; i < func.Statements.statements.Count; i++)
                 {
                     Statement s = func.Statements.statements[i];
+                    s.SetPaddingForScriptSize(scriptSize);
                     DecompiledScriptBlocks.Add(s);
                     if (s.Reader != null && i == 0)
                     {
