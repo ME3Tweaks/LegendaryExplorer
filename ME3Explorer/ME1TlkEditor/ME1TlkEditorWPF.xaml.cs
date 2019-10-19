@@ -392,7 +392,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         internal override void OpenFile()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = "ME1 Package Files|*.sfm;*.u;*.upk|ME2/ME3 Talk Files|*.tlk"};
+            OpenFileDialog d = new OpenFileDialog { Filter = "All TLK Editor supported files|*.sfm;*.u;*.upk;*.tlk|ME1 Package Files|*.sfm;*.u;*.upk|ME2/ME3 Talk Files|*.tlk" };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -436,6 +436,19 @@ namespace ME3Explorer.ME1TlkEditor
         public override bool CanSave()
         {
             return true; //throw new NotImplementedException();
+        }
+
+        internal override void RecentFile_click(object sender, RoutedEventArgs e)
+        {
+            string s = ((FrameworkElement)sender).Tag.ToString();
+            if (File.Exists(s))
+            {
+                LoadFile(s);
+            }
+            else
+            {
+                MessageBox.Show("File does not exist: " + s);
+            }
         }
 
         internal override string DataFolder { get; } = "TLKEditorWPF";
