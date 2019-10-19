@@ -118,7 +118,7 @@ namespace ME3Explorer
 
                 //@ 0x00 After TLKID - FolderName
                 //ms.WriteInt32(dlcfolder.Length);
-                ms.WriteUnrealStringASCII(ME2Only_DLCFolderName);
+                ms.WriteUnrealStringASCII(ME2Only_DLCFolderName); 
 
                 //@ Final 4 bytes
                 ms.WriteInt32(0x0);
