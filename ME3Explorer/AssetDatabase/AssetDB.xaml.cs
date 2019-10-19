@@ -23,6 +23,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using ME3Explorer.GameInterop;
 using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.AssetDatabase
@@ -135,6 +136,7 @@ namespace ME3Explorer.AssetDatabase
         public ICommand OpenSourcePkgCommand { get; set; }
         public ICommand GoToSuperclassCommand { get; set; }
         public ICommand OpenUsagePkgCommand { get; set; }
+        public ICommand ViewAnimationCommand { get; set; }
         public ICommand FilterSeqClassCommand { get; set; }
         public ICommand FilterMatCommand { get; set; }
         public ICommand FilterMeshCommand { get; set; }
@@ -209,6 +211,7 @@ namespace ME3Explorer.AssetDatabase
             GoToSuperclassCommand = new RelayCommand(GoToSuperClass, IsClassSelected);
             OpenUsagePkgCommand = new RelayCommand(OpenUsagePkg, IsUsageSelected);
             SetCRCCommand = new RelayCommand(SetCRCScan);
+            ViewAnimationCommand = new GenericCommand(OpenAnimInGame, () => currentGame == MEGame.ME3 && currentView == 5 && lstbx_Anims.SelectedIndex >= 0);
         }
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)
         {
@@ -1647,6 +1650,27 @@ namespace ME3Explorer.AssetDatabase
         #endregion
 
 
+        private void OpenAnimInGame()
+        {
+            if (lstbx_Anims.SelectedItem is Animation selectedAnim && selectedAnim.AnimUsages.Any())
+            {
+                var usage = selectedAnim.AnimUsages[0];
+                var filename = FileListExtended[usage.Item1].Item1;
+                var contentdir = FileListExtended[usage.Item1].Item2;
+                var usageexp = usage.Item2;
+                string rootPath = ME3Directory.gamePath;
+
+                if (rootPath == null || !Directory.Exists(rootPath))
+                {
+                    MessageBox.Show($"Mass Effect 3 has not been found. Please check your ME3Explorer settings");
+                    return;
+                }
+
+                filename = $"{filename}.*";
+                var filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
+                AnimViewer.ViewAnimInGame(filePath, usageexp);
+            }
+        }
     }
     #region Database
     /// <summary>

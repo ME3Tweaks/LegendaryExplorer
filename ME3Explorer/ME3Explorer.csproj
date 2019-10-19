@@ -387,6 +387,7 @@
     <Compile Include="CloningImportingAndRelinking\Relinker.cs" />
     <Compile Include="Deconstructors.cs" />
     <Compile Include="Dialogue Editor\DialogueObjects.cs" />
+    <Compile Include="GameInterop\AnimViewer.cs" />
     <Compile Include="MassEffectModder\MassEffectModderIPCWrapper.cs" />
     <Compile Include="MaterialViewer\MaterialExportLoader.xaml.cs">
       <DependentUpon>MaterialExportLoader.xaml</DependentUpon>
