@@ -2716,14 +2716,14 @@ namespace ME3Explorer
         {
             if (e.Key == Key.Return)
             {
-                FindNextObjectByClass();
+                FindNextObjectByClass(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift));
             }
         }
 
         /// <summary>
         /// Finds the next entry that has the selected class from the dropdown.
         /// </summary>
-        private void FindNextObjectByClass()
+        private void FindNextObjectByClass(bool reverse)
         {
             if (Pcc == null)
                 return;
@@ -2731,17 +2731,37 @@ namespace ME3Explorer
                 return;
 
             string searchClass = ClassDropdown_Combobox.SelectedItem.ToString();
+            void LoopFunc(ref int integer, int count)
+            {
+                if (reverse)
+                {
+                    integer--;
+                }
+                else
+                {
+                    integer++;
+                }
+
+                if (integer < 0)
+                {
+                    integer = count - 1;
+                }
+                else if (integer >= count)
+                {
+                    integer = 0;
+                }
+            }
 
             if (CurrentView == CurrentViewMode.Tree)
             {
                 TreeViewEntry selectedNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
                 List<TreeViewEntry> items = AllTreeViewNodesX[0].FlattenTree();
                 int pos = selectedNode == null ? 0 : items.IndexOf(selectedNode);
-                pos += 1; //search this and 1 forward
-                for (int i = 0; i < items.Count; i++)
+                LoopFunc(ref pos, items.Count); //increment 1 forward or back to start so we don't immediately find ourself.
+                for (int i = pos, numSearched = 0; numSearched < items.Count; LoopFunc(ref i, items.Count), numSearched++)
                 {
-                    int curIndex = (i + pos) % items.Count;
-                    TreeViewEntry node = items[curIndex];
+                    //int curIndex = (i + pos) % items.Count;
+                    TreeViewEntry node = items[i];
                     if (node.Entry == null)
                     {
                         continue;
@@ -2757,6 +2777,7 @@ namespace ME3Explorer
             }
             else
             {
+                //Todo: Loopfunc
                 int n = LeftSide_ListView.SelectedIndex;
                 int start;
                 if (n == -1)
@@ -2797,7 +2818,7 @@ namespace ME3Explorer
         /// <param name="e"></param>
         private void FindObjectByClass_Click(object sender, RoutedEventArgs e)
         {
-            FindNextObjectByClass();
+            FindNextObjectByClass(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift));
         }
 
         /// <summary>

@@ -318,6 +318,13 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
     public class Statement
     {
+        public string OffsetDisplayableString
+        {
+            get
+            {
+                return $"0x{Token.GetOffset():X6} | {Token}";
+            }
+        }
         public Statement(int startOffset, BytecodeToken token)
         {
             StartOffset = startOffset;
