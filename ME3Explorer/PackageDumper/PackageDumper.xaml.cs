@@ -548,10 +548,10 @@ namespace ME3Explorer.PackageDumper
                         //}
 
                         string datasets = "Exports Coalesced ";
-                        if (GameBeingDumped != MEGame.ME2)
-                        {
+                        //if (GameBeingDumped != MEGame.ME2)
+                        //{
                             datasets += " Functions";
-                        }
+                        //}
 
                         stringoutput.WriteLine("--Start of " + datasets);
                         stringoutput.WriteLine("Exports starting with [C] can be overriden from the configuration file");
@@ -595,6 +595,7 @@ namespace ME3Explorer.PackageDumper
                                 switch (GameBeingDumped)
                                 {
                                     case MEGame.ME1:
+                                    case MEGame.ME2:
                                         var func = UE3FunctionReader.ReadFunction(exp);
                                         func.Decompile(new TextBuilder(), false); //parse bytecode
                                         bool defined = func.HasFlag("Defined");
