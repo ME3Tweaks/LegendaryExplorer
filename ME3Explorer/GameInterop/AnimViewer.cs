@@ -51,12 +51,9 @@ namespace ME3Explorer.GameInterop
 
         [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
-        [DllImport("user32.dll")]
-        public static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
         public static void OpenFileInME3(IMEPackage pcc, bool canHotLoad = false)
         {
-            const string tempMapName = "AAAME3EXPDEBUGLOAD";
-
+            var tempMapName = GameController.TempMapName;
             string tempDir = ME3Directory.cookedPath;
             string tempFilePath = Path.Combine(tempDir, $"{tempMapName}.pcc");
 
@@ -77,42 +74,15 @@ namespace ME3Explorer.GameInterop
                 }
             }
 
-            if (Process.GetProcessesByName("MassEffect3").FirstOrDefault() is Process me3Process)
+            if (GameController.TryGetME3Process(out Process me3Process) && canHotLoad)
             {
-                //ME3 is already open!
-
-                if (canHotLoad)
-                {
-                    string execFileName = "hotload";
-                    string execFilePath = Path.Combine(ME3Directory.gamePath, "Binaries", execFileName);
-                    File.WriteAllText(execFilePath, $"at {tempMapName}");
-                    //MessageBox.Show($"Mass Effect 3 is already open! Open the in-game console (tab), and type:\nexec {execFileName}");
-                    IntPtr handle = me3Process.MainWindowHandle;
-                    SetForegroundWindow(handle);
-                    const int WM_SYSKEYDOWN = 0x0104;
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.Tab, 0);
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.E, 0);
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.X, 0);
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.E, 0);
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.C, 0);
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.Space, 0);
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.H, 0);
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.O, 0);
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.T, 0);
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.L, 0);
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.O, 0);
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.A, 0);
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.D, 0);
-                    PostMessage(handle, WM_SYSKEYDOWN, (int)Keys.Enter, 0);
-                    //SendKeys.SendWait("{TAB}");
-                    //SendKeys.SendWait(" exec hotload");
-                    //SendKeys.SendWait("{ENTER}");
-                    return;
-                }
-
-                me3Process.Kill();
+                IntPtr handle = me3Process.MainWindowHandle;
+                SetForegroundWindow(handle);
+                GameController.ExecuteConsoleCommands(handle, MEGame.ME3, $"at {tempMapName}");
+                return;
             }
 
+            me3Process?.Kill();
             Process.Start(ME3Directory.ExecutablePath, $"{tempMapName} -nostartupmovies -Windowed ResX=1000 ResY=800");
             MessageBox.Show("Mass Effect 3 starting up! This may take a moment.");
         }

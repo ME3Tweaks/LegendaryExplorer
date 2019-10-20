@@ -101,18 +101,31 @@ namespace ME3Explorer
             #endregion
 
             #region Utilities
+            //set.Add(new Tool
+            //{
+            //    name = "Animation Explorer",
+            //    type = typeof(AnimationExplorer.AnimationExplorer),
+            //    icon = Application.Current.FindResource("iconAnimationExplorer") as ImageSource,
+            //    open = () =>
+            //    {
+            //        (new AnimationExplorer.AnimationExplorer()).Show();
+            //    },
+            //    tags = new List<string> { "utility", "animation", "gesture", "bone", "PSA" },
+            //    subCategory = "Explorers",
+            //    description = "Animation Explorer can build a database of all the files containing animtrees and complete animsets in Mass Effect 3. You can import and export Animsets to PSA files."
+            //});
             set.Add(new Tool
             {
-                name = "Animation Explorer",
-                type = typeof(AnimationExplorer.AnimationExplorer),
+                name = "Animation Viewer",
+                type = typeof(AnimationExplorer.AnimationExplorerWPF),
                 icon = Application.Current.FindResource("iconAnimationExplorer") as ImageSource,
                 open = () =>
                 {
-                    (new AnimationExplorer.AnimationExplorer()).Show();
+                    (new AnimationExplorer.AnimationExplorerWPF()).Show();
                 },
-                tags = new List<string> { "utility", "animation", "gesture", "bone" },
+                tags = new List<string> { "utility", "animation", "gesture" },
                 subCategory = "Explorers",
-                description = "Animation Explorer can build a database of all the files containing animtrees and complete animsets in Mass Effect 3. You can import and export Animsets to PSA files."
+                description = "Animation Viewer allows you to preview any animation in Mass Effect 3"
             });
             set.Add(new Tool
             {
