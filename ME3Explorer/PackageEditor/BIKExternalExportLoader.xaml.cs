@@ -758,14 +758,14 @@ namespace ME3Explorer.PackageEditor
                     }
                     else
                     {
-                        TfcName = oldselection;
+                        TextureCacheComboBox.SelectedItem = oldselection;
                     }
                     break;
                 case MOVE_TO_LOCAL_STRING: //Before was external move to local
                     var swELdlg = MessageBox.Show($"Do you want to move the bik from {oldselection}.tfc\ninto {Path.GetFileName(CurrentLoadedExport.FileRef.FilePath)}?\nThis is not recommended for large files.", "Move to Local", MessageBoxButton.OKCancel);
                     if (swELdlg == MessageBoxResult.Cancel)
                     {
-                        TfcName = oldselection;
+                        TextureCacheComboBox.SelectedItem = oldselection;
                         break;
                     }
                     SwitchExternalToLocal();
@@ -774,7 +774,7 @@ namespace ME3Explorer.PackageEditor
                     var impdlg = MessageBox.Show($"Do you want to import a new bik file into {Path.GetFileName(CurrentLoadedExport.FileRef.FilePath)}?\nThis is not recommended for large files.", "Warning", MessageBoxButton.YesNo);
                     if (impdlg == MessageBoxResult.No)
                     {
-                        TfcName = oldselection;
+                        TextureCacheComboBox.SelectedItem = oldselection;
                         break;
                     }
                     CurrentLoadedExport.RemoveProperty("TextureFileCacheName");
@@ -788,8 +788,16 @@ namespace ME3Explorer.PackageEditor
                     if (bdlg != MessageBoxResult.Cancel)
                     {
                         var createdTFC = CreateNewMovieTFC();
+                        var newtfcname = Path.GetFileNameWithoutExtension(createdTFC);
+                        var newImptdlg = MessageBox.Show($"Do you want to import a movie cached at {newtfcname}", "Movie Import", MessageBoxButton.YesNo);
+                        if (newImptdlg != MessageBoxResult.No)
+                        {
+                            TfcName = newtfcname;
+                            ImportBikFile();
+                            break;
+                        }
                     }
-                    TfcName = oldselection;
+                    TextureCacheComboBox.SelectedItem = oldselection;
                     break;
                 case ADD_TFC_STRING:
                     var addChkDlg = MessageBox.Show($"Do you want to add an existing tfc to the list?", "Add a TFC", MessageBoxButton.OKCancel);
@@ -805,17 +813,24 @@ namespace ME3Explorer.PackageEditor
                         Filter = "TextureFileCache (*.tfc)|*.tfc"
                     };
                     adddlg.ShowDialog();
-                    string file = Path.GetFileNameWithoutExtension(adddlg.FileName);
-                    if (!file.StartsWith("Textures_DLC_") && !file.StartsWith("Movies_DLC_"))
+                    string addedtfc = Path.GetFileNameWithoutExtension(adddlg.FileName);
+                    if (!addedtfc.StartsWith("Textures_DLC_") && !addedtfc.StartsWith("Movies_DLC_"))
                     {
                         MessageBox.Show($"Cannot replace movies into a TFC provided by BioWare.\nMust have valid DLC name starting 'Movies_DLC_MOD_' or 'Textures_DLC_MOD_'","Invalid TFC",MessageBoxButton.OK);
                     }
                     else
                     {
-                        Pcc.FindNameOrAdd(file);
-                        AvailableTFCNames.Add(file);
+                        Pcc.FindNameOrAdd(addedtfc);
+                        AvailableTFCNames.Add(addedtfc);
+                        var addimptdlg = MessageBox.Show($"Do you want to import a movie cached at {addedtfc}", "Movie Import", MessageBoxButton.YesNo);
+                        if (addimptdlg != MessageBoxResult.No)
+                        {
+                            TfcName = addedtfc;
+                            ImportBikFile();
+                            break;
+                        }
                     }
-                    TfcName = oldselection;
+                    TextureCacheComboBox.SelectedItem = oldselection;
                     break;
                 default: //This means a tfc name was selected
                     if (IsLocallyCached) 
@@ -823,7 +838,7 @@ namespace ME3Explorer.PackageEditor
                         var ddlg = MessageBox.Show($"Do you want to add a new bik file cached at {newSelection}.tfc?", "Warning", MessageBoxButton.OKCancel);
                         if (ddlg == MessageBoxResult.Cancel)
                         {
-                            TfcName = oldselection;
+                            TextureCacheComboBox.SelectedItem = oldselection;
                             break;
                         }
                         CurrentLoadedExport.WriteProperty(new NameProperty(newSelection, "TextureFileCacheName"));
@@ -837,7 +852,7 @@ namespace ME3Explorer.PackageEditor
                         var dlg = MessageBox.Show($"Do you want to add a new bik file cached at {newSelection}.tfc?", "Warning", MessageBoxButton.YesNo);
                         if (dlg == MessageBoxResult.No)
                         {
-                            TfcName = oldselection;
+                            TextureCacheComboBox.SelectedItem = oldselection;
                             break;
                         }
                     }
@@ -881,18 +896,17 @@ namespace ME3Explorer.PackageEditor
                     return null;
 
                 Pcc.FindNameOrAdd(nprompt);
-                if (!AvailableTFCNames.Any(x => x == TfcName))
+                if (!AvailableTFCNames.Any(x => x == nprompt))
                 {
-                    AvailableTFCNames.Add(TfcName);
+                    AvailableTFCNames.Add(nprompt);
                 }
-                TfcName = nprompt;
                 return outputTFC;
             }
 
             Pcc.FindNameOrAdd(nprompt);
-            if (!AvailableTFCNames.Any(x => x == TfcName))
+            if (!AvailableTFCNames.Any(x => x == nprompt))
             {
-                AvailableTFCNames.Add(TfcName);
+                AvailableTFCNames.Add(nprompt);
             }
 
             Guid tfcGuid = Guid.NewGuid();
