@@ -12,9 +12,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ClosedXML.Excel;
+using Gammtek.Conduit.Extensions;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer.CurveEd
 {
@@ -172,6 +175,75 @@ namespace ME3Explorer.CurveEd
             }
         }
 
+        public void ExportCurvesToXLS()
+        {
+            var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Curve");
+            var trackKeys = new SortedDictionary<float, List<float>>();  //4  time, then either X or other, Y, Z
+            var curveList = new List<string>();
+            //write data to list
+            foreach (var track in InterpCurveTracks)
+            {
+                foreach(var curve in track.Curves)
+                {
+                    curveList.Add(curve.Name);
+                    foreach(var point in curve.CurvePoints)
+                    {
+                        float time = point.InVal;
+                        if (!trackKeys.ContainsKey(time))
+                        {
+                            trackKeys.Add(time, new List<float>());
+                        }
+                        trackKeys[time].Add(point.OutVal);
+                    }
+                }
+            }
+            
+            //Write to XL
+            int xlrow = 1;
+            int xlcol = 1;
+            worksheet.Cell(xlrow, xlcol).Value = "Time";
+            foreach (var cn in curveList)
+            {
+                xlcol++;
+                worksheet.Cell(xlrow, xlcol).Value = cn;
+            }
+
+            foreach (var tk in trackKeys)
+            {
+                xlrow++;
+                xlcol = 1;
+                worksheet.Cell(xlrow, xlcol).Value = tk.Key.ToString();
+                foreach (var point in tk.Value)
+                {
+                    xlcol++;
+                    worksheet.Cell(xlrow, xlcol).Value = point.ToString();
+                }
+            }
+
+            CommonSaveFileDialog m = new CommonSaveFileDialog
+            {
+                Title = "Select excel output",
+                DefaultFileName = $"{CurrentLoadedExport.ObjectNameString}_{CurrentLoadedExport.UIndex}.xlsx",
+                DefaultExtension = "xlsx",
+            };
+            m.Filters.Add(new CommonFileDialogFilter("Excel Files", "*.xlsx"));
+            var owner = Window.GetWindow(this);
+            if (m.ShowDialog(owner) == CommonFileDialogResult.Ok)
+            {
+                owner.RestoreAndBringToFront();
+                try
+                {
+                    workbook.SaveAs(m.FileName);
+                    MessageBox.Show($"Curves exported to {System.IO.Path.GetFileName(m.FileName)}.");
+                }
+                catch
+                {
+                    MessageBox.Show($"Save to {System.IO.Path.GetFileName(m.FileName)} failed.\nCheck the excel file is not open.");
+                }
+            }
+        }
+
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = InterpCurveTracks.Count > 0;
@@ -218,6 +290,16 @@ namespace ME3Explorer.CurveEd
                     }
                 }
             }
+        }
+
+        private void ImportFromExcel_Click(object sender, RoutedEventArgs e)
+        {
+            //TBC
+        }
+
+        private void ExportToExcel_Click(object sender, RoutedEventArgs e)
+        {
+            ExportCurvesToXLS();
         }
     }
 }

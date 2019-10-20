@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:global="clr-namespace:ME3Explorer"
              xmlns:local="clr-namespace:ME3Explorer.CurveEd"
+             xmlns:fa="http://schemas.fontawesome.com/icons/"
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" 
              x:Class="ME3Explorer.CurveEd.CurveEditor"
              mc:Ignorable="d" 
@@ -78,6 +79,18 @@
                 <RadioButton x:Name="btnClamped" Click="btnInterpMode_Click" Content="Auto/Clamped"/>
                 <RadioButton x:Name="btnUser" Click="btnInterpMode_Click" Content="User"/>
                 <RadioButton x:Name="btnBreak" Click="btnInterpMode_Click" Content="Break"/>
+                <RadioButton Margin="5,0,0,0" Grid.Column="2" Name="ImportFromExcel_Button" Padding="5,0" Click="ImportFromExcel_Click" ToolTip="Import curves from excel">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                        <fa:ImageAwesome Icon="Solid_ArrowLeft" Width="16" Height="16" Foreground="DarkRed"/>
+                    </StackPanel>
+                </RadioButton>
+                <RadioButton Padding="5,0" Grid.Column="3" Name="ExportToExcel_Button" Click="ExportToExcel_Click" HorizontalAlignment="Right" ToolTip="Export curves to excel">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                        <fa:ImageAwesome Icon="Solid_ArrowRight" Width="16" Height="16" Foreground="DarkRed"/>
+                    </StackPanel>
+                </RadioButton>
             </StackPanel>
         </Border>
         <TreeView x:Name="TrackList" DockPanel.Dock="Left" Width="200" SelectedItemChanged="TrackList_SelectedItemChanged" Background="#FF888888">
