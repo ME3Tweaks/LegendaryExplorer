@@ -135,7 +135,7 @@ namespace ME3Explorer.AssetDatabase
         public ICommand OpenSourcePkgCommand { get; set; }
         public ICommand GoToSuperclassCommand { get; set; }
         public ICommand OpenUsagePkgCommand { get; set; }
-        public ICommand FilterSeqClassCommand { get; set; }
+        public ICommand FilterClassCommand { get; set; }
         public ICommand FilterMatCommand { get; set; }
         public ICommand FilterMeshCommand { get; set; }
         public ICommand FilterTexCommand { get; set; }
@@ -199,7 +199,7 @@ namespace ME3Explorer.AssetDatabase
         {
             GenerateDBCommand = new GenericCommand(GenerateDatabase);
             SaveDBCommand = new GenericCommand(SaveDatabase);
-            FilterSeqClassCommand = new RelayCommand(SetFilters, IsViewingClass);
+            FilterClassCommand = new RelayCommand(SetFilters, IsViewingClass);
             FilterMatCommand = new RelayCommand(SetFilters, IsViewingMaterials);
             FilterMeshCommand = new RelayCommand(SetFilters, IsViewingMeshes);
             FilterTexCommand = new RelayCommand(SetFilters, IsViewingTextures);
@@ -1042,6 +1042,10 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
+            if (showthis && menu_fltrInterp.IsChecked && (!cr.Class.ToLower().StartsWith("interp") && !cr.Class.ToLower().StartsWith("bioevtsys") && !cr.Class.ToLower().Contains("interptrack")))
+            {
+                showthis = false;
+            }
             return showthis;
         }
         bool MaterialFilter(object d)
@@ -1225,6 +1229,9 @@ namespace ME3Explorer.AssetDatabase
             {
                 case "Seq":
                     menu_fltrSeq.IsChecked = !menu_fltrSeq.IsChecked;
+                    break;
+                case "Interp":
+                    menu_fltrInterp.IsChecked = !menu_fltrInterp.IsChecked;
                     break;
                 case "Unlit":
                     menu_fltrMatUnlit.IsChecked = !menu_fltrMatUnlit.IsChecked;
