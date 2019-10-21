@@ -385,9 +385,6 @@ namespace ME3Explorer
                 iWorksheet = Workbook.Worksheet(1);
             }
 
-            //Do we want to limit user to importing same column structure as existing?  Who would be stupid enough to do something else??? ME.
-            // - Kinkojiro, 2019
-
             //STEP 1 Clear existing data
             Bio2DA bio2da = new Bio2DA();
             bio2da.export = export;
