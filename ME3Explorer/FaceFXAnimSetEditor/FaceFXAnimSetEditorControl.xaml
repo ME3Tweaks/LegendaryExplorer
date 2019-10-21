@@ -80,6 +80,11 @@
                         <TextBlock.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Delete" Click="DeleteAnim_Click"/>
+                                <MenuItem Header="Export Curve to Excel" Click="ExportToExcel_Click">
+                                    <MenuItem.Icon>
+                                        <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
                             </ContextMenu>
                         </TextBlock.ContextMenu>
                     </TextBlock>

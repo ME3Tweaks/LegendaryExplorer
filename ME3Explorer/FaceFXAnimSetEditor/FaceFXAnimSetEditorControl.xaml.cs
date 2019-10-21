@@ -13,11 +13,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ClosedXML.Excel;
 using ME3Explorer.CurveEd;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 
 namespace ME3Explorer.FaceFX
@@ -710,6 +712,48 @@ namespace ME3Explorer.FaceFX
             }
             FaceFX.Save();
             updateAnimListBox();
+        }
+
+        private void ExportToExcel_Click(object sender, RoutedEventArgs e)
+        {
+            var curve = graph.SelectedCurve;
+            var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Curve");
+            //Setup XL
+            worksheet.Cell(1, 1).Value = "Time";
+            worksheet.Cell(1, 2).Value = curve.Name;
+            int xlrow = 1;
+            //write data to list
+            foreach (var point in curve.CurvePoints)
+            {
+                xlrow++;
+                float time = point.InVal;
+                float value = point.OutVal;
+                worksheet.Cell(xlrow, 1).Value = point.InVal;
+                worksheet.Cell(xlrow, 2).Value = point.OutVal;
+            }
+
+            CommonSaveFileDialog m = new CommonSaveFileDialog
+            {
+                Title = "Select excel output",
+                DefaultFileName = $"{CurrentLoadedExport.ObjectNameString}_{CurrentLoadedExport.UIndex}.xlsx",
+                DefaultExtension = "xlsx",
+            };
+            m.Filters.Add(new CommonFileDialogFilter("Excel Files", "*.xlsx"));
+            var owner = Window.GetWindow(this);
+            if (m.ShowDialog(owner) == CommonFileDialogResult.Ok)
+            {
+                owner.RestoreAndBringToFront();
+                try
+                {
+                    workbook.SaveAs(m.FileName);
+                    MessageBox.Show($"Curve exported to {System.IO.Path.GetFileName(m.FileName)}.");
+                }
+                catch
+                {
+                    MessageBox.Show($"Save to {System.IO.Path.GetFileName(m.FileName)} failed.\nCheck the excel file is not open.");
+                }
+            }
         }
     }
 }
