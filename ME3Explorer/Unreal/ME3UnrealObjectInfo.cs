@@ -433,15 +433,20 @@ namespace ME3Explorer.Unreal
 
         public static SequenceObjectInfo getSequenceObjectInfo(string className)
         {
+            return SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo) ? seqInfo : null;
+        }
+
+        public static List<string> getSequenceObjectInfoInputLinks(string className)
+        {
             if (SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo))
             {
                 if (seqInfo.inputLinks != null)
                 {
-                    return SequenceObjects[className];
+                    return SequenceObjects[className].inputLinks;
                 }
                 if (Classes.TryGetValue(className, out ClassInfo info) && info.baseClass != "Object" && info.baseClass != "Class")
                 {
-                    return getSequenceObjectInfo(info.baseClass);
+                    return getSequenceObjectInfoInputLinks(info.baseClass);
                 }
             }
             return null;
@@ -851,6 +856,15 @@ namespace ME3Explorer.Unreal
                 }
             };
             newSequenceObjects["SFXSeqAct_SetFaceFX"] = new SequenceObjectInfo();
+
+            //SirCxyrtyx - New Class - SeqAct_SendMessageToME3Explorer
+            NewClasses["SeqAct_SendMessageToME3Explorer"] = new ClassInfo
+            {
+                baseClass = "SeqAct_Log",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 40, //in ME3Resources.pcc
+            };
+            newSequenceObjects["SeqAct_SendMessageToME3Explorer"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
 
             NewClasses["LightMapTexture2D"] = new ClassInfo
             {

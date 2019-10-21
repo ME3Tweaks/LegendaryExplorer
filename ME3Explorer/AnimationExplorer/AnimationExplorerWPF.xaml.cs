@@ -33,7 +33,14 @@ namespace ME3Explorer.AnimationExplorer
             DataContext = this;
             InitializeComponent();
             LoadCommands();
+            GameController.RecieveME3Message += GameController_RecieveME3Message;
         }
+
+        private void GameController_RecieveME3Message(string msg)
+        {
+
+        }
+
         public PropsDataBase CurrentDataBase { get; } = new PropsDataBase();
 
         private bool _readyToView;

@@ -13,6 +13,7 @@ using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME3Explorer.ASI;
 using ME3Explorer.Dialogue_Editor;
+using ME3Explorer.GameInterop;
 using ME3Explorer.MountEditor;
 using ME3Explorer.Packages;
 using ME3Explorer.Sequence_Editor;
@@ -153,7 +154,9 @@ namespace ME3Explorer
             else
             {
                 Dispatcher.UnhandledException += OnDispatcherUnhandledException; //only start handling them after bootup
-                (new MainWindow()).Show();
+                var mainWindow = new MainWindow();
+                mainWindow.Show();
+                GameController.InitializeMessageHook(mainWindow);
             }
         }
 

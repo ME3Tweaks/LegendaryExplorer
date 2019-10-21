@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
 using ME3Explorer.Packages;
 using Keys = System.Windows.Forms.Keys;
 
@@ -20,13 +21,26 @@ namespace ME3Explorer.GameInterop
             me3Process = Process.GetProcessesByName("MassEffect3").FirstOrDefault();
             return me3Process != null;
         }
+
+        private static bool hasRegisteredForMessages; 
+        public static void InitializeMessageHook(Window window)
+        {
+            if (hasRegisteredForMessages) return;
+            hasRegisteredForMessages = true;
+            if (PresentationSource.FromVisual(window) is HwndSource hwndSource)
+            {
+                hwndSource.AddHook(WndProc);
+            }
+        }
+
+        public static event Action<string> RecieveME3Message; 
         public static void SendKey(IntPtr hWnd, Keys key) => SendKey(hWnd, (int)key);
 
         public static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, params string[] commands) => ExecuteConsoleCommands(hWnd, game, commands.AsEnumerable());
 
         public static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, IEnumerable<string> commands)
         {
-            string execFileName = "me3expinterop";
+            const string execFileName = "me3expinterop";
             string execFilePath = Path.Combine(MEDirectories.GamePath(game), "Binaries", execFileName);
             File.WriteAllText(execFilePath, string.Join(Environment.NewLine, commands));
             DirectExecuteConsoleCommand(hWnd, $"exec {execFileName}");
@@ -35,6 +49,31 @@ namespace ME3Explorer.GameInterop
         //private
 
         #region Internal support functions
+        [StructLayout(LayoutKind.Sequential)]
+        struct COPYDATASTRUCT
+        {
+            public ulong dwData;
+            public uint cbData;
+            public IntPtr lpData;
+        }
+        private static IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            const int WM_COPYDATA = 0x004a;
+            const uint SENT_FROM_ME3 = 0x02AC00C2;
+            if (msg == WM_COPYDATA)
+            {
+                COPYDATASTRUCT cds = Marshal.PtrToStructure<COPYDATASTRUCT>(lParam);
+                if (cds.dwData == SENT_FROM_ME3)
+                {
+                    string value = Marshal.PtrToStringUni(cds.lpData);
+                    RecieveME3Message?.Invoke(value);
+                    handled = true;
+                    return (IntPtr)1;
+                }
+            }
+
+            return IntPtr.Zero;
+        }
 
         [DllImport("user32.dll")]
         static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
