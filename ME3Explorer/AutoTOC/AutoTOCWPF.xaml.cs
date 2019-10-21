@@ -42,20 +42,11 @@ namespace ME3Explorer.AutoTOC
             BindingOperations.EnableCollectionSynchronization(TOCTasks, _myCollectionLock);
         }
 
-        public AutoTOCWPF(bool automated) : this()
-        {
-            Automated = automated;
-        }
-
         public ICommand RunAutoTOCCommand { get; private set; }
         public ICommand GenerateDLCTOCCommand { get; private set; }
         public ICommand BuildME1FileListCommand { get; private set; }
 
         public BackgroundWorker TOCWorker;
-        /// <summary>
-        /// Used to determine if this window will automatically close when an ME3 autotoc completes
-        /// </summary>
-        private readonly bool Automated;
 
         private void LoadCommands()
         {
@@ -269,7 +260,7 @@ namespace ME3Explorer.AutoTOC
         private void GenerateSingleTOC_BackgroundThread(object sender, DoWorkEventArgs e)
         {
             TOCTasks.ClearEx();
-            prepareToCreateTOC(e.Argument as string);
+            prepareToCreateTOC(e.Argument as string, TOCTasks);
             TOCTasks.Add(new ListBoxTask
             {
                 Header = "TOC created",
@@ -296,16 +287,12 @@ namespace ME3Explorer.AutoTOC
         {
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
             TOCWorker = null;
-            if (Automated)
-            {
-                Close();
-            }
         }
 
         private void GenerateAllTOCs_BackgroundThread(object sender, DoWorkEventArgs e)
         {
             TOCTasks.ClearEx();
-            GenerateAllTOCs();
+            GenerateAllTOCs(TOCTasks);
             TOCTasks.Add(new ListBoxTask
             {
                 Header = "AutoTOC complete",
@@ -328,7 +315,8 @@ namespace ME3Explorer.AutoTOC
         /// Prepares to create the indexed TOC file by gathering data and then passing it to the TOC creation function
         /// </summary>
         /// <param name="consoletocFile"></param>
-        public void prepareToCreateTOC(string consoletocFile)
+        /// <param name="tocTasks"></param>
+        public static void prepareToCreateTOC(string consoletocFile, IList<ListBoxTask> tocTasks = null)
         {
             if (!consoletocFile.EndsWith("\\"))
             {
@@ -338,8 +326,12 @@ namespace ME3Explorer.AutoTOC
             if (files.Count != 0)
             {
                 //These variable names.......
-                ListBoxTask task = new ListBoxTask($"Creating TOC in {consoletocFile}");
-                TOCTasks.Add(task);
+                ListBoxTask task = null;
+                if (tocTasks != null)
+                {
+                    task = new ListBoxTask($"Creating TOC in {consoletocFile}");
+                    tocTasks.Add(task);
+                }
                 string t = files[0];
                 int n = t.IndexOf("DLC_");
                 if (n > 0)
@@ -372,7 +364,7 @@ namespace ME3Explorer.AutoTOC
                     pathbase = consoletocFile;
                 }
                 CreateTOC(pathbase, consoletocFile + "PCConsoleTOC.bin", files.ToArray());
-                task.Complete($"Created TOC for {consoletocFile}");
+                task?.Complete($"Created TOC for {consoletocFile}");
             }
         }
 
@@ -447,19 +439,15 @@ namespace ME3Explorer.AutoTOC
             return res.ToArray();
         }
 
-        private void GenerateAllTOCs()
+        public static void GenerateAllTOCs(IList<ListBoxTask> tocTasks = null)
         {
             List<string> folders = (new DirectoryInfo(ME3Directory.DLCPath)).GetDirectories().Select(d => d.FullName).ToList();
             folders.Add(ME3Directory.gamePath + @"BIOGame\");
-            folders.ForEach(prepareToCreateTOC);
+            folders.ForEach(consoletocFile => prepareToCreateTOC(consoletocFile, tocTasks));
         }
 
         private void AutoTOCWPF_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (Automated)
-            {
-                RunAutoTOC();
-            }
         }
 
         private void ListBox_OnLoaded(object sender, RoutedEventArgs e)

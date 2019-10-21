@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 using Gammtek.Conduit.Extensions;
 using ME3Explorer.Packages;
@@ -77,14 +78,16 @@ namespace ME3Explorer.GameInterop
             if (GameController.TryGetME3Process(out Process me3Process) && canHotLoad)
             {
                 IntPtr handle = me3Process.MainWindowHandle;
-                SetForegroundWindow(handle);
                 GameController.ExecuteConsoleCommands(handle, MEGame.ME3, $"at {tempMapName}");
                 return;
             }
 
             me3Process?.Kill();
-            Process.Start(ME3Directory.ExecutablePath, $"{tempMapName} -nostartupmovies -Windowed ResX=1000 ResY=800");
-            MessageBox.Show("Mass Effect 3 starting up! This may take a moment.");
+            int resX = 1000;
+            int resY = 800;
+            int posX = (int)(SystemParameters.PrimaryScreenWidth - (resX + 100));
+            int posY = (int)(SystemParameters.PrimaryScreenHeight - resX) / 2;
+            Process.Start(ME3Directory.ExecutablePath, $"{tempMapName} -nostartupmovies -Windowed ResX={resX} ResY={resY} WindowPosX={posX} WindowPosY={posY}");
         }
     }
 }

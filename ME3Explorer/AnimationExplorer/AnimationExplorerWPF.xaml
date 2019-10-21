@@ -7,78 +7,98 @@
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         xmlns:global="clr-namespace:ME3Explorer"
         xmlns:converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="AnimationExplorer" SizeToContent="Width">
+        Title="AnimationExplorer" SizeToContent="Width" Loaded="AnimationExplorerWPF_Loaded" Closing="AnimationExplorerWPF_OnClosing">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
     </Window.Resources>
-    <Grid>
-        <TabControl>
-            <TabItem Header="Instructions">
-                <Grid Width="523">
-                    <Border BorderBrush="LightSlateGray" BorderThickness="0.65">
-                        <StackPanel MinWidth="200" Margin="8">
-                            <TextBlock Text="Welcome to Animation Explorer!" Margin="0,5,0,0"/>
-                            <TextBlock Text="Requirements:" Margin="0,5,0,0"/>
-                            <StackPanel>
-                                <local:Requirement x:Name="me3InstalledReq" FullfilledText="Mass Effect 3 is installed" Margin="0,5,0,5"
-                                                   UnFullfilledText="Can't find Mass Effect 3 installation!" ButtonText="Set ME3 path" 
-                                                   RequirementCommand="{Binding ME3InstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}"/>
-                                <local:Requirement x:Name="asiLoaderInstalledReq" FullfilledText="Binkw32 asi loader is installed" Margin="0,5,0,5"
-                                                   UnFullfilledText="Binkw32 asi loader is not installed!" ButtonText="Get dlls" 
-                                                   RequirementCommand="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}"/>
-                                <local:Requirement x:Name="me3ClosedInstalledReq" FullfilledText="Mass Effect 3 is not running" Margin="0,5,0,5"
-                                                   UnFullfilledText="Mass Effect 3 must be quit!" ButtonText="Kill ME3 process" 
-                                                   RequirementCommand="{Binding ME3ClosedRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}"/>
-                            </StackPanel>
-                            <Button Name="startME3Button" Content="Start Mass Effect 3 in Animation Viewer Mode" Margin="20,10,20,0" 
-                                    Command="{Binding StartME3Command, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}"/>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Animations" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
-                <DockPanel>
-                    <SharedUI:SearchBox x:Name="searchBox" DockPanel.Dock="Top" TextChanged="SearchBox_OnTextChanged"></SharedUI:SearchBox>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="300"/>
-                            <ColumnDefinition Width="5"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <SharedUI:ListBoxScroll x:Name="listBoxAnims" ItemsSource="{Binding Path=CurrentDataBase.Animations}"  DisplayMemberPath="AnimSequence">
-
-                        </SharedUI:ListBoxScroll>
-                        <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Column="1"/>
-                        <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Column="2">
-                            <StackPanel x:Name="details_Anim" MinWidth="200" Margin="8">
-                                <StackPanel.Style>
-                                    <Style>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=listBoxAnims, Path=SelectedIndex}" Value=">=0">
-                                                <Setter Property="StackPanel.Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </StackPanel.Style>
-                                <TextBlock Text="Sequence Name: " Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding Path=SelectedItem.SeqName, ElementName=listBoxAnims}" />
-                                <TextBlock Text="Animation Group: " Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding Path=SelectedItem.AnimData, ElementName=listBoxAnims}" />
-                                <TextBlock Text="Length (s): " Margin="0,5,0,0" />
-                                <TextBlock Text="{Binding Path=SelectedItem.Length, ElementName=listBoxAnims}"/>
-                                <TextBlock Text="Number of Frames (runs at 30fps): " Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding Path=SelectedItem.Frames, ElementName=listBoxAnims}" />
-                                <TextBlock Text="Compression Format: " Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding Path=SelectedItem.Compression, ElementName=listBoxAnims}" />
-                                <TextBlock Text="Key Format: " Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding Path=SelectedItem.KeyFormat, ElementName=listBoxAnims}" />
+    <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
+        <Grid>
+            <TabControl>
+                <TabItem Header="Instructions" Visibility="{Binding ReadyToView, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                    <Grid Width="523">
+                        <Border BorderBrush="LightSlateGray" BorderThickness="0.65">
+                            <StackPanel MinWidth="200" Margin="8">
+                                <TextBlock Text="Welcome to Animation Explorer!" Margin="0,5,0,0" />
+                                <TextBlock Text="Requirements:" Margin="0,5,0,0" />
+                                <StackPanel>
+                                    <local:Requirement x:Name="me3InstalledReq"
+                                                       FullfilledText="Mass Effect 3 is installed" Margin="0,5,0,5"
+                                                       UnFullfilledText="Can't find Mass Effect 3 installation!"
+                                                       ButtonText="Set ME3 path"
+                                                       RequirementCommand="{Binding ME3InstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}" />
+                                    <local:Requirement x:Name="asiLoaderInstalledReq"
+                                                       FullfilledText="Binkw32 asi loader is installed"
+                                                       Margin="0,5,0,5"
+                                                       UnFullfilledText="Binkw32 asi loader is not installed!"
+                                                       ButtonText="Get dlls"
+                                                       RequirementCommand="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}" />
+                                    <local:Requirement x:Name="me3ClosedReq"
+                                                       FullfilledText="Mass Effect 3 is not running" Margin="0,5,0,5"
+                                                       UnFullfilledText="Mass Effect 3 must be quit!"
+                                                       ButtonText="Kill ME3 process"
+                                                       RequirementCommand="{Binding ME3ClosedRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}" />
+                                    <local:Requirement x:Name="dbLoadedReq"
+                                                       FullfilledText="Animation data is loaded" Margin="0,5,0,5"
+                                                       UnFullfilledText="Animation data is not loaded!"
+                                                       ButtonText="Load Database"
+                                                       RequirementCommand="{Binding DatabaseLoadedRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}" />
+                                </StackPanel>
+                                <Button Name="startME3Button" Content="Start Mass Effect 3 in Animation Viewer Mode"
+                                        Margin="20,10,20,0"
+                                        Command="{Binding StartME3Command, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}" />
                             </StackPanel>
                         </Border>
                     </Grid>
-                </DockPanel>
-            </TabItem>
-        </TabControl>
-    </Grid>
+                </TabItem>
+                <TabItem Name="animTab" Header="Animations" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <DockPanel>
+                        <SharedUI:SearchBox x:Name="searchBox" DockPanel.Dock="Top"
+                                            TextChanged="SearchBox_OnTextChanged">
+                        </SharedUI:SearchBox>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="300" />
+                                <ColumnDefinition Width="5" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <SharedUI:ListBoxScroll x:Name="listBoxAnims" ItemsSource="{Binding Path=Animations}" SelectedItem="{Binding SelectedAnimation}" DisplayMemberPath="AnimSequence">
+
+                            </SharedUI:ListBoxScroll>
+                            <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Column="1" />
+                            <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Column="2">
+                                <StackPanel x:Name="details_Anim" MinWidth="200" Margin="8">
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Style.Triggers>
+                                                <DataTrigger
+                                                    Binding="{Binding ElementName=listBoxAnims, Path=SelectedIndex}"
+                                                    Value=">=0">
+                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <TextBlock Text="Sequence Name: " Margin="0,5,0,0" />
+                                    <TextBlock Text="{Binding Path=SelectedItem.SeqName, ElementName=listBoxAnims}" />
+                                    <TextBlock Text="Animation Group: " Margin="0,5,0,0" />
+                                    <TextBlock Text="{Binding Path=SelectedItem.AnimData, ElementName=listBoxAnims}" />
+                                    <TextBlock Text="Length (s): " Margin="0,5,0,0" />
+                                    <TextBlock Text="{Binding Path=SelectedItem.Length, ElementName=listBoxAnims}" />
+                                    <TextBlock Text="Number of Frames (runs at 30fps): " Margin="0,5,0,0" />
+                                    <TextBlock Text="{Binding Path=SelectedItem.Frames, ElementName=listBoxAnims}" />
+                                    <TextBlock Text="Compression Format: " Margin="0,5,0,0" />
+                                    <TextBlock Text="{Binding Path=SelectedItem.Compression, ElementName=listBoxAnims}" />
+                                    <TextBlock Text="Key Format: " Margin="0,5,0,0" />
+                                    <TextBlock Text="{Binding Path=SelectedItem.KeyFormat, ElementName=listBoxAnims}" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
+        </Grid></xctk:BusyIndicator>
 </global:NotifyPropertyChangedWindowBase>

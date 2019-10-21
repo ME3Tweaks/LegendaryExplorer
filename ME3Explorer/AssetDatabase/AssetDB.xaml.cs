@@ -608,7 +608,7 @@ namespace ME3Explorer.AssetDatabase
             }
         }
 
-        public string GetDBPath(MEGame game)
+        public static string GetDBPath(MEGame game)
         {
             return Path.Combine(App.AppDataFolder, $"AssetDB{game}.zip");
         }

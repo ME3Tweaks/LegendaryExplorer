@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -80,7 +81,9 @@ namespace ME3Explorer
         private static void UnblockLibFiles()
         {
             var probingPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lib");
-            var files = Directory.GetFiles(probingPath);
+            IEnumerable<string> files = Directory.EnumerateFiles(probingPath);
+            //unblock asi files as well
+            files = files.Concat(Directory.EnumerateFiles(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "exec"), "*.asi"));
             foreach (string file in files)
             {
                 DeleteFile(file + ":Zone.Identifier");
