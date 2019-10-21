@@ -736,7 +736,7 @@ namespace ME3Explorer.FaceFX
             CommonSaveFileDialog m = new CommonSaveFileDialog
             {
                 Title = "Select excel output",
-                DefaultFileName = $"{CurrentLoadedExport.ObjectNameString}_{CurrentLoadedExport.UIndex}.xlsx",
+                DefaultFileName = $"{SelectedLine.NameAsString}_{curve.Name}.xlsx",
                 DefaultExtension = "xlsx",
             };
             m.Filters.Add(new CommonFileDialogFilter("Excel Files", "*.xlsx"));

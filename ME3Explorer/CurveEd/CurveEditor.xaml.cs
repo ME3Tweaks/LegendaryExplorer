@@ -257,7 +257,7 @@ namespace ME3Explorer.CurveEd
 
         public void ImportCurvesFromXLS()
         {
-            var wdlg = MessageBox.Show("Do you want to import a new curve from Excel and overwrite the existing curve values?\n \nThe sheet must be in the correct format:\n- Headers must match the overwritten curves\n- All cells must contain a value\n- Time values must be ordered.", "Import Curves", MessageBoxButton.OKCancel);
+            var wdlg = MessageBox.Show("Do you want to import a new curve from Excel and overwrite the existing curve values?\n \nThe sheet must be in the correct format:\n- Headers must match the overwritten curves\n- All cells must contain a value\n- Time values must be ordered.\n- Values only, no links or formulas", "Import Curves", MessageBoxButton.OKCancel);
             if (wdlg == MessageBoxResult.Cancel)
                 return;
 
@@ -286,7 +286,7 @@ namespace ME3Explorer.CurveEd
             {
                 try
                 {
-                    iWorksheet = Workbook.Worksheet("Curve");
+                    iWorksheet = Workbook.Worksheet(1);
                 }
                 catch
                 {
@@ -299,69 +299,84 @@ namespace ME3Explorer.CurveEd
                 iWorksheet = Workbook.Worksheet(1);
             }
 
-            var xlrowCount = iWorksheet.RowsUsed().Count();
-            //Check headers
-            for (int hdr = 0; hdr < curveList.Count; hdr++) //skip time (first) column
+            try
             {
-                var expected = curveList[hdr];
-                var returned = (string)iWorksheet.Cell(1, hdr + 2).Value; //+2 as XL starts at 1, and skip time column
-                if(expected != returned)
+                var xlrowCount = iWorksheet.RowsUsed().Count();
+                //Check headers
+                for (int hdr = 0; hdr < curveList.Count; hdr++) //skip time (first) column
                 {
-                    MessageBox.Show("The imported column headers do not match.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
-                    return;
-                }
-            }
-            //Check time is in order
-            float previoustime = -9999;  
-            for (int row = 2; row <= xlrowCount; row++)
-            {
-                var t = iWorksheet.Cell(row, 1).Value.ToString();
-                if (!Single.TryParse(t, out float time)  || time < previoustime)
-                {
-                    MessageBox.Show("The imported timings are not in order.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
-                    return;
-                }
-                previoustime = time;
-            }
-            //CHECK Every cell has a numeric value
-            foreach(var cell in iWorksheet.RangeUsed().Cells())
-            {
-                if(cell.IsNull() || cell.IsEmpty())
-                {
-                    MessageBox.Show("The sheet contains empty cells.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
-                    return;
-                }
-            }
-
-            //Import data to curves
-            foreach (var track in InterpCurveTracks)
-            {
-                //var curveType = track.curveType;
-                foreach(var curve in track.Curves)
-                {
-                    curve.CurvePoints.Clear();
-                    string cname = curve.Name;
-                    int xlcolumn = curveList.IndexOf(cname) + 2;  //Find correct column offset as XL starts at 1, skip first column (time)
-
-                    for (int xlrow = 2; xlrow < xlrowCount; xlrow++) //Get Excel points start at 2 because top contains headers
+                    var expected = curveList[hdr];
+                    var returned = (string)iWorksheet.Cell(1, hdr + 2).Value; //+2 as XL starts at 1, and skip time column
+                    if (expected != returned)
                     {
-                        var time = iWorksheet.Cell(xlrow, 1).Value.ToString();
-                        var outval = iWorksheet.Cell(xlrow, xlcolumn).Value.ToString();
-                        if(outval != null && float.TryParse(time, out float t) && float.TryParse(outval, out float v))
-                        {
-                            CurvePoint point = new CurvePoint(t, v, 0, 0, CurveMode.CIM_CurveAuto);
-                            curve.CurvePoints.AddLast(point);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Data error. Aborted");
-                            return;
-                        }
+                        MessageBox.Show("The imported column headers do not match.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
+                        return;
                     }
                 }
-                Commit();
+                //Check time is in order
+                float previoustime = -9999;
+                for (int row = 2; row <= xlrowCount; row++)
+                {
+                    var t = iWorksheet.Cell(row, 1).Value.ToString();
+                    if (!Single.TryParse(t, out float time) || time < previoustime)
+                    {
+                        MessageBox.Show("The imported timings are not in order.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
+                        return;
+                    }
+                    previoustime = time;
+                }
+                //CHECK Every cell has a numeric value
+                foreach (var cell in iWorksheet.RangeUsed().Cells())
+                {
+                    if (cell.IsNull() || cell.IsEmpty())
+                    {
+                        MessageBox.Show("The sheet contains empty cells.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
+                        return;
+                    }
+                    if(cell.Address.RowNumber > 1 && !Single.TryParse(cell.Value.ToString(), out float f))
+                    {
+                        MessageBox.Show("The values contain text.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
+                        return;
+                    }
+                }
+
+                //Import data to curves
+                foreach (var track in InterpCurveTracks)
+                {
+                    foreach (var curve in track.Curves)
+                    {
+                        curve.CurvePoints.Clear();
+                        string cname = curve.Name;
+                        int xlcolumn = curveList.IndexOf(cname) + 2;  //Find correct column offset as XL starts at 1, skip first column (time)
+
+                        for (int xlrow = 2; xlrow <= xlrowCount; xlrow++) //Get Excel points start at 2 because top contains headers
+                        {
+                            var time = iWorksheet.Cell(xlrow, 1).Value.ToString();
+                            var outval = iWorksheet.Cell(xlrow, xlcolumn).Value.ToString();
+                            if (outval != null && float.TryParse(time, out float t) && float.TryParse(outval, out float v))
+                            {
+                                CurvePoint point = new CurvePoint(t, v, 0, 0, CurveMode.CIM_CurveAuto);
+                                curve.CurvePoints.AddLast(point);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Data error. Aborted");
+                                return;
+                            }
+                        }
+                    }
+                    Commit();
+                }
+                MessageBox.Show("Import complete.", "Import Curves");
             }
-            MessageBox.Show("Import complete.", "Import Curves");
+            catch (Exception e)
+            {
+                MessageBox.Show($"Import failed. Check Import data.\n", "Error");
+#if DEBUG
+                MessageBox.Show($"{ExceptionHandlerDialogWPF.FlattenException(e)}", "Error");
+#endif
+            }
+            
         }
 
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
