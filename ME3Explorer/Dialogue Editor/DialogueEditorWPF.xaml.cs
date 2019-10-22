@@ -177,7 +177,7 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand RecenterCommand { get; set; }
         public ICommand UpdateLayoutDefaultsCommand { get; set; }
         public ICommand SearchCommand { get; set; }
-
+        public ICommand CopyToClipboardCommand { get; set; }
         private bool HasWwbank(object param)
         {
             return SelectedConv?.WwiseBank != null;
@@ -410,6 +410,7 @@ namespace ME3Explorer.Dialogue_Editor
             RecenterCommand = new GenericCommand(graphEditor_PanTo);
             UpdateLayoutDefaultsCommand = new RelayCommand(UpdateLayoutDefaults);
             SearchCommand = new GenericCommand(SearchDialogue, CurrentObjects.Any);
+            CopyToClipboardCommand = new RelayCommand(CopyStringToClipboard);
 
         }
 
@@ -4282,6 +4283,42 @@ namespace ME3Explorer.Dialogue_Editor
             }
             RefreshView();
         }
+        private void CopyStringToClipboard_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (sender == Node_Text_LineString)
+            {
+                CopyStringToClipboard("Line");
+            }
+            else if (sender == Interpdata_TxtBx)
+            {
+                CopyStringToClipboard("ItpDta");
+            }
+        }
+        private async void CopyStringToClipboard(object obj)
+        {
+            if (!(obj is string cmd))
+                return;
+            Clipboard.Clear();
+            string copytext = null;
+            switch(cmd)
+            {
+                case "Line":
+                    copytext = SelectedDialogueNode.Line;
+                    break;
+                case "ItpDta":
+                    copytext = SelectedDialogueNode.Interpdata.ToString();
+                    break;
+            }
+
+            if (copytext == null)
+                return;
+
+            Clipboard.SetText(copytext);
+            var otext = StatusBar_OtherText.Text;
+            StatusBar_OtherText.Text = "Copied to Clipboard.";
+            await Task.Delay(4000);
+            StatusBar_OtherText.Text = otext;
+        }
 
         #endregion
 
@@ -4329,8 +4366,7 @@ namespace ME3Explorer.Dialogue_Editor
 
 
 
+
         #endregion Helpers
-
-
     }
 }
