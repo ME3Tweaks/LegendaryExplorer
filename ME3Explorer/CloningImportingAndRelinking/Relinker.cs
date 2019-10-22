@@ -397,7 +397,10 @@ namespace ME3Explorer
                 }
                 else if (importExportDependencies)
                 {
-                    IEntry parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentFullPath, importingPCC, destinationPcc, true, crossPCCObjectMappingList);
+                    if (!crossPCCObjectMappingList.TryGetValue(sourceExport.Parent, out IEntry parent))
+                    {
+                        parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentFullPath, importingPCC, destinationPcc, true, crossPCCObjectMappingList);
+                    }
                     ExportEntry importedExport = EntryImporter.ImportExport(destinationPcc, sourceExport, parent?.UIndex ?? 0, true, crossPCCObjectMappingList);
                     uIndex = importedExport.UIndex;
                 }
