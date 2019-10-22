@@ -82,7 +82,21 @@ namespace ME3Explorer.SharedUI
                 return;
             }
             Recents_MenuItem.IsEnabled = true;
+            int i = 0;
+            foreach (string filepath in RFiles)
+            {
+                MenuItem fr = new MenuItem()
+                {
+                    Header = filepath.Replace("_", "__"),
+                    Tag = filepath
+                };
+                fr.Click += RecentFile_click;
+                Recents_MenuItem.Items.Add(fr);
+                i++;
+            }
         }
+
+        internal abstract void RecentFile_click(object sender, RoutedEventArgs e);
 
         public void LoadRecentList()
         {

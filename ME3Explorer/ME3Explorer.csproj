@@ -731,8 +731,6 @@
     <Compile Include="Main Window\SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ME1\Unreal\Bytecode.cs" />
-    <Compile Include="ME1\Unreal\Function.cs" />
     <Compile Include="Packages\ExportEntry.cs" />
     <Compile Include="Packages\IEntry.cs" />
     <Compile Include="Packages\IMEPackage.cs" />

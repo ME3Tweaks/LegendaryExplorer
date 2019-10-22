@@ -132,7 +132,7 @@
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type me1bytecode:Statement}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Name="ScriptBlock" Margin="4,0,0,0" Text="{Binding Token}">
+                                <TextBlock x:Name="ScriptBlock" Margin="4,0,0,0" Text="{Binding OffsetDisplayableString}">
                                     <TextBlock.Style>
                                         <Style>
                                             <Setter Property="TextBlock.FontWeight" Value="Regular"/>
