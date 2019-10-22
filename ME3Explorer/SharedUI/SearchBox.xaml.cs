@@ -20,6 +20,15 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public partial class SearchBox : UserControl
     {
+        public static readonly DependencyProperty WatermarkTextProperty = DependencyProperty.Register(
+            nameof(WatermarkText), typeof(string), typeof(SearchBox), new PropertyMetadata(default(string)));
+
+        public string WatermarkText
+        {
+            get => (string)GetValue(WatermarkTextProperty);
+            set => SetValue(WatermarkTextProperty, value);
+        }
+
         public delegate void SearchBoxTextChangedEventHandler(SearchBox sender, string newText);
 
         public event SearchBoxTextChangedEventHandler TextChanged;

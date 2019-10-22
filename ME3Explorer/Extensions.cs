@@ -796,6 +796,11 @@ namespace ME3Explorer
         public static float ToDegrees(this int unrealRotationUnits) => unrealRotationUnits * 360f / 65536f;
 
         /// <summary>
+        /// Converts Unreal rotation units to Radians
+        /// </summary>
+        public static double ToRadians(this int unrealRotationUnits) => unrealRotationUnits * 360.0 / 65536.0 * Math.PI / 180.0;
+
+        /// <summary>
         /// Checks if this object is of a specific generic type (e.g. List&lt;IntProperty&gt;)
         /// </summary>
         /// <param name="typeToCheck">typeof() of the item you are checking</param>

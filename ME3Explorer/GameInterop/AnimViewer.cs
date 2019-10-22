@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Gammtek.Conduit.Extensions;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using SharpDX;
 using StreamHelpers;
 using MessageBox = System.Windows.MessageBox;
 
@@ -18,7 +19,7 @@ namespace ME3Explorer.GameInterop
 {
     public static class AnimViewer
     {
-        public static void ViewAnimInGame(string animSourceFilePath, int animSequenceUIndex)
+        public static Vector3 ViewAnimInGame(string animSourceFilePath, int animSequenceUIndex, bool shepard = false)
         {
             string animViewerBaseFilePath = Path.Combine(App.ExecFolder, "ME3AnimViewer.pcc");
 
@@ -26,6 +27,13 @@ namespace ME3Explorer.GameInterop
             using IMEPackage animSourceFile = MEPackageHandler.OpenMEPackage(animSourceFilePath);
 
             ExportEntry sourceAnimSeq = animSourceFile.GetUExport(animSequenceUIndex);
+
+            byte[] binData = sourceAnimSeq.getBinaryData();
+            Vector3 offsetVector = Vector3.Zero;
+            if (binData.Length >= 16)
+            {
+                offsetVector = new Vector3(BitConverter.ToSingle(binData, 4), BitConverter.ToSingle(binData, 8), BitConverter.ToSingle(binData, 12));
+            }
 
             IEntry parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceAnimSeq.ParentFullPath, animSourceFile, animViewerBase);
 
@@ -47,7 +55,15 @@ namespace ME3Explorer.GameInterop
                 new ObjectProperty(importedAnimSeq.UIndex)
             });
 
+            if (shepard)
+            {
+                ExportEntry bioWorldInfo = animViewerBase.GetUExport(4);
+                //6 is the hoody
+                bioWorldInfo.WriteProperty(new IntProperty(6, "ForcedCasualAppearanceID"));
+            }
+
             OpenFileInME3(animViewerBase, true);
+            return offsetVector;
         }
 
         [DllImport("user32.dll")]

@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="300">
     <DockPanel>
-        <SharedUI:SearchBox x:Name="searchBox" DockPanel.Dock="Top" TextChanged="SearchBox_OnTextChanged"/>
+        <SharedUI:SearchBox x:Name="searchBox" DockPanel.Dock="Top" TextChanged="SearchBox_OnTextChanged" WatermarkText="Search Toolbox"/>
         <ListView Name="listView">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="packages:ClassInfo">

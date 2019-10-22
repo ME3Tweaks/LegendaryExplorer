@@ -36,8 +36,17 @@ namespace ME3Explorer.GameInterop
         public static event Action<string> RecieveME3Message; 
         public static void SendKey(IntPtr hWnd, Keys key) => SendKey(hWnd, (int)key);
 
-        public static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, params string[] commands) => ExecuteConsoleCommands(hWnd, game, commands.AsEnumerable());
 
+        public static void ExecuteME3ConsoleCommands(params string[] commands) => ExecuteME3ConsoleCommands(commands.AsEnumerable());
+        public static void ExecuteME3ConsoleCommands(IEnumerable<string> commands)
+        {
+            if (TryGetME3Process(out Process me3Process))
+            {
+                ExecuteConsoleCommands(me3Process.MainWindowHandle, MEGame.ME3, commands);
+            }
+        }
+
+        public static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, params string[] commands) => ExecuteConsoleCommands(hWnd, game, commands.AsEnumerable());
         public static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, IEnumerable<string> commands)
         {
             const string execFileName = "me3expinterop";

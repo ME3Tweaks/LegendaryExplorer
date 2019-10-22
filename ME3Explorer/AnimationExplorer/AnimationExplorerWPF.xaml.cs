@@ -20,7 +20,10 @@ using ME3Explorer.AutoTOC;
 using ME3Explorer.GameInterop;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 using Microsoft.Win32;
+using SharpDX;
 using Path = System.IO.Path;
 
 namespace ME3Explorer.AnimationExplorer
@@ -59,6 +62,10 @@ namespace ME3Explorer.AnimationExplorer
                 IsBusy = false;
                 ReadyToView = true;
                 animTab.IsSelected = true;
+                UpdateLocation();
+                UpdateRotation();
+                UpdateCameraState();
+                this.RestoreAndBringToFront();
             }
         }
 
@@ -273,20 +280,37 @@ namespace ME3Explorer.AnimationExplorer
 
         #endregion
 
-        private void LoadAnimation(Animation anim)
+        private void LoadAnimation(Animation anim, bool shepard = false)
         {
-            if (!LoadingAnimation && anim != null && anim.AnimUsages.Any() && GameController.TryGetME3Process(out Process me3Process))
+            if (!LoadingAnimation && GameController.TryGetME3Process(out Process me3Process))
             {
                 BusyText = "Loading Animation";
                 IsBusy = true;
 
-                (int fileListIndex, int animUIndex) = anim.AnimUsages[0];
-                (string filename, string contentdir) = FileListExtended[fileListIndex];
-                string rootPath = ME3Directory.gamePath;
+                if (anim != null && anim.AnimUsages.Any())
+                {
+                    (int fileListIndex, int animUIndex) = anim.AnimUsages[0];
+                    (string filename, string contentdir) = FileListExtended[fileListIndex];
+                    string rootPath = ME3Directory.gamePath;
 
-                filename = $"{filename}.*";
-                var filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
-                Task.Run(() => AnimViewer.ViewAnimInGame(filePath, animUIndex));
+                    filename = $"{filename}.*";
+                    var filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
+                    Task.Run(() => AnimViewer.ViewAnimInGame(filePath, animUIndex)).ContinueWithOnUIThread(prevTask => { currentAnimOffsetVector = prevTask.Result; });
+                }
+                else //no animation selected
+                {
+                    Task.Run(() =>
+                    {
+                        string animViewerBaseFilePath = Path.Combine(App.ExecFolder, "ME3AnimViewer.pcc");
+                        using IMEPackage animViewerBase = MEPackageHandler.OpenMEPackage(animViewerBaseFilePath);
+                        if (shepard)
+                        {
+                            ExportEntry bioWorldInfo = animViewerBase.GetUExport(4);
+                            bioWorldInfo.WriteProperty(new IntProperty(6, "ForcedCasualAppearanceID"));
+                        }
+                        AnimViewer.OpenFileInME3(animViewerBase, true);
+                    });
+                }
             }
         }
 
@@ -303,5 +327,178 @@ namespace ME3Explorer.AnimationExplorer
             GameController.RecieveME3Message -= GameController_RecieveME3Message;
             DataContext = null;
         }
+
+        #region Position/Rotation
+
+        private Vector3 currentAnimOffsetVector = Vector3.Zero;
+
+        private int _xPos;
+        public int XPos
+        {
+            get => _xPos;
+            set
+            {
+                if (SetProperty(ref _xPos, value))
+                {
+                    UpdateLocation();
+                }
+            }
+        }
+
+        private int _yPos;
+        public int YPos
+        {
+            get => _yPos;
+            set
+            {
+                if (SetProperty(ref _yPos, value))
+                {
+                    UpdateLocation();
+                }
+            }
+        }
+
+        private int _zPos = 70;
+        public int ZPos
+        {
+            get => _zPos;
+            set
+            {
+                if (SetProperty(ref _zPos, value))
+                {
+                    UpdateLocation();
+                }
+            }
+        }
+
+        private int _yaw = 180;
+        public int Yaw
+        {
+            get => _yaw;
+            set
+            {
+                if (SetProperty(ref _yaw, value))
+                {
+                    UpdateRotation();
+                }
+            }
+        }
+
+        private int _pitch;
+        public int Pitch
+        {
+            get => _pitch;
+            set
+            {
+                if (SetProperty(ref _pitch, value))
+                {
+                    UpdateRotation();
+                }
+            }
+        }
+
+        private bool noUpdate;
+        private void UpdateLocation()
+        {
+            if (noUpdate) return;
+            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(XPos, 1),
+                                                     UpdateFloatVarCommand(YPos,  2),
+                                                     UpdateFloatVarCommand(ZPos, 3), 
+                                                     "ce SetActorLocation");
+        }
+
+        private void UpdateRotation()
+        {
+            if (noUpdate) return;
+
+            (float x, float y, float z) = new Rotator(((float)Pitch).ToUnrealRotationUnits(), ((float)Yaw).ToUnrealRotationUnits(), 0).GetDirectionalVector();
+            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(x, 4),
+                                                     UpdateFloatVarCommand(y, 5),
+                                                     UpdateFloatVarCommand(z, 6),
+                                                     "ce SetActorRotation");
+        }
+
+        private static string UpdateFloatVarCommand(float value, int index)
+        {
+            return $"initplotmanagervaluebyindex {index} float {value}";
+        }
+
+        private void SetDefaultPosition_Click(object sender, RoutedEventArgs e)
+        {
+            noUpdate = true;
+            XPos = 0;
+            YPos = 0;
+            ZPos = 70;
+            noUpdate = false;
+            UpdateLocation();
+        }
+
+        private void RemoveAnimationOffset_Click(object sender, RoutedEventArgs e)
+        {
+            noUpdate = true;
+            int x = (int)currentAnimOffsetVector.X;
+            int y = (int)currentAnimOffsetVector.Y;
+            int z = (int)currentAnimOffsetVector.Z;
+
+            (XPos, YPos, ZPos) = (-x, -y, -z + 70);
+            noUpdate = false;
+            UpdateLocation();
+        }
+
+        private void ResetRotation_Click(object sender, RoutedEventArgs e)
+        {
+            noUpdate = true;
+            Pitch = 0;
+            Yaw = 180;
+            noUpdate = false;
+            UpdateRotation();
+        }
+
+        #endregion
+
+        private ECameraState prevCameraState;
+        private ECameraState _cameraState;
+        public ECameraState CameraState
+        {
+            get => _cameraState;
+            set
+            {
+                if (SetProperty(ref _cameraState, value))
+                {
+                    UpdateCameraState();
+                    prevCameraState = _cameraState;
+                }
+            }
+        }
+
+        private void UpdateCameraState()
+        {
+            switch (CameraState)
+            {
+                //case ECameraState.Fixed when prevCameraState == ECameraState.Shepard:
+                //case ECameraState.Free when prevCameraState == ECameraState.Shepard:
+                //    LoadAnimation(SelectedAnimation);
+                //    break;
+                case ECameraState.Fixed when prevCameraState == ECameraState.Free:
+                case ECameraState.Free:
+                    GameController.ExecuteME3ConsoleCommands("toggledebugcamera");
+                    break;
+                //case ECameraState.Shepard when prevCameraState != ECameraState.Shepard:
+                //    LoadAnimation(SelectedAnimation, true);
+                //    break;
+            }
+        }
+
+        private void QuiteME3_Click(object sender, RoutedEventArgs e)
+        {
+            KillME3();
+        }
+    }
+
+    public enum ECameraState
+    {
+        Fixed,
+        Free,
+        //Shepard
     }
 }
