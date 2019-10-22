@@ -51,7 +51,7 @@
                 <Grid DockPanel.Dock="Bottom" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Name="bikcontrols_Panel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30" Grid.Column="1">
@@ -69,7 +69,7 @@
                         </Button>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal" Grid.Column="2" Visibility="{Binding IsExternalFile, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}">
-                        <TextBlock Text="Dimensions: " HorizontalAlignment="Stretch"/>
+                        <TextBlock Text="Dimensions: " HorizontalAlignment="Stretch" Visibility="{Binding ViewerModeOnly, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}" TextWrapping="Wrap"/>
                         <TextBlock Text="{Binding SizeX}" FontSize="12" Name="sizeX_txt" VerticalAlignment="Center"/>
                         <TextBlock Text=" x " FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center"  />
                         <TextBlock Text="{Binding SizeY}" FontSize="12" Name="sizeY_txt" VerticalAlignment="Center"/>
