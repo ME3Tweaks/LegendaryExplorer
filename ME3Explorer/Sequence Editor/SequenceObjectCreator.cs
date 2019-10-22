@@ -99,6 +99,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 ArrayProperty<StructProperty> varLinksProp = null;
                 ArrayProperty<StructProperty> outLinksProp = null;
+                ArrayProperty<StructProperty> eventLinksProp = null;
                 Dictionary<string, ClassInfo> classes = UnrealObjectInfo.GetClasses(game);
                 try
                 {
@@ -145,9 +146,23 @@ namespace ME3Explorer.Sequence_Editor
                                 {
                                     outLinksProp = olp;
                                 }
+
+                                if (eventLinksProp == null && prop.Name == "EventLinks" && prop is ArrayProperty<StructProperty> elp)
+                                {
+                                    eventLinksProp = elp;
+                                    //relink ExpectedType
+                                    foreach (StructProperty eventLink in eventLinksProp)
+                                    {
+                                        if (eventLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
+                                            importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
+                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName) is IEntry portedExpectedVar)
+                                        {
+                                            expectedTypeProp.Value = portedExpectedVar.UIndex;
+                                        }
+                                    }
+                                }
                             }
                         }
-
                         classes.TryGetValue(classInfo.baseClass, out classInfo);
                     }
                 }
@@ -163,15 +178,23 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     defaults.Add(outLinksProp);
                 }
+                if (eventLinksProp != null)
+                {
+                    defaults.Add(eventLinksProp);
+                }
 
                 //remove links if empty
-                if (defaults.GetProp<ArrayProperty<StructProperty>>("OutputLinks") is { } outLinks && outLinks.Count == 0)
+                if (defaults.GetProp<ArrayProperty<StructProperty>>("OutputLinks") is { } outLinks && outLinks.IsEmpty())
                 {
                     defaults.Remove(outLinks);
                 }
                 if (defaults.GetProp<ArrayProperty<StructProperty>>("VariableLinks") is { } varLinks && varLinks.IsEmpty())
                 {
                     defaults.Remove(varLinks);
+                }
+                if (defaults.GetProp<ArrayProperty<StructProperty>>("EventLinks") is { } eventLinks && eventLinks.IsEmpty())
+                {
+                    defaults.Remove(eventLinks);
                 }
             }
 

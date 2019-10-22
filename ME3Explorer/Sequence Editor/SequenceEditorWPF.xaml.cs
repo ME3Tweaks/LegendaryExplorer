@@ -1574,28 +1574,11 @@ namespace ME3Explorer.Sequence_Editor
 
             PropertyCollection newObjectProps = newObject.GetProperties();
             newObjectProps.AddOrReplaceProp(new ObjectProperty(sequenceExport, "ParentSequence"));
+            newObject.WriteProperties(newObjectProps);
             if (removeLinks)
             {
-                var outLinksProp = newObjectProps.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-                if (outLinksProp != null)
-                {
-                    foreach (var prop in outLinksProp)
-                    {
-                        prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
-                    }
-                }
-
-                var varLinksProp = newObjectProps.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-                if (varLinksProp != null)
-                {
-                    foreach (var prop in varLinksProp)
-                    {
-                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
-                    }
-                }
+                removeAllLinks(newObject);
             }
-
-            newObject.WriteProperties(newObjectProps);
             newObject.Parent = sequenceExport;
         }
 
