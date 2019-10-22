@@ -52,18 +52,7 @@ namespace ME2Explorer.Unreal
 
         public static SequenceObjectInfo getSequenceObjectInfo(string className)
         {
-            if (SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo))
-            {
-                if (seqInfo.inputLinks != null)
-                {
-                    return SequenceObjects[className];
-                }
-                if (Classes.TryGetValue(className, out ClassInfo info) && info.baseClass != "Object" && info.baseClass != "Class")
-                {
-                    return getSequenceObjectInfo(info.baseClass);
-                }
-            }
-            return null;
+            return SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo) ? seqInfo : null;
         }
 
         public static string getEnumTypefromProp(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)

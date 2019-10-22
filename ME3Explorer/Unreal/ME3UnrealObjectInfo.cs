@@ -433,15 +433,20 @@ namespace ME3Explorer.Unreal
 
         public static SequenceObjectInfo getSequenceObjectInfo(string className)
         {
+            return SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo) ? seqInfo : null;
+        }
+
+        public static List<string> getSequenceObjectInfoInputLinks(string className)
+        {
             if (SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo))
             {
                 if (seqInfo.inputLinks != null)
                 {
-                    return SequenceObjects[className];
+                    return SequenceObjects[className].inputLinks;
                 }
                 if (Classes.TryGetValue(className, out ClassInfo info) && info.baseClass != "Object" && info.baseClass != "Class")
                 {
-                    return getSequenceObjectInfo(info.baseClass);
+                    return getSequenceObjectInfoInputLinks(info.baseClass);
                 }
             }
             return null;

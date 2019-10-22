@@ -1598,7 +1598,7 @@ namespace ME3Explorer.SequenceObjects
             {
                 try
                 {
-                    if (ME3UnrealObjectInfo.getSequenceObjectInfo(export.ClassName)?.inputLinks is List<string> inputLinks)
+                    if (ME3UnrealObjectInfo.getSequenceObjectInfoInputLinks(export.ClassName) is List<string> inputLinks)
                     {
                         for (int i = 0; i < inputLinks.Count; i++)
                         {
