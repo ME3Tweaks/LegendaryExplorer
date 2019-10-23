@@ -1823,10 +1823,8 @@ namespace ME3Explorer.Dialogue_Editor
                     prop.Properties.AddOrReplaceProp(nExportID);
                     node.Interpdata = ParseSingleNodeInterpData(SelectedConv, node);
                     var lengthprop = node.Interpdata?.GetProperty<FloatProperty>("InterpLength");
-                    if (lengthprop != null)
-                    {
-                        node.InterpLength = lengthprop.Value;
-                    }
+                    node.InterpLength = lengthprop?.Value ?? -1;
+                    needsRefresh = true;
                     break;
                 case "CameraIntimacy":
                     var CameraIntimacy = new IntProperty(node.CameraIntimacy, "nCameraIntimacy");

@@ -520,7 +520,7 @@
                                         </DockPanel>
                                         <StackPanel Orientation="Horizontal" ToolTip="Length in secs of matinee interpdata.">
                                             <TextBlock Text="InterpLength: " VerticalAlignment="Center" FontSize="15" Margin="2"/>
-                                            <TextBox Text="{Binding Path=SelectedDialogueNode.InterpLength}" HorizontalAlignment="Stretch" FontSize="15" VerticalAlignment="Center" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" IsReadOnly="True"/>
+                                            <TextBox Text="{Binding Path=SelectedDialogueNode.InterpLength}" Name="InterpLength_TxtBx" HorizontalAlignment="Stretch" FontSize="15" VerticalAlignment="Center" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" IsReadOnly="True"/>
                                             <TextBlock Text="seconds" VerticalAlignment="Center" FontSize="15" Margin="2"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" ToolTip="Link to Matinee via BioSeqEvent_Conv">
