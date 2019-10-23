@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using FontAwesome5;
 using ME3Explorer.AssetDatabase;
 using ME3Explorer.AutoTOC;
 using ME3Explorer.GameInterop;
@@ -489,10 +490,54 @@ namespace ME3Explorer.AnimationExplorer
             }
         }
 
-        private void QuiteME3_Click(object sender, RoutedEventArgs e)
+        private void QuitME3_Click(object sender, RoutedEventArgs e)
         {
             KillME3();
         }
+
+        #region Playback
+
+        private EFontAwesomeIcon _playPauseImageSource = EFontAwesomeIcon.Solid_Pause;
+        public EFontAwesomeIcon PlayPauseIcon
+        {
+            get => _playPauseImageSource;
+            set => SetProperty(ref _playPauseImageSource, value);
+        }
+
+        private enum PlaybackState
+        {
+            Playing, Stopped, Paused
+        }
+
+        private PlaybackState playbackState;
+
+        private void PlayPause_Click(object sender, RoutedEventArgs e)
+        {
+            switch (playbackState)
+            {
+                case PlaybackState.Playing:
+                    playbackState = PlaybackState.Paused;
+                    PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
+                    GameController.ExecuteME3ConsoleCommands("ce PauseAnimation");
+                    break;
+                case PlaybackState.Stopped:
+                case PlaybackState.Paused:
+                    playbackState = PlaybackState.Playing;
+                    PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
+                    GameController.ExecuteME3ConsoleCommands("ce PlayAnimation");
+                    break;
+            }
+        }
+
+        private void StopAnimation_Click(object sender, RoutedEventArgs e)
+        {
+            playbackState = PlaybackState.Stopped;
+            PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
+            GameController.ExecuteME3ConsoleCommands("ce StopAnimation");
+        }
+
+        #endregion
+
     }
 
     public enum ECameraState

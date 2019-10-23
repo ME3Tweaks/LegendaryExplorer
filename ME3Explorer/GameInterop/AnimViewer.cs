@@ -41,13 +41,19 @@ namespace ME3Explorer.GameInterop
             ExportEntry importedAnimSeq = (ExportEntry)ent;
 
             NameReference seqName = importedAnimSeq.GetProperty<NameProperty>("SequenceName").Value;
+            float seqLength = importedAnimSeq.GetProperty<FloatProperty>("SequenceLength");
             IEntry bioAnimSet = animViewerBase.GetUExport(importedAnimSeq.GetProperty<ObjectProperty>("m_pBioAnimSetData").Value);
             string setName = importedAnimSeq.ObjectName.Name.RemoveRight(seqName.Name.Length + 1);
 
-            ExportEntry setAmbientPerformance = animViewerBase.GetUExport(19);
-            ExportEntry dynamicAnimSet = animViewerBase.GetUExport(2666);
+            ExportEntry animInterpData = animViewerBase.GetUExport(2690);
+            animInterpData.WriteProperty(new FloatProperty(seqLength, "InterpLength"));
 
-            setAmbientPerformance.WriteProperty(new NameProperty(seqName, "m_nmDefaultPoseAnim"));
+            ExportEntry animTrack = animViewerBase.GetUExport(2692);
+            var animSeqKeys = animTrack.GetProperty<ArrayProperty<StructProperty>>("AnimSeqs");
+            animSeqKeys[0].Properties.AddOrReplaceProp(new NameProperty(seqName, "AnimSeqName"));
+            animTrack.WriteProperty(animSeqKeys);
+
+            ExportEntry dynamicAnimSet = animViewerBase.GetUExport(2666);
             dynamicAnimSet.WriteProperty(new ObjectProperty(bioAnimSet.UIndex, "m_pBioAnimSetData"));
             dynamicAnimSet.WriteProperty(new NameProperty(setName, "m_nmOrigSetName"));
             dynamicAnimSet.WriteProperty(new ArrayProperty<ObjectProperty>("Sequences")
@@ -66,8 +72,6 @@ namespace ME3Explorer.GameInterop
             return offsetVector;
         }
 
-        [DllImport("user32.dll")]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
         public static void OpenFileInME3(IMEPackage pcc, bool canHotLoad = false)
         {
             var tempMapName = GameController.TempMapName;
