@@ -1064,6 +1064,10 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
+            if (showthis && menu_fltrMatSkM.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "bUsedWithSkeletalMesh" && x.Item3 == "True"))
+            {
+                showthis = false;
+            }
             if (showthis && menu_fltrMat2side.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "TwoSided" && x.Item3 == "True"))
             {
                 showthis = false;
@@ -1235,6 +1239,9 @@ namespace ME3Explorer.AssetDatabase
                     break;
                 case "Unlit":
                     menu_fltrMatUnlit.IsChecked = !menu_fltrMatUnlit.IsChecked;
+                    break;
+                case "SkM":
+                    menu_fltrMatSkM.IsChecked = !menu_fltrMatSkM.IsChecked;
                     break;
                 case "Twoside":
                     if (!menu_fltrMat2side.IsChecked)
