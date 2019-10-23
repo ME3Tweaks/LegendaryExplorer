@@ -1041,7 +1041,7 @@ namespace ME3Explorer.Dialogue_Editor
                                             var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
                                             if (outLinksProp3 != null && outLinksProp3.Count > 0)
                                             {
-                                                var linksProp3 = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                                var linksProp3 = outLinksProp3[0].GetProp<ArrayProperty<StructProperty>>("Links");
                                                 if (linksProp3 != null)
                                                 {
                                                     var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
@@ -4306,7 +4306,7 @@ namespace ME3Explorer.Dialogue_Editor
                     copytext = SelectedDialogueNode.Line;
                     break;
                 case "ItpDta":
-                    copytext = SelectedDialogueNode.Interpdata.ToString();
+                    copytext = SelectedDialogueNode.Interpdata.UIndex.ToString();
                     break;
             }
 
