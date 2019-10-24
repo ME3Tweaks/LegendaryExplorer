@@ -503,9 +503,9 @@ namespace ME3Explorer.Meshplorer
             {
 
                 Debug.WriteLine("Preloading " + tex.InstancedFullPath);
-                if (tex.ClassName == "TextureCube")
+                if (tex.ClassName == "TextureCube" || tex.ClassName.StartsWith("TextureRender"))
                 {
-                    //can't deal with cubemaps yet
+                    //can't deal with cubemaps/renderers yet
                     continue;
                 }
                 if (tex is ImportEntry import)
