@@ -104,7 +104,7 @@ namespace ME3Explorer.AssetDatabase
         /// used to switch queue countdown on
         /// </summary>
         public bool isProcessing;
-
+        private CancellationTokenSource cancelloading;
         private string _currentOverallOperationText;
         public string CurrentOverallOperationText
         {
@@ -253,11 +253,16 @@ namespace ME3Explorer.AssetDatabase
             BusyText = "Please wait...";
             BusyBarInd = true;
             IsBusy = true;
+            if(cancelloading != null)
+            {
+                cancelloading.Cancel();
+            }
 
+            cancelloading = new CancellationTokenSource();
             var start = DateTime.UtcNow;
             var build = dbCurrentBuild.Trim(new Char[] { ' ', '*', '.' });
             ////Async load
-            PropsDataBase pdb = await ParseDBAsync(currentGame, CurrentDBPath, build);
+            PropsDataBase pdb = await ParseDBAsync(currentGame, CurrentDBPath, build, cancelloading.Token);
             CurrentDataBase.meGame = pdb.meGame;
             CurrentDataBase.GenerationDate = pdb.GenerationDate;
             CurrentDataBase.DataBaseversion = pdb.DataBaseversion;
@@ -299,7 +304,7 @@ namespace ME3Explorer.AssetDatabase
             CurrentOverallOperationText = $"{CurrentOverallOperationText} LoadTime: {length}ms";
 #endif
         }
-        public async Task<PropsDataBase> ParseDBAsync(MEGame dbgame, string dbpath, string build)
+        public async Task<PropsDataBase> ParseDBAsync(MEGame dbgame, string dbpath, string build, CancellationToken cancel)
         {
             deserializingQueue = new BlockingCollection<PropsDataBase>();
             
@@ -323,7 +328,7 @@ namespace ME3Explorer.AssetDatabase
                                     estream.CopyTo(ms);
                                 }
                                 ms.Position = 0;
-                                var unitTask = Task.Factory.StartNew(() => JsonFileParse(ms, dbType));
+                                var unitTask = Task.Factory.StartNew(() => JsonFileParse(ms, dbType, cancel));
                             }
 
                         }
@@ -356,67 +361,77 @@ namespace ME3Explorer.AssetDatabase
                             }
                             
                             deserializingQueue.Add(pdb);
-                            deserializingQueue.CompleteAdding();
+                            if(cancel.IsCancellationRequested)
+                            { return; }
+                            else
+                            { deserializingQueue.CompleteAdding(); }
+                            
                         }
                     }
+                });
+
+                return await Task<PropsDataBase>.Run(() =>
+                {
+                    var readData = new PropsDataBase();
+
+                    int n = 0;
+                    foreach (PropsDataBase pdb in deserializingQueue.GetConsumingEnumerable())
+                    {
+                        n++;
+                        switch (pdb.DataBaseversion)
+                        {
+                            case "Class":
+                                readData.ClassRecords.AddRange(pdb.ClassRecords);
+                                break;
+                            case "Mat":
+                                readData.Materials.AddRange(pdb.Materials);
+                                break;
+                            case "Anim":
+                                readData.Animations.AddRange(pdb.Animations);
+                                break;
+                            case "Mesh":
+                                readData.Meshes.AddRange(pdb.Meshes);
+                                break;
+                            case "Ps":
+                                readData.Particles.AddRange(pdb.Particles);
+                                break;
+                            case "Txt":
+                                readData.Textures.AddRange(pdb.Textures);
+                                break;
+                            default:
+                                readData.meGame = pdb.meGame;
+                                readData.GenerationDate = pdb.GenerationDate;
+                                readData.DataBaseversion = pdb.DataBaseversion;
+                                readData.FileList.AddRange(pdb.FileList);
+                                readData.ContentDir.AddRange(pdb.ContentDir);
+                                break;
+                        }
+                        if (cancel.IsCancellationRequested) 
+                        { 
+                            break; 
+                        }
+                        else if (n == 7) { deserializingQueue.CompleteAdding(); }
+                    }
+
+                    return readData;
                 });
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error ParseDB");
             }
-            return await Task<PropsDataBase>.Run(() =>
-            {
-                var readData = new PropsDataBase();
-
-                int n = 0;
-                foreach (PropsDataBase pdb in deserializingQueue.GetConsumingEnumerable())
-                {
-                    n++;
-                    switch (pdb.DataBaseversion)
-                    {
-                        case "Class":
-                            readData.ClassRecords.AddRange(pdb.ClassRecords);
-                            break;
-                        case "Mat":
-                            readData.Materials.AddRange(pdb.Materials);
-                            break;
-                        case "Anim":
-                            readData.Animations.AddRange(pdb.Animations);
-                            break;
-                        case "Mesh":
-                            readData.Meshes.AddRange(pdb.Meshes);
-                            break;
-                        case "Ps":
-                            readData.Particles.AddRange(pdb.Particles);
-                            break;
-                        case "Txt":
-                            readData.Textures.AddRange(pdb.Textures);
-                            break;
-                        default:
-                            readData.meGame = pdb.meGame;
-                            readData.GenerationDate = pdb.GenerationDate;
-                            readData.DataBaseversion = pdb.DataBaseversion;
-                            readData.FileList.AddRange(pdb.FileList);
-                            readData.ContentDir.AddRange(pdb.ContentDir);
-                            break;
-                    }
-                    if (n == 7) { deserializingQueue.CompleteAdding(); }
-                }
-
-                return readData;
-            });
+            return null;
         }
-        private void JsonFileParse(MemoryStream ms, string dbType)
+        private void JsonFileParse(MemoryStream ms, string dbType, CancellationToken ct)
         {
             
             PropsDataBase readData = new PropsDataBase();
             readData.DataBaseversion = dbType;
-            using (StreamReader sr = new StreamReader(ms))
+            try
             {
-                using (JsonTextReader reader = new JsonTextReader(sr))
+                using (StreamReader sr = new StreamReader(ms))
                 {
-                    try
+                    using (JsonTextReader reader = new JsonTextReader(sr))
                     {
                         var Serializer = new JsonSerializer();
                         switch (dbType)
@@ -455,14 +470,18 @@ namespace ME3Explorer.AssetDatabase
                                 break;
                         }
                     }
-                    catch
-                    {
-                        MessageBox.Show($"Failure deserializing type: {dbType}");
-                    }
                 }
+                if(ct.IsCancellationRequested)
+                {
+                    Console.WriteLine("Cancelled JsonParseDB");
+                    return;
+                }
+                deserializingQueue.Add(readData);
             }
-
-            deserializingQueue.Add(readData);
+            catch (Exception)
+            {
+                MessageBox.Show($"Failure deserializing type: {dbType}");
+            }
         }
         public async void SaveDatabase()
         {
