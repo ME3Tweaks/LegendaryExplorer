@@ -38,7 +38,7 @@ namespace ME3Explorer.PackageEditorWPFControls
         public ICommand CloneTreeCommand { get; set; }
         public ICommand CloneAllReferencesCommand { get; set; }
 
-        public TreeMergeDialog(IEntry sourceEntry, IEntry targetEntry)
+        public TreeMergeDialog(IEntry sourceEntry, IEntry targetEntry, MEGame targetGame)
         {
             this.sourceEntry = sourceEntry;
             this.targetEntry = targetEntry;
@@ -51,6 +51,12 @@ namespace ME3Explorer.PackageEditorWPFControls
 
             LoadCommands();
             InitializeComponent();
+
+            if (sourceEntry.Game != targetGame)
+            {
+                cloneAllRefsButton.IsEnabled = false;
+                cloneAllRefsText.Text = "Cannot do this when cross-game porting";
+            }
         }
 
         private void LoadCommands()
@@ -117,10 +123,12 @@ namespace ME3Explorer.PackageEditorWPFControls
             return (sourceEntry is ExportEntry && targetEntry is ExportEntry && sourceEntry.ClassName == targetEntry.ClassName);
         }
 
-        public static EntryImporter.PortingOption GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem)
+        public static EntryImporter.PortingOption GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem, MEGame targetGame)
         {
-            TreeMergeDialog tmd = new TreeMergeDialog(sourceItem.Entry, targetItem.Entry);
-            tmd.Owner = w;
+            TreeMergeDialog tmd = new TreeMergeDialog(sourceItem.Entry, targetItem.Entry, targetGame)
+            {
+                Owner = w
+            };
             tmd.ShowDialog(); //modal
 
             return tmd.PortingOptionChosen;

@@ -2661,7 +2661,7 @@ namespace ME3Explorer
                     }
                 }
 
-                var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem);
+                var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem, Pcc.Game);
 
                 if (portingOption == EntryImporter.PortingOption.Cancel)
                 {
