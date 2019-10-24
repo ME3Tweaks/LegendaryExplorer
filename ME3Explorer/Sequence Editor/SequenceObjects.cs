@@ -1270,7 +1270,12 @@ namespace ME3Explorer.SequenceObjects
             outLinkBox = new PPath();
             for (int i = 0; i < Outlinks.Count; i++)
             {
-                SText t2 = new SText(Outlinks[i].Desc);
+                string linkDesc = Outlinks[i].Desc;
+                if (OutputNumbers && Outlinks[i].Links.Any())
+                {
+                    linkDesc += $": {string.Join(",", Outlinks[i].Links.Select(l => $"#{l}"))}";
+                }
+                SText t2 = new SText(linkDesc);
                 if (t2.Width + 10 > midW) midW = t2.Width + 10;
                 //t2.TextAlignment = StringAlignment.Far;
                 //t2.ConstrainWidthToTextWidth = false;

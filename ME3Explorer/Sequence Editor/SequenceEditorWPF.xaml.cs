@@ -2143,7 +2143,6 @@ namespace ME3Explorer.Sequence_Editor
 
         private void ShowAdditionalInfoInCommentTextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.SequenceEditor_ShowParsedInfo = !Properties.Settings.Default.SequenceEditor_ShowParsedInfo;
             Properties.Settings.Default.Save();
         }
 
