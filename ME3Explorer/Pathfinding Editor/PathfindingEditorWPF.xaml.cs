@@ -2075,9 +2075,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     case "SplineActor":
                         splineNode = new SplineActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
-
-                        var connectionsProp = exportToLoad.GetProperty<ArrayProperty<StructProperty>>("Connections");
-                        if (connectionsProp != null)
+                        if (exportToLoad.GetProperty<ArrayProperty<StructProperty>>("Connections") is ArrayProperty<StructProperty> connectionsProp)
                         {
                             foreach (StructProperty connectionProp in connectionsProp)
                             {
