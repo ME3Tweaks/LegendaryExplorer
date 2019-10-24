@@ -111,6 +111,8 @@
                                     <Button ToolTip="Stop playback" Click="StopAnimation_Click" Margin="5">
                                         <fa5:ImageAwesome Icon="Solid_Stop" Height="16" Width="16" Margin="4"/>
                                     </Button>
+                                    <TextBlock Text="    PlayRate: " VerticalAlignment="Center"/>
+                                    <xctk:DoubleUpDown Name="playRateUpDown" Value="{Binding PlayRate}" Increment="0.1"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>

@@ -36,6 +36,17 @@ namespace ME3Explorer.AnimationExplorer
     {
         private const string Me3ExplorerinteropAsiName = "ME3ExplorerInterop.asi";
 
+        private enum VarIndexes
+        {
+            XPos = 1,
+            YPos = 2,
+            ZPos = 3,
+            XRotComponent = 4,
+            YRotComponent = 5,
+            ZRotComponent = 6,
+            PlayRate = 7,
+        }
+
         public AnimationExplorerWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Animation Viewer", new WeakReference(this));
@@ -402,9 +413,9 @@ namespace ME3Explorer.AnimationExplorer
         private void UpdateLocation()
         {
             if (noUpdate) return;
-            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(XPos, 1),
-                                                     UpdateFloatVarCommand(YPos,  2),
-                                                     UpdateFloatVarCommand(ZPos, 3), 
+            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(XPos, VarIndexes.XPos),
+                                                     UpdateFloatVarCommand(YPos, VarIndexes.YPos),
+                                                     UpdateFloatVarCommand(ZPos, VarIndexes.ZPos), 
                                                      "ce SetActorLocation");
         }
 
@@ -413,15 +424,15 @@ namespace ME3Explorer.AnimationExplorer
             if (noUpdate) return;
 
             (float x, float y, float z) = new Rotator(((float)Pitch).ToUnrealRotationUnits(), ((float)Yaw).ToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(x, 4),
-                                                     UpdateFloatVarCommand(y, 5),
-                                                     UpdateFloatVarCommand(z, 6),
+            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(x, VarIndexes.XRotComponent),
+                                                     UpdateFloatVarCommand(y, VarIndexes.YRotComponent),
+                                                     UpdateFloatVarCommand(z, VarIndexes.ZRotComponent),
                                                      "ce SetActorRotation");
         }
 
-        private static string UpdateFloatVarCommand(float value, int index)
+        private static string UpdateFloatVarCommand(float value, VarIndexes index)
         {
-            return $"initplotmanagervaluebyindex {index} float {value}";
+            return $"initplotmanagervaluebyindex {(int)index} float {value}";
         }
 
         private void SetDefaultPosition_Click(object sender, RoutedEventArgs e)
@@ -534,6 +545,20 @@ namespace ME3Explorer.AnimationExplorer
             playbackState = PlaybackState.Stopped;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
             GameController.ExecuteME3ConsoleCommands("ce StopAnimation");
+        }
+
+        private double _playRate = 1.0;
+
+        public double PlayRate
+        {
+            get => _playRate;
+            set
+            {
+                if (SetProperty(ref _playRate, value))
+                {
+                    GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand((float)value, VarIndexes.PlayRate));
+                }
+            }
         }
 
         #endregion
