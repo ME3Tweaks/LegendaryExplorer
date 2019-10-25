@@ -13,6 +13,8 @@ namespace ME3Explorer.SplineNodes
     {
         static readonly Color commentColor = Color.FromArgb(74, 63, 190);
         public static Pen splineconnnectorPen = Pens.DeepPink;
+        public List<ExportEntry> components = new List<ExportEntry>();
+        public List<ExportEntry> connections = new List<ExportEntry>();
 
         protected SplineNode(int idx, IMEPackage p, PathingGraphEditor grapheditor)
         {
@@ -21,6 +23,8 @@ namespace ME3Explorer.SplineNodes
             g = grapheditor;
             index = idx;
             export = pcc.GetUExport(index);
+            export.GetProperty<ArrayProperty<StructProperty>>("Splines");
+
             comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
             comment.Y = 52 + comment.Height;
