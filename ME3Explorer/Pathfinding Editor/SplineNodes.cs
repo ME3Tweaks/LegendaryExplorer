@@ -6,6 +6,7 @@ using ME3Explorer.Packages;
 using UMD.HCIL.Piccolo.Nodes;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SequenceObjects;
+using ME3Explorer.Unreal.ME3Enums;
 
 namespace ME3Explorer.SplineNodes
 {
@@ -13,9 +14,6 @@ namespace ME3Explorer.SplineNodes
     {
         static readonly Color commentColor = Color.FromArgb(74, 63, 190);
         public static Pen splineconnnectorPen = Pens.DeepPink;
-        public List<ExportEntry> components = new List<ExportEntry>();
-        public List<ExportEntry> connections = new List<ExportEntry>();
-
         protected SplineNode(int idx, IMEPackage p, PathingGraphEditor grapheditor)
         {
             Tag = new ArrayList(); //outbound reachspec edges.
@@ -23,7 +21,6 @@ namespace ME3Explorer.SplineNodes
             g = grapheditor;
             index = idx;
             export = pcc.GetUExport(index);
-            export.GetProperty<ArrayProperty<StructProperty>>("Splines");
 
             comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
@@ -81,6 +78,7 @@ namespace ME3Explorer.SplineNodes
         }
     }
 
+
     public class PendingSplineNode : SplineNode
     {
         private static readonly Color color = Color.FromArgb(255, 0, 0);
@@ -109,14 +107,137 @@ namespace ME3Explorer.SplineNodes
 
     public class SplineActorNode : SplineNode
     {
+        public List<Spline> Splines = new List<Spline>();
+        public List<ExportEntry> connections = new List<ExportEntry>();
+
         private static readonly Color color = Color.FromArgb(255, 30, 30);
-        readonly PointF[] edgeShape = { new PointF(0, 50), new PointF(0, 25), new PointF(10, 15), new PointF(15, 10), new PointF(30, 5), new PointF(40, 0), new PointF(50, 0), new PointF(40, 5), new PointF(30, 10), new PointF(15, 15), new PointF(5, 25) };
+        readonly PointF[] edgeShape = { new PointF(21, 25), new PointF(29, 25), new PointF(27, 5), new PointF(40, 5), new PointF(40, 15), new PointF(50, 0), new PointF(40, -15), new PointF(40, -5), new PointF(0, -5), new PointF(0, 5), new PointF(23, 5) };
         public SplineActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
+            var splprop = export.GetProperty<ArrayProperty<StructProperty>>("Connections");
+            foreach (var prop in splprop)
+            {
+                var spcomp = prop.GetProp<ObjectProperty>("SplineComponent");
+                var cmpidx = spcomp?.Value ?? 0;
+                var cntcomp = prop.GetProp<ObjectProperty>("ConnectTo");
+                var cnctn = pcc.GetUExport(cntcomp?.Value ?? 0);
+                if (spcomp != null && cmpidx > 0)
+                {
+                    var component = pcc.GetUExport(cmpidx);
+                    var spline = new Spline(cmpidx, component, cnctn, p, grapheditor);
+                    Splines.Add(spline);
+                }
+                connections.Add(cnctn);
+            }
+
             const float w = 50;
             const float h = 50;
             shape = PPath.CreatePolygon(edgeShape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = splineNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            SText val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+        }
+    }
+    public class Spline : SplineNode
+    {
+        private static readonly Color color = Color.FromArgb(255, 30, 30);
+        public List<SplineParambleNode> nodes = new List<SplineParambleNode>();
+
+        public Spline(int idx, ExportEntry component, ExportEntry target, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+
+            StructProperty splineInfo = export.GetProperty<StructProperty>("SplineInfo");
+            if (splineInfo != null)
+            {
+                var pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
+                StructProperty point0 = pointsProp[0];
+                StructProperty point10 = pointsProp[1];
+                SharpDX.Vector3 a = CommonStructs.GetVector3(point0.GetProp<StructProperty>("OutVal"));
+                SharpDX.Vector3 tan1 = CommonStructs.GetVector3(point0.GetProp<StructProperty>("LeaveTangent"));
+                SharpDX.Vector3 tan2 = CommonStructs.GetVector3(point10.GetProp<StructProperty>("ArriveTangent"));
+                SharpDX.Vector3 d = CommonStructs.GetVector3(point10.GetProp<StructProperty>("OutVal"));
+                var reparamProp = component.GetProperty<StructProperty>("SplineReparamTable");
+                var reparamPoints = reparamProp.GetProp<ArrayProperty<StructProperty>>("Points");
+
+                var atan =  reparamPoints[0].GetProp<FloatProperty>("ArriveTangent").Value;
+                var ltan = reparamPoints[0].GetProp<FloatProperty>("LeaveTangent").Value;
+                reparamPoints[0].GetProp<EnumProperty>("InterpMode");
+                EInterpCurveMode ipmode = EInterpCurveMode.CIM_Linear;
+                nodes.Add(new SplineParambleNode(0, a.X, a.Y, a, 0, 0, atan, ltan, ipmode, pcc, grapheditor));
+
+                float distance = 0;
+                for (int n = 0; n < 10; n++)
+                {
+                    //find on bezier point n
+                    //
+                    float inval = n / 9;
+                    var outval = reparamPoints[n].GetProp<FloatProperty>("OutVal").Value;
+                    atan = reparamPoints[0].GetProp<FloatProperty>("ArriveTangent").Value;
+                    ltan = reparamPoints[0].GetProp<FloatProperty>("LeaveTangent").Value;
+
+                    
+
+                    nodes.Add(new SplineParambleNode(0, a.X, a.Y, a, 0, 0, atan, ltan, ipmode, pcc, grapheditor));
+                }
+
+                var terminator = new SplineParambleNode(10, d.X, d.Y, d, 1, 0, atan, ltan, ipmode, pcc, grapheditor);
+                nodes.Add(terminator);
+                //const float w = 25;
+                //const float h = 25;
+                //shape = PPath.CreateEllipse(0, 0, w, h);
+                //outlinePen = new Pen(color);
+                //shape.Pen = outlinePen;
+                //shape.Brush = pathfindingNodeBrush;
+                //shape.Pickable = false;
+                //this.AddChild(shape);
+                //this.Bounds = new RectangleF(0, 0, w, h);
+                //SText val = new SText($"{export.Index}\nSpline Start");
+                //val.Pickable = false;
+                //val.TextAlignment = StringAlignment.Center;
+                //val.X = w / 2 - val.Width / 2;
+                //val.Y = h / 2 - val.Height / 2;
+                //this.AddChild(val);
+                //this.TranslateBy(x, y);
+            }
+        }
+    }
+
+    public class SplineParambleNode : SplineNode
+    {
+        private static readonly Color color = Color.FromArgb(255, 30, 30);
+        public float Time;
+        public float Distance;
+        public float ArriveTangent;
+        public float LeaveTangent;
+        public EInterpCurveMode InterpMode;
+        SharpDX.Vector3 Loc;
+        SharpDX.Vector3 tan1;
+
+
+        public SplineParambleNode(int idx, float x, float y, SharpDX.Vector3 loc, float inval, float outval, float inTan = 0, float outTan = 0, EInterpCurveMode interpMode = EInterpCurveMode.CIM_Linear, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            Loc = loc;
+            Time = inval;
+            Distance = outval;
+            ArriveTangent = inTan;
+            LeaveTangent = outTan;
+            InterpMode = interpMode;
+            const float w = 10;
+            const float h = 10;
+            shape = PPath.CreateRectangle(0, 0, w, h);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = splineNodeBrush;

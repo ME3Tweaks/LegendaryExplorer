@@ -2075,39 +2075,39 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     case "SplineActor":
                         splineNode = new SplineActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
-                        if (exportToLoad.GetProperty<ArrayProperty<StructProperty>>("Connections") is ArrayProperty<StructProperty> connectionsProp)
-                        {
-                            foreach (StructProperty connectionProp in connectionsProp)
-                            {
-                                ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
-                                ExportEntry splineComponentExport = Pcc.GetUExport(splinecomponentprop.Value);
-                                //Debug.WriteLine(splineComponentExport.GetFullPath + " " + splinecomponentprop.Value);
-                                StructProperty splineInfo = splineComponentExport.GetProperty<StructProperty>("SplineInfo");
-                                if (splineInfo != null)
-                                {
-                                    var pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
-                                    var point1 = pointsProp[0].GetProp<StructProperty>("OutVal");
-                                    double xf = point1.GetProp<FloatProperty>("X");
-                                    double yf = point1.GetProp<FloatProperty>("Y");
-                                    //double zf = point1.GetProp<FloatProperty>("Z");
-                                    //Point3D point1_3d = new Point3D(xf, yf, zf);
-                                    SplinePoint0Node point0node = new SplinePoint0Node(splinecomponentprop.Value, Convert.ToInt32(xf), Convert.ToInt32(yf), exportToLoad.FileRef, graphEditor);
-                                    StructProperty point2 = pointsProp[1].GetProp<StructProperty>("OutVal");
-                                    xf = point2.GetProp<FloatProperty>("X");
-                                    yf = point2.GetProp<FloatProperty>("Y");
-                                    //zf = point2.GetProp<FloatProperty>("Z");
-                                    //Point3D point2_3d = new Point3D(xf, yf, zf);
-                                    SplinePoint1Node point1node = new SplinePoint1Node(splinecomponentprop.Value, Convert.ToInt32(xf), Convert.ToInt32(yf), exportToLoad.FileRef, graphEditor);
-                                    point0node.SetDestinationPoint(point1node);
+                        //if (exportToLoad.GetProperty<ArrayProperty<StructProperty>>("Connections") is ArrayProperty<StructProperty> connectionsProp)
+                        //{
+                        //    foreach (StructProperty connectionProp in connectionsProp)
+                        //    {
+                        //        ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
+                        //        ExportEntry splineComponentExport = Pcc.GetUExport(splinecomponentprop.Value);
+                        //        //Debug.WriteLine(splineComponentExport.GetFullPath + " " + splinecomponentprop.Value);
+                        //        StructProperty splineInfo = splineComponentExport.GetProperty<StructProperty>("SplineInfo");
+                        //        if (splineInfo != null)
+                        //        {
+                        //            //var pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
+                        //            //var point1 = pointsProp[0].GetProp<StructProperty>("OutVal");
+                        //            //double xf = point1.GetProp<FloatProperty>("X");
+                        //            //double yf = point1.GetProp<FloatProperty>("Y");
+                        //            ////double zf = point1.GetProp<FloatProperty>("Z");
+                        //            ////Point3D point1_3d = new Point3D(xf, yf, zf);
+                        //            //SplinePoint0Node point0node = new SplinePoint0Node(splinecomponentprop.Value, Convert.ToInt32(xf), Convert.ToInt32(yf), exportToLoad.FileRef, graphEditor);
+                        //            //StructProperty point2 = pointsProp[1].GetProp<StructProperty>("OutVal");
+                        //            //xf = point2.GetProp<FloatProperty>("X");
+                        //            //yf = point2.GetProp<FloatProperty>("Y");
+                        //            //zf = point2.GetProp<FloatProperty>("Z");
+                        //            //Point3D point2_3d = new Point3D(xf, yf, zf);
+                        //            //SplinePoint1Node point1node = new SplinePoint1Node(splinecomponentprop.Value, Convert.ToInt32(xf), Convert.ToInt32(yf), exportToLoad.FileRef, graphEditor);
+                        //            //point0node.SetDestinationPoint(point1node);
 
-                                    GraphNodes.Add(point0node);
-                                    GraphNodes.Add(point1node);
+                        //            //GraphNodes.Add(point0node);
+                        //            //GraphNodes.Add(point1node);
 
-                                    var reparamProp = splineComponentExport.GetProperty<StructProperty>("SplineReparamTable");
-                                    var reparamPoints = reparamProp.GetProp<ArrayProperty<StructProperty>>("Points");
-                                }
-                            }
-                        }
+                        //            //var reparamProp = splineComponentExport.GetProperty<StructProperty>("SplineReparamTable");
+                        //            //var reparamPoints = reparamProp.GetProp<ArrayProperty<StructProperty>>("Points");
+                        //        }
+                        //    }
+                        //}
                         break;
                     default:
                         splineNode = new PendingSplineNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
