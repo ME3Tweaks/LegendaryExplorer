@@ -20,7 +20,7 @@
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <Grid>
             <TabControl>
-                <TabItem Header="Instructions" Visibility="{Binding ReadyToView, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                <TabItem Name="instructionsTab" Header="Instructions" Visibility="{Binding ReadyToView, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                     <Grid Width="523">
                         <Border BorderBrush="LightSlateGray" BorderThickness="0.65">
                             <StackPanel MinWidth="200" Margin="8">
@@ -129,11 +129,11 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Button Content=" Reset Position " Margin="5" Click="SetDefaultPosition_Click" />
                                     <TextBlock Text=" X:  " VerticalAlignment="Center"/>
-                                    <xctk:IntegerUpDown Name="xPosUpDown" Value="{Binding XPos}"/>
+                                    <xctk:IntegerUpDown Name="xPosUpDown" Value="{Binding XPos}" Increment="10"/>
                                     <TextBlock Text=" Y:  " VerticalAlignment="Center"/>
-                                    <xctk:IntegerUpDown Name="yPosUpDown" Value="{Binding YPos}" />
+                                    <xctk:IntegerUpDown Name="yPosUpDown" Value="{Binding YPos}" Increment="10"/>
                                     <TextBlock Text=" Z:  " VerticalAlignment="Center"/>
-                                    <xctk:IntegerUpDown Name="zPosUpDown" Value="{Binding ZPos}" />
+                                    <xctk:IntegerUpDown Name="zPosUpDown" Value="{Binding ZPos}" Increment="10"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
@@ -142,12 +142,12 @@
                             <StackPanel Orientation="Horizontal">
                                 <Button Content=" Reset Rotation " Margin="5" Click="ResetRotation_Click" />
                                 <TextBlock Text=" Yaw:  " VerticalAlignment="Center"/>
-                                <xctk:IntegerUpDown Name="yawUpDown" Value="{Binding Yaw}"/>
+                                <xctk:IntegerUpDown Name="yawUpDown" Value="{Binding Yaw}" Increment="5"/>
                                 <TextBlock Text=" Pitch:  " VerticalAlignment="Center"/>
-                                <xctk:IntegerUpDown Name="pitchUpDown" Value="{Binding Pitch}" />
+                                <xctk:IntegerUpDown Name="pitchUpDown" Value="{Binding Pitch}" Increment="5"/>
                             </StackPanel>
                         </Border>
-                        <Label Content="Camera" Margin="10,0,0,0"/>
+                        <!--<Label Content="Camera" Margin="10,0,0,0"/>
                         <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
                             <StackPanel Margin="10 0" Orientation="Horizontal">
                                 <RadioButton IsChecked="{Binding CameraState, Converter={StaticResource EnumComparisonConverter}, ConverterParameter={x:Static local:ECameraState.Fixed}}" Margin="30,0,0,0">
@@ -156,11 +156,11 @@
                                 <RadioButton IsChecked="{Binding CameraState, Converter={StaticResource EnumComparisonConverter}, ConverterParameter={x:Static local:ECameraState.Free}}" Margin="50,0,0,0">
                                     <Label Content="Free"/>
                                 </RadioButton>
-                                <!--<RadioButton IsChecked="{Binding CameraState, Converter={StaticResource EnumComparisonConverter}, ConverterParameter={x:Static local:ECameraState.Shepard}}">
+                                ~1~<RadioButton IsChecked="{Binding CameraState, Converter={StaticResource EnumComparisonConverter}, ConverterParameter={x:Static local:ECameraState.Shepard}}">
                                     <Label Content="Shepard"/>
-                                </RadioButton>-->
+                                </RadioButton>@1@
                             </StackPanel>
-                        </Border>
+                        </Border>-->
                         <Label Content="Application" Margin="10,0,0,0"/>
                         <Border Margin="10,0,10,10" BorderBrush="Red" BorderThickness="2" CornerRadius="5">
                             <Button Content=" Quit Mass Effect 3 " Margin="5" Click="QuitME3_Click" />

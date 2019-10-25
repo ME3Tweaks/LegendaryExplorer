@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using FontAwesome5;
 using ME3Explorer.AssetDatabase;
 using ME3Explorer.AutoTOC;
@@ -34,6 +35,8 @@ namespace ME3Explorer.AnimationExplorer
     /// </summary>
     public partial class AnimationExplorerWPF : NotifyPropertyChangedWindowBase
     {
+        public static AnimationExplorerWPF Instance;
+
         private const string Me3ExplorerinteropAsiName = "ME3ExplorerInterop.asi";
 
         private enum VarIndexes
@@ -49,11 +52,19 @@ namespace ME3Explorer.AnimationExplorer
 
         public AnimationExplorerWPF()
         {
+            if (Instance != null)
+            {
+                throw new Exception("Can only have one instance of AnimViewer open!");
+            }
+
+            Instance = this;
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Animation Viewer", new WeakReference(this));
             DataContext = this;
             InitializeComponent();
             LoadCommands();
             GameController.RecieveME3Message += GameController_RecieveME3Message;
+            ME3OpenTimer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(1)};
+            ME3OpenTimer.Tick += CheckIfME3Open;
         }
 
         private void AnimationExplorerWPF_Loaded(object sender, RoutedEventArgs e)
@@ -63,6 +74,23 @@ namespace ME3Explorer.AnimationExplorer
             {
                 LoadDatabase(dbPath);
             }
+        }
+
+        private void AnimationExplorerWPF_OnClosing(object sender, CancelEventArgs e)
+        {
+            if (!GameController.TryGetME3Process(out _))
+            {
+                string asiPath = GetInteropAsiWritePath();
+                if (File.Exists(asiPath))
+                {
+                    File.Delete(asiPath);
+                }
+            }
+            ME3OpenTimer.Stop();
+            ME3OpenTimer.Tick -= CheckIfME3Open;
+            GameController.RecieveME3Message -= GameController_RecieveME3Message;
+            DataContext = null;
+            Instance = null;
         }
 
         private void GameController_RecieveME3Message(string msg)
@@ -78,6 +106,33 @@ namespace ME3Explorer.AnimationExplorer
                 UpdateRotation();
                 UpdateCameraState();
                 this.RestoreAndBringToFront();
+                ME3OpenTimer.Start();
+
+                noUpdate = true;
+                XPos = 0;
+                YPos = 0;
+                ZPos = 70;
+                Pitch = 0;
+                Yaw = 180;
+                PlayRate = 1;
+                playbackState = PlaybackState.Playing;
+                PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
+                noUpdate = false;
+            }
+        }
+
+        private readonly DispatcherTimer ME3OpenTimer;
+        private void CheckIfME3Open(object sender, EventArgs e)
+        {
+            if (!GameController.TryGetME3Process(out _))
+            {
+                ME3StartingUp = false;
+                LoadingAnimation = false;
+                IsBusy = false;
+                ReadyToView = false;
+                SelectedAnimation = null;
+                instructionsTab.IsSelected = true;
+                ME3OpenTimer.Stop();
             }
         }
 
@@ -91,7 +146,7 @@ namespace ME3Explorer.AnimationExplorer
             get => _selectedAnimation;
             set
             {
-                if (SetProperty(ref _selectedAnimation, value))
+                if (SetProperty(ref _selectedAnimation, value) && value != null)
                 {
                     LoadAnimation(value);
                 }
@@ -189,8 +244,8 @@ namespace ME3Explorer.AnimationExplorer
                 }
                 Animations.AddRange(db.Animations);
                 IsBusy = false;
+                CommandManager.InvalidateRequerySuggested();
             });
-            CommandManager.InvalidateRequerySuggested();
         }
 
         private bool AllRequirementsMet() => me3InstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && me3ClosedReq.IsFullfilled && dbLoadedReq.IsFullfilled;
@@ -301,6 +356,7 @@ namespace ME3Explorer.AnimationExplorer
 
                 if (anim != null && anim.AnimUsages.Any())
                 {
+                    //CameraState = ECameraState.Fixed;
                     (int fileListIndex, int animUIndex) = anim.AnimUsages[0];
                     (string filename, string contentdir) = FileListExtended[fileListIndex];
                     string rootPath = ME3Directory.gamePath;
@@ -324,20 +380,6 @@ namespace ME3Explorer.AnimationExplorer
                     });
                 }
             }
-        }
-
-        private void AnimationExplorerWPF_OnClosing(object sender, CancelEventArgs e)
-        {
-            if (!GameController.TryGetME3Process(out _))
-            {
-                string asiPath = GetInteropAsiWritePath();
-                if (File.Exists(asiPath))
-                {
-                    File.Delete(asiPath);
-                }
-            }
-            GameController.RecieveME3Message -= GameController_RecieveME3Message;
-            DataContext = null;
         }
 
         #region Position/Rotation
@@ -485,6 +527,7 @@ namespace ME3Explorer.AnimationExplorer
 
         private void UpdateCameraState()
         {
+            if (noUpdate) return;
             switch (CameraState)
             {
                 //case ECameraState.Fixed when prevCameraState == ECameraState.Shepard:
@@ -524,6 +567,7 @@ namespace ME3Explorer.AnimationExplorer
 
         private void PlayPause_Click(object sender, RoutedEventArgs e)
         {
+            if (noUpdate) return;
             switch (playbackState)
             {
                 case PlaybackState.Playing:
@@ -542,6 +586,8 @@ namespace ME3Explorer.AnimationExplorer
 
         private void StopAnimation_Click(object sender, RoutedEventArgs e)
         {
+
+            if (noUpdate) return;
             playbackState = PlaybackState.Stopped;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
             GameController.ExecuteME3ConsoleCommands("ce StopAnimation");
@@ -556,6 +602,7 @@ namespace ME3Explorer.AnimationExplorer
             {
                 if (SetProperty(ref _playRate, value))
                 {
+                    if (noUpdate) return;
                     GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand((float)value, VarIndexes.PlayRate));
                 }
             }

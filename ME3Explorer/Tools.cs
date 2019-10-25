@@ -121,7 +121,14 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconAnimationExplorer") as ImageSource,
                 open = () =>
                 {
-                    (new AnimationExplorer.AnimationExplorerWPF()).Show();
+                    if (AnimationExplorer.AnimationExplorerWPF.Instance == null)
+                    {
+                        (new AnimationExplorer.AnimationExplorerWPF()).Show();
+                    }
+                    else
+                    {
+                        AnimationExplorer.AnimationExplorerWPF.Instance.RestoreAndBringToFront();
+                    }
                 },
                 tags = new List<string> { "utility", "animation", "gesture" },
                 subCategory = "Explorers",
