@@ -58,7 +58,7 @@ namespace ME3Explorer.TFCCompactor
             };
             bw.RunWorkerAsync();
         }
-
+        private bool movieScan;
         private int _progressBarMax = 100, _progressBarValue;
         private bool _progressBarIndeterminate;
         public int ProgressBarMax
@@ -166,6 +166,7 @@ namespace ME3Explorer.TFCCompactor
             if (ME3Directory.DLCPath != null)
             {
                 GameList.Add(new GameWrapper(MEGame.ME3, "Mass Effect 3", ME3Directory.DLCPath));
+                GameList.Add(new GameWrapper(MEGame.ME3, "Mass Effect 3 (Movies)", ME3Directory.DLCPath));
             }
 
             GameList.Add(new GameWrapper(MEGame.Unknown, "Select game...", null) { IsBrowseForCustom = true, IsCustomPath = true });
@@ -256,7 +257,7 @@ namespace ME3Explorer.TFCCompactor
             }
         }
 
-        public static string[] BasegameTFCs = { "CharTextures", "Movies", "Textures", "Lighting" };
+        public static string[] BasegameTFCs = { "CharTextures", "Movies", "Textures", "Lighting", "Movies" };
         private void BeginReferencedTFCScan()
         {
             backgroundWorker = new BackgroundWorker();
@@ -298,47 +299,70 @@ namespace ME3Explorer.TFCCompactor
                     CurrentOperationText = $"Scanning {Path.GetFileName(file)}...";
                     using (var package = MEPackageHandler.OpenMEPackage(file))
                     {
-                        var textureExports = package.Exports.Where(x => x.IsTexture());
-                        foreach (var texture in textureExports)
+                        if (movieScan)
                         {
-                            if (texture.GetProperty<NameProperty>("TextureFileCacheName") is NameProperty tfcNameProperty)
+                            var movieExports = package.Exports.Where(x => x.ClassName == "TextureMovie");
+                            foreach( var movietexture in movieExports)
                             {
-                                string tfcname = tfcNameProperty.Value;
-                                //if (tfcname == "CustTextures0")
-                                //{
-                                //    Debug.WriteLine($"CustTextures0 TFC Reference: {texture.FullPath} {texture.UIndex} in {texture.FileRef.FilePath}");
-                                //}
-                                if (!BasegameTFCs.Contains(tfcname))
+                                if (movietexture.GetProperty<NameProperty>("TextureFileCacheName") is NameProperty tfcNameProperty)
                                 {
-                                    //Check that external mips are referenced.
-                                    //some texture2d have a tfc but don't have any external mips for some reason
-                                    Texture2D texture2d = new Texture2D(texture);
-                                    var topmip = texture2d.GetTopMip();
-                                    if (topmip.storageType == StorageTypes.extLZO ||
-                                        topmip.storageType == StorageTypes.extZlib ||
-                                        topmip.storageType == StorageTypes.extUnc)
+                                    string tfcname = tfcNameProperty.Value;
+                                    if (referencedTFCs.Add(new TFCSelector(tfcname, forSelecting)))
                                     {
-                                        if (referencedTFCs.Add(new TFCSelector(tfcname, forSelecting)))
+                                        if (forSelecting)
                                         {
-                                            //Debug.WriteLine($"Reference to {tfcname} in {Path.GetFileName(texture.FileRef.FilePath)} {texture.UIndex} {texture.InstancedFullPath}");
-                                            if (forSelecting)
+                                            Application.Current.Dispatcher.Invoke(delegate
                                             {
-                                                Application.Current.Dispatcher.Invoke(delegate
-                                                {
-                                                    TextureCachesToPullFromList.ReplaceAll(referencedTFCs);
-                                                });
-                                            }
+                                                TextureCachesToPullFromList.ReplaceAll(referencedTFCs);
+                                            });
                                         }
                                     }
-                                    else
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var textureExports = package.Exports.Where(x => x.IsTexture());
+                            foreach (var texture in textureExports)
+                            {
+                                if (texture.GetProperty<NameProperty>("TextureFileCacheName") is NameProperty tfcNameProperty)
+                                {
+                                    string tfcname = tfcNameProperty.Value;
+                                    //if (tfcname == "CustTextures0")
+                                    //{
+                                    //    Debug.WriteLine($"CustTextures0 TFC Reference: {texture.FullPath} {texture.UIndex} in {texture.FileRef.FilePath}");
+                                    //}
+                                    if (!BasegameTFCs.Contains(tfcname))
                                     {
-                                        //Debug.WriteLine($"Skipping Reference, no external mips defined: {texture.GetFullPath} {texture.UIndex} in {texture.FileRef.FilePath}");
+                                        //Check that external mips are referenced.
+                                        //some texture2d have a tfc but don't have any external mips for some reason
+                                        Texture2D texture2d = new Texture2D(texture);
+                                        var topmip = texture2d.GetTopMip();
+                                        if (topmip.storageType == StorageTypes.extLZO ||
+                                            topmip.storageType == StorageTypes.extZlib ||
+                                            topmip.storageType == StorageTypes.extUnc)
+                                        {
+                                            if (referencedTFCs.Add(new TFCSelector(tfcname, forSelecting)))
+                                            {
+                                                //Debug.WriteLine($"Reference to {tfcname} in {Path.GetFileName(texture.FileRef.FilePath)} {texture.UIndex} {texture.InstancedFullPath}");
+                                                if (forSelecting)
+                                                {
+                                                    Application.Current.Dispatcher.Invoke(delegate
+                                                    {
+                                                        TextureCachesToPullFromList.ReplaceAll(referencedTFCs);
+                                                    });
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            //Debug.WriteLine($"Skipping Reference, no external mips defined: {texture.GetFullPath} {texture.UIndex} in {texture.FileRef.FilePath}");
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-
                     ProgressBarValue++;
                 }
             }
@@ -353,95 +377,142 @@ namespace ME3Explorer.TFCCompactor
             string sourceGamePath = Path.GetDirectoryName(Path.GetDirectoryName(SelectedGame.DLCPath));
             string workingGamePath = StagingDirectory; //Todo: Allow user to change this path
 
-            backgroundWorker.DoWork += (a, b) =>
+            if(movieScan)
             {
-                if (Directory.EnumerateFileSystemEntries(StagingDirectory).Any())
-                {
-                    DeleteDirectory(StagingDirectory);
-                    Directory.CreateDirectory(StagingDirectory);
-                }
-                CurrentOperationText = "Creating compaction workspace";
-                ProgressBarValue = 0;
-                ProgressBarMax = 100;
-                ProgressBarIndeterminate = false;
+                MessageBox.Show("Not yet implemented");
+                return;
+                //backgroundWorker.DoWork += (a, b) =>
+                //{
+                //    if (Directory.EnumerateFileSystemEntries(StagingDirectory).Any())
+                //    {
+                //        DeleteDirectory(StagingDirectory);
+                //        Directory.CreateDirectory(StagingDirectory);
+                //    }
+                //    CurrentOperationText = "Creating compaction workspace";
+                //    ProgressBarValue = 0;
+                //    ProgressBarMax = 100;
+                //    ProgressBarIndeterminate = false;
 
-                var dlcTFCsToPullFrom = TextureCachesToPullFromList.Where(x => x.Selected).Select(x => x.TFCName);
-                var tfcsToStage = TextureCachesToPullFromList.Select(x => x.TFCName);
-                //Create workspace for MEM
-                var game = (int)SelectedGame.Game;
+                //    var dlcTFCsToPullFrom = TextureCachesToPullFromList.Where(x => x.Selected).Select(x => x.TFCName);
+                //    var tfcsToStage = TextureCachesToPullFromList.Select(x => x.TFCName);
 
-                //Create fake game directory
-                Directory.CreateDirectory(workingGamePath);
-                Directory.CreateDirectory(Path.Combine(workingGamePath, "Binaries"));
-                if (game == 3)
-                {
-                    Directory.CreateDirectory(Path.Combine(workingGamePath, "Binaries", "win32"));
-                    File.Create(Path.Combine(workingGamePath, "Binaries", "win32", "MassEffect3.exe")).Close();
-                }
-                else
-                {
-                    //ME2
-                    File.Create(Path.Combine(workingGamePath, "Binaries", "MassEffect2.exe")).Close();
-                }
+                //    //Copy basegame TFCs to staged
+                //    //Extract movie references, compare so the duplicate biks are referenced the same
+                //    //Compile new tfc and assign biks.
 
-                string cookedDirName = game == 2 ? "CookedPC" : "CookedPCConsole";
-                Directory.CreateDirectory(Path.Combine(workingGamePath, "BioGame"));
-                var dlcDir = Path.Combine(workingGamePath, "BioGame", "DLC");
-                Directory.CreateDirectory(dlcDir);
-                var basegameCookedDir = Path.Combine(workingGamePath, "BioGame", cookedDirName);
-                Directory.CreateDirectory(basegameCookedDir);
 
-                //Copy basegame TFCs to cookedDiretory
-                var basegameDirToCopyFrom = MEDirectories.CookedPath(SelectedGame.Game);
-                var tfcs = Directory.GetFiles(basegameDirToCopyFrom, "*.tfc").ToList();
-                var currentgamefiles = MELoadedFiles.GetFilesLoadedInGame(SelectedGame.Game, forceReload: true, includeTFCs: true);
-                //var debug = currentgamefiles.Where(x => x.Value.Contains(".tfc")).ToList();
-                //debug.ForEach(x => Debug.WriteLine(x));
-                foreach (var tfc in tfcsToStage)
+                //    //Scan game
+                //    ProgressBarMax = 100;
+                //    ProgressBarValue = 0;
+                //    //List<string> missingTFCs = new List<string>();
+                //    List<string> errors = new List<string>();
+                //    var triggers = new Dictionary<string, Action<string>> {
+                //    { "TASK_PROGRESS", s => ProgressBarValue = int.Parse(s)},
+                //    { "PROCESSING_FILE", s => CurrentOperationText = $"Building texture map for {Path.GetFileName(s)}"},
+                //    //{ "ERROR_REFERENCED_TFC_NOT_FOUND", s => missingTFCs.Add(s) }, //this ipc can be thrown but we should not run into this error since we attempt to stage everything.
+                //    { "ERROR", s => errors.Add(s) },
+                //};
+                //};
+
+            }
+            else
+            {
+                backgroundWorker.DoWork += (a, b) =>
                 {
-                    var fullname = tfc.EndsWith(".tfc") ? tfc : tfc + ".tfc";
-                    if (currentgamefiles.TryGetValue(fullname, out string fullpath))
+                    if (Directory.EnumerateFileSystemEntries(StagingDirectory).Any())
                     {
-                        tfcs.Add(fullpath);
+                        DeleteDirectory(StagingDirectory);
+                        Directory.CreateDirectory(StagingDirectory);
                     }
-                    else if (SelectedGame.Game == MEGame.ME3)
+                    CurrentOperationText = "Creating compaction workspace";
+                    ProgressBarValue = 0;
+                    ProgressBarMax = 100;
+                    ProgressBarIndeterminate = false;
+
+                    var dlcTFCsToPullFrom = TextureCachesToPullFromList.Where(x => x.Selected).Select(x => x.TFCName);
+                    var tfcsToStage = TextureCachesToPullFromList.Select(x => x.TFCName);
+                    //Create workspace for MEM
+                    var game = (int)SelectedGame.Game;
+
+                    //Create fake game directory
+                    Directory.CreateDirectory(workingGamePath);
+                    Directory.CreateDirectory(Path.Combine(workingGamePath, "Binaries"));
+                    if (game == 3)
                     {
-                        //Attempt SFAR lookup at later stage below. Will abort if we cannot find TFC.
-                        tfcs.Add(tfc); //no suffix
+                        Directory.CreateDirectory(Path.Combine(workingGamePath, "Binaries", "win32"));
+                        File.Create(Path.Combine(workingGamePath, "Binaries", "win32", "MassEffect3.exe")).Close();
                     }
                     else
                     {
-                        b.Result = new Tuple<CompactionResult, string>(CompactionResult.RESULT_ERROR_TFC_NOT_FOUND, $"Unable to find TFC for compaction in game directory: {tfc}");
-                        return;
+                        //ME2
+                        File.Create(Path.Combine(workingGamePath, "Binaries", "MassEffect2.exe")).Close();
                     }
-                }
 
-                ProgressBarIndeterminate = true;
-                foreach (var tfc in tfcs)
-                {
-                    string tfcShortName = Path.GetFileNameWithoutExtension(tfc);
-                    CurrentOperationText = $"Staging {tfcShortName}";
-                    string destPath = Path.Combine(basegameCookedDir, tfcShortName + ".tfc");
-                    if (File.Exists(tfc))
+                    string cookedDirName = game == 2 ? "CookedPC" : "CookedPCConsole";
+                    Directory.CreateDirectory(Path.Combine(workingGamePath, "BioGame"));
+                    var dlcDir = Path.Combine(workingGamePath, "BioGame", "DLC");
+                    Directory.CreateDirectory(dlcDir);
+                    var basegameCookedDir = Path.Combine(workingGamePath, "BioGame", cookedDirName);
+                    Directory.CreateDirectory(basegameCookedDir);
+
+                    //Copy basegame TFCs to cookedDiretory
+                    var basegameDirToCopyFrom = MEDirectories.CookedPath(SelectedGame.Game);
+                    var tfcs = Directory.GetFiles(basegameDirToCopyFrom, "*.tfc").ToList();
+                    var currentgamefiles = MELoadedFiles.GetFilesLoadedInGame(SelectedGame.Game, forceReload: true, includeTFCs: true);
+                    //var debug = currentgamefiles.Where(x => x.Value.Contains(".tfc")).ToList();
+                    //debug.ForEach(x => Debug.WriteLine(x));
+                    foreach (var tfc in tfcsToStage)
                     {
-                        File.Copy(tfc, destPath, true);
-                    }
-                    else if (SelectedGame.Game == MEGame.ME3)
-                    {
-                        if (tfcShortName.StartsWith("Textures_DLC"))
+                        var fullname = tfc.EndsWith(".tfc") ? tfc : tfc + ".tfc";
+                        if (currentgamefiles.TryGetValue(fullname, out string fullpath))
                         {
-                            string dlcFolderName = tfc.Substring(9);
-                            var sfar = Path.Combine(MEDirectories.DLCPath(SelectedGame.Game), dlcFolderName, "CookedPCConsole", "Default.sfar");
-                            if (File.Exists(sfar) && new FileInfo(sfar).Length > 32)
+                            tfcs.Add(fullpath);
+                        }
+                        else if (SelectedGame.Game == MEGame.ME3)
+                        {
+                            //Attempt SFAR lookup at later stage below. Will abort if we cannot find TFC.
+                            tfcs.Add(tfc); //no suffix
+                        }
+                        else
+                        {
+                            b.Result = new Tuple<CompactionResult, string>(CompactionResult.RESULT_ERROR_TFC_NOT_FOUND, $"Unable to find TFC for compaction in game directory: {tfc}");
+                            return;
+                        }
+                    }
+
+                    ProgressBarIndeterminate = true;
+                    foreach (var tfc in tfcs)
+                    {
+                        string tfcShortName = Path.GetFileNameWithoutExtension(tfc);
+                        CurrentOperationText = $"Staging {tfcShortName}";
+                        string destPath = Path.Combine(basegameCookedDir, tfcShortName + ".tfc");
+                        if (File.Exists(tfc))
+                        {
+                            File.Copy(tfc, destPath, true);
+                        }
+                        else if (SelectedGame.Game == MEGame.ME3)
+                        {
+                            if (tfcShortName.StartsWith("Textures_DLC"))
                             {
-                                //sfar exists and is not fully unpacked (with mem style 32 byte sfar)
-                                DLCPackage p = new DLCPackage(sfar);
-                                var tfcIndex = p.FindFileEntry(tfcShortName + ".tfc");
-                                if (tfcIndex >= 0)
+                                string dlcFolderName = tfc.Substring(9);
+                                var sfar = Path.Combine(MEDirectories.DLCPath(SelectedGame.Game), dlcFolderName, "CookedPCConsole", "Default.sfar");
+                                if (File.Exists(sfar) && new FileInfo(sfar).Length > 32)
                                 {
-                                    var tfcMemory = p.DecompressEntry(tfcIndex);
-                                    File.WriteAllBytes(destPath, tfcMemory.ToArray());
-                                    tfcMemory.Close();
+                                    //sfar exists and is not fully unpacked (with mem style 32 byte sfar)
+                                    DLCPackage p = new DLCPackage(sfar);
+                                    var tfcIndex = p.FindFileEntry(tfcShortName + ".tfc");
+                                    if (tfcIndex >= 0)
+                                    {
+                                        var tfcMemory = p.DecompressEntry(tfcIndex);
+                                        File.WriteAllBytes(destPath, tfcMemory.ToArray());
+                                        tfcMemory.Close();
+                                    }
+                                    else
+                                    {
+                                        //Can't find TFC!
+                                        b.Result = new Tuple<CompactionResult, string>(CompactionResult.RESULT_ERROR_TFC_NOT_FOUND, $"Unable to find TFC for compaction in game directory: {tfc}");
+                                        return;
+                                    }
                                 }
                                 else
                                 {
@@ -460,84 +531,77 @@ namespace ME3Explorer.TFCCompactor
                         else
                         {
                             //Can't find TFC!
-                            b.Result = new Tuple<CompactionResult, string>(CompactionResult.RESULT_ERROR_TFC_NOT_FOUND, $"Unable to find TFC for compaction in game directory: {tfc}");
+                            if (dlcTFCsToPullFrom.Contains(tfc))
+                            {
+                                b.Result = new Tuple<CompactionResult, string>(CompactionResult.RESULT_ERROR_TFC_NOT_FOUND, $"Unable to find TFC for pulling textures from in game directory: {tfc}");
+                            }
+                            else
+                            {
+                                b.Result = new Tuple<CompactionResult, string>(CompactionResult.RESULT_ERROR_TFC_NOT_FOUND, $"Unable to find TFC for ensuring clean texture scan: {tfc}");
+                            }
                             return;
                         }
                     }
-                    else
+
+                    //Copy DLC
+                    var destDLCDir = Path.Combine(dlcDir, SelectedDLCModFolder);
+                    var sourceDLCDir = Path.Combine(SelectedGame.DLCPath, SelectedDLCModFolder);
+                    CopyDir.CopyAll_ProgressBar(new DirectoryInfo(sourceDLCDir), Directory.CreateDirectory(destDLCDir), backgroundWorker, ignoredExtensions: new string[] { ".tfc" });
+                    // get MassEffectModder.ini
+                    string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        "MassEffectModder");
+                    string _iniPath = Path.Combine(path, "MassEffectModder.ini");
+                    if (!Directory.Exists(path))
                     {
-                        //Can't find TFC!
-                        if (dlcTFCsToPullFrom.Contains(tfc))
-                        {
-                            b.Result = new Tuple<CompactionResult, string>(CompactionResult.RESULT_ERROR_TFC_NOT_FOUND, $"Unable to find TFC for pulling textures from in game directory: {tfc}");
-                        }
-                        else
-                        {
-                            b.Result = new Tuple<CompactionResult, string>(CompactionResult.RESULT_ERROR_TFC_NOT_FOUND, $"Unable to find TFC for ensuring clean texture scan: {tfc}");
-                        }
-                        return;
+                        Directory.CreateDirectory(path);
                     }
-                }
 
-                //Copy DLC
-                var destDLCDir = Path.Combine(dlcDir, SelectedDLCModFolder);
-                var sourceDLCDir = Path.Combine(SelectedGame.DLCPath, SelectedDLCModFolder);
-                CopyDir.CopyAll_ProgressBar(new DirectoryInfo(sourceDLCDir), Directory.CreateDirectory(destDLCDir), backgroundWorker, ignoredExtensions: new string[] { ".tfc" });
-                // get MassEffectModder.ini
-                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "MassEffectModder");
-                string _iniPath = Path.Combine(path, "MassEffectModder.ini");
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
+                    if (!File.Exists(_iniPath))
+                    {
+                        File.Create(_iniPath);
+                    }
 
-                if (!File.Exists(_iniPath))
-                {
-                    File.Create(_iniPath);
-                }
+                    Ini.IniFile ini = new Ini.IniFile(_iniPath);
+                    var oldValue = ini.ReadValue("ME" + game, "GameDataPath");
+                    ini.WriteValue("GameDataPath", "ME" + game, workingGamePath);
 
-                Ini.IniFile ini = new Ini.IniFile(_iniPath);
-                var oldValue = ini.ReadValue("ME" + game, "GameDataPath");
-                ini.WriteValue("GameDataPath", "ME" + game, workingGamePath);
-
-                //Scan game
-                ProgressBarMax = 100;
-                ProgressBarValue = 0;
-                //List<string> missingTFCs = new List<string>();
-                List<string> errors = new List<string>();
-                var triggers = new Dictionary<string, Action<string>> {
+                    //Scan game
+                    ProgressBarMax = 100;
+                    ProgressBarValue = 0;
+                    //List<string> missingTFCs = new List<string>();
+                    List<string> errors = new List<string>();
+                    var triggers = new Dictionary<string, Action<string>> {
                     { "TASK_PROGRESS", s => ProgressBarValue = int.Parse(s)},
                     { "PROCESSING_FILE", s => CurrentOperationText = $"Building texture map for {Path.GetFileName(s)}"},
                     //{ "ERROR_REFERENCED_TFC_NOT_FOUND", s => missingTFCs.Add(s) }, //this ipc can be thrown but we should not run into this error since we attempt to stage everything.
                     { "ERROR", s => errors.Add(s) },
                 };
 
-                string args = $"--scan --gameid {game} --ipc";
-                var memProcess = MassEffectModder.MassEffectModderIPCWrapper.RunMEM(args, triggers);
-                while (memProcess.State == AppState.Running)
-                {
-                    Thread.Sleep(100); //this is kind of hacky but it works
-                }
+                    string args = $"--scan --gameid {game} --ipc";
+                    var memProcess = MassEffectModder.MassEffectModderIPCWrapper.RunMEM(args, triggers);
+                    while (memProcess.State == AppState.Running)
+                    {
+                        Thread.Sleep(100); //this is kind of hacky but it works
+                    }
 
-                if (errors.Count > 0)
-                {
-                    //Do something...
-                    b.Result = new Tuple<CompactionResult, List<string>>(CompactionResult.RESULT_SCAN_ERRORS, errors);
-                    return;
-                }
+                    if (errors.Count > 0)
+                    {
+                        //Do something...
+                        b.Result = new Tuple<CompactionResult, List<string>>(CompactionResult.RESULT_SCAN_ERRORS, errors);
+                        return;
+                    }
 
-                //Extract textures
-                var tempTextureCache = Directory.CreateDirectory(Path.Combine(workingGamePath, "TextureStaging")).FullName;
-                var singlepasscount = Directory.GetFiles(destDLCDir, "*.pcc", SearchOption.AllDirectories).Length;
-                var totalpasses = singlepasscount * dlcTFCsToPullFrom.Count();
-                int previousFullStepsDone = 0;
-                ProgressBarValue = 0;
-                ProgressBarMax = totalpasses;
-                foreach (var tfcname in dlcTFCsToPullFrom)
-                {
-                    CurrentOperationText = $"Extracting referenced textures from {tfcname}";
-                    triggers = new Dictionary<string, Action<string>> {
+                    //Extract textures
+                    var tempTextureCache = Directory.CreateDirectory(Path.Combine(workingGamePath, "TextureStaging")).FullName;
+                    var singlepasscount = Directory.GetFiles(destDLCDir, "*.pcc", SearchOption.AllDirectories).Length;
+                    var totalpasses = singlepasscount * dlcTFCsToPullFrom.Count();
+                    int previousFullStepsDone = 0;
+                    ProgressBarValue = 0;
+                    ProgressBarMax = totalpasses;
+                    foreach (var tfcname in dlcTFCsToPullFrom)
+                    {
+                        CurrentOperationText = $"Extracting referenced textures from {tfcname}";
+                        triggers = new Dictionary<string, Action<string>> {
                         { "Package", s =>
                             {
                                 int done = int.Parse(s.Substring(0,s.IndexOf('/')));
@@ -546,22 +610,22 @@ namespace ME3Explorer.TFCCompactor
                         }
                     };
 
-                    args = $"--extract-all-dds --gameid {game} --output \"{tempTextureCache}\" --tfc-name {tfcname}";
-                    memProcess = MassEffectModder.MassEffectModderIPCWrapper.RunMEM(args, null, triggers); //this command does not support IPC commands
-                    while (memProcess.State == AppState.Running)
-                    {
-                        Thread.Sleep(100); //this is kind of hacky but it works
+                        args = $"--extract-all-dds --gameid {game} --output \"{tempTextureCache}\" --tfc-name {tfcname}";
+                        memProcess = MassEffectModder.MassEffectModderIPCWrapper.RunMEM(args, null, triggers); //this command does not support IPC commands
+                        while (memProcess.State == AppState.Running)
+                        {
+                            Thread.Sleep(100); //this is kind of hacky but it works
+                        }
+
+                        previousFullStepsDone += singlepasscount;
                     }
 
-                    previousFullStepsDone += singlepasscount;
-                }
-
-                //Install new textures
-                string newTextureCacheName = "Textures_" + SelectedDLCModFolder;
-                CurrentOperationText = $"Building " + newTextureCacheName;
-                ProgressBarValue = 0;
-                ProgressBarMax = Directory.GetFiles(tempTextureCache, "*.dds").Length;
-                triggers = new Dictionary<string, Action<string>> {
+                    //Install new textures
+                    string newTextureCacheName = "Textures_" + SelectedDLCModFolder;
+                    CurrentOperationText = $"Building " + newTextureCacheName;
+                    ProgressBarValue = 0;
+                    ProgressBarMax = Directory.GetFiles(tempTextureCache, "*.dds").Length;
+                    triggers = new Dictionary<string, Action<string>> {
                     { "Installing", s =>
                         {
                             string remainingStr = s.Substring(5); //cut off "mod: "
@@ -573,31 +637,33 @@ namespace ME3Explorer.TFCCompactor
                     }
                 };
 
-                args = $"-dlc-mod-for-mgamerz {game} \"{tempTextureCache}\" {newTextureCacheName}";
-                memProcess = MassEffectModder.MassEffectModderIPCWrapper.RunMEM(args, null, triggers, true); //this command does not support IPC commands
-                while (memProcess.State == AppState.Running)
-                {
-                    Thread.Sleep(100); //this is kind of hacky but it works
-                }
+                    args = $"-dlc-mod-for-mgamerz {game} \"{tempTextureCache}\" {newTextureCacheName}";
+                    memProcess = MassEffectModder.MassEffectModderIPCWrapper.RunMEM(args, null, triggers, true); //this command does not support IPC commands
+                    while (memProcess.State == AppState.Running)
+                    {
+                        Thread.Sleep(100); //this is kind of hacky but it works
+                    }
 
 
-                //Restore old path in MEM ini
-                if (!string.IsNullOrEmpty(oldValue))
-                {
-                    ini.WriteValue("GameDataPath", "ME" + game, oldValue);
-                }
+                    //Restore old path in MEM ini
+                    if (!string.IsNullOrEmpty(oldValue))
+                    {
+                        ini.WriteValue("GameDataPath", "ME" + game, oldValue);
+                    }
 
-                //cleanup
-                System.IO.DirectoryInfo di = new DirectoryInfo(basegameCookedDir);
-                foreach (FileInfo file in di.GetFiles())
-                {
-                    file.Delete();
-                }
+                    //cleanup
+                    System.IO.DirectoryInfo di = new DirectoryInfo(basegameCookedDir);
+                    foreach (FileInfo file in di.GetFiles())
+                    {
+                        file.Delete();
+                    }
 
-                b.Result = new Tuple<CompactionResult, List<string>>(CompactionResult.RESULT_OK, FindReferencedTextures(dlcDir, false));
-                Process.Start(dlcDir);
+                    b.Result = new Tuple<CompactionResult, List<string>>(CompactionResult.RESULT_OK, FindReferencedTextures(dlcDir, false));
+                    Process.Start(dlcDir);
 
-            };
+                };
+            }
+            
             backgroundWorker.ProgressChanged += (a, b) =>
             {
                 if (b.UserState is ThreadCommand tc)
@@ -772,6 +838,7 @@ namespace ME3Explorer.TFCCompactor
                     var officialDLC = newItem.Game == MEGame.ME3 ? ME3Directory.OfficialDLC : ME2Directory.OfficialDLC;
                     var DLC = MELoadedFiles.GetEnabledDLCFiles(newItem.Game, newItem.DLCPath).Select(x => Path.GetFileName(x)).Where(x => !officialDLC.Contains(x));
                     CustomDLCFolderList.ReplaceAll(DLC);
+                    movieScan = newItem.DisplayName == "Mass Effect 3 (Movies)";
                 }
             }
         }
