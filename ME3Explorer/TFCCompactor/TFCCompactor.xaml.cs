@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Gammtek.Conduit.Extensions.Collections.Generic;
+using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -379,40 +380,125 @@ namespace ME3Explorer.TFCCompactor
 
             if(movieScan)
             {
-                MessageBox.Show("Not yet implemented");
-                return;
-                //backgroundWorker.DoWork += (a, b) =>
-                //{
-                //    if (Directory.EnumerateFileSystemEntries(StagingDirectory).Any())
-                //    {
-                //        DeleteDirectory(StagingDirectory);
-                //        Directory.CreateDirectory(StagingDirectory);
-                //    }
-                //    CurrentOperationText = "Creating compaction workspace";
-                //    ProgressBarValue = 0;
-                //    ProgressBarMax = 100;
-                //    ProgressBarIndeterminate = false;
+                backgroundWorker.DoWork += (a, b) =>
+                {
+                    if (Directory.EnumerateFileSystemEntries(StagingDirectory).Any())
+                    {
+                        DeleteDirectory(StagingDirectory);
+                        Directory.CreateDirectory(StagingDirectory);
+                    }
+                    CurrentOperationText = "Creating compaction workspace";
+                    ProgressBarValue = 0;
+                    ProgressBarMax = 100;
+                    ProgressBarIndeterminate = true;
 
-                //    var dlcTFCsToPullFrom = TextureCachesToPullFromList.Where(x => x.Selected).Select(x => x.TFCName);
-                //    var tfcsToStage = TextureCachesToPullFromList.Select(x => x.TFCName);
+                    var TFCsToPullFrom = TextureCachesToPullFromList.Where(x => x.Selected).Select(x => x.TFCName);
+                    var ExportsToBeReplaced = new List<(string, int, string)>(); //filename, export number, moviecache_offset
+                    var MoviesToBeReplaced = new Dictionary<string, int>(); //moviecache_offset, offset
+                    var MoviesWrittenToNewTFC = new Dictionary<string, (int, int)>(); //moviecache_offset, new offset, new length
+                    //Copy basegame TFCs to staged
+                    var tfclist = Directory.GetFiles(sourceGamePath, "*.tfc", SearchOption.AllDirectories);
+                    foreach (var tfc in TextureCachesToPullFromList.Where(x => x.Selected))
+                    {
+                        string otfcPath = tfclist.FirstOrDefault(t => Path.GetFileNameWithoutExtension(t) == tfc.TFCName);
+                        File.Copy(otfcPath, Path.Combine(StagingDirectory, Path.GetFileName(otfcPath)));
+                    }
+                    //Find all movie references
+                    //Search all files in mod directory for texturemovie references to selected DLCs
+                    string[] files = Directory.GetFiles(Path.Combine(sourceGamePath, "DLC", SelectedDLCModFolder), "*.pcc", SearchOption.AllDirectories);
+                    foreach (string file in files)
+                    {
+                        CurrentOperationText = $"Scanning and extracting {Path.GetFileName(file)}...";
+                        using (var package = MEPackageHandler.OpenMEPackage(file))
+                        {
+                            var movieExports = package.Exports.Where(x => x.ClassName == "TextureMovie");
+                            foreach (var movietexture in movieExports)
+                            {
+                                if (movietexture.GetProperty<NameProperty>("TextureFileCacheName") is NameProperty tfcNameProperty)
+                                {
+                                    if (TFCsToPullFrom.Contains<string>(tfcNameProperty.Value))
+                                    {
+                                        var binary = movietexture.getBinaryData();
+                                        int offset = BitConverter.ToInt32(binary, 12);
+                                        string bikfile = $"{tfcNameProperty.Value}_{offset}";
+                                        ExportsToBeReplaced.Add((file, movietexture.UIndex, bikfile));
+                                        if (!MoviesToBeReplaced.ContainsKey(bikfile))
+                                        {
+                                            MoviesToBeReplaced.Add(bikfile, offset);
+                                            //Extract movie references
+                                            string destination = Path.Combine(StagingDirectory, $"{bikfile}.bik");
+                                            ExtractBikToFile(movietexture, destination);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
-                //    //Copy basegame TFCs to staged
-                //    //Extract movie references, compare so the duplicate biks are referenced the same
-                //    //Compile new tfc and assign biks.
+                    //Compile new tfc
+                    Guid tfcGuid = Guid.NewGuid();
+                    var tfcName = "Movies_" + SelectedDLCModFolder;
+                    var outputTFC = Path.Combine(StagingDirectory, $"{tfcName}.tfc");
+                    if (File.Exists(outputTFC))
+                    {
+                        File.Delete(outputTFC);
+                    }
+                    using (FileStream fs = new FileStream(outputTFC, FileMode.OpenOrCreate, FileAccess.Write))
+                    {
+                        fs.WriteGuid(tfcGuid);
+                        fs.Flush();
+                    }
+                    //Import biks to cache
+                    CurrentOperationText = $"Compiling biks to cache...";
+                    foreach (var bik in MoviesToBeReplaced)
+                    {
+                        var addedmovie = ImportBiktoCache(Path.Combine(StagingDirectory, $"{bik.Key}.bik"), outputTFC);
+                        MoviesWrittenToNewTFC.Add(bik.Key, addedmovie);
+                    }
+                    //Replace references in files
+                    CurrentOperationText = $"Replacing file references...";
+                    foreach (var expRef in ExportsToBeReplaced)
+                    {
+                        using (var package = MEPackageHandler.OpenMEPackage(expRef.Item1))
+                        {
+                            var expTexMov = package.GetUExport(expRef.Item2);
+                            var moviedata = MoviesWrittenToNewTFC[expRef.Item3];
 
+                            var binData = expTexMov.getBinaryData();
+                            binData.OverwriteRange(0, BitConverter.GetBytes(1));
+                            binData.OverwriteRange(4, BitConverter.GetBytes(moviedata.Item1)); //Length
+                            binData.OverwriteRange(8, BitConverter.GetBytes(moviedata.Item1)); //Length
+                            binData.OverwriteRange(12, BitConverter.GetBytes(moviedata.Item2)); //offset
+                            expTexMov.setBinaryData(binData);
 
-                //    //Scan game
-                //    ProgressBarMax = 100;
-                //    ProgressBarValue = 0;
-                //    //List<string> missingTFCs = new List<string>();
-                //    List<string> errors = new List<string>();
-                //    var triggers = new Dictionary<string, Action<string>> {
-                //    { "TASK_PROGRESS", s => ProgressBarValue = int.Parse(s)},
-                //    { "PROCESSING_FILE", s => CurrentOperationText = $"Building texture map for {Path.GetFileName(s)}"},
-                //    //{ "ERROR_REFERENCED_TFC_NOT_FOUND", s => missingTFCs.Add(s) }, //this ipc can be thrown but we should not run into this error since we attempt to stage everything.
-                //    { "ERROR", s => errors.Add(s) },
-                //};
-                //};
+                            var props = expTexMov.GetProperties();
+                            props.AddOrReplaceProp(new NameProperty(tfcName, "TextureFileCacheName"));
+                            props.AddOrReplaceProp(tfcGuid.ToGuidStructProp("TFCFileGuid"));
+                            expTexMov.WriteProperties(props);
+
+                            package.Save();
+                        }
+                    }
+
+                    //Copy tfc to ModFolder
+                    CurrentOperationText = $"Cleaning Up...";
+                    File.Copy(outputTFC, Path.Combine(sourceGamePath, "DLC", SelectedDLCModFolder, "CookedPCConsole", Path.GetFileName(outputTFC)), true);
+
+                    //Clean Up
+                    System.IO.DirectoryInfo di = new DirectoryInfo(StagingDirectory);
+                    foreach (FileInfo file in di.GetFiles())
+                    {
+                        file.Delete();
+                    }
+
+                    ProgressBarValue = 0;
+                    ProgressBarMax = 100;
+                    ProgressBarIndeterminate = false;
+                    var dependancylist = new List<string>() { tfcName };
+                    dependancylist.AddRange(TextureCachesToPullFromList.Where(x => !x.Selected).Select(x => x.TFCName).ToList());
+                    b.Result = new Tuple<CompactionResult, List<string>>(CompactionResult.RESULT_OK, dependancylist);
+                    return;
+                };
 
             }
             else
@@ -873,6 +959,60 @@ namespace ME3Explorer.TFCCompactor
                 }
                 return false;
             }
+        }
+
+        private void ExtractBikToFile(ExportEntry export, string destination)
+        {
+            MemoryStream bikMovie = new MemoryStream();
+            var binary = export.getBinaryData();
+            int length = BitConverter.ToInt32(binary, 4);
+            int offset = BitConverter.ToInt32(binary, 12);
+            var tfcprop = export.GetProperty<NameProperty>("TextureFileCacheName");
+            string tfcname = $"{tfcprop.Value}.tfc";
+            string filePath = Path.Combine(StagingDirectory, tfcname);
+
+            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                fs.Seek((long)offset, SeekOrigin.Begin);
+                int bikend = offset + length;
+
+                if (bikend > fs.Length)
+                    throw new Exception("tfc corrupt");
+
+                byte[] bikBytes = fs.ReadBytes(length);
+                bikMovie = new MemoryStream(bikBytes);
+            }
+
+            bikMovie.Seek(0, SeekOrigin.Begin);
+            var bikarray = bikMovie.ToArray();
+            using (FileStream fs = new FileStream(destination, FileMode.Create))
+            {
+                fs.WriteBytes(bikarray);
+            }
+        }
+
+        private (int, int) ImportBiktoCache(string bikfile, string tfcPath) //Returns length, offset
+        {
+            MemoryStream bikMovie = new MemoryStream();
+            using (FileStream fs = new FileStream(bikfile, FileMode.OpenOrCreate, FileAccess.Read))
+            {
+                fs.CopyTo(bikMovie);
+            }
+            bikMovie.Seek(0, SeekOrigin.Begin);
+
+            var bikarray = bikMovie.ToArray();
+            int biklength = (int)bikarray.Length;
+            int bikoffset = 0;
+            Guid tfcGuid = Guid.NewGuid();
+            using (FileStream fs = new FileStream(tfcPath, FileMode.Open, FileAccess.ReadWrite))
+            {
+                tfcGuid = fs.ReadGuid();
+                fs.Seek(0, SeekOrigin.End);
+                bikoffset = (int)fs.Position;
+                fs.Write(bikarray, 0, biklength);
+            }
+
+            return (biklength, bikoffset);
         }
     }
 }
