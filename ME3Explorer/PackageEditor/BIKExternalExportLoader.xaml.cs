@@ -661,19 +661,22 @@ namespace ME3Explorer.PackageEditor
                     }
 
                     var tfcPaths = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).ToList();
-                    if (tfcPaths.Count > 1)
+                    switch(tfcPaths.Count)
                     {
-                        MessageBox.Show($"Error. More than one tfc with this name was found in the {Pcc.Game} folders. TFC names need to be unique.");
-                        return false;
-                    }
-                    if (tfcPaths.Count == 0)
-                    {
-                        tfcPath = CreateNewMovieTFC();
-                        if (tfcPath == null)
-                        {
-                            MessageBox.Show("Error. New tfc not created.");
+                        case 0:
+                            tfcPath = CreateNewMovieTFC();
+                            if (tfcPath == null)
+                            {
+                                MessageBox.Show("Error. New tfc not created.");
+                                return false;
+                            }
+                            break;
+                        case 1:
+                            tfcPath = tfcPaths[0];
+                            break;
+                        default :
+                            MessageBox.Show($"Error. More than one tfc with this name was found in the {Pcc.Game} folders. TFC names need to be unique.");
                             return false;
-                        }
                     }
                     TfcName = Path.GetFileNameWithoutExtension(tfcPath);
                 }
@@ -836,7 +839,7 @@ namespace ME3Explorer.PackageEditor
                     if(adddlg.ShowDialog() ?? false)
                     {
                         string addedtfc = Path.GetFileNameWithoutExtension(adddlg.FileName);
-                        if (!Directory.GetDirectories(MEDirectories.GamePath(Pcc.Game)).ToList().Contains(Path.GetDirectoryName(adddlg.FileName)))
+                        if (!Directory.GetDirectories(MEDirectories.GamePath(Pcc.Game), "*", SearchOption.AllDirectories).ToList().Contains(Path.GetDirectoryName(adddlg.FileName)))
                         {
                             MessageBox.Show("This location does not reside within the game directories.", "Aborting", MessageBoxButton.OK);
                         }
@@ -918,7 +921,7 @@ namespace ME3Explorer.PackageEditor
         private string CreateNewMovieTFC()
         {
             var owner = Window.GetWindow(this);
-            var nprompt = PromptDialog.Prompt(owner, "Add a new Tfc name.\nIt must begin either Movies_DLC_MOD_ or Textures_DLC_MOD_\nand be followed by the rest of the dlc name.\nIt must reside in the game folders.", "Create a new movie TFC", "Movies_DLC_MOD_XYZ", true);
+            var nprompt = PromptDialog.Prompt(owner, "Add a new Tfc name.\nIt must begin either Movies_DLC_MOD_ or Textures_DLC_MOD_\nand be followed by the rest of the dlc name.\nIt must reside in the game folders.", "Create a new movie TFC", "Movies_DLC_MOD_", true);
             if (nprompt == null || !nprompt.StartsWith("Movies_DLC_MOD_") && !nprompt.StartsWith("Textures_DLC_MOD_"))
             {
                 MessageBox.Show("Invalid TFC Name", "Warning", MessageBoxButton.OK);
@@ -937,8 +940,8 @@ namespace ME3Explorer.PackageEditor
             }
             string outputTFC = Path.Combine(m.FileName, $"{nprompt}.tfc") ;
             bool createTFC = true;
-            
-            if (!Directory.GetDirectories(MEDirectories.GamePath(Pcc.Game)).ToList().Contains( Path.GetDirectoryName(outputTFC)))
+
+            if (!Directory.GetDirectories(MEDirectories.GamePath(Pcc.Game), "*", SearchOption.AllDirectories).ToList().Contains( Path.GetDirectoryName(outputTFC)))
             {
                 MessageBox.Show("This location does not reside within the game directories.", "Aborting", MessageBoxButton.OK);
                 return null;
