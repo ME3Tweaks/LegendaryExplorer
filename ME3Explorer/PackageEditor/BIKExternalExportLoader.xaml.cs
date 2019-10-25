@@ -243,7 +243,7 @@ namespace ME3Explorer.PackageEditor
         private void LoadCommands()
         {
             OpenFileInRADCommand = new GenericCommand(OpenExportInRAD, () => RADIsInstalled);
-            ImportBikFileCommand = new GenericCommand(ImportBikFile, IsExportable);
+            ImportBikFileCommand = new GenericCommand(ImportBikFileAction, IsExportable);
             PlayBikInVLCCommand = new GenericCommand(PlayExportInVLC, IsMovieStopped);
             PauseVLCCommand = new GenericCommand(PauseMoviePlayer, IsMoviePlaying);
             RewindVLCCommand = new GenericCommand(RewindMoviePlayer, IsMoviePlaying);
@@ -550,22 +550,28 @@ namespace ME3Explorer.PackageEditor
             }
             return false;
         }
-        private void ImportBikFile()
+        private void ImportBikFileAction()
         {
+            ImportBikFile();
+        }
+        private bool ImportBikFile()
+        {
+            bool success = false;
             var dlg = new OpenFileDialog()
             {
-                FileName = "Select a bik file",
+                //FileName = "Select a bik file",
                 Title = "Import Bik movie file",
                 Filter = "Bik Movie Files (*.bik)|*.bik"
             };
 
             dlg.ShowDialog();
-            if (!dlg.FileName.IsEmpty())
+
+            if (File.Exists(dlg.FileName))
             {
-                var success = ImportBiktoCache(dlg.FileName);
+                success = ImportBiktoCache(dlg.FileName);
                 if(success) { MessageBox.Show("Done"); }
             }
-                
+            return success;    
         }
         private bool ImportBiktoCache(string bikfile, string tfcPath = null)
         {
@@ -709,8 +715,11 @@ namespace ME3Explorer.PackageEditor
             TextureCacheComboBox.SelectionChanged -= TextureCacheComboBox_SelectionChanged; //stop duplicate events on reversion
             var oldselection = (string)e.RemovedItems[0];
             string newSelection = TextureCacheComboBox.SelectedItem.ToString();
-
-            switch(newSelection)
+            var olocalcache = IsLocallyCached;  //Backup old data in case of cancellation.
+            var oextcache = IsExternallyCached;
+            var oTfcName = TfcName;
+            bool wasCancelled = false;
+            switch (newSelection)
             {
                 case MOVE_TO_EXTERNAL_STRING: //Before was local move to external
                     var adlg = MessageBox.Show($"Do you want to move the bik at {CurrentLoadedExport.ObjectNameString} to an external tfc?", "Move to External", MessageBoxButton.OKCancel);
@@ -722,7 +731,10 @@ namespace ME3Explorer.PackageEditor
                         {
                             newtfc = CreateNewMovieTFC();
                             if (newtfc == null)
+                            {
+                                TextureCacheComboBox.SelectedItem = oldselection;
                                 break;
+                            }
                             TfcName = Path.GetFileNameWithoutExtension(newtfc);
                         }
                         else
@@ -732,7 +744,7 @@ namespace ME3Explorer.PackageEditor
                             var tdlg = InputComboBoxWPF.GetValue(owner, "Select a Movie TFC", possibleTFCs);
                             if (tdlg == null)
                             {
-                                TfcName = oldselection;
+                                TextureCacheComboBox.SelectedItem = oldselection;
                                 break;
                             }
 
@@ -740,7 +752,7 @@ namespace ME3Explorer.PackageEditor
                             if (rootPath == null || !Directory.Exists(rootPath))
                             {
                                 MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
-                                TfcName = oldselection;
+                                TextureCacheComboBox.SelectedItem = oldselection;
                                 break;
                             }
 
@@ -749,7 +761,7 @@ namespace ME3Explorer.PackageEditor
                             if (newtfc == null || !File.Exists(newtfc))
                             {
                                 MessageBox.Show($"TFC {tdlg}.tfc has not been found.");
-                                TfcName = oldselection;
+                                TextureCacheComboBox.SelectedItem = oldselection;
                                 break;
                             }
                             TfcName = tdlg;
@@ -777,11 +789,12 @@ namespace ME3Explorer.PackageEditor
                         TextureCacheComboBox.SelectedItem = oldselection;
                         break;
                     }
+
                     CurrentLoadedExport.RemoveProperty("TextureFileCacheName");
                     IsLocallyCached = true;
                     TfcName = STORE_LOCAL_STRING;
                     IsExternallyCached = false;
-                    ImportBikFile();
+                    wasCancelled = !ImportBikFile();
                     break;
                 case NEW_TFC_STRING:
                     var bdlg = MessageBox.Show($"Do you want to create a new tfc and add it to the list?", "Create a New TFC", MessageBoxButton.OKCancel);
@@ -792,8 +805,11 @@ namespace ME3Explorer.PackageEditor
                         var newImptdlg = MessageBox.Show($"Do you want to import a movie cached at {newtfcname}", "Movie Import", MessageBoxButton.YesNo);
                         if (newImptdlg != MessageBoxResult.No)
                         {
+                            IsLocallyCached = false;
+                            IsExternallyCached = true;
                             TfcName = newtfcname;
-                            ImportBikFile();
+                            CurrentLoadedExport.WriteProperty(new NameProperty(TfcName, "TextureFileCacheName"));
+                            wasCancelled = !ImportBikFile();
                             break;
                         }
                     }
@@ -825,8 +841,11 @@ namespace ME3Explorer.PackageEditor
                         var addimptdlg = MessageBox.Show($"Do you want to import a movie cached at {addedtfc}", "Movie Import", MessageBoxButton.YesNo);
                         if (addimptdlg != MessageBoxResult.No)
                         {
+                            IsLocallyCached = false;
+                            IsExternallyCached = true;
                             TfcName = addedtfc;
-                            ImportBikFile();
+                            CurrentLoadedExport.WriteProperty(new NameProperty(TfcName, "TextureFileCacheName"));
+                            wasCancelled = !ImportBikFile();
                             break;
                         }
                     }
@@ -857,9 +876,26 @@ namespace ME3Explorer.PackageEditor
                         }
                     }
                     TfcName = newSelection;
-                    ImportBikFile();
+                    wasCancelled = !ImportBikFile();
                     break;
             }
+
+            if(wasCancelled)
+            {
+                IsLocallyCached = olocalcache;
+                IsExternallyCached = oextcache;
+                TfcName = oTfcName;
+                TextureCacheComboBox.SelectedItem = oldselection;
+                if (IsLocallyCached)
+                {
+                    CurrentLoadedExport.RemoveProperty("TextureFileCacheName");
+                }
+                else
+                {
+                    CurrentLoadedExport.WriteProperty(new NameProperty(TfcName, "TextureFileCacheName"));
+                }
+            }
+
             TextureCacheComboBox.SelectionChanged += TextureCacheComboBox_SelectionChanged; //event handling back on
             e.Handled = true;
         }

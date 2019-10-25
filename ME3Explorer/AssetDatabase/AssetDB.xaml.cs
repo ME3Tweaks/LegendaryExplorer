@@ -1491,16 +1491,16 @@ namespace ME3Explorer.AssetDatabase
             }
 
             //Shuffle filekeys randomly to avoid localizations concurrently accessing
-            int n = fileKeys.Count;
-            var rng = new Random();
-            while (n > 1)
-            {
-                n--;
-                int k = rng.Next(n + 1);
-                var value = fileKeys[k];
-                fileKeys[k] = fileKeys[n];
-                fileKeys[n] = value;
-            }
+            //int n = fileKeys.Count;
+            //var rng = new Random();
+            //while (n > 1)
+            //{
+            //    n--;
+            //    int k = rng.Next(n + 1);
+            //    var value = fileKeys[k];
+            //    fileKeys[k] = fileKeys[n];
+            //    fileKeys[n] = value;
+            //}
 
             IsBusy = true;
             BusyHeader = $"Generating database for {currentGame}";
