@@ -7,6 +7,8 @@ using UMD.HCIL.Piccolo.Nodes;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SequenceObjects;
 using ME3Explorer.Unreal.ME3Enums;
+using System;
+using System.Windows;
 
 namespace ME3Explorer.SplineNodes
 {
@@ -73,8 +75,9 @@ namespace ME3Explorer.SplineNodes
 
         public override bool Intersects(RectangleF _bounds)
         {
-            Region ellipseRegion = new Region(shape.PathReference);
-            return ellipseRegion.IsVisible(_bounds);
+            //Region ellipseRegion = new Region(shape.PathReference);
+            //return ellipseRegion.IsVisible(_bounds);
+            return true;
         }
     }
 
@@ -127,6 +130,9 @@ namespace ME3Explorer.SplineNodes
                     var component = pcc.GetUExport(cmpidx);
                     var spline = new Spline(cmpidx, component, cnctn, p, grapheditor);
                     Splines.Add(spline);
+
+                    spline.Pickable = false;
+                    this.AddChild(spline);
                 }
                 connections.Add(cnctn);
             }
@@ -164,37 +170,78 @@ namespace ME3Explorer.SplineNodes
                 var pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
                 StructProperty point0 = pointsProp[0];
                 StructProperty point10 = pointsProp[1];
-                SharpDX.Vector3 a = CommonStructs.GetVector3(point0.GetProp<StructProperty>("OutVal"));
+                SharpDX.Vector3 p0 = CommonStructs.GetVector3(point0.GetProp<StructProperty>("OutVal")); //start => should equal splineactor location
                 SharpDX.Vector3 tan1 = CommonStructs.GetVector3(point0.GetProp<StructProperty>("LeaveTangent"));
                 SharpDX.Vector3 tan2 = CommonStructs.GetVector3(point10.GetProp<StructProperty>("ArriveTangent"));
-                SharpDX.Vector3 d = CommonStructs.GetVector3(point10.GetProp<StructProperty>("OutVal"));
+                SharpDX.Vector3 p3 = CommonStructs.GetVector3(point10.GetProp<StructProperty>("OutVal")); //end => should equal target next splineactor location
                 var reparamProp = component.GetProperty<StructProperty>("SplineReparamTable");
                 var reparamPoints = reparamProp.GetProp<ArrayProperty<StructProperty>>("Points");
 
-                var atan =  reparamPoints[0].GetProp<FloatProperty>("ArriveTangent").Value;
-                var ltan = reparamPoints[0].GetProp<FloatProperty>("LeaveTangent").Value;
-                reparamPoints[0].GetProp<EnumProperty>("InterpMode");
-                EInterpCurveMode ipmode = EInterpCurveMode.CIM_Linear;
-                nodes.Add(new SplineParambleNode(0, a.X, a.Y, a, 0, 0, atan, ltan, ipmode, pcc, grapheditor));
+                //Get P2 at (1/3 of control)   
+                double m = SharpDX.Vector3.Distance(p3, p0); // use as approximate for distance of control point
+                float magnitude = (p3 - p0).Length();
+                const float THIRD = (float) 1/3;
 
-                float distance = 0;
-                for (int n = 0; n < 10; n++)
+                var linearPath = p3 - p0;
+                var nlinPath = SharpDX.Vector3.Normalize(linearPath);
+                var nTan1Path = SharpDX.Vector3.Normalize(tan1);
+                var p1 = p0 + SharpDX.Vector3.Multiply(nlinPath + nTan1Path, magnitude * THIRD);
+                this.AddChild(new SplinePointControlNode(2, p1.X, p1.Y, "P2", p, grapheditor));
+
+
+                //Get P3 at (1/3 of control)
+                var nTan2Path = SharpDX.Vector3.Normalize(tan2);
+                var p2 = p3 - SharpDX.Vector3.Multiply(nlinPath * nTan2Path, magnitude * THIRD);
+                this.AddChild(new SplinePointControlNode(3, p2.X, p2.Y, "P3", p, grapheditor));
+
+                for(int n = 1; n < 10; n++)  // this adds the path of reparamble intermediate steps
                 {
-                    //find on bezier point n
-                    //
-                    float inval = n / 9;
-                    var outval = reparamPoints[n].GetProp<FloatProperty>("OutVal").Value;
-                    atan = reparamPoints[0].GetProp<FloatProperty>("ArriveTangent").Value;
-                    ltan = reparamPoints[0].GetProp<FloatProperty>("LeaveTangent").Value;
+
+                    
+                    float t = (float)n / (float)9;
+                    var paramPos = GetPointOnBezierCurve(p0, p1, p2, p3, t);
+                    var param = new SplineParambleNode(n, paramPos.X, paramPos.Y, paramPos, t, 0, 0, 0, EInterpCurveMode.CIM_Linear, p, grapheditor);
+                    nodes.Add(param);
+                    this.AddChild(param);
+                                       
+                }
+
+
+                //Return co-ordinates DEBUG
+                //string StrP1 = $"P0: {p1.X.ToString()}, {p1.Y.ToString()}, {p1.Z.ToString()}";
+                //string StrP2 = $"P1: {p2.X.ToString()}, {p2.Y.ToString()}, {p2.Z.ToString()}";
+                //string StrP3 = $"P3: {p3.X.ToString()}, {p3.Y.ToString()}, {p3.Z.ToString()}";
+                //string StrP4 = $"P4: {p4.X.ToString()}, {p4.Y.ToString()}, {p4.Z.ToString()}";
+                //string StrNout = null; /*$"Nout: {nout.X.ToString()}, {nout.Y.ToString()}, {nout.Z.ToString()}";*/
+                //MessageBox.Show($"Magnitude: {magnitude}\n{StrP1}\n{StrP2}\n{StrP3}\n{StrP4}\n{StrNout}");
+
+
+
+
+                //var atan =  reparamPoints[0].GetProp<FloatProperty>("ArriveTangent").Value;
+                //var ltan = reparamPoints[0].GetProp<FloatProperty>("LeaveTangent").Value;
+                //reparamPoints[0].GetProp<EnumProperty>("InterpMode");
+                //EInterpCurveMode ipmode = EInterpCurveMode.CIM_Linear;
+                //nodes.Add(new SplineParambleNode(0, a.X, a.Y, a, 0, 0, atan, ltan, ipmode, pcc, grapheditor));
+
+                //float distance = 0;
+                //for (int n = 0; n < 10; n++)
+                //{
+                //    //find on bezier point n
+                //    //
+                //    float inval = n / 9;
+                //    var outval = reparamPoints[n].GetProp<FloatProperty>("OutVal").Value;
+                //    atan = reparamPoints[0].GetProp<FloatProperty>("ArriveTangent").Value;
+                //    ltan = reparamPoints[0].GetProp<FloatProperty>("LeaveTangent").Value;
 
                     
 
-                    nodes.Add(new SplineParambleNode(0, a.X, a.Y, a, 0, 0, atan, ltan, ipmode, pcc, grapheditor));
-                }
+                //    nodes.Add(new SplineParambleNode(0, a.X, a.Y, a, 0, 0, atan, ltan, ipmode, pcc, grapheditor));
+                //}
 
-                var terminator = new SplineParambleNode(10, d.X, d.Y, d, 1, 0, atan, ltan, ipmode, pcc, grapheditor);
-                nodes.Add(terminator);
-                //const float w = 25;
+                //var terminator = new SplineParambleNode(10, d.X, d.Y, d, 1, 0, atan, ltan, ipmode, pcc, grapheditor);
+                //nodes.Add(terminator);
+                ////const float w = 25;
                 //const float h = 25;
                 //shape = PPath.CreateEllipse(0, 0, w, h);
                 //outlinePen = new Pen(color);
@@ -212,6 +259,23 @@ namespace ME3Explorer.SplineNodes
                 //this.TranslateBy(x, y);
             }
         }
+
+        private SharpDX.Vector3 GetPointOnBezierCurve(SharpDX.Vector3 p0, SharpDX.Vector3 p1, SharpDX.Vector3 p2, SharpDX.Vector3 p3, float t)
+        {
+            float u = 1f - t;
+            float t2 = t * t;
+            float u2 = u * u;
+            float u3 = u2 * u;
+            float t3 = t2 * t;
+
+            SharpDX.Vector3 result =
+                (u3) * p0 +
+                (3f * u2 * t) * p1 +
+                (3f * u * t2) * p2 +
+                (t3) * p3;
+
+            return result;
+        }
     }
 
     public class SplineParambleNode : SplineNode
@@ -226,7 +290,7 @@ namespace ME3Explorer.SplineNodes
         SharpDX.Vector3 tan1;
 
 
-        public SplineParambleNode(int idx, float x, float y, SharpDX.Vector3 loc, float inval, float outval, float inTan = 0, float outTan = 0, EInterpCurveMode interpMode = EInterpCurveMode.CIM_Linear, IMEPackage p, PathingGraphEditor grapheditor)
+        public SplineParambleNode(int idx, float x, float y, SharpDX.Vector3 loc, float inval, float outval, float inTan, float outTan, EInterpCurveMode interpMode, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
             Loc = loc;
@@ -235,8 +299,8 @@ namespace ME3Explorer.SplineNodes
             ArriveTangent = inTan;
             LeaveTangent = outTan;
             InterpMode = interpMode;
-            const float w = 10;
-            const float h = 10;
+            const float w = 5;
+            const float h = 5;
             shape = PPath.CreateRectangle(0, 0, w, h);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
@@ -244,56 +308,37 @@ namespace ME3Explorer.SplineNodes
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
-            SText val = new SText(idx.ToString());
+            this.TranslateBy(x, y);
+        }
+    }
+
+    public class SplinePointControlNode : SplineNode
+    {
+        private static readonly Color color = Color.FromArgb(0, 0, 255);
+        private SplinePoint1Node destinationPoint;
+
+        public SplinePointControlNode(int idx, float x, float y, string name, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+
+            const float w = 10;
+            const float h = 10;
+            shape = PPath.CreateEllipse(0, 0, w, h);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            SText val = new SText($"Ctrl {name} {x},{y}");
             val.Pickable = false;
             val.TextAlignment = StringAlignment.Center;
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-        }
-    }
 
-    public class SplinePoint0Node : SplineNode
-    {
-        private static readonly Color color = Color.FromArgb(0, 0, 255);
-        private SplinePoint1Node destinationPoint;
 
-        SharpDX.Vector2 a;
-        SharpDX.Vector2 tan1;
-        SharpDX.Vector2 tan2;
-        SharpDX.Vector2 d;
-
-        public SplinePoint0Node(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, p, grapheditor)
-        {
-            StructProperty splineInfo = export.GetProperty<StructProperty>("SplineInfo");
-            if (splineInfo != null)
-            {
-                var pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
-                StructProperty point0 = pointsProp[0];
-                StructProperty point1 = pointsProp[1];
-                a = CommonStructs.GetVector2(point0.GetProp<StructProperty>("OutVal"));
-                tan1 = CommonStructs.GetVector2(point0.GetProp<StructProperty>("LeaveTangent"));
-                tan2 = CommonStructs.GetVector2(point1.GetProp<StructProperty>("ArriveTangent"));
-                d = CommonStructs.GetVector2(point1.GetProp<StructProperty>("OutVal"));
-                const float w = 25;
-                const float h = 25;
-                shape = PPath.CreateEllipse(0, 0, w, h);
-                outlinePen = new Pen(color);
-                shape.Pen = outlinePen;
-                shape.Brush = pathfindingNodeBrush;
-                shape.Pickable = false;
-                this.AddChild(shape);
-                this.Bounds = new RectangleF(0, 0, w, h);
-                SText val = new SText($"{export.Index}\nSpline Start");
-                val.Pickable = false;
-                val.TextAlignment = StringAlignment.Center;
-                val.X = w / 2 - val.Width / 2;
-                val.Y = h / 2 - val.Height / 2;
-                this.AddChild(val);
-                this.TranslateBy(x, y);
-            }
         }
 
         internal void SetDestinationPoint(SplinePoint1Node point1node)

@@ -1633,15 +1633,15 @@ namespace ME3Explorer.Pathfinding_Editor
                         if (ShowSplinesLayer && isAllowedVisibleByZFiltering(exportEntry))
                         {
                             bulkActiveNodes.Add(exportEntry);
-                            var connectionsProp = exportEntry.GetProperty<ArrayProperty<StructProperty>>("Connections");
-                            if (connectionsProp != null)
-                            {
-                                foreach (StructProperty connectionProp in connectionsProp)
-                                {
-                                    ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
-                                    bulkActiveNodes.Add(levelToRead.FileRef.GetUExport(splinecomponentprop.Value));
-                                }
-                            }
+                            //var connectionsProp = exportEntry.GetProperty<ArrayProperty<StructProperty>>("Connections");
+                            //if (connectionsProp != null)
+                            //{
+                            //    foreach (StructProperty connectionProp in connectionsProp)
+                            //    {
+                            //        ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
+                            //        bulkActiveNodes.Add(levelToRead.FileRef.GetUExport(splinecomponentprop.Value));
+                            //    }
+                            //}
                         }
                     }
 
@@ -1836,10 +1836,11 @@ namespace ME3Explorer.Pathfinding_Editor
             ChangingSelectionByGraphClick = true;
 
             ActiveNodes_ListBox.SelectedItem = node.export;
-            if (node is SplinePoint0Node || node is SplinePoint1Node)
-            {
-                node.Select();
-            }
+            //if (node is SplineActorNode)
+            //{
+            //    node.Select();
+            //}
+
             //CurrentlySelectedSplinePoint = null;
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
