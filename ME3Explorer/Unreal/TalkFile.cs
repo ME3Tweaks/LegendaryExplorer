@@ -74,9 +74,7 @@ namespace ME3Explorer
         public event ProgressChangedEventHandler ProgressChanged;
         private void OnProgressChanged(int percentProgress)
         {
-            ProgressChangedEventHandler handler = ProgressChanged;
-            if (handler != null)
-                handler(percentProgress);
+            ProgressChanged?.Invoke(percentProgress);
         }
 
         /// <summary>

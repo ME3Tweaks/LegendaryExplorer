@@ -37,7 +37,7 @@ namespace ME1Explorer.Unreal.Classes
         }
 
         [DebuggerDisplay("TLKStringRef {StringID} {Data}")]
-        public class TLKStringRef : ME3Explorer.NotifyPropertyChangedBase, IEquatable<TLKStringRef>
+        public class TLKStringRef : ME3Explorer.NotifyPropertyChangedBase, IEquatable<TLKStringRef>, IComparable
         {
             private int _stringID;
             private string _data;
@@ -84,17 +84,22 @@ namespace ME1Explorer.Unreal.Classes
                 }
             }
 
-            public TLKStringRef(int id, int flags, string data)
+            public TLKStringRef(int id, int flags, string data, int index = -1)
             {
                 StringID = id;
                 Flags = flags;
                 Data = data;
-                Index = -1;
+                Index = index;
             }
 
             public bool Equals(TLKStringRef other)
             {
                 return StringID == other.StringID && ASCIIData == other.ASCIIData && Flags == other.Flags /*&& Index == other.Index*/;
+            }
+            public int CompareTo(object obj)
+            {
+                TLKStringRef entry = (TLKStringRef)obj;
+                return Index.CompareTo(entry.Index);
             }
         }
         #endregion

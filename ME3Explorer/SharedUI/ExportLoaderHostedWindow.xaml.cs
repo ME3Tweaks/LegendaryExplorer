@@ -17,15 +17,48 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public partial class ExportLoaderHostedWindow : WPFBase
     {
-        public ExportEntry LoadedExport { get; }
+        public ExportEntry LoadedExport { get; private set; }
         public readonly ExportLoaderControl HostedControl;
         public ObservableCollectionExtended<IndexedName> NamesList { get; } = new ObservableCollectionExtended<IndexedName>();
         public bool SupportsRecents => HostedControl is FileExportLoaderControl;
+
+        private bool _fileHasPendingChanges;
+        public bool FileHasPendingChanges
+        {
+            get => _fileHasPendingChanges;
+            set
+            {
+                SetProperty(ref _fileHasPendingChanges, value);
+                OnPropertyChanged(nameof(IsModifiedProxy));
+            }
+        }
+        public bool IsModifiedProxy
+        {
+            get
+            {
+                if (LoadedExport != null)
+                {
+                    return LoadedExport.EntryHasPendingChanges;
+                }
+                if (HostedControl is FileExportLoaderControl felc)
+                {
+                    return felc.FileModified;
+                }
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Opens ELHW with an export and the specified tool.
+        /// </summary>
+        /// <param name="hostedControl"></param>
+        /// <param name="exportToLoad"></param>
         public ExportLoaderHostedWindow(ExportLoaderControl hostedControl, ExportEntry exportToLoad)
         {
             DataContext = this;
             this.HostedControl = hostedControl;
             this.LoadedExport = exportToLoad;
+            LoadedExport.EntryModifiedChanged += NotifyPendingChangesStatusChanged;
             NamesList.ReplaceAll(LoadedExport.FileRef.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
             LoadCommands();
             InitializeComponent();
@@ -33,10 +66,21 @@ namespace ME3Explorer.SharedUI
             RootPanel.Children.Add(hostedControl);
         }
 
+        private void NotifyPendingChangesStatusChanged(object sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(IsModifiedProxy));
+        }
+
+        /// <summary>
+        /// Opens ELFH with a file loader and an optional file.
+        /// </summary>
+        /// <param name="hostedControl"></param>
+        /// <param name="file"></param>
         public ExportLoaderHostedWindow(FileExportLoaderControl hostedControl, string file = null)
         {
             DataContext = this;
             this.HostedControl = hostedControl;
+            hostedControl.ModifiedStatusChanging += NotifyPendingChangesStatusChanged;
             //NamesList.ReplaceAll(LoadedExport.FileRef.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
             LoadCommands();
             InitializeComponent();
@@ -77,6 +121,7 @@ namespace ME3Explorer.SharedUI
         {
             if (HostedControl is FileExportLoaderControl felc)
             {
+                FileHasPendingChanges = false;
                 felc.OpenFile();
             }
         }
@@ -97,6 +142,7 @@ namespace ME3Explorer.SharedUI
             if (HostedControl is FileExportLoaderControl felc)
             {
                 felc.SaveAs();
+                FileHasPendingChanges = false;
             }
             else
             {
@@ -115,16 +161,12 @@ namespace ME3Explorer.SharedUI
             if (HostedControl is FileExportLoaderControl felc)
             {
                 felc.Save();
+                FileHasPendingChanges = false;
             }
             else
             {
                 Pcc.Save();
             }
-        }
-
-        private bool PackageIsLoaded()
-        {
-            return Pcc != null;
         }
 
         public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "";
@@ -166,6 +208,16 @@ namespace ME3Explorer.SharedUI
         {
             if (!e.Cancel)
             {
+                if (LoadedExport != null)
+                {
+                    LoadedExport.EntryModifiedChanged -= NotifyPendingChangesStatusChanged;
+                    LoadedExport = null;
+                }
+                if (HostedControl is FileExportLoaderControl felc)
+                {
+                    felc.ModifiedStatusChanging -= NotifyPendingChangesStatusChanged;
+                }
+
                 HostedControl.Dispose();
             }
         }

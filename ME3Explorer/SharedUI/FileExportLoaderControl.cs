@@ -96,6 +96,22 @@ namespace ME3Explorer.SharedUI
             }
         }
 
+        public event EventHandler ModifiedStatusChanging;
+        protected virtual void OnModifiedStatusChanging(EventArgs e)
+        {
+            ModifiedStatusChanging?.Invoke(this, e);
+        }
+        private bool _fileModified;
+        public bool FileModified
+        {
+            get => _fileModified;
+            set
+            {
+                SetProperty(ref _fileModified, value);
+                OnModifiedStatusChanging(EventArgs.Empty);
+            }
+        }
+
         internal abstract void RecentFile_click(object sender, RoutedEventArgs e);
 
         public void LoadRecentList()

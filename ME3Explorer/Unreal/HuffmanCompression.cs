@@ -5,36 +5,37 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Xml;
+using static ME1Explorer.Unreal.Classes.TalkFile;
 
 namespace ME3Explorer
 {
     class HuffmanCompression
     {
         private Version _inputFileVersion = null;
-        private List<TLKEntry> _inputData = new List<TLKEntry>();
+        private List<TLKStringRef> _inputData = new List<TLKStringRef>();
         private Dictionary<char, int> frequencyCount = new Dictionary<char, int>();
         private List<HuffmanNode> _huffmanTree = new List<HuffmanNode>();
         private Dictionary<char, BitArray> _huffmanCodes = new Dictionary<char, BitArray>();
 
-        private class TLKEntry : IComparable
-        {
-            public int StringID;
-            public int position;
-            public string data;
+        //private class TLKEntry : IComparable
+        //{
+        //    public int StringID;
+        //    public int position;
+        //    public string data;
 
-            public TLKEntry(int StringID, int position, string data)
-            {
-                this.StringID = StringID;
-                this.position = position;
-                this.data = data;
-            }
+        //    public TLKEntry(int StringID, int position, string data)
+        //    {
+        //        this.StringID = StringID;
+        //        this.position = position;
+        //        this.data = data;
+        //    }
 
-            public int CompareTo(object obj)
-            {
-               TLKEntry entry = (TLKEntry)obj;
-               return position.CompareTo(entry.position);
-            }
-        }
+        //    public int CompareTo(object obj)
+        //    {
+        //       TLKEntry entry = (TLKEntry)obj;
+        //       return position.CompareTo(entry.position);
+        //    }
+        //}
 
         private class HuffmanNode
         {
@@ -73,6 +74,12 @@ namespace ME3Explorer
             PrepareHuffmanCoding();
         }
 
+        public void LoadInputData(List<TLKStringRef> tlkEntries)
+        {
+            _inputData = tlkEntries;
+            PrepareHuffmanCoding();
+        }
+
         /// <summary>
         /// Dumps data from memory to TLK compressed file format.
         /// <remarks>
@@ -99,9 +106,9 @@ namespace ME3Explorer
                 if (entry.StringID < 0)
                 {
                     if (!entries1.ContainsKey(entry.StringID))
-                        entries1.Add(entry.StringID, Convert.ToInt32(entry.data));
+                        entries1.Add(entry.StringID, Convert.ToInt32(entry.ASCIIData));
                     else
-                        entries2.Add(entry.StringID, Convert.ToInt32(entry.data));
+                        entries2.Add(entry.StringID, Convert.ToInt32(entry.ASCIIData));
                     continue;
                 }
 
@@ -111,7 +118,7 @@ namespace ME3Explorer
                     entries2.Add(entry.StringID, offset);
 
                 /* for every character in a string, put it's binary code into data array */
-                foreach (char c in entry.data)
+                foreach (char c in entry.ASCIIData)
                 {
                     binaryData.Add(_huffmanCodes[c]);
                     offset += _huffmanCodes[c].Count;
@@ -205,12 +212,12 @@ namespace ME3Explorer
                             data += '\0';
                         /* only add debug info if we are in debug mode and StringID is positive AND it's localizable */
                         if (id >= 0 && debugVersion && (id & 0x8000000) != 0x8000000)
-                            _inputData.Add(new TLKEntry(id, position, "(#" + id + ") " + data));
+                            _inputData.Add(new TLKStringRef(id, position, "(#" + id + ") " + data, position));
                         else
-                            _inputData.Add(new TLKEntry(id, position, data));
+                            _inputData.Add(new TLKStringRef(id, position, data, position));
                         position++;
                     }
-                } 
+                }
             }
             else //legacy support
             {
@@ -237,9 +244,9 @@ namespace ME3Explorer
                             data += '\0';
                         /* only add debug info if we are in debug mode and StringID is positive AND it's localizable */
                         if (id >= 0 && debugVersion && (id & 0x8000000) != 0x8000000)
-                            _inputData.Add(new TLKEntry(id, position, "(#" + id + ") " + data));
+                            _inputData.Add(new TLKStringRef(id, 0, "(#" + id + ") " + data, position));
                         else
-                            _inputData.Add(new TLKEntry(id, position, data));
+                            _inputData.Add(new TLKStringRef(id, 0, data, position));
                     }
                 }
             }
@@ -258,7 +265,7 @@ namespace ME3Explorer
             {
                 if (entry.StringID < 0)
                     continue;
-                foreach (char c in entry.data)
+                foreach (char c in entry.ASCIIData)
                 {
                     if (!frequencyCount.ContainsKey(c))
                         frequencyCount.Add(c, 0);
@@ -271,7 +278,7 @@ namespace ME3Explorer
 
             BuildHuffmanTree();
             BuildCodingArray();
-           
+
             // DebugTools.LoadHuffmanTree(_huffmanCodes);
             // DebugTools.PrintLookupTable();
         }
@@ -338,7 +345,7 @@ namespace ME3Explorer
         /// <returns></returns>
         private List<int> ConvertHuffmanTreeToBuffer()
         {
-            Queue <HuffmanNode> q = new Queue<HuffmanNode>();
+            Queue<HuffmanNode> q = new Queue<HuffmanNode>();
             Dictionary<int, HuffmanNode> indices = new Dictionary<int, HuffmanNode>();
 
             int index = 0;
@@ -355,7 +362,7 @@ namespace ME3Explorer
 
                     /* that's how it's going to be decoded when parsing TLK file:
                      * char c = BitConverter.ToChar(BitConverter.GetBytes(0xffff - node.ID), 0); */
-                } 
+                }
                 else
                 {
                     node.ID = index++;

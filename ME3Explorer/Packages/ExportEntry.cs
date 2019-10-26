@@ -506,9 +506,12 @@ namespace ME3Explorer.Packages
                 {
                     _entryHasPendingChanges = value;
                     OnPropertyChanged();
+                    EntryModifiedChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
+
+        public event EventHandler EntryModifiedChanged;
 
         PropertyCollection properties;
 

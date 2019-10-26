@@ -10,7 +10,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
 using System.Xml;
 using ME3Explorer.Packages;
@@ -57,7 +56,7 @@ namespace ME3Explorer.ME1TlkEditor
         public ICommand CommitCommand { get; set; }
         public ICommand SetIDCommand { get; set; }
         public ICommand DeleteStringCommand { get; set; }
-        public bool hasPendingChanges { get; private set; }
+
 
         private void LoadCommands()
         {
@@ -72,7 +71,7 @@ namespace ME3Explorer.ME1TlkEditor
             var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
             CleanedStrings.Remove(selectedItem);
             LoadedStrings.Remove(selectedItem);
-            hasPendingChanges = true;
+            FileModified = true;
         }
 
         private void SetStringID(object obj)
@@ -97,7 +96,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private bool CanCommitTLK(object obj)
         {
-            return hasPendingChanges;
+            return FileModified;
         }
 
         private void CommitTLK(object obj)
@@ -105,7 +104,7 @@ namespace ME3Explorer.ME1TlkEditor
             ME1Explorer.HuffmanCompression huff = new ME1Explorer.HuffmanCompression();
             huff.LoadInputData(LoadedStrings);
             huff.serializeTLKStrListToExport(CurrentLoadedExport);
-            hasPendingChanges = false;
+            FileModified = false;
         }
 
         private void SaveString(object obj)
@@ -114,7 +113,7 @@ namespace ME3Explorer.ME1TlkEditor
             if (selectedItem != null)
             {
                 selectedItem.Data = editBox.Text.Trim();
-                hasPendingChanges = true;
+                FileModified = true;
             }
         }
 
@@ -140,6 +139,7 @@ namespace ME3Explorer.ME1TlkEditor
         public override void Dispose()
         {
             CurrentLoadedExport = null;
+            CurrentME2ME3TalkFile = null;
             LoadedStrings?.Clear();
             CleanedStrings?.ClearEx();
         }
@@ -152,14 +152,14 @@ namespace ME3Explorer.ME1TlkEditor
             CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //nest it remove 0 strings.
             CurrentLoadedExport = exportEntry;
             editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
-            hasPendingChanges = false;
+            FileModified = false;
 
         }
 
         public override void UnloadExport()
         {
-            hasPendingChanges = false;
-            
+            FileModified = false;
+
         }
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -225,7 +225,7 @@ namespace ME3Explorer.ME1TlkEditor
             DisplayedString_ListBox.SelectedIndex = CleanedStrings.Count() - 1; //Set focus to new line (which is the last one)
             DisplayedString_ListBox.ScrollIntoView(DisplayedString_ListBox.SelectedItem); //Scroll to last item
             SetNewID();
-            hasPendingChanges = true;
+            FileModified = true;
         }
 
         private void Evt_ExportXML(object sender, RoutedEventArgs e)
@@ -256,7 +256,7 @@ namespace ME3Explorer.ME1TlkEditor
                 ME1Explorer.HuffmanCompression compressor = new ME1Explorer.HuffmanCompression();
                 compressor.LoadInputData(openFileDialog.FileName);
                 compressor.serializeTLKStrListToExport(CurrentLoadedExport);
-                hasPendingChanges = true; //this is not always technically true, but we'll assume it is
+                FileModified = true; //this is not always technically true, but we'll assume it is
             }
         }
 
@@ -322,7 +322,7 @@ namespace ME3Explorer.ME1TlkEditor
                 if (selectedItem.StringID != stringRefNewID)
                 {
                     selectedItem.StringID = stringRefNewID;
-                    hasPendingChanges = true;
+                    FileModified = true;
                 }
             }
         }
@@ -374,20 +374,19 @@ namespace ME3Explorer.ME1TlkEditor
             //throw new NotImplementedException();
             UnloadExport();
 
-            TalkFile tf = new TalkFile();
-            tf.LoadTlkData(filepath);
+            CurrentME2ME3TalkFile = new TalkFile();
+            CurrentME2ME3TalkFile.LoadTlkData(filepath);
 
-            LoadedStrings = tf.StringRefs.ToList(); //This is not binded to so reassigning is fine
-            CleanedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
-            CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //remove 0 or null strings.
+            LoadedStrings = CurrentME2ME3TalkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
+            CleanedStrings.ReplaceAll(LoadedStrings.Where(x => x.StringID > 0).ToList()); //remove 0 or null strings.
             editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
-            hasPendingChanges = false;
+            FileModified = false;
         }
 
         public override bool CanLoadFile()
         {
             //this doesn't do any background threading so we can always load files
-            return true; 
+            return true;
         }
 
         internal override void OpenFile()
@@ -422,7 +421,11 @@ namespace ME3Explorer.ME1TlkEditor
             }
             else if (CurrentME2ME3TalkFile != null)
             {
-               // CurrentME2ME3TalkFile.
+                // CurrentME2ME3TalkFile.
+                ME3Explorer.HuffmanCompression huff = new ME3Explorer.HuffmanCompression();
+                huff.LoadInputData(LoadedStrings);
+                huff.SaveToTlkFile(CurrentME2ME3TalkFile.path);
+                FileModified = false; //you can only commit to file, not to export and then file in file mode.
             }
             //throw new NotImplementedException();
 
@@ -430,7 +433,26 @@ namespace ME3Explorer.ME1TlkEditor
 
         public override void SaveAs()
         {
-            //throw new NotImplementedException();
+            if (CurrentLoadedExport != null)
+            {
+                SaveFileDialog d = new SaveFileDialog { Filter = $"*{Path.GetExtension(CurrentLoadedExport.FileRef.FilePath)}|*{Path.GetExtension(CurrentLoadedExport.FileRef.FilePath)}" };
+                if (d.ShowDialog() == true)
+                {
+                    CurrentLoadedExport.FileRef.Save(d.FileName);
+                }
+            }
+            else if (CurrentME2ME3TalkFile != null)
+            {
+                SaveFileDialog d = new SaveFileDialog { Filter = $"ME2/ME3 talk files|*.tlk" };
+                if (d.ShowDialog() == true)
+                {
+                    // CurrentME2ME3TalkFile.
+                    ME3Explorer.HuffmanCompression huff = new ME3Explorer.HuffmanCompression();
+                    huff.LoadInputData(LoadedStrings);
+                    huff.SaveToTlkFile(d.FileName);
+                }
+
+            }
         }
 
         public override bool CanSave()
