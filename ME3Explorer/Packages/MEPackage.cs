@@ -14,6 +14,7 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
+using Newtonsoft.Json;
 using StreamHelpers;
 using UsefulThings;
 using static ME3Explorer.Unreal.UnrealFlags;
@@ -55,12 +56,17 @@ namespace ME3Explorer.Packages
         public const ushort ME1LicenseeVersion = 1008;
         public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a seperate class
 
-        public bool CanReconstruct =>
+        public bool CanReconstruct => canReconstruct(FilePath);
+
+        private bool canReconstruct(string path) =>
             Game == MEGame.ME3 ||
             Game == MEGame.ME2 ||
-            Game == MEGame.ME1 && !exports.Any(x => x.IsTexture() && x.idxLink == 0 && Texture2D.GetTexture2DMipInfos(x, null).Any(mip => mip.storageType == StorageTypes.pccLZO ||
-                                                                                                                                          mip.storageType == StorageTypes.pccZlib));
-        
+            Game == MEGame.ME1 && ME1TextureFiles.TrueForAll(texFilePath => !path.EndsWith(texFilePath));
+
+        private List<string> _me1TextureFiles;
+        public List<string> ME1TextureFiles => _me1TextureFiles ??= JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(Path.Combine(App.ExecFolder, "ME1TextureFiles.json")));
+
+
         public byte[] getHeader()
         {
             var ms = new MemoryStream();
@@ -280,13 +286,14 @@ namespace ME3Explorer.Packages
             bool isSaveAs = path != FilePath;
             try
             {
-                if (CanReconstruct)
+                if (canReconstruct(path))
                 {
                     saveByReconstructing(path, isSaveAs);
                 }
                 else
                 {
-                    throw new Exception($"Cannot save ME1 packages with compressed textures. Please make an issue on github: {App.BugReportURL}");
+                    MessageBox.Show($"Cannot save ME1 packages with externally referenced textures. Please make an issue on github: {App.BugReportURL}", "Can't Save!",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             finally

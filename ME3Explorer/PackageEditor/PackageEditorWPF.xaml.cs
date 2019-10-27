@@ -4684,5 +4684,63 @@ namespace ME3Explorer
             Task.Run(() => ShaderCacheManipulator.CompactShaderCaches(Pcc))
                 .ContinueWithOnUIThread(_ => IsBusy = false);
         }
+
+        private void MakeME1TextureFileList(object sender, RoutedEventArgs e)
+        {
+            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME1).ToList();
+            
+            IsBusy = true;
+            BusyText = "Scanning";
+            Task.Run(() =>
+            {
+                var textureFiles = new HashSet<string>();
+                foreach (string filePath in filePaths)
+                {
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                    
+                    foreach (ExportEntry export in pcc.Exports)
+                    {
+                        try
+                        {
+                            if (export.IsTexture() && !export.IsDefaultObject)
+                            {
+                                List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, null);
+                                foreach (Texture2DMipInfo mip in mips)
+                                {
+                                    if (mip.storageType == StorageTypes.extLZO || mip.storageType == StorageTypes.extZlib || mip.storageType == StorageTypes.extUnc)
+                                    {
+                                        var fullPath = filePaths.FirstOrDefault(x => Path.GetFileName(x).Equals(mip.TextureCacheName, StringComparison.InvariantCultureIgnoreCase));
+                                        if (fullPath != null)
+                                        {
+                                            var baseIdx = fullPath.LastIndexOf("CookedPC");
+                                            textureFiles.Add(fullPath.Substring(baseIdx));
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            throw new FileNotFoundException($"Externally referenced texture file not found in game: {mip.TextureCacheName}.");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine(e.Message);
+                        }
+                    }
+                }
+
+                return textureFiles;
+
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                IsBusy = false;
+                List<string> files = prevTask.Result.OrderBy(s => s).ToList();
+                File.WriteAllText(Path.Combine(App.ExecFolder, "ME1TextureFiles.json"), JsonConvert.SerializeObject(files, Formatting.Indented));
+                ListDialog dlg = new ListDialog(files, "", "ME1 files with externall referenced textures", this);
+                dlg.Show();
+            });
+        }
     }
 }

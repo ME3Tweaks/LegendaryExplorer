@@ -245,6 +245,7 @@
                     <MenuItem Header="Correct Orikon Wwise Offsets" Click="CorrectOnDiskOffsetsForWwise_Click"/>
                     <MenuItem Header="Run PropertyCollection test" Click="RunPropertyCollectionTest"/>
                     <MenuItem Header="UDKify" Click="UDKifyTest"/>
+                    <MenuItem Header="Make List of ME1 files with externally referenced textures" Click="MakeME1TextureFileList"/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
