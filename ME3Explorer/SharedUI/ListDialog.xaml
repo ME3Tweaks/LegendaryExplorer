@@ -23,7 +23,7 @@
         <TextBlock Name="ListDialog_Message" Text="This is a message." TextWrapping="Wrap" DockPanel.Dock="Top" Margin="0,5,0,5"/>
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" DockPanel.Dock="Bottom" Margin="0,5,0,0">
             <Button FlowDirection="LeftToRight" Click="CopyItemsToClipBoard_Click" Content="Copy items to clipboard" Padding="3"/>
-            <Label Name="ListDialog_Status" FlowDirection="LeftToRight" Content="Copied to clipboard" Margin="8,0,0,0" Visibility="Collapsed"/>
+            <Label Name="ListDialog_Status" FlowDirection="LeftToRight" Content="Copied to clipboard" Margin="8,0,0,0" Visibility="Collapsed" VerticalAlignment="Center"/>
         </StackPanel>
         <ListView Name="ListDialog_List" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" AlternationCount="2" ItemContainerStyle="{DynamicResource CustomListViewItemStyle}">
             <!-- here set the itemTemplate to a TextBlock that can wraps-->
