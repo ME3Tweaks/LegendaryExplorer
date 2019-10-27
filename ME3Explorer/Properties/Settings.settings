@@ -96,7 +96,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="SequenceEditor_MaxVarStringLength" Type="System.UInt16" Scope="User">
-      <Value Profile="(Default)">12</Value>
+      <Value Profile="(Default)">40</Value>
     </Setting>
     <Setting Name="MeshplorerBackgroundColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">#999999</Value>

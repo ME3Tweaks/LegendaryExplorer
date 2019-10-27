@@ -397,7 +397,7 @@ namespace ME3Explorer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("40")]
         public ushort SequenceEditor_MaxVarStringLength {
             get {
                 return ((ushort)(this["SequenceEditor_MaxVarStringLength"]));
