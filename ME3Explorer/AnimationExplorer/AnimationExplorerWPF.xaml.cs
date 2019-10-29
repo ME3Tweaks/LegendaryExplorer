@@ -102,9 +102,6 @@ namespace ME3Explorer.AnimationExplorer
                 IsBusy = false;
                 ReadyToView = true;
                 animTab.IsSelected = true;
-                UpdateLocation();
-                UpdateRotation();
-                UpdateCameraState();
                 this.RestoreAndBringToFront();
                 ME3OpenTimer.Start();
 
@@ -177,10 +174,10 @@ namespace ME3Explorer.AnimationExplorer
 
         private void SearchBox_OnTextChanged(SearchBox sender, string newtext)
         {
-            throw new NotImplementedException();
+
         }
 
-        #region Busy variables
+        #region BusyHost
 
         private bool _isBusy;
 
@@ -196,6 +193,38 @@ namespace ME3Explorer.AnimationExplorer
         {
             get => _busyText;
             set => SetProperty(ref _busyText, value);
+        }
+
+        private ICommand _cancelBusyCommand;
+
+        public ICommand CancelBusyCommand
+        {
+            get => _cancelBusyCommand;
+            set => SetProperty(ref _cancelBusyCommand, value);
+        }
+
+        public void SetBusy(string busyText, Action onCancel = null)
+        {
+            BusyText = busyText;
+            if (onCancel != null)
+            {
+                CancelBusyCommand = new GenericCommand(() =>
+                {
+                    onCancel();
+                    IsBusy = false;
+                }, () => true);
+            }
+            else
+            {
+                CancelBusyCommand = new DisabledCommand();
+            }
+
+            IsBusy = true;
+        }
+
+        public void EndBusy()
+        {
+            IsBusy = false;
         }
 
         #endregion
@@ -233,8 +262,7 @@ namespace ME3Explorer.AnimationExplorer
 
         private void LoadDatabase(string dbPath)
         {
-            BusyText = "Loading Database...";
-            IsBusy = true;
+            SetBusy("Loading Database...");
             PropsDataBase db = new PropsDataBase();
             AssetDB.LoadDatabase(dbPath, MEGame.ME3, db).ContinueWithOnUIThread(prevTask =>
             {
@@ -243,7 +271,7 @@ namespace ME3Explorer.AnimationExplorer
                     FileListExtended.Add((fileName, db.ContentDir[dirIndex]));
                 }
                 Animations.AddRange(db.Animations);
-                IsBusy = false;
+                EndBusy();
                 CommandManager.InvalidateRequerySuggested();
             });
         }
@@ -252,9 +280,11 @@ namespace ME3Explorer.AnimationExplorer
 
         private void StartME3()
         {
-            BusyText = "Launching Mass Effect 3...";
-            IsBusy = true;
             ME3StartingUp = true;
+            SetBusy("Creating AnimViewer Files...", () =>
+            {
+                ME3StartingUp = false;
+            });
             Task.Run(() =>
             {
                 InstallInteropASI();
@@ -264,6 +294,7 @@ namespace ME3Explorer.AnimationExplorer
 
                 using IMEPackage animViewerBase = MEPackageHandler.OpenMEPackage(animViewerBaseFilePath);
                 AnimViewer.OpenFileInME3(animViewerBase, false);
+                BusyText = "Launching Mass Effect 3...";
             });
         }
 
@@ -351,8 +382,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             if (!LoadingAnimation && GameController.TryGetME3Process(out Process me3Process))
             {
-                BusyText = "Loading Animation";
-                IsBusy = true;
+                SetBusy("Loading Animation");
 
                 if (anim != null && anim.AnimUsages.Any())
                 {
@@ -609,7 +639,6 @@ namespace ME3Explorer.AnimationExplorer
         }
 
         #endregion
-
     }
 
     public enum ECameraState

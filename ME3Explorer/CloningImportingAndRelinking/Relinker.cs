@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Debugging;
@@ -383,10 +384,17 @@ namespace ME3Explorer
             }
             else
             {
+                bool importingFromGlobalFile = false;
                 //It's an export
                 //Attempt lookup
                 ExportEntry sourceExport = importingPCC.GetUExport(uIndex);
                 string fullPath = sourceExport.FullPath;
+                string sourceFilePath = sourceExport.FileRef.FilePath;
+                if (EntryImporter.IsSafeToImportFrom(sourceFilePath, destinationPcc.Game))
+                {
+                    importingFromGlobalFile = true;
+                    fullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{fullPath}";
+                }
                 int indexValue = sourceExport.indexValue;
                 IEntry existingEntry = destinationPcc.Exports.FirstOrDefault(x => x.FullPath == fullPath && indexValue == x.indexValue);
                 existingEntry ??= destinationPcc.Imports.FirstOrDefault(x => x.FullPath == fullPath);
@@ -398,9 +406,16 @@ namespace ME3Explorer
                 }
                 else if (importExportDependencies)
                 {
-                    IEntry parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentFullPath, importingPCC, destinationPcc, true, crossPCCObjectMappingList);
-                    ExportEntry importedExport = EntryImporter.ImportExport(destinationPcc, sourceExport, parent?.UIndex ?? 0, true, crossPCCObjectMappingList);
-                    uIndex = importedExport.UIndex;
+                    if (importingFromGlobalFile)
+                    {
+                        uIndex = EntryImporter.GetOrAddCrossImportOrPackageFromGlobalFile(sourceExport.FullPath, importingPCC, destinationPcc, crossPCCObjectMappingList).UIndex;
+                    }
+                    else
+                    {
+                        IEntry parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentFullPath, importingPCC, destinationPcc, true, crossPCCObjectMappingList);
+                        ExportEntry importedExport = EntryImporter.ImportExport(destinationPcc, sourceExport, parent?.UIndex ?? 0, true, crossPCCObjectMappingList);
+                        uIndex = importedExport.UIndex;
+                    }
                 }
                 else
                 {

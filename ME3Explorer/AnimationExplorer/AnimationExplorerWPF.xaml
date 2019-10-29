@@ -17,7 +17,7 @@
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
         <converters:EnumComparisonConverter x:Key="EnumComparisonConverter"/>
     </Window.Resources>
-    <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
+    <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}">
         <Grid>
             <TabControl>
                 <TabItem Name="instructionsTab" Header="Instructions" Visibility="{Binding ReadyToView, Converter={StaticResource InverseBoolToVisibilityConverter}}">
@@ -169,5 +169,20 @@
                 </TabItem>
             </TabControl>
         </Grid>
+        <xctk:BusyIndicator.BusyContentTemplate>
+            <DataTemplate>
+                <StackPanel DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                    <!--<TextBlock Text="{Binding BusyHeader}" FontWeight="Bold" TextAlignment="Center"/>-->
+                    <TextBlock Text="{Binding BusyText}"/>
+                    <ProgressBar IsIndeterminate="True"  Margin="0,5,0,0" Height="15" />
+                    <Button Content="Cancel" HorizontalAlignment="center" Margin="0,5,0,0" Padding="3" Command="{Binding CancelBusyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                </StackPanel>
+            </DataTemplate>
+        </xctk:BusyIndicator.BusyContentTemplate>
+        <xctk:BusyIndicator.ProgressBarStyle>
+            <Style TargetType="ProgressBar" >
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </Style>
+        </xctk:BusyIndicator.ProgressBarStyle>
     </xctk:BusyIndicator>
 </global:NotifyPropertyChangedWindowBase>
