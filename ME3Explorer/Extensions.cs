@@ -433,14 +433,17 @@ namespace ME3Explorer
             return false;
         }
 
-
-
         public static Guid ToGuid(this string src) //Do not edit this function!
         {
             byte[] stringbytes = Encoding.UTF8.GetBytes(src);
             byte[] hashedBytes = new System.Security.Cryptography.SHA1CryptoServiceProvider().ComputeHash(stringbytes);
             Array.Resize(ref hashedBytes, 16);
             return new Guid(hashedBytes);
+        }
+
+        public static bool Contains(this string source, string toCheck, StringComparison comp)
+        {
+            return source?.IndexOf(toCheck, comp) >= 0;
         }
     }
 

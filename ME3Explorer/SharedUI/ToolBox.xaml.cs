@@ -51,8 +51,7 @@ namespace ME3Explorer.SharedUI
 
         private void SearchBox_OnTextChanged(SearchBox sender, string newtext)
         {
-
-            listView.ItemsSource = Classes.Where(classInfo => classInfo.ClassName.ToLower().Contains(newtext)).ToList();
+            listView.ItemsSource = Classes.Where(classInfo => classInfo.ClassName.Contains(newtext, StringComparison.OrdinalIgnoreCase)).ToList();
         }
     }
 }

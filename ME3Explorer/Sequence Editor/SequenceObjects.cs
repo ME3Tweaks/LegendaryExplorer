@@ -154,6 +154,12 @@ namespace ME3Explorer.SequenceObjects
                             res += weaponEnum.Value;
                         }
                         break;
+                    case "BioSeqAct_BlackScreen":
+                        if (properties.GetProp<EnumProperty>("m_eBlackScreenAction") is {} blackScreenProp)
+                        {
+                            res += blackScreenProp.Value.Name.Split('_').Last();
+                        }
+                        break;
                 }
             }
             return res;

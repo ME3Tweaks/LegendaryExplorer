@@ -133,7 +133,7 @@ namespace ME3Explorer.AnimationExplorer
             }
         }
 
-        public ObservableCollectionExtended<Animation> Animations { get; } = new ObservableCollectionExtended<Animation>();
+        public List<Animation> Animations { get; } = new List<Animation>();
         private readonly List<(string fileName, string directory)> FileListExtended = new List<(string fileName, string directory)>();
 
         private Animation _selectedAnimation;
@@ -170,11 +170,6 @@ namespace ME3Explorer.AnimationExplorer
         {
             get => _loadingAnimation;
             set => SetProperty(ref _loadingAnimation, value);
-        }
-
-        private void SearchBox_OnTextChanged(SearchBox sender, string newtext)
-        {
-
         }
 
         #region BusyHost
@@ -271,6 +266,7 @@ namespace ME3Explorer.AnimationExplorer
                     FileListExtended.Add((fileName, db.ContentDir[dirIndex]));
                 }
                 Animations.AddRange(db.Animations);
+                listBoxAnims.ItemsSource = Animations;
                 EndBusy();
                 CommandManager.InvalidateRequerySuggested();
             });
@@ -639,6 +635,11 @@ namespace ME3Explorer.AnimationExplorer
         }
 
         #endregion
+
+        private void SearchBox_OnTextChanged(SearchBox sender, string newtext)
+        {
+            listBoxAnims.ItemsSource = Animations.Where(anim => anim.SeqName.Contains(newtext, StringComparison.OrdinalIgnoreCase));
+        }
     }
 
     public enum ECameraState

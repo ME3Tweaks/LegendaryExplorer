@@ -58,16 +58,14 @@
                 </TabItem>
                 <TabItem Name="animTab" Header="Animations" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
                     <DockPanel>
-                        <SharedUI:SearchBox x:Name="searchBox" DockPanel.Dock="Top" TextChanged="SearchBox_OnTextChanged" WatermarkText="Search Animations"/>
+                        <SharedUI:SearchBox x:Name="searchBox" DockPanel.Dock="Top" WatermarkText="Search Animations" TextChanged="SearchBox_OnTextChanged"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="300" />
                                 <ColumnDefinition Width="5" />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <SharedUI:ListBoxScroll x:Name="listBoxAnims" ItemsSource="{Binding Path=Animations}" SelectedItem="{Binding SelectedAnimation}" DisplayMemberPath="AnimSequence">
-
-                            </SharedUI:ListBoxScroll>
+                            <SharedUI:ListBoxScroll x:Name="listBoxAnims" SelectedItem="{Binding SelectedAnimation}" DisplayMemberPath="AnimSequence"/>
                             <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Column="1" />
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Column="2">
                                 <StackPanel x:Name="details_Anim" MinWidth="200" Margin="8">

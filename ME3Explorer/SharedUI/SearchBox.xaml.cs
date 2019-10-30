@@ -18,7 +18,7 @@ namespace ME3Explorer.SharedUI
     /// <summary>
     /// Interaction logic for SearchBox.xaml
     /// </summary>
-    public partial class SearchBox : UserControl
+    public partial class SearchBox : NotifyPropertyChangedControlBase
     {
         public static readonly DependencyProperty WatermarkTextProperty = DependencyProperty.Register(
             nameof(WatermarkText), typeof(string), typeof(SearchBox), new PropertyMetadata(default(string)));
@@ -32,6 +32,14 @@ namespace ME3Explorer.SharedUI
         public delegate void SearchBoxTextChangedEventHandler(SearchBox sender, string newText);
 
         public event SearchBoxTextChangedEventHandler TextChanged;
+
+        private string _text;
+
+        public string Text
+        {
+            get => _text;
+            set => SetProperty(ref _text, value);
+        }
 
         public SearchBox()
         {
@@ -50,8 +58,8 @@ namespace ME3Explorer.SharedUI
 
         private void SearchBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            string text = searchBox.Text.ToLower();
-            TextChanged?.Invoke(this, text);
+            Text = searchBox.Text;
+            TextChanged?.Invoke(this, Text);
         }
 
         private void SearchBox_OnMouseDown(object sender, MouseButtonEventArgs e)
