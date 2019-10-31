@@ -475,13 +475,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="Animsequences" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Animations within the game" Grid.Row="0" Grid.Column="0"/>
-                            <SharedUI:ListBoxScroll x:Name="lstbx_Anims" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Animations}"  DisplayMemberPath="AnimSequence" Grid.Row="1" Grid.Column="0">
-                                <SharedUI:ListBoxScroll.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="View In Game" Command="{Binding ViewAnimationCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-                                    </ContextMenu>
-                                </SharedUI:ListBoxScroll.ContextMenu>
-                            </SharedUI:ListBoxScroll>
+                            <SharedUI:ListBoxScroll x:Name="lstbx_Anims" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Animations}"  DisplayMemberPath="AnimSequence" Grid.Row="1" Grid.Column="0"/>
                             <TextBlock Text="Details" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Details of each animation" Grid.Row="0" Grid.Column="1"/>
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
                                 <StackPanel x:Name="details_Anim" MinWidth="200" Margin="8">
@@ -506,7 +500,6 @@
                                     <TextBlock Text="{Binding Path=SelectedItem.Compression, ElementName=lstbx_Anims}" />
                                     <TextBlock Text="Key Format: " Margin="0,5,0,0"/>
                                     <TextBlock Text="{Binding Path=SelectedItem.KeyFormat, ElementName=lstbx_Anims}" />
-                                    <Button Content="View Animation In-game" Command="{Binding ViewAnimationCommand}" Margin="20" SharedUI:Bindings.VisibilityToEnabled="True"/>
                                 </StackPanel>
                             </Border>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this animsequence&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
@@ -527,7 +520,6 @@
                                 <SharedUI:ListBoxScroll.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
-                                        <MenuItem Header="View In Game" Command="{Binding ViewAnimationCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                                     </ContextMenu>
                                 </SharedUI:ListBoxScroll.ContextMenu>
                             </SharedUI:ListBoxScroll>

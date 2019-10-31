@@ -95,26 +95,38 @@ namespace ME3Explorer.AnimationExplorer
 
         private void GameController_RecieveME3Message(string msg)
         {
-            if (msg == "Loaded string AnimViewer")
+            switch (msg)
             {
-                ME3StartingUp = false;
-                LoadingAnimation = false;
-                IsBusy = false;
-                ReadyToView = true;
-                animTab.IsSelected = true;
-                this.RestoreAndBringToFront();
-                ME3OpenTimer.Start();
-
-                noUpdate = true;
-                XPos = 0;
-                YPos = 0;
-                ZPos = 70;
-                Pitch = 0;
-                Yaw = 180;
-                PlayRate = 1;
-                playbackState = PlaybackState.Playing;
-                PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
-                noUpdate = false;
+                case "AnimViewer string Loaded":
+                {
+                    if (GameController.TryGetME3Process(out Process me3Process))
+                    {
+                        me3Process.MainWindowHandle.RestoreAndBringToFront();
+                    }
+                    this.RestoreAndBringToFront();
+                    ME3OpenTimer.Start();
+                    ME3StartingUp = false;
+                    LoadingAnimation = false;
+                    ReadyToView = true;
+                    animTab.IsSelected = true;
+                    EndBusy();
+                    break;
+                }
+                case "AnimViewer string AnimLoaded":
+                {
+                    noUpdate = true;
+                    playbackState = PlaybackState.Playing;
+                    PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
+                    noUpdate = false;
+                    if (GameController.TryGetME3Process(out Process me3Process))
+                    {
+                        me3Process.MainWindowHandle.RestoreAndBringToFront();
+                    }
+                    this.RestoreAndBringToFront();
+                    LoadingAnimation = false;
+                    EndBusy();
+                    break;
+                }
             }
         }
 
@@ -125,7 +137,7 @@ namespace ME3Explorer.AnimationExplorer
             {
                 ME3StartingUp = false;
                 LoadingAnimation = false;
-                IsBusy = false;
+                EndBusy();
                 ReadyToView = false;
                 SelectedAnimation = null;
                 instructionsTab.IsSelected = true;
@@ -284,12 +296,13 @@ namespace ME3Explorer.AnimationExplorer
             Task.Run(() =>
             {
                 InstallInteropASI();
-                AutoTOCWPF.GenerateAllTOCs();
+                
 
                 string animViewerBaseFilePath = Path.Combine(App.ExecFolder, "ME3AnimViewer.pcc");
 
                 using IMEPackage animViewerBase = MEPackageHandler.OpenMEPackage(animViewerBaseFilePath);
-                AnimViewer.OpenFileInME3(animViewerBase, false);
+                AnimViewer.SetUpAnimStreamFile(null, 0, "AAAME3EXPAVS1"); //placeholder for tocing
+                AnimViewer.OpenFileInME3(animViewerBase, true, false);
                 BusyText = "Launching Mass Effect 3...";
             });
         }
@@ -374,37 +387,30 @@ namespace ME3Explorer.AnimationExplorer
 
         #endregion
 
-        private void LoadAnimation(Animation anim, bool shepard = false)
+        private void LoadAnimation(Animation anim)
         {
             if (!LoadingAnimation && GameController.TryGetME3Process(out Process me3Process))
             {
+                LoadingAnimation = true;
                 SetBusy("Loading Animation");
-
+                int animUIndex = 0;
+                string filePath = null;
                 if (anim != null && anim.AnimUsages.Any())
                 {
                     //CameraState = ECameraState.Fixed;
-                    (int fileListIndex, int animUIndex) = anim.AnimUsages[0];
+                    int fileListIndex;
+                    (fileListIndex, animUIndex) = anim.AnimUsages[0];
                     (string filename, string contentdir) = FileListExtended[fileListIndex];
                     string rootPath = ME3Directory.gamePath;
 
                     filename = $"{filename}.*";
-                    var filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
-                    Task.Run(() => AnimViewer.ViewAnimInGame(filePath, animUIndex)).ContinueWithOnUIThread(prevTask => { currentAnimOffsetVector = prevTask.Result; });
+                    filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
                 }
-                else //no animation selected
+                Task.Run(() =>
                 {
-                    Task.Run(() =>
-                    {
-                        string animViewerBaseFilePath = Path.Combine(App.ExecFolder, "ME3AnimViewer.pcc");
-                        using IMEPackage animViewerBase = MEPackageHandler.OpenMEPackage(animViewerBaseFilePath);
-                        if (shepard)
-                        {
-                            ExportEntry bioWorldInfo = animViewerBase.GetUExport(4);
-                            bioWorldInfo.WriteProperty(new IntProperty(6, "ForcedCasualAppearanceID"));
-                        }
-                        AnimViewer.OpenFileInME3(animViewerBase, true);
-                    });
-                }
+                    AnimViewer.SetUpAnimStreamFile(filePath, animUIndex, "AAAME3EXPAVS1");
+                    GameController.ExecuteME3ConsoleCommands("ce StopAnimation", "ce LoadAnim1");
+                });
             }
         }
 

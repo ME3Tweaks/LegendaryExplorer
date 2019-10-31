@@ -534,24 +534,21 @@ namespace ME3Explorer
         public static void RestoreAndBringToFront(this Window window)
         {
             WindowInteropHelper helper = new WindowInteropHelper(window);
-            //if window is minimized
-            if (IsIconic(helper.Handle))
-            {
-                //SW_RESTORE = 9;
-                ShowWindowAsync(helper.Handle, 9);
-            }
-            SetForegroundWindow(helper.Handle);
+            RestoreAndBringToFront(helper.Handle);
         }
 
-        public static void RestoreAndBringToFront(this System.Windows.Forms.Form form)
+        public static void RestoreAndBringToFront(this System.Windows.Forms.Form form) => RestoreAndBringToFront(form.Handle);
+
+        public static void RestoreAndBringToFront(this IntPtr windowHandle)
         {
             //if window is minimized
-            if (IsIconic(form.Handle))
+            if (IsIconic(windowHandle))
             {
-                //SW_RESTORE = 9;
-                ShowWindowAsync(form.Handle, 9);
+                const int SW_RESTORE = 9;
+                ShowWindowAsync(windowHandle, SW_RESTORE);
             }
-            SetForegroundWindow(form.Handle);
+
+            SetForegroundWindow(windowHandle);
         }
 
         public static bool IsForegroundWindow(this System.Windows.Forms.Form form)
