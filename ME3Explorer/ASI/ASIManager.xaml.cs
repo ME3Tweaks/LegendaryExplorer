@@ -281,7 +281,7 @@ namespace ME3Explorer.ASI
         private void RefreshBinkStatuses()
         {
             var md5 = System.Security.Cryptography.MD5.Create();
-            if (ME1Directory.gamePath != null)
+            if (ME1Directory.gamePath != null && Directory.Exists(ME1Directory.gamePath))
             {
                 var binkw32 = Path.Combine(ME1Directory.gamePath, "Binaries", "binkw32.dll");
                 if (File.Exists(binkw32))
@@ -292,7 +292,7 @@ namespace ME3Explorer.ASI
                 }
             }
 
-            if (ME2Directory.gamePath != null)
+            if (ME2Directory.gamePath != null && Directory.Exists(ME2Directory.gamePath))
             {
                 var binkw32 = Path.Combine(ME2Directory.gamePath, "Binaries", "binkw32.dll");
                 if (File.Exists(binkw32))
@@ -303,7 +303,7 @@ namespace ME3Explorer.ASI
                 }
             }
 
-            if (ME3Directory.gamePath != null)
+            if (ME3Directory.gamePath != null && Directory.Exists(ME3Directory.gamePath))
             {
                 var binkw32 = Path.Combine(ME3Directory.gamePath, "Binaries", "win32", "binkw32.dll");
                 if (File.Exists(binkw32))
@@ -615,19 +615,23 @@ namespace ME3Explorer.ASI
         {
             List<InstalledASIMod> results = new List<InstalledASIMod>();
             string asiDirectory = null;
+            string gameDirectory = null;
             MEGame gameEnum = MEGame.Unknown;
             switch (game)
             {
                 case 1:
                     asiDirectory = ME1ASIDirectory;
+                    gameDirectory = ME1Directory.gamePath;
                     gameEnum = MEGame.ME1;
                     break;
                 case 2:
                     asiDirectory = ME2ASIDirectory;
+                    gameDirectory = ME2Directory.gamePath;
                     gameEnum = MEGame.ME2;
                     break;
                 case 3:
                     asiDirectory = ME3ASIDirectory;
+                    gameDirectory = ME3Directory.gamePath;
                     gameEnum = MEGame.ME3;
                     break;
                 default:
@@ -636,7 +640,7 @@ namespace ME3Explorer.ASI
                     results.AddRange(getInstalledASIMods(3));
                     return results;
             }
-            if (asiDirectory != null)
+            if (asiDirectory != null && Directory.Exists(gameDirectory))
             {
                 if (!Directory.Exists(asiDirectory))
                 {
