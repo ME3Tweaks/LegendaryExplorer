@@ -21,6 +21,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ME3Explorer.CurveEd;
+using ME3Explorer.Unreal.BinaryConverters;
+using SharpDX;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -114,7 +117,60 @@ namespace ME3Explorer.Pathfinding_Editor
             ValidationTasks.Add(task);
             relinkPathfindingChain(task);
 
+            task = new ListBoxTask("Recalculating SplineReparamTables");
+            ValidationTasks.Add(task);
+            recalculateSplineReparamTables(task);
+
             LastRunOnText = "Last ran at " + DateTime.Now;
+        }
+
+        public void recalculateSplineReparamTables(ListBoxTask task = null)
+        {
+            int numRecalculated = 0;
+            foreach (ExportEntry splineComponent in Pcc.Exports.Where(exp => exp.ClassName == "SplineComponent"))
+            {
+                if (splineComponent.GetProperty<StructProperty>("SplineInfo") is {} splineInfoProp)
+                {
+                    if (task != null)
+                    {
+                        task.Header = $"Recalculating reachspecs {((double)splineComponent.UIndex / Pcc.ExportCount):P}";
+                    }
+                    var splineReparamTable = new InterpCurve<float>();
+                    var splineInfo = InterpCurve<Vector3>.FromStructProperty(splineInfoProp);
+
+                    if (splineInfo.Points.Count > 1)
+                    {
+                        const int steps = 10;
+                        float totalDist = 0;
+
+                        float input = splineInfo.Points[0].InVal;
+                        float end = splineInfo.Points.Last().InVal;
+                        float interval = (end - input) / (steps - 1);
+                        Vector3 oldPos = splineInfo.Eval(input, Vector3.Zero);
+                        Vector3 startPos = oldPos;
+                        Vector3 newPos = startPos;
+                        splineReparamTable.AddPoint(totalDist, input);
+                        input += interval;
+                        for (int i = 1; i < steps; i++)
+                        {
+                            newPos = splineInfo.Eval(input, Vector3.Zero);
+                            totalDist += (newPos - oldPos).Length();
+                            oldPos = newPos;
+                            splineReparamTable.AddPoint(totalDist, input);
+                            input += interval;
+                        }
+
+                        if (totalDist != 0f)
+                        {
+                            splineComponent.WriteProperty(new FloatProperty((startPos - newPos).Length() / totalDist, "SplineCurviness"));
+                        }
+                    }
+
+                    splineComponent.WriteProperty(splineReparamTable.ToStructProperty(Pcc.Game, "SplineReparamTable"));
+                    numRecalculated++;
+                }
+            }
+            task?.Complete($"{numRecalculated} SplineReparamTable{(numRecalculated == 1 ? " was" : "s were")} recalculated");
         }
 
         public void recalculateReachspecs(ListBoxTask task = null)
@@ -185,7 +241,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 }
             }
-            task?.Complete($"{numRecalculated} ReachSpec{(numRecalculated == 1 ? "" : "s")} were recalculated");
+            task?.Complete($"{numRecalculated} ReachSpec{(numRecalculated == 1 ? " was" : "s were")} recalculated");
         }
 
         private bool calculateReachSpec(ExportEntry reachSpecExport, ExportEntry startNodeExport = null)

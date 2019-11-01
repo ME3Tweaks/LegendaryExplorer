@@ -119,22 +119,25 @@ namespace ME3Explorer.SplineNodes
             : base(idx, p, grapheditor)
         {
             var splprop = export.GetProperty<ArrayProperty<StructProperty>>("Connections");
-            foreach (var prop in splprop)
+            if (splprop != null)
             {
-                var spcomp = prop.GetProp<ObjectProperty>("SplineComponent");
-                var cmpidx = spcomp?.Value ?? 0;
-                var cntcomp = prop.GetProp<ObjectProperty>("ConnectTo");
-                var cnctn = pcc.GetUExport(cntcomp?.Value ?? 0);
-                if (spcomp != null && cmpidx > 0)
+                foreach (var prop in splprop)
                 {
-                    var component = pcc.GetUExport(cmpidx);
-                    var spline = new Spline(cmpidx, component, cnctn, p, grapheditor);
-                    Splines.Add(spline);
+                    var spcomp = prop.GetProp<ObjectProperty>("SplineComponent");
+                    var cmpidx = spcomp?.Value ?? 0;
+                    var cntcomp = prop.GetProp<ObjectProperty>("ConnectTo");
+                    var cnctn = pcc.GetUExport(cntcomp?.Value ?? 0);
+                    if (spcomp != null && cmpidx > 0)
+                    {
+                        var component = pcc.GetUExport(cmpidx);
+                        var spline = new Spline(cmpidx, component, cnctn, p, grapheditor);
+                        Splines.Add(spline);
 
-                    spline.Pickable = false;
-                    this.AddChild(spline);
+                        spline.Pickable = false;
+                        this.AddChild(spline);
+                    }
+                    connections.Add(cnctn);
                 }
-                connections.Add(cnctn);
             }
 
             const float w = 50;

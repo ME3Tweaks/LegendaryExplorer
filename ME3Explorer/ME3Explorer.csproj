@@ -853,6 +853,7 @@
     <Compile Include="Unreal\BinaryConverters\BioDynamicAnimSet.cs" />
     <Compile Include="Unreal\BinaryConverters\BioPawn.cs" />
     <Compile Include="Unreal\BinaryConverters\BioStage.cs" />
+    <Compile Include="Unreal\BinaryConverters\InterpCurve.cs" />
     <Compile Include="Unreal\BinaryConverters\KDOPTreeBuilder.cs" />
     <Compile Include="Unreal\BinaryConverters\StaticCollectionActor.cs" />
     <Compile Include="Unreal\BinaryConverters\UClass.cs" />
