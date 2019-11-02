@@ -23,6 +23,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ME3Explorer.CurveEd;
 using ME3Explorer.Unreal.BinaryConverters;
+using ME3Explorer.Unreal.ME3Enums;
 using SharpDX;
 
 namespace ME3Explorer.Pathfinding_Editor
@@ -117,60 +118,85 @@ namespace ME3Explorer.Pathfinding_Editor
             ValidationTasks.Add(task);
             relinkPathfindingChain(task);
 
-            task = new ListBoxTask("Recalculating SplineReparamTables");
+            task = new ListBoxTask("Recalculating SplineComponents");
             ValidationTasks.Add(task);
-            recalculateSplineReparamTables(task);
+            recalculateSplineComponents(task);
 
             LastRunOnText = "Last ran at " + DateTime.Now;
         }
 
-        public void recalculateSplineReparamTables(ListBoxTask task = null)
+        public void recalculateSplineComponents(ListBoxTask task = null)
         {
             int numRecalculated = 0;
-            foreach (ExportEntry splineComponent in Pcc.Exports.Where(exp => exp.ClassName == "SplineComponent"))
+            foreach (ExportEntry splineActor in Pcc.Exports.Where(exp => exp.ClassName == "SplineActor"))
             {
-                if (splineComponent.GetProperty<StructProperty>("SplineInfo") is {} splineInfoProp)
+                if (splineActor.GetProperty<ArrayProperty<StructProperty>>("Connections") is {} connections && connections.Any())
                 {
-                    if (task != null)
+                    Vector3 location = CommonStructs.GetVector3(splineActor, "location", Vector3.Zero);
+                    Vector3 splineActorTangent = CommonStructs.GetVector3(splineActor, "SplineActorTangent", new Vector3(300f, 0f, 0f));
+
+                    foreach (StructProperty connection in connections)
                     {
-                        task.Header = $"Recalculating reachspecs {((double)splineComponent.UIndex / Pcc.ExportCount):P}";
-                    }
-                    var splineReparamTable = new InterpCurve<float>();
-                    var splineInfo = InterpCurve<Vector3>.FromStructProperty(splineInfoProp);
-
-                    if (splineInfo.Points.Count > 1)
-                    {
-                        const int steps = 10;
-                        float totalDist = 0;
-
-                        float input = splineInfo.Points[0].InVal;
-                        float end = splineInfo.Points.Last().InVal;
-                        float interval = (end - input) / (steps - 1);
-                        Vector3 oldPos = splineInfo.Eval(input, Vector3.Zero);
-                        Vector3 startPos = oldPos;
-                        Vector3 newPos = startPos;
-                        splineReparamTable.AddPoint(totalDist, input);
-                        input += interval;
-                        for (int i = 1; i < steps; i++)
+                        int splineComponentUIndex = connection.GetProp<ObjectProperty>("SplineComponent")?.Value ?? 0;
+                        int connectedActorUIndex = connection.GetProp<ObjectProperty>("ConnectTo")?.Value ?? 0;
+                        if (Pcc.TryGetUExport(splineComponentUIndex, out ExportEntry splineComponent) && Pcc.TryGetUExport(connectedActorUIndex, out ExportEntry connectedActor))
                         {
-                            newPos = splineInfo.Eval(input, Vector3.Zero);
-                            totalDist += (newPos - oldPos).Length();
-                            oldPos = newPos;
-                            splineReparamTable.AddPoint(totalDist, input);
-                            input += interval;
-                        }
+                            if (task != null)
+                            {
+                                task.Header = $"Recalculating SplineComponents {((double)splineComponent.UIndex / Pcc.ExportCount):P}";
+                            }
 
-                        if (totalDist != 0f)
-                        {
-                            splineComponent.WriteProperty(new FloatProperty((startPos - newPos).Length() / totalDist, "SplineCurviness"));
+                            var splineInfo = new InterpCurve<Vector3>();
+                            Vector3 tangent = ActorUtils.GetLocalToWorld(splineActor).TransformNormal(splineActorTangent);
+
+                            splineInfo.AddPoint(0f, location, tangent, tangent, EInterpCurveMode.CIM_CurveUser);
+
+                            Vector3 connectedActorLocation = CommonStructs.GetVector3(connectedActor, "location", Vector3.Zero);
+                            Vector3 connectedActorSplineActorTangent = CommonStructs.GetVector3(connectedActor, "SplineActorTangent", new Vector3(300f, 0f, 0f));
+
+                            tangent = ActorUtils.GetLocalToWorld(connectedActor).TransformNormal(connectedActorSplineActorTangent);
+
+                            splineInfo.AddPoint(1f, connectedActorLocation, tangent, tangent, EInterpCurveMode.CIM_CurveUser);
+
+                            splineComponent.WriteProperty(splineInfo.ToStructProperty(Pcc.Game, "SplineInfo"));
+
+                            var splineReparamTable = new InterpCurve<float>();
+                            if (splineInfo.Points.Count > 1)
+                            {
+                                const int steps = 10;
+                                float totalDist = 0;
+
+                                float input = splineInfo.Points[0].InVal;
+                                float end = splineInfo.Points.Last().InVal;
+                                float interval = (end - input) / (steps - 1);
+                                Vector3 oldPos = splineInfo.Eval(input, Vector3.Zero);
+                                Vector3 startPos = oldPos;
+                                Vector3 newPos = startPos;
+                                splineReparamTable.AddPoint(totalDist, input);
+                                input += interval;
+                                for (int i = 1; i < steps; i++)
+                                {
+                                    newPos = splineInfo.Eval(input, Vector3.Zero);
+                                    totalDist += (newPos - oldPos).Length();
+                                    oldPos = newPos;
+                                    splineReparamTable.AddPoint(totalDist, input);
+                                    input += interval;
+                                }
+
+                                if (totalDist != 0f)
+                                {
+                                    splineComponent.WriteProperty(new FloatProperty((startPos - newPos).Length() / totalDist, "SplineCurviness"));
+                                }
+                            }
+
+                            splineComponent.WriteProperty(splineReparamTable.ToStructProperty(Pcc.Game, "SplineReparamTable"));
+                            numRecalculated++;
                         }
                     }
-
-                    splineComponent.WriteProperty(splineReparamTable.ToStructProperty(Pcc.Game, "SplineReparamTable"));
-                    numRecalculated++;
                 }
+
             }
-            task?.Complete($"{numRecalculated} SplineReparamTable{(numRecalculated == 1 ? " was" : "s were")} recalculated");
+            task?.Complete($"{numRecalculated} SplineComponents{(numRecalculated == 1 ? " was" : "s were")} recalculated");
         }
 
         public void recalculateReachspecs(ListBoxTask task = null)

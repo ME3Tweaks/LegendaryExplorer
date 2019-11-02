@@ -90,6 +90,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public readonly int Yaw;
         public readonly int Roll;
 
+        public void Deconstruct(out int pitch, out int yaw, out int roll)
+        {
+            pitch = Pitch;
+            yaw = Yaw;
+            roll = Roll;
+        }
+
         public Rotator(int pitch, int yaw, int roll)
         {
             Pitch = pitch;

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer.Packages;
 using ME3Explorer.Unreal.BinaryConverters;
 using SharpDX;
 using StreamHelpers;
@@ -23,10 +24,24 @@ namespace ME3Explorer.Unreal
                 new FloatProperty(z, "Z")
             }, name, true);
         }
-
         public static Vector3 GetVector3(StructProperty vecProp) =>
             new Vector3(vecProp.GetProp<FloatProperty>("X"), vecProp.GetProp<FloatProperty>("Y"), vecProp.GetProp<FloatProperty>("Z"));
 
+        public static Vector3 GetVector3(ExportEntry exp, string propName, Vector3 defaultValue)
+        {
+            var vecProp = exp.GetProperty<StructProperty>(propName);
+            return vecProp != null ? GetVector3(vecProp) : defaultValue;
+        }
+
+        public static StructProperty Vector2(Vector2 vec, NameReference? name = null) => Vector2(vec.X, vec.Y, name);
+        public static StructProperty Vector2(float x, float y, NameReference? name = null)
+        {
+            return new StructProperty("Vector2D", new PropertyCollection
+            {
+                new FloatProperty(x, "X"),
+                new FloatProperty(y, "Y")
+            }, name, true);
+        }
         public static Vector2 GetVector2(StructProperty vecProp) =>
             new Vector2(vecProp.GetProp<FloatProperty>("X"), vecProp.GetProp<FloatProperty>("Y"));
 
@@ -40,6 +55,8 @@ namespace ME3Explorer.Unreal
                 new IntProperty(roll, "Roll")
             }, name, true);
         }
+        public static Rotator GetRotator(StructProperty rotProp) =>
+            new Rotator(rotProp.GetProp<IntProperty>("Pitch"), rotProp.GetProp<IntProperty>("Yaw"), rotProp.GetProp<IntProperty>("Roll"));
 
         public static StructProperty Matrix(Matrix m, NameReference? name = null)
         {
