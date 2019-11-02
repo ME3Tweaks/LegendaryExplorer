@@ -4668,7 +4668,19 @@ namespace ME3Explorer
         {
             if (Pcc != null)
             {
-                StaticLightingGenerator.GenerateUDKFileForLevel(Pcc);
+                var udkPath = Properties.Settings.Default.UDKCustomPath;
+                if (udkPath == null || !Directory.Exists(udkPath))
+                {
+                    var udkDlg = new System.Windows.Forms.FolderBrowserDialog();
+                    udkDlg.Description = @"Select UDK\Custom folder";
+                    System.Windows.Forms.DialogResult result = udkDlg.ShowDialog();
+
+                    if (result != System.Windows.Forms.DialogResult.OK || string.IsNullOrWhiteSpace(udkDlg.SelectedPath))
+                        return;
+                    udkPath = udkDlg.SelectedPath;
+                    Properties.Settings.Default.UDKCustomPath = udkPath;
+                }
+                StaticLightingGenerator.GenerateUDKFileForLevel(Pcc, udkPath);
             }
         }
 

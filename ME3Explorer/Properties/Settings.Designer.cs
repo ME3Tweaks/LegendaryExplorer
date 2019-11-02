@@ -442,5 +442,17 @@ namespace ME3Explorer.Properties {
                 this["PackageEditor_HideInterpreterHexBox"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UDKCustomPath {
+            get {
+                return ((string)(this["UDKCustomPath"]));
+            }
+            set {
+                this["UDKCustomPath"] = value;
+            }
+        }
     }
 }

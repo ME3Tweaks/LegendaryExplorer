@@ -16,12 +16,12 @@ namespace ME3Explorer.StaticLighting
 {
     public static class StaticLightingGenerator
     {
-        public static void GenerateUDKFileForLevel(IMEPackage pcc)
+        public static void GenerateUDKFileForLevel(IMEPackage pcc, string udkPath)
         {
             #region AssetPackage
 
             string meshPackageName = $"{Path.GetFileNameWithoutExtension(pcc.FilePath)}Meshes";
-            string meshFile = Path.Combine(@"C:\UDK\Custom\UDKGame\Content\Shared\", $"{meshPackageName}.upk");
+            string meshFile = Path.Combine(udkPath, @"UDKGame\Content\Shared\", $"{meshPackageName}.upk");
             MEPackageHandler.CreateAndSavePackage(meshFile, MEGame.UDK);
             using IMEPackage meshPackage = MEPackageHandler.OpenUDKPackage(meshFile);
             meshPackage.getEntryOrAddImport("Core.Package");
@@ -451,7 +451,7 @@ namespace ME3Explorer.StaticLighting
                     levelBin.Actors.Add(result.UIndex);
                 }
                 levelExport.setBinaryData(levelBin);
-                udkPackage2.Save(Path.Combine(@"C:\UDK\Custom\UDKGame\Content\Maps\", $"{Path.GetFileNameWithoutExtension(pcc.FilePath)}.udk"));
+                udkPackage2.Save(Path.Combine(udkPath, @"UDKGame\Content\Maps\", $"{Path.GetFileNameWithoutExtension(pcc.FilePath)}.udk"));
             }
             File.Delete(tempPackagePath);
         }
