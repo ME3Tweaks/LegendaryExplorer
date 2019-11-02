@@ -118,33 +118,42 @@ namespace ME3Explorer.PackageEditor
 
         private void ImportJPEXFile()
         {
-            var bytes = File.ReadAllBytes(CurrentJPEXExportedFilepath);
-            var props = CurrentLoadedExport.GetProperties();
-
-            string dataPropName = CurrentLoadedExport.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
-            var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
-            //Write SWF data
-            rawData.bytes = bytes;
-
-            //Write SWF metadata
-            if (CurrentLoadedExport.FileRef.Game == MEGame.ME1 || CurrentLoadedExport.FileRef.Game == MEGame.ME2)
+            if (CurrentJPEXExportedFilepath != null)
             {
-                string sourceFilePropName = CurrentLoadedExport.FileRef.Game != MEGame.ME1 ? "SourceFile" : "SourceFilePath";
-                StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
-                if (sourceFilePath == null)
+                var bytes = File.ReadAllBytes(CurrentJPEXExportedFilepath);
+                var props = CurrentLoadedExport.GetProperties();
+
+                string dataPropName = CurrentLoadedExport.FileRef.Game != MEGame.ME3 ? "RawData" : "Data";
+                var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
+                //Write SWF data
+                rawData.bytes = bytes;
+
+                //Write SWF metadata
+                if (CurrentLoadedExport.FileRef.Game == MEGame.ME1 || CurrentLoadedExport.FileRef.Game == MEGame.ME2)
                 {
-                    sourceFilePath = new StrProperty(Path.GetFileName(CurrentJPEXExportedFilepath), sourceFilePropName);
-                    props.Add(sourceFilePath);
-                }
-                sourceFilePath.Value = Path.GetFileName(CurrentJPEXExportedFilepath);
-            }
+                    string sourceFilePropName = CurrentLoadedExport.FileRef.Game != MEGame.ME1 ? "SourceFile" : "SourceFilePath";
+                    StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
+                    if (sourceFilePath == null)
+                    {
+                        sourceFilePath = new StrProperty(Path.GetFileName(CurrentJPEXExportedFilepath), sourceFilePropName);
+                        props.Add(sourceFilePath);
+                    }
 
-            if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
-            {
-                StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
-                sourceFileTimestamp = File.GetLastWriteTime(CurrentJPEXExportedFilepath).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                    sourceFilePath.Value = Path.GetFileName(CurrentJPEXExportedFilepath);
+                }
+
+                if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
+                {
+                    StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
+                    sourceFileTimestamp = File.GetLastWriteTime(CurrentJPEXExportedFilepath).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                }
+
+                CurrentLoadedExport.WriteProperties(props);
             }
-            CurrentLoadedExport.WriteProperties(props);
+            else
+            {
+                MessageBox.Show("No file opened in JPEX found. To import a file from the system right click on the export in the tree and select import > embedded file.");
+            }
         }
 
         private void OpenWithJPEX_Click(object sender, RoutedEventArgs e)
