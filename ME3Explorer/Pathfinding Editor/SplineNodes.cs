@@ -167,47 +167,47 @@ namespace ME3Explorer.SplineNodes
             : base(idx, p, grapheditor)
         {
 
-            StructProperty splineInfo = export.GetProperty<StructProperty>("SplineInfo");
-            if (splineInfo != null)
-            {
-                var pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
-                StructProperty point0 = pointsProp[0];
-                StructProperty point10 = pointsProp[1];
-                SharpDX.Vector3 p0 = CommonStructs.GetVector3(point0.GetProp<StructProperty>("OutVal")); //start => should equal splineactor location
-                SharpDX.Vector3 tan1 = CommonStructs.GetVector3(point0.GetProp<StructProperty>("LeaveTangent"));
-                SharpDX.Vector3 tan2 = CommonStructs.GetVector3(point10.GetProp<StructProperty>("ArriveTangent"));
-                SharpDX.Vector3 p3 = CommonStructs.GetVector3(point10.GetProp<StructProperty>("OutVal")); //end => should equal target next splineactor location
-                var reparamProp = component.GetProperty<StructProperty>("SplineReparamTable");
-                var reparamPoints = reparamProp.GetProp<ArrayProperty<StructProperty>>("Points");
+            //StructProperty splineInfo = export.GetProperty<StructProperty>("SplineInfo");
+            //if (splineInfo != null)
+            //{
+            //    var pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
+            //    StructProperty point0 = pointsProp[0];
+            //    StructProperty point10 = pointsProp[1];
+            //    SharpDX.Vector3 p0 = CommonStructs.GetVector3(point0.GetProp<StructProperty>("OutVal")); //start => should equal splineactor location
+            //    SharpDX.Vector3 tan1 = CommonStructs.GetVector3(point0.GetProp<StructProperty>("LeaveTangent"));
+            //    SharpDX.Vector3 tan2 = CommonStructs.GetVector3(point10.GetProp<StructProperty>("ArriveTangent"));
+            //    SharpDX.Vector3 p3 = CommonStructs.GetVector3(point10.GetProp<StructProperty>("OutVal")); //end => should equal target next splineactor location
+            //    var reparamProp = component.GetProperty<StructProperty>("SplineReparamTable");
+            //    var reparamPoints = reparamProp.GetProp<ArrayProperty<StructProperty>>("Points");
 
-                //Get P2 at (1/3 of control)   
-                double m = SharpDX.Vector3.Distance(p3, p0); // use as approximate for distance of control point
-                float magnitude = (p3 - p0).Length();
-                const float THIRD = (float) 1/3;
+            //    //Get P2 at (1/3 of control)   
+            //    double m = SharpDX.Vector3.Distance(p3, p0); // use as approximate for distance of control point
+            //    float magnitude = (p3 - p0).Length();
+            //    const float THIRD = (float) 1/3;
 
-                var linearPath = p3 - p0;
-                var nlinPath = SharpDX.Vector3.Normalize(linearPath);
-                var nTan1Path = SharpDX.Vector3.Normalize(tan1);
-                var p1 = p0 + SharpDX.Vector3.Multiply(nlinPath + nTan1Path, magnitude * THIRD);
-                this.AddChild(new SplinePointControlNode(2, p1.X, p1.Y, "P2", p, grapheditor));
+            //    var linearPath = p3 - p0;
+            //    var nlinPath = SharpDX.Vector3.Normalize(linearPath);
+            //    var nTan1Path = SharpDX.Vector3.Normalize(tan1);
+            //    var p1 = p0 + SharpDX.Vector3.Multiply(nlinPath + nTan1Path, magnitude * THIRD);
+            //    this.AddChild(new SplinePointControlNode(2, p1.X, p1.Y, "P2", p, grapheditor));
 
 
-                //Get P3 at (1/3 of control)
-                var nTan2Path = SharpDX.Vector3.Normalize(tan2);
-                var p2 = p3 - SharpDX.Vector3.Multiply(nlinPath * nTan2Path, magnitude * THIRD);
-                this.AddChild(new SplinePointControlNode(3, p2.X, p2.Y, "P3", p, grapheditor));
+            //    //Get P3 at (1/3 of control)
+            //    var nTan2Path = SharpDX.Vector3.Normalize(tan2);
+            //    var p2 = p3 - SharpDX.Vector3.Multiply(nlinPath * nTan2Path, magnitude * THIRD);
+            //    this.AddChild(new SplinePointControlNode(3, p2.X, p2.Y, "P3", p, grapheditor));
 
-                for(int n = 1; n < 10; n++)  // this adds the path of reparamble intermediate steps
-                {
+            //    for(int n = 1; n < 10; n++)  // this adds the path of reparamble intermediate steps
+            //    {
 
                     
-                    float t = (float)n / (float)9;
-                    var paramPos = GetPointOnBezierCurve(p0, p1, p2, p3, t);
-                    var param = new SplineParambleNode(n, paramPos.X, paramPos.Y, paramPos, t, 0, 0, 0, EInterpCurveMode.CIM_Linear, p, grapheditor);
-                    nodes.Add(param);
-                    this.AddChild(param);
+            //        float t = (float)n / (float)9;
+            //        var paramPos = GetPointOnBezierCurve(p0, p1, p2, p3, t);
+            //        var param = new SplineParambleNode(n, paramPos.X, paramPos.Y, paramPos, t, 0, 0, 0, EInterpCurveMode.CIM_Linear, p, grapheditor);
+            //        nodes.Add(param);
+            //        this.AddChild(param);
                                        
-                }
+            //    }
 
 
                 //Return co-ordinates DEBUG
@@ -260,7 +260,7 @@ namespace ME3Explorer.SplineNodes
                 //val.Y = h / 2 - val.Height / 2;
                 //this.AddChild(val);
                 //this.TranslateBy(x, y);
-            }
+            //}
         }
 
         private SharpDX.Vector3 GetPointOnBezierCurve(SharpDX.Vector3 p0, SharpDX.Vector3 p1, SharpDX.Vector3 p2, SharpDX.Vector3 p3, float t)
