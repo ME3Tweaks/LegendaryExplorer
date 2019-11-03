@@ -295,20 +295,20 @@ namespace ME3Explorer
                 case "FMaterialUniformExpressionFlipBookTextureParameter":
                     if (Pcc.Game == MEGame.ME3)
                     {
-                        node.Items.Add(MakeInt32Node(bin, "TextureIndex:"));
+                        node.Items.Add(MakeInt32Node(bin, "TextureIndex"));
                     }
                     else
                     {
-                        node.Items.Add(MakeEntryNode(bin, "TextureIndex:"));
+                        node.Items.Add(MakeEntryNode(bin, "TextureIndex"));
                     }
                     break;
                 case "FMaterialUniformExpressionFlipbookParameter":
                     node.Items.Add(MakeInt32Node(bin, "Index:"));
-                    node.Items.Add(MakeEntryNode(bin, "TextureIndex:"));
+                    node.Items.Add(MakeEntryNode(bin, "TextureIndex"));
                     break;
                 case "FMaterialUniformExpressionTextureParameter":
                     node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));
-                    node.Items.Add(MakeInt32Node(bin, "TextureIndex:"));
+                    node.Items.Add(MakeInt32Node(bin, "TextureIndex"));
                     break;
                 case "FMaterialUniformExpressionTime":
                     //intentionally left blank. outputs current scene time, has no parameters
