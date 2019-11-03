@@ -457,7 +457,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         public override bool CanSave()
         {
-            return true; //throw new NotImplementedException();
+            return true;
         }
 
         internal override void RecentFile_click(object sender, RoutedEventArgs e)
@@ -470,6 +470,20 @@ namespace ME3Explorer.ME1TlkEditor
             else
             {
                 MessageBox.Show("File does not exist: " + s);
+            }
+        }
+
+        internal override bool CanLoadFileExtension(string extension)
+        {
+            switch (extension)
+            {
+                case ".sfm":
+                case ".u":
+                case ".upk":
+                case ".tlk":
+                    return true;
+                default:
+                    return false;
             }
         }
 

@@ -10,6 +10,9 @@
              mc:Ignorable="d" 
              Loaded="Window_Loaded"
              Closing="Window_Closing"
+             DragOver="ExportLoaderHostedWindow_OnDragOver"
+             AllowDrop="True"
+             Drop="ExportLoaderHostedWindow_OnDrop"
              d:DesignHeight="297.789" d:DesignWidth="600.737" Title="Hosted Export Loader">
     <Window.Resources>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>

@@ -221,5 +221,37 @@ namespace ME3Explorer.SharedUI
                 HostedControl.Dispose();
             }
         }
+
+        private void ExportLoaderHostedWindow_OnDrop(object sender, DragEventArgs e)
+        {
+
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) && HostedControl is FileExportLoaderControl felc)
+            {
+                // Note that you can have more than one file.
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                // Assuming you have one file that you care about, pass it off to whatever
+                // handling code you have defined.
+                if (felc.CanLoadFileExtension(Path.GetExtension(files[0])))
+                {
+                    felc.LoadFile(files[0]);
+                }
+            }
+        }
+
+        private void ExportLoaderHostedWindow_OnDragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) && HostedControl is FileExportLoaderControl felc)
+            {
+                // Note that you can have more than one file.
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string ext = Path.GetExtension(files[0]).ToLower();
+                if (!felc.CanLoadFileExtension(ext))
+                {
+                    e.Effects = DragDropEffects.None;
+                    e.Handled = true;
+                }
+            }
+        }
     }
 }

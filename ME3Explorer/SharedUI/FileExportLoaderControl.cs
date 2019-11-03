@@ -114,6 +114,7 @@ namespace ME3Explorer.SharedUI
 
         internal abstract void RecentFile_click(object sender, RoutedEventArgs e);
 
+        internal abstract bool CanLoadFileExtension(string extension);
         public void LoadRecentList()
         {
             Recents_MenuItem.IsEnabled = false;
