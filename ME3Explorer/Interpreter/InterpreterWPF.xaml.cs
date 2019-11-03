@@ -913,10 +913,38 @@ namespace ME3Explorer
                             parsedValue += $" {parmName}: {parsingExport.FileRef.GetEntry(parmValue.Value).ObjectName.Instanced}";
                         }
                     }
+                    else if (sp.StructType == "TextureParameter")
+                    {
+                        var parmName = sp.GetProp<NameProperty>("nName");
+                        var parmValue = sp.GetProp<ObjectProperty>("m_pTexture");
+
+                        if (parmName != null && parmValue != null && parmValue.Value != 0)
+                        {
+                            parsedValue += $" {parmName}: {parsingExport.FileRef.GetEntry(parmValue.Value).ObjectName.Instanced}";
+                        }
+                    }
                     else if (sp.StructType == "ScalarParameterValue")
                     {
                         var parmValue = sp.GetProp<FloatProperty>("ParameterValue");
                         var parmName = sp.GetProp<NameProperty>("ParameterName");
+                        if (parmName != null && parmValue != null)
+                        {
+                            parsedValue += $" {parmName}: {parmValue.Value}";
+                        }
+                    }
+                    else if (sp.StructType == "ColorParameter")
+                    {
+                        //var parmValue = sp.GetProp<StructProperty>("cValue");
+                        var parmName = sp.GetProp<NameProperty>("nName");
+                        if (parmName != null)
+                        {
+                            parsedValue += $" {parmName}";
+                        }
+                    }
+                    else if (sp.StructType == "ScalarParameter")
+                    {
+                        var parmValue = sp.GetProp<FloatProperty>("sValue");
+                        var parmName = sp.GetProp<NameProperty>("nName");
                         if (parmName != null && parmValue != null)
                         {
                             parsedValue += $" {parmName}: {parmValue.Value}";
