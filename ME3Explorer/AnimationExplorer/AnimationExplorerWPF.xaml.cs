@@ -39,7 +39,7 @@ namespace ME3Explorer.AnimationExplorer
 
         private const string Me3ExplorerinteropAsiName = "ME3ExplorerInterop.asi";
 
-        private enum VarIndexes
+        private enum FloatVarIndexes
         {
             XPos = 1,
             YPos = 2,
@@ -48,6 +48,11 @@ namespace ME3Explorer.AnimationExplorer
             YRotComponent = 5,
             ZRotComponent = 6,
             PlayRate = 7,
+        }
+
+        private enum BoolVarIndexes
+        {
+            RemoveOffset = 1
         }
 
         public AnimationExplorerWPF()
@@ -95,38 +100,57 @@ namespace ME3Explorer.AnimationExplorer
 
         private void GameController_RecieveME3Message(string msg)
         {
-            switch (msg)
+            if (msg == "AnimViewer string Loaded")
             {
-                case "AnimViewer string Loaded":
+                if (GameController.TryGetME3Process(out Process me3Process))
                 {
-                    if (GameController.TryGetME3Process(out Process me3Process))
-                    {
-                        me3Process.MainWindowHandle.RestoreAndBringToFront();
-                    }
-                    this.RestoreAndBringToFront();
-                    ME3OpenTimer.Start();
-                    ME3StartingUp = false;
-                    LoadingAnimation = false;
-                    ReadyToView = true;
-                    animTab.IsSelected = true;
-                    EndBusy();
-                    break;
+                    me3Process.MainWindowHandle.RestoreAndBringToFront();
                 }
-                case "AnimViewer string AnimLoaded":
+
+                this.RestoreAndBringToFront();
+                ME3OpenTimer.Start();
+                ME3StartingUp = false;
+                LoadingAnimation = false;
+                ReadyToView = true;
+                animTab.IsSelected = true;
+                EndBusy();
+            }
+            else if (msg.StartsWith("AnimViewer string AnimLoaded"))
+            {
+                Vector3 pos = defaultPosition;
+                if (msg.IndexOf("vector") is int idx && idx > 0 && 
+                    msg.Substring(idx + 7).Split(' ') is string[] strings && strings.Length == 3)
                 {
-                    noUpdate = true;
-                    playbackState = PlaybackState.Playing;
-                    PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
-                    noUpdate = false;
-                    if (GameController.TryGetME3Process(out Process me3Process))
+                    var floats = new float[3];
+                    for (int i = 0; i < 3; i++)
                     {
-                        me3Process.MainWindowHandle.RestoreAndBringToFront();
+                        if (float.TryParse(strings[i], out float f))
+                        {
+                            floats[i] = f;
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
-                    this.RestoreAndBringToFront();
-                    LoadingAnimation = false;
-                    EndBusy();
-                    break;
+                    pos = new Vector3(floats);
                 }
+                noUpdate = true;
+                XPos = (int)pos.X;
+                YPos = (int)pos.Y;
+                ZPos = (int)pos.Z;
+                Yaw = 180;
+                Pitch = 0;
+                playbackState = PlaybackState.Playing;
+                PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
+                noUpdate = false;
+                if (GameController.TryGetME3Process(out Process me3Process))
+                {
+                    me3Process.MainWindowHandle.RestoreAndBringToFront();
+                }
+                this.RestoreAndBringToFront();
+                LoadingAnimation = false;
+                EndBusy();
             }
         }
 
@@ -409,16 +433,15 @@ namespace ME3Explorer.AnimationExplorer
                 Task.Run(() =>
                 {
                     AnimViewer.SetUpAnimStreamFile(filePath, animUIndex, "AAAME3EXPAVS1");
-                    GameController.ExecuteME3ConsoleCommands("ce StopAnimation", "ce LoadAnim1");
+                    GameController.ExecuteME3ConsoleCommands("ce LoadAnim1");
                 });
             }
         }
 
         #region Position/Rotation
+        private static readonly Vector3 defaultPosition = new Vector3(0f, 0f, 85f);
 
-        private Vector3 currentAnimOffsetVector = Vector3.Zero;
-
-        private int _xPos;
+        private int _xPos = (int)defaultPosition.X;
         public int XPos
         {
             get => _xPos;
@@ -431,7 +454,7 @@ namespace ME3Explorer.AnimationExplorer
             }
         }
 
-        private int _yPos;
+        private int _yPos = (int)defaultPosition.Y;
         public int YPos
         {
             get => _yPos;
@@ -444,7 +467,7 @@ namespace ME3Explorer.AnimationExplorer
             }
         }
 
-        private int _zPos = 70;
+        private int _zPos = (int)defaultPosition.Z;
         public int ZPos
         {
             get => _zPos;
@@ -483,13 +506,26 @@ namespace ME3Explorer.AnimationExplorer
             }
         }
 
+        private bool _removeOffset;
+        public bool RemoveOffset
+        {
+            get => _removeOffset;
+            set
+            {
+                if (SetProperty(ref _removeOffset, value))
+                {
+                    UpdateOffset();
+                }
+            }
+        }
+
         private bool noUpdate;
         private void UpdateLocation()
         {
             if (noUpdate) return;
-            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(XPos, VarIndexes.XPos),
-                                                     UpdateFloatVarCommand(YPos, VarIndexes.YPos),
-                                                     UpdateFloatVarCommand(ZPos, VarIndexes.ZPos), 
+            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(XPos, FloatVarIndexes.XPos),
+                                                     UpdateFloatVarCommand(YPos, FloatVarIndexes.YPos),
+                                                     UpdateFloatVarCommand(ZPos, FloatVarIndexes.ZPos), 
                                                      "ce SetActorLocation");
         }
 
@@ -498,35 +534,36 @@ namespace ME3Explorer.AnimationExplorer
             if (noUpdate) return;
 
             (float x, float y, float z) = new Rotator(((float)Pitch).ToUnrealRotationUnits(), ((float)Yaw).ToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(x, VarIndexes.XRotComponent),
-                                                     UpdateFloatVarCommand(y, VarIndexes.YRotComponent),
-                                                     UpdateFloatVarCommand(z, VarIndexes.ZRotComponent),
+            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(x, FloatVarIndexes.XRotComponent),
+                                                     UpdateFloatVarCommand(y, FloatVarIndexes.YRotComponent),
+                                                     UpdateFloatVarCommand(z, FloatVarIndexes.ZRotComponent),
                                                      "ce SetActorRotation");
         }
 
-        private static string UpdateFloatVarCommand(float value, VarIndexes index)
+        private void UpdateOffset()
+        {
+            if (noUpdate) return;
+            GameController.ExecuteME3ConsoleCommands(UpdateBoolVarCommand(RemoveOffset, BoolVarIndexes.RemoveOffset));
+            LoadAnimation(SelectedAnimation);
+        }
+
+        private static string UpdateFloatVarCommand(float value, FloatVarIndexes index)
         {
             return $"initplotmanagervaluebyindex {(int)index} float {value}";
+        }
+
+        private static string UpdateBoolVarCommand(bool value, BoolVarIndexes index)
+        {
+            return $"initplotmanagervaluebyindex {(int)index} bool {(value ? 1 : 0)}";
         }
 
         private void SetDefaultPosition_Click(object sender, RoutedEventArgs e)
         {
             noUpdate = true;
-            XPos = 0;
-            YPos = 0;
-            ZPos = 70;
-            noUpdate = false;
-            UpdateLocation();
-        }
-
-        private void RemoveAnimationOffset_Click(object sender, RoutedEventArgs e)
-        {
-            noUpdate = true;
-            int x = (int)currentAnimOffsetVector.X;
-            int y = (int)currentAnimOffsetVector.Y;
-            int z = (int)currentAnimOffsetVector.Z;
-
-            (XPos, YPos, ZPos) = (-x, -y, -z + 70);
+            RemoveOffset = false;
+            XPos = (int)defaultPosition.X;
+            YPos = (int)defaultPosition.Y;
+            ZPos = (int)defaultPosition.Z;
             noUpdate = false;
             UpdateLocation();
         }
@@ -635,7 +672,7 @@ namespace ME3Explorer.AnimationExplorer
                 if (SetProperty(ref _playRate, value))
                 {
                     if (noUpdate) return;
-                    GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand((float)value, VarIndexes.PlayRate));
+                    GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand((float)value, FloatVarIndexes.PlayRate));
                 }
             }
         }

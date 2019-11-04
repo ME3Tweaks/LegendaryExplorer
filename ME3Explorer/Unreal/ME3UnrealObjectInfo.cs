@@ -866,6 +866,19 @@ namespace ME3Explorer.Unreal
             };
             newSequenceObjects["SeqAct_SendMessageToME3Explorer"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
 
+            //SirCxyrtyx - New Class - SFXSeqAct_SetPrePivot
+            NewClasses["SFXSeqAct_SetPrePivot"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 45, //in ME3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("PrePivot", new PropertyInfo(PropertyType.StructProperty, "Vector")),
+                }
+            };
+            newSequenceObjects["SFXSeqAct_SetPrePivot"] = new SequenceObjectInfo();
+
             NewClasses["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",

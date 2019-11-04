@@ -116,14 +116,7 @@
                         </Border>
                         <Label Content="Position" Margin="10,0,0,0"/>
                         <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
-                            <StackPanel>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <!--<ColumnDefinition/>-->
-                                    </Grid.ColumnDefinitions>
-                                    <!--<Button Content="Remove Animation offset" Grid.Column="1" Margin="5" Click="RemoveAnimationOffset_Click" />-->
-                                </Grid>
+                            <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal">
                                     <Button Content=" Reset Position " Margin="5" Click="SetDefaultPosition_Click" />
                                     <TextBlock Text=" X:  " VerticalAlignment="Center"/>
@@ -133,6 +126,11 @@
                                     <TextBlock Text=" Z:  " VerticalAlignment="Center"/>
                                     <xctk:IntegerUpDown Name="zPosUpDown" Value="{Binding ZPos}" Increment="10"/>
                                 </StackPanel>
+                                <CheckBox Margin="5,0,0,0" IsChecked="{Binding RemoveOffset}">
+                                    <Label>
+                                        Center actor on screen (may not work)
+                                    </Label>
+                                </CheckBox>
                             </StackPanel>
                         </Border>
                         <Label Content="Rotation" Margin="10,0,0,0"/>
