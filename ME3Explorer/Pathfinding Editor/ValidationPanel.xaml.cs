@@ -196,7 +196,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
 
             }
-            task?.Complete($"{numRecalculated} SplineComponents{(numRecalculated == 1 ? " was" : "s were")} recalculated");
+            task?.Complete($"{numRecalculated} SplineComponent{(numRecalculated == 1 ? " was" : "s were")} recalculated");
         }
 
         public void recalculateReachspecs(ListBoxTask task = null)
