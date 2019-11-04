@@ -1964,7 +1964,7 @@ namespace ME3Explorer.AssetDatabase
         /// </summary>
         public void dumpPackageFile(MEGame GameBeingDumped, AssetDB dbScanner)
         {
-            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
+            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(File);
             foreach (ExportEntry exp in pcc.Exports)
             {
                 if (DumpCanceled)
