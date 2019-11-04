@@ -220,12 +220,12 @@ namespace ME3Explorer.AssetDatabase
 
             if (CurrentDBPath != null && CurrentDBPath.EndsWith("zip") && File.Exists(CurrentDBPath) && currentGame != MEGame.Unknown && currentGame != MEGame.UDK)
             {
-                SwitchGame(currentGame);
+                SwitchGame(currentGame.ToString());
             }
             else
             {
                 CurrentDBPath = null;
-                SwitchGame(MEGame.ME3);
+                SwitchGame(MEGame.ME3.ToString());
             }
             Activate();
         }
