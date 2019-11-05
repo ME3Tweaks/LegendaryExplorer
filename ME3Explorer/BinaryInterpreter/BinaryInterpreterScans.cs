@@ -6273,8 +6273,41 @@ namespace ME3Explorer
                         string label = i.ToString();
                         switch (i)
                         {
+                            case 0:
+                                label = "X1:";
+                                break;
                             case 1:
-                                label = "ScalingXorY1:";
+                                label = "X2: X-scaling-Axis: ";
+                                break;
+                            case 2:
+                                label = "X3:";
+                                break;
+                            case 3:
+                                label = "XT:";
+                                break;
+                            case 4:
+                                label = "Y1: Y-scaling axis";
+                                break;
+                            case 5:
+                                label = "Y2:";
+                                break;
+                            case 6:
+                                label = "Y3:";
+                                break;
+                            case 7:
+                                label = "YT:";
+                                break;
+                            case 8:
+                                label = "Z1:";
+                                break;
+                            case 9:
+                                label = "Z2:";
+                                break;
+                            case 10:
+                                label = "Z3: Z-scaling axis";
+                                break;
+                            case 11:
+                                label = "ZT:";
                                 break;
                             case 12:
                                 label = "LocX:";
@@ -6286,7 +6319,7 @@ namespace ME3Explorer
                                 label = "LocZ:";
                                 break;
                             case 15:
-                                label = "CameraLayerDistance?:";
+                                label = "CameraCollisionDistanceScalar:";
                                 break;
                         }
 
