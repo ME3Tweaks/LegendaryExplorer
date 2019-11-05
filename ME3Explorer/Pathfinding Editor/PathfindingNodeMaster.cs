@@ -67,14 +67,14 @@ namespace ME3Explorer.Pathfinding_Editor
         /// </summary>
         public List<PathfindingEditorEdge> Edges = new List<PathfindingEditorEdge>();
 
-        public void Select()
+        public virtual void Select()
         {
             Selected = true;
             shape.Pen = selectedPen;
             MoveToFront();
         }
 
-        public void Deselect()
+        public virtual void Deselect()
         {
             Selected = false;
             if (shape.Pen != outlinePen)

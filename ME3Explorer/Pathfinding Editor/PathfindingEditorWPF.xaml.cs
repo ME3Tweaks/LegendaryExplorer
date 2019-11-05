@@ -2069,52 +2069,10 @@ namespace ME3Explorer.Pathfinding_Editor
                 return new PointF(x, y);
             }
 
-            if (splineNodeClasses.Contains(exportToLoad.ClassName))
+            if (exportToLoad.ClassName == "SplineActor")
             {
-                SplineNode splineNode;
-                switch (exportToLoad.ClassName)
-                {
-                    case "SplineActor":
-                        splineNode = new SplineActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
-                        //if (exportToLoad.GetProperty<ArrayProperty<StructProperty>>("Connections") is ArrayProperty<StructProperty> connectionsProp)
-                        //{
-                        //    foreach (StructProperty connectionProp in connectionsProp)
-                        //    {
-                        //        ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
-                        //        ExportEntry splineComponentExport = Pcc.GetUExport(splinecomponentprop.Value);
-                        //        //Debug.WriteLine(splineComponentExport.GetFullPath + " " + splinecomponentprop.Value);
-                        //        StructProperty splineInfo = splineComponentExport.GetProperty<StructProperty>("SplineInfo");
-                        //        if (splineInfo != null)
-                        //        {
-                        //            //var pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
-                        //            //var point1 = pointsProp[0].GetProp<StructProperty>("OutVal");
-                        //            //double xf = point1.GetProp<FloatProperty>("X");
-                        //            //double yf = point1.GetProp<FloatProperty>("Y");
-                        //            ////double zf = point1.GetProp<FloatProperty>("Z");
-                        //            ////Point3D point1_3d = new Point3D(xf, yf, zf);
-                        //            //SplinePoint0Node point0node = new SplinePoint0Node(splinecomponentprop.Value, Convert.ToInt32(xf), Convert.ToInt32(yf), exportToLoad.FileRef, graphEditor);
-                        //            //StructProperty point2 = pointsProp[1].GetProp<StructProperty>("OutVal");
-                        //            //xf = point2.GetProp<FloatProperty>("X");
-                        //            //yf = point2.GetProp<FloatProperty>("Y");
-                        //            //zf = point2.GetProp<FloatProperty>("Z");
-                        //            //Point3D point2_3d = new Point3D(xf, yf, zf);
-                        //            //SplinePoint1Node point1node = new SplinePoint1Node(splinecomponentprop.Value, Convert.ToInt32(xf), Convert.ToInt32(yf), exportToLoad.FileRef, graphEditor);
-                        //            //point0node.SetDestinationPoint(point1node);
-
-                        //            //GraphNodes.Add(point0node);
-                        //            //GraphNodes.Add(point1node);
-
-                        //            //var reparamProp = splineComponentExport.GetProperty<StructProperty>("SplineReparamTable");
-                        //            //var reparamPoints = reparamProp.GetProp<ArrayProperty<StructProperty>>("Points");
-                        //        }
-                        //    }
-                        //}
-                        break;
-                    default:
-                        splineNode = new PendingSplineNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
-                        break;
-                }
-
+                SplineNode splineNode = new SplineActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
+                
                 splineNode.IsOverlay = isFromOverlay;
                 GraphNodes.Add(splineNode);
                 return new PointF(x, y);
@@ -2144,9 +2102,9 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     graphEditor.addNode(node);
                 }
-                foreach (PathfindingNodeMaster node in graphEditor.nodeLayer)
+                foreach (var node in graphEditor.nodeLayer)
                 {
-                    node.CreateConnections(GraphNodes);
+                    (node as PathfindingNodeMaster)?.CreateConnections(GraphNodes);
                 }
 
                 foreach (PPath edge in graphEditor.edgeLayer)
@@ -2184,9 +2142,19 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     if (nodesToUpdate.Contains(node.Index))
                     {
+                        PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == node.UIndex);
+                        if (s is SplineActorNode splineActorNode)
+                        {
+                            ValidationPanel.RecalculateSplineComponents(Pcc);
+                            //Do a full refresh
+                            ExportEntry selectedExport = ActiveNodes_ListBox.SelectedItem as ExportEntry;
+                            RefreshGraph();
+                            ActiveNodes_ListBox.SelectedItem = selectedExport;
+                            return;
+                        }
+
                         //Reposition the node
                         var newlocation = SharedPathfinding.GetLocation(node);
-                        PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == node.UIndex);
                         s.SetOffset((float)newlocation.X, (float)newlocation.Y);
 
                         UpdateEdgesForCurrentNode(s);
@@ -2739,6 +2707,12 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public void UpdateEdgesForCurrentNode(PathfindingNodeMaster node = null)
         {
+            if (node is SplineActorNode splineActorNode)
+            {
+                PathingGraphEditor.UpdateEdgeStraight(splineActorNode.ArriveTangentControlNode.Edge);
+                PathingGraphEditor.UpdateEdgeStraight(splineActorNode.LeaveTangentControlNode.Edge);
+                return;
+            }
             PathfindingNodeMaster nodeToUpdate = node;
             if (nodeToUpdate == null && ActiveNodes_ListBox.SelectedItem is ExportEntry export)
             {

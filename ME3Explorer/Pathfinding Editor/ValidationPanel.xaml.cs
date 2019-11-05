@@ -120,15 +120,15 @@ namespace ME3Explorer.Pathfinding_Editor
 
             task = new ListBoxTask("Recalculating SplineComponents");
             ValidationTasks.Add(task);
-            recalculateSplineComponents(task);
+            RecalculateSplineComponents(Pcc, task);
 
             LastRunOnText = "Last ran at " + DateTime.Now;
         }
 
-        public void recalculateSplineComponents(ListBoxTask task = null)
+        public static void RecalculateSplineComponents(IMEPackage mePackage, ListBoxTask task = null)
         {
             int numRecalculated = 0;
-            foreach (ExportEntry splineActor in Pcc.Exports.Where(exp => exp.ClassName == "SplineActor"))
+            foreach (ExportEntry splineActor in mePackage.Exports.Where(exp => exp.ClassName == "SplineActor"))
             {
                 if (splineActor.GetProperty<ArrayProperty<StructProperty>>("Connections") is {} connections && connections.Any())
                 {
@@ -139,11 +139,11 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         int splineComponentUIndex = connection.GetProp<ObjectProperty>("SplineComponent")?.Value ?? 0;
                         int connectedActorUIndex = connection.GetProp<ObjectProperty>("ConnectTo")?.Value ?? 0;
-                        if (Pcc.TryGetUExport(splineComponentUIndex, out ExportEntry splineComponent) && Pcc.TryGetUExport(connectedActorUIndex, out ExportEntry connectedActor))
+                        if (mePackage.TryGetUExport(splineComponentUIndex, out ExportEntry splineComponent) && mePackage.TryGetUExport(connectedActorUIndex, out ExportEntry connectedActor))
                         {
                             if (task != null)
                             {
-                                task.Header = $"Recalculating SplineComponents {((double)splineComponent.UIndex / Pcc.ExportCount):P}";
+                                task.Header = $"Recalculating SplineComponents {((double)splineComponent.UIndex / mePackage.ExportCount):P}";
                             }
 
                             var splineInfo = new InterpCurve<Vector3>();
@@ -158,7 +158,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                             splineInfo.AddPoint(1f, connectedActorLocation, tangent, tangent, EInterpCurveMode.CIM_CurveUser);
 
-                            splineComponent.WriteProperty(splineInfo.ToStructProperty(Pcc.Game, "SplineInfo"));
+                            splineComponent.WriteProperty(splineInfo.ToStructProperty(mePackage.Game, "SplineInfo"));
 
                             var splineReparamTable = new InterpCurve<float>();
                             if (splineInfo.Points.Count > 1)
@@ -189,7 +189,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 }
                             }
 
-                            splineComponent.WriteProperty(splineReparamTable.ToStructProperty(Pcc.Game, "SplineReparamTable"));
+                            splineComponent.WriteProperty(splineReparamTable.ToStructProperty(mePackage.Game, "SplineReparamTable"));
                             numRecalculated++;
                         }
                     }

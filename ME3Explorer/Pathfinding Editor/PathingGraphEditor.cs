@@ -12,6 +12,7 @@ using UMD.HCIL.Piccolo.Util;
 using System.Reflection;
 using System.Collections.Generic;
 using ME3Explorer.PathfindingNodes;
+using ME3Explorer.SplineNodes;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -143,10 +144,17 @@ namespace ME3Explorer.Pathfinding_Editor
 
 
             PointF start = node1.GlobalBounds.Location;
-            PointF end = node2.GlobalBounds.Location;
 
             edge.Reset();
-            edge.AddLine(start.X + node1.GlobalBounds.Width * 0.5f, start.Y + node1.GlobalBounds.Height * 0.5f, end.X + node2.GlobalBounds.Width * 0.5f, end.Y + node2.GlobalBounds.Height * 0.5f);
+            if (node1 is SplinePointControlNode)
+            {
+                edge.AddLine(start.X + node1.GlobalBounds.Width * 0.5f, start.Y + node1.GlobalBounds.Height * 0.5f, node2.OffsetX, node2.OffsetY);
+            }
+            else
+            {
+                PointF end = node2.GlobalBounds.Location;
+                edge.AddLine(start.X + node1.GlobalBounds.Width * 0.5f, start.Y + node1.GlobalBounds.Height * 0.5f, end.X + node2.GlobalBounds.Width * 0.5f, end.Y + node2.GlobalBounds.Height * 0.5f);
+            }
         }
 
         public void ScaleViewTo(float scale)
