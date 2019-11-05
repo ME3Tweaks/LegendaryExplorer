@@ -48,6 +48,10 @@ namespace ME3Explorer.AnimationExplorer
             YRotComponent = 5,
             ZRotComponent = 6,
             PlayRate = 7,
+            CamXRotComponent = 8,
+            CamYRotComponent = 9,
+            CamZRotComponent = 10,
+
         }
 
         private enum BoolVarIndexes
@@ -683,6 +687,56 @@ namespace ME3Explorer.AnimationExplorer
         {
             listBoxAnims.ItemsSource = Animations.Where(anim => anim.SeqName.Contains(newtext, StringComparison.OrdinalIgnoreCase));
         }
+
+        #region CamRotation
+
+        private int _camYaw = -10;
+        public int CamYaw
+        {
+            get => _camYaw;
+            set
+            {
+                if (SetProperty(ref _camYaw, value))
+                {
+                    UpdateCamRotation();
+                }
+            }
+        }
+
+        private int _camPitch;
+        public int CamPitch
+        {
+            get => _camPitch;
+            set
+            {
+                if (SetProperty(ref _camPitch, value))
+                {
+                    UpdateCamRotation();
+                }
+            }
+        }
+
+        private void UpdateCamRotation()
+        {
+            if (noUpdate) return;
+
+            (float x, float y, float z) = new Rotator(((float)CamPitch).ToUnrealRotationUnits(), ((float)CamYaw).ToUnrealRotationUnits(), 0).GetDirectionalVector();
+            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(x, FloatVarIndexes.CamXRotComponent),
+                                                     UpdateFloatVarCommand(y, FloatVarIndexes.CamYRotComponent),
+                                                     UpdateFloatVarCommand(z, FloatVarIndexes.CamZRotComponent),
+                                                     "ce SetCameraRotation");
+        }
+
+        private void ResetCamRotation_Click(object sender, RoutedEventArgs e)
+        {
+            noUpdate = true;
+            CamPitch = 0;
+            CamYaw = 0;
+            noUpdate = false;
+            UpdateCamRotation();
+        }
+
+        #endregion
     }
 
     public enum ECameraState
