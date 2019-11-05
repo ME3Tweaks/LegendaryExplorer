@@ -35,7 +35,7 @@ namespace ME3Explorer.AssetDatabase
     public partial class AssetDB : WPFBase
     {
         #region Declarations
-        public const string dbCurrentBuild = "2.1"; //If changes are made that invalidate old databases edit this.
+        public const string dbCurrentBuild = "2.2"; //If changes are made that invalidate old databases edit this.
         private int previousView { get; set; }
         private int _currentView;
         public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
@@ -76,6 +76,10 @@ namespace ME3Explorer.AssetDatabase
         /// Dictionary that stores generated Textures
         /// </summary>
         public ConcurrentDictionary<String, TextureRecord> GeneratedText = new ConcurrentDictionary<String, TextureRecord>();
+        /// <summary>
+        /// Dictionary that stores generated GFXMovies
+        /// </summary>
+        public ConcurrentDictionary<String, GUIElement> GeneratedGUI = new ConcurrentDictionary<String, GUIElement>();
         /// <summary>
         /// Used to check if values generated are unique.
         /// </summary>
@@ -270,6 +274,7 @@ namespace ME3Explorer.AssetDatabase
             CurrentDataBase.Meshes.AddRange(pdb.Meshes);
             CurrentDataBase.Particles.AddRange(pdb.Particles);
             CurrentDataBase.Textures.AddRange(pdb.Textures);
+            CurrentDataBase.GUIElements.AddRange(pdb.GUIElements);
 
             if (CurrentDataBase.DataBaseversion == null || CurrentDataBase.DataBaseversion != dbCurrentBuild)
             {
@@ -293,7 +298,7 @@ namespace ME3Explorer.AssetDatabase
 
 
             IsBusy = false;
-            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count}";
+            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} Elements: {CurrentDataBase.GUIElements.Count}";
 #if DEBUG
             var end = DateTime.UtcNow;
             double length = (end - start).TotalMilliseconds;
@@ -394,6 +399,9 @@ namespace ME3Explorer.AssetDatabase
                         case "Txt":
                             readData.Textures.AddRange(pdb.Textures);
                             break;
+                        case "Gui":
+                            readData.GUIElements.AddRange(pdb.GUIElements);
+                            break;
                         default:
                             readData.meGame = pdb.meGame;
                             readData.GenerationDate = pdb.GenerationDate;
@@ -402,7 +410,7 @@ namespace ME3Explorer.AssetDatabase
                             readData.ContentDir.AddRange(pdb.ContentDir);
                             break;
                     }
-                    if (n == 7) { deserializingQueue.CompleteAdding(); }
+                    if (n == 8) { deserializingQueue.CompleteAdding(); }
                 }
 
                 return readData;
@@ -454,6 +462,10 @@ namespace ME3Explorer.AssetDatabase
                                 var txt = Serializer.Deserialize<ObservableCollectionExtended<TextureRecord>>(reader);
                                 readData.Textures.AddRange(txt);
                                 break;
+                            case "Gui":
+                                var gui = Serializer.Deserialize<ObservableCollectionExtended<GUIElement>>(reader);
+                                readData.GUIElements.AddRange(gui);
+                                break;
                         }
                     }
                     catch
@@ -473,7 +485,7 @@ namespace ME3Explorer.AssetDatabase
             IsBusy = true;
             CurrentOverallOperationText = $"Database saving...";
 
-            //V2.1 split files
+            //V2.1+ split files
             var masterDB = new PropsDataBase(CurrentDataBase.meGame, CurrentDataBase.GenerationDate, CurrentDataBase.DataBaseversion, CurrentDataBase.FileList, CurrentDataBase.ContentDir, new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(),
             new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>(), new ObservableCollectionExtended<ParticleSys>(), new ObservableCollectionExtended<TextureRecord>());
             var masterSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(masterDB));
@@ -483,7 +495,7 @@ namespace ME3Explorer.AssetDatabase
             var mshSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Meshes));
             var psSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Particles));
             var txtSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Textures));
-
+            var guiSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.GUIElements));
 
             using (var fileStream = new FileStream(CurrentDBPath, FileMode.Create))
             {
@@ -533,12 +545,18 @@ namespace ME3Explorer.AssetDatabase
                     {
                         await Task.Run(() => streamWriter.Write(txtSrl.Result));
                     }
+                    var guiJson = archive.CreateEntry($"GuiDB{currentGame}.json");
+                    using (var entryStream = guiJson.Open())
+                    using (var streamWriter = new StreamWriter(entryStream))
+                    {
+                        await Task.Run(() => streamWriter.Write(guiSrl.Result));
+                    }
                 }
             }
             CurrentOverallOperationText = $"Database saved.";
             IsBusy = false;
             await Task.Delay(5000);
-            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count}";
+            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} Elements: { CurrentDataBase.GUIElements.Count}";
         }
         public void ClearDataBase()
         {
@@ -552,6 +570,7 @@ namespace ME3Explorer.AssetDatabase
             CurrentDataBase.Meshes.ClearEx();
             CurrentDataBase.Particles.ClearEx();
             CurrentDataBase.Textures.ClearEx();
+            CurrentDataBase.GUIElements.ClearEx();
             FileListExtended.ClearEx();
             FilterBox.Clear();
             Filter();
@@ -1457,6 +1476,7 @@ namespace ME3Explorer.AssetDatabase
             GeneratedMeshes.Clear();
             GeneratedPS.Clear();
             GeneratedText.Clear();
+            GeneratedGUI.Clear();
             GeneratedValueChecker.Clear();
 
             _dbqueue = new BlockingCollection<ClassRecord>(); //Reset queue for multiple operations
@@ -1515,7 +1535,7 @@ namespace ME3Explorer.AssetDatabase
                 x.dumpPackageFile(game, this); // What to do on each item
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    BusyText = $"Scanned {OverallProgressValue}/{OverallProgressMaximum} files\n\nClasses: { GeneratedClasses.Count}\nAnimations: { GeneratedAnims.Count}\nMaterials: { GeneratedMats.Count}\nMeshes: { GeneratedMeshes.Count}\nParticles: { GeneratedPS.Count}\nTextures: { GeneratedText.Count}";
+                    BusyText = $"Scanned {OverallProgressValue}/{OverallProgressMaximum} files\n\nClasses: { GeneratedClasses.Count}\nAnimations: { GeneratedAnims.Count}\nMaterials: { GeneratedMats.Count}\nMeshes: { GeneratedMeshes.Count}\nParticles: { GeneratedPS.Count}\nTextures: { GeneratedText.Count}\nGUI Elements: { GeneratedGUI.Count}";
                     OverallProgressValue++; //Concurrency 
                     CurrentDumpingItems.Remove(x);
                 });
@@ -1582,6 +1602,10 @@ namespace ME3Explorer.AssetDatabase
             //Add Textures
             CurrentDataBase.Textures.AddRange(GeneratedText.Values);
             CurrentDataBase.Textures.Sort(x => x.TextureName);
+
+            //Add GUI
+            CurrentDataBase.GUIElements.AddRange(GeneratedGUI.Values);
+            CurrentDataBase.GUIElements.Sort(x => x.GUIName);
 
             foreach (var f in CurrentDataBase.FileList)
             {
@@ -1696,6 +1720,7 @@ namespace ME3Explorer.AssetDatabase
         public ObservableCollectionExtended<MeshRecord> Meshes { get; } = new ObservableCollectionExtended<MeshRecord>();
         public ObservableCollectionExtended<ParticleSys> Particles { get; } = new ObservableCollectionExtended<ParticleSys>();
         public ObservableCollectionExtended<TextureRecord> Textures { get; } = new ObservableCollectionExtended<TextureRecord>();
+        public ObservableCollectionExtended<GUIElement> GUIElements { get; } = new ObservableCollectionExtended<GUIElement>();
         public PropsDataBase(MEGame meGame, string GenerationDate, string DataBaseversion, ObservableCollectionExtended<Tuple<string, int>> FileList, List<string> ContentDir, ObservableCollectionExtended<ClassRecord> ClassRecords, ObservableCollectionExtended<Material> Materials,
             ObservableCollectionExtended<Animation> Animations, ObservableCollectionExtended<MeshRecord> Meshes, ObservableCollectionExtended<ParticleSys> Particles, ObservableCollectionExtended<TextureRecord> Textures)
         {
@@ -1715,7 +1740,6 @@ namespace ME3Explorer.AssetDatabase
         public PropsDataBase()
         { }
     }
-
     public class ClassRecord : NotifyPropertyChangedBase
     {
         private string _Class;
@@ -1739,7 +1763,6 @@ namespace ME3Explorer.AssetDatabase
         public ClassRecord()
         { }
     }
-
     public class PropertyRecord : NotifyPropertyChangedBase
     {
         private string _Property;
@@ -1756,7 +1779,6 @@ namespace ME3Explorer.AssetDatabase
         public PropertyRecord()
         { }
     }
-
     public class ClassUsage : NotifyPropertyChangedBase
     {
         public int FileKey { get; set; }
@@ -1771,7 +1793,6 @@ namespace ME3Explorer.AssetDatabase
         public ClassUsage()
         { }
     }
-
     public class Material : NotifyPropertyChangedBase
     {
         private string _MaterialName;
@@ -1796,7 +1817,6 @@ namespace ME3Explorer.AssetDatabase
         public Material()
         { }
     }
-
     public class Animation : NotifyPropertyChangedBase
     {
         private string _AnimSequence;
@@ -1831,7 +1851,6 @@ namespace ME3Explorer.AssetDatabase
         public Animation()
         { }
     }
-
     public class MeshRecord : NotifyPropertyChangedBase
     {
         private string _MeshName;
@@ -1878,7 +1897,6 @@ namespace ME3Explorer.AssetDatabase
         public ParticleSys()
         { }
     }
-
     public class TextureRecord : NotifyPropertyChangedBase
     {
         private string _TextureName;
@@ -1910,6 +1928,25 @@ namespace ME3Explorer.AssetDatabase
         }
 
         public TextureRecord()
+        { }
+    }
+    public class GUIElement : NotifyPropertyChangedBase
+    {
+        private string _GUIName;
+        public string GUIName { get => _GUIName; set => SetProperty(ref _GUIName, value); }
+        private int _DataSize;
+        public int DataSize { get => _DataSize; set => SetProperty(ref _DataSize, value); }
+
+        public ObservableCollectionExtended<Tuple<int, int>> GUIUsages { get; } = new ObservableCollectionExtended<Tuple<int, int>>(); //File reference then export
+
+        public GUIElement(string GUIName, int DataSize, ObservableCollectionExtended<Tuple<int, int>> GUIUsages)
+        {
+            this.GUIName = GUIName;
+            this.DataSize = DataSize;
+            this.GUIUsages.AddRange(GUIUsages);
+        }
+
+        public GUIElement()
         { }
     }
     public class FileIndexToNameConverter : IMultiValueConverter
@@ -2323,6 +2360,22 @@ namespace ME3Explorer.AssetDatabase
                                 }
                                 var NewTex = new TextureRecord(pExp, parent, IsDLC, pformat, psizeX, psizeY, cRC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
                                 dbScanner.GeneratedText.TryAdd(pExp, NewTex);
+                            }
+                        }
+
+                        if (exp.ClassName == "GFxMovieInfo" && !pIsdefault)
+                        {
+                            string dataPropName = exp.Game != MEGame.ME1 ? "RawData" : "Data";
+                            var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
+                            int datasize = rawData.Count;
+                            var NewGUI = new GUIElement(pExp, datasize, new ObservableCollectionExtended<Tuple<int, int>>() { new Tuple<int, int>(FileKey, pExportUID) });
+                            if (!dbScanner.GeneratedGUI.TryAdd(pExp, NewGUI))
+                            {
+                                var eGUI = dbScanner.GeneratedGUI[pExp];
+                                lock (eGUI)
+                                {
+                                    eGUI.GUIUsages.Add(new Tuple<int, int>(FileKey, pExportUID));
+                                }
                             }
                         }
                     }

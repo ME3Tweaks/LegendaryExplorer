@@ -614,6 +614,69 @@
                             </SharedUI:ListBoxScroll>
                         </Grid>
                     </TabItem>
+                    <!-- GUI -->
+                    <TabItem Header="GUI" TabIndex="7">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition MinWidth="300" Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="GUI Elements (ScaleForm)" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Particle systems (Grey is DLC only)" Grid.Row="0" Grid.Column="0"/>
+                            <SharedUI:ListBoxScroll x:Name="lstbx_Scaleform" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.GUIElements}" Grid.Row="1" Grid.Column="0">
+                                <SharedUI:ListBoxScroll.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding GUIName}" />
+                                            <TextBlock Text="  size: " FontSize="10"/>
+                                            <TextBlock Text="{Binding DataSize}" FontSize="10" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </SharedUI:ListBoxScroll.ItemTemplate>
+                                <SharedUI:ListBoxScroll.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsDLCOnly}" Value="True">
+                                                <Setter Property="Background" Value="LightGray"/>
+                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </SharedUI:ListBoxScroll.ItemContainerStyle>
+                            </SharedUI:ListBoxScroll>
+                            <TextBlock Text="Details" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Additional details" Grid.Row="0" Grid.Column="1"/>
+                            <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
+                                <StackPanel x:Name="details_GUI" MinWidth="200" Margin="3">
+
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this effect&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
+                            <SharedUI:ListBoxScroll x:Name="lstbx_GUIUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.GUIUsages, ElementName=lstbx_Scaleform }" Grid.Row="1" Grid.Column="2">
+                                <SharedUI:ListBoxScroll.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
+                                                    <Binding Path="Item1"/>
+                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                    <Binding Path="Item2"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </SharedUI:ListBoxScroll.ItemTemplate>
+                                <SharedUI:ListBoxScroll.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                    </ContextMenu>
+                                </SharedUI:ListBoxScroll.ContextMenu>
+                            </SharedUI:ListBoxScroll>
+                        </Grid>
+                    </TabItem>
                 </TabControl>
             </DockPanel>
         </DockPanel>
