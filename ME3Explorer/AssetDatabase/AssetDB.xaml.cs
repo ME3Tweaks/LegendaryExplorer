@@ -154,7 +154,7 @@ namespace ME3Explorer.AssetDatabase
         }
         private bool IsUsageSelected(object obj)
         {
-            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 1) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5)
+            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 1) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5) || (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7)
                 || (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3) || (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6) || (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4) || currentView == 0;
         }
         private bool IsViewingClass(object obj)
@@ -705,6 +705,13 @@ namespace ME3Explorer.AssetDatabase
                 contentdir = FileListExtended[ps.Item1].Item2;
                 usageexp = ps.Item2;
             }
+            else if (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7)
+            {
+                var sf = (Tuple<int, int>)lstbx_GUIUsages.SelectedItem;
+                usagepkg = FileListExtended[sf.Item1].Item1;
+                contentdir = FileListExtended[sf.Item1].Item2;
+                usageexp = sf.Item2;
+            }
             else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
             {
                 var fileref = (Tuple<string, string>)lstbx_Files.SelectedItem;
@@ -966,6 +973,8 @@ namespace ME3Explorer.AssetDatabase
             {
                 EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
                 BIKExternalExportLoaderTab_BIKExternalExportLoader.UnloadExport();
+                EmbeddedTextureViewerTab_EmbededTextureViewer.Visibility = Visibility.Visible;
+                BIKExternalExportLoaderTab_BIKExternalExportLoader.Visibility = Visibility.Collapsed;
                 textPcc?.Dispose();
                 return;
             }
@@ -1191,6 +1200,17 @@ namespace ME3Explorer.AssetDatabase
             }
             return showthis;
         }
+        bool SFFilter(object d)
+        {
+            var sf = d as GUIElement;
+            bool showthis = true;
+            if (!String.IsNullOrEmpty(FilterBox.Text) && sf != null)
+            {
+                showthis = sf.GUIName.ToLower().Contains(FilterBox.Text.ToLower());
+            }
+
+            return showthis;
+        }
         private bool FileFilter(object d)
         {
             bool showthis = true;
@@ -1239,6 +1259,11 @@ namespace ME3Explorer.AssetDatabase
                     ICollectionView viewP = CollectionViewSource.GetDefaultView(CurrentDataBase.Particles);
                     viewP.Filter = PSFilter;
                     lstbx_Particles.ItemsSource = viewP;
+                    break;
+                case 7: //Scaleform
+                    ICollectionView viewG = CollectionViewSource.GetDefaultView(CurrentDataBase.GUIElements);
+                    viewG.Filter = SFFilter;
+                    lstbx_Scaleform.ItemsSource = viewG;
                     break;
                 default: //Files
                     lstbx_Files.Items.Filter = FileFilter;
@@ -1699,7 +1724,6 @@ namespace ME3Explorer.AssetDatabase
 
         }
         #endregion
-
 
     }
     #region Database
