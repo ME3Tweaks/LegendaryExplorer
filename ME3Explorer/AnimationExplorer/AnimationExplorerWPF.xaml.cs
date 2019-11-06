@@ -117,6 +117,11 @@ namespace ME3Explorer.AnimationExplorer
                 LoadingAnimation = false;
                 ReadyToView = true;
                 animTab.IsSelected = true;
+
+                noUpdate = true;
+                ShouldFollowActor = false;
+                noUpdate = false;
+
                 EndBusy();
             }
             else if (msg.StartsWith("AnimViewer string AnimLoaded"))
@@ -688,7 +693,7 @@ namespace ME3Explorer.AnimationExplorer
             listBoxAnims.ItemsSource = Animations.Where(anim => anim.SeqName.Contains(newtext, StringComparison.OrdinalIgnoreCase));
         }
 
-        #region CamRotation
+        #region Camera
 
         private int _camYaw = -10;
         public int CamYaw
@@ -715,6 +720,28 @@ namespace ME3Explorer.AnimationExplorer
                 }
             }
         }
+
+        private bool _shouldFollowActor;
+        public bool ShouldFollowActor
+        {
+            get => _shouldFollowActor;
+            set
+            {
+                if (SetProperty(ref _shouldFollowActor, value) && !noUpdate)
+                {
+                    if (value)
+                    {
+                        GameController.ExecuteME3ConsoleCommands("ce StartCameraFollow");
+                    }
+                    else
+                    {
+                        GameController.ExecuteME3ConsoleCommands("ce StopCameraFollow");
+                    }
+                }
+            }
+        }
+
+
 
         private void UpdateCamRotation()
         {

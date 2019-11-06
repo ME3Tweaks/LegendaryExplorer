@@ -143,14 +143,19 @@
                                 <xctk:IntegerUpDown Name="pitchUpDown" Value="{Binding Pitch}" Increment="5"/>
                             </StackPanel>
                         </Border>
-                        <Label Content="Camera Rotation" Margin="10,0,0,0"/>
+                        <Label Content="Camera" Margin="10,0,0,0"/>
                         <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content=" Reset Rotation " Margin="5" Click="ResetCamRotation_Click" />
-                                <TextBlock Text=" Yaw:  " VerticalAlignment="Center"/>
-                                <xctk:IntegerUpDown Name="camYawUpDown" Value="{Binding CamYaw}" Increment="5"/>
-                                <TextBlock Text=" Pitch:  " VerticalAlignment="Center"/>
-                                <xctk:IntegerUpDown Name="camPitchUpDown" Value="{Binding CamPitch}" Increment="5"/>
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content=" Reset Rotation " Margin="5" Click="ResetCamRotation_Click" />
+                                    <TextBlock Text=" Yaw:  " VerticalAlignment="Center" />
+                                    <xctk:IntegerUpDown Name="camYawUpDown" Value="{Binding CamYaw}" Increment="5" />
+                                    <TextBlock Text=" Pitch:  " VerticalAlignment="Center" />
+                                    <xctk:IntegerUpDown Name="camPitchUpDown" Value="{Binding CamPitch}" Increment="5" />
+                                </StackPanel>
+                                <CheckBox Margin="5,0,0,0" IsChecked="{Binding ShouldFollowActor}">
+                                    <Label Content="Follow actor"/>
+                                </CheckBox>
                             </StackPanel>
                         </Border>
                         <!--<Label Content="Camera" Margin="10,0,0,0"/>
