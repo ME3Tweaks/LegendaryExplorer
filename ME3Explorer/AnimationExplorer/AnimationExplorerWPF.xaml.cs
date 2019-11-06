@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -314,7 +315,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             SetBusy("Loading Database...");
             PropsDataBase db = new PropsDataBase();
-            AssetDB.LoadDatabase(dbPath, MEGame.ME3, db).ContinueWithOnUIThread(prevTask =>
+            AssetDB.LoadDatabase(dbPath, MEGame.ME3, db, CancellationToken.None).ContinueWithOnUIThread(prevTask =>
             {
                 foreach ((string fileName, int dirIndex) in db.FileList)
                 {
