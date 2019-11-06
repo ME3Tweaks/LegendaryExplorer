@@ -245,7 +245,7 @@ namespace ME3Explorer
             {
                 name = "TLK Editor",
                 type = typeof(ExportLoaderHostedWindow),
-                icon = Application.Current.FindResource("iconTLKEditorME23") as ImageSource,
+                icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
                 open = () =>
                 {
                     ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditor.ME1TlkEditorWPF());
