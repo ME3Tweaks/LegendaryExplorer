@@ -114,6 +114,10 @@
                                 </StackPanel>
                             </StackPanel>
                         </Border>
+                        <Label Content="Actor" Margin="10,0,0,0"/>
+                        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+                            <ComboBox SelectedItem="{Binding SelectedSquadMember}" ItemsSource="{Binding ESquadMemberValues}" Margin="5"/>
+                        </Border>
                         <Label Content="Actor Position" Margin="10,0,0,0"/>
                         <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
                             <StackPanel Orientation="Vertical">

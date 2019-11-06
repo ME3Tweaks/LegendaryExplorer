@@ -59,6 +59,11 @@ namespace ME3Explorer.AnimationExplorer
             RemoveOffset = 1
         }
 
+        private enum IntVarIndexes
+        {
+            SquadMember = 1
+        }
+
         public AnimationExplorerWPF()
         {
             if (Instance != null)
@@ -120,6 +125,7 @@ namespace ME3Explorer.AnimationExplorer
 
                 noUpdate = true;
                 ShouldFollowActor = false;
+                SelectedSquadMember = ESquadMember.Liara;
                 noUpdate = false;
 
                 EndBusy();
@@ -160,6 +166,10 @@ namespace ME3Explorer.AnimationExplorer
                 this.RestoreAndBringToFront();
                 LoadingAnimation = false;
                 EndBusy();
+            }
+            else if (msg == "AnimViewer string HenchLoaded")
+            {
+                LoadAnimation(SelectedAnimation);
             }
         }
 
@@ -532,9 +542,9 @@ namespace ME3Explorer.AnimationExplorer
         private void UpdateLocation()
         {
             if (noUpdate) return;
-            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(XPos, FloatVarIndexes.XPos),
-                                                     UpdateFloatVarCommand(YPos, FloatVarIndexes.YPos),
-                                                     UpdateFloatVarCommand(ZPos, FloatVarIndexes.ZPos), 
+            GameController.ExecuteME3ConsoleCommands(VarCmd(XPos, FloatVarIndexes.XPos),
+                                                     VarCmd(YPos, FloatVarIndexes.YPos),
+                                                     VarCmd(ZPos, FloatVarIndexes.ZPos), 
                                                      "ce SetActorLocation");
         }
 
@@ -543,27 +553,32 @@ namespace ME3Explorer.AnimationExplorer
             if (noUpdate) return;
 
             (float x, float y, float z) = new Rotator(((float)Pitch).ToUnrealRotationUnits(), ((float)Yaw).ToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(x, FloatVarIndexes.XRotComponent),
-                                                     UpdateFloatVarCommand(y, FloatVarIndexes.YRotComponent),
-                                                     UpdateFloatVarCommand(z, FloatVarIndexes.ZRotComponent),
+            GameController.ExecuteME3ConsoleCommands(VarCmd(x, FloatVarIndexes.XRotComponent),
+                                                     VarCmd(y, FloatVarIndexes.YRotComponent),
+                                                     VarCmd(z, FloatVarIndexes.ZRotComponent),
                                                      "ce SetActorRotation");
         }
 
         private void UpdateOffset()
         {
             if (noUpdate) return;
-            GameController.ExecuteME3ConsoleCommands(UpdateBoolVarCommand(RemoveOffset, BoolVarIndexes.RemoveOffset));
+            GameController.ExecuteME3ConsoleCommands(VarCmd(RemoveOffset, BoolVarIndexes.RemoveOffset));
             LoadAnimation(SelectedAnimation);
         }
 
-        private static string UpdateFloatVarCommand(float value, FloatVarIndexes index)
+        private static string VarCmd(float value, FloatVarIndexes index)
         {
             return $"initplotmanagervaluebyindex {(int)index} float {value}";
         }
 
-        private static string UpdateBoolVarCommand(bool value, BoolVarIndexes index)
+        private static string VarCmd(bool value, BoolVarIndexes index)
         {
             return $"initplotmanagervaluebyindex {(int)index} bool {(value ? 1 : 0)}";
+        }
+
+        private static string VarCmd(int value, IntVarIndexes index)
+        {
+            return $"initplotmanagervaluebyindex {(int)index} int {value}";
         }
 
         private void SetDefaultPosition_Click(object sender, RoutedEventArgs e)
@@ -681,7 +696,7 @@ namespace ME3Explorer.AnimationExplorer
                 if (SetProperty(ref _playRate, value))
                 {
                     if (noUpdate) return;
-                    GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand((float)value, FloatVarIndexes.PlayRate));
+                    GameController.ExecuteME3ConsoleCommands(VarCmd((float)value, FloatVarIndexes.PlayRate));
                 }
             }
         }
@@ -748,9 +763,9 @@ namespace ME3Explorer.AnimationExplorer
             if (noUpdate) return;
 
             (float x, float y, float z) = new Rotator(((float)CamPitch).ToUnrealRotationUnits(), ((float)CamYaw).ToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameController.ExecuteME3ConsoleCommands(UpdateFloatVarCommand(x, FloatVarIndexes.CamXRotComponent),
-                                                     UpdateFloatVarCommand(y, FloatVarIndexes.CamYRotComponent),
-                                                     UpdateFloatVarCommand(z, FloatVarIndexes.CamZRotComponent),
+            GameController.ExecuteME3ConsoleCommands(VarCmd(x, FloatVarIndexes.CamXRotComponent),
+                                                     VarCmd(y, FloatVarIndexes.CamYRotComponent),
+                                                     VarCmd(z, FloatVarIndexes.CamZRotComponent),
                                                      "ce SetCameraRotation");
         }
 
@@ -764,6 +779,34 @@ namespace ME3Explorer.AnimationExplorer
         }
 
         #endregion
+
+        private ESquadMember _selectedSquadMember = ESquadMember.Liara;
+
+        public ESquadMember SelectedSquadMember
+        {
+            get => _selectedSquadMember;
+            set
+            {
+                if (SetProperty(ref _selectedSquadMember, value) && !noUpdate)
+                {
+                    GameController.ExecuteME3ConsoleCommands(VarCmd((int)value, IntVarIndexes.SquadMember), "ce LoadNewHench");
+                }
+            }
+        }
+
+        public IEnumerable<ESquadMember> ESquadMemberValues => Enums.GetValues<ESquadMember>();
+    }
+
+    public enum ESquadMember : int
+    {
+        Liara = 1,
+        Ashley = 2,
+        EDI = 3,
+        Garrus = 4,
+        Kaidan = 5,
+        James = 6,
+        Javik = 7,
+        Tali = 8
     }
 
     public enum ECameraState
