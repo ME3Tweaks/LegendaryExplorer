@@ -162,11 +162,11 @@ namespace ME3Explorer.Packages
             return _header.TypedClone();
         }
 
-        public byte[] GenerateHeader(MEGame game) => GenerateHeader(null, null, game == MEGame.ME1 || game == MEGame.ME2);
+        public byte[] GenerateHeader(MEGame game, bool clearComponentMap = false) => GenerateHeader(null, null, game == MEGame.ME1 || game == MEGame.ME2, clearComponentMap);
 
-        public void RegenerateHeader(MEGame game) => Header = GenerateHeader(game);
+        public void RegenerateHeader(MEGame game, bool clearComponentMap = false) => Header = GenerateHeader(game, clearComponentMap);
 
-        private byte[] GenerateHeader(OrderedMultiValueDictionary<NameReference, int> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null)
+        private byte[] GenerateHeader(OrderedMultiValueDictionary<NameReference, int> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null, bool clearComponentMap = false)
         {
             var bin = new MemoryStream();
             bin.WriteInt32(idxClass);
@@ -180,13 +180,20 @@ namespace ME3Explorer.Packages
             bin.WriteInt32(DataOffset);
             if (hasComponentMap ?? HasComponentMap)
             {
-                OrderedMultiValueDictionary<NameReference, int> cmpMap = componentMap ?? ComponentMap;
-                bin.WriteInt32(cmpMap.Count);
-                foreach ((NameReference name, int uIndex) in cmpMap)
+                if (clearComponentMap)
                 {
-                    bin.WriteInt32(FileRef.FindNameOrAdd(name.Name));
-                    bin.WriteInt32(name.Number);
-                    bin.WriteInt32(uIndex);
+                    bin.WriteInt32(0);
+                }
+                else
+                {
+                    OrderedMultiValueDictionary<NameReference, int> cmpMap = componentMap ?? ComponentMap;
+                    bin.WriteInt32(cmpMap.Count);
+                    foreach ((NameReference name, int uIndex) in cmpMap)
+                    {
+                        bin.WriteInt32(FileRef.FindNameOrAdd(name.Name));
+                        bin.WriteInt32(name.Number);
+                        bin.WriteInt32(uIndex);
+                    }
                 }
             }
             bin.WriteUInt32((uint)ExportFlags);
