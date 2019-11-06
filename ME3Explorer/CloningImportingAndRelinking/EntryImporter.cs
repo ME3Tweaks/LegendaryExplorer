@@ -418,6 +418,92 @@ namespace ME3Explorer
 
             throw new Exception($"Unable to add {importFullName} to file! Could not find it!");
         }
+        
+        /// <summary>
+         /// Adds an import from the importingPCC to the destinationPCC with the specified importFullName, or returns the existing one if it can be found. 
+         /// This will add parent imports and packages as neccesary
+         /// </summary>
+         /// <param name="importFullName">GetFullPath() of an import from ImportingPCC</param>
+         /// <param name="sourcePcc">PCC to import imports from</param>
+         /// <param name="destinationPCC">PCC to add imports to</param>
+         /// <param name="objectMapping"></param>
+         /// <returns></returns>
+        public static IEntry GetOrAddCrossImportOrPackageFromGlobalFile(string importFullName, IMEPackage sourcePcc, IMEPackage destinationPCC, IDictionary<IEntry, IEntry> objectMapping = null)
+        {
+            string packageName = Path.GetFileNameWithoutExtension(sourcePcc.FilePath);
+            if (string.IsNullOrEmpty(importFullName))
+            {
+                return destinationPCC.getEntryOrAddImport(packageName, "Package");
+            }
+
+            string localSearchPath = $"{packageName}.{importFullName}";
+
+            //see if this import exists locally
+            foreach (ImportEntry imp in destinationPCC.Imports)
+            {
+                if (imp.FullPath == localSearchPath)
+                {
+                    return imp;
+                }
+            }
+
+            //see if this export exists locally
+            foreach (ExportEntry exp in destinationPCC.Exports)
+            {
+                if (exp.FullPath == localSearchPath)
+                {
+                    return exp;
+                }
+            }
+
+            string[] importParts = importFullName.Split('.');
+
+            //recursively ensure parent exists
+            IEntry parent = GetOrAddCrossImportOrPackageFromGlobalFile(string.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC, objectMapping);
+
+
+            foreach (ImportEntry sourceImport in sourcePcc.Imports)
+            {
+                if (sourceImport.FullPath == importFullName)
+                {
+                    var newImport = new ImportEntry(destinationPCC)
+                    {
+                        idxLink = parent?.UIndex ?? 0,
+                        ClassName = sourceImport.ClassName,
+                        ObjectName = sourceImport.ObjectName,
+                        PackageFile = sourceImport.PackageFile
+                    };
+                    destinationPCC.AddImport(newImport);
+                    if (objectMapping != null)
+                    {
+                        objectMapping[sourceImport] = newImport;
+                    }
+                    return newImport;
+                }
+            }
+
+            foreach (ExportEntry sourceExport in sourcePcc.Exports)
+            {
+                if (sourceExport.FullPath == importFullName)
+                {
+                    var newImport = new ImportEntry(destinationPCC)
+                    {
+                        idxLink = parent?.UIndex ?? 0,
+                        ClassName = sourceExport.ClassName,
+                        ObjectName = sourceExport.ObjectName,
+                        PackageFile = "Core" //No clue how to figure out what this should be. Might not even matter?
+                    };
+                    destinationPCC.AddImport(newImport);
+                    if (objectMapping != null)
+                    {
+                        objectMapping[sourceExport] = newImport;
+                    }
+                    return newImport;
+                }
+            }
+
+            throw new Exception($"Unable to add {importFullName} to file! Could not find it!");
+        }
 
         public static IEntry EnsureClassIsInFile(IMEPackage pcc, string className)
         {

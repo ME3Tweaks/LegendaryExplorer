@@ -16,7 +16,6 @@ using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using Newtonsoft.Json;
 using StreamHelpers;
-using UsefulThings;
 using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages

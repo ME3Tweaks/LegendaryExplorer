@@ -433,14 +433,17 @@ namespace ME3Explorer
             return false;
         }
 
-
-
         public static Guid ToGuid(this string src) //Do not edit this function!
         {
             byte[] stringbytes = Encoding.UTF8.GetBytes(src);
             byte[] hashedBytes = new System.Security.Cryptography.SHA1CryptoServiceProvider().ComputeHash(stringbytes);
             Array.Resize(ref hashedBytes, 16);
             return new Guid(hashedBytes);
+        }
+
+        public static bool Contains(this string source, string toCheck, StringComparison comp)
+        {
+            return source?.IndexOf(toCheck, comp) >= 0;
         }
     }
 
@@ -531,24 +534,21 @@ namespace ME3Explorer
         public static void RestoreAndBringToFront(this Window window)
         {
             WindowInteropHelper helper = new WindowInteropHelper(window);
-            //if window is minimized
-            if (IsIconic(helper.Handle))
-            {
-                //SW_RESTORE = 9;
-                ShowWindowAsync(helper.Handle, 9);
-            }
-            SetForegroundWindow(helper.Handle);
+            RestoreAndBringToFront(helper.Handle);
         }
 
-        public static void RestoreAndBringToFront(this System.Windows.Forms.Form form)
+        public static void RestoreAndBringToFront(this System.Windows.Forms.Form form) => RestoreAndBringToFront(form.Handle);
+
+        public static void RestoreAndBringToFront(this IntPtr windowHandle)
         {
             //if window is minimized
-            if (IsIconic(form.Handle))
+            if (IsIconic(windowHandle))
             {
-                //SW_RESTORE = 9;
-                ShowWindowAsync(form.Handle, 9);
+                const int SW_RESTORE = 9;
+                ShowWindowAsync(windowHandle, SW_RESTORE);
             }
-            SetForegroundWindow(form.Handle);
+
+            SetForegroundWindow(windowHandle);
         }
 
         public static bool IsForegroundWindow(this System.Windows.Forms.Form form)
@@ -794,6 +794,11 @@ namespace ME3Explorer
         /// Converts Unreal rotation units to Degrees
         /// </summary>
         public static float ToDegrees(this int unrealRotationUnits) => unrealRotationUnits * 360f / 65536f;
+
+        /// <summary>
+        /// Converts Unreal rotation units to Radians
+        /// </summary>
+        public static double ToRadians(this int unrealRotationUnits) => unrealRotationUnits * 360.0 / 65536.0 * Math.PI / 180.0;
 
         /// <summary>
         /// Checks if this object is of a specific generic type (e.g. List&lt;IntProperty&gt;)

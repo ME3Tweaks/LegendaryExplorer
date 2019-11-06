@@ -501,10 +501,10 @@ namespace MassEffect.NativesEditor.Views
         {
             if(package != null)
             {
-                txt_cdxPgeDesc.Text = GlobalFindStrRefbyID(SelectedCodexPage.Value.Description, package);
-                txt_cdxPgeTitle.Text = GlobalFindStrRefbyID(SelectedCodexPage.Value.Title, package);
-                txt_cdxSecDesc.Text = GlobalFindStrRefbyID(SelectedCodexSection.Value.Description, package);
-                txt_cdxSecTitle.Text = GlobalFindStrRefbyID(SelectedCodexSection.Value.Title, package);
+                txt_cdxPgeDesc.Text = GlobalFindStrRefbyID(SelectedCodexPage.Value?.Description ?? 0, package);
+                txt_cdxPgeTitle.Text = GlobalFindStrRefbyID(SelectedCodexPage.Value?.Title ?? 0, package);
+                txt_cdxSecDesc.Text = GlobalFindStrRefbyID(SelectedCodexSection.Value?.Description ?? 0, package);
+                txt_cdxSecTitle.Text = GlobalFindStrRefbyID(SelectedCodexSection.Value?.Title ?? 0, package);
             }
         }
     }

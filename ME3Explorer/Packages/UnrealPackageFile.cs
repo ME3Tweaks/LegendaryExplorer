@@ -478,6 +478,7 @@ namespace ME3Explorer.Packages
             }
         }
 
+        private readonly object _updatelock = new object();
         readonly HashSet<PackageUpdate> pendingUpdates = new HashSet<PackageUpdate>();
         readonly List<Task> tasks = new List<Task>();
         readonly Dictionary<int, bool> taskCompletion = new Dictionary<int, bool>();
@@ -485,9 +486,17 @@ namespace ME3Explorer.Packages
         protected void updateTools(PackageChange change, int index)
         {
             PackageUpdate update = new PackageUpdate { change = change, index = index };
-            if (!pendingUpdates.Contains(update))
+            bool isNewUpdate;
+            lock (_updatelock)
             {
-                pendingUpdates.Add(update);
+                isNewUpdate = !pendingUpdates.Contains(update);
+            }
+            if (isNewUpdate)
+            {
+                lock (_updatelock)
+                {
+                    pendingUpdates.Add(update);
+                }
                 Task task = Task.Delay(queuingDelay);
                 taskCompletion[task.Id] = false;
                 tasks.Add(task);
@@ -498,10 +507,16 @@ namespace ME3Explorer.Packages
                     {
                         tasks.Clear();
                         taskCompletion.Clear();
-                        var removedImports = pendingUpdates.Where(u => u.change == PackageChange.ImportRemove).Select(u => u.index).ToList();
-                        var removedExports = pendingUpdates.Where(u => u.change == PackageChange.ExportRemove).Select(u => u.index).ToList();
+                        List<PackageUpdate> updates;
+                        lock (_updatelock)
+                        {
+                            updates = pendingUpdates.ToList();
+                            pendingUpdates.Clear();
+                        }
+                        var removedImports = updates.Where(u => u.change == PackageChange.ImportRemove).Select(u => u.index).ToList();
+                        var removedExports = updates.Where(u => u.change == PackageChange.ExportRemove).Select(u => u.index).ToList();
                         var pendingUpdatesList = new List<PackageUpdate>();
-                        foreach (PackageUpdate upd in pendingUpdates)
+                        foreach (PackageUpdate upd in updates)
                         {
                             switch (upd.change)
                             {
@@ -529,7 +544,6 @@ namespace ME3Explorer.Packages
                                     break;
                             }
                         }
-                        pendingUpdates.Clear();
                         foreach (var item in Tools)
                         {
                             item.handleUpdate(pendingUpdatesList);

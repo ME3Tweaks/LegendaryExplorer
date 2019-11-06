@@ -242,7 +242,7 @@
                     <MenuItem Header="Dump All Shaders in File" Command="{Binding DumpAllShadersCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                     <MenuItem Header="Dump FLocalVertexFactory Shaders for Selected Material" Command="{Binding DumpMaterialShadersCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                     <MenuItem Header="Open this map in game" Command="{Binding OpenMapInGameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-                    <MenuItem Header="Correct Orikon Wwise Offsets" Click="CorrectOnDiskOffsetsForWwise_Click"/>
+                    <MenuItem Header="Re-serialize export" Click="ReSerializeExport_Click"/>
                     <MenuItem Header="Run PropertyCollection test" Click="RunPropertyCollectionTest"/>
                     <MenuItem Header="UDKify" Click="UDKifyTest"/>
                     <MenuItem Header="Make List of ME1 files with externally referenced textures" Click="MakeME1TextureFileList"/>

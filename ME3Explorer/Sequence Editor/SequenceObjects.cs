@@ -19,7 +19,7 @@ using ME1Explorer;
 
 namespace ME3Explorer.SequenceObjects
 {
-    public enum VarTypes { Int, Bool, Object, Float, StrRef, MatineeData, Extern, String };
+    public enum VarTypes { Int, Bool, Object, Float, StrRef, MatineeData, Extern, String, Vector };
     public abstract class SeqEdEdge : PPath
     {
         public PNode start;
@@ -51,6 +51,8 @@ namespace ME3Explorer.SequenceObjects
         static readonly Color boolColor = Color.FromArgb(215, 37, 33); //red
         static readonly Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static readonly Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
+        static readonly Color stringColor = Color.FromArgb(24, 219, 12);//lime green
+        static readonly Color vectorColor = Color.FromArgb(127, 123, 32);//dark gold
         protected static readonly Color EventColor = Color.FromArgb(214, 30, 28);
         protected static readonly Color titleColor = Color.FromArgb(255, 255, 128);
         protected static readonly Brush titleBoxBrush = new SolidBrush(Color.FromArgb(112, 112, 112));
@@ -152,6 +154,12 @@ namespace ME3Explorer.SequenceObjects
                             res += weaponEnum.Value;
                         }
                         break;
+                    case "BioSeqAct_BlackScreen":
+                        if (properties.GetProp<EnumProperty>("m_eBlackScreenAction") is {} blackScreenProp)
+                        {
+                            res += blackScreenProp.Value.Name.Split('_').Last();
+                        }
+                        break;
                 }
             }
             return res;
@@ -171,6 +179,10 @@ namespace ME3Explorer.SequenceObjects
                     return objectColor;
                 case VarTypes.MatineeData:
                     return interpDataColor;
+                case VarTypes.String:
+                    return stringColor;
+                case VarTypes.Vector:
+                    return vectorColor;
                 default:
                     return Color.Black;
             }
@@ -192,6 +204,8 @@ namespace ME3Explorer.SequenceObjects
                 return VarTypes.StrRef;
             if (s.Contains("String"))
                 return VarTypes.String;
+            if (s.Contains("Vector"))
+                return VarTypes.Vector;
             return VarTypes.Extern;
         }
 
@@ -266,6 +280,7 @@ namespace ME3Explorer.SequenceObjects
 
         public string GetValue()
         {
+            const string unknownValue = "???";
             try
             {
                 var props = export.GetProperties();
@@ -336,7 +351,7 @@ namespace ME3Explorer.SequenceObjects
                                 case ObjectProperty objProp when objProp.Name == "ObjValue":
                                     {
                                         IEntry entry = pcc.GetEntry(objProp.Value);
-                                        if (entry == null) return "???";
+                                        if (entry == null) return unknownValue;
                                         if (entry is ExportEntry objValueExport && objValueExport.GetProperty<NameProperty>("Tag") is NameProperty tagProp && tagProp.Value != objValueExport.ObjectName)
                                         {
                                             return $"#{entry.UIndex}\n{entry.ObjectName.Instanced}\n{ tagProp.Value}";
@@ -348,7 +363,7 @@ namespace ME3Explorer.SequenceObjects
                                     }
                             }
                         }
-                        return "???";
+                        return unknownValue;
                     case VarTypes.StrRef:
                         foreach (var prop in props)
                         {
@@ -358,14 +373,14 @@ namespace ME3Explorer.SequenceObjects
                                 return TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strRefProp.Value, export.FileRef.Game, export.FileRef);
                             }
                         }
-                        return "???";
+                        return unknownValue;
                     case VarTypes.String:
                         var strValue = props.GetProp<StrProperty>("StrValue");
                         if (strValue != null)
                         {
                             return strValue.Value;
                         }
-                        return "???";
+                        return unknownValue;
                     case VarTypes.Extern:
                         foreach (var prop in props)
                         {
@@ -382,16 +397,22 @@ namespace ME3Explorer.SequenceObjects
                                     return $"Extern:\n{strProp.Value}";
                             }
                         }
-                        return "???";
+                        return unknownValue;
                     case VarTypes.MatineeData:
                         return $"#{UIndex}\nInterpData";
+                    case VarTypes.Vector:
+                        if (props.GetProp<StructProperty>("VectValue") is { } vecStruct)
+                        {
+                            return CommonStructs.GetVector3(vecStruct).ToString();
+                        }
+                        return unknownValue;
                     default:
-                        return "???";
+                        return unknownValue;
                 }
             }
             catch (Exception)
             {
-                return "???";
+                return unknownValue;
             }
         }
 

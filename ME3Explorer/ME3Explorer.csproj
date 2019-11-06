@@ -284,6 +284,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AnimationExplorer\AnimationExplorerWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AnimationExplorer\Requirement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ASI\ASIManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -360,6 +368,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="AnimationExplorer\AnimationExplorerWPF.xaml.cs">
+      <DependentUpon>AnimationExplorerWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AnimationExplorer\Requirement.xaml.cs">
+      <DependentUpon>Requirement.xaml</DependentUpon>
+    </Compile>
     <Compile Include="APIKeysP*.cs" />
     <Compile Include="ASI\ASIManager.xaml.cs">
       <DependentUpon>ASIManager.xaml</DependentUpon>
@@ -387,6 +401,8 @@
     <Compile Include="CloningImportingAndRelinking\Relinker.cs" />
     <Compile Include="Deconstructors.cs" />
     <Compile Include="Dialogue Editor\DialogueObjects.cs" />
+    <Compile Include="GameInterop\AnimViewer.cs" />
+    <Compile Include="GameInterop\GameController.cs" />
     <Compile Include="MassEffectModder\MassEffectModderIPCWrapper.cs" />
     <Compile Include="MaterialViewer\MaterialExportLoader.xaml.cs">
       <DependentUpon>MaterialExportLoader.xaml</DependentUpon>
@@ -649,6 +665,9 @@
     <Compile Include="SharedUI\AttachedProperties.cs" />
     <Compile Include="SharedUI\Converters\EntryGameMatchVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeBooleanConverter.cs" />
+    <Compile Include="SharedUI\Converters\EnumComparisonConverter.cs" />
+    <Compile Include="SharedUI\Converters\InverseBoolToVisibilityConverter.cs" />
+    <Compile Include="SharedUI\Converters\InverseVisibilityConverter.cs" />
     <Compile Include="SharedUI\CopyDir.cs" />
     <Compile Include="SharedUI\ExportScanner.xaml.cs">
       <DependentUpon>ExportScanner.xaml</DependentUpon>
@@ -659,6 +678,9 @@
     </Compile>
     <Compile Include="SharedUI\PeregrineTreeView\NodeTreeSelectionBehavior.cs" />
     <Compile Include="SharedUI\ListBoxTask.cs" />
+    <Compile Include="SharedUI\SearchBox.xaml.cs">
+      <DependentUpon>SearchBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\ToolBox.xaml.cs">
       <DependentUpon>ToolBox.xaml</DependentUpon>
     </Compile>
@@ -1141,6 +1163,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SharedUI\PromptDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\SearchBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

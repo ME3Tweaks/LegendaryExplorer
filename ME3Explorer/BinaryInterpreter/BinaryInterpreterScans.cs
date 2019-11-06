@@ -3299,16 +3299,18 @@ namespace ME3Explorer
                                 const float shift = 0.70710678118f;
                                 const float scale = 1.41421356237f;
                                 offsetRotX = offset;
-                                rotX = (data[0] & 0x7FFF) / 32767.0f * scale - shift;
-                                offset += 4;
+                                rotX = (BitConverter.ToUInt16(data, offset) & 0x7FFF) / 32767.0f * scale - shift;
+                                offset += 2;
                                 offsetRotY = offset;
-                                rotY = (data[1] & 0x7FFF) / 32767.0f * scale - shift;
-                                offset += 4;
+                                rotY = (BitConverter.ToUInt16(data, offset) & 0x7FFF) / 32767.0f * scale - shift;
+                                offset += 2;
                                 offsetRotZ = offset;
-                                rotZ = (data[2] & 0x7FFF) / 32767.0f * scale - shift;
-                                //float w = 1.0f - (rotX * rotX + rotY * rotY + rotZ * rotZ);
-                                //w = w >= 0.0f ? (float)Math.Sqrt(w) : 0.0f;
-                                //int s = ((data[0] >> 14) & 2) | ((data[1] >> 15) & 1);
+                                rotZ = (BitConverter.ToUInt16(data, offset) & 0x7FFF) / 32767.0f * scale - shift;
+                                offset += 2;
+                                float w = 1.0f - (rotX * rotX + rotY * rotY + rotZ * rotZ);
+                                w = w >= 0.0f ? (float)Math.Sqrt(w) : 0.0f;
+                                int s = ((BitConverter.ToUInt16(data, offsetRotX) >> 14) & 2) | ((BitConverter.ToUInt16(data, offsetRotY) >> 15) & 1);
+
                                 break;
                         }
 

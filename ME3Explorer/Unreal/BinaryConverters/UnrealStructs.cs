@@ -96,6 +96,15 @@ namespace ME3Explorer.Unreal.BinaryConverters
             Yaw = yaw;
             Roll = roll;
         }
+
+        public Vector3 GetDirectionalVector()
+        {
+            var cp = Math.Cos(Pitch.ToRadians());
+            var cy = Math.Cos(Yaw.ToRadians());
+            var sp = Math.Sin(Pitch.ToRadians());
+            var sy = Math.Sin(Yaw.ToRadians());
+            return new Vector3((float)(cp * cy), (float)(cp * sy), (float)sp);
+        }
     }
 
     // -1 to 1 converted to 0-255

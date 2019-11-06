@@ -4591,23 +4591,28 @@ namespace ME3Explorer
             Process.Start(MEDirectories.ExecutablePath(Pcc.Game), $"{tempMapName} -nostartupmovies");
         }
 
-        private void CorrectOnDiskOffsetsForWwise_Click(object sender, RoutedEventArgs e)
+        private void ReSerializeExport_Click(object sender, RoutedEventArgs e)
         {
-            var file = @"D:\Origin Games\Mass Effect 3\BIOGame\DLC\DLC_CON_PEOM\CookedPCConsole\BioD_PEOM_505_HammerAssault.pcc";
-            using (var hammer505 = MEPackageHandler.OpenMEPackage(file))
+            if (TryGetSelectedExport(out ExportEntry export))
             {
-                MemoryStream ms = new MemoryStream(File.ReadAllBytes(file));
-                var wwisebanks = hammer505.Exports.Where(x => x.ClassName == "WwiseBank").ToList();
-                foreach (var wwisebank in wwisebanks)
-                {
-                    //Correct the offset on disk
-                    int offset = wwisebank.DataOffset + wwisebank.propsEnd() + 16;
-                    ms.Position = wwisebank.DataOffset + wwisebank.propsEnd() + 12;
-                    ms.WriteInt32(offset);
-                }
+                PropertyCollection props = export.GetProperties();
+                ObjectBinary bin = ObjectBinary.From(export) ?? export.getBinaryData();
+                byte[] original = export.Data;
 
-                File.WriteAllBytes(file, ms.ToArray());
-                Debug.WriteLine("Done");
+                export.WriteProperties(props);
+                export.setBinaryData(bin);
+                byte[] changed = export.Data;
+                if (original.SequenceEqual(changed))
+                {
+                    MessageBox.Show(this, "reserialized identically!");
+                }
+                else
+                {
+                    MessageBox.Show(this, "Differences detected!");
+                    string userFolder = Path.Combine(@"C:\Users", Environment.UserName);
+                    File.WriteAllBytes(Path.Combine(userFolder, "converted.bin"), changed);
+                    File.WriteAllBytes(Path.Combine(userFolder, "original.bin"), original);
+                }
             }
         }
 

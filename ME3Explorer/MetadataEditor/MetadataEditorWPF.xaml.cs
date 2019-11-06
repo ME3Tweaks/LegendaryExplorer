@@ -434,6 +434,10 @@ namespace ME3Explorer.MetadataEditor
             {
                 var selectedImpExp = InfoTab_PackageLink_ComboBox.SelectedIndex;
                 var unrealIndex = selectedImpExp - CurrentLoadedEntry.FileRef.ImportCount;
+                if (unrealIndex == CurrentLoadedEntry?.UIndex)
+                {
+                    return;
+                }
                 headerByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXLINK : HEADER_OFFSET_IMP_IDXLINK, BitConverter.GetBytes(unrealIndex));
                 Header_Hexbox.Refresh();
             }
