@@ -8,6 +8,7 @@ using ME3Explorer.Unreal;
 using System.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using SharpDX;
 
 namespace ME3Explorer.CurveEd
 {
@@ -19,20 +20,6 @@ namespace ME3Explorer.CurveEd
         InterpCurveVector2D,
         InterpCurveTwoVectors,
         InterpCurveLinearColor,
-    }
-
-    public struct Vector
-    {
-        public float X;
-        public float Y;
-        public float Z;
-
-        public Vector(float x, float y, float z)
-        {
-            X = x;
-            Y = y;
-            Z = z;
-        }
     }
 
     public class InterpCurve
@@ -92,9 +79,9 @@ namespace ME3Explorer.CurveEd
                     Curves.Add(new Curve("X", vals));
                     break;
                 case CurveType.InterpCurveVector:
-                    Vector OutValVec = new Vector(0, 0, 0);
-                    Vector ArriveTangentVec = new Vector(0, 0, 0);
-                    Vector LeaveTangentVec = new Vector(0, 0, 0);
+                    Vector3 OutValVec = new Vector3(0, 0, 0);
+                    Vector3 ArriveTangentVec = new Vector3(0, 0, 0);
+                    Vector3 LeaveTangentVec = new Vector3(0, 0, 0);
                     var x = new LinkedList<CurvePoint>();
                     var y = new LinkedList<CurvePoint>();
                     var z = new LinkedList<CurvePoint>();
@@ -108,13 +95,13 @@ namespace ME3Explorer.CurveEd
                                     InVal = floatProp.Value;
                                     break;
                                 case StructProperty structProp when structProp.Name == "OutVal":
-                                    OutValVec = GetVector(structProp);
+                                    OutValVec = CommonStructs.GetVector3(structProp);
                                     break;
                                 case StructProperty structProp when structProp.Name == "ArriveTangent":
-                                    ArriveTangentVec = GetVector(structProp);
+                                    ArriveTangentVec = CommonStructs.GetVector3(structProp);
                                     break;
                                 case StructProperty structProp when structProp.Name == "LeaveTangent":
-                                    LeaveTangentVec = GetVector(structProp);
+                                    LeaveTangentVec = CommonStructs.GetVector3(structProp);
                                     break;
                                 case EnumProperty enumProp when enumProp.Name == "InterpMode" && Enum.TryParse(enumProp.Value, out CurveMode enumVal):
                                     InterpMode = enumVal;
@@ -292,28 +279,5 @@ namespace ME3Explorer.CurveEd
 
             return null;
         }
-
-        private static Vector GetVector(StructProperty props)
-        {
-            Vector vec = new Vector();
-            foreach (var prop in props.Properties)
-            {
-                switch (prop)
-                {
-                    case FloatProperty fltProp when fltProp.Name == "X":
-                        vec.X = fltProp.Value;
-                        break;
-                    case FloatProperty fltProp when fltProp.Name == "Y":
-                        vec.Y = fltProp.Value;
-                        break;
-                    case FloatProperty fltProp when fltProp.Name == "Z":
-                        vec.Z = fltProp.Value;
-                        break;
-                }
-            }
-            return vec;
-        }
-
-
     }
 }

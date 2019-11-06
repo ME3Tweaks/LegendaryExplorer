@@ -6,6 +6,16 @@ using ME3Explorer.Packages;
 using UMD.HCIL.Piccolo.Nodes;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SequenceObjects;
+using ME3Explorer.Unreal.ME3Enums;
+using System;
+using System.Linq;
+using System.Windows;
+using ME3Explorer.Unreal.BinaryConverters;
+using SharpDX;
+using UMD.HCIL.Piccolo;
+using UMD.HCIL.Piccolo.Event;
+using Color = System.Drawing.Color;
+using RectangleF = System.Drawing.RectangleF;
 
 namespace ME3Explorer.SplineNodes
 {
@@ -13,7 +23,6 @@ namespace ME3Explorer.SplineNodes
     {
         static readonly Color commentColor = Color.FromArgb(74, 63, 190);
         public static Pen splineconnnectorPen = Pens.DeepPink;
-
         protected SplineNode(int idx, IMEPackage p, PathingGraphEditor grapheditor)
         {
             Tag = new ArrayList(); //outbound reachspec edges.
@@ -21,53 +30,13 @@ namespace ME3Explorer.SplineNodes
             g = grapheditor;
             index = idx;
             export = pcc.GetUExport(index);
+
             comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
             comment.Y = 52 + comment.Height;
             comment.Pickable = false;
             this.AddChild(comment);
             this.Pickable = true;
-        }
-
-        protected SplineNode(int idx, IMEPackage p)
-        {
-            pcc = p;
-            index = idx;
-            if (idx >= 0)
-            {
-                export = pcc.GetUExport(index);
-                comment = new SText(GetComment(), commentColor, false);
-            }
-
-            comment.X = 0;
-            comment.Y = 0 - comment.Height;
-            comment.Pickable = false;
-            this.AddChild(comment);
-            this.Pickable = true;
-        }
-
-        void appendToComment(string s)
-        {
-            if (comment.Text.Length > 0)
-            {
-                comment.TranslateBy(0, -1 * comment.Height);
-                comment.Text += s + "\n";
-            }
-            else
-            {
-                comment.Text += s + "\n";
-                comment.TranslateBy(0, -1 * comment.Height);
-            }
-        }
-
-        public void Select()
-        {
-            shape.Pen = selectedPen;
-        }
-
-        public void Deselect()
-        {
-            shape.Pen = outlinePen;
         }
 
         public override bool Intersects(RectangleF _bounds)
@@ -77,160 +46,382 @@ namespace ME3Explorer.SplineNodes
         }
     }
 
-    public class PendingSplineNode : SplineNode
+    public sealed class SplineActorNode : SplineNode
     {
-        private static readonly Color color = Color.FromArgb(255, 0, 0);
+        public List<Spline> Splines = new List<Spline>();
+        public List<ExportEntry> connections = new List<ExportEntry>();
+        public SplinePointControlNode ArriveTangentControlNode;
+        public SplinePointControlNode LeaveTangentControlNode;
+        private List<SplineActorNode> LinksFrom = new List<SplineActorNode>();
 
-        public PendingSplineNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, p, grapheditor)
-        {
-            const float w = 50;
-            const float h = 50;
-            shape = PPath.CreateRectangle(0, 0, w, h);
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = splineNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            SText val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
-        }
-    }
-
-    public class SplineActorNode : SplineNode
-    {
         private static readonly Color color = Color.FromArgb(255, 30, 30);
-        readonly PointF[] edgeShape = { new PointF(0, 50), new PointF(0, 25), new PointF(10, 15), new PointF(15, 10), new PointF(30, 5), new PointF(40, 0), new PointF(50, 0), new PointF(40, 5), new PointF(30, 10), new PointF(15, 15), new PointF(5, 25) };
+        readonly PointF[] edgeShape = { new PointF(21, 25), new PointF(29, 25), new PointF(27, 5), new PointF(40, 5), new PointF(40, 15), new PointF(50, 0), new PointF(40, -15), new PointF(40, -5), new PointF(0, -5), new PointF(0, 5), new PointF(23, 5) };
         public SplineActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
-            const float w = 50;
-            const float h = 50;
+            var splprop = export.GetProperty<ArrayProperty<StructProperty>>("Connections");
+            if (splprop != null)
+            {
+                foreach (var prop in splprop)
+                {
+                    var spcomp = prop.GetProp<ObjectProperty>("SplineComponent");
+                    var cmpidx = spcomp?.Value ?? 0;
+                    var cntcomp = prop.GetProp<ObjectProperty>("ConnectTo");
+                    pcc.TryGetUExport(cntcomp?.Value ?? 0, out ExportEntry cnctn);
+                    if (spcomp != null && cmpidx > 0)
+                    {
+                        var component = pcc.GetUExport(cmpidx);
+                        var spline = new Spline(component, grapheditor, cnctn);
+                        Splines.Add(spline);
+
+                        spline.Pickable = false;
+                        g.nodeLayer.AddChild(spline);
+                    }
+                    connections.Add(cnctn);
+                }
+            }
+
+            Vector3 tangent = CommonStructs.GetVector3(export, "SplineActorTangent", new Vector3(300f, 0f, 0f));
+
+            //(float controlPointX, float controlPointY, _) = tangent;
+
+            (float controlPointX, float controlPointY, float controlPointZ) = ActorUtils.GetLocalToWorld(export).TransformNormal(tangent);
+
+            LeaveTangentControlNode = new SplinePointControlNode(this, controlPointX, controlPointY, controlPointZ, UpdateMode.LeaveTangent);
+            ArriveTangentControlNode = new SplinePointControlNode(this, -controlPointX, -controlPointY, controlPointZ, UpdateMode.ArriveTangent);
+            AddChild(LeaveTangentControlNode);
+            AddChild(ArriveTangentControlNode);
+
             shape = PPath.CreatePolygon(edgeShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = splineNodeBrush;
             shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            SText val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
+            AddChild(shape);
+            float w = shape.Width;
+            float h = shape.Height;
+            Bounds = new RectangleF(0, 0, w, h);
+            SText val = new SText(idx.ToString())
+            {
+                Pickable = false,
+                TextAlignment = StringAlignment.Center
+            };
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
+            AddChild(val);
+            SetOffset(x, y);
         }
-    }
 
-    public class SplinePoint0Node : SplineNode
-    {
-        private static readonly Color color = Color.FromArgb(0, 0, 255);
-        private SplinePoint1Node destinationPoint;
-
-        SharpDX.Vector2 a;
-        SharpDX.Vector2 tan1;
-        SharpDX.Vector2 tan2;
-        SharpDX.Vector2 d;
-
-        public SplinePoint0Node(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, p, grapheditor)
+        public override void CreateConnections(List<PathfindingNodeMaster> Objects)
         {
-            StructProperty splineInfo = export.GetProperty<StructProperty>("SplineInfo");
-            if (splineInfo != null)
+            g.edgeLayer.AddChild(ArriveTangentControlNode.CreateConnection(g));
+            g.edgeLayer.AddChild(LeaveTangentControlNode.CreateConnection(g));
+
+            ArriveTangentControlNode.Hidden = true;
+            LeaveTangentControlNode.Hidden = true;
+
+            LinksFrom.Clear();
+            if (export.GetProperty<ArrayProperty<ObjectProperty>>("LinksFrom") is {} linksFromProp)
             {
-                var pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
-                StructProperty point0 = pointsProp[0];
-                StructProperty point1 = pointsProp[1];
-                a = CommonStructs.GetVector2(point0.GetProp<StructProperty>("OutVal"));
-                tan1 = CommonStructs.GetVector2(point0.GetProp<StructProperty>("LeaveTangent"));
-                tan2 = CommonStructs.GetVector2(point1.GetProp<StructProperty>("ArriveTangent"));
-                d = CommonStructs.GetVector2(point1.GetProp<StructProperty>("OutVal"));
-                const float w = 25;
-                const float h = 25;
-                shape = PPath.CreateEllipse(0, 0, w, h);
-                outlinePen = new Pen(color);
-                shape.Pen = outlinePen;
-                shape.Brush = pathfindingNodeBrush;
-                shape.Pickable = false;
-                this.AddChild(shape);
-                this.Bounds = new RectangleF(0, 0, w, h);
-                SText val = new SText($"{export.Index}\nSpline Start");
-                val.Pickable = false;
-                val.TextAlignment = StringAlignment.Center;
-                val.X = w / 2 - val.Width / 2;
-                val.Y = h / 2 - val.Height / 2;
-                this.AddChild(val);
-                this.TranslateBy(x, y);
+                foreach (ObjectProperty objProp in linksFromProp)
+                {
+                    if (pcc.TryGetUExport(objProp.Value, out ExportEntry exp) && Objects.FirstOrDefault(node => node.export == exp) is SplineActorNode splineActorNode)
+                    {
+                        LinksFrom.Add(splineActorNode);
+                    }
+                }
             }
         }
 
-        internal void SetDestinationPoint(SplinePoint1Node point1node)
+        public enum UpdateMode
         {
-            destinationPoint = point1node;
+            ArriveTangent,
+            LeaveTangent,
+            Movement
         }
 
-        /// <summary>
-        /// This beginning node of the spline connects to the destination point over a bezier curve.
-        /// </summary>
-        public override void CreateConnections(List<PathfindingNodeMaster> graphNodes)
+        public override void OnMouseDrag(PInputEventArgs e)
         {
-            PathfindingEditorEdge edge = new PathfindingEditorEdge()
+            base.OnMouseDrag(e);
+            UpdateSplines(UpdateMode.Movement);
+            dragging = true;
+        }
+
+        private bool dragging;
+        public override void OnMouseUp(PInputEventArgs e)
+        {
+            base.OnMouseUp(e);
+            if (dragging)
             {
-                EndPoints = { [0] = this, [1] = destinationPoint },
-                OutboundConnections = { [0] = true, [1] = true},
-                Pen = splineconnnectorPen
-            };
+                UpdateSplines(UpdateMode.Movement, true);
+                dragging = false;
+            }
+        }
 
-            //TODO: Calculate where points B and C lie in actual space for calculating the overhead curve
-            //edge.BezierPoints = new float[2];
-            //SharpDX.Vector2 b = a + tan1 / 3.0f; // Operator overloading is lovely. Java can go die in a hole.
-            //SharpDX.Vector2 c = d - tan2 / 3.0f;
+        public void UpdateSplines(UpdateMode mode, bool save = false)
+        {
+            if (mode == UpdateMode.ArriveTangent || mode == UpdateMode.LeaveTangent)
+            {
+                Vector3 worldCoords;
+                if (mode == UpdateMode.ArriveTangent)
+                {
+                    worldCoords = new Vector3(ArriveTangentControlNode.OffsetX, ArriveTangentControlNode.OffsetY, ArriveTangentControlNode.Z);
+                    LeaveTangentControlNode.SetOffset(-worldCoords.X, -worldCoords.Y);
 
-            //((ArrayList)Tag).Add(edge);
-            //((ArrayList)destinationPoint.Tag).Add(edge);
-            //edge.Tag = new ArrayList();
-            //((ArrayList)edge.Tag).Add(this);
-            //((ArrayList)edge.Tag).Add(destinationPoint);
-            g.edgeLayer.AddChild(edge);
+                    worldCoords = -worldCoords;
+                }
+                else
+                {
+                    worldCoords = new Vector3(LeaveTangentControlNode.OffsetX, LeaveTangentControlNode.OffsetY, LeaveTangentControlNode.Z);
+                    ArriveTangentControlNode.SetOffset(-worldCoords.X, -worldCoords.Y);
+                }
+
+                if (save)
+                {
+                    //will cause a refresh,so no need to update UI
+                    export.WriteProperty(CommonStructs.Vector3(ActorUtils.GetWorldToLocal(export).TransformNormal(worldCoords), "SplineActorTangent"));
+                    return;
+                }
+
+                foreach (Spline spline in Splines)
+                {
+                    spline.SplineInfo.Points[0].ArriveTangent = -worldCoords;
+                    spline.SplineInfo.Points[0].LeaveTangent = worldCoords;
+                    UpdateSpline(spline);
+                }
+
+                foreach (SplineActorNode prevSplineActor in LinksFrom)
+                {
+                    foreach (Spline spline in prevSplineActor.Splines)
+                    {
+                        if (spline.NextActor == export)
+                        {
+                            spline.SplineInfo.Points[1].ArriveTangent = worldCoords;
+                            spline.SplineInfo.Points[1].LeaveTangent = -worldCoords;
+                            UpdateSpline(spline);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                float z = (float)SharedPathfinding.GetLocation(export).Z;
+                Vector3 location = new Vector3(OffsetX, OffsetY, z);
+
+                if (save)
+                {
+                    //will cause a refresh,so no need to update UI
+                   SharedPathfinding.SetLocation(export, location.X, location.Y, location.Z);
+                   return;
+                }
+
+                foreach (Spline spline in Splines)
+                {
+                    spline.SplineInfo.Points[0].OutVal = location;
+                    UpdateSpline(spline);
+                }
+
+                foreach(SplineActorNode prevSplineActor in LinksFrom)
+                {
+                    foreach (Spline spline in prevSplineActor.Splines)
+                    {
+                        if (spline.NextActor == export)
+                        {
+                            spline.SplineInfo.Points[1].OutVal = location;
+                            UpdateSpline(spline);
+                        }
+                    }
+                }
+            }
+
+            PathingGraphEditor.UpdateEdgeStraight(ArriveTangentControlNode.Edge);
+            PathingGraphEditor.UpdateEdgeStraight(LeaveTangentControlNode.Edge);
+
+            void UpdateSpline(Spline spline)
+            {
+                spline.RegenerateReparamTable();
+                for (int i = 0; i < spline.ReparamTable.Points.Count; i++)
+                {
+                    (float x, float y, _) = spline.SplineInfo.Eval(spline.ReparamTable.Points[i].OutVal, Vector3.Zero);
+                    spline.nodes[i].SetOffset(x, y);
+                }
+
+                foreach (PathfindingEditorEdge edge in spline.edges)
+                {
+                    PathingGraphEditor.UpdateEdgeStraight(edge);
+                }
+            }
+        }
+
+        public override void Select()
+        {
+            base.Select();
+            ArriveTangentControlNode.Hidden = false;
+            LeaveTangentControlNode.Hidden = false;
+        }
+
+        public override void Deselect()
+        {
+            base.Deselect();
+            ArriveTangentControlNode.Hidden = true;
+            LeaveTangentControlNode.Hidden = true;
+        }
+    }
+    public sealed class Spline : PNode
+    {
+        public List<SplineParambleNode> nodes = new List<SplineParambleNode>();
+        public List<PathfindingEditorEdge> edges = new List<PathfindingEditorEdge>();
+        public InterpCurve<Vector3> SplineInfo;
+        public InterpCurve<float> ReparamTable;
+        public ExportEntry NextActor;
+
+        public Spline(ExportEntry component, PathingGraphEditor g, ExportEntry nextActor)
+        {
+            Pickable = false;
+            NextActor = nextActor;
+            StructProperty splineInfoProp = component.GetProperty<StructProperty>("SplineInfo");
+            if (splineInfoProp != null)
+            {
+                SplineInfo = InterpCurve<Vector3>.FromStructProperty(splineInfoProp);
+                var reparamProp = component.GetProperty<StructProperty>("SplineReparamTable");
+                if (reparamProp != null)
+                {
+                    ReparamTable = InterpCurve<float>.FromStructProperty(reparamProp);
+                }
+                else
+                {
+                    ReparamTable = new InterpCurve<float>();
+                    RegenerateReparamTable();
+                }
+
+                Draw(g);
+            }
+        }
+
+        public void Draw(PathingGraphEditor g)
+        {
+            foreach (InterpCurvePoint<float> reparamTablePoint in ReparamTable.Points)
+            {
+                (float x, float y, _) = SplineInfo.Eval(reparamTablePoint.OutVal, Vector3.Zero);
+                nodes.Add(new SplineParambleNode(x, y));
+            }
+
+            AddChildren(nodes);
+            
+            for (int i = 1; i < nodes.Count; i++)
+            {
+                PathfindingEditorEdge edge = new PathfindingEditorEdge
+                {
+                    EndPoints = { [0] = nodes[i - 1], [1] = nodes[i] },
+                    Pen = Pens.Purple
+                };
+                edges.Add(edge);
+                g.edgeLayer.AddChild(edge);
+            }
+        }
+
+        public void RegenerateReparamTable()
+        {
+            ReparamTable.Points.Clear();
+            const int steps = 10;
+            float totalDist = 0;
+
+            float input = SplineInfo.Points[0].InVal;
+            float end = SplineInfo.Points.Last().InVal;
+            float interval = (end - input) / (steps - 1);
+            Vector3 oldPos = SplineInfo.Eval(input, Vector3.Zero);
+            ReparamTable.AddPoint(totalDist, input);
+            input += interval;
+            for (int i = 1; i < steps; i++)
+            {
+                Vector3 newPos = SplineInfo.Eval(input, Vector3.Zero);
+                totalDist += (newPos - oldPos).Length();
+                oldPos = newPos;
+                ReparamTable.AddPoint(totalDist, input);
+                input += interval;
+            }
         }
     }
 
-    public class SplinePoint1Node : SplineNode
+    public sealed class SplineParambleNode : PNode
     {
-        private static readonly Color color = Color.FromArgb(0, 0, 255);
-        public SplinePoint1Node(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, p, grapheditor)
+        private static readonly Color color = Color.Purple;
+
+
+        public SplineParambleNode(float x, float y)
         {
-            const float w = 20;
-            const float h = 20;
-            shape = PPath.CreateEllipse(0, 0, w, h);
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            const float w = 5;
+            const float h = 5;
+            PPath shape = PPath.CreateRectangle(0, 0, w, h);
+            shape.Pen = new Pen(color);
+            shape.Brush = new SolidBrush(color);
             shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            SText val = new SText(export.Index + "\nSpline End");
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
+            AddChild(shape);
+            Bounds = new RectangleF(0, 0, w, h);
+            TranslateBy(x, y);
+            Pickable = false;
+        }
+    }
+
+    public sealed class SplinePointControlNode : PNode
+    {
+        private static readonly Color color = Color.White;
+        private readonly SplineActorNode splineActor;
+        public readonly float Z;
+        public SplineActorNode.UpdateMode UpdateMode;
+        public PathfindingEditorEdge Edge;
+
+        public SplinePointControlNode(SplineActorNode actor, float x, float y, float z, SplineActorNode.UpdateMode updateMode)
+        {
+            UpdateMode = updateMode;
+            Z = z;
+            splineActor = actor;
+            const float w = 15;
+            const float h = 15;
+            PPath shape = PPath.CreateEllipse(0, 0, w, h);
+            shape.Pen = new Pen(color);
+            shape.Brush = PathfindingNodeMaster.pathfindingNodeBrush;
+            shape.Pickable = false;
+            AddChild(shape);
+            Bounds = new RectangleF(0, 0, w, h);
+
+            TranslateBy(x, y);
         }
 
-        /// <summary>
-        /// This has no outbound connections.
-        /// </summary>
-        public override void CreateConnections(List<PathfindingNodeMaster> Objects)
+        public bool Hidden
         {
+            set
+            {
+                Visible = !value;
+                Pickable = !value;
+                Edge.Visible =! value;
+            }
+        }
+
+        public PathfindingEditorEdge CreateConnection(PathingGraphEditor g)
+        {
+            if (Edge != null)
+            {
+                g.edgeLayer.RemoveChild(Edge);
+            }
+            return Edge = new PathfindingEditorEdge
+            {
+                EndPoints = { [0] = this, [1] = splineActor },
+                Pen = Pens.White
+            };
+        }
+
+        public override void OnMouseUp(PInputEventArgs e)
+        {
+            base.OnMouseUp(e);
+            splineActor.UpdateSplines(UpdateMode, true);
+        }
+
+        public override void OnMouseDrag(PInputEventArgs e)
+        {
+            base.OnMouseDrag(e);
+            splineActor.UpdateSplines(UpdateMode);
+            return;
 
         }
     }
